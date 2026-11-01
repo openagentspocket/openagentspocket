@@ -1,0 +1,108 @@
+{
+  "passed": 17,
+  "total": 17,
+  "results": [
+    {
+      "name": "key: generate in Keychain, authorize on the Host",
+      "ok": true,
+      "ms": 165,
+      "detail": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5"
+    },
+    {
+      "name": "connect: wrong pin refused before auth",
+      "ok": true,
+      "ms": 40,
+      "detail": "hostKeyMismatch"
+    },
+    {
+      "name": "connect: TOFU fingerprint + ed25519 auth",
+      "ok": true,
+      "ms": 58,
+      "detail": "ssh-ed25519 SHA256:oKf9ULXlZcP/ltJACb8dOxpXarAkK6Bt555k4O1PIQw SSH-2.0-OpenSSH_10.5"
+    },
+    {
+      "name": "connect: pinned reconnect",
+      "ok": true,
+      "ms": 55,
+      "detail": "ok"
+    },
+    {
+      "name": "exec: echo ok",
+      "ok": true,
+      "ms": 25,
+      "detail": "exit 0, stdout \"ok\\n\""
+    },
+    {
+      "name": "herdr ping over direct-streamlocal (protocol >= 17)",
+      "ok": true,
+      "ms": 108,
+      "detail": "herdr 0.9.5 protocol 22"
+    },
+    {
+      "name": "herdr session.snapshot parses",
+      "ok": true,
+      "ms": 116,
+      "detail": "1059 bytes, keys type,snapshot"
+    },
+    {
+      "name": "streamlocal response bound keeps the connection",
+      "ok": true,
+      "ms": 218,
+      "detail": "responseTooLarge, then ping ok"
+    },
+    {
+      "name": "streamlocal one-shot >= 1 MiB response",
+      "ok": true,
+      "ms": 670,
+      "detail": "1200001 bytes"
+    },
+    {
+      "name": "streamlocal duplex >= 1 MiB read",
+      "ok": true,
+      "ms": 267,
+      "detail": "1100000 bytes, then remote EOF"
+    },
+    {
+      "name": "streamlocal duplex: herdr events.subscribe ack",
+      "ok": true,
+      "ms": 114,
+      "detail": "{\"id\":\"sub-1793576174123\",\"result\":{\"type\":\"subscription_started\"}}"
+    },
+    {
+      "name": "exec >= 1 MiB stdout",
+      "ok": true,
+      "ms": 70,
+      "detail": "1100000 bytes"
+    },
+    {
+      "name": "pty: echo, resize, exit status",
+      "ok": true,
+      "ms": 40,
+      "detail": "echo + stty \"30 100\" + exit 3"
+    },
+    {
+      "name": "sftp: mkdir, write, list, stat, read, readRange, rename, chmod, unlink",
+      "ok": true,
+      "ms": 565,
+      "detail": "list b.txt,big.bin, 1 MiB read, cleaned up"
+    },
+    {
+      "name": "direct-tcpip stream to a Host port",
+      "ok": true,
+      "ms": 12,
+      "detail": "HTTP/1.0 200 OK"
+    },
+    {
+      "name": "direct-tcpip loopback forward + fetch",
+      "ok": true,
+      "ms": 16,
+      "detail": "127.0.0.1:62841 -> Host:47451 200"
+    },
+    {
+      "name": "disconnect",
+      "ok": true,
+      "ms": 11,
+      "detail": "closed"
+    }
+  ]
+}

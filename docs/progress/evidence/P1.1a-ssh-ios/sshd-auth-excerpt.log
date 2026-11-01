@@ -1,0 +1,18 @@
+kex_exchange_identification: Connection closed by remote host [preauth]
+Connection closed by 127.0.0.1 port 59370 [preauth]
+Accepted publickey for <user> from 127.0.0.1 port 59423 ssh2: ED25519 SHA256:z7pTe8VQESIYhTm6g30qYa5KI8uDViWLs0b+64w803s
+Received disconnect from 127.0.0.1 port 59423:11: disconnected by user
+Disconnected from user <user> 127.0.0.1 port 59423
+Accepted publickey for <user> from 127.0.0.1 port 59512 ssh2: ED25519 SHA256:z7pTe8VQESIYhTm6g30qYa5KI8uDViWLs0b+64w803s
+Received disconnect from 127.0.0.1 port 59512:11: disconnected by user
+Disconnected from user <user> 127.0.0.1 port 59512
+Disconnected from 127.0.0.1 port 62251 [preauth]
+Accepted publickey for <user> from 127.0.0.1 port 62253 ssh2: ED25519 SHA256:mxu1yy84Nmlow+Q/emsRol61Dc+7osi7/zgFzgCvD7Y
+Accepted publickey for <user> from 127.0.0.1 port 62255 ssh2: ED25519 SHA256:mxu1yy84Nmlow+Q/emsRol61Dc+7osi7/zgFzgCvD7Y
+Disconnected from user <user> 127.0.0.1 port 62255
+Disconnected from user <user> 127.0.0.1 port 62253
+Disconnected from 127.0.0.1 port 62821 [preauth]
+Accepted publickey for <user> from 127.0.0.1 port 62823 ssh2: ED25519 SHA256:mxu1yy84Nmlow+Q/emsRol61Dc+7osi7/zgFzgCvD7Y
+Accepted publickey for <user> from 127.0.0.1 port 62825 ssh2: ED25519 SHA256:mxu1yy84Nmlow+Q/emsRol61Dc+7osi7/zgFzgCvD7Y
+Disconnected from user <user> 127.0.0.1 port 62825
+Disconnected from user <user> 127.0.0.1 port 62823
