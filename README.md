@@ -17,7 +17,7 @@ See [docs/roadmap.md](docs/roadmap.md).
 | `packages/ui` | Theme tokens (Índigo, Papel, Noche) and the UI primitives |
 | `packages/plugin` | The herdr plugin that renders the pairing QR and sends notifications (Apache-2.0, from Heeler) |
 | `packages/relay` | The push relay (Apache-2.0, from Heeler) |
-| `modules/ssh` | The SSH Expo Module (interface and fake only, for now) |
+| `modules/ssh` | The SSH Expo Module: iOS over libssh2 + OpenSSL (Apache-2.0 part, see `modules/ssh/ios/NOTICE`); Android pending |
 
 ## Develop
 
