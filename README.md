@@ -35,5 +35,5 @@ Contributors and agents: read [CLAUDE.md](CLAUDE.md) first.
 
 ## License
 
-MIT, except `packages/plugin` and `packages/relay` (Apache-2.0, derived from
-[Heeler](https://github.com/ZingerLittleBee/Heeler)).
+MIT, except `packages/plugin`, `packages/relay` and `modules/ssh/ios` (Apache-2.0, derived from
+[Heeler](https://github.com/ZingerLittleBee/Heeler); see `modules/ssh/ios/NOTICE`).
