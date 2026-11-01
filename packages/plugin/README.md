@@ -741,6 +741,16 @@ the app's update notice installs from that branch. See
   [Only from Tailscale](#only-from-tailscale-device-keys)). Nothing changes
   unless you turn it on; the app does not need an update to pair.
 
+### Updating to 0.12.0
+
+- Plugin 0.12.0 delivers notifications to Android devices: registration
+  entries with `platform: "android"` and `env: "fcm"` (see
+  [Notification Registration file](#notification-registration-file-v1)) go
+  through the relay's FCM path, which needs a relay with FCM credentials
+  (`relay/README.md`). Older plugins skip those entries, so the app should
+  offer Android notifications only on 0.12.0 or newer. iOS deliveries are
+  unchanged.
+
 ## Usage
 
 Plugin 0.7.0 adds Usage for Claude Code and Codex on Linux and macOS Hosts.
