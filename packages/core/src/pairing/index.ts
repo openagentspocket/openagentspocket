@@ -1,3 +1,7 @@
+// endpoint.ts and fingerprint.ts stay internal: P1.3-core-hosts exports its own
+// HerdrEndpoint, session-name, quotable-path and fingerprint helpers, and two
+// barrels exporting the same names break `tsc -b` (TS2308). Once hosts lands,
+// pairing imports hosts' copies and these two files go away.
 export {
   type EnrollmentRefusal,
   type EnrollmentResponse,
@@ -34,15 +38,6 @@ export {
   type SSHPairingConnectorOptions,
 } from './connector';
 export {
-  type HerdrEndpoint,
-  herdrEndpoint,
-  herdrSessionFromSocketPath,
-  isQuotableAbsolutePath,
-  isValidHerdrSessionName,
-  MAXIMUM_SOCKET_PATH_UTF8_LENGTH,
-  sameHerdrEndpoint,
-} from './endpoint';
-export {
   ceremonyFailure,
   PAIRING_MESSAGE_CATALOG_KEYS,
   type PairingFailure,
@@ -51,7 +46,6 @@ export {
   scanFailureMessage,
 } from './failure';
 export { FakePairingConnector, type FakePairingOutcome } from './fake-connector';
-export { canonicalFingerprint, sameFingerprint } from './fingerprint';
 export {
   findPairedTwin,
   mayBePairedTwin,
