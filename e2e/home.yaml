@@ -1,0 +1,9 @@
+# Smoke: Home shows its three sections. Run with `maestro test e2e/home.yaml` (one booted simulator/emulator).
+appId: com.example.agentico
+---
+- launchApp:
+    clearState: true
+- assertVisible: "Agentico"
+- assertVisible: "NEEDS YOU.*"
+- assertVisible: "WORKING.*"
+- assertVisible: "DONE.*"
