@@ -1,0 +1,195 @@
+{
+  "description": "Shared approval preview v1 test vectors (spec F5). Each `screen` is an Agent's visible screen as `herdr agent read --source visible --format text` prints it: captured vectors name their `fixture`, the ANSI capture under Tests/AgenticoTests/ChatFixtures/screens with escape sequences stripped and trailing blanks trimmed; the others are written for the test in the same layouts. `expected` is what the plugin's extractor (src/approval-preview.js) must return, `null` for a screen without numbered options; the values were reviewed by hand against each screen. The Swift tests parse each captured `fixture` with the app's dialog parser and check that the app's prompt binding accepts `expected.q` whenever `expected.act` is true, which keeps the two sides from drifting.",
+  "vectors": [
+    {
+      "name": "Claude Bash permission",
+      "fixture": "claude-02-c1-bash-blocked",
+      "screen": "\n ▐▛███▛█   Claude Code v2.1.291\n▝▜██████▀  Sonnet 5.5 · Claude Max\n ▝▝   ▝▝   /private/tmp/heeler-tmp-chat2/probe-claude\n\n\n❯ Use the Bash tool to run: touch c1.txt\n\n  Creating empty file c1.txt\n  ⎿  $ touch c1.txt\n\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n Bash command\n Tip: auto mode handles these prompts for you — choose \"switch to auto mode\" below\n Create empty file c1.txt\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n touch c1.txt\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n Do you want to proceed?\n ❯ 1. Yes\n   2. Yes, and always allow access to /private/tmp/heeler-tmp-chat2/probe-claude from this project\n   3. Yes, and switch to auto mode · auto mode handles these prompts for you\n   4. No\n\n Esc to cancel · Tab to amend",
+      "expected": {
+        "q": "touch c1.txt Do you want to proceed?",
+        "opts": [
+          "Yes",
+          "Yes, and always allow access to /privat…",
+          "Yes, and switch to auto mode",
+          "No"
+        ],
+        "act": true
+      }
+    },
+    {
+      "name": "Claude Bash at a phone's width, the tip wrapped",
+      "fixture": "claude-32-c7-phone-bash-blocked",
+      "screen": "\n✻ Baked for 7s · done 1:45 AM\n\n❯ Run the Bash command: touch c2q7.txt. Do nothing else.\n\n  Ran 1 shell command\n  ⎿  Interrupted · What should Claude do instead?\n\n✻ Sautéed for 2s · done 1:46 AM\n\n❯ Run the Bash command: touch c3q7.txt. Do nothing else.\n\n  Ran 1 shell command\n\n⏺ skipped\n\n✻ Baked for 3s · done 1:51 AM\n\n❯ Run the Bash command: touch c3bq7.txt. Do nothing else.\n\n  Creating empty c3bq7.txt in current directory\n  ⎿  $ touch c3bq7.txt\n\n──────────────────────────────────────────────────────────────\n Bash command\n Tip: auto mode handles these prompts for you — choose\n \"switch to auto mode\" below\n Create empty c3bq7.txt in current directory\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n touch c3bq7.txt\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n Do you want to proceed?\n ❯ 1. Yes\n   2. Yes, and always allow access to\n      /private/tmp/heeler-iso-4h/proj-claude-b from this\n      project\n   3. Yes, and switch to auto mode · auto mode handles these\n      prompts for you\n   4. No\n\n Esc to cancel · Tab to amend",
+      "expected": {
+        "q": "touch c3bq7.txt Do you want to proceed?",
+        "opts": [
+          "Yes",
+          "Yes, and always allow access to /privat…",
+          "Yes, and switch to auto mode",
+          "No"
+        ],
+        "act": true
+      }
+    },
+    {
+      "name": "Claude Bash from a subagent",
+      "fixture": "claude-26-c10-subagent-ask",
+      "screen": "\n\n✻ Cogitated for 7s · done 1:50 PM\n\n❯ Use the Edit tool to change the word probe to probe2 in q.txt.\n\n⏺ Update(q.txt)\n  ⎿  User rejected update to q.txt\n      1 -probe\n      1 +probe2\n\n✻ Crunched for 2s · done 1:51 PM\n\n❯ Use the WebFetch tool to fetch https://example.com and tell me the page title.\n\n⏺ Fetch(https://example.com)\n  ⎿  Interrupted · What should Claude do instead?\n\n✻ Worked for 2s · done 1:52 PM\n\n❯ Use the Agent tool to launch one general-purpose subagent whose only task is to run the Bash command: touch sub.txt\n  (in the current directory). Do not run any command yourself.\n\n⏺ Agent(Run touch sub.txt)\n  ⎿  Backgrounded agent (↓ to manage · ctrl+o to expand)\n\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n Bash command · from the general-purpose agent\n Tip: auto mode handles these prompts for you — choose \"switch to auto mode\" below\n Create empty file sub.txt\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n touch sub.txt && echo ok\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n Do you want to proceed?\n ❯ 1. Yes\n   2. Yes, and always allow access to /private/tmp/heeler-tmp-chat2/probe-claude from this project\n   3. Yes, and switch to auto mode · auto mode handles these prompts for you\n   4. No\n\n Esc to cancel · Tab to amend · ctrl+x ctrl+k twice to stop background agents",
+      "expected": {
+        "q": "touch sub.txt && echo ok Do you want to proceed?",
+        "opts": [
+          "Yes",
+          "Yes, and always allow access to /privat…",
+          "Yes, and switch to auto mode",
+          "No"
+        ],
+        "act": true
+      }
+    },
+    {
+      "name": "Claude Edit with a diff",
+      "fixture": "claude-22-c7-edit",
+      "screen": "     │ 2. Verify by reading p.txt back and confirming its content is \"probe\".                            │\n     ╰───────────────────────────────────────────────────────────────────────────────────────────────────╯\n\n⏺ Updated plan\n  ⎿  /plan to preview\n\n⏺ User approved Claude's plan\n  ⎿  Plan saved to: ~/.claude/plans/spicy-dazzling-crescent.md · /plan to edit\n     1. Create q.txt in /private/tmp/heeler-tmp-chat2/probe-claude containing the single word \"probe\".\n     2. Verify by reading q.txt back and confirming its content is \"probe\".\n\n❯ Also reply with the word done at the end\n\n⏺ Write(q.txt)\n  ⎿  Wrote 1 line to q.txt\n      1 probe\n\n⏺ 已创建 q.txt，内容为 probe（Write 工具返回成功，未再单独读回验证）。\n\n  done\n\n✻ Cogitated for 7s · done 1:50 PM\n\n❯ Use the Edit tool to change the word probe to probe2 in q.txt.\n\n⏺ Update(q.txt)\n\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n Edit file\n q.txt\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n 1 -probe\n 1 +probe2\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n Do you want to make this edit to q.txt?\n ❯ 1. Yes\n   2. Yes, and switch to accept edits (auto-approve file edits and common file commands) for this session (shift+tab)\n   3. No\n\n Esc to cancel · Tab to amend",
+      "expected": {
+        "q": "1 -probe 1 +probe2 Do you want to make this edit to q.txt?",
+        "opts": [
+          "Yes",
+          "Yes, and switch to accept edits (auto-a…",
+          "No"
+        ],
+        "act": true
+      }
+    },
+    {
+      "name": "Claude WebFetch",
+      "fixture": "claude-24-c8-webfetch",
+      "screen": "  ⎿  Plan saved to: ~/.claude/plans/spicy-dazzling-crescent.md · /plan to edit\n     1. Create q.txt in /private/tmp/heeler-tmp-chat2/probe-claude containing the single word \"probe\".\n     2. Verify by reading q.txt back and confirming its content is \"probe\".\n\n❯ Also reply with the word done at the end\n\n⏺ Write(q.txt)\n  ⎿  Wrote 1 line to q.txt\n      1 probe\n\n⏺ 已创建 q.txt，内容为 probe（Write 工具返回成功，未再单独读回验证）。\n\n  done\n\n✻ Cogitated for 7s · done 1:50 PM\n\n❯ Use the Edit tool to change the word probe to probe2 in q.txt.\n\n⏺ Update(q.txt)\n  ⎿  User rejected update to q.txt\n      1 -probe\n      1 +probe2\n\n✻ Crunched for 2s · done 1:51 PM\n\n❯ Use the WebFetch tool to fetch https://example.com and tell me the page title.\n\n⏺ Fetch(https://example.com)\n\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n Fetch\n Claude wants to fetch content from example.com\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n url: https://example.com/\n prompt: What is the page title (the <title> text)?\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n Do you want to allow Claude to fetch this content?\n ❯ 1. Yes\n   2. Yes, and don't ask again for example.com\n   3. No, and tell Claude what to do differently (esc)",
+      "expected": {
+        "q": "url: https://example.com/ prompt: What is the page title (the <title> text)? Do you want to allow Claude to fetch this content?",
+        "opts": [
+          "Yes",
+          "Yes, and don't ask again for example.com",
+          "No, and tell Claude what to do differen…"
+        ],
+        "act": true
+      }
+    },
+    {
+      "name": "Claude Read file, the path wrapped",
+      "fixture": "claude-43-c12-read-file",
+      "screen": "\n✻ Baked for 7s · done 1:45 AM\n\n❯ Run the Bash command: touch c2q7.txt. Do nothing else.\n\n  Ran 1 shell command\n  ⎿  Interrupted · What should Claude do instead?\n\n✻ Sautéed for 2s · done 1:46 AM\n\n❯ Run the Bash command: touch c3q7.txt. Do nothing else.\n\n  Ran 1 shell command\n\n⏺ skipped\n\n✻ Baked for 3s · done 1:51 AM\n\n❯ /var/folders/zz/probe0placeholder00000000000gn/T/heeler.hn\n  DAu48H/stage-474a20ea-59f3-48eb-8639-56c1977b6d41/image.jp\n  g what color dominates? one word\n\n⏺ Read(/var/folders/zz/probe0placeholder00000000000gn/T/hee…)\n\n──────────────────────────────────────────────────────────────\n Read file\n\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n Read(/var/folders/zz/probe0placeholder00000000000gn/T/heeler\n .hnDAu48H/stage-474a20ea-59f3-48eb-8639-56c1977b6d41/image.j\n pg)\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n Do you want to proceed?\n ❯ 1. Yes\n   2. No\n\n Esc to cancel · Tab to amend",
+      "expected": {
+        "q": "Read(/var/folders/zz/probe0placeholder00000000000gn/T/heeler .hnDAu48H/stage-474a20ea-59f3-48eb-8639-56c1977b6d41/image.j pg) Do you want to proceed?",
+        "opts": [
+          "Yes",
+          "No"
+        ],
+        "act": true
+      }
+    },
+    {
+      "name": "Codex exec",
+      "fixture": "codex-01-x1-exec",
+      "screen": "\n  >_ OpenAI Codex (v0.160.1)\n     /private/tmp/heeler-tmp-chat2/probe-codex\n\n  The source is strong with this one.\n\n  To get started, describe a task or try one of these commands:\n\n  /init - create an AGENTS.md file with instructions for Codex\n  /status - show current session configuration\n  /permissions - choose what Codex is allowed to do\n  /model - choose what model and reasoning effort to use\n  /review - review any changes and find issues\n\n\n› Run the shell command: touch x1.txt in the current directory\n\n\n• 我会在当前目录创建 x1.txt。\n\n• Running touch x1.txt\n\n\n\n\n\n  Would you like to run the following command?\n\n  Environment: local\n\n  Reason: 允许在当前目录创建 x1.txt 吗？\n\n  $ touch x1.txt\n\n\n› 1. Yes, proceed (y)\n  2. Yes, and don't ask again for commands that start with `touch x1.txt` (p)\n  3. No, and tell Codex what to do differently (esc)\n\n  Press enter to confirm or esc to cancel",
+      "expected": {
+        "q": "Reason: 允许在当前目录创建 x1.txt 吗？ $ touch x1.txt",
+        "opts": [
+          "Yes, proceed",
+          "Yes, and don't ask again for commands t…",
+          "No, and tell Codex what to do different…"
+        ],
+        "act": true
+      }
+    },
+    {
+      "name": "Codex exec at a phone's width",
+      "fixture": "codex-12-x5-narrow-exec",
+      "screen": "  narrow-probe-file.txt in the current\n  directory\n\n\n• 我会在当前目录创建 x5-narrow-probe-\n  file.txt。\n\n• Running touch x5-narrow-probe-file.txt\n\n\n  Would you like to run the following\n  command?\n\n  Environment: local\n\n  Reason: 允许在当前目录创建\n  x5-narrow-probe-file.txt 吗？\n\n  $ touch x5-narrow-probe-file.txt\n\n\n› 1. Yes, proceed (y)\n  2. Yes, and don't ask again for\n     commands that start with `touch x5-\n     narrow-probe-file.txt` (p)\n  3. No, and tell Codex what to do\n     differently (esc)\n\n  Press enter to confirm or esc to\n  cancel",
+      "expected": {
+        "q": "Reason: 允许在当前目录创建 x5-narrow-probe-file.txt 吗？ $ touch x5-narrow-probe-file.txt",
+        "opts": [
+          "Yes, proceed",
+          "Yes, and don't ask again for commands t…",
+          "No, and tell Codex what to do different…"
+        ],
+        "act": true
+      }
+    },
+    {
+      "name": "Codex patch",
+      "fixture": "codex-02-x2-patch",
+      "screen": "  /model - choose what model and reasoning effort to use\n  /review - review any changes and find issues\n\n\n› Run the shell command: touch x1.txt in the current directory\n\n\n• 我会在当前目录创建 x1.txt。\n\n✔ You approved codex to run touch x1.txt this time\n\n• Ran touch x1.txt\n  └ (no output)\n\n• 已在当前目录执行 touch x1.txt，成功。\n\n  Worked for 12s • 1:55 PM\n\n\n› Use apply_patch to create a file named patch.txt containing the single line probe.\n\n\n• 我会使用 apply_patch 创建 patch.txt，内容为一行 probe。\n\n• Added patch.txt (+1 -0)\n    1 +probe\n    + Show details\n\n\n  Would you like to make the following edits?\n\n  Description: Apply proposed file edits\n  Destination: /private/tmp/heeler-tmp-chat2/probe-codex/patch.txt\n\n\n› 1. Yes, proceed (y)\n  2. Yes, and don't ask again for these files (a)\n  3. No, and tell Codex what to do differently (esc)\n\n  Press enter to confirm or esc to cancel",
+      "expected": {
+        "q": "Would you like to make the following edits? Description: Apply proposed file edits Destination: /private/tmp/heeler-tmp-chat2/probe-codex/patch.txt",
+        "opts": [
+          "Yes, proceed",
+          "Yes, and don't ask again for these files",
+          "No, and tell Codex what to do different…"
+        ],
+        "act": true
+      }
+    },
+    {
+      "name": "Claude AskUserQuestion is not a permission",
+      "fixture": "claude-08-c4-auq-q1",
+      "screen": "\n\n❯ Use the Bash tool to run: touch c1.txt\n\n  Ran 1 shell command\n\n⏺ skipped\n\n✻ Churned for 3s · done 1:47 PM\n\n❯ Use the Bash tool to run: touch c2.txt\n\n  Ran 1 shell command\n\n❯ after it succeeds, reply with the single word created\n\n⏺ created\n\n✻ Worked for 2s · done 1:47 PM\n\n❯ Use the AskUserQuestion tool once with exactly two questions. Question 1: header Colors, question 'Which colors?',\n  multiSelect true, options Red, Green, Blue. Question 2: header Size, question 'Which size?', options Small and\n  Large. After the answers arrive, reply with them in one line and stop.\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n←  ☐ Colors  ☐ Size  ✔ Submit  →\n\nWhich colors?\n\n❯ 1. [ ] Red\n         Red\n  2. [ ] Green\n         Green\n  3. [ ] Blue\n         Blue\n  4. [ ] Type something\n     Next\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n  5. Chat about this\n\nEnter to select · Tab/Arrow keys to navigate · Esc to cancel",
+      "expected": {
+        "q": "← ☐ Colors ☐ Size ✔ Submit → Which colors?",
+        "opts": [
+          "[ ] Red",
+          "[ ] Green",
+          "[ ] Blue",
+          "[ ] Type something"
+        ],
+        "act": false
+      }
+    },
+    {
+      "name": "Claude plan approval is not a permission",
+      "fixture": "claude-16-c6-exitplan-1",
+      "screen": "\n  ⎿  /plan to preview\n▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔\n\n  ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n   Ready to code?\n\n   Here is Claude's plan:\n  ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n   1. Create p.txt in /private/tmp/heeler-tmp-chat2/probe-claude containing the single word \"probe\".\n   2. Verify by reading p.txt back and confirming its content is \"probe\".\n  ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n  ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n   Claude has written up a plan and is ready to execute. Would you like to proceed?\n\n   ❯ 1. Yes, and use auto mode\n     2. Yes, manually approve edits\n     3. Tell Claude what to change\n        shift+tab to approve with this feedback\n\n   ctrl+g to edit in VS Code · ~/.claude/plans/spicy-dazzling-crescent.md",
+      "expected": {
+        "q": "Claude has written up a plan and is ready to execute. Would you like to proceed?",
+        "opts": [
+          "Yes, and use auto mode",
+          "Yes, manually approve edits",
+          "Tell Claude what to change"
+        ],
+        "act": false
+      }
+    },
+    {
+      "name": "Claude idle prompt shows no options",
+      "fixture": "claude-01-ready",
+      "screen": "\n ▐▛███▛█   Claude Code v2.1.291\n▝▜██████▀  Sonnet 5.5 · Claude Max\n ▝▝   ▝▝   /private/tmp/heeler-tmp-chat2/probe-claude\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                                                                                                   ◐ medium · /effort\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n❯\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────\n  [Sonnet 5.5 medium] │ probe-claude\n  Context ░░░░░░░░░░ 0%\n  ⏸ manual mode on · ← 1 agent",
+      "expected": null
+    },
+    {
+      "name": "Claude question in Spanish is not a permission",
+      "screen": "⏺ Listo, revisé la carpeta.\n\n────────────────────────────────────────────────────────────────────────────────\n ☐ Archivo\n\n¿Creo el archivo notas.txt con el resumen?\n\n❯ 1. Dale, crealo\n     Escribe notas.txt en la carpeta del proyecto\n  2. No, solo era para ver\n     No toca nada\n  3. Type something.\n────────────────────────────────────────────────────────────────────────────────\n  4. Chat about this\n\nEnter to select · ↑/↓ to navigate · Esc to cancel",
+      "expected": {
+        "q": "☐ Archivo ¿Creo el archivo notas.txt con el resumen?",
+        "opts": [
+          "Dale, crealo",
+          "No, solo era para ver",
+          "Type something.",
+          "Chat about this"
+        ],
+        "act": false
+      }
+    },
+    {
+      "name": "Claude Bash with a command longer than the prompt limit",
+      "screen": "⏺ Bash(./scripts/release.sh)\n\n────────────────────────────────────────────────────────────────────────────────\n Bash command\n Cut the beta release\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n ./scripts/release.sh --channel beta --notes \"Fixes the pairing sheet, the\n usage ring and the notification relay retry\" --tag v2.4.0-beta.3 --sign\n --upload --skip-changelog-check --build-number 4182 --team-id ABCDE12345\n --keychain /home/dev/.keychains/release.keychain-db --profile\n /home/dev/profiles/agentico-beta.mobileprovision --verbose\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌\n Do you want to proceed?\n ❯ 1. Yes\n   2. Yes, and don't ask again for ./scripts/release.sh commands in /home/dev/app\n   3. No\n\n Esc to cancel · Tab to amend",
+      "expected": {
+        "q": "./scripts/release.sh --channel beta --notes \"Fixes the pairing sheet, the usage ring and the notification relay retry\" --tag v2.4.0-beta.3 --sign --upload --skip-changelog-check --build-number 4182 --team-id ABCDE12345 --keychain /home/dev…",
+        "opts": [
+          "Yes",
+          "Yes, and don't ask again for ./scripts/…",
+          "No"
+        ],
+        "act": true
+      }
+    }
+  ]
+}
