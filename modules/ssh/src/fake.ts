@@ -1,11 +1,14 @@
+import { checkHostKey, DEFAULT_MAX_RESPONSE_BYTES } from './client';
+import { SshError } from './errors';
+import { fakeSftp } from './fakeSftp';
 import type {
   ConnectOptions,
   ExecResult,
+  HostKey,
   LocalForward,
   PtyOptions,
   PtyStream,
   Sftp,
-  SftpEntry,
   SshModule,
   SshSession,
   Stream,
@@ -13,7 +16,7 @@ import type {
 
 type Listener<T> = (value: T) => void;
 
-class FakeStream implements Stream {
+export class FakeStream implements Stream {
   readonly written: Uint8Array[] = [];
   private dataListeners = new Set<Listener<Uint8Array>>();
   private closeListeners = new Set<Listener<string | undefined>>();
@@ -22,6 +25,7 @@ class FakeStream implements Stream {
   constructor(readonly id: string) {}
 
   async write(data: Uint8Array) {
+    if (this.closed) throw new SshError('closed');
     this.written.push(data);
   }
   onData(listener: Listener<Uint8Array>) {
@@ -29,22 +33,33 @@ class FakeStream implements Stream {
     return () => this.dataListeners.delete(listener);
   }
   onClose(listener: Listener<string | undefined>) {
+    if (this.closed) {
+      listener(undefined);
+      return () => {};
+    }
     this.closeListeners.add(listener);
     return () => this.closeListeners.delete(listener);
   }
   async close() {
-    this.closed = true;
-    for (const listener of this.closeListeners) listener(undefined);
+    this.end(undefined);
   }
   /** Test helper: the remote side sends bytes. */
   emit(data: Uint8Array) {
-    for (const listener of this.dataListeners) listener(data);
+    if (!this.closed) for (const listener of this.dataListeners) listener(data);
+  }
+  /** Test helper: the remote side ends the stream (a reason code when it failed). */
+  end(reason?: string) {
+    if (this.closed) return;
+    this.closed = true;
+    for (const listener of this.closeListeners) listener(reason);
   }
 }
 
-class FakePty extends FakeStream implements PtyStream {
+export class FakePty extends FakeStream implements PtyStream {
   size = { cols: 0, rows: 0 };
+  exitStatus: number | undefined;
   async resize(cols: number, rows: number) {
+    if (this.closed) throw new SshError('closed');
     this.size = { cols, rows };
   }
 }
@@ -52,10 +67,17 @@ class FakePty extends FakeStream implements PtyStream {
 export interface FakeSshOptions {
   /** Canned results by exact command. */
   exec?: Record<string, ExecResult>;
+  /** Answers `exchangeStreamLocal` (default: `streamLocalOpenFailed`). */
+  streamLocal?: (socketPath: string, request: Uint8Array) => Uint8Array;
   files?: Record<string, Uint8Array>;
-  hostKeyFingerprint?: string;
+  /** Directories that exist (the parents of `files` are added). */
+  directories?: string[];
+  hostKey?: HostKey;
+  /** Users whose key is authorized; default: any. */
+  authorizedUsers?: string[];
 }
 
+/** An in-memory `SshModule` for tests and Demo mode, with the native module's semantics. */
 export class FakeSsh implements SshModule {
   readonly keys = new Map<string, string>();
   readonly sessions: FakeSession[] = [];
@@ -63,18 +85,29 @@ export class FakeSsh implements SshModule {
   constructor(private readonly options: FakeSshOptions = {}) {}
 
   async generateKey(alias: string) {
-    const publicKey = `ssh-ed25519 FAKE-${alias}`;
+    const publicKey = this.keys.get(alias) ?? `ssh-ed25519 FAKE-${alias}`;
     this.keys.set(alias, publicKey);
     return { publicKey };
   }
 
-  async connect(options: ConnectOptions) {
-    if (!this.keys.has(options.keyAlias)) throw new Error(`unknown key alias: ${options.keyAlias}`);
-    const fingerprint = this.options.hostKeyFingerprint ?? 'SHA256:fake';
-    if (options.pinnedHostKey && options.pinnedHostKey !== fingerprint) {
-      throw new Error('host key mismatch');
-    }
-    const session = new FakeSession(`fake-${this.sessions.length + 1}`, fingerprint, this.options);
+  async publicKey(alias: string) {
+    return this.keys.get(alias) ?? null;
+  }
+
+  async deleteKey(alias: string) {
+    this.keys.delete(alias);
+  }
+
+  async connect(options: ConnectOptions): Promise<SshSession> {
+    const hostKey = this.options.hostKey ?? {
+      algorithm: 'ssh-ed25519',
+      fingerprint: 'SHA256:fake',
+    };
+    await checkHostKey(options, hostKey);
+    if (!this.keys.has(options.keyAlias)) throw new SshError('keyNotFound');
+    const users = this.options.authorizedUsers;
+    if (users && !users.includes(options.username)) throw new SshError('authenticationFailed');
+    const session = new FakeSession(`fake-${this.sessions.length + 1}`, hostKey, this.options);
     this.sessions.push(session);
     return session;
   }
@@ -82,57 +115,73 @@ export class FakeSsh implements SshModule {
 
 export class FakeSession implements SshSession {
   readonly streams: FakeStream[] = [];
+  readonly files: Map<string, Uint8Array>;
+  readonly directories: Set<string>;
   connected = true;
 
   constructor(
     readonly sessionId: string,
-    readonly hostKeyFingerprint: string,
+    readonly hostKey: HostKey,
     private readonly options: FakeSshOptions,
-  ) {}
+  ) {
+    this.files = new Map(Object.entries(options.files ?? {}));
+    this.directories = new Set(['/', ...(options.directories ?? [])]);
+    for (const path of this.files.keys()) {
+      this.directories.add(path.slice(0, Math.max(path.lastIndexOf('/'), 0)) || '/');
+    }
+  }
 
-  async exec(command: string): Promise<ExecResult> {
-    return this.options.exec?.[command] ?? { exitCode: 127, stdout: '', stderr: 'not found' };
+  private check() {
+    if (!this.connected) throw new SshError('closed');
   }
-  async openPty(options: PtyOptions): Promise<PtyStream> {
-    const pty = new FakePty(`pty-${this.streams.length + 1}`);
-    pty.size = { cols: options.cols, rows: options.rows };
-    this.streams.push(pty);
-    return pty;
-  }
-  async openStreamLocal(_socketPath: string): Promise<Stream> {
-    const stream = new FakeStream(`sock-${this.streams.length + 1}`);
+
+  private track<T extends FakeStream>(stream: T): T {
+    this.check();
     this.streams.push(stream);
     return stream;
   }
+
+  async exec(command: string): Promise<ExecResult> {
+    this.check();
+    return this.options.exec?.[command] ?? { exitCode: 127, stdout: '', stderr: 'not found' };
+  }
+  async exchangeStreamLocal(
+    socketPath: string,
+    request: Uint8Array,
+    options: { maxResponseBytes?: number } = {},
+  ) {
+    this.check();
+    if (!this.options.streamLocal) throw new SshError('streamLocalOpenFailed');
+    const response = this.options.streamLocal(socketPath, request);
+    if (response.length > (options.maxResponseBytes ?? DEFAULT_MAX_RESPONSE_BYTES)) {
+      throw new SshError('responseTooLarge');
+    }
+    return response;
+  }
+  async openStreamLocal(_socketPath: string): Promise<Stream> {
+    return this.track(new FakeStream(`sock-${this.streams.length + 1}`));
+  }
+  async openPty(options: PtyOptions): Promise<PtyStream> {
+    const pty = this.track(new FakePty(`pty-${this.streams.length + 1}`));
+    pty.size = { cols: options.cols, rows: options.rows };
+    return pty;
+  }
+  async openTcp(_host: string, _port: number): Promise<Stream> {
+    return this.track(new FakeStream(`tcp-${this.streams.length + 1}`));
+  }
   async sftp(): Promise<Sftp> {
-    const files = new Map(Object.entries(this.options.files ?? {}));
-    return {
-      list: async (path): Promise<SftpEntry[]> =>
-        [...files.keys()]
-          .filter((name) => name.startsWith(`${path}/`))
-          .map((name) => ({
-            name: name.slice(path.length + 1),
-            isDirectory: false,
-            size: files.get(name)?.length ?? 0,
-            modifiedAt: 0,
-          })),
-      read: async (path) => {
-        const data = files.get(path);
-        if (!data) throw new Error(`no such file: ${path}`);
-        return data;
-      },
-      write: async (path, data) => {
-        files.set(path, data);
-      },
-      remove: async (path) => {
-        files.delete(path);
-      },
-    };
+    this.check();
+    return fakeSftp(this.files, this.directories);
   }
   async forwardLocal(_remoteHost: string, _remotePort: number): Promise<LocalForward> {
+    this.check();
     return { localPort: 49152, close: async () => {} };
+  }
+  async isConnected() {
+    return this.connected;
   }
   async disconnect() {
     this.connected = false;
+    for (const stream of this.streams) stream.end('disconnected');
   }
 }
