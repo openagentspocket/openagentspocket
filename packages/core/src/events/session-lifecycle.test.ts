@@ -88,6 +88,44 @@ describe('EventsSession reconnect backoff', () => {
     await session.end();
   });
 
+  it('redials after a timed-out subscribe even though the connection looks alive', async () => {
+    const first = new ScriptedEventsTransport();
+    const second = new ScriptedEventsTransport();
+    first.failNextSubscription(failures.timedOut());
+    const connector = new SequencedConnector([first, second]);
+    const { clock, session, next } = harness(connector.connect);
+    await session.resume();
+    expect(await next()).toEqual(connecting);
+    expect(await next()).toMatchObject({
+      status: { kind: 'reconnecting', attempt: 1, failure: { kind: 'timedOut' } },
+    });
+    expect(first.isConnected()).toBe(true);
+    await clock.advance(1_000);
+    expect(await next()).toEqual(connected);
+    expect(connector.connectCount).toBe(2);
+    expect(first.isClosed).toBe(true);
+    expect(second.capturedSubscriptions).toEqual([initial]);
+    await session.end();
+  });
+
+  it('retries a subscribe herdr rejected for another reason, on the same connection', async () => {
+    const transport = new ScriptedEventsTransport();
+    const busy = failures.apiRejected('internal_error', 'try again');
+    transport.failNextSubscription(busy);
+    const connector = new SequencedConnector([transport]);
+    const { clock, session, next } = harness(connector.connect);
+    await session.resume();
+    expect(await next()).toEqual(connecting);
+    expect(await next()).toMatchObject({
+      status: { kind: 'reconnecting', attempt: 1, failure: busy },
+    });
+    await clock.advance(1_000);
+    expect(await next()).toEqual(connected);
+    expect(connector.connectCount).toBe(1);
+    expect(transport.capturedSubscriptions).toEqual([initial, initial]);
+    await session.end();
+  });
+
   it.each([
     'authenticationFailed',
     'deviceKeyCorrupt',

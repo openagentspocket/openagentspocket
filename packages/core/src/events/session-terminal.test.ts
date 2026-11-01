@@ -259,7 +259,7 @@ describe('EventsSession.withTerminalTransport', () => {
     await session.end();
   });
 
-  it('closes a distrusted transport on teardown even before any redial', async () => {
+  it('closes a distrusted transport before its redial dials', async () => {
     const first = scripted('first');
     const gate = new CallGate();
     const connector = new SequencedConnector([first, scripted('second')]);
@@ -275,9 +275,32 @@ describe('EventsSession.withTerminalTransport', () => {
       throw failWith(deadLink);
     });
     expect(await failureOf(lost)).toEqual(deadLink);
-    await session.suspend();
+    await gate.waitForEntry();
     expect(first.isClosed).toBe(true);
     gate.open();
+    await session.end();
+  });
+
+  it('closes a distrusted transport on teardown even before any redial', async () => {
+    const first = scripted('first');
+    const connector = new SequencedConnector([first, scripted('second')]);
+    const { session, next } = harness(connector.connect);
+    await session.resume();
+    expect(await next()).toEqual(connecting);
+    expect(await next()).toEqual(connected);
+
+    // A retryable drop parks the run loop in backoff with `first` still installed.
+    first.failEventStream(failures.channelFailed('remote closed'));
+    expect(await next()).toMatchObject({ status: { kind: 'reconnecting', attempt: 1 } });
+    const lost = session.withTerminalTransport(async () => {
+      throw failWith(deadLink);
+    });
+    expect(await failureOf(lost)).toEqual(deadLink);
+    expect(first.isClosed).toBe(false);
+
+    await session.suspend();
+    expect(first.isClosed).toBe(true);
+    expect(connector.connectCount).toBe(1);
     await session.end();
   });
 });

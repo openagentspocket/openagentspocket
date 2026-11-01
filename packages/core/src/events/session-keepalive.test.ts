@@ -148,6 +148,22 @@ describe('EventsSession revalidate', () => {
     await session.end();
   });
 
+  it('stays silent when its ping is cancelled', async () => {
+    const transport = new ScriptedEventsTransport();
+    transport.failPing(2, failures.cancelled());
+    const connector = new SequencedConnector([transport]);
+    const { clock, session, next } = harness(connector.connect, { keepalive: null });
+    await session.resume();
+    expect(await next()).toEqual(connecting);
+    expect(await next()).toEqual(connected);
+    await session.revalidate();
+    await clock.advance(30_000);
+    expect(session.updates.size).toBe(0);
+    expect(transport.hasLiveStream).toBe(true);
+    expect(connector.connectCount).toBe(1);
+    await session.end();
+  });
+
   it('is a no-op without a live channel', async () => {
     const transport = new ScriptedEventsTransport();
     const { session } = harness(async () => transport, { keepalive: null });

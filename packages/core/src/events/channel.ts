@@ -1,5 +1,5 @@
 import { BoundedQueue } from './bounded-queue';
-import type { Clock } from './clock';
+import { type Clock, sleep } from './clock';
 import { failures, failWith } from './failure';
 import { EVENTS_BUFFER_LIMIT } from './policies';
 import {
@@ -35,6 +35,8 @@ export interface EventsChannelOptions {
 
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
 export const MAX_RESPONSE_BYTES = 1_048_576;
+/** How long `end()` waits for the duplex to close (Swift `close(timeout: .seconds(2))`). */
+export const CHANNEL_CLOSE_TIMEOUT_MS = 2_000;
 
 const NEWLINE = 0x0a;
 
@@ -67,8 +69,10 @@ function concat(a: Uint8Array, b: Uint8Array): Uint8Array {
  * precedes any event), then streams NDJSON event lines into a bounded buffer
  * whose overflow sheds the oldest and enqueues `local.events_dropped`.
  *
- * On any failure before the ack the duplex is closed and the failure thrown.
- * Afterwards a remote close rejects the stream; `end()` finishes it cleanly.
+ * One request deadline covers the write and the ack, so a write that never
+ * settles cannot hold the caller. On any failure before the ack the duplex is
+ * closed and the failure thrown. Afterwards a remote close rejects the
+ * stream; `end()` finishes it cleanly, waiting at most 2 s for the close.
  */
 export async function openEventsChannel(
   duplex: EventsDuplex,
@@ -137,17 +141,14 @@ export async function openEventsChannel(
     }),
   );
 
-  try {
-    await duplex.write(encodeUtf8(subscribeRequestLine(options.requestId, options.subscriptions)));
-  } catch (error) {
-    shutDown(error);
-    throw error;
-  }
-
   const clearDeadline = options.clock.setTimer(
     options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
     () => shutDown(failWith(failures.timedOut())),
   );
+  // Not awaited on its own: the deadline above bounds it through `ack`.
+  const writeRequest = async () =>
+    duplex.write(encodeUtf8(subscribeRequestLine(options.requestId, options.subscriptions)));
+  writeRequest().catch(shutDown);
   try {
     await ack;
   } finally {
@@ -163,7 +164,10 @@ export async function openEventsChannel(
         if (closed) return;
         closed = true;
         for (const stop of detach) stop();
-        await duplex.close().catch(() => {});
+        // A bounded teardown: a wedged native close must not hold suspend/end.
+        const grace = sleep(options.clock, CHANNEL_CLOSE_TIMEOUT_MS);
+        await Promise.race([duplex.close().catch(() => {}), grace.done]);
+        grace.cancel();
         events.finish();
       })();
       return ended;

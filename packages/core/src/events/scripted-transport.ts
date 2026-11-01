@@ -38,8 +38,8 @@ export class CallGate {
 
 /**
  * A Transport whose answers a test scripts: ping failures by call ordinal,
- * gates on ping/subscribe/close, exited panes, a dead link, and an events
- * stream fed by `emit`.
+ * a failing subscribe, gates on ping/subscribe/close, exited panes, a dead
+ * link, and an events stream fed by `emit`.
  */
 export class ScriptedEventsTransport implements EventsTransport {
   pingCount = 0;
@@ -49,6 +49,7 @@ export class ScriptedEventsTransport implements EventsTransport {
   private readonly pingFailures = new Map<number, TransportFailure>();
   private pingGate: CallGate | undefined;
   private subscriptionGate: CallGate | undefined;
+  private subscriptionFailure: TransportFailure | undefined;
   private closeGate: CallGate | undefined;
   private missingPanes = new Set<string>();
   private live: { id: number; events: BoundedQueue<HerdrEvent> } | undefined;
@@ -71,6 +72,11 @@ export class ScriptedEventsTransport implements EventsTransport {
   /** Parks the next subscribe after recording its set. */
   gateNextSubscription(gate: CallGate): void {
     this.subscriptionGate = gate;
+  }
+
+  /** Makes the next subscribe throw `failure` after recording its set. */
+  failNextSubscription(failure: TransportFailure): void {
+    this.subscriptionFailure = failure;
   }
 
   gateNextClose(gate: CallGate): void {
@@ -123,8 +129,11 @@ export class ScriptedEventsTransport implements EventsTransport {
     if (this.live) throw failWith(failures.eventsChannelAlreadyOpen());
     this.capturedSubscriptions.push([...subscriptions]);
     const gate = this.subscriptionGate;
+    const failure = this.subscriptionFailure;
     this.subscriptionGate = undefined;
+    this.subscriptionFailure = undefined;
     await gate?.waitUntilOpen();
+    if (failure) throw failWith(failure);
     const missing = subscriptions.find(
       (entry) => entry.scope === 'pane' && this.missingPanes.has(entry.paneId),
     );

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { type EventsDuplex, openEventsChannel } from './channel';
+import { CHANNEL_CLOSE_TIMEOUT_MS, type EventsDuplex, openEventsChannel } from './channel';
 import { TransportFailureError } from './failure';
 import { FakeClock } from './fake-clock';
 import { EventsSession } from './session';
@@ -20,11 +20,16 @@ class FakeDuplex implements EventsDuplex {
   readonly written: string[] = [];
   closed = false;
   failWrites = false;
+  /** The write never settles, as on a wedged native channel. */
+  hangWrites = false;
+  /** close() never settles, as on a wedged native channel. */
+  hangClose = false;
   private data = new Set<(chunk: Uint8Array) => void>();
   private closes = new Set<(reason?: string) => void>();
 
   async write(data: Uint8Array) {
     if (this.failWrites) throw new Error('write refused');
+    if (this.hangWrites) return new Promise<void>(() => {});
     this.written.push(decodeUtf8(data));
   }
   onData(listener: (chunk: Uint8Array) => void) {
@@ -37,6 +42,7 @@ class FakeDuplex implements EventsDuplex {
   }
   async close() {
     this.closed = true;
+    if (this.hangClose) return new Promise<void>(() => {});
     for (const listener of this.closes) listener(undefined);
   }
   send(text: string | Uint8Array) {
@@ -170,6 +176,19 @@ describe('openEventsChannel', () => {
     expect(duplex.closed).toBe(true);
   });
 
+  it('times out a subscribe write that never settles at the request deadline', async () => {
+    const duplex = new FakeDuplex();
+    duplex.hangWrites = true;
+    const { clock, opening } = open(duplex);
+    const failure = failureOf(opening);
+    await clock.advance(14_999);
+    expect(duplex.closed).toBe(false);
+    await clock.advance(1);
+    expect(await failure).toEqual({ kind: 'timedOut' });
+    expect(duplex.closed).toBe(true);
+    expect(clock.pendingTimers).toBe(0);
+  });
+
   it('reports a channel that ends before the ack', async () => {
     const duplex = new FakeDuplex();
     const { opening } = open(duplex);
@@ -215,6 +234,25 @@ describe('openEventsChannel', () => {
     expect(seen).toEqual([]);
   });
 
+  it('bounds end() at 2 s when the channel close stalls', async () => {
+    const duplex = new FakeDuplex();
+    const { clock, opening } = open(duplex);
+    await settle();
+    duplex.ack();
+    const stream = await opening;
+    duplex.hangClose = true;
+    let ended = false;
+    void stream.end().then(() => {
+      ended = true;
+    });
+    await clock.advance(CHANNEL_CLOSE_TIMEOUT_MS - 1);
+    expect(duplex.closed).toBe(true);
+    expect(ended).toBe(false);
+    await clock.advance(1);
+    expect(ended).toBe(true);
+    expect((await stream.events.next()).done).toBe(true);
+  });
+
   it('sheds the oldest events under overflow and marks the gap', async () => {
     const duplex = new FakeDuplex();
     const { opening } = open(duplex, { bufferLimit: 2 });
@@ -243,6 +281,8 @@ describe('openEventsChannel', () => {
 /** A Transport whose events ride a real channel over a fake duplex. */
 class DuplexTransport implements EventsTransport {
   readonly duplexes: FakeDuplex[] = [];
+  /** Applied to the next channel's duplex before its subscribe write. */
+  prepareNext: ((duplex: FakeDuplex) => void) | undefined;
   constructor(private readonly clock: FakeClock) {}
   async ping() {
     return { version: 'duplex', protocolVersion: 17 };
@@ -254,24 +294,36 @@ class DuplexTransport implements EventsTransport {
   subscribeToEvents(subscriptions: Parameters<EventsTransport['subscribeToEvents']>[0]) {
     const duplex = new FakeDuplex();
     this.duplexes.push(duplex);
+    this.prepareNext?.(duplex);
+    this.prepareNext = undefined;
     const id = `req-${this.duplexes.length}`;
     const opening = openEventsChannel(duplex, { subscriptions, requestId: id, clock: this.clock });
-    void Promise.resolve().then(() => duplex.ack());
+    // herdr answers only a request it received.
+    if (!duplex.hangWrites) void Promise.resolve().then(() => duplex.ack());
     return opening;
   }
 }
 
+function duplexSession() {
+  const clock = new FakeClock(settle);
+  const transport = new DuplexTransport(clock);
+  let dials = 0;
+  const session = new EventsSession({
+    subscriptions: [globalSubscription('pane.agent_detected')],
+    connect: async () => {
+      dials += 1;
+      return transport;
+    },
+    clock,
+    keepalive: null,
+  });
+  const next = async () => (await session.updates.next()).value;
+  return { clock, transport, session, next, dials: () => dials };
+}
+
 describe('EventsSession over a streamlocal channel', () => {
   it('connects, delivers decoded events, and recovers from a remote close', async () => {
-    const clock = new FakeClock(settle);
-    const transport = new DuplexTransport(clock);
-    const session = new EventsSession({
-      subscriptions: [globalSubscription('pane.agent_detected')],
-      connect: async () => transport,
-      clock,
-      keepalive: null,
-    });
-    const next = async () => (await session.updates.next()).value;
+    const { clock, transport, session, next } = duplexSession();
     await session.resume();
     expect(await next()).toEqual({ type: 'status', status: { kind: 'connecting' } });
     expect(await next()).toEqual({ type: 'status', status: { kind: 'connected' } });
@@ -289,5 +341,54 @@ describe('EventsSession over a streamlocal channel', () => {
     expect(transport.duplexes).toHaveLength(2);
     await session.end();
     expect(transport.duplexes[1]?.closed).toBe(true);
+  });
+
+  it('holds suspend() for at most 2 s on a stalled channel close, then resumes', async () => {
+    const { clock, transport, session, next } = duplexSession();
+    await session.resume();
+    expect(await next()).toMatchObject({ status: { kind: 'connecting' } });
+    expect(await next()).toMatchObject({ status: { kind: 'connected' } });
+    if (transport.duplexes[0]) transport.duplexes[0].hangClose = true;
+
+    let suspended = false;
+    void session.suspend().then(() => {
+      suspended = true;
+    });
+    await clock.advance(CHANNEL_CLOSE_TIMEOUT_MS - 1);
+    expect(suspended).toBe(false);
+    await clock.advance(1);
+    expect(suspended).toBe(true);
+    expect(await next()).toEqual({ type: 'status', status: { kind: 'suspended' } });
+
+    await session.resume();
+    expect(await next()).toMatchObject({ status: { kind: 'connecting' } });
+    expect(await next()).toMatchObject({ status: { kind: 'connected' } });
+    await session.end();
+  });
+
+  it('redials when a resubscribe write never settles', async () => {
+    const { clock, transport, session, next, dials } = duplexSession();
+    await session.resume();
+    expect(await next()).toMatchObject({ status: { kind: 'connecting' } });
+    expect(await next()).toMatchObject({ status: { kind: 'connected' } });
+
+    transport.prepareNext = (duplex) => {
+      duplex.hangWrites = true;
+    };
+    await session.updateSubscriptions([
+      globalSubscription('pane.agent_detected'),
+      paneSubscription('pane.agent_status_changed', 'w1:p1'),
+    ]);
+    await clock.advance(14_999);
+    expect(session.updates.size).toBe(0);
+    await clock.advance(1);
+    expect(await next()).toMatchObject({
+      status: { kind: 'reconnecting', attempt: 1, failure: { kind: 'timedOut' } },
+    });
+    expect(transport.duplexes[1]?.closed).toBe(true);
+    await clock.advance(1_000);
+    expect(await next()).toMatchObject({ status: { kind: 'connected' } });
+    expect(dials()).toBe(2);
+    await session.end();
   });
 });
