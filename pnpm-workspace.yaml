@@ -1,0 +1,14 @@
+packages:
+  - apps/*
+  - packages/*
+  - modules/*
+
+# One React and one react-native for the whole repo (see docs/decisions/0009).
+overrides:
+  react: 19.3.0
+  react-dom: 19.3.0
+  react-native: 0.88.1
+
+# Build scripts allowed to run (pnpm 11 fails installs on unreviewed ones).
+allowBuilds:
+  "@parcel/watcher": true

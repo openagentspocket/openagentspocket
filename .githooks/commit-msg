@@ -1,0 +1,6 @@
+#!/bin/sh
+# Commits carry no attribution trailers (CLAUDE.md, "Commits").
+if grep -qiE '^co-authored-by:|^signed-off-by:|generated (with|by) |noreply@anthropic\.com' "$1"; then
+  echo "commit-msg: remove the attribution trailer (Co-Authored-By / Generated with ...)." >&2
+  exit 1
+fi
