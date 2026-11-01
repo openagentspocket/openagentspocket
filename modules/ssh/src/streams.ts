@@ -1,6 +1,6 @@
 import type { NativeSshBridge, StreamCloseEvent, StreamDataEvent } from './bridge';
 import { fromBase64, toBase64 } from './bytes';
-import { toSshError } from './errors';
+import { SshError, toSshError } from './errors';
 import type { PtyStream, Unsubscribe } from './types';
 
 const WRITE_TIMEOUT_MS = 15_000;
@@ -50,7 +50,7 @@ export class BridgeStream implements PtyStream {
   ) {}
 
   async write(data: Uint8Array) {
-    if (this.closed) throw toSshError({ code: 'closed', message: 'stream closed' });
+    if (this.closed) throw new SshError('closed', 'stream closed');
     try {
       await this.bridge.writeStream(this.id, toBase64(data), WRITE_TIMEOUT_MS);
     } catch (error) {

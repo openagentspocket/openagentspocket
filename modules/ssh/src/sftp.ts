@@ -73,10 +73,11 @@ export function bridgeSftp(
       const timeoutMs = options.timeoutMs ?? TIMEOUT_MS;
       if (!options.replace) return write(path, data, permissions, timeoutMs);
       const staged = stagingPath(path, nonce());
-      await write(staged, data, permissions, timeoutMs);
       try {
+        await write(staged, data, permissions, timeoutMs);
         await rename(staged, path, true, timeoutMs);
       } catch (error) {
+        // A write that failed midway may still have left a partial staged file.
         await unlink(staged, timeoutMs).catch(() => {});
         throw error;
       }

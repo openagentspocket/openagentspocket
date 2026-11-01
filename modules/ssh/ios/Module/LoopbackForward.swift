@@ -76,7 +76,11 @@ final class LoopbackForward: Sendable {
             }
             listener.start(queue: queue)
             queue.asyncAfter(deadline: .now() + .seconds(3)) {
-                finish(.failure(BridgeError.forwardFailed("start timed out")))
+                // Only when the timeout won: the caller gets an error and never sees
+                // this listener, so nothing else would ever cancel it.
+                guard let pending = ready.take() else { return }
+                pending.resume(throwing: BridgeError.forwardFailed("start timed out"))
+                listener.cancel()
             }
         }
         let forward = LoopbackForward(listener: listener, port: port)

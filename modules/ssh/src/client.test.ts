@@ -178,6 +178,23 @@ describe('sftp', () => {
     expect(names()).toContain('sftpUnlink');
   });
 
+  it('removes the staged file when the write fails', async () => {
+    const { bridge, calls, names } = scriptedBridge({
+      sftpWrite: () => {
+        throw Object.assign(new Error('x'), { code: 'sftpFailure' });
+      },
+    });
+    const sftp = await (await createSshClient(bridge).connect(options)).sftp();
+    expect(await rejectCode(sftp.write('/a/b', utf8Encode('x'), { replace: true }))).toBe(
+      'sftpFailure',
+    );
+    const write = calls.find(([name]) => name === 'sftpWrite');
+    const unlink = calls.find(([name]) => name === 'sftpUnlink');
+    expect(String(write?.[2]).startsWith('/a/.b.agentico-')).toBe(true);
+    expect(unlink?.[2]).toBe(write?.[2]);
+    expect(names()).not.toContain('sftpRename');
+  });
+
   it('maps listing kinds and keeps a missing directory as null', async () => {
     const { bridge } = scriptedBridge({
       sftpList: (_id, path) =>
