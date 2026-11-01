@@ -1,0 +1,31 @@
+{
+  "id": "noche",
+  "name": "Noche",
+  "appearance": "dark",
+  "colors": {
+    "canvas": "#010102",
+    "surface": "#121416",
+    "surfaceRaised": "#161719",
+    "surfaceOverlay": "#191B1D",
+    "control": "#202225",
+    "separator": "#1F2124",
+    "textPrimary": "#FCFCFC",
+    "textSecondary": "#9BA0AA",
+    "textTertiary": "#5E6269",
+    "accent": "#00FF00",
+    "onAccent": "#000000",
+    "accentContainer": "#142E16",
+    "accentStrong": "#09830B",
+    "glow": "#0A4C22",
+    "statusBlocked": "#EC6360",
+    "statusWorking": "#F7B750",
+    "statusDone": "#17C964",
+    "statusIdle": "#9BA0AA",
+    "success": "#17C964",
+    "warning": "#F7B750",
+    "danger": "#EC6360",
+    "info": "#3D6FD6",
+    "terminalBackground": "#1E1E1E",
+    "terminalForeground": "#D6D8E0"
+  }
+}

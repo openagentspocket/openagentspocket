@@ -1,0 +1,31 @@
+{
+  "id": "indigo",
+  "name": "Índigo",
+  "appearance": "dark",
+  "colors": {
+    "canvas": "#08080F",
+    "surface": "#12131F",
+    "surfaceRaised": "#181A29",
+    "surfaceOverlay": "#1D1F31",
+    "control": "#252840",
+    "separator": "#23253A",
+    "textPrimary": "#F6F6FC",
+    "textSecondary": "#9C9FB8",
+    "textTertiary": "#62657F",
+    "accent": "#8E7CFF",
+    "onAccent": "#0B0820",
+    "accentContainer": "#231E4D",
+    "accentStrong": "#5B47D6",
+    "glow": "#2E2670",
+    "statusBlocked": "#F0626B",
+    "statusWorking": "#F7B750",
+    "statusDone": "#2FD08A",
+    "statusIdle": "#9C9FB8",
+    "success": "#2FD08A",
+    "warning": "#F7B750",
+    "danger": "#F0626B",
+    "info": "#3B82F6",
+    "terminalBackground": "#0D0E18",
+    "terminalForeground": "#D9DAEA"
+  }
+}

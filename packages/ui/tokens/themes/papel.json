@@ -1,0 +1,31 @@
+{
+  "id": "papel",
+  "name": "Papel",
+  "appearance": "light",
+  "colors": {
+    "canvas": "#F2EDE2",
+    "surface": "#FBF8F1",
+    "surfaceRaised": "#FFFDF8",
+    "surfaceOverlay": "#F4EFE5",
+    "control": "#E4DED1",
+    "separator": "#E0D9CB",
+    "textPrimary": "#1F1B16",
+    "textSecondary": "#635C50",
+    "textTertiary": "#A29A8B",
+    "accent": "#5B47D6",
+    "onAccent": "#FFFFFF",
+    "accentContainer": "#E2DDF5",
+    "accentStrong": "#8E7CFF",
+    "glow": "#D3CCF0",
+    "statusBlocked": "#A92A23",
+    "statusWorking": "#8A5800",
+    "statusDone": "#00664A",
+    "statusIdle": "#635C50",
+    "success": "#00664A",
+    "warning": "#8A5800",
+    "danger": "#A92A23",
+    "info": "#2B5CC2",
+    "terminalBackground": "#FFFCF0",
+    "terminalForeground": "#100F0F"
+  }
+}

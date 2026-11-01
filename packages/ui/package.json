@@ -1,0 +1,30 @@
+{
+  "name": "@agentico/ui",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "jest",
+    "gen": "node scripts/gen-tokens.mjs",
+    "gen:check": "node scripts/gen-tokens.mjs --check"
+  },
+  "dependencies": {
+    "react-native-safe-area-context": "~5.10.1"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "devDependencies": {
+    "@testing-library/react-native": "^14.1.0",
+    "@types/jest": "^30.0.0",
+    "@types/react": "~19.3.0",
+    "jest": "^30.5.2",
+    "jest-expo": "~58.0.13",
+    "react": "19.3.0",
+    "react-native": "0.88.1",
+    "test-renderer": "^1.0.0"
+  }
+}
