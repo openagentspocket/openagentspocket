@@ -64,7 +64,6 @@ export type PreflightHintKey =
   | 'endpointSocketNotFound'
   | 'herdrBinaryNotFound'
   | 'herdrLauncherNotFound'
-  | 'launcherNotHerdr'
   | 'streamLocalOpenFailed'
   | 'endpointStreamLocalOpenFailed'
   | 'apiRejected'
