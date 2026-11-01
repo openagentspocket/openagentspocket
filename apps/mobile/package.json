@@ -27,6 +27,7 @@
     "react-native-web": "~0.21.4",
     "react-native-worklets": "0.13.0",
     "@agentico/core": "workspace:*",
+    "@agentico/i18n": "workspace:*",
     "@agentico/ui": "workspace:*"
   },
   "devDependencies": {

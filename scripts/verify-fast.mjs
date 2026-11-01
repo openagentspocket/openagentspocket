@@ -65,6 +65,9 @@ if (coreFiles.length) {
     ),
   );
 }
+// i18n: the whole suite (~1 s), also when only a catalog JSON changed.
+if (inPkg('packages/i18n/').length)
+  checks.push(run('i18n tests', 'pnpm', ['exec', 'vitest', 'run'], 'packages/i18n'));
 const sshFiles = codeIn('modules/ssh/');
 if (sshFiles.length)
   checks.push(run('ssh tests', 'pnpm', ['exec', 'vitest', 'run'], 'modules/ssh'));
