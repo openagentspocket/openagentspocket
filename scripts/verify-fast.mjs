@@ -44,6 +44,7 @@ const checks = [
   run('generated types', 'pnpm', ['run', 'gen:check']),
   run('file length', 'node', ['scripts/check-file-length.mjs']),
   run('theme literals', 'node', ['scripts/check-theme-literals.mjs']),
+  run('progress current', 'node', ['scripts/progress.mjs', '--check']),
 ];
 
 // Tests related to the change; jest/vitest map source files to the suites that import them.

@@ -15,11 +15,13 @@
     "format": "biome check --write .",
     "gen": "pnpm -F @agentico/core gen && pnpm -F @agentico/ui gen",
     "gen:check": "pnpm -F @agentico/core gen:check && pnpm -F @agentico/ui gen:check",
-    "e2e:ios": "maestro test e2e/home.yaml"
+    "e2e:ios": "maestro test e2e/home.yaml",
+    "progress": "node scripts/progress.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.4",
     "@types/node": "^22.0.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "yaml": "^2.9.1"
   }
 }

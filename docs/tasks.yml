@@ -1,0 +1,407 @@
+# The backlog of the port, one entry per task. The lead plans waves from it;
+# workers never edit it (they write docs/progress/<id>.md). Status: todo |
+# active | done | blocked. kind: js (no native build) | native (holds the
+# native slot) | server (plugin/relay, node tests) | swift (in the Swift
+# reference repo). Spec: docs/spec/parity.md (sections cited as §).
+#
+# Swift reference repo: ../Agentico (read-only for workers).
+
+# ── Phase 1: Hosts + pairing + SSH transport ────────────────────────────────
+- id: P1.1a-ssh-ios
+  phase: 1
+  kind: native
+  title: SSH Expo Module, iOS, wrapping the Swift repo's AgenticoSSH (libssh2)
+  deps: []
+  files: [modules/ssh/ios/**, modules/ssh/expo-module.config.json, modules/ssh/src/**]
+  swift_ref: [Packages/AgenticoSSH, Sources/Agentico/Transport/AgenticoSSHTransport*.swift]
+  acceptance:
+    - the six primitives of §1.1 behind the TS interface in modules/ssh/src (connect + host key, ed25519 auth with a key generated and kept natively, exec, streamlocal request/response and duplex, PTY with resize, SFTP stat/list/readRange/write/rename/unlink/mkdir, direct-tcpip)
+    - an integration screen or test harness that, on the iOS simulator against `python3 ../Agentico/scripts/isolated-herdr-backend.py start --plugin`, runs ping (protocol >= 17), session.snapshot, a 1 MiB response, and a PTY echo; output saved as evidence
+- id: P1.1b-ssh-android
+  phase: 1
+  kind: native
+  title: SSH Expo Module, Android, with JSch (mwiede) + BouncyCastle
+  deps: [P1.1a-ssh-ios]
+  files: [modules/ssh/android/**]
+  swift_ref: [Packages/AgenticoSSH]
+  acceptance:
+    - same primitives and the same integration run on the Android emulator (host reachable at 10.0.2.2)
+- id: P1.2-core-wire
+  phase: 1
+  kind: js
+  title: herdr wire envelope, methods, events, error model in packages/core
+  deps: []
+  files: [packages/core/src/wire/**, packages/core/src/errors/**]
+  swift_ref:
+    [
+      Sources/Agentico/Transport/HerdrWire.swift,
+      HerdrEvents.swift,
+      JSONValue.swift,
+      TransportError.swift,
+      TransportError+*.swift,
+    ]
+  acceptance:
+    - "U: request/response envelope with id matching; errors with empty ids tolerated; unknown enum values survive a round trip; every RESULT tag decodes from captured JSON; isRetryable table ported"
+- id: P1.3-core-hosts
+  phase: 1
+  kind: js
+  title: Host model, drafts, host-key TOFU rules, route race, preflight mapping
+  deps: []
+  files: [packages/core/src/hosts/**]
+  swift_ref:
+    [
+      Sources/Agentico/Hosts/Host.swift,
+      HostDraft.swift,
+      HostStore.swift,
+      Transport/RouteRace.swift,
+      HostKeyFingerprint,
+      KnownHostsStore,
+      Hosts/Preflight.swift,
+    ]
+  acceptance:
+    - "U: draft validation, fingerprint format, mayNameAnotherMachine table, route race (400 ms stagger, late winners discarded) with a fake clock, preflight failure mapping, plugin notice matrix vs plugin-version-v1.json"
+- id: P1.4-core-pairing
+  phase: 1
+  kind: js
+  title: Pairing code decode and the pairing ceremony state machine
+  deps: []
+  files: [packages/core/src/pairing/**]
+  swift_ref:
+    [
+      Sources/Agentico/Pairing/PairingCode.swift,
+      PairingCeremony.swift,
+      SSHPairingConnector.swift,
+      PairingScanStore.swift,
+    ]
+  acceptance:
+    - "U: pairing-code-v1/v2 vectors (accept and reject cases); ceremony with a scripted connector: failure copy per step, nothing persisted on failure, retry drops the bootstrap after verificationFailed, Tailscale SSH banner rejected"
+- id: P1.6-core-events
+  phase: 1
+  kind: js
+  title: EventsSession (subscribe, resume/suspend, backoff, keepalive, overflow)
+  deps: []
+  files: [packages/core/src/events/**]
+  swift_ref: [Sources/Agentico/Transport/EventsSession.swift, AgenticoSSHTransport+Events.swift]
+  acceptance:
+    - "U with a fake clock: backoff 1,2,4..30 s, non-retryable stops, keepalive ping after 30 s idle, pane subscriptions dropped on reconnect, overflow sheds oldest and emits eventsDropped, protocol floor 17"
+- id: P1.5-app-hosts
+  phase: 1
+  kind: js
+  title: Hosts screens (list, form, detail, trust alert, pairing scanner) on FakeTransport
+  deps: [P1.3-core-hosts, P1.4-core-pairing, P0-ui-primitives]
+  files: [apps/mobile/app/hosts/**, apps/mobile/src/features/hosts/**]
+  acceptance:
+    - "M: add a Host manually, trust alert, saved; paste a HERDR-PAIR code, ceremony steps shown; S: elements and copy of hosts.list, hosts.form, hosts.detail from the spec"
+
+# ── Foundations used by every phase ────────────────────────────────────────
+- id: P0-ui-primitives
+  phase: 0
+  kind: js
+  title: The shared component set (§3, ~24) + a component gallery route
+  deps: []
+  files: [packages/ui/src/**, apps/mobile/app/__gallery.tsx]
+  acceptance:
+    - "every primitive of §3 with themes Índigo/Papel/Noche, accessibility labels, component tests; one confirm() for alerts, one Sheet, one ActionMenu; gallery route renders all of them"
+- id: P0-i18n
+  phase: 0
+  kind: js
+  title: i18n en + es from the Swift catalogs (ICU plurals), no retranslation
+  deps: []
+  files: [packages/i18n/**, scripts/convert-xcstrings.*]
+  swift_ref: [Sources/Agentico/Resources/*.xcstrings]
+  acceptance:
+    - "a converter turns the xcstrings into en/es catalogs keeping format arguments and plurals; a t() API; a test that every es string keeps its arguments; Spanish voseo kept as is"
+- id: P0-swift-goldens
+  phase: 0
+  kind: swift
+  title: Export golden JSON from the Swift parsers for the TS ports to diff against
+  deps: []
+  files: [../Agentico/Tests/AgenticoTests/GoldenExport*.swift, packages/core/goldens/**]
+  acceptance:
+    - "an opt-in Swift test (env var) that writes, for every ChatFixtures transcript (Claude, Codex, Pi, Grok, OpenCode) and every Blocked screen fixture, the reducer/projection/parser output as stable JSON; copied into packages/core/goldens with the fixtures; committed in both repos"
+- id: P5.0-relay-fcm
+  phase: 5
+  kind: server
+  title: Relay FCM v1 path + platform field; plugin registration carries platform
+  deps: []
+  files:
+    [
+      packages/relay/**,
+      packages/plugin/src/notify*.js,
+      packages/plugin/src/notification-config.js,
+      packages/plugin/src/activity-hook.js,
+    ]
+  acceptance:
+    - "node tests: platform=ios keeps the APNs path byte-for-byte; platform=android sends an FCM HTTP v1 data-only message signed with an RS256 service-account JWT (WebCrypto); FCM tokens accepted; UNREGISTERED maps to the prune signal; registration v1 additive"
+
+# ── Phase 2: Agents / Inbox / Chat / approvals (+ new screens) ─────────────
+- {
+    id: P2.1-core-console,
+    phase: 2,
+    kind: js,
+    title: "Console projection: snapshot + deltas, ordering, pins, status inbox projector",
+    deps: [P1.2-core-wire],
+    files: [packages/core/src/console/**],
+  }
+- {
+    id: P2.2-app-home,
+    phase: 2,
+    kind: js,
+    title: "Home + Status Inbox on the live store",
+    deps: [P2.1-core-console, P0-ui-primitives],
+  }
+- {
+    id: P2.3-app-agents-list,
+    phase: 2,
+    kind: js,
+    title: "Agents list: four presentations, filter, search, pin/close/rename",
+    deps: [P2.1-core-console, P0-ui-primitives],
+  }
+- {
+    id: P2.4-new-agent,
+    phase: 2,
+    kind: js,
+    title: "New Agent, workspaces, worktrees, directory browser",
+    deps: [P2.1-core-console],
+  }
+- {
+    id: P2.5-agent-detail,
+    phase: 2,
+    kind: js,
+    title: "Agent detail shell: header, switcher, Chat/Terminal toggle, focus marks Done seen",
+    deps: [P2.1-core-console],
+  }
+- {
+    id: P2.6a-chat-claude,
+    phase: 2,
+    kind: js,
+    title: "Chat engine for Claude Code (locate, tail, follow, reduce, project, cache) vs goldens",
+    deps: [P0-swift-goldens],
+  }
+- {
+    id: P2.6b-chat-codex,
+    phase: 2,
+    kind: js,
+    title: "Chat engine for Codex vs goldens",
+    deps: [P0-swift-goldens],
+  }
+- {
+    id: P2.7-chat-ui,
+    phase: 2,
+    kind: js,
+    title: "Chat timeline UI: rows, tool rows, markdown (library), jump, subagent transcript",
+    deps: [P2.6a-chat-claude, P0-ui-primitives],
+  }
+- {
+    id: P2.8-composer,
+    phase: 2,
+    kind: js,
+    title: "Composer: draft, send witness, Stop, suggestions",
+    deps: [P2.5-agent-detail],
+  }
+- {
+    id: P2.9a-blocked-parsers,
+    phase: 2,
+    kind: js,
+    title: "Blocked dialog parsers + action planners (Claude, Codex first) vs goldens; safety invariants verbatim",
+    deps: [P0-swift-goldens],
+  }
+- {
+    id: P2.9b-blocked-card,
+    phase: 2,
+    kind: js,
+    title: "Blocked card UI + answer executor (never resend)",
+    deps: [P2.9a-blocked-parsers, P2.5-agent-detail],
+  }
+- {
+    id: P2.10-chat-others,
+    phase: 2,
+    kind: js,
+    title: "Chat + dialogs for Pi/OMP, Grok, OpenCode",
+    deps: [P2.6a-chat-claude],
+  }
+- {
+    id: P2.11-background-work,
+    phase: 2,
+    kind: js,
+    title: "Background Work strip and sheet",
+    deps: [P2.6a-chat-claude],
+  }
+- {
+    id: P2.12-focus-mode,
+    phase: 2,
+    kind: js,
+    title: "NEW Focus mode: one card per agent that needs you, numbered options, one tap answers, next card",
+    deps: [P2.9b-blocked-card],
+  }
+- {
+    id: P2.13-board,
+    phase: 2,
+    kind: js,
+    title: "NEW overview board of every agent on every Host, user priorities",
+    deps: [P2.1-core-console],
+  }
+- {
+    id: P2.14-summaries,
+    phase: 2,
+    kind: js,
+    title: "NEW two-line summary per agent (did / needs) from the transcript",
+    deps: [P2.6a-chat-claude],
+  }
+
+# ── Phase 3: Terminal ──────────────────────────────────────────────────────
+- {
+    id: P3.0-terminal-spike,
+    phase: 3,
+    kind: native,
+    title: "Spike: expo-libghostty on SDK 58 vs xterm.js WebView, fed by the SSH PTY",
+    deps: [P1.1b-ssh-android],
+  }
+- {
+    id: P3.1-attach,
+    phase: 3,
+    kind: js,
+    title: "Attach pipeline: PTY attach, takeover, reattach <= 2, startup probe filter",
+    deps: [P3.0-terminal-spike],
+  }
+- {
+    id: P3.2-keys,
+    phase: 3,
+    kind: js,
+    title: "Toolbars, keyboards, Direct Input, key encoding table",
+    deps: [P3.1-attach],
+  }
+- {
+    id: P3.3-selection-links,
+    phase: 3,
+    kind: js,
+    title: "Selection, links, message jump, reviewed paste",
+    deps: [P3.1-attach],
+  }
+- {
+    id: P3.4-snippets-skills-attachments,
+    phase: 3,
+    kind: js,
+    title: "Snippets, Skills, Attachments (SFTP staging)",
+    deps: [P3.1-attach],
+  }
+- {
+    id: P3.5-shell-terminals,
+    phase: 3,
+    kind: js,
+    title: "Shell and workspace terminals, retention pool",
+    deps: [P3.1-attach],
+  }
+
+# ── Phase 4: Usage / Files / Ports / Changes / Settings ────────────────────
+- {
+    id: P4.1-usage,
+    phase: 4,
+    kind: js,
+    title: "Usage: dashboard, quick sheet, limits, accounts (gifted-charts)",
+    deps: [P0-ui-primitives],
+  }
+- {
+    id: P4.2-files,
+    phase: 4,
+    kind: js,
+    title: "Files over SFTP: browse, download, upload, rename, delete, share",
+    deps: [P1.1b-ssh-android],
+  }
+- {
+    id: P4.3-ports,
+    phase: 4,
+    kind: js,
+    title: "Ports + WebView preview over direct-tcpip",
+    deps: [P1.1b-ssh-android],
+  }
+- {
+    id: P4.4-changes,
+    phase: 4,
+    kind: js,
+    title: "Changes: git probes, list, diff",
+    deps: [P1.2-core-wire],
+  }
+- {
+    id: P4.5-settings,
+    phase: 4,
+    kind: js,
+    title: "Settings from one declarative schema; theme switch; app lock",
+    deps: [P0-ui-primitives],
+  }
+- {
+    id: P4.6-deep-links,
+    phase: 4,
+    kind: js,
+    title: "Deep links agentico://agent/...",
+    deps: [P2.5-agent-detail],
+  }
+
+# ── Phase 5: Notifications ─────────────────────────────────────────────────
+- {
+    id: P5.1-in-app-banner,
+    phase: 5,
+    kind: js,
+    title: "In-app notification banner",
+    deps: [P2.1-core-console],
+  }
+- {
+    id: P5.2-registration,
+    phase: 5,
+    kind: js,
+    title: "Notification registration file v1 + settings screens",
+    deps: [P5.0-relay-fcm],
+  }
+- {
+    id: P5.3-android-push,
+    phase: 5,
+    kind: native,
+    title: "Android FCM data messages + Kotlin decrypt + local notification",
+    deps: [P5.2-registration],
+  }
+- {
+    id: P5.4-ios-push,
+    phase: 5,
+    kind: native,
+    title: "iOS NSE target (reuse Swift) via apple-targets",
+    deps: [P5.2-registration],
+  }
+- {
+    id: P5.5-approve-from-notification,
+    phase: 5,
+    kind: js,
+    title: "Approve/Deny from a notification",
+    deps: [P5.3-android-push, P5.4-ios-push],
+  }
+
+# ── Phase 6: iOS extensions ────────────────────────────────────────────────
+- {
+    id: P6.1-widgets-live-activities,
+    phase: 6,
+    kind: native,
+    title: "Widgets + Live Activities targets (reuse Swift) + App Group writer module",
+    deps: [P4.1-usage],
+  }
+- {
+    id: P6.2-watch,
+    phase: 6,
+    kind: native,
+    title: "watchOS app target (reuse Swift)",
+    deps: [P6.1-widgets-live-activities],
+  }
+- {
+    id: P6.3-intents,
+    phase: 6,
+    kind: native,
+    title: "App Intents / Siri target (reuse Swift)",
+    deps: [P6.1-widgets-live-activities],
+  }
+
+# ── Phase 7: ACP ────────────────────────────────────────────────────────────
+- {
+    id: P7.0-acp-spike,
+    phase: 7,
+    kind: server,
+    title: "Spike: ACP bridge in the plugin, driven by Vercel Labs' fx",
+    deps: [P2.5-agent-detail],
+  }
