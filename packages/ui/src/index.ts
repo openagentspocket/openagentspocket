@@ -1,5 +1,21 @@
+export {
+  Composer,
+  type ComposerAction,
+  type ComposerSuggestion,
+  composerAction,
+} from './composer/Composer';
+export { type DiffLayout, DiffView } from './diff/DiffView';
+export {
+  type DiffLine,
+  type DiffLineKind,
+  parseUnifiedDiff,
+  toSideBySide,
+} from './diff/parseUnifiedDiff';
 export { NavRow, type PickerOption, PickerRow, StepperRow, ToggleRow } from './form/FormRows';
 export { TextField, type TextFieldProps } from './form/TextField';
+export { KeyboardDock, type KeyModifiers, KeyRow, type KeySpec } from './keys/KeyboardDock';
+export { CodeBlock } from './markdown/CodeBlock';
+export { Markdown } from './markdown/Markdown';
 export {
   ActionMenu,
   ActionMenuButton,
@@ -43,6 +59,16 @@ export { Skeleton, SkeletonRows } from './primitives/Skeleton';
 export { StatusDot } from './primitives/StatusDot';
 export { type SwipeAction, SwipeRow } from './primitives/SwipeRow';
 export { monoFamily, Text, type TextTone, type TextVariant } from './primitives/Text';
+export {
+  flattenSections,
+  type ListSection,
+  type SectionedItem,
+  VirtualList,
+  type VirtualListProps,
+  VirtualSectionList,
+} from './primitives/VirtualList';
+export { type TerminalHandle, TerminalView, type TerminalViewProps } from './terminal/TerminalView';
+export { appendOutput, gridSize, stripAnsi } from './terminal/terminalText';
 export { withAlpha } from './theme/color';
 export { useInsets } from './theme/insets';
 export { metrics, spacing } from './theme/metrics';
