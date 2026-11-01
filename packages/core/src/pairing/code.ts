@@ -71,12 +71,14 @@ function decodeOrThrow(scanned: string): PairingCode {
   const separator = rest.indexOf(':');
   if (separator < 0) throw new DecodeFailure({ code: 'bad_prefix' });
   const found = rest.slice(0, separator);
-  const wire = decodedPayload(rest.slice(separator + 1));
-  if (found === VERSION) return validated(wire);
+  const encodedBody = rest.slice(separator + 1);
+  if (found === VERSION) return validated(decodedPayload(encodedBody));
+  // Checked before the body is read: a future version may frame it differently.
   if (found !== ENDPOINT_VERSION) {
     throw new DecodeFailure({ code: 'unsupported_version', found });
   }
   // Version 2: the v1 fields first, with the same rules and reasons, then the endpoint.
+  const wire = decodedPayload(encodedBody);
   const sock = optional(wire, 'sock', 'string');
   const herdr = optional(wire, 'herdr', 'string');
   const code = validated(wire);

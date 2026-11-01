@@ -99,6 +99,16 @@ describe('decodePairingCode', () => {
     expect(errorOf('HERDR-PAIR:01:e30')?.code).toBe('unsupported_version');
   });
 
+  it('checks the version before reading the body', () => {
+    // A future version may frame its body differently; it still names the version.
+    expect(errorOf('HERDR-PAIR:3:!!!')).toEqual({ code: 'unsupported_version', found: '3' });
+    expect(errorOf(`HERDR-PAIR:3:${encodeBase64Url(utf8Encode('[1]'))}`)).toEqual({
+      code: 'unsupported_version',
+      found: '3',
+    });
+    expect(errorOf('HERDR-PAIR:2:!!!')?.code).toBe('bad_encoding');
+  });
+
   it('needs a version separator after the prefix', () => {
     expect(errorOf('HERDR-PAIR:1')?.code).toBe('bad_prefix');
   });
