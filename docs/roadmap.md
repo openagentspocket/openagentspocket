@@ -62,6 +62,12 @@ Scaffold facts:
 
 ## Open issues
 
+- Stores (2026-11-01): Apple Developer Program (Individual) paid by Enzo, enrollment processing (up to 2 business
+  days); then he sends the Team ID, accepts the agreements, creates the APNs `.p8` himself. Google Play: his 2024
+  account was closed for inactivity; he creates a new one (US$25) once the app is further along. New personal
+  Play accounts need a closed test with 12 testers for 14 days before production: start it with the first usable
+  build. Firebase (FCM) project in phase 5; the service-account key is set by Enzo as a relay secret.
+
 - Plugin/relay: legacy Heeler relay URLs stay in `notification-config.js` on purpose (migration of old configs).
 - `ThemeProvider` follows the system appearance (light: Papel, dark: Índigo); no in-app theme setting yet.
 - App icon and splash are still the Expo template's; Índigo variants pending a design pass.
