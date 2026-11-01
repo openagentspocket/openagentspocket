@@ -257,6 +257,29 @@ describe('PairingScanStore: failures', () => {
     expect(catalog.saved).toEqual([]);
   });
 
+  it('abandons a running attempt on cancel, saving nothing', async () => {
+    const { store, connector, catalog } = makeEnv();
+    connector.hold();
+    store.submit(CODES.bootstrap);
+    const run = store.pair();
+    await vi.waitFor(() => expect(store.getState().step).toBe('verify'));
+    store.cancel();
+    connector.release();
+    await run;
+    expect(store.getState()).toMatchObject({
+      failure: null,
+      isPairing: false,
+      step: null,
+      pairedHostId: null,
+    });
+    expect(catalog.saved).toEqual([]);
+    expect(catalog.pins.size).toBe(0);
+
+    // The cancellation belongs to that attempt: Try Again runs a fresh one.
+    await store.pair();
+    expect(store.getState().pairedHostId).not.toBeNull();
+  });
+
   it('keeps INSIDE_TTL_MS inside the vector expiry', () => {
     expect(decoded(CODES.bootstrap).bootstrap?.expiresAt).toBeGreaterThan(INSIDE_TTL_MS / 1000);
   });

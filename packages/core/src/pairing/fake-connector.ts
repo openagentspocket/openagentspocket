@@ -1,12 +1,13 @@
 import {
   failureStep,
+  PairingCancelledError,
   PairingCeremonyError,
   type PairingCeremonyFailure,
   type PairingResult,
   type PairingStep,
 } from './ceremony';
 import type { PairingCode } from './code';
-import type { PairingConnector, PairingDeviceKey } from './connector';
+import type { PairingCancellation, PairingConnector, PairingDeviceKey } from './connector';
 
 export type FakePairingOutcome =
   | { readonly succeeds: PairingResult }
@@ -18,6 +19,8 @@ export type FakePairingOutcome =
  * A scripted `PairingConnector` for store and screen tests: plays the
  * outcomes in order (the last one repeats), reports the steps the real
  * client would report before that outcome, and can hold every attempt open.
+ * An attempt whose cancellation is aborted by the time it would finish
+ * throws `PairingCancelledError`, as the real client does.
  */
 export class FakePairingConnector implements PairingConnector {
   readonly capturedCodes: PairingCode[] = [];
@@ -43,6 +46,7 @@ export class FakePairingConnector implements PairingConnector {
     code: PairingCode,
     deviceKey: PairingDeviceKey,
     onStep: (step: PairingStep) => void,
+    cancellation?: PairingCancellation,
   ): Promise<PairingResult> {
     this.capturedCodes.push(code);
     this.capturedDeviceKeys.push(deviceKey);
@@ -52,6 +56,7 @@ export class FakePairingConnector implements PairingConnector {
     if (outcome === undefined) throw new Error('no outcome');
     for (const step of emittedSteps(outcome, code)) onStep(step);
     if (this.holding) await new Promise<void>((resume) => this.waiters.push(resume));
+    if (cancellation?.aborted) throw new PairingCancelledError();
     if ('succeeds' in outcome) return outcome.succeeds;
     if ('fails' in outcome) throw new PairingCeremonyError(outcome.fails);
     throw outcome.throws;
