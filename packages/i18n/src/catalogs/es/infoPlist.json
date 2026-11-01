@@ -1,0 +1,7 @@
+{
+  "CFBundleDisplayName": "Agentico",
+  "NSCameraUsageDescription": "Agentico usa la cámara para escanear el código de vinculación que muestra tu computadora, así esa máquina se agrega sin escribir nada.",
+  "NSFaceIDUsageDescription": "Agentico usa Face ID, cuando lo activás en Configuración › Seguridad, para bloquear la app y para confirmar que sos vos antes de que tus claves SSH se conecten a un Host.",
+  "NSLocalNetworkUsageDescription": "Agentico usa tu red local para conectarse por SSH a Hosts de la misma red, incluidos los Hosts de tu red Tailscale, ZeroTier o EasyTier cuando están cerca.",
+  "NSMicrophoneUsageDescription": "Agentico usa el micrófono, cuando tocás el botón de micrófono del Composer, para convertir tu voz en texto en el borrador. La voz se transcribe en tu dispositivo y no se envía a ningún lado."
+}
