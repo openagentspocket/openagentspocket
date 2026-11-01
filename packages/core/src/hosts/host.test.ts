@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import sessionVector from '../../../plugin/test-vectors/notification-session-v1.json';
 import {
   isQuotableAbsolutePath,
   isValidHerdrSessionName,
@@ -173,6 +174,20 @@ describe('herdr session and endpoint rules', () => {
   ])('reads the session of socket %j as %j', (path, session) => {
     expect(sessionFromSocketPath(path)).toBe(session);
   });
+
+  it.each(sessionVector.names)(
+    'rules on the shared vector name $name as valid: $valid',
+    (entry) => {
+      expect(isValidHerdrSessionName(entry.name)).toBe(entry.valid);
+    },
+  );
+
+  it.each(sessionVector.derivation)(
+    'derives the session of the shared vector case: $name',
+    (entry) => {
+      expect(sessionFromSocketPath(entry.socketPath)).toBe(entry.session);
+    },
+  );
 
   it('builds an endpoint only from quotable absolute paths in herdr layout', () => {
     const socket = '/Users/dev/Library/Application Support/Example/herdr/herdr.sock';
