@@ -1,0 +1,9 @@
+Agentico relay
+Copyright 2026 Agentico contributors
+
+This product is a modified version of the Heeler Push Relay
+(https://github.com/ZingerLittleBee/Heeler), forked at commit 150e1c72 on
+2026-10-29 and licensed under the Apache License 2.0.
+
+Modifications: renamed to Agentico; configuration values are placeholders
+(bundle id, team id, key id, contact) that each deployer fills in.

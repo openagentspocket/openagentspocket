@@ -1,0 +1,10 @@
+Agentico plugin
+Copyright 2026 Agentico contributors
+
+This product is a modified version of the Heeler herdr plugin
+(https://github.com/ZingerLittleBee/Heeler), forked at commit 150e1c72 on
+2026-10-29 and licensed under the Apache License 2.0.
+
+Modifications: renamed to Agentico; removed references to hosted services the
+Agentico project does not operate (the default Push Relay is the loopback
+relay on the Host). See the git history for the full list.

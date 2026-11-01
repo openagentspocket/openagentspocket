@@ -1,0 +1,131 @@
+// The app's privacy policy, served by the relay at GET /privacy so the App
+// Store listing links to the same origin that handles notifications. One
+// source of truth: change the policy here. The contact address comes from
+// the PRIVACY_CONTACT var, so it is set at deploy time, not committed.
+
+const UPDATED = "2026-11-01";
+
+/** @param {string} contact */
+function englishPolicy(contact) {
+  return `
+<h1>Agentico Remote — Privacy Policy</h1>
+<p class="updated">Last updated ${UPDATED}</p>
+<p>Agentico Remote is an app for watching and answering coding agents that run
+on computers you own. It has no accounts, no ads, no analytics and no
+tracking. The developer does not collect or sell personal data.</p>
+<h2>What stays on your device</h2>
+<ul>
+<li>Your Hosts, settings and SSH keys. Private keys stay in the iOS Keychain
+and never leave the device.</li>
+<li>The camera is used only to scan a Pairing Code; images are not stored or
+sent.</li>
+<li>Dictation (iOS 26 and later) is transcribed on the device; audio is not
+stored or sent.</li>
+</ul>
+<h2>What goes to your own computers</h2>
+<p>The app connects over SSH directly to the Hosts you add, to show your
+agents, terminals, files and usage. That data travels between your devices
+and is not seen by the developer.</p>
+<h2>Notifications</h2>
+<p>When you turn on notifications, the herdr plugin on your Host encrypts each
+notification with a key only your devices hold and sends it through a relay
+to Apple Push Notification service. The relay keeps no history and cannot read
+the notification. It handles, only to deliver it: your device's push token,
+the encrypted message, the request's IP address and timing, and, for Live
+Activities, agent counts. By default the relay runs on your own Host; the
+hosted relay runs on Cloudflare Workers.</p>
+<h2>Overlay networks</h2>
+<p>If you join a Tailscale or ZeroTier network inside the app, that network's
+own service coordinates the connection under its own privacy policy.</p>
+<h2>Children</h2>
+<p>The app is a developer tool and is not directed at children.</p>
+<h2>Changes and contact</h2>
+<p>Changes to this policy appear on this page with a new date. Questions:
+<a href="mailto:${contact}">${contact}</a>.</p>`;
+}
+
+/** @param {string} contact */
+function spanishPolicy(contact) {
+  return `
+<h1>Agentico Remote — Política de privacidad</h1>
+<p class="updated">Última actualización ${UPDATED}</p>
+<p>Agentico Remote es una app para seguir y responder a agentes de
+programación que corren en computadoras tuyas. No tiene cuentas, publicidad,
+analítica ni rastreo. El desarrollador no recolecta ni vende datos
+personales.</p>
+<h2>Lo que queda en tu dispositivo</h2>
+<ul>
+<li>Tus Hosts, ajustes y claves SSH. Las claves privadas quedan en el
+Llavero de iOS y nunca salen del dispositivo.</li>
+<li>La cámara se usa solo para escanear un código de vinculación; las imágenes
+no se guardan ni se envían.</li>
+<li>El dictado (iOS 26 o posterior) se transcribe en el dispositivo; el audio
+no se guarda ni se envía.</li>
+</ul>
+<h2>Lo que va a tus propias computadoras</h2>
+<p>La app se conecta por SSH directamente a los Hosts que agregás, para
+mostrar tus agentes, terminales, archivos y uso. Esos datos viajan entre tus
+dispositivos y el desarrollador no los ve.</p>
+<h2>Notificaciones</h2>
+<p>Si activás las notificaciones, el plugin de herdr en tu Host cifra cada
+notificación con una clave que solo tienen tus dispositivos y la envía, a
+través de un relay, al servicio de notificaciones push de Apple. El relay no
+guarda historial y no puede leer la notificación. Para entregarla maneja
+solamente: el token push de tu dispositivo, el mensaje cifrado, la dirección
+IP y el horario del pedido y, para las Live Activities, la cantidad de
+agentes. Por defecto el relay corre en tu propio Host; el relay alojado
+corre en Cloudflare Workers.</p>
+<h2>Redes overlay</h2>
+<p>Si te unís a una red de Tailscale o ZeroTier dentro de la app, el servicio
+de esa red coordina la conexión según su propia política de privacidad.</p>
+<h2>Menores</h2>
+<p>La app es una herramienta para desarrolladores y no está dirigida a
+menores.</p>
+<h2>Cambios y contacto</h2>
+<p>Los cambios a esta política aparecen en esta página con una fecha nueva.
+Consultas: <a href="mailto:${contact}">${contact}</a>.</p>`;
+}
+
+/**
+ * The policy page, English then Spanish. Without PRIVACY_CONTACT the relay
+ * answers 503 rather than publish a policy nobody can be reached through.
+ *
+ * @param {Record<string, string>} env
+ * @returns {Response}
+ */
+export function privacyPage(env) {
+  const contact = (env.PRIVACY_CONTACT ?? "").trim();
+  if (!/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(contact)) {
+    return new Response("privacy contact not configured\n", {
+      status: 503,
+      headers: { "content-type": "text/plain; charset=utf-8" },
+    });
+  }
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agentico Remote — Privacy Policy</title>
+<style>
+body { font: 16px/1.55 -apple-system, system-ui, sans-serif; max-width: 42rem;
+  margin: 2rem auto; padding: 0 1.25rem; color: #1f1b16; background: #f2ede2; }
+h1 { font-size: 1.6rem; } h2 { font-size: 1.15rem; margin-top: 1.6rem; }
+.updated { color: #635c50; } hr { margin: 3rem 0; border: 0; border-top: 1px solid #e0d9cb; }
+a { color: #13801a; }
+</style>
+</head>
+<body>
+${englishPolicy(contact)}
+<hr>
+<section lang="es">
+${spanishPolicy(contact)}
+</section>
+</body>
+</html>
+`;
+  return new Response(html, {
+    status: 200,
+    headers: { "content-type": "text/html; charset=utf-8", "cache-control": "public, max-age=3600" },
+  });
+}

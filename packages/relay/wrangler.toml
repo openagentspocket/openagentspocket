@@ -1,0 +1,32 @@
+# Cloudflare Workers deployment for the herdr Push Relay (ADR 0008).
+#
+# Non-secret config goes in [vars]; the APNs signing key is a deploy-time
+# secret and must NEVER be committed:
+#
+#   wrangler secret put APNS_KEY_P8   # paste the .p8 PEM contents
+#
+# See README.md for the full deploy walkthrough.
+
+name = "agentico-relay"
+main = "src/worker.js"
+compatibility_date = "2026-07-01"
+# Served at https://agentico-relay.<account subdomain>.workers.dev. A custom
+# domain can replace it later:
+# [[routes]]
+# pattern = "relay.example.com"
+# custom_domain = true
+workers_dev = true
+
+[vars]
+# Fill these in before deploying the relay: your Apple Developer Team ID, the
+# APNs key ID, and the app's bundle ID (the APNs topic).
+APNS_TEAM_ID = ""
+APNS_KEY_ID = ""
+APNS_TOPIC = "com.example.agentico"
+# The address the privacy policy at GET /privacy publishes; /privacy answers
+# 503 until it is set.
+PRIVACY_CONTACT = ""
+# Live Activity pushes use `${APNS_TOPIC}.push-type.liveactivity`
+# (suffix-derived; no extra var).
+# RATE_LIMIT_IP_PER_MIN = "120"                  # optional override
+# RATE_LIMIT_TOKEN_PER_MIN = "60"                # optional override
