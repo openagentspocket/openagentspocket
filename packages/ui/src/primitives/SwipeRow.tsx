@@ -3,6 +3,7 @@ import { Animated, PanResponder, Pressable, View } from 'react-native';
 import type { Tone } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
+import { useSurfaceFill } from './surfaceFill';
 import { Text } from './Text';
 
 export interface SwipeAction {
@@ -17,7 +18,7 @@ export const SWIPE_ACTION_WIDTH = 76;
 /** How far past the start a swipe must travel to snap open. */
 const OPEN_THRESHOLD = 40;
 
-const useStyles = makeStyles((t) => ({
+const useStyles = makeStyles(() => ({
   root: { overflow: 'hidden' },
   actions: { position: 'absolute', top: 0, bottom: 0, right: 0, flexDirection: 'row' },
   action: {
@@ -26,7 +27,6 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     gap: 2,
   },
-  front: { backgroundColor: t.colors.surface },
 }));
 
 interface SwipeRowProps {
@@ -37,10 +37,12 @@ interface SwipeRowProps {
 /**
  * Trailing swipe actions under a row: swipe left to reveal, tap one to run it.
  * Screen readers reach the same actions through the row's accessibility actions.
+ * The front is filled with the enclosing card's (or sheet's, or screen's) fill to cover them.
  */
 export function SwipeRow({ actions, children }: SwipeRowProps) {
   const styles = useStyles();
   const theme = useTheme();
+  const frontFill = theme.colors[useSurfaceFill()];
   const width = actions.length * SWIPE_ACTION_WIDTH;
   const offset = useRef(new Animated.Value(0)).current;
   const [open, setOpen] = useState(false);
@@ -103,7 +105,8 @@ export function SwipeRow({ actions, children }: SwipeRowProps) {
         })}
       </View>
       <Animated.View
-        style={[styles.front, { transform: [{ translateX: offset }] }]}
+        style={{ backgroundColor: frontFill, transform: [{ translateX: offset }] }}
+        testID="swipe-row-front"
         {...responder.panHandlers}
       >
         {children}

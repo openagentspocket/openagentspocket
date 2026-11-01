@@ -2,6 +2,13 @@ import { useMemo } from 'react';
 import { View } from 'react-native';
 import { Text } from '../primitives/Text';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
+import {
+  type DiffLabels,
+  type DiffLineHead,
+  defaultDiffLabels,
+  diffLineLabel,
+  diffRowLabel,
+} from './diffLabels';
 import { type DiffLine, parseUnifiedDiff, toSideBySide } from './parseUnifiedDiff';
 
 export type DiffLayout = 'unified' | 'split';
@@ -22,6 +29,9 @@ const useStyles = makeStyles((t) => ({
   text: { flex: 1, paddingRight: t.spacing.xs },
   small: { fontSize: 12, lineHeight: 17 },
 }));
+
+/** Gutters, signs and dividers: the row's label already says them. */
+const HIDDEN = { accessibilityElementsHidden: true, importantForAccessibility: 'no' } as const;
 
 const SIGN: Record<DiffLine['kind'], string> = {
   add: '+',
@@ -51,7 +61,7 @@ function Cell({
   const number = line.kind === 'add' ? line.newNumber : line.oldNumber;
   return (
     <View style={[styles.half, { backgroundColor: lineFill(line.kind, theme) }]}>
-      <Text variant="mono" tone="tertiary" style={[styles.gutter, styles.small]}>
+      <Text variant="mono" tone="tertiary" style={[styles.gutter, styles.small]} {...HIDDEN}>
         {number ?? ''}
       </Text>
       <Text variant="mono" style={[styles.text, styles.small]}>
@@ -66,28 +76,60 @@ interface DiffViewProps {
   diff: string | readonly DiffLine[];
   /** unified: one column with +/-; split: old on the left, new on the right. */
   layout?: DiffLayout;
+  /** Spoken heads per line ("Added, line 12"); English by default, pass translations. */
+  addedLabel?: DiffLineHead;
+  removedLabel?: DiffLineHead;
+  unchangedLabel?: DiffLineHead;
   testID?: string;
 }
 
-/** A diff in the theme's success/danger washes, unified or side by side. Lines wrap. */
-export function DiffView({ diff, layout = 'unified', testID = 'diff-view' }: DiffViewProps) {
+/**
+ * A diff in the theme's success/danger washes, unified or side by side. Lines wrap.
+ * Each row is one screen-reader element ("Added, line 12: text"); a split row reads
+ * its removed line, then its added one; a hunk band reads its header.
+ */
+export function DiffView({
+  diff,
+  layout = 'unified',
+  addedLabel = defaultDiffLabels.added,
+  removedLabel = defaultDiffLabels.removed,
+  unchangedLabel = defaultDiffLabels.unchanged,
+  testID = 'diff-view',
+}: DiffViewProps) {
   const styles = useStyles();
   const theme = useTheme();
   const lines = useMemo(() => (typeof diff === 'string' ? parseUnifiedDiff(diff) : diff), [diff]);
+  const labels: DiffLabels = {
+    added: addedLabel,
+    removed: removedLabel,
+    unchanged: unchangedLabel,
+  };
   if (layout === 'split') {
     return (
       <View style={styles.root} testID={testID}>
         {toSideBySide(lines).map((row, index) =>
           row.left && !row.right && (row.left.kind === 'hunk' || row.left.kind === 'meta') ? (
-            // biome-ignore lint/suspicious/noArrayIndexKey: diff rows are positional.
-            <View key={index} style={styles.row} testID={`diff-line-${row.left.kind}`}>
+            <View
+              // biome-ignore lint/suspicious/noArrayIndexKey: diff rows are positional.
+              key={index}
+              style={styles.row}
+              accessible
+              accessibilityLabel={diffRowLabel(row, labels)}
+              testID={`diff-line-${row.left.kind}`}
+            >
               <Cell line={row.left} styles={styles} theme={theme} />
             </View>
           ) : (
-            // biome-ignore lint/suspicious/noArrayIndexKey: diff rows are positional.
-            <View key={index} style={styles.row} testID="diff-split-row">
+            <View
+              // biome-ignore lint/suspicious/noArrayIndexKey: diff rows are positional.
+              key={index}
+              style={styles.row}
+              accessible
+              accessibilityLabel={diffRowLabel(row, labels)}
+              testID="diff-split-row"
+            >
               <Cell line={row.left} styles={styles} theme={theme} />
-              <View style={styles.divider} />
+              <View style={styles.divider} {...HIDDEN} />
               <Cell line={row.right} styles={styles} theme={theme} />
             </View>
           ),
@@ -102,15 +144,17 @@ export function DiffView({ diff, layout = 'unified', testID = 'diff-view' }: Dif
           // biome-ignore lint/suspicious/noArrayIndexKey: diff lines are positional.
           key={index}
           style={[styles.row, { backgroundColor: lineFill(line.kind, theme) }]}
+          accessible
+          accessibilityLabel={diffLineLabel(line, labels)}
           testID={`diff-line-${line.kind}`}
         >
-          <Text variant="mono" tone="tertiary" style={[styles.gutter, styles.small]}>
+          <Text variant="mono" tone="tertiary" style={[styles.gutter, styles.small]} {...HIDDEN}>
             {line.oldNumber ?? ''}
           </Text>
-          <Text variant="mono" tone="tertiary" style={[styles.gutter, styles.small]}>
+          <Text variant="mono" tone="tertiary" style={[styles.gutter, styles.small]} {...HIDDEN}>
             {line.newNumber ?? ''}
           </Text>
-          <Text variant="mono" tone="secondary" style={[styles.sign, styles.small]}>
+          <Text variant="mono" tone="secondary" style={[styles.sign, styles.small]} {...HIDDEN}>
             {SIGN[line.kind]}
           </Text>
           <Text

@@ -109,7 +109,10 @@ export function flattenSections<T>(
       title: section.title,
       count: section.data.length,
     });
-    for (const item of section.data) items.push({ kind: 'item', key: keyOf(item), item });
+    // Keys are namespaced by section: one Agent may sit in two sections, and FlashList needs unique keys.
+    for (const item of section.data) {
+      items.push({ kind: 'item', key: `${section.key}:${keyOf(item)}`, item });
+    }
   }
   return { items, headerIndexes };
 }

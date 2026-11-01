@@ -13,15 +13,15 @@ export interface KeySpec {
   /** Spoken name when the label is a glyph ("Escape", "Up arrow"). */
   accessibilityLabel?: string;
   /** A sticky modifier: tapping it latches it for the next key. */
-  modifier?: 'ctrl' | 'alt';
+  modifier?: KeyModifier;
 }
 
-export interface KeyModifiers {
-  ctrl: boolean;
-  alt: boolean;
-}
+/** One-shot modifiers, as Swift's TerminalKeyModifiers: Ctrl, Alt (Option) and Shift. */
+export type KeyModifier = 'ctrl' | 'alt' | 'shift';
 
-const NONE: KeyModifiers = { ctrl: false, alt: false };
+export type KeyModifiers = Record<KeyModifier, boolean>;
+
+const NONE: KeyModifiers = { ctrl: false, alt: false, shift: false };
 
 const useStyles = makeStyles((t) => ({
   row: { gap: t.spacing.xxs, paddingHorizontal: t.spacing.xs },
@@ -51,7 +51,7 @@ interface KeyRowProps {
   onKey: (key: KeySpec, modifiers: KeyModifiers) => void;
   /** Latched modifiers, owned by the dock so they span rows. */
   latched?: KeyModifiers;
-  onToggleModifier?: (modifier: 'ctrl' | 'alt') => void;
+  onToggleModifier?: (modifier: KeyModifier) => void;
 }
 
 /** One scrolling row of keys. */
@@ -99,7 +99,7 @@ interface KeyboardDockProps {
   testID?: string;
 }
 
-/** The terminal's key dock: rows of data-driven keys with sticky Ctrl and Alt. */
+/** The terminal's key dock: rows of data-driven keys with sticky Ctrl, Alt and Shift. */
 export function KeyboardDock({
   rows,
   onKey,

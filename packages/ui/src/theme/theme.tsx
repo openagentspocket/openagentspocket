@@ -22,7 +22,7 @@ export interface Theme extends ThemeTokens {
   tone: (tone: Tone) => string;
   /** A color at the wash opacity, for a fill under that same color as ink. */
   wash: (color: string) => string;
-  /** Dimmed backdrop behind overlays. */
+  /** The dim behind sheets, menus and alerts: the theme's dark scrim ink, never the canvas. */
   backdrop: string;
 }
 
@@ -36,7 +36,7 @@ export function buildTheme(id: ThemeId): Theme {
     status: (status) => tokens.colors[statusColorKey[status]],
     tone: (tone) => tokens.colors[toneColorKey[tone]],
     wash: (color) => withAlpha(color, metrics.washOpacity),
-    backdrop: withAlpha(tokens.colors.canvas, metrics.backdropOpacity),
+    backdrop: withAlpha(tokens.colors.scrim, metrics.backdropOpacity),
   };
 }
 

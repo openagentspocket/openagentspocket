@@ -1,5 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
-import { ListRow, Section, Text } from '../index';
+import { StyleSheet } from 'react-native';
+import { ListRow, Section, Sheet, Text, themes } from '../index';
 import { renderThemed } from '../test-utils';
 
 const menuItems = (onRename: () => void) => [
@@ -98,6 +99,44 @@ describe('Section', () => {
     expect(screen.queryAllByTestId('row-separator', { includeHiddenElements: true })).toHaveLength(
       0,
     );
+  });
+
+  it('shows the overlay card through its rows, and fills a swipe row with it', async () => {
+    await renderThemed(
+      <Section title="Hosts" level="overlay">
+        <ListRow title="Plain" testID="plain-row" />
+        <ListRow title="Swipe" swipeActions={[{ key: 'pin', title: 'Pin', onPress: () => {} }]} />
+      </Section>,
+      'papel',
+    );
+    // Transparent: the row paints nothing, so the overlay card shows through.
+    expect(StyleSheet.flatten(screen.getByTestId('plain-row').props.style)).not.toHaveProperty(
+      'backgroundColor',
+    );
+    expect(screen.getByTestId('swipe-row-front')).toHaveStyle({
+      backgroundColor: themes.papel.colors.surfaceOverlay,
+    });
+  });
+
+  it('fills a swipe row with the card level or sheet that holds it, else the canvas', async () => {
+    const swipe = [{ key: 'pin', title: 'Pin', onPress: () => {} }];
+    await renderThemed(
+      <>
+        <ListRow title="Loose" swipeActions={swipe} />
+        <Section title="Agents">
+          <ListRow title="In a card" swipeActions={swipe} />
+        </Section>
+        <Sheet visible onClose={() => {}} title="Sheet">
+          <ListRow title="In a sheet" swipeActions={swipe} />
+        </Sheet>
+      </>,
+      'noche',
+    );
+    const fills = screen
+      .getAllByTestId('swipe-row-front')
+      .map((front) => front.props.style.backgroundColor);
+    const { canvas, surface, surfaceOverlay } = themes.noche.colors;
+    expect(fills).toEqual([canvas, surface, surfaceOverlay]);
   });
 
   it('hides its rows while collapsed and toggles from the header', async () => {

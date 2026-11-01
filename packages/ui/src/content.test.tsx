@@ -93,6 +93,33 @@ describe('parseUnifiedDiff / toSideBySide', () => {
     await renderThemed(<DiffView diff={DIFF} layout="split" />);
     expect(screen.getAllByTestId('diff-split-row')).toHaveLength(3);
   });
+
+  // Heads come from the label props, so the test pins how a row is spoken, not the English copy.
+  const heads = {
+    addedLabel: (n?: number) => `add ${n}`,
+    removedLabel: (n?: number) => `del ${n}`,
+    unchangedLabel: (n?: number) => `same ${n}`,
+  };
+
+  it('speaks each unified row as one element: kind, line number, text', async () => {
+    await renderThemed(<DiffView diff={DIFF} {...heads} />);
+    expect(screen.getByLabelText('same 10: keep')).toHaveProp('accessible', true);
+    expect(screen.getByLabelText('del 11: old')).toBeTruthy();
+    expect(screen.getByLabelText('add 11: new')).toBeTruthy();
+    expect(screen.getByLabelText('@@ -10,3 +10,3 @@ fn')).toBeTruthy();
+    // Gutters and signs are hidden: only the rows reach a screen reader.
+    expect(screen.getAllByText('11', { includeHiddenElements: true })).toHaveLength(2);
+    expect(screen.queryByText('11')).toBeNull();
+    expect(screen.queryByText('+')).toBeNull();
+  });
+
+  it('speaks a split row as its removed line, then its added one, and context once', async () => {
+    await renderThemed(<DiffView diff={DIFF} layout="split" {...heads} />);
+    expect(screen.getByLabelText('del 11: old. add 11: new')).toBeTruthy();
+    expect(screen.getByLabelText('same 10: keep')).toBeTruthy();
+    expect(screen.getByLabelText('add 12: extra')).toBeTruthy();
+    expect(screen.getByLabelText('@@ -10,3 +10,3 @@ fn')).toBeTruthy();
+  });
 });
 
 describe('TerminalView', () => {
@@ -131,6 +158,7 @@ describe('KeyboardDock', () => {
   const rows = [
     [
       { id: 'ctrl', label: 'ctrl', accessibilityLabel: 'Control', modifier: 'ctrl' as const },
+      { id: 'shift', label: 'shift', accessibilityLabel: 'Shift', modifier: 'shift' as const },
       { id: 'c', label: 'c' },
     ],
   ];
@@ -148,6 +176,21 @@ describe('KeyboardDock', () => {
       ['c', false],
     ]);
     expect(ctrl).not.toBeSelected();
+  });
+
+  it('latches Shift for one key too, alone or with Ctrl', async () => {
+    const onKey = jest.fn();
+    await renderThemed(<KeyboardDock rows={rows} onKey={onKey} />);
+    const shift = screen.getByRole('togglebutton', { name: 'Shift' });
+    await fireEvent.press(shift);
+    await fireEvent.press(screen.getByRole('togglebutton', { name: 'Control' }));
+    await fireEvent.press(screen.getByTestId('key-c'));
+    await fireEvent.press(screen.getByTestId('key-c'));
+    expect(onKey.mock.calls.map(([, mods]) => mods)).toEqual([
+      { ctrl: true, alt: false, shift: true },
+      { ctrl: false, alt: false, shift: false },
+    ]);
+    expect(shift).not.toBeSelected();
   });
 });
 
@@ -209,8 +252,20 @@ describe('VirtualList', () => {
       ],
       String,
     );
-    expect(items.map((item) => item.key)).toEqual(['header:a', '1', '2', 'header:c', '3']);
+    expect(items.map((item) => item.key)).toEqual(['header:a', 'a:1', 'a:2', 'header:c', 'c:3']);
     expect(headerIndexes).toEqual([0, 3]);
+  });
+
+  it('keeps keys unique when one item sits in two sections', () => {
+    const { items } = flattenSections(
+      [
+        { key: 'pinned', title: 'Pinned', data: ['agent-1'] },
+        { key: 'working', title: 'Working', data: ['agent-1', 'agent-2'] },
+      ],
+      (id) => id,
+    );
+    const keys = items.map((item) => item.key);
+    expect(new Set(keys).size).toBe(keys.length);
   });
 
   it('renders its items', async () => {

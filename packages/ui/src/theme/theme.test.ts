@@ -40,6 +40,23 @@ describe('theme', () => {
     expect(theme.metrics.cardRadius).toBe(8);
   });
 
+  it('dims overlays with a dark scrim in every theme, light ones included', () => {
+    // WCAG relative luminance of a #RRGGBB color.
+    const luminance = (hex: string) => {
+      const linear = (at: number) => {
+        const c = Number.parseInt(hex.slice(at, at + 2), 16) / 255;
+        return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+      };
+      return 0.2126 * linear(1) + 0.7152 * linear(3) + 0.0722 * linear(5);
+    };
+    for (const id of themeIds) {
+      const { scrim, canvas } = themes[id].colors;
+      expect(buildTheme(id).backdrop).toBe(withAlpha(scrim, 0.45));
+      expect(luminance(scrim)).toBeLessThan(0.02);
+      expect(luminance(scrim)).toBeLessThanOrEqual(luminance(canvas));
+    }
+  });
+
   it('scales spacing by 1.3 over a 4-pt base', () => {
     expect(Object.values(spacing)).toEqual([5, 10, 16, 21, 31, 42]);
   });

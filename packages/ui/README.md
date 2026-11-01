@@ -19,13 +19,17 @@ The gallery route renders every primitive in every state: open `/__gallery` in t
 | Transient notice, in-app notification banner | `toast({ title, message, tone, leading, onPress })` |
 | Inline notice with an action | `<Banner tone title message actionLabel onAction>` |
 | A row in a list or settings | `ListRow` (leading, value, trailing, chevron, swipeActions, menu); `ToggleRow`, `PickerRow`, `StepperRow`, `NavRow`, `TextField` |
-| A group of rows | `<Section title footer>` (one card, hairlines between rows) |
+| A group of rows | `<Section title footer level>` (one card, hairlines between rows; `level="overlay"` inside a sheet or drawer) |
 | A long list | `VirtualList` / `VirtualSectionList` (FlashList v2; `startAtBottom` for chat) |
 | Nothing to show, a failure, loading | `EmptyState`, `ErrorState`, `SkeletonRows` |
 | An icon | `<Icon name="copy">`: semantic names mapped to SF Symbols and Material Symbols in `Icon.tsx` |
 
 `confirm()` and `toast()` draw in the mounted `<OverlayHost />` (the root layout mounts one; a Sheet mounts its
 own while open, so alerts from a sheet appear over it). The most recently mounted host presents.
+
+Rows are transparent: they show the card, sheet or screen that holds them. `Card` and `Sheet` declare their fill
+through `SurfaceFillProvider`; what must paint it (a swipe row's front, ProgramMark's ring) reads `useSurfaceFill()`.
+Overlays dim with `theme.backdrop`, the theme's dark `scrim` token, in light themes too.
 
 ## Rules
 
@@ -34,5 +38,7 @@ own while open, so alerts from a sheet appear over it). The most recently mounte
 - Every user-visible string a primitive owns is a prop with an English default (`cancelLabel`, `copiedTitle`,
   `closeLabel`), so screens pass translated copy.
 - Accessibility: buttons have names, icons are hidden unless labeled, swipe and menu actions are also screen-reader
-  actions, meters and steppers expose values.
-- Tests: `renderThemed()` from `src/test-utils.tsx`; mock `expo-clipboard` when pressing copy buttons.
+  actions, meters and steppers expose values, a diff row is one element ("Added, line 12: text"). At accessibility
+  text sizes (`useFontScale().isAccessibilitySize`) status is a shaped glyph, never color alone.
+- Tests: `renderThemed()` from `src/test-utils.tsx`; mock `expo-clipboard` when pressing copy buttons. Tests run at
+  font scale 1 (`jest.setup.js`; React Native's preset says 2); `setFontScale(n)` before rendering for another.

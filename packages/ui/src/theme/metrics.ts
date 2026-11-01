@@ -26,8 +26,14 @@ export const metrics = {
   washOpacity: 0.15,
   /** Outline of a card that asks for attention. */
   accentOutlineOpacity: 0.4,
-  /** Dimmed backdrop behind sheets, menus and alerts. */
+  /** Dimmed backdrop (the theme's scrim ink) behind sheets, menus and alerts. */
   backdropOpacity: 0.45,
+  /**
+   * Font scale above which text sizes count as accessibility sizes: between iOS's largest
+   * standard size (xxxLarge, 1.353) and its first accessibility size (AX1, 1.786), and
+   * between Android's 1.3 and 1.5 steps.
+   */
+  accessibilityFontScale: 1.4,
   minTapSize: 44,
   /** Widest a reading column grows on tablets and landscape. */
   readableWidth: 720,

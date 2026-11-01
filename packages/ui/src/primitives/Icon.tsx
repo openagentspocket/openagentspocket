@@ -46,6 +46,12 @@ const ICONS = {
   sparkles: { ios: 'sparkles', android: 'auto_awesome' },
   qr: { ios: 'qrcode.viewfinder', android: 'qr_code_scanner' },
   emptyTray: { ios: 'tray', android: 'inbox' },
+  // Agent status at accessibility text sizes: one shape per status (StatusDot). Material's
+  // static font is outlined, so working and idle differ by shape, not by fill.
+  statusBlocked: { ios: 'exclamationmark.circle.fill', android: 'error' },
+  statusDone: { ios: 'checkmark.circle.fill', android: 'check_circle' },
+  statusWorking: { ios: 'circle.fill', android: 'radio_button_checked' },
+  statusIdle: { ios: 'circle', android: 'radio_button_unchecked' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;

@@ -14,7 +14,6 @@ const useStyles = makeStyles((t) => ({
     minHeight: t.metrics.minTapSize + 8,
     paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.xs,
-    backgroundColor: t.colors.surface,
   },
   pressed: { backgroundColor: t.colors.surfaceRaised },
   disabled: { opacity: 0.4 },
@@ -46,7 +45,10 @@ export interface ListRowProps {
   testID?: string;
 }
 
-/** The one list row: leading slot, title and subtitle, value, trailing slot, chevron, swipe and long-press actions. */
+/**
+ * The one list row: leading slot, title and subtitle, value, trailing slot, chevron, swipe and
+ * long-press actions. Transparent: it shows the card (or screen) that holds it.
+ */
 export function ListRow({
   title,
   subtitle,

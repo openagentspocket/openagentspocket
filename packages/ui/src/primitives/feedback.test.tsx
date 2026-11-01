@@ -136,14 +136,14 @@ describe('BarChart', () => {
 });
 
 describe('ProgramMark', () => {
-  it('draws the neutral glyph and a status dot ringed in the surface color', async () => {
+  it('draws the neutral glyph and a status dot ringed in the fill under it (the canvas here)', async () => {
     await renderThemed(<ProgramMark program="codex" status="working" size={20} />, 'noche');
     expect(screen.getByText('C', { includeHiddenElements: true })).toBeTruthy();
     expect(
       screen.getByTestId('program-mark-status-working', { includeHiddenElements: true }),
     ).toHaveStyle({
       backgroundColor: themes.noche.colors.statusWorking,
-      borderColor: themes.noche.colors.surface,
+      borderColor: themes.noche.colors.canvas,
     });
   });
 

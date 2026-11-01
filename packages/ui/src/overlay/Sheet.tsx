@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { Button } from '../primitives/Button';
+import { SurfaceFillProvider } from '../primitives/surfaceFill';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles } from '../theme/theme';
@@ -126,9 +127,13 @@ export function Sheet({
             keyboardShouldPersistTaps="handled"
             style={detent === 'fit' ? undefined : { flex: 1 }}
           >
-            {children}
+            <SurfaceFillProvider value="surfaceOverlay">{children}</SurfaceFillProvider>
           </ScrollView>
-          {footer ? <View style={styles.body}>{footer}</View> : null}
+          {footer ? (
+            <View style={styles.body}>
+              <SurfaceFillProvider value="surfaceOverlay">{footer}</SurfaceFillProvider>
+            </View>
+          ) : null}
         </View>
       </KeyboardAvoidingView>
       {/* iOS cannot present the app's alert over this modal; its own host takes over while open. */}

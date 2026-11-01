@@ -3,8 +3,15 @@ import { Pressable, View } from 'react-native';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
+import { SurfaceFillProvider } from './surfaceFill';
 
 export type CardLevel = 'surface' | 'overlay';
+
+/** The color each card level fills with; rows inside read it through `useSurfaceFill()`. */
+export const CARD_FILL: Record<CardLevel, ColorKey> = {
+  surface: 'surface',
+  overlay: 'surfaceOverlay',
+};
 
 const useStyles = makeStyles((t) => ({
   card: {
@@ -48,6 +55,7 @@ export function Card({
 }: CardProps) {
   const styles = useStyles();
   const theme = useTheme();
+  const filled = <SurfaceFillProvider value={CARD_FILL[level]}>{children}</SurfaceFillProvider>;
   const look = [
     styles.card,
     padded && styles.padded,
@@ -59,7 +67,7 @@ export function Card({
   if (!onPress && !onLongPress) {
     return (
       <View style={look} testID={testID} accessibilityLabel={accessibilityLabel}>
-        {children}
+        {filled}
       </View>
     );
   }
@@ -73,7 +81,7 @@ export function Card({
       onLongPress={onLongPress}
       style={({ pressed }) => [...look, pressed && styles.pressed]}
     >
-      {children}
+      {filled}
     </Pressable>
   );
 }

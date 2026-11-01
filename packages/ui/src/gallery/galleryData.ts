@@ -56,6 +56,7 @@ export const sampleKeyRows: KeySpec[][] = [
     { id: 'esc', label: 'esc', accessibilityLabel: 'Escape' },
     { id: 'ctrl', label: 'ctrl', accessibilityLabel: 'Control', modifier: 'ctrl' },
     { id: 'alt', label: 'alt', accessibilityLabel: 'Alt', modifier: 'alt' },
+    { id: 'shift', label: 'shift', accessibilityLabel: 'Shift', modifier: 'shift' },
     { id: 'tab', label: 'tab', accessibilityLabel: 'Tab' },
     { id: 'up', label: '↑', icon: 'arrowUp', accessibilityLabel: 'Up arrow' },
     { id: 'down', label: '↓', icon: 'arrowDown', accessibilityLabel: 'Down arrow' },
