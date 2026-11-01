@@ -6,6 +6,5 @@
   "packages/plugin/test/notify-hook.test.js": 1241,
   "packages/plugin/test/usage-claude-limits.test.js": 410,
   "packages/plugin/test/usage-incremental.test.js": 565,
-  "packages/relay/src/worker.js": 404,
   "packages/relay/test/worker.test.js": 649
 }
