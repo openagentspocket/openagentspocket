@@ -13,6 +13,7 @@ export {
 } from './diff/parseUnifiedDiff';
 export { NavRow, type PickerOption, PickerRow, StepperRow, ToggleRow } from './form/FormRows';
 export { TextField, type TextFieldProps } from './form/TextField';
+export { Gallery, type GallerySection, gallerySections } from './gallery/Gallery';
 export { KeyboardDock, type KeyModifiers, KeyRow, type KeySpec } from './keys/KeyboardDock';
 export { CodeBlock } from './markdown/CodeBlock';
 export { Markdown } from './markdown/Markdown';
