@@ -1,6 +1,10 @@
 import type { ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
-import { makeStyles } from '../theme/theme';
+import { withAlpha } from '../theme/color';
+import { makeStyles, useTheme } from '../theme/theme';
+import type { ColorKey } from '../theme/tokens.generated';
+
+export type CardLevel = 'surface' | 'overlay';
 
 const useStyles = makeStyles((t) => ({
   card: {
@@ -8,24 +12,53 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.metrics.cardRadius,
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
-    padding: t.spacing.md,
-    gap: t.spacing.xs,
+    overflow: 'hidden',
   },
+  padded: { padding: t.spacing.md, gap: t.spacing.xs },
+  overlay: { backgroundColor: t.colors.surfaceOverlay },
   pressed: { backgroundColor: t.colors.surfaceRaised },
 }));
 
 interface CardProps {
   children: ReactNode;
+  /** surface: a card on the canvas; overlay: a card inside a sheet or drawer. */
+  level?: CardLevel;
+  /** Outlines a card that asks for attention in this color (at 40%). */
+  accent?: ColorKey;
+  /** False for a grouped list whose rows pad themselves. */
+  padded?: boolean;
   onPress?: () => void;
+  onLongPress?: () => void;
   accessibilityLabel?: string;
+  accessibilityHint?: string;
   testID?: string;
 }
 
-export function Card({ children, onPress, accessibilityLabel, testID }: CardProps) {
+/** A themed card: surface fill, radius 8, hairline border. */
+export function Card({
+  children,
+  level = 'surface',
+  accent,
+  padded = true,
+  onPress,
+  onLongPress,
+  accessibilityLabel,
+  accessibilityHint,
+  testID,
+}: CardProps) {
   const styles = useStyles();
-  if (!onPress) {
+  const theme = useTheme();
+  const look = [
+    styles.card,
+    padded && styles.padded,
+    level === 'overlay' && styles.overlay,
+    accent && {
+      borderColor: withAlpha(theme.colors[accent], theme.metrics.accentOutlineOpacity),
+    },
+  ];
+  if (!onPress && !onLongPress) {
     return (
-      <View style={styles.card} testID={testID} accessibilityLabel={accessibilityLabel}>
+      <View style={look} testID={testID} accessibilityLabel={accessibilityLabel}>
         {children}
       </View>
     );
@@ -34,9 +67,11 @@ export function Card({ children, onPress, accessibilityLabel, testID }: CardProp
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
+      accessibilityHint={accessibilityHint}
       testID={testID}
       onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+      onLongPress={onLongPress}
+      style={({ pressed }) => [...look, pressed && styles.pressed]}
     >
       {children}
     </Pressable>

@@ -1,16 +1,10 @@
 import { View } from 'react-native';
+import type { Status } from '../theme/status';
 import { useTheme } from '../theme/theme';
-import type { ColorKey } from '../theme/tokens.generated';
 
-export type Status = 'blocked' | 'working' | 'done' | 'idle';
+export type { Status } from '../theme/status';
 
-const STATUS_COLOR: Record<Status, ColorKey> = {
-  blocked: 'statusBlocked',
-  working: 'statusWorking',
-  done: 'statusDone',
-  idle: 'statusIdle',
-};
-
+/** An Agent status as a dot in the theme's status color. Hidden from screen readers: the row says it in words. */
 export function StatusDot({ status, size = 10 }: { status: Status; size?: number }) {
   const theme = useTheme();
   return (
@@ -22,7 +16,7 @@ export function StatusDot({ status, size = 10 }: { status: Status; size?: number
         width: size,
         height: size,
         borderRadius: size / 2,
-        backgroundColor: theme.colors[STATUS_COLOR[status]],
+        backgroundColor: theme.status(status),
       }}
     />
   );

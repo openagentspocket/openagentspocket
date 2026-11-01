@@ -22,6 +22,24 @@ describe('theme', () => {
     expect(theme.hairline).toBe(withAlpha(themes.indigo.colors.textPrimary, 0.16));
   });
 
+  it('resolves status and tone colors from the theme tokens', () => {
+    for (const id of themeIds) {
+      const theme = buildTheme(id);
+      expect(theme.status('blocked')).toBe(themes[id].colors.statusBlocked);
+      expect(theme.status('idle')).toBe(themes[id].colors.statusIdle);
+      expect(theme.tone('danger')).toBe(themes[id].colors.danger);
+      expect(theme.tone('neutral')).toBe(themes[id].colors.textSecondary);
+    }
+  });
+
+  it('washes a color at 15% and keeps radius 8 cards', () => {
+    const theme = buildTheme('noche');
+    expect(theme.wash(themes.noche.colors.accent)).toBe(
+      withAlpha(themes.noche.colors.accent, 0.15),
+    );
+    expect(theme.metrics.cardRadius).toBe(8);
+  });
+
   it('scales spacing by 1.3 over a 4-pt base', () => {
     expect(Object.values(spacing)).toEqual([5, 10, 16, 21, 31, 42]);
   });

@@ -1,18 +1,25 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
-import type { ReactElement } from 'react';
+import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { AccessibilityInfo } from 'react-native';
 import {
   Badge,
   Button,
   Card,
+  Chip,
+  COPY_CONFIRMATION_MS,
+  CopyableValueRow,
+  CopyButton,
+  Icon,
   SectionHeader,
   StatusDot,
+  StatusPill,
   Text,
-  ThemeProvider,
   themes,
+  withAlpha,
 } from '../index';
+import { renderThemed } from '../test-utils';
 
-const renderThemed = (ui: ReactElement, themeId: 'indigo' | 'papel' | 'noche' = 'indigo') =>
-  render(<ThemeProvider themeId={themeId}>{ui}</ThemeProvider>);
+const mockSetString = jest.fn(async (_value: string) => true);
+jest.mock('expo-clipboard', () => ({ setStringAsync: (value: string) => mockSetString(value) }));
 
 describe('Button', () => {
   it('fires onPress', async () => {
@@ -22,11 +29,31 @@ describe('Button', () => {
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
-  it('does not fire when disabled', async () => {
+  it('does not fire when disabled or loading', async () => {
     const onPress = jest.fn();
-    await renderThemed(<Button title="Go" onPress={onPress} disabled />);
-    await fireEvent.press(screen.getByRole('button', { name: 'Go' }));
+    await renderThemed(
+      <>
+        <Button title="Off" onPress={onPress} disabled />
+        <Button title="Busy" onPress={onPress} loading />
+      </>,
+    );
+    await fireEvent.press(screen.getByRole('button', { name: 'Off' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Busy' }));
     expect(onPress).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Busy' })).toBeBusy();
+  });
+
+  it('names an icon-only button by its accessibility label', async () => {
+    await renderThemed(<Button icon="more" accessibilityLabel="More" onPress={() => {}} />);
+    expect(screen.getByRole('button', { name: 'More' })).toBeTruthy();
+  });
+
+  it('inks a destructive button in the danger color on its wash', async () => {
+    await renderThemed(<Button kind="destructive" title="Delete" onPress={() => {}} testID="b" />);
+    expect(screen.getByTestId('b')).toHaveStyle({
+      backgroundColor: withAlpha(themes.indigo.colors.danger, 0.15),
+    });
+    expect(screen.getByText('Delete')).toHaveStyle({ color: themes.indigo.colors.danger });
   });
 });
 
@@ -47,36 +74,135 @@ describe('Card', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Open' }));
     expect(onPress).toHaveBeenCalled();
   });
+
+  it('draws the overlay level and an accent outline from tokens', async () => {
+    await renderThemed(
+      <Card testID="card" level="overlay" accent="statusBlocked">
+        <Text>x</Text>
+      </Card>,
+      'papel',
+    );
+    expect(screen.getByTestId('card')).toHaveStyle({
+      backgroundColor: themes.papel.colors.surfaceOverlay,
+      borderColor: withAlpha(themes.papel.colors.statusBlocked, 0.4),
+      borderRadius: 8,
+    });
+  });
 });
 
-describe('StatusDot', () => {
-  it('takes its color from the theme token of the status', async () => {
+describe('StatusDot and StatusPill', () => {
+  it('takes the dot color from the status token of the theme', async () => {
     await renderThemed(<StatusDot status="blocked" />);
     expect(screen.getByTestId('status-dot-blocked', { includeHiddenElements: true })).toHaveStyle({
       backgroundColor: themes.indigo.colors.statusBlocked,
     });
   });
 
-  it('changes color with the theme', async () => {
-    await renderThemed(<StatusDot status="done" />, 'papel');
-    expect(screen.getByTestId('status-dot-done', { includeHiddenElements: true })).toHaveStyle({
-      backgroundColor: themes.papel.colors.statusDone,
-    });
-  });
+  it.each(['indigo', 'papel', 'noche'] as const)(
+    'inks a pill in its status color (%s)',
+    async (id) => {
+      await renderThemed(<StatusPill status="done" label="Done" />, id);
+      expect(screen.getByTestId('status-pill-done')).toHaveStyle({
+        backgroundColor: withAlpha(themes[id].colors.statusDone, 0.15),
+      });
+      expect(screen.getByText('Done')).toHaveStyle({ color: themes[id].colors.statusDone });
+      expect(screen.getByLabelText('Done')).toBeTruthy();
+    },
+  );
 });
 
 describe('SectionHeader', () => {
-  it('shows the count in a badge and exposes a header role', async () => {
+  it('shows the count and exposes a header role', async () => {
     await renderThemed(<SectionHeader title="Needs you" status="blocked" count={3} />);
     expect(screen.getByRole('header')).toBeTruthy();
     expect(screen.getByText('3')).toBeTruthy();
   });
+
+  it('runs its trailing action and toggles when collapsible', async () => {
+    const onPress = jest.fn();
+    const onToggle = jest.fn();
+    await renderThemed(
+      <SectionHeader
+        title="Done"
+        expanded={false}
+        onToggle={onToggle}
+        action={{ title: 'See all', onPress, accessibilityLabel: 'See all Done' }}
+      />,
+    );
+    await fireEvent.press(screen.getByRole('button', { name: 'See all Done' }));
+    expect(onPress).toHaveBeenCalled();
+    expect(screen.getByRole('header')).toBeCollapsed();
+    await fireEvent.press(screen.getByRole('header'));
+    expect(onToggle).toHaveBeenCalled();
+  });
 });
 
-describe('Badge', () => {
-  it('renders its label', async () => {
-    await renderThemed(<Badge label="new" />);
+describe('Badge and Chip', () => {
+  it('renders a badge label in each kind', async () => {
+    await renderThemed(
+      <>
+        <Badge label="new" />
+        <Badge label="4" kind="control" testID="control" />
+      </>,
+    );
     expect(screen.getByText('new')).toBeTruthy();
+    expect(screen.getByTestId('control')).toHaveStyle({
+      backgroundColor: themes.indigo.colors.control,
+    });
+  });
+
+  it('makes a filter chip a selectable button', async () => {
+    const onPress = jest.fn();
+    await renderThemed(<Chip label="Blocked" selected onPress={onPress} />);
+    const chip = screen.getByRole('button', { name: 'Blocked' });
+    expect(chip).toBeSelected();
+    await fireEvent.press(chip);
+    expect(onPress).toHaveBeenCalled();
+  });
+});
+
+describe('Icon', () => {
+  it('is hidden from screen readers unless labeled', async () => {
+    await renderThemed(
+      <>
+        <Icon name="copy" />
+        <Icon name="warning" accessibilityLabel="Warning" />
+      </>,
+    );
+    expect(screen.queryByTestId('icon-copy')).toBeNull();
+    expect(screen.getByTestId('icon-copy', { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.getByRole('image', { name: 'Warning' })).toBeTruthy();
+  });
+});
+
+describe('CopyButton', () => {
+  beforeEach(() => mockSetString.mockClear());
+
+  it('copies, announces, shows the copied state, then reverts', async () => {
+    jest.useFakeTimers();
+    const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibility');
+    await renderThemed(<CopyButton value="wB:p1" title="Copy Command" copiedTitle="Copied" />);
+    await fireEvent.press(screen.getByRole('button', { name: 'Copy Command' }));
+    expect(mockSetString).toHaveBeenCalledWith('wB:p1');
+    expect(announce).toHaveBeenCalledWith('Copied');
+    expect(screen.getByRole('button', { name: 'Copied' })).toBeTruthy();
+    await act(async () => {
+      jest.advanceTimersByTime(COPY_CONFIRMATION_MS);
+    });
+    expect(screen.getByRole('button', { name: 'Copy Command' })).toBeTruthy();
+    jest.useRealTimers();
+  });
+
+  it('labels the row copy button after its label and skips it when not copyable', async () => {
+    await renderThemed(
+      <>
+        <CopyableValueRow label="Pane id" value="wB:p1" />
+        <CopyableValueRow label="Name" value="api" copyable={false} />
+      </>,
+    );
+    expect(screen.getAllByRole('button')).toHaveLength(1);
+    await fireEvent.press(screen.getByRole('button', { name: 'Copy Pane id' }));
+    expect(mockSetString).toHaveBeenCalledWith('wB:p1');
   });
 });
 
