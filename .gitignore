@@ -9,3 +9,6 @@ build/
 .DS_Store
 coverage/
 .env*
+
+# Agent worktrees (Claude Code); each is its own checkout
+.claude/worktrees/
