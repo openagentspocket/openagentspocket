@@ -1,0 +1,19 @@
+{
+  "name": "@agentico/core",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "vitest run",
+    "test:related": "vitest related --run",
+    "gen": "node scripts/gen-protocol-types.mjs",
+    "gen:check": "node scripts/gen-protocol-types.mjs --check"
+  },
+  "devDependencies": {
+    "json-schema-to-typescript": "^16.0.0",
+    "vitest": "^5.0.5"
+  }
+}
