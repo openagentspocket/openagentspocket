@@ -160,6 +160,26 @@ describe('PairingScanStore: re-pairing a saved Host', () => {
     expect(env.catalog.saved).toHaveLength(2);
   });
 
+  it('surfaces an unwritable catalog when updating a twin', async () => {
+    const env = makeEnv({ outcomes: [{ succeeds: PAIRED_RESULT }] });
+    env.store.submit(CODES.bootstrap);
+    await env.store.pair();
+    const saved = env.catalog.saved[0];
+    if (saved) env.catalog.update({ ...saved, routes: [] });
+    env.catalog.unwritable = true;
+
+    env.store.rescan();
+    env.store.submit(CODES.bootstrap);
+    await env.store.pair();
+
+    expect(env.store.getState()).toMatchObject({
+      pairedHostId: null,
+      failure: { canRetry: false, message: { id: 'saveFailed' } },
+    });
+    expect(env.catalog.saved).toHaveLength(1);
+    expect(env.catalog.saved[0]?.routes).toEqual([]);
+  });
+
   it('adds the routes a twin is missing', async () => {
     const env = makeEnv({ outcomes: [{ succeeds: PAIRED_RESULT }] });
     env.store.submit(CODES.bootstrap);
