@@ -1,4 +1,4 @@
-import { sha256 } from '@noble/hashes/sha2.js';
+import { sha256 } from '@noble/hashes/sha2';
 import { encodeBase64 } from './text';
 
 /** Marker for a fingerprint stored without its key algorithm. */
