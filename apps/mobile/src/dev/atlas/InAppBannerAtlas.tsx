@@ -1,6 +1,4 @@
-import { Stack } from 'expo-router';
-import { useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Modal } from 'react-native';
 import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Index from '@/app/index';
 import { BannerLayer } from '@/notifications/InAppBanner';
@@ -19,38 +17,18 @@ const BLOCKED = {
 };
 
 /**
- * The layer the app mounts over the whole window (the native header cannot be drawn over from a
- * route, so this entry hides it): lifted back to the window's top edge before the safe area applies.
+ * The Home console with the in-app banner pinned below the status bar: a blocked Agent's question.
+ * The app mounts the layer over the whole window; a route cannot draw over the native header, so
+ * the atlas lifts the layer into a transparent Modal, which does.
  */
-function WindowLayer() {
-  const [top, setTop] = useState(0);
-  const node = useRef<{ measureInWindow: (done: (x: number, y: number) => void) => void } | null>(
-    null,
-  );
-  return (
-    <View
-      ref={(n) => {
-        node.current = n;
-      }}
-      onLayout={() => node.current?.measureInWindow((_x, y) => setTop(y))}
-      style={StyleSheet.absoluteFill}
-      pointerEvents="box-none"
-    >
-      <View style={[StyleSheet.absoluteFill, { top: -top }]} pointerEvents="box-none">
-        <BannerLayer banner={BLOCKED} animated={false} onPress={noop} onDismiss={noop} />
-      </View>
-    </View>
-  );
-}
-
-/** The Home console with the in-app banner pinned below the status bar: a blocked Agent's question. */
 export function InAppBannerAtlas() {
   const device = useSafeAreaInsets();
   const content = (
     <>
-      <Stack.Screen options={{ headerShown: false }} />
       <Index />
-      <WindowLayer />
+      <Modal transparent animationType="none" visible statusBarTranslucent>
+        <BannerLayer banner={BLOCKED} animated={false} onPress={noop} onDismiss={noop} />
+      </Modal>
     </>
   );
   if (device.top > 0) return content;
