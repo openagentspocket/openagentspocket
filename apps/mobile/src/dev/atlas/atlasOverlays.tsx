@@ -3,6 +3,7 @@ import { t } from '@openagentspocket/i18n';
 import { type ConfirmOptions, confirm } from '@openagentspocket/ui';
 import { type ReactNode, useEffect, useState } from 'react';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
+import { COMPOSER_MORE_ANCHOR } from '@/agent-detail/composer/AgentComposer';
 import { StatusOverlay } from '@/agent-detail/terminal/StatusOverlay';
 import { NotificationExplainerSheet } from '@/notifications/NotificationDisclosure';
 import { deviceStorage } from '@/settings/deviceStorage';
@@ -25,19 +26,7 @@ export const closePanePopover: ConfirmOptions = {
   cancelLabel: t('Cancel'),
   destructive: true,
   presentation: 'popover',
-};
-
-/** usage.account-remove-confirm: Swift anchors it to the Account row. */
-export const removeAccountPopover: ConfirmOptions = {
-  title: t('Remove %@?', 'claude-2'),
-  message: t(
-    'Its Token Usage and Usage Limits stop showing. The directory and its sign-in stay on %@.',
-    'Studio Mac',
-  ),
-  confirmLabel: t('Remove Account'),
-  cancelLabel: t('Cancel'),
-  destructive: true,
-  presentation: 'popover',
+  anchorKey: COMPOSER_MORE_ANCHOR,
 };
 
 export const closeConfirmation: ConfirmOptions = {

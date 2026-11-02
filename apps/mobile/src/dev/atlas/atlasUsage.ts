@@ -38,7 +38,10 @@ export function atlasAccountFiles(): MemoryAccountFileStore {
     'demo',
     encodeAccountFile({
       ...emptyAccountFile(),
-      accounts: [{ id: '7f3c9a2e', directory: '/home/dev/.claude-work', name: 'work', extra: {} }],
+      accounts: [
+        { id: 'b41d07c5', directory: '/home/dev/.claude-2', name: 'claude-2', extra: {} },
+        { id: '7f3c9a2e', directory: '/home/dev/.claude-work', name: 'work', extra: {} },
+      ],
     }),
   );
   return files;

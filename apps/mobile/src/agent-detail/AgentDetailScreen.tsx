@@ -5,14 +5,7 @@ import {
   terminalStopAvailable,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import {
-  type ActionMenuItem,
-  EmptyState,
-  makeStyles,
-  Screen,
-  ScreenBackground,
-  Text,
-} from '@openagentspocket/ui';
+import { type ActionMenuItem, EmptyState, makeStyles, Screen, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
@@ -86,7 +79,6 @@ export function AgentDetailScreen({
   const locating = surface === 'chat' && chatStatus.locating;
   return (
     <SafeAreaView style={styles.root} edges={['top', 'bottom']} testID="agent-detail">
-      <ScreenBackground />
       <View style={styles.top} />
       {surface === 'chat' ? (
         <ChatBanners
@@ -117,6 +109,7 @@ export function AgentDetailScreen({
         onToggleSurface={() => setSurface(surface === 'chat' ? 'terminal' : 'chat')}
         footer={<AgentSwitcher rows={rows} currentKey={key} onSelect={onSwitch} />}
         canStop={terminalStopAvailable(row.agent.agent ?? '')}
+        moreItems={moreItems}
       />
       <AgentHeader onSessions={onSessions ?? (() => {})} items={moreItems} />
     </SafeAreaView>

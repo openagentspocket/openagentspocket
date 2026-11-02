@@ -20,6 +20,8 @@ interface BaseOptions {
   presentation?: ConfirmPresentation;
   /** A popover's arrow: under its control at the trailing edge (`end`) or centered. Default center. */
   anchor?: 'center' | 'end';
+  /** A popover points at the control registered under this key (`useAnchor`); without one it sits above the bottom edge. */
+  anchorKey?: string;
 }
 
 export interface ConfirmOptions extends BaseOptions {
@@ -39,6 +41,7 @@ export interface AlertRequest {
   cancelLabel: string | null;
   presentation: ConfirmPresentation;
   anchor?: 'center' | 'end';
+  anchorKey?: string;
   resolve: (key: string | null) => void;
 }
 
@@ -79,6 +82,7 @@ export async function confirm<K extends string>(
       cancelLabel,
       presentation: options.presentation ?? 'dialog',
       anchor: options.anchor,
+      anchorKey: options.anchorKey,
     });
     return key as K | null;
   }
@@ -91,6 +95,7 @@ export async function confirm<K extends string>(
     cancelLabel,
     presentation: options.presentation ?? 'alert',
     anchor: options.anchor,
+    anchorKey: options.anchorKey,
   });
   return key === 'confirm';
 }

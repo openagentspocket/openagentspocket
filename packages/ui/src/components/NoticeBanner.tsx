@@ -19,15 +19,16 @@ const useStyles = makeStyles((t) => ({
   banner: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: t.spacing.sm,
+    // Tight like Swift's chat banner: its message keeps "Connection" on the first line.
+    gap: t.spacing.xs,
     minHeight: t.metrics.minTapSize,
     paddingVertical: t.spacing.xs,
-    paddingHorizontal: t.spacing.sm,
+    paddingHorizontal: t.spacing.xs,
     borderRadius: t.metrics.cardRadius + 4,
     backgroundColor: t.colors.surfaceRaised,
   },
   message: { flex: 1 },
-  action: { minHeight: 32, justifyContent: 'center', paddingLeft: t.spacing.xs },
+  action: { minHeight: 32, justifyContent: 'center', paddingLeft: t.spacing.xxs },
   locating: { alignItems: 'center', gap: t.spacing.sm, paddingVertical: t.spacing.xl },
   inappPin: { width: '100%', maxWidth: INAPP_MAX_WIDTH, alignSelf: 'center' },
   inapp: {

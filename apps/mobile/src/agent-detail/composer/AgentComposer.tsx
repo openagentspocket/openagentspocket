@@ -9,12 +9,16 @@ import {
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
+  ActionMenu,
+  type ActionMenuItem,
   Banner,
   Composer,
+  Icon,
   KeyboardDock,
   type KeySpec,
   makeStyles,
   ProgramMark,
+  useAnchor,
   useTheme,
 } from '@openagentspocket/ui';
 import type { ReactNode } from 'react';
@@ -39,6 +43,9 @@ const ATTACH_KEYS: readonly (readonly KeySpec[])[] = [
     { id: 'enter', label: 'Enter', icon: 'send', accessibilityLabel: 'Enter' },
   ],
 ];
+
+/** The key the Close Pane popover points at. */
+export const COMPOSER_MORE_ANCHOR = 'agent-composer-more';
 
 const useStyles = makeStyles(() => ({
   toggle: {
@@ -65,6 +72,8 @@ interface Props {
   canStop?: boolean;
   /** Writes a key to the live terminal; the tools dock shows only after a draft went there. */
   onAttachKey?: (key: KeySpec) => void;
+  /** The composer's "..." menu (Close Agent and the screen's other actions); hidden when empty. */
+  moreItems?: readonly ActionMenuItem[];
 }
 
 /** The Composer under the Chat or Terminal slot: draft, Send or Stop, suggestions and what went wrong. */
@@ -78,6 +87,7 @@ export function AgentComposerBar({
   skillPrefixes = ['/'],
   canStop = true,
   onAttachKey,
+  moreItems = [],
 }: Props) {
   const styles = useStyles();
   const theme = useTheme();
@@ -86,6 +96,8 @@ export function AgentComposerBar({
   useSyncExternalStore(store.stop.subscribe, () => store.stop.phase);
   const held = useSyncExternalStore(store.stop.subscribe, () => store.stop.isHeldAfterSend);
   const [attachDraft, setAttachDraft] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreAnchor = useAnchor(COMPOSER_MORE_ANCHOR);
   const trigger = detectSkillTrigger(snapshot.draft, skillPrefixes);
   const matches = trigger ? matchingSkills(trigger, skills) : [];
   const control = primaryControl({
@@ -158,20 +170,35 @@ export function AgentComposerBar({
         }}
         footer={footer}
         tools={
-          onToggleSurface ? (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={surface === 'chat' ? t('Terminal') : t('Chat')}
-              onPress={onToggleSurface}
-              style={[styles.toggle, { backgroundColor: theme.colors.control }]}
-              testID={surface === 'chat' ? 'surface-terminal' : 'surface-chat'}
-            >
-              <ProgramMark program={program} size={22} />
-            </Pressable>
-          ) : undefined
+          <>
+            {onToggleSurface ? (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={surface === 'chat' ? t('Terminal') : t('Chat')}
+                onPress={onToggleSurface}
+                style={[styles.toggle, { backgroundColor: theme.colors.control }]}
+                testID={surface === 'chat' ? 'surface-terminal' : 'surface-chat'}
+              >
+                <ProgramMark program={program} size={22} />
+              </Pressable>
+            ) : null}
+            {moreItems.length > 0 ? (
+              <Pressable
+                ref={moreAnchor}
+                accessibilityRole="button"
+                accessibilityLabel={t('More')}
+                onPress={() => setMoreOpen(true)}
+                style={[styles.toggle, { backgroundColor: theme.colors.control }]}
+                testID="composer-more"
+              >
+                <Icon name="more" color="textPrimary" size={18} />
+              </Pressable>
+            ) : null}
+          </>
         }
         testID="composer"
       />
+      <ActionMenu items={moreItems} visible={moreOpen} onClose={() => setMoreOpen(false)} />
       {attachDraft && onAttachKey ? (
         <KeyboardDock rows={ATTACH_KEYS} onKey={(key) => onAttachKey(key)} />
       ) : null}

@@ -22,7 +22,7 @@ import UsageLimits from '@/app/usage-limits';
 import { HostDetailScreen } from '@/features/hosts/HostDetailScreen';
 import { SetupGuideScreen } from '@/features/hosts/SetupGuideScreen';
 import { closeTerminalConfirmation } from '@/features/terminals/closeConfirmation';
-import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
+import { SHELL_CLOSE_ANCHOR, ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
 import { AppLockView } from '@/settings/AppLockCover';
 import { deviceStorage } from '@/settings/deviceStorage';
@@ -160,7 +160,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
       <UsageScreen
         source={atlasUsageSource}
         files={atlasAccountFiles()}
-        initial={{ host: 'demo', accounts: true, remove: '7f3c9a2e' }}
+        initial={{ host: 'demo', accounts: true, remove: 'b41d07c5' }}
       />
     ),
   },
@@ -239,7 +239,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   },
   'agent-detail.shell-close-confirm': {
     render: () => (
-      <AlertOver options={closeTerminalConfirmation()}>
+      <AlertOver options={{ ...closeTerminalConfirmation(), anchorKey: SHELL_CLOSE_ANCHOR }}>
         {titled(
           t('Terminal'),
           <ShellTerminalScreen

@@ -10,7 +10,7 @@ import {
 import { t } from '@openagentspocket/i18n';
 import { Banner, confirm, Section, Sheet } from '@openagentspocket/ui';
 import { useEffect, useRef, useState } from 'react';
-import { AccountRow } from './AccountRow';
+import { AccountRow, accountAnchor } from './AccountRow';
 import { AccountSuggestions } from './AccountSuggestions';
 import { AddAccountForm } from './AddAccountForm';
 import { renderMessage } from './usageText';
@@ -76,8 +76,10 @@ export function AccountsSheet({
         hostName,
       ),
       confirmLabel: t('Remove Account'),
-      cancelLabel: t('Cancel'),
+      cancelLabel: null,
       destructive: true,
+      presentation: 'popover',
+      anchorKey: accountAnchor(id),
     });
     if (ok) await state.remove(id);
   };

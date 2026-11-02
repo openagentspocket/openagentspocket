@@ -65,7 +65,7 @@ try {
   for (const id of targets) {
     setViewport(devices.get(id) ?? 'iphone');
     browser('open', `${base}/__atlas/${id}?theme=${theme}`);
-    await sleep(id === targets[0] ? 8000 : 1800);
+    await sleep(id === targets[0] ? 8000 : 3500);
     // Expo's dev error toast (web-only DOM prop warnings) must not cover the capture.
     browser(
       'eval',
