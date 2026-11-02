@@ -29,6 +29,10 @@ export interface ListRowProps {
   leading?: ReactNode;
   /** A settings-style leading symbol: 22 pt, tinted secondary. */
   icon?: IconName;
+  /** Sets the subtitle in monospaced caption (dates, sizes, paths). */
+  subtitleMono?: boolean;
+  /** Lines the subtitle may take before it truncates (2 by default). */
+  subtitleLines?: number;
   /** A short value in secondary text before the trailing slot ("Índigo", "3 hosts"). */
   value?: string;
   /** A badge, a switch, a copy button. */
@@ -59,6 +63,8 @@ export interface ListRowProps {
 export function ListRow({
   title,
   subtitle,
+  subtitleMono = false,
+  subtitleLines = 2,
   leading,
   icon,
   value,
@@ -108,7 +114,12 @@ export function ListRow({
       <View style={styles.text}>
         <Text numberOfLines={1}>{title}</Text>
         {subtitle ? (
-          <Text variant="footnote" tone="secondary" numberOfLines={2}>
+          <Text
+            variant={subtitleMono ? 'caption' : 'footnote'}
+            monospaced={subtitleMono}
+            tone="secondary"
+            numberOfLines={subtitleLines}
+          >
             {subtitle}
           </Text>
         ) : null}
