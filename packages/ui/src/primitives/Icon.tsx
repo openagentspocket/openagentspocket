@@ -12,6 +12,7 @@ const ICONS = {
   add: { ios: 'plus', android: 'add' },
   remove: { ios: 'minus', android: 'remove' },
   close: { ios: 'xmark', android: 'close' },
+  hash: { ios: 'number', android: 'tag' },
   check: { ios: 'checkmark', android: 'check' },
   copy: { ios: 'doc.on.doc', android: 'content_copy' },
   more: { ios: 'ellipsis', android: 'more_horiz' },

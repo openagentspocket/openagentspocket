@@ -5,6 +5,8 @@ export interface AtlasScript {
   press?: readonly string[];
   /** A testID held down long enough to count as a long press. */
   longPress?: string;
+  /** testIDs clicked in order after the long press (its menu items). */
+  thenPress?: readonly string[];
   /** Runs once after the screen settles (opens an alert, for example). */
   run?: () => void;
 }
@@ -49,6 +51,11 @@ export function AtlasActions({ script, children }: { script: AtlasScript; childr
           timers.push(setTimeout(() => el.dispatchEvent(new Mouse('mouseup', init)), HOLD_MS));
         }, at),
       );
+    }
+    if (script.longPress) at += HOLD_MS + SETTLE_MS;
+    for (const id of script.thenPress ?? []) {
+      timers.push(setTimeout(() => find(id)?.click(), at));
+      at += 300;
     }
     if (script.run) timers.push(setTimeout(script.run, at));
     return () => {

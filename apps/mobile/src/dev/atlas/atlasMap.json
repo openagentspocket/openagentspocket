@@ -229,12 +229,12 @@
   {
     "id": "files.browser",
     "rn": "app/files.tsx (FilesScreen)",
-    "note": "demo host files"
+    "note": "demo host files, Done + up/+ capsule, path chip"
   },
   {
     "id": "browser.ports",
     "rn": "app/ports (PortsScreen)",
-    "note": "demo ports"
+    "note": "demo ports, Done + # capsule, host chip"
   },
   {
     "id": "changes.list",
@@ -244,7 +244,7 @@
   {
     "id": "changes.file-diff",
     "rn": "app/changes/diff.tsx (FileDiffScreen)",
-    "note": "KNOWN GAP: no file is selected in the atlas, so it shows the no-longer-in-Changes empty state"
+    "note": "first modified demo file opened"
   },
   {
     "id": "agent-detail.container",
@@ -285,5 +285,65 @@
     "id": "console.host-issue-rows",
     "rn": "app/index.tsx (HomeScreen)",
     "note": "demo plus a Host that never connects"
+  },
+  {
+    "id": "files.quick-look",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "tap a file: RN asks before downloading, the system Quick Look is native and not drawn"
+  },
+  {
+    "id": "files.share-sheet",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "row menu Share, then the download confirm; the system share sheet is native"
+  },
+  {
+    "id": "files.save-to-files",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "row menu Save to Files, then the download confirm; the document picker is native"
+  },
+  {
+    "id": "files.download-confirm",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "secret-looking name asks first (same dialog as the secret variant)"
+  },
+  {
+    "id": "files.download-confirm--secret",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "secret-looking name asks first"
+  },
+  {
+    "id": "files.upload-pickers",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "\"+\" menu: Upload File, Upload Photo, Refresh; the system pickers are native"
+  },
+  {
+    "id": "files.upload-collision",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "Keep Both / Replace dialog"
+  },
+  {
+    "id": "files.rename-alert",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "row menu Rename opens the rename sheet"
+  },
+  {
+    "id": "files.delete-confirm",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "row menu Delete opens the confirm"
+  },
+  {
+    "id": "browser.open-port",
+    "rn": "app/ports (PortsScreen)",
+    "note": "Open Port sheet over the list"
+  },
+  {
+    "id": "browser.preview",
+    "rn": "app/ports/preview.tsx (PortPreviewScreen)",
+    "note": "dev server opened; web view is a stub on web"
+  },
+  {
+    "id": "browser.leave-confirm",
+    "rn": "app/ports/preview.tsx (PortPreviewScreen)",
+    "note": "external-link confirm over the preview"
   }
 ]

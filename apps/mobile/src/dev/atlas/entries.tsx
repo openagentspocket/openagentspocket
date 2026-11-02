@@ -6,7 +6,6 @@ import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import Agents from '@/app/agents';
 import Board from '@/app/board';
 import ChangesRoute from '@/app/changes';
-import FileDiffRoute from '@/app/changes/diff';
 import FilesRoute from '@/app/files';
 import HostsRoute from '@/app/hosts';
 import HostFormRoute from '@/app/hosts/form';
@@ -21,6 +20,7 @@ import UsageLimits from '@/app/usage-limits';
 import { HostDetailScreen } from '@/features/hosts/HostDetailScreen';
 import { SetupGuideScreen } from '@/features/hosts/SetupGuideScreen';
 import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
+import { askCollisionChoice } from '@/files/useFileDialogs';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
 import { AppLockView } from '@/settings/AppLockCover';
 import { deviceStorage } from '@/settings/deviceStorage';
@@ -33,6 +33,7 @@ import { UsageScreen } from '@/usage/UsageScreen';
 import type { AtlasScript } from './AtlasActions';
 import type { AtlasData } from './AtlasFrame';
 import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
+import { FileDiffDemo, PreviewDemo } from './FilesPortsDemos';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
@@ -182,9 +183,46 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'usage.limits-sheet': { render: () => <UsageLimits /> },
   'usage.limits-page': { render: () => <UsageLimits /> },
   'files.browser': { render: () => <FilesRoute /> },
+  'files.quick-look': { script: { press: ['file-notes 2.txt'] }, render: () => <FilesRoute /> },
+  'files.share-sheet': {
+    script: { longPress: 'file-notes 2.txt', thenPress: ['action-menu-share'] },
+    render: () => <FilesRoute />,
+  },
+  'files.save-to-files': {
+    script: { longPress: 'file-notes 2.txt', thenPress: ['action-menu-save'] },
+    render: () => <FilesRoute />,
+  },
+  'files.download-confirm': { script: { press: ['file-.env'] }, render: () => <FilesRoute /> },
+  'files.download-confirm--secret': {
+    script: { press: ['file-.env'] },
+    render: () => <FilesRoute />,
+  },
+  'files.upload-pickers': { script: { press: ['files-add'] }, render: () => <FilesRoute /> },
+  'files.upload-collision': {
+    script: {
+      run: () =>
+        void askCollisionChoice({
+          upload: { name: 'notes 2.txt' },
+          existingKind: 'file',
+          canReplace: true,
+        } as Parameters<typeof askCollisionChoice>[0]),
+    },
+    render: () => <FilesRoute />,
+  },
+  'files.rename-alert': {
+    script: { longPress: 'file-notes 2.txt', thenPress: ['action-menu-rename'] },
+    render: () => <FilesRoute />,
+  },
+  'files.delete-confirm': {
+    script: { longPress: 'file-notes 2.txt', thenPress: ['action-menu-delete'] },
+    render: () => <FilesRoute />,
+  },
   'browser.ports': { render: () => <PortsRoute /> },
+  'browser.open-port': { script: { press: ['ports-open-port'] }, render: () => <PortsRoute /> },
+  'browser.preview': { render: () => <PreviewDemo /> },
+  'browser.leave-confirm': { render: () => <PreviewDemo leaving /> },
   'changes.list': { render: () => <ChangesRoute /> },
-  'changes.file-diff': { render: () => <FileDiffRoute /> },
+  'changes.file-diff': { render: () => <FileDiffDemo /> },
   'agent-detail.container': {
     render: () =>
       titled(

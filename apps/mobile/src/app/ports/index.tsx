@@ -1,4 +1,3 @@
-import { t } from '@openagentspocket/i18n';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { PortsScreen } from '@/ports/PortsScreen';
@@ -14,8 +13,9 @@ export default function PortsRoute() {
   useEffect(() => () => releasePortsStore(hostId), [hostId]);
   return (
     <>
-      <Stack.Screen options={{ title: t('Ports') }} />
+      <Stack.Screen options={{ headerShown: false }} />
       <PortsScreen
+        onDone={() => router.back()}
         store={store}
         onOpenPreview={() => router.push({ pathname: '/ports/preview', params: { host: hostId } })}
       />

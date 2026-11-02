@@ -47,10 +47,10 @@ async function askDownload(
   return ok ? store.confirmPendingDownload() : store.cancelPendingDownload();
 }
 
-async function askCollision(
-  store: FileBrowserStore,
+/** The "already exists" question of an upload whose name is taken. */
+export async function askCollisionChoice(
   collision: NonNullable<FileBrowserState['pendingCollision']>,
-) {
+): Promise<CollisionChoice> {
   const detail =
     collision.existingKind === 'directory'
       ? t('A folder has that name. Keep Both uploads it under a new name.')
@@ -68,7 +68,14 @@ async function askCollision(
     message: detail,
     actions,
   });
-  store.resolveCollision((choice ?? 'cancel') as CollisionChoice);
+  return (choice ?? 'cancel') as CollisionChoice;
+}
+
+async function askCollision(
+  store: FileBrowserStore,
+  collision: NonNullable<FileBrowserState['pendingCollision']>,
+) {
+  store.resolveCollision(await askCollisionChoice(collision));
 }
 
 /** Presents the store's pending questions, notices and finished downloads, one at a time. */

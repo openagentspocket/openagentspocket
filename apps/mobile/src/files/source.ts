@@ -32,7 +32,7 @@ export const demoFileSource: FileBrowserSource = {
         [`${home}/notes 2.txt`]: bytes('two'),
         [`${home}/notes 10.txt`]: bytes('ten'),
       },
-      directories: [`${home}/empty`],
+      directories: [`${home}/Downloads`, `${home}/workspace`, `${home}/empty`],
       exec: {
         [HOME_COMMAND]: { exitCode: 0, stdout: `__AGENTICO_HOME__=${home}\n`, stderr: '' },
       },

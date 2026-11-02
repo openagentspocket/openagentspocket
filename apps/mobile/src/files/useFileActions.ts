@@ -4,7 +4,8 @@ import { type ActionMenuItem, confirm } from '@openagentspocket/ui';
 import { rowDetail } from './FileRow';
 import { pickDocument, pickPhoto } from './pickers';
 
-async function confirmDelete(store: FileBrowserStore, item: FileBrowserItem) {
+/** files.delete-confirm: the host has no trash, so the notes say what goes and that it stays gone. */
+export async function confirmDelete(store: FileBrowserStore, item: FileBrowserItem) {
   const notes = [
     rowDetail(item),
     item.kind === 'directory' ? t('Only an empty folder can be deleted.') : undefined,
