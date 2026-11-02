@@ -29,6 +29,17 @@ Both platforms implement the same contract (`src/bridge.ts`); the TypeScript abo
 - SFTP `write` creates and fails if the file exists; `{ replace: true }` stages a sibling and
   renames it over atomically. herdr API requests use one channel each, 1 MiB, 15 s by default.
 
+## Credentials
+
+`ConnectOptions.credential` (or `keyAlias` for the device key) is one of: `deviceKey` (native key),
+`password`, `bootstrapSeed` (a Pairing Code's 32-byte Ed25519 seed) or `rsaKey` (PEM: PKCS#1, PKCS#8
+or unencrypted OpenSSH; signs rsa-sha2-512). A function is resolved only after the Host Key was
+accepted. Secrets cross the bridge for that one `authenticateWith` call and are never kept
+natively; the app keeps passwords and RSA keys in the secure store (`HostCatalog`). Encrypted RSA
+keys fail with `keyEncrypted`, unreadable ones with `keyInvalid`. Proof: route `__ssh-auth` with
+`scripts/auth-fixture.py` (adds an enroll stand-in and a paramiko password server beside the
+isolated sshd).
+
 ## Android notes
 
 - JSch connects in one call; a `HostKeyRepository` gate holds its handshake thread at the Host Key

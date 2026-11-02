@@ -45,7 +45,7 @@ export function authHarnessParams(
     port,
     user,
     fixturePort,
-    pin: query.pin || undefined,
+    pin: query.pin?.replaceAll(' ', '+') || undefined,
     fixtureHost: query.fhost || '127.0.0.1',
   };
 }
@@ -67,7 +67,8 @@ export async function runSshAuthHarness(
     const started = Date.now();
     let result: StepResult;
     try {
-      result = { name, ok: true, ms: Date.now() - started, detail: await run() };
+      const detail = await run();
+      result = { name, ok: true, ms: Date.now() - started, detail };
     } catch (error) {
       const e = toSshError(error);
       result = { name, ok: false, ms: Date.now() - started, detail: `${e.code}: ${e.message}` };

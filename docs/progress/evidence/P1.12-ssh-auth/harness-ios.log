@@ -1,0 +1,12 @@
+{"name":"password: correct password, exec echo","ok":true,"ms":0,"detail":"ecdsa-sha2-nistp256 ok"}
+{"name":"password: wrong password is authenticationFailed","ok":true,"ms":0,"detail":"authenticationFailed"}
+{"name":"seed: Bootstrap Key seed authenticates","ok":true,"ms":0,"detail":"ssh-ed25519 ok"}
+{"name":"seed: unknown seed is authenticationFailed","ok":true,"ms":0,"detail":"authenticationFailed"}
+{"name":"rsa: pkcs1 private key authenticates (rsa-sha2-512)","ok":true,"ms":0,"detail":"ssh-ed25519 ok"}
+{"name":"rsa: pkcs8 private key authenticates (rsa-sha2-512)","ok":true,"ms":0,"detail":"ssh-ed25519 ok"}
+{"name":"rsa: openssh private key authenticates (rsa-sha2-512)","ok":true,"ms":0,"detail":"ssh-ed25519 ok"}
+{"name":"rsa: an unauthorized key is authenticationFailed","ok":true,"ms":0,"detail":"authenticationFailed"}
+{"name":"rsa: an encrypted key is keyEncrypted","ok":true,"ms":0,"detail":"keyEncrypted"}
+{"name":"rsa: garbage is keyInvalid","ok":true,"ms":0,"detail":"keyInvalid"}
+{"name":"credential resolved only after the Host Key was accepted","ok":true,"ms":0,"detail":"confirm > credential"}
+{"name":"pairing: Bootstrap ceremony enrolls the device key and verifies","ok":true,"ms":0,"detail":"reach>enroll>verify via 127.0.0.1; ssh-ed25519 ok"}
