@@ -16,9 +16,9 @@ const useStyles = makeStyles((t) => ({
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
   dot: { width: 10, height: 10, borderRadius: 5 },
   spacer: { flex: 1 },
-  hint: { flexShrink: 1 },
+  hint: { flexShrink: 0, marginLeft: 4 },
   plot: { height: HEIGHT, marginTop: t.spacing.xs },
-  yLabel: { position: 'absolute', right: 0 },
+  yLabel: { position: 'absolute', right: 0, width: AXIS_WIDTH - 8, textAlign: 'right' },
   readout: {
     position: 'absolute',
     top: 0,
@@ -28,7 +28,7 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.surfaceOverlay,
   },
   xRow: { height: 16, marginTop: t.spacing.xxs },
-  xLabel: { position: 'absolute' },
+  xLabel: { position: 'absolute', width: 44, textAlign: 'center' },
 }));
 
 export interface ChartSeries {
@@ -55,12 +55,11 @@ export interface UsageChartProps {
   testID?: string;
 }
 
-/** Indexes whose axis label is drawn: every `step` days, ending on the last day. */
-function labelIndexes(count: number, step = 9): number[] {
+/** Indexes whose axis label is drawn: four evenly spaced, first and last day included. */
+function labelIndexes(count: number, labels = 4): number[] {
   if (count === 0) return [];
-  const out: number[] = [];
-  for (let i = count - 1; i >= 0; i -= step) out.unshift(i);
-  return out;
+  if (count <= labels) return Array.from({ length: count }, (_, i) => i);
+  return Array.from({ length: labels }, (_, i) => Math.round((i * (count - 1)) / (labels - 1)));
 }
 
 /** Daily cost per program as smoothed area lines; press and hold scrubs a day with a rule and readout. */
@@ -126,7 +125,7 @@ export function UsageChart({
           </View>
         ))}
         <View style={styles.spacer} />
-        <Text variant="caption" tone="secondary" numberOfLines={1} style={styles.hint}>
+        <Text variant="caption2" tone="secondary" numberOfLines={1} style={styles.hint}>
           {hint}
         </Text>
       </View>
@@ -154,7 +153,7 @@ export function UsageChart({
               <Line
                 key={tick}
                 x1={0}
-                x2={width}
+                x2={plotWidth}
                 y1={y(tick)}
                 y2={y(tick)}
                 stroke={theme.hairline}
@@ -232,7 +231,10 @@ export function UsageChart({
             key={index}
             variant="caption2"
             tone="secondary"
-            style={[styles.xLabel, { left: Math.max(0, Math.min(plotWidth - 44, x(index) - 22)) }]}
+            style={[
+              styles.xLabel,
+              { left: count > 1 ? (index / (count - 1)) * Math.max(0, plotWidth - 44) : 0 },
+            ]}
           >
             {dayLabels[index] ?? ''}
           </Text>

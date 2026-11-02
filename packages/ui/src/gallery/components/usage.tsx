@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import { UsageBreakdownRow } from '../../components/UsageBreakdownRow';
+import { UsageBreakdownRow, UsageHostGroup } from '../../components/UsageBreakdownRow';
 import { UsageChart } from '../../components/UsageChart';
 import type { HeatDay } from '../../components/UsageHeatMap';
 import { UsageHeatMap } from '../../components/UsageHeatMap';
 import { UsageLimitChip } from '../../components/UsageLimitChip';
 import { UsageTotals } from '../../components/UsageTotals';
+import { programTint } from '../../theme/programTint';
 import { makeStyles, useTheme } from '../../theme/theme';
 import type { CatalogEntry } from './types';
 
@@ -103,7 +104,12 @@ function Chart() {
     <View style={useStyles().pad}>
       <UsageChart
         series={[
-          { key: 'claude', label: 'Claude Code', color: theme.colors.warning, points: WAVE },
+          {
+            key: 'claude',
+            label: 'Claude Code',
+            color: programTint('claude', theme),
+            points: WAVE,
+          },
           {
             key: 'codex',
             label: 'Codex',
@@ -130,7 +136,10 @@ const HEAT_DAYS: HeatDay[] = Array.from({ length: 35 }, (_, offset) => {
   const recorded = offset >= 5;
   return {
     date: date.toISOString().slice(0, 10),
-    label: offset === 34 ? dayName(date) : String(date.getUTCDate()),
+    label:
+      [5, 34].includes(offset) || date.getUTCDate() === 1
+        ? dayName(date)
+        : String(date.getUTCDate()),
     accessibilityLabel: dayName(date),
     value: recorded ? ((offset * 7) % 11) / 2 : 0,
     recorded,
@@ -164,8 +173,9 @@ function Breakdown({ host }: { host?: boolean }) {
   return (
     <View style={useStyles().pad}>
       {host ? (
-        <>
+        <UsageHostGroup>
           <UsageBreakdownRow
+            grouped
             variant="host"
             title="Studio Mac"
             subtitle="1 Nov · America/Argentina/Tucuman"
@@ -173,18 +183,19 @@ function Breakdown({ host }: { host?: boolean }) {
             tokens="879K tokens"
           />
           <UsageBreakdownRow
+            grouped
             variant="host"
             title="Build Server"
             subtitle="1 Nov · America/Argentina/Tucuman"
             cost="US$ 0,50"
             tokens="499K tokens"
           />
-        </>
+        </UsageHostGroup>
       ) : (
         <>
           <UsageBreakdownRow
             title="Claude Code"
-            dotColor={theme.colors.warning}
+            dotColor={programTint('claude', theme)}
             cost="US$ 1,11"
             tokens="1,01M tokens"
             split={{ input: 3, cacheRead: 80, cacheWrite: 10, output: 4 }}

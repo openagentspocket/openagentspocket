@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
@@ -17,6 +18,8 @@ const useStyles = makeStyles((t) => ({
   host: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm },
   hostTitles: { flex: 1 },
   hostAmounts: { alignItems: 'flex-end' },
+  hostPad: { padding: t.spacing.md },
+  separator: { height: t.metrics.hairlineWidth, backgroundColor: t.hairline },
 }));
 
 export interface UsageSplit {
@@ -38,6 +41,8 @@ export interface UsageBreakdownRowProps {
   tokens: string;
   /** Program variant: the program's dot (a program tint). */
   dotColor?: string;
+  /** Host variant: draw the row bare, to sit inside a `UsageHostGroup` (one card, hairline separators). */
+  grouped?: boolean;
   split?: UsageSplit;
   /** Legend names in split order: input, cache read, cache write, output. */
   splitLabels?: readonly [string, string, string, string];
@@ -52,6 +57,7 @@ export function UsageBreakdownRow({
   cost,
   tokens,
   dotColor,
+  grouped,
   split,
   splitLabels,
   testID = 'usage-breakdown-row',
@@ -60,32 +66,39 @@ export function UsageBreakdownRow({
   const theme = useTheme();
   const spoken = `${title}, ${cost}, ${tokens}`;
   if (variant === 'host') {
-    return (
-      <Card
-        testID={testID}
-        accessibilityLabel={subtitle ? `${title}, ${subtitle}, ${cost}, ${tokens}` : spoken}
-      >
-        <View style={styles.host}>
-          <Icon name="server" size={26} color="textSecondary" />
-          <View style={styles.hostTitles}>
-            <Text variant="headline" numberOfLines={1}>
-              {title}
+    const label = subtitle ? `${title}, ${subtitle}, ${cost}, ${tokens}` : spoken;
+    const row = (
+      <View style={[styles.host, grouped && styles.hostPad]}>
+        <Icon name="server" size={26} color="textSecondary" />
+        <View style={styles.hostTitles}>
+          <Text variant="headline" numberOfLines={1}>
+            {title}
+          </Text>
+          {subtitle ? (
+            <Text variant="footnote" tone="secondary" numberOfLines={2}>
+              {subtitle}
             </Text>
-            {subtitle ? (
-              <Text variant="footnote" tone="secondary" numberOfLines={1}>
-                {subtitle}
-              </Text>
-            ) : null}
-          </View>
-          <View style={styles.hostAmounts}>
-            <Text variant="headline" tabularNums>
-              {cost}
-            </Text>
-            <Text variant="footnote" tone="secondary" tabularNums>
-              {tokens}
-            </Text>
-          </View>
+          ) : null}
         </View>
+        <View style={styles.hostAmounts}>
+          <Text variant="headline" tabularNums>
+            {cost}
+          </Text>
+          <Text variant="footnote" tone="secondary" tabularNums>
+            {tokens}
+          </Text>
+        </View>
+      </View>
+    );
+    if (grouped)
+      return (
+        <View testID={testID} accessible accessibilityLabel={label}>
+          {row}
+        </View>
+      );
+    return (
+      <Card testID={testID} accessibilityLabel={label}>
+        {row}
       </Card>
     );
   }
@@ -139,5 +152,28 @@ export function UsageBreakdownRow({
         </View>
       ) : null}
     </View>
+  );
+}
+
+/** The Hosts section: rows made with `grouped` share one card, split by hairlines (Swift's grouped list). */
+export function UsageHostGroup({
+  children,
+  testID = 'usage-host-group',
+}: {
+  children: ReactNode[] | ReactNode;
+  testID?: string;
+}) {
+  const styles = useStyles();
+  const rows = (Array.isArray(children) ? children : [children]).filter(Boolean);
+  return (
+    <Card padded={false} testID={testID}>
+      {rows.map((row, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: rows are positional
+        <View key={index}>
+          {index > 0 ? <View style={styles.separator} /> : null}
+          {row}
+        </View>
+      ))}
+    </Card>
   );
 }

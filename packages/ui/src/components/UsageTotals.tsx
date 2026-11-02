@@ -5,17 +5,18 @@ import { Segmented, type SegmentedOption } from '../primitives/Segmented';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
-const BUTTON = 36;
+const BUTTON = 32;
 
 const useStyles = makeStyles((t) => ({
-  root: { gap: t.spacing.sm, paddingHorizontal: t.spacing.sm },
-  controls: { flexDirection: 'row', gap: t.spacing.xs, alignItems: 'center' },
-  metric: { flex: 2 },
-  range: { flex: 3 },
+  root: { gap: t.spacing.sm, paddingHorizontal: t.spacing.xs },
+  controls: { flexDirection: 'row', gap: t.spacing.xxs, alignItems: 'center' },
+  // Basis auto + grow by segment count: each group is at least as wide as its labels.
+  metric: { flexGrow: 2, flexShrink: 0, flexBasis: 'auto' },
+  range: { flexGrow: 3, flexShrink: 0, flexBasis: 'auto' },
   totals: { gap: t.spacing.xxs },
   total: { fontSize: 44, lineHeight: 52, fontWeight: '700' },
   head: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
-  headTitles: { flex: 1 },
+  headTitles: { flex: 1, minWidth: 0 },
   button: {
     width: BUTTON,
     height: BUTTON,
@@ -141,7 +142,7 @@ export function UsageTotals<M extends string, R extends string>({
               {title}
             </Text>
             {subtitle ? (
-              <Text variant="subheadline" tone="secondary" numberOfLines={1}>
+              <Text variant="subheadline" tone="secondary" numberOfLines={2}>
                 {subtitle}
               </Text>
             ) : null}

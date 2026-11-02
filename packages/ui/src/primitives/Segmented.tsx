@@ -10,12 +10,16 @@ const useStyles = makeStyles((t) => ({
     padding: 2,
   },
   segment: {
-    flex: 1,
+    // Natural label width first, spare room shared equally: a label is never clipped.
+    flexGrow: 1,
+    flexShrink: 0,
+    flexBasis: 'auto',
     minHeight: 32,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: t.metrics.chipRadius,
-    paddingHorizontal: t.spacing.xs,
+    paddingHorizontal: 4,
+    minWidth: 0,
   },
   selected: {
     backgroundColor: t.colors.surfaceRaised,
