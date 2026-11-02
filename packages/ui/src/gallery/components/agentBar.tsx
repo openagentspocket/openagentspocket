@@ -32,10 +32,10 @@ const agents = [
   { id: 'c', title: 'api', program: 'codex', status: 'done' },
 ] as const;
 
-/** The tools variant has three trailing icons; a short title leaves room for the neighbour mark. */
+/** The tools variant (three trailing icons) as in Swift's crop: 'Product Docs' with its neighbour clipped. */
 const toolsAgents = [
-  agents[0],
-  { id: 'b', title: 'iOS App', program: 'codex', status: 'idle' },
+  { id: 'a', title: 'iOS App · Codex', program: 'codex', status: 'working' },
+  { id: 'b', title: 'Product Docs', program: 'claude', status: 'idle' },
   agents[2],
 ] as const;
 
@@ -205,7 +205,8 @@ export const agentBarEntries: readonly CatalogEntry[] = [
           <StatusLine
             status="idle"
             branch="attach-polish"
-            counts={{ untracked: 1, changed: 1 }}
+            counts={{ behind: 2, ahead: 1, untracked: 1, changed: 1 }}
+            diff={{ added: 1, removed: 1 }}
             contextLeft={16}
             latencyMs={0.4}
           />

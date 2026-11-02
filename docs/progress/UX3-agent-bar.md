@@ -28,3 +28,10 @@ round4: third judge round (evidence: scratchpad rn/evidence/UX3-agent-bar-r3, co
 - StatusLine low-context: Papel compare regenerated, reads 'attach-…' beside the counters.
 - Compare sheets regenerated after the last commit, dark (Swift dark | Indigo | Papel) and light (Swift Papel | Indigo | Papel).
 - ComposerCard native centring: still NOT verified on an iOS simulator (agents may not build native); needs the integrator on iPhone 17 Pro.
+round5: fourth judge round (evidence: scratchpad ux3r5 and the regenerated compare sheets, Swift | Indigo | Papel in both --theme dark and light).
+- Root cause of the clipped latency: the component capture stage was 360pt wide (Screen inset), not the 402pt of the Swift crops. `ComponentCapture` now bleeds the stage to 402pt (gallery section unchanged).
+- StatusLine low-context: fixture now carries the Swift data (down 2, up 1, ?1, !1, +1 -1); counters and pill text are caption, tighter gaps; the branch gives way to its glyph (name hidden when squeezed under 14pt). Ends 13pt inside the right edge with margin; latency '<1 ms' shown.
+- AgentSwitcher tools: fixture uses the real titles ('Product Docs' beside 'iOS App · Codex'); the neighbour is clipped at the capsule's left edge like Swift while at least 48pt shows, mark-only only below that; chips cut on the right or showing less than 48pt stay hidden (no sliver).
+- AgentSwitcher default: toggles 34pt, tighter pill padding and capsule inset: 'Payments API' shows with its full label.
+- Papel: RN Papel column present for all six components and SessionDrawer.papel is captured; reviewed side by side for AgentHeader, AgentSwitcher, SessionDrawer, ComposerCard, StatusLine, ChangeRow.
+- HANDED OVER to the integrator: ComposerCard native text centring (multiline field, height 40, 9+22+9 padding, textAlignVertical center) and the StatusLine/AgentSwitcher fits on iPhone 17 Pro are NOT verified on iOS; check in the simulator when UX1-agent-detail swaps in ComposerCard.

@@ -13,9 +13,11 @@ import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 /** Gap between chips, also the content inset used when aligning the scroll origin. */
 const CHIP_GAP = spacing.xxs;
 const COMPACT_CHIP = 40;
+/** A neighbour clipped by the left edge stays readable only while this much of it shows. */
+const MIN_VISIBLE = 48;
 
 const useStyles = makeStyles((t) => ({
-  capsule: { marginHorizontal: t.spacing.sm, height: 52, overflow: 'hidden' },
+  capsule: { marginHorizontal: t.spacing.xs + 2, height: 52, overflow: 'hidden' },
   scroll: { flex: 1 },
   content: { alignItems: 'center', paddingHorizontal: t.spacing.xxs, gap: t.spacing.xxs },
   chip: {
@@ -32,14 +34,14 @@ const useStyles = makeStyles((t) => ({
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: t.spacing.xs,
+    gap: airy.stack,
     backgroundColor: t.colors.control,
     borderRadius: 999,
     height: 40,
-    paddingHorizontal: airy.stack + 4,
+    paddingHorizontal: airy.stack + 2,
   },
   trailing: { flexDirection: 'row', alignItems: 'center', paddingRight: t.spacing.xxs },
-  toggle: { width: 40, height: 44, alignItems: 'center', justifyContent: 'center' },
+  toggle: { width: 34, height: 44, alignItems: 'center', justifyContent: 'center' },
 }));
 
 export interface SwitcherAgent {
@@ -94,16 +96,18 @@ export function AgentSwitcher({
     if (!box || viewport.current === 0) return false;
     const left = box.x - scrollX;
     const right = left + box.width;
-    const inside = left >= -0.5 && right <= viewport.current + 0.5;
-    const outside = right <= 0.5 || left >= viewport.current - 0.5;
-    return !inside && !outside;
+    const cutLeft = left < -0.5 && right > 0.5;
+    const cutRight = right > viewport.current + 0.5 && left < viewport.current - 0.5;
+    // Swift clips the previous Agent at the capsule's left edge; keep that while enough of it
+    // reads, and never draw a sliver or a chip cut on the right.
+    return cutRight || (cutLeft && right < MIN_VISIBLE);
   };
   const currentIndex = agents.findIndex((agent) => agent.id === currentId);
-  /** Whole previous chip when it fits beside the pill, else a mark-only chip; never a clipped label. */
+  /** Whole or left-clipped previous chip while MIN_VISIBLE of it shows beside the pill, else mark-only. */
   const decide = () => {
     const box = currentBox.current;
     if (!box || viewport.current === 0 || previousFull.current === 0) return;
-    setCompact(previousFull.current + CHIP_GAP + box.width > viewport.current);
+    setCompact(viewport.current - box.width - CHIP_GAP < MIN_VISIBLE);
   };
   /** Scrolls so the previous chip starts at the left edge, once boxes and viewport are measured. */
   const align = () => {

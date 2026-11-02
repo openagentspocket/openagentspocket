@@ -15,19 +15,20 @@ const useStyles = makeStyles((t) => ({
   line: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: t.spacing.xxs + 1,
-    marginHorizontal: t.spacing.sm,
+    gap: t.spacing.xxs - 1,
+    marginHorizontal: t.spacing.xs + 2,
     minHeight: 32,
   },
   group: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
   branch: { flexShrink: 1, minWidth: 0 },
-  /** Floor so the branch never collapses to a lone glyph beside the counters. */
-  branchGroup: { minWidth: 84 },
+  /** The branch gives way first, down to its glyph (as Swift's low-context line does). */
+  branchGroup: { minWidth: 16 },
   fixed: { flexShrink: 0 },
+  hidden: { opacity: 0 },
   spacer: { flex: 1, minWidth: 0 },
   sep: { width: StyleSheet.hairlineWidth * 2, height: 16, backgroundColor: t.colors.separator },
   pillRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  pill: { borderRadius: 999, paddingHorizontal: airy.stack, paddingVertical: 2, flexShrink: 0 },
+  pill: { borderRadius: 999, paddingHorizontal: airy.stack - 3, paddingVertical: 2, flexShrink: 0 },
 }));
 
 export interface StatusLineProps {
@@ -63,6 +64,7 @@ export function StatusLine({
   const styles = useStyles();
   const theme = useTheme();
   const [width, setWidth] = useState(Number.POSITIVE_INFINITY);
+  const [branchWidth, setBranchWidth] = useState(Number.POSITIVE_INFINITY);
   const hasCounts = Boolean(
     counts && (counts.behind || counts.ahead || counts.untracked || counts.changed),
   );
@@ -125,7 +127,9 @@ export function StatusLine({
             monospaced
             semibold
             numberOfLines={1}
-            style={[styles.branch, { color: theme.colors.info }]}
+            onLayout={(e) => setBranchWidth(e.nativeEvent.layout.width)}
+            // A name squeezed to a sliver reads as noise: leave the glyph alone.
+            style={[styles.branch, { color: theme.colors.info }, branchWidth < 14 && styles.hidden]}
           >
             {branch}
           </Text>
@@ -133,7 +137,7 @@ export function StatusLine({
       ) : null}
       {hasCounts ? (
         <Text
-          variant="footnote"
+          variant="caption"
           monospaced
           semibold
           tone="secondary"
@@ -148,8 +152,8 @@ export function StatusLine({
       {lowContext ? (
         <View style={[styles.pill, { backgroundColor: theme.wash(theme.colors.warning) }]}>
           <View style={styles.pillRow}>
-            <Icon name="warning" size={13} tint={theme.colors.warning} />
-            <Text variant="footnote" semibold tone="warning" numberOfLines={1}>
+            <Icon name="warning" size={12} tint={theme.colors.warning} />
+            <Text variant="caption" semibold tone="warning" numberOfLines={1}>
               {labels.contextLeft(contextLeft)}
             </Text>
           </View>
