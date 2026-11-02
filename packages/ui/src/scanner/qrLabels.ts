@@ -14,6 +14,8 @@ export interface QRScannerLabels {
   pasteField: string;
   pastePlaceholder: string;
   pasteSubmit: string;
+  /** Under the live preview ("Point the camera at the Pairing Code"). */
+  hint?: string;
 }
 
 /** English defaults, the Swift app's wording; the i18n layer passes translations through `labels`. */

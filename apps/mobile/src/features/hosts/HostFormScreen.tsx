@@ -66,21 +66,22 @@ export function HostFormScreen({ initial, onSaved, onCancel }: HostFormScreenPro
 
   return (
     <Screen header={bar} edges={['left', 'right', 'bottom']} testID="host-form">
-      <Section title={t('Host')} grouped={false}>
+      <Section title={t('Host')}>
         <TextField
+          inline
           label={t('Name (optional)')}
           value={draft.name}
           onChangeText={(name) => change({ name })}
           testID="host-name"
         />
         <TextField
+          inline
           label={t('User')}
           value={draft.username}
           onChangeText={(username) => change({ username })}
           autoCapitalize="none"
           autoCorrect={false}
           textContentType="username"
-          mono
           testID="host-user"
         />
       </Section>

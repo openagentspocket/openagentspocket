@@ -10,13 +10,15 @@ import { createDemoConsoleStore } from '@/console/demo';
 import { ConsoleStoreProvider } from '@/console/hooks';
 import { ConsoleStore } from '@/console/store';
 import { systemClock } from '@/console/systemClock';
-import { createDemoRuntime, setHostsRuntime } from '@/features/hosts/hostsRuntime';
+import { createDemoRuntime, policyFor, setHostsRuntime } from '@/features/hosts/hostsRuntime';
 import { freezeAtlasClock } from './atlasClock';
 
 export interface AtlasData {
   /** `empty`: no Hosts at all (first run). Default `demo`: the scripted Hosts and Agents. */
   console?: 'demo' | 'empty';
   hosts?: 'demo' | 'empty';
+  /** `false`: the Hosts never connected, so the first preflight asks to trust the key. */
+  trusted?: boolean;
 }
 
 const DEMO_HOSTS: readonly Host[] = [
@@ -64,15 +66,23 @@ export function AtlasFrame({ data, children }: { data: AtlasData; children: Reac
     const runtime = createDemoRuntime();
     setHostsRuntime(runtime);
     const seed = data.hosts === 'empty' ? [] : DEMO_HOSTS;
-    void Promise.all(seed.map((host) => runtime.model.add(host, null))).then(() => {
-      for (const host of seed) runtime.model.setConnection(host.id, 'connected');
-      if (live) setReady(true);
-    });
+    const policy = policyFor(runtime.model, async () => true);
+    void Promise.all(seed.map((host) => runtime.model.add(host, null)))
+      // A trusted Host has its key pinned: its page opens straight to a passing preflight.
+      .then(() =>
+        data.trusted === false
+          ? []
+          : Promise.all(seed.map((host) => runtime.probe.run(host, policy))),
+      )
+      .then(() => {
+        for (const host of seed) runtime.model.setConnection(host.id, 'connected');
+        if (live) setReady(true);
+      });
     return () => {
       live = false;
       setHostsRuntime(null);
     };
-  }, [data.hosts]);
+  }, [data.hosts, data.trusted]);
   if (!ready) return null;
   return <ConsoleStoreProvider store={store}>{children}</ConsoleStoreProvider>;
 }

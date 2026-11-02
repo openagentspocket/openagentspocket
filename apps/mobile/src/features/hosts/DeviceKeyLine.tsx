@@ -2,6 +2,7 @@ import { t } from '@openagentspocket/i18n';
 import { Button, Text } from '@openagentspocket/ui';
 import * as Clipboard from 'expo-clipboard';
 import { useEffect, useState } from 'react';
+import { View } from 'react-native';
 import { hostsRuntime } from './hostsRuntime';
 
 /** The comment the line carries in `authorized_keys`, as the Swift app's. */
@@ -36,12 +37,12 @@ export function DeviceKeyLine() {
     );
   }
   return (
-    <>
+    <View style={{ padding: 16, gap: 8 }}>
       <Text variant="mono" selectable numberOfLines={3} testID="device-key-line">
         {line}
       </Text>
       <Button
-        kind="secondary"
+        kind="text"
         icon="copy"
         title={copied ? t('Copied') : t('Copy authorized_keys Line')}
         onPress={async () => {
@@ -50,6 +51,6 @@ export function DeviceKeyLine() {
         }}
         testID="device-key-copy"
       />
-    </>
+    </View>
   );
 }

@@ -20,7 +20,18 @@
   {
     "id": "hosts.detail",
     "rn": "HostDetailScreen",
-    "note": "demo host; the demo probe leaves the Trust this Host prompt open (also hosts.trust-alert)"
+    "note": "demo host, key already trusted: the preflight passes"
+  },
+  {
+    "id": "hosts.trust-alert",
+    "rn": "HostDetailScreen",
+    "note": "demo host that has never connected: the Trust this Host prompt is open"
+  },
+  { "id": "hosts.setup-guide", "rn": "app/hosts/guide.tsx (SetupGuideScreen)", "note": "" },
+  {
+    "id": "hosts.remove-confirm",
+    "rn": "app/hosts/index.tsx (HostListScreen)",
+    "note": "list with the Remove Host alert open for the last Host"
   },
   {
     "id": "hosts.pairing-scanner",

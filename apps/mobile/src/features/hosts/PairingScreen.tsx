@@ -1,6 +1,6 @@
 import { needsConfirmation } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Button, QRScanner, Screen, SheetBar, Text } from '@openagentspocket/ui';
+import { Banner, Button, QRScanner, Screen, SheetBar } from '@openagentspocket/ui';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { hostsRuntime } from './hostsRuntime';
 import { PairingCeremony } from './PairingCeremony';
@@ -48,7 +48,6 @@ export function PairingScreen({ onCancel, onPaired, onAddManually }: PairingScre
         />
       ) : (
         <>
-          <Text tone="secondary">{t('Point the camera at the Pairing Code shown by herdr.')}</Text>
           <QRScanner onCode={(text) => store.submit(text)} labels={scannerLabels()} />
           {state.scanFailure ? (
             <Banner
@@ -58,7 +57,7 @@ export function PairingScreen({ onCancel, onPaired, onAddManually }: PairingScre
             />
           ) : null}
           <Button
-            kind="secondary"
+            kind="text"
             title={t('Add Manually')}
             onPress={onAddManually}
             testID="pairing-manual"

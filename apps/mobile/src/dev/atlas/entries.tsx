@@ -18,11 +18,13 @@ import NotificationsRoute from '@/app/settings/notifications';
 import Usage from '@/app/usage';
 import UsageLimits from '@/app/usage-limits';
 import { HostDetailScreen } from '@/features/hosts/HostDetailScreen';
+import { SetupGuideScreen } from '@/features/hosts/SetupGuideScreen';
 import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
 import type { AtlasData } from './AtlasFrame';
+import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
 export interface AtlasEntry {
   data?: AtlasData;
@@ -52,6 +54,12 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'hosts.detail': {
     render: () => <HostDetailScreen hostId="demo" onBack={noop} onEdit={noop} onRemoved={noop} />,
   },
+  'hosts.trust-alert': {
+    data: { trusted: false },
+    render: () => <HostDetailScreen hostId="demo" onBack={noop} onEdit={noop} onRemoved={noop} />,
+  },
+  'hosts.setup-guide': { render: () => <SetupGuideScreen onBack={noop} /> },
+  'hosts.remove-confirm': { render: () => <RemoveConfirmDemo /> },
   'hosts.pairing-scanner': { render: () => <PairRoute /> },
   'settings.root': { render: () => <SettingsRoot /> },
   'settings.notifications': { render: () => <NotificationsRoute /> },
