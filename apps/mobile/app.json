@@ -58,6 +58,7 @@
         }
       ],
       "expo-secure-store",
+      "expo-notifications",
       "@bacons/apple-targets",
       "./plugins/withLocalPreview"
     ],
