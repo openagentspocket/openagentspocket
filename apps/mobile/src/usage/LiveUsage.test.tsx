@@ -49,7 +49,7 @@ describe('Usage over a live source', () => {
     const { source, port, storage } = liveSource();
     await wrap(<LimitsScreen source={source} />);
     await waitFor(() => expect(port.queries).toHaveLength(1));
-    const toggle = screen.getByTestId('claude-limits-toggle');
+    const toggle = screen.getByTestId('claude-limits-toggle-h1');
     await fireEvent(toggle, 'valueChange', true);
     await waitFor(() => expect(port.queries.at(-1)?.claudeLimits).toBe(true));
     expect(storage.getString('usage.claude-limits.h1')).toBe('true');
@@ -66,13 +66,15 @@ describe('Usage over a live source', () => {
   });
 });
 
-describe('Chart bars', () => {
-  it('open the day sheet like the day rows do', async () => {
+describe('Calendar days', () => {
+  it('open the day sheet like the Days rows do', async () => {
     await wrap(<UsageScreen source={new FakeUsageSource()} files={new MemoryAccountFileStore()} />);
     await waitFor(() => expect(screen.getByTestId('usage-daily')).toBeTruthy());
-    const bar = screen.getAllByTestId(/^bar-2026/)[0];
-    if (!bar) throw new Error('no bar');
-    await fireEvent.press(bar);
+    const cell = screen
+      .getAllByTestId(/^heat-2026-\d\d-\d\d$/)
+      .find((c) => c.props.accessibilityState?.disabled !== true);
+    if (!cell) throw new Error('no recorded day');
+    await fireEvent.press(cell);
     expect(
       within(screen.getByTestId('usage-day-sheet')).getByTestId('day-program-claude'),
     ).toBeTruthy();

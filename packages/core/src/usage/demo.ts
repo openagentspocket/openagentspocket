@@ -99,7 +99,7 @@ function windows(now: Date, fiveHour: number, week: number) {
 }
 
 /** A recorded report with two Claude Code Accounts (plus one missing) and Codex. */
-export function demoUsageReport(now: Date = new Date()): UsageReport {
+export function demoUsageReport(now: Date = new Date(), scale = 1): UsageReport {
   const observedAt = new Date(now.getTime() - 30_000).toISOString();
   const limits = (fiveHour: number, week: number) => ({
     state: 'ok',
@@ -125,7 +125,7 @@ export function demoUsageReport(now: Date = new Date()): UsageReport {
     programs: [
       {
         program: 'claude',
-        tokenUsage: claudeTokenUsage(now, 1),
+        tokenUsage: claudeTokenUsage(now, scale),
         usageLimits: limits(58, 38),
         accounts: [
           {
@@ -134,7 +134,7 @@ export function demoUsageReport(now: Date = new Date()): UsageReport {
             name: null,
             directory: '/home/dev/.claude',
             state: 'ok',
-            tokenUsage: claudeTokenUsage(now, 0.6),
+            tokenUsage: claudeTokenUsage(now, 0.6 * scale),
             usageLimits: limits(58, 38),
           },
           {
@@ -143,7 +143,7 @@ export function demoUsageReport(now: Date = new Date()): UsageReport {
             name: 'work',
             directory: '/home/dev/.claude-work',
             state: 'ok',
-            tokenUsage: claudeTokenUsage(now, 0.4),
+            tokenUsage: claudeTokenUsage(now, 0.4 * scale),
             usageLimits: limits(81, 52),
           },
           {
@@ -161,7 +161,7 @@ export function demoUsageReport(now: Date = new Date()): UsageReport {
       {
         program: 'codex',
         tokenUsage: {
-          ...claudeTokenUsage(now, 0.1),
+          ...claudeTokenUsage(now, 0.1 * scale),
           models: [{ model: 'gpt-5.3-codex', priced: true, ...summary(250_000) }],
         },
         usageLimits: {

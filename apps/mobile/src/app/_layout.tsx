@@ -48,6 +48,7 @@ function AppStack() {
       <Stack.Screen name="hosts" options={{ ...bare, title: t('Hosts'), presentation: 'modal' }} />
       <Stack.Screen name="ports" options={{ ...bare, title: t('Ports') }} />
       <Stack.Screen name="usage" options={{ title: t('Usage') }} />
+      <Stack.Screen name="usage-breakdown" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-limits" options={{ title: t('Usage Limits') }} />
       <Stack.Screen name="files" options={{ title: t('Files') }} />
       <Stack.Screen

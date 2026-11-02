@@ -140,6 +140,88 @@
     "note": "demo readings"
   },
   {
+    "id": "usage.tab--host",
+    "rn": "app/usage.tsx (UsageScreen)",
+    "note": "scoped to the demo Host"
+  },
+  {
+    "id": "usage.scope-menu",
+    "rn": "UsageScreen",
+    "note": "scope menu open"
+  },
+  {
+    "id": "usage.quick-sheet",
+    "rn": "QuickSheet",
+    "note": "quick sheet open over Usage"
+  },
+  {
+    "id": "usage.day-sheet",
+    "rn": "DaySheet",
+    "note": "newest day open over Usage"
+  },
+  {
+    "id": "usage.accounts-sheet",
+    "rn": "AccountsSheet",
+    "note": "Claude Code Accounts sheet over Usage"
+  },
+  {
+    "id": "usage.quick-sheet--limits-off",
+    "rn": "QuickSheet",
+    "note": "quick sheet with the Claude Code limits switch off: the card carries the switch and its consent note"
+  },
+  {
+    "id": "usage.accounts-notice",
+    "rn": "UsageAccountsNotice",
+    "note": "lone Host scope: Found 1 Claude Code directory"
+  },
+  {
+    "id": "usage.account-rename-alert",
+    "rn": "AccountsSheet",
+    "note": "Accounts sheet, the work Account's name field open"
+  },
+  {
+    "id": "usage.account-remove-confirm",
+    "rn": "AccountsSheet",
+    "note": "Accounts sheet, Remove work? confirmation"
+  },
+  {
+    "id": "usage.host-section",
+    "rn": "HostUsageSection",
+    "note": "Usage section of the Host detail"
+  },
+  {
+    "id": "usage.hosts-section",
+    "rn": "UsageHostsSection",
+    "note": "phone Usage over two available Hosts: the Hosts section"
+  },
+  {
+    "id": "usage.ipad-split",
+    "rn": "UsageScreen (wide)",
+    "note": "Host column beside the two-column dashboard, All Hosts; two available Hosts",
+    "device": "ipad"
+  },
+  {
+    "id": "usage.wide-layout",
+    "rn": "UsageScreen (wide)",
+    "note": "same, scoped to one Host in the column",
+    "device": "ipad"
+  },
+  {
+    "id": "usage.breakdown-list--directories",
+    "rn": "UsageBreakdownListScreen",
+    "note": "Directories, last 30 days"
+  },
+  {
+    "id": "usage.breakdown-list",
+    "rn": "UsageBreakdownListScreen",
+    "note": "Models, last 30 days"
+  },
+  {
+    "id": "usage.limits-sheet",
+    "rn": "app/usage-limits.tsx (LimitsScreen)",
+    "note": "same screen as usage.limits-page"
+  },
+  {
     "id": "usage.limits-page",
     "rn": "app/usage-limits.tsx (LimitsScreen)",
     "note": "demo readings"
@@ -203,10 +285,5 @@
     "id": "console.host-issue-rows",
     "rn": "app/index.tsx (HomeScreen)",
     "note": "demo plus a Host that never connects"
-  },
-  {
-    "id": "usage.quick-sheet",
-    "rn": "app/index.tsx (HomeScreen)",
-    "note": "ring pressed"
   }
 ]

@@ -1,121 +1,142 @@
 import {
-  type AccountFileStore,
   buildUsageScope,
   claudeProgram,
-  scopeIsEmpty,
+  scopeDates,
   type UsageRange,
-  type UsageSource,
 } from '@openagentspocket/core';
-import { t } from '@openagentspocket/i18n';
-import { EmptyState, ListRow, Screen, Section, Skeleton } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { AccountsSheet } from './AccountsSheet';
-import { BreakdownList } from './BreakdownList';
-import { DailyChart } from './DailyChart';
-import { DaySheet } from './DaySheet';
-import { QuickSheet } from './QuickSheet';
-import { UsageControls } from './UsageControls';
-import { UsageNotices } from './UsageNotices';
+import { useWindowDimensions } from 'react-native';
+import type { BreakdownKind } from './BreakdownRows';
+import { accountsNoticeTitle, UsageAccountsNotice } from './UsageAccountsNotice';
+import { UsageLimitsRows } from './UsageLimitsRows';
+import { UsagePhoneScreen } from './UsagePhoneScreen';
+import type { UsageScreenProps } from './UsageScreenProps';
+import { UsageSheets } from './UsageSheets';
 import { useAccountFiles } from './UsageSourceProvider';
-import { UsageTotals } from './UsageTotals';
+import { UsageWideScreen, WIDE_WINDOW } from './UsageWide';
 import type { UsageMetric } from './usageText';
+import { useClaudeLimits } from './useClaudeLimits';
 import { useUsage } from './useUsage';
 
-interface Props {
-  source?: UsageSource;
-  files?: AccountFileStore;
-}
-
-/** usage.tab: totals, daily chart, breakdown and notices for All Hosts or one Host. */
-export function UsageScreen({ source, files: explicitFiles }: Props) {
+/**
+ * usage.tab: scope header, hero figure, limits strip, chart, calendar, Hosts, Programs, Breakdown.
+ * On a wide window (usage.ipad-split) a Host column sits beside the two-column dashboard.
+ */
+export function UsageScreen({
+  source,
+  files: explicitFiles,
+  initial,
+  wide: forceWide,
+}: UsageScreenProps) {
+  const { width } = useWindowDimensions();
+  const wide = forceWide ?? width >= WIDE_WINDOW;
   const providedFiles = useAccountFiles();
   const files = explicitFiles ?? providedFiles;
   const router = useRouter();
-  const { readings, now, refreshing, refresh } = useUsage(source);
-  const [host, setHost] = useState<string | null>(null);
-  const [range, setRange] = useState<UsageRange>('last7Days');
+  const { readings, now, refreshing, refresh, source: used } = useUsage(source);
+  const limits = useClaudeLimits(used, !initial?.limitsOff);
+  const [host, setHost] = useState<string | null>(initial?.host ?? null);
+  const [range, setRange] = useState<UsageRange>('last30Days');
   const [metric, setMetric] = useState<UsageMetric>('cost');
   const [day, setDay] = useState<string | null>(null);
-  const [quick, setQuick] = useState(false);
-  const [accounts, setAccounts] = useState(false);
+  const [quick, setQuick] = useState(initial?.quick ?? false);
+  const [accounts, setAccounts] = useState(initial?.accounts ?? false);
 
   const all = readings ?? [];
-  const scope = buildUsageScope(host ? all.filter((r) => r.id === host) : all);
+  const inScope = host ? all.filter((r) => r.id === host) : all;
+  const scope = buildUsageScope(inScope);
+  const latest = initial?.day === 'latest' && day === null ? scopeDates(scope).at(-1) : undefined;
   const withAccounts = scope.included.find((h) => claudeProgram(h.report)?.accounts != null);
-  return (
-    <Screen refreshing={refreshing} onRefresh={refresh} testID="usage-screen">
-      {readings === null ? <Skeleton /> : null}
-      {readings?.length === 0 ? (
-        <EmptyState title={t('No Hosts')} message={t('Add a Host to read its Usage.')} />
-      ) : null}
-      {readings && readings.length > 0 ? (
-        <>
-          <UsageControls
-            readings={all}
-            host={host}
-            onHost={setHost}
-            range={range}
-            onRange={setRange}
-            metric={metric}
-            onMetric={setMetric}
-          />
-          {scopeIsEmpty(scope) ? (
-            <EmptyState
-              title={t('No Host in this scope can report Usage right now.')}
-              layout="compact"
-            />
-          ) : (
-            <>
-              <UsageTotals scope={scope} range={range} metric={metric} />
-              <DailyChart scope={scope} range={range} metric={metric} onDay={setDay} />
-              <BreakdownList scope={scope} metric={metric} />
-              <Section grouped>
-                <ListRow
-                  title={t('Usage Limits')}
-                  chevron
-                  onPress={() => setQuick(true)}
-                  testID="open-limits-sheet"
-                />
-                <ListRow
-                  title={t('Limits')}
-                  subtitle={t('Account windows as each service reports them')}
-                  chevron
-                  onPress={() => router.push('/usage-limits')}
-                  testID="open-limits-page"
-                />
-                {withAccounts ? (
-                  <ListRow
-                    title={t('Claude Code Accounts')}
-                    chevron
-                    onPress={() => setAccounts(true)}
-                    testID="open-accounts"
-                  />
-                ) : null}
-              </Section>
-            </>
-          )}
-          <UsageNotices scope={scope} />
-        </>
-      ) : null}
-      <DaySheet date={day} onClose={() => setDay(null)} scope={scope} metric={metric} />
-      <QuickSheet
-        visible={quick}
-        onClose={() => setQuick(false)}
-        readings={all}
+  const openLimits = () => router.push('/usage-limits');
+  const showAll = (kind: BreakdownKind) =>
+    router.push({
+      pathname: '/usage-breakdown',
+      params: { kind, metric, ...(host ? { host } : {}) },
+    });
+  const noticeTitle = accountsNoticeTitle(inScope);
+  const notice = noticeTitle ? (
+    <UsageAccountsNotice title={noticeTitle} onPress={() => setAccounts(true)} />
+  ) : null;
+  const limitsRows = (
+    <UsageLimitsRows
+      onQuick={() => setQuick(true)}
+      onLimits={openLimits}
+      onAccounts={withAccounts ? () => setAccounts(true) : undefined}
+    />
+  );
+  const sheets = (
+    <UsageSheets
+      scope={scope}
+      metric={metric}
+      readings={all}
+      now={now}
+      limits={limits}
+      day={day ?? latest ?? null}
+      onDay={setDay}
+      // The day sheet's links close it, then push the list.
+      onBreakdown={(kind) => {
+        setDay(null);
+        showAll(kind);
+      }}
+      quick={quick}
+      onQuick={setQuick}
+      accounts={accounts}
+      onAccounts={setAccounts}
+      accountsHost={withAccounts}
+      files={files}
+      initialRename={initial?.rename}
+      initialRemove={initial?.remove}
+    />
+  );
+  if (wide && readings && readings.length > 0) {
+    return (
+      <UsageWideScreen
+        all={buildUsageScope(all)}
+        host={host}
+        onHost={setHost}
+        refreshing={refreshing}
+        scope={scope}
+        inScope={inScope}
+        range={range}
+        onRange={setRange}
+        metric={metric}
+        onMetric={setMetric}
         now={now}
-        onOpenFull={() => setQuick(false)}
+        onDay={setDay}
+        onShowAll={showAll}
+        onDetails={openLimits}
+        footer={
+          <>
+            {notice}
+            {limitsRows}
+          </>
+        }
+        sheets={sheets}
       />
-      {withAccounts ? (
-        <AccountsSheet
-          visible={accounts}
-          onClose={() => setAccounts(false)}
-          hostId={withAccounts.id}
-          hostName={withAccounts.name}
-          report={withAccounts.report}
-          store={files}
-        />
-      ) : null}
-    </Screen>
+    );
+  }
+  return (
+    <UsagePhoneScreen
+      readings={readings}
+      scope={scope}
+      inScope={inScope}
+      host={host}
+      onHost={setHost}
+      range={range}
+      onRange={setRange}
+      metric={metric}
+      onMetric={setMetric}
+      now={now}
+      refreshing={refreshing}
+      onRefresh={refresh}
+      initialMenu={initial?.menu}
+      onDay={setDay}
+      onShowAll={showAll}
+      onDetails={openLimits}
+      notice={notice}
+      footer={limitsRows}
+      sheets={sheets}
+    />
   );
 }
