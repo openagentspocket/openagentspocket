@@ -1,6 +1,7 @@
 # Hosts: add a Host by hand, trust its key, see it in the list.
 # Run with `maestro test e2e/hosts.yaml` (one booted simulator/emulator, English UI).
-# The Hosts screens run on the offline demo probe: the trust prompt is scripted, no SSH.
+# Needs the demo build (`EXPO_PUBLIC_DEMO=1`): the offline demo probe scripts the trust prompt, no SSH.
+# Against a real backend use e2e/live.yaml.
 appId: com.openagentspocket.app
 ---
 - launchApp:

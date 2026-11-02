@@ -1,0 +1,43 @@
+# Live: add the isolated herdr backend Host, trust its key, see its agent on Home.
+# Run with `maestro test -e HOST=<address> -e PORT=<ssh port> -e USER=<account> e2e/live.yaml`
+# on a build WITHOUT EXPO_PUBLIC_DEMO. Prerequisites (integrator):
+#   - the isolated backend is up (sshd + a herdr socket with one running agent), reachable from the device;
+#   - the device key is authorized for USER on it (first run: copy the key shown by the Host form's
+#     "Copy authorized_keys Line" or authorize it from the pairing ceremony).
+# English UI. Never point this at a personal Host.
+appId: com.openagentspocket.app
+env:
+  HOST: 127.0.0.1
+  PORT: "22"
+  USER: demo
+---
+- launchApp:
+    clearState: true
+- openLink: openagentspocket:///hosts
+- assertVisible: "No Hosts"
+- tapOn:
+    id: hosts-add
+- tapOn:
+    id: host-user
+- inputText: ${USER}
+- tapOn:
+    id: route-0-address
+- inputText: ${HOST}
+- hideKeyboard
+- tapOn:
+    id: host-save
+# The first connection asks to trust the key the backend presents.
+- assertVisible: "Trust this Host?"
+- tapOn: "Trust"
+- assertVisible: "Connected"
+- assertVisible: "In Use"
+- back
+- assertVisible: "Connected"
+# Home shows the backend's agents from the live Console, not the demo data.
+- openLink: openagentspocket:///
+- assertNotVisible: "Demo Host"
+- extendedWaitUntil:
+    visible:
+      text: "WORKING.*|NEEDS YOU.*|DONE.*"
+    timeout: 20000
+- takeScreenshot: live-home
