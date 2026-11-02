@@ -15,4 +15,5 @@ export * from './preflight';
 export * from './preflight-error';
 export * from './route-race';
 export * from './ssh-route';
+export * from './store-device-key';
 export * from './verification-gate';

@@ -38,7 +38,9 @@
       "expo-sqlite",
       [
         "expo-local-authentication",
-        { "faceIDPermission": "Unlock OpenAgentsPocket with Face ID." }
+        {
+          "faceIDPermission": "Unlock OpenAgentsPocket with Face ID."
+        }
       ],
       [
         "expo-camera",
@@ -47,7 +49,8 @@
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "locales": {
       "es": "./locales/es.json"

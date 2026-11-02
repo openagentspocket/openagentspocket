@@ -158,4 +158,18 @@ describe('host catalog', () => {
       expect(await catalog.password(subject)).toBeNull();
     },
   );
+
+  it('reorders Hosts, clamps the target and keeps hidden entries in place', async () => {
+    const hidden = { ...host('future'), authMethod: 'passkey' };
+    const { storage, catalog } = setup({
+      version: 1,
+      hosts: [host('a'), hidden, host('b'), host('c')],
+    });
+    catalog.move('c', 0);
+    expect(catalog.hosts.map((h) => h.id)).toEqual(['c', 'a', 'b']);
+    catalog.move('c', 99);
+    expect(catalog.hosts.map((h) => h.id)).toEqual(['a', 'b', 'c']);
+    expect(persisted(storage).hosts.map((h) => h.id)).toEqual(['a', 'future', 'b', 'c']);
+    expect(() => catalog.move('missing', 0)).toThrow(HostCatalogError);
+  });
 });

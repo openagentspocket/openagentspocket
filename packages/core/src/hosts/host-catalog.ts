@@ -136,6 +136,24 @@ export class HostCatalog {
     this.persist();
   }
 
+  /** Moves the Host to `toIndex` among the Hosts this build reads; hidden entries keep their slots. */
+  move(id: string, toIndex: number): void {
+    this.ensureWritable();
+    this.indexOf(id);
+    const visible = this.hosts.slice();
+    const from = visible.findIndex((host) => host.id === id);
+    const [moved] = visible.splice(from, 1);
+    if (!moved) return;
+    visible.splice(Math.max(0, Math.min(toIndex, visible.length)), 0, moved);
+    let next = 0;
+    this.entries = this.entries.map((entry) => {
+      if (!('host' in entry)) return entry;
+      const host = visible[next++];
+      return host ? { host } : entry;
+    });
+    this.persist();
+  }
+
   /** The stored password, or null when none was saved. */
   password(host: Host): Promise<string | null> {
     return this.secrets.getItem(passwordAccount(host.id));
