@@ -14,6 +14,7 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.xs,
   },
+  rowCompact: { minHeight: 36, paddingVertical: 2 },
   label: { flexShrink: 0 },
   value: { flex: 1, textAlign: 'right' },
 }));
@@ -33,12 +34,19 @@ export interface KeyValueRow {
 
 interface KeyValueGroupProps {
   title?: string;
+  /** Tighter rows (a sheet that must fit above the fold). */
+  compact?: boolean;
   rows: readonly KeyValueRow[];
   testID?: string;
 }
 
 /** A section title above a card of label / value rows: values right aligned in secondary, wrapping when long. */
-export function KeyValueGroup({ title, rows, testID = 'key-value-group' }: KeyValueGroupProps) {
+export function KeyValueGroup({
+  title,
+  rows,
+  compact = false,
+  testID = 'key-value-group',
+}: KeyValueGroupProps) {
   const styles = useStyles();
   return (
     <Section title={title} testID={testID}>
@@ -47,16 +55,18 @@ export function KeyValueGroup({ title, rows, testID = 'key-value-group' }: KeyVa
         return (
           <Row
             key={row.label}
-            style={styles.row}
+            style={[styles.row, compact && styles.rowCompact]}
             accessible
             accessibilityRole={row.onPress ? 'button' : undefined}
             accessibilityLabel={`${row.label}, ${row.value}`}
             onPress={row.onPress}
             testID={row.testID ?? `${testID}-row`}
           >
-            <Text style={styles.label}>{row.label}</Text>
+            <Text variant={compact ? 'subheadline' : 'body'} style={styles.label}>
+              {row.label}
+            </Text>
             <Text
-              variant={row.mono ? 'mono' : 'body'}
+              variant={row.mono ? 'mono' : compact ? 'subheadline' : 'body'}
               tone="secondary"
               selectable
               style={styles.value}

@@ -19,10 +19,11 @@ left:
 - Terminals list (console.terminals-list): RN has no shell-pane inventory in the Console store, so TerminalRow/TerminalGroup have no screen yet. Needs a core inventory first.
 - Worktrees nested under the repository card, worktree details and remove confirmation (console.worktree-*): RepositoryCheckout is on the row but no grouping by repository exists in core.
 - Live sources for diff totals and context usage (rn-gap section 10).
-- The list behind the quick detail sheet is not scrolled (Swift's reference for that id is the Home screen).
+- The quick detail atlas entry draws over the by-status Agents list, not Home: Swift's reference is Home (a status inbox) and RN Home has no quick detail. Documented in atlasMap.json.
 - Board still uses ListRow; move it to AgentCard presentation card in a compact mode.
 - Also tracked in rn-gap.md section 10: SearchField gallery entry, quick detail age seed. Atlas ids rename-sheet, close-confirmation, row-context-menu, search have no entry (sheets over the list need a way to open them).
 notes:
+- Judge fixes round 2: quick detail is a floating inset sheet (`Sheet floating`: 8 pt side gutter, all corners rounded, bottom margin, detent fit so Pin / Close show), `KeyValueGroup compact` rows (36 pt, subheadline); by-workspace single-Agent card shows the book glyph (`AgentCardModel.glyph`), WorkspaceCard count pill smaller (24 pt, footnote, 10 pt chevron) and its body no longer indented.
 - Swift has no stack header on this screen: the route hides it and draws ListToolbar (Home circle, capsule), a large title and the new SearchField.
 - ListToolbar's Host filter is omitted when its item list is empty.
 - Atlas: `AtlasData.presentation` seeds the list grouping; `AgentsScreen openDetail=<paneId>` opens the quick detail.

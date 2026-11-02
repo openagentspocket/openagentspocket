@@ -18,10 +18,10 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.control,
     borderRadius: 999,
     paddingHorizontal: t.spacing.xs,
-    paddingVertical: 4,
-    minHeight: 30,
+    paddingVertical: 2,
+    minHeight: 24,
   },
-  body: { marginTop: t.spacing.xs, marginLeft: t.spacing.md, gap: t.spacing.sm },
+  body: { marginTop: t.spacing.xs, marginLeft: 0, gap: t.spacing.sm },
   nested: { marginLeft: t.spacing.md },
 }));
 
@@ -87,11 +87,11 @@ export function WorkspaceCard({
         accessibilityState={{ expanded: !collapsed }}
         testID={`${testID}-fold`}
       >
-        <Text variant="subheadline" semibold tabularNums>
+        <Text variant="footnote" semibold tabularNums>
           {String(workspace.agentCount)}
         </Text>
         <View style={{ transform: [{ rotate: collapsed ? '0deg' : '90deg' }] }}>
-          <Icon name="chevronRight" size={12} tint={theme.colors.textSecondary} />
+          <Icon name="chevronRight" size={10} tint={theme.colors.textSecondary} />
         </View>
       </Pressable>
     </View>

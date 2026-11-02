@@ -70,7 +70,8 @@ export function QuickDetailSheet({
     <Sheet
       visible
       onClose={onClose}
-      detent={{ fraction: 0.64 }}
+      detent="fit"
+      floating
       closeButton={false}
       testID="quick-detail"
       footer={
@@ -133,7 +134,7 @@ export function QuickDetailSheet({
         eyebrowTrailing={age}
         chips={chips.map((chip) => <Chip key={chip} label={chip} />)}
       />
-      <KeyValueGroup rows={details} />
+      <KeyValueGroup compact rows={details} />
     </Sheet>
   );
 }

@@ -67,7 +67,11 @@ export function AgentRow({
   return (
     <AgentCard
       testID={`agent-row-${row.agent.pane_id}`}
-      agent={{ ...agentCardModel(row, showHost, nested, qualify), pinned }}
+      agent={{
+        ...agentCardModel(row, showHost, nested, qualify),
+        pinned,
+        glyph: presentation === 'card' ? 'workspace' : 'program',
+      }}
       presentation={presentation}
       labels={labels}
       menu={menu}

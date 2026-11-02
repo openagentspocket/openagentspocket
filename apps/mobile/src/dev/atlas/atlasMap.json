@@ -32,7 +32,7 @@
   {
     "id": "console.quick-detail-sheet",
     "rn": "app/agents.tsx (AgentsScreen)",
-    "note": "quick detail of p2 over the list"
+    "note": "quick detail of p2 over the Agents list; Swift draws it over Home (a status inbox) and RN Home has no quick detail, so the backdrop is the by-status Agents list"
   },
   {
     "id": "console.empty-states-agents",

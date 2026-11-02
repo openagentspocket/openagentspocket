@@ -26,6 +26,8 @@ export interface AgentCardModel {
   contextLeft?: string;
   /** The Host is disconnected; the card is the saved copy. */
   saved?: boolean;
+  /** `workspace`: the book glyph of a single-Agent workspace card instead of the program mark. */
+  glyph?: 'program' | 'workspace';
   /** Pinned rows carry a tertiary pin glyph before the title. */
   pinned?: boolean;
 }
@@ -99,7 +101,11 @@ export function AgentCardBody({
     <View style={styles.root}>
       <View style={styles.content}>
         <View style={styles.line}>
-          <ProgramMark program={agent.program} size={22} />
+          {agent.glyph === 'workspace' ? (
+            <Icon name="book" size={22} color="textSecondary" />
+          ) : (
+            <ProgramMark program={agent.program} size={22} />
+          )}
           <View style={[styles.line, styles.title]}>
             <Text variant="headline" numberOfLines={1} style={styles.shrink}>
               {agent.title}
