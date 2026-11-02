@@ -3,7 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "types": ["jest"],
-    "paths": { "@/*": ["./src/*"] },
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "outDir": "dist",
     "noEmit": false
   },
@@ -13,6 +15,7 @@
     { "path": "../../packages/i18n" },
     { "path": "../../packages/transport" },
     { "path": "../../packages/ui" },
-    { "path": "../../modules/ssh" }
+    { "path": "../../modules/ssh" },
+    { "path": "../../modules/app-group" }
   ]
 }

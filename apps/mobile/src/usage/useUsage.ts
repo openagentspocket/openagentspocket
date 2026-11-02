@@ -1,5 +1,6 @@
 import { FakeUsageSource, type HostReading, type UsageSource } from '@openagentspocket/core';
 import { useCallback, useEffect, useState } from 'react';
+import { publishUsageWidgets } from '@/widgets/widgetPublisher';
 
 const demoSource = new FakeUsageSource();
 
@@ -20,7 +21,9 @@ export function useUsage(source: UsageSource = demoSource): {
   const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      setReadings(await source.readings());
+      const next = await source.readings();
+      setReadings(next);
+      publishUsageWidgets(next);
       setNow(new Date());
     } finally {
       setRefreshing(false);

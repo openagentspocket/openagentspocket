@@ -9,6 +9,7 @@ import { deviceAuthenticator } from '@/settings/deviceAuthenticator';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { SettingsProvider } from '@/settings/SettingsProvider';
 import { useResolvedThemeId } from '@/settings/useSettingsContext';
+import { useWidgetSync } from '@/widgets/useWidgetSync';
 
 const settingsStore = new SettingsStore(deviceStorage);
 
@@ -19,6 +20,7 @@ function SettingsTheme({ children }: { children: ReactNode }) {
 }
 
 export default function RootLayout() {
+  useWidgetSync();
   return (
     <SettingsProvider store={settingsStore} authenticator={deviceAuthenticator}>
       <SettingsTheme>

@@ -9,7 +9,13 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.openagentspocket.app",
-      "deploymentTarget": "18.0"
+      "deploymentTarget": "18.0",
+      "entitlements": {
+        "com.apple.security.application-groups": ["group.com.openagentspocket.app"]
+      },
+      "infoPlist": {
+        "NSSupportsLiveActivities": true
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -50,7 +56,8 @@
           "recordAudioAndroid": false
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "@bacons/apple-targets"
     ],
     "locales": {
       "es": "./locales/es.json"
