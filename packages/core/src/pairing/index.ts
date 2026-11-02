@@ -2,6 +2,8 @@
 // HerdrEndpoint, session-name, quotable-path and fingerprint helpers, and two
 // barrels exporting the same names break `tsc -b` (TS2308). Once hosts lands,
 // pairing imports hosts' copies and these two files go away.
+
+export { decodeBase64Url, encodeBase64Url } from './bytes';
 export {
   type EnrollmentRefusal,
   type EnrollmentResponse,

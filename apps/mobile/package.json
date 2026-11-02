@@ -10,6 +10,7 @@
     "@openagentspocket/transport": "workspace:*",
     "@openagentspocket/ui": "workspace:*",
     "agentico-app-group": "workspace:*",
+    "agentico-live-activity": "workspace:*",
     "agentico-ssh": "workspace:*",
     "expo": "~58.0.22",
     "expo-camera": "~58.0.14",
