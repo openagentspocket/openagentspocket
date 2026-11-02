@@ -4,3 +4,7 @@
 const { setFontScale } = require('./src/test-utils');
 
 beforeEach(() => setFontScale(1));
+
+// The first render of a screen in a worker pays module loading; under `pnpm test` every package
+// runs at once and that alone can pass RNTL's 1 s default for waitFor/findBy (FilesScreen did).
+require('@testing-library/react-native').configure({ asyncUtilTimeout: 5000 });
