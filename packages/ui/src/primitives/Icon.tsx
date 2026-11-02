@@ -54,6 +54,11 @@ const ICONS = {
   statusDone: { ios: 'checkmark.circle.fill', android: 'check_circle' },
   statusWorking: { ios: 'circle.fill', android: 'radio_button_checked' },
   statusIdle: { ios: 'circle', android: 'radio_button_unchecked' },
+  // Ports and the browser preview.
+  globe: { ios: 'globe', android: 'language' },
+  container: { ios: 'shippingbox', android: 'inventory_2' },
+  paused: { ios: 'pause.circle', android: 'pause_circle' },
+  share: { ios: 'square.and.arrow.up', android: 'share' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
