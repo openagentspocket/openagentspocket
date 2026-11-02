@@ -15,7 +15,7 @@ TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/r
 
 ## The gates
 
-- `pnpm verify-fast`: biome, `tsc -b`, `gen:check`, file-length ratchet, theme-literal rule, then only the tests
+- `pnpm verify-fast`: typed routes (regenerated from `src/app`), biome, `tsc -b`, `gen:check`, file-length ratchet, theme-literal rule, then only the tests
   related to changed files (plugin/relay suites run only when touched; plugin takes ~50 s). Run before every report
   and commit. The pre-commit hook runs it.
 - `pnpm test`: every unit/component test. Once per run, by the integrator.

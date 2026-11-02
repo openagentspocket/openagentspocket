@@ -38,6 +38,9 @@ function run(label, cmd, args, cwd = '.') {
   });
 }
 
+// Before tsc: route types come from the route files on disk, not from the last Metro run.
+sh('node', ['scripts/typed-routes.mjs']);
+
 const checks = [
   run('biome', 'pnpm', ['exec', 'biome', 'check', '.']),
   run('tsc -b', 'pnpm', ['exec', 'tsc', '-b']),
