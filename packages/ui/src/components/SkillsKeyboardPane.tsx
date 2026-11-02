@@ -72,16 +72,17 @@ const useStyles = makeStyles((t) => ({
   },
   switcher: {
     flexDirection: 'row',
-    paddingHorizontal: t.spacing.xs,
-    paddingVertical: t.spacing.xs,
+    paddingHorizontal: t.spacing.xxs,
+    paddingTop: t.spacing.xxs,
+    paddingBottom: t.spacing.xs,
     gap: t.spacing.xxs,
   },
   tab: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: t.metrics.minTapSize,
-    borderRadius: t.metrics.cardRadius * 2,
+    minHeight: t.metrics.minTapSize - 4,
+    borderRadius: t.metrics.cardRadius * 1.5,
   },
   tabSelected: { backgroundColor: t.colors.control },
 }));

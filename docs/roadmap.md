@@ -17,6 +17,8 @@ the scene: now static in AppStack), expo-notifications config plugin. The native
 **Running:** UX phase D (`scratchpad/rn/ux-d.js`): the 10 UX3 component groups (6 at a time, judged on Swift | RN
 compare sheets) + N-rebuild-notifications retry. Next: UX1 assembly per family (screens adopt the components,
 whole-screen compare).
+**Tracked dependency:** once UX3-chat-rows merges, ClaudeSubagentTranscript (UX3-composer-extras) must replace its local SubagentRow
+rendering with ChatUserBubble / ChatToolRow (catalog acceptance 'rows reuse the Chat* components').
 
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in

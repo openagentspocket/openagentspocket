@@ -49,7 +49,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: t.metrics.screenInset,
-    paddingVertical: t.spacing.xs,
+    paddingVertical: t.spacing.xxs,
   },
   back: { width: t.metrics.minTapSize, justifyContent: 'center' },
   title: { flex: 1, textAlign: 'center' },
@@ -232,7 +232,12 @@ export function ClaudeSubagentTranscript({
       <View style={styles.bar}>
         <View style={styles.back}>
           <GlassCapsule>
-            <Button kind="text" icon="arrowLeft" accessibilityLabel={text.back} onPress={onBack} />
+            <Button
+              kind="text"
+              icon="chevronLeft"
+              accessibilityLabel={text.back}
+              onPress={onBack}
+            />
           </GlassCapsule>
         </View>
         <Text variant="headline" numberOfLines={1} accessibilityRole="header" style={styles.title}>
