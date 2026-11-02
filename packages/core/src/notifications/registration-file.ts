@@ -1,5 +1,5 @@
 import { encodeBase64Url, utf8Decode, utf8Encode } from '../pairing/bytes';
-import type { JsonObject, JsonValue } from '../wire/json';
+import { isJsonObject, type JsonObject, type JsonValue } from '../wire/json';
 import { NotificationRegistrationError } from './errors';
 import { encodeSortedJson, isTrueField, jsonEqual, mergeFields, stringField } from './json';
 import type { PushDeviceToken } from './push-token';
@@ -45,6 +45,38 @@ export interface NotificationRegistrationOwner {
 
 export function entryOwner(entry: NotificationDeviceEntry): NotificationRegistrationOwner {
   return { deviceToken: entry.token.token, key: entry.key, session: entry.session };
+}
+
+/** What the app writes into the `live_activity` field of its own entry. */
+export interface LiveActivityFields {
+  readonly token: string;
+  /** ISO 8601 UTC, as stored. */
+  readonly startedAt: string;
+  /** Most recently pinned first. */
+  readonly pinnedPaneIds: readonly string[];
+  readonly hostName?: string;
+}
+
+/** The `live_activity` field as read back. */
+export interface LiveActivityRegistration {
+  readonly token: string;
+  readonly startedAt: string;
+  readonly pinnedPaneIds: readonly string[];
+}
+
+function liveObject(entry: JsonValue | undefined): JsonObject | undefined {
+  const live = isJsonObject(entry) ? entry.live_activity : undefined;
+  return isJsonObject(live) ? live : undefined;
+}
+
+function liveActivityToken(device: JsonValue | undefined): string | undefined {
+  return stringField(liveObject(device), 'token');
+}
+
+function withoutField(device: JsonValue, field: string): JsonValue {
+  if (!isJsonObject(device)) return device;
+  const { [field]: _dropped, ...rest } = device;
+  return rest;
 }
 
 function entryWire(entry: NotificationDeviceEntry): JsonObject {
@@ -192,6 +224,104 @@ export class NotificationRegistrationFile {
       done: isTrueField(notify, 'done'),
       approve: isTrueField(notify, 'approve'),
     };
+  }
+
+  /**
+   * Drops `live_activity` carrying the activity push token `liveToken` from every entry except the
+   * Host's own: a token belongs to one activity of one Host, so a copy elsewhere is stale.
+   */
+  strippingLiveActivity(
+    liveToken: string,
+    keepingOwnEntryOf: NotificationRegistrationOwner | null,
+  ): NotificationRegistrationFile {
+    const own = keepingOwnEntryOf ? this.ownIndex(keepingOwnEntryOf) : -1;
+    return new NotificationRegistrationFile(
+      this.devices.map((device, index) =>
+        index !== own && liveActivityToken(device) === liveToken
+          ? withoutField(device, 'live_activity')
+          : device,
+      ),
+    );
+  }
+
+  /**
+   * Writes `live_activity` on the Host's own entry (merging into an existing object so unknown
+   * fields survive) after stripping the same token from every other entry. Throws
+   * `deviceNotRegistered` when the Host has no entry: the alert key cannot be invented here.
+   */
+  settingLiveActivity(
+    live: LiveActivityFields,
+    owner: NotificationRegistrationOwner,
+  ): NotificationRegistrationFile {
+    return this.strippingLiveActivity(live.token, owner).mutatingOwn(owner, (entry) =>
+      mergeFields(entry, {
+        live_activity: mergeFields(liveObject(entry) ?? {}, {
+          token: live.token,
+          started_at: live.startedAt,
+          pinned_pane_ids: [...live.pinnedPaneIds],
+          ...(live.hostName === undefined ? {} : { host_name: live.hostName }),
+        }),
+      }),
+    );
+  }
+
+  /** Writes the pin list on the own entry's existing `live_activity`; no-op without one. */
+  settingLiveActivityPinnedPaneIds(
+    pinnedPaneIds: readonly string[],
+    owner: NotificationRegistrationOwner,
+  ): NotificationRegistrationFile {
+    return this.mutatingOwn(owner, (entry) => {
+      const live = liveObject(entry);
+      if (live === undefined) return entry;
+      return mergeFields(entry, {
+        live_activity: mergeFields(live, { pinned_pane_ids: [...pinnedPaneIds] }),
+      });
+    });
+  }
+
+  /**
+   * Drops `live_activity` from the Host's own entry when it carries `liveToken` (any token when
+   * null: the field is this Host's own). Without an own entry, drops it from whichever entry
+   * carries `liveToken`. Another Host's `live_activity` with a different token is never touched.
+   */
+  clearingLiveActivity(
+    liveToken: string | null,
+    owner: NotificationRegistrationOwner | null,
+  ): NotificationRegistrationFile {
+    const own = owner ? this.ownIndex(owner) : -1;
+    return new NotificationRegistrationFile(
+      this.devices.map((device, index) => {
+        const matches = liveToken === null || liveActivityToken(device) === liveToken;
+        const target = own >= 0 ? index === own : liveToken !== null;
+        return target && matches ? withoutField(device, 'live_activity') : device;
+      }),
+    );
+  }
+
+  /** The `live_activity` of the Host's own entry; null when absent, mistyped or token-less. */
+  liveActivity(owner: NotificationRegistrationOwner): LiveActivityRegistration | null {
+    const live = liveObject(this.devices[this.ownIndex(owner)]);
+    const token = stringField(live, 'token');
+    const startedAt = stringField(live, 'started_at');
+    if (!token || !startedAt) return null;
+    const pins = live?.pinned_pane_ids;
+    const pinnedPaneIds =
+      Array.isArray(pins) && pins.every((pin) => typeof pin === 'string') ? (pins as string[]) : [];
+    return { token, startedAt, pinnedPaneIds };
+  }
+
+  private mutatingOwn(
+    owner: NotificationRegistrationOwner,
+    update: (entry: JsonValue) => JsonValue,
+  ): NotificationRegistrationFile {
+    const index = this.ownIndex(owner);
+    const entry = this.devices[index];
+    if (entry === undefined) {
+      throw new NotificationRegistrationError({ kind: 'deviceNotRegistered' });
+    }
+    const devices = [...this.devices];
+    devices[index] = update(entry);
+    return new NotificationRegistrationFile(devices);
   }
 
   /**
