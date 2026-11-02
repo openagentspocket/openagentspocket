@@ -44,6 +44,13 @@ describe('ConsoleStore with the demo Host', () => {
     expect(store.getState().rows).toHaveLength(0);
   });
 
+  it('lists the workspaces a Host reports, and none for an unknown Host', async () => {
+    const store = createDemoConsoleStore();
+    await ready(store);
+    expect(store.workspaces('demo').map((workspace) => workspace.label)).toContain('api-server');
+    expect(store.workspaces('nope')).toEqual([]);
+  });
+
   it('reads the Blocked prompt from the terminal into the row', async () => {
     const store = createDemoConsoleStore();
     await ready(store);

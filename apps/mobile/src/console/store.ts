@@ -5,6 +5,7 @@ import {
   type ConsoleRow,
   type ConsoleSession,
   type ConsoleTransport,
+  type ConsoleWorkspace,
   type EventsSessionStatus,
   HostConsoleProjection,
   type HostIdentity,
@@ -91,6 +92,11 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     this.options.clocks.retainHosts(new Set(this.projections.keys()));
     this.recompute();
     projection.end();
+  }
+
+  /** The workspaces a Host's latest snapshot reports, in sidebar order; empty for an unknown Host. */
+  workspaces(hostId: string): readonly ConsoleWorkspace[] {
+    return this.projections.get(hostId)?.workspaces ?? [];
   }
 
   isPinned(hostId: string, paneId: string): boolean {
