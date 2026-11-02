@@ -1,4 +1,4 @@
-import { DirectoryBrowser, type DirectoryLister } from '@openagentspocket/core';
+import { DirectoryBrowser, type DirectoryLister, RemoteHostPath } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   Banner,
@@ -6,15 +6,29 @@ import {
   EmptyState,
   Icon,
   ListRow,
+  makeStyles,
   Section,
   Sheet,
   SkeletonRows,
-  Text,
   TextField,
 } from '@openagentspocket/ui';
 import { type ReactNode, useEffect, useMemo } from 'react';
+import { View } from 'react-native';
 import { useStoreState } from '@/changes/useStoreState';
 import { browserErrorText } from './text';
+
+const useStyles = makeStyles((t) => ({
+  filter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: t.spacing.md,
+    borderRadius: t.metrics.cardRadius,
+    borderWidth: t.metrics.hairlineWidth,
+    borderColor: t.hairline,
+    backgroundColor: t.colors.control,
+  },
+  filterInput: { flex: 1 },
+}));
 
 interface DirectoryBrowserSheetProps {
   visible: boolean;
@@ -97,26 +111,40 @@ export function DirectoryBrowserSheet({
       title={t('Browse Directories')}
       detent="large"
       closeLabel={t('Cancel')}
-      footer={
-        <Button
-          title={t('Select')}
-          accessibilityLabel={t('Select folder')}
-          disabled={currentPath === undefined}
-          onPress={() => currentPath !== undefined && onSelect(currentPath)}
-          testID="directory-select"
-        />
-      }
+      trailing={{
+        label: t('Select'),
+        disabled: currentPath === undefined,
+        onPress: () => currentPath !== undefined && onSelect(currentPath),
+        testID: 'directory-select',
+      }}
       testID="directory-browser"
     >
-      <Button
-        kind="secondary"
-        icon="arrowUp"
-        title={currentPath ?? t('Loading folders…')}
-        accessibilityLabel={t('Parent folder')}
-        disabled={!browser.canGoBack || isLoading}
-        onPress={() => void browser.goBack()}
-        testID="directory-back"
+      <FilterField
+        value={filter}
+        onChange={(text) => browser.setFilter(text)}
+        hidden={currentPath === undefined}
       />
+      <Section
+        footer={
+          currentPath === undefined
+            ? undefined
+            : t('You can select this folder for the new Workspace.')
+        }
+      >
+        <ListRow
+          title={
+            currentPath ? RemoteHostPath.lastComponent(currentPath) || '/' : t('Loading folders…')
+          }
+          subtitle={currentPath}
+          subtitleMono
+          titleSemibold
+          trailing={<Icon name="arrowUp" color="accent" />}
+          accessibilityLabel={t('Parent folder')}
+          disabled={!browser.canGoBack || isLoading}
+          onPress={() => void browser.goBack()}
+          testID="directory-back"
+        />
+      </Section>
       {error ? (
         <Banner
           tone="danger"
@@ -127,30 +155,45 @@ export function DirectoryBrowserSheet({
           testID="directory-error"
         />
       ) : null}
-      {currentPath !== undefined ? (
-        <>
-          <Text variant="footnote" tone="secondary">
-            {t('You can select this folder for the new Workspace.')}
-          </Text>
-          <TextField
-            label={t('Filter folders')}
-            value={filter}
-            onChangeText={(text) => browser.setFilter(text)}
-            autoCapitalize="none"
-            autoCorrect={false}
-            testID="directory-filter"
-          />
-          {state.truncated ? (
-            <Banner
-              tone="warning"
-              title={t(
-                'Only part of this folder is available. Filtering searches the loaded folders only.',
-              )}
-            />
-          ) : null}
-        </>
+      {state.truncated && currentPath !== undefined ? (
+        <Banner
+          tone="warning"
+          title={t(
+            'Only part of this folder is available. Filtering searches the loaded folders only.',
+          )}
+        />
       ) : null}
       {list}
     </Sheet>
+  );
+}
+
+/** The pill search field of the sheet: a magnifier and the placeholder "Filter folders". */
+function FilterField({
+  value,
+  onChange,
+  hidden,
+}: {
+  value: string;
+  onChange: (text: string) => void;
+  hidden: boolean;
+}) {
+  const styles = useStyles();
+  if (hidden) return null;
+  return (
+    <View style={styles.filter}>
+      <Icon name="search" color="textSecondary" />
+      <View style={styles.filterInput}>
+        <TextField
+          inline
+          label={t('Filter folders')}
+          value={value}
+          onChangeText={onChange}
+          autoCapitalize="none"
+          autoCorrect={false}
+          testID="directory-filter"
+        />
+      </View>
+    </View>
   );
 }

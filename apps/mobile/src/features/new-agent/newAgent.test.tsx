@@ -6,6 +6,7 @@ import type { ReactElement } from 'react';
 import { DirectoryBrowserSheet } from './DirectoryBrowserSheet';
 import { createDemoServices } from './demo';
 import { NewAgentScreen } from './NewAgentScreen';
+import { NewTerminalScreen } from './NewTerminalScreen';
 import { type NewAgentServices, NewAgentServicesProvider } from './services';
 import { WorktreeDetailsScreen } from './WorktreeDetailsScreen';
 
@@ -75,8 +76,11 @@ describe('NewAgentScreen', () => {
 
   it('offers a recent directory and fills the New Workspace draft', async () => {
     await renderApp(<NewAgentScreen onStarted={jest.fn()} onCancel={jest.fn()} />);
-    await fireEvent.press(await screen.findByTestId('recent-directory-api-server'));
-    expect(screen.getByTestId('new-agent-workspace-label')).toBeTruthy();
+    await fireEvent.press(await screen.findByTestId('new-agent-workspace'));
+    await fireEvent.press(
+      await screen.findByTestId('new-agent-workspace-menu-recent:/home/demo/projects/api-server'),
+    );
+    expect(await screen.findByTestId('new-agent-workspace-label')).toBeTruthy();
     expect(screen.getByText('/home/demo/projects/api-server')).toBeTruthy();
   });
 
@@ -169,5 +173,20 @@ describe('WorktreeDetailsScreen', () => {
     await waitFor(() =>
       expect(screen.getByTestId('worktree-remove').props.accessibilityState?.disabled).toBeFalsy(),
     );
+  });
+});
+
+describe('NewTerminalScreen', () => {
+  it('opens a shell in the first Workspace of the only Host with the typed tab name', async () => {
+    const onOpen = jest.fn();
+    await renderApp(<NewTerminalScreen onOpen={onOpen} onCancel={jest.fn()} />);
+    await fireEvent.changeText(screen.getByTestId('new-terminal-tab'), ' logs ');
+    await fireEvent.press(screen.getByTestId('new-terminal-open'));
+    expect(onOpen).toHaveBeenCalledWith({
+      hostId: 'demo',
+      workspaceId: 'w0',
+      cwd: '/home/demo/projects/api-server',
+      label: 'logs',
+    });
   });
 });

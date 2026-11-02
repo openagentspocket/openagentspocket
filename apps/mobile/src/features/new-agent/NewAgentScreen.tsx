@@ -1,22 +1,12 @@
 import type { LaunchOrigin } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Button, makeStyles, Screen } from '@openagentspocket/ui';
+import { Banner, Screen, SheetBar } from '@openagentspocket/ui';
 import { useEffect, useMemo, useState } from 'react';
-import { View } from 'react-native';
 import { AgentSection, DetailsSections } from './AgentSections';
 import { DirectoryBrowserSheet } from './DirectoryBrowserSheet';
-import { HostSection, RecentSection, WorkspaceSection, WorktreeSection } from './LaunchSections';
+import { HostSection, WorkspaceSection, WorktreeSection } from './LaunchSections';
 import { newAgentText } from './text';
 import { useStartAgent } from './useStartAgent';
-
-const useStyles = makeStyles((t) => ({
-  bar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: t.spacing.sm,
-  },
-}));
 
 interface NewAgentScreenProps {
   /** Set when opened from an Agent: its Host, workspace and directory are inherited. */
@@ -29,7 +19,6 @@ interface NewAgentScreenProps {
 /** console.start-agent: pick a Host, a launch target and an installed Agent, then start it. */
 export function NewAgentScreen({ origin, onStarted, onCancel }: NewAgentScreenProps) {
   const { store, state, services } = useStartAgent(origin);
-  const styles = useStyles();
   const [browsing, setBrowsing] = useState(false);
   const { selectedHostId } = state;
   const lister = useMemo(
@@ -41,29 +30,38 @@ export function NewAgentScreen({ origin, onStarted, onCancel }: NewAgentScreenPr
     if (phase.kind === 'started') onStarted(phase.hostId, phase.paneId);
   }, [phase, onStarted]);
 
+  const bar = (
+    <SheetBar
+      title={t('New Agent')}
+      leading={{
+        label: t('Cancel'),
+        onPress: onCancel,
+        disabled: !store.canDismiss,
+        testID: 'new-agent-cancel',
+      }}
+      trailing={[
+        {
+          label: t('Start'),
+          onPress: () => void store.submit(),
+          disabled: !store.canSubmit,
+          loading: phase.kind === 'starting',
+          testID: 'new-agent-start',
+        },
+      ]}
+    />
+  );
+
   return (
-    <Screen edges={['left', 'right', 'bottom']} testID="new-agent-screen">
-      <View style={styles.bar}>
-        <Button
-          kind="text"
-          title={t('Cancel')}
-          disabled={!store.canDismiss}
-          onPress={onCancel}
-          testID="new-agent-cancel"
-        />
-        <Button
-          title={t('Start')}
-          loading={phase.kind === 'starting'}
-          disabled={!store.canSubmit}
-          onPress={() => void store.submit()}
-          testID="new-agent-start"
-        />
-      </View>
+    <Screen
+      header={bar}
+      edges={['left', 'right', 'bottom']}
+      keyboardAvoiding
+      testID="new-agent-screen"
+    >
       {phase.kind === 'failed' ? (
         <Banner tone="danger" title={newAgentText(phase.message)} testID="new-agent-failure" />
       ) : null}
       {origin ? null : <HostSection store={store} state={state} />}
-      <RecentSection store={store} state={state} />
       <WorkspaceSection store={store} state={state} onBrowse={() => setBrowsing(true)} />
       <WorktreeSection store={store} state={state} />
       <AgentSection store={store} state={state} />

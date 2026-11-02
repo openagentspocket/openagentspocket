@@ -13,6 +13,7 @@ import HostFormRoute from '@/app/hosts/form';
 import PairRoute from '@/app/hosts/pair';
 import Index from '@/app/index';
 import NewAgentRoute from '@/app/new-agent';
+import NewTerminalRoute from '@/app/new-terminal';
 import PortsRoute from '@/app/ports';
 import SettingsRoot from '@/app/settings';
 import NotificationsRoute from '@/app/settings/notifications';
@@ -34,6 +35,7 @@ import type { AtlasScript } from './AtlasActions';
 import type { AtlasData } from './AtlasFrame';
 import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
+import { DirectoryBrowserDemo } from './NewAgentDemos';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
 export interface AtlasEntry {
@@ -82,7 +84,13 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'usage.quick-sheet': { script: { press: ['home-usage-ring'] }, render: () => <Index /> },
   'console.no-hosts-empty': { data: { console: 'empty', hosts: 'empty' }, render: () => <Index /> },
   'console.agents-list-flat': { render: () => <Agents /> },
-  'console.start-agent': { render: () => titled(t('New Agent'), <NewAgentRoute />) },
+  'console.start-agent': { render: () => <NewAgentRoute /> },
+  'console.workspace-picker': {
+    script: { press: ['new-agent-workspace'] },
+    render: () => <NewAgentRoute />,
+  },
+  'console.new-terminal': { render: () => <NewTerminalRoute /> },
+  'console.directory-browser': { render: () => <DirectoryBrowserDemo /> },
   'hosts.list': { render: () => <HostsRoute /> },
   'hosts.form': { render: () => <HostFormRoute /> },
   'hosts.detail': {

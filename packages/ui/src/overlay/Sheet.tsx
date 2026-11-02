@@ -67,6 +67,7 @@ export interface SheetBarAction {
   onPress: () => void;
   disabled?: boolean;
   loading?: boolean;
+  testID?: string;
 }
 
 interface SheetProps {
@@ -239,7 +240,7 @@ function BarButton({
       onPress={action.onPress}
       disabled={action.disabled}
       loading={action.loading}
-      testID={testID}
+      testID={action.testID ?? testID}
     />
   );
 }

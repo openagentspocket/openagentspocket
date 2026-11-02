@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { type AccessibilityActionEvent, Switch, View } from 'react-native';
 import { ActionMenu } from '../overlay/ActionMenu';
 import { Button } from '../primitives/Button';
-import { Icon } from '../primitives/Icon';
+import { Icon, type IconName } from '../primitives/Icon';
 import { ListRow, type ListRowProps } from '../primitives/ListRow';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -68,6 +68,11 @@ export function ToggleRow({
 export interface PickerOption<V extends string> {
   value: V;
   label: string;
+  /** Starts a titled group in the menu ("Recent"). */
+  section?: string;
+  /** A second line under the label (a path). */
+  subtitle?: string;
+  icon?: IconName;
 }
 
 interface PickerRowProps<V extends string> {
@@ -76,6 +81,8 @@ interface PickerRowProps<V extends string> {
   value: V;
   onChange: (value: V) => void;
   disabled?: boolean;
+  /** Ink of the shown value; accent by default, secondary for "None reported". */
+  valueTone?: ListRowProps['valueTone'];
   testID?: string;
 }
 
@@ -86,6 +93,7 @@ export function PickerRow<V extends string>({
   value,
   onChange,
   disabled,
+  valueTone = 'accent',
   testID,
 }: PickerRowProps<V>) {
   const [open, setOpen] = useState(false);
@@ -95,8 +103,14 @@ export function PickerRow<V extends string>({
       <ListRow
         title={title}
         value={current?.label}
-        valueTone="accent"
-        trailing={<Icon name="chevronUpDown" size={13} color="accent" />}
+        valueTone={valueTone}
+        trailing={
+          <Icon
+            name="chevronUpDown"
+            size={13}
+            color={valueTone === 'accent' ? 'accent' : 'textTertiary'}
+          />
+        }
         onPress={() => setOpen(true)}
         disabled={disabled}
         testID={testID}
@@ -109,6 +123,9 @@ export function PickerRow<V extends string>({
           key: option.value,
           title: option.label,
           checked: option.value === value,
+          section: option.section,
+          subtitle: option.subtitle,
+          icon: option.icon,
           onPress: () => onChange(option.value),
         }))}
         testID={testID ? `${testID}-menu` : undefined}
