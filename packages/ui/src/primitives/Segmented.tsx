@@ -74,6 +74,8 @@ export function Segmented<T extends string>({
               semibold={selected}
               tone={selected ? 'primary' : 'secondary'}
               numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.8}
             >
               {option.label}
             </Text>
