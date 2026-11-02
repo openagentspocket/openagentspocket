@@ -1,0 +1,18 @@
+# T-atlas-redbox: atlas iOS "Maximum update depth exceeded"
+status: done
+branch: worktree-wf_057d2888-9cf-2
+changed: apps/mobile/src/app/_layout.tsx, apps/mobile/src/app/new-agent.tsx, apps/mobile/src/app/worktree.tsx, apps/mobile/src/dev/atlas/entries.tsx, apps/mobile/src/navigation/modalRoutes.test.ts, scripts/atlas-lib.mjs, scripts/atlas-ios.mjs, docs/tasks.yml
+tests: pnpm verify-fast green; modalRoutes.test.ts fails on the old new-agent.tsx and passes on the fix
+acceptance:
+- Reproduced on the iOS simulator (iPhone 17 Pro, Debug build, Metro with EXPO_PUBLIC_DEMO=1), no relaunch: `xcrun simctl openurl openagentspocket://__atlas/<id>` for console.agents-list-flat, console.start-agent, hosts.list in ONE app session. Red box "Maximum update depth exceeded" on console.start-agent, Metro log: `WARN Dynamically changing header's visibility in modals will result in remounting the screen and losing all local state`, then the error. Component stack: SceneView > SafeAreaView; Modal.componentWillUnmount (ActionMenu in PickerRow in WorkspaceSection in NewAgentScreen) setState; AtlasFrame setReady.
+- Root cause: `NewAgentRoute` (and `WorktreeRoute`) set `presentation: 'modal'` plus `headerShown: true` from inside the screen with `<Stack.Screen options>`. The screen is already pushed (the atlas pushes a headerless `[atlasId]` screen per deep link), so flipping it to a modal remounts the scene; the remount re-applies the options, the unmounting ActionMenu Modal and AtlasFrame's async setReady set state on every pass, and React bails out with the update-depth error. hosts.list and agents-list-flat were innocent (only the first modal screen failed).
+- Fix: presentation and title are declared once, statically, in `AppStack` (`new-agent`, `worktree`); the routes no longer set options. The atlas entry wraps NewAgentRoute in `titled()` like the other header screens. Side effect: the real app route also shows the "New Agent" title now (before, the header showed the raw route name).
+- Regression test: apps/mobile/src/navigation/modalRoutes.test.ts (no route file sets `presentation:`; `_layout.tsx` declares new-agent and worktree as modals). Verified red on the old file. Same three ids after the fix: no red box, no ERROR in the Metro log, three distinct screenshots.
+- Suspects, verified on the simulator: (1) presentation set after push: CONFIRMED as the cause. (2) fresh `edges` array to SafeAreaView every render: REFUTED (still passed every render after the fix, no loop; it only showed in the stack because SceneView renders it). (3) `onStarted`/phase effect: REFUTED (not in any trace, loop gone without touching it).
+- atlas-ios.mjs relaunches per id: run end to end on the three ids (terminate, launch, wait, deep link, screenshot, `ok <id>` each). The run exposed a script bug: `--no-server <id>` swallowed the first id as the flag value, so the whole atlas ran; `atlas-lib.mjs` parseArgs now knows `no-server` takes no value. Relaunch per id stays as the safety net; it is no longer hiding anything because the cause is fixed.
+notes:
+- Disk was full (332 MiB free); freed about 9 GiB by deleting two regenerable Xcode DerivedData folders (dd-nse, dd-la) from this session's scratchpad. Native slot taken and released, simulator shut down, Metro stopped.
+- expo-router turns every file under src/app into a route: a test file there became a red box ("Unable to resolve node:fs"). Tests of routes live in src/navigation.
+- `simctl launch` of the Debug app can block for a minute while Metro cold-bundles; the script's execFileSync waits for it.
+left:
+- Nothing for this task. UX2-component-catalog and N-rebuild-notifications are other tasks, not in this branch.

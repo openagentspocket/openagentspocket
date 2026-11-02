@@ -860,3 +860,21 @@
     - "/__atlas/<swift screen id> renders each mapped RN screen with fixed clock and demo data; Swift ids with no RN screen are listed"
     - "node scripts/atlas-web.mjs captures every mapped id on Expo web (402x874 @3x); atlas-ios.mjs does the same on the simulator; atlas-compare.py builds Swift | RN sheets and index.html"
     - "docs/ux/rn-gap.md lists per screen family what RN lacks versus Swift, worst first"
+- id: T-atlas-redbox
+  phase: 9
+  kind: native
+  title: "Atlas iOS 'Maximum update depth exceeded' (SafeAreaView -> SceneView) when ids are opened in sequence in one session"
+  deps: [UX0-screen-atlas]
+  files:
+    [
+      scripts/atlas-ios.mjs,
+      scripts/atlas-lib.mjs,
+      apps/mobile/src/dev/atlas/**,
+      apps/mobile/src/app/_layout.tsx,
+      apps/mobile/src/app/new-agent.tsx,
+      apps/mobile/src/app/worktree.tsx,
+      apps/mobile/src/navigation/modalRoutes.test.ts,
+    ]
+  acceptance:
+    - "the loop is reproduced, its root cause explained and fixed with a regression test"
+    - "atlas-ios.mjs terminates and relaunches the app per id so captures never cascade"

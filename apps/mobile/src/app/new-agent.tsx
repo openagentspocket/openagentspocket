@@ -1,5 +1,4 @@
-import { t } from '@openagentspocket/i18n';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useMemo } from 'react';
 import { NewAgentScreen } from '@/features/new-agent/NewAgentScreen';
 import { useNewAgentServices } from '@/features/new-agent/services';
@@ -27,10 +26,5 @@ export default function NewAgentRoute() {
     },
     [router, services],
   );
-  return (
-    <>
-      <Stack.Screen options={{ headerShown: true, title: t('New Agent'), presentation: 'modal' }} />
-      <NewAgentScreen origin={origin} onStarted={onStarted} onCancel={() => router.back()} />
-    </>
-  );
+  return <NewAgentScreen origin={origin} onStarted={onStarted} onCancel={() => router.back()} />;
 }

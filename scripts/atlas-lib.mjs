@@ -19,6 +19,9 @@ export function mappedScreens() {
   return JSON.parse(readFileSync(join(mobileDir, 'src/dev/atlas/atlasMap.json'), 'utf8'));
 }
 
+/** Flags that never take a value, so `--no-server some.id` keeps the id. */
+const BOOLEAN_FLAGS = new Set(['no-server']);
+
 /** `--key value` and `--flag` arguments; bare words are ids. */
 export function parseArgs(argv) {
   const options = {};
@@ -27,7 +30,8 @@ export function parseArgs(argv) {
     if (argv[i].startsWith('--')) {
       const key = argv[i].slice(2);
       const next = argv[i + 1];
-      if (next === undefined || next.startsWith('--')) options[key] = true;
+      if (BOOLEAN_FLAGS.has(key) || next === undefined || next.startsWith('--'))
+        options[key] = true;
       else {
         options[key] = next;
         i++;
