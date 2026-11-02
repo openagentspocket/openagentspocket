@@ -69,9 +69,11 @@ export function LiftedMenu({
 }: LiftedMenuProps) {
   const styles = useStyles();
   const pending = useRef<(() => void) | null>(null);
+  const onOpenRef = useRef(onOpen);
+  onOpenRef.current = onOpen;
   useEffect(() => {
     if (visible) {
-      onOpen?.();
+      onOpenRef.current?.();
       return;
     }
     if (!pending.current) return;

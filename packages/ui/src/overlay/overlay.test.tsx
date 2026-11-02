@@ -38,6 +38,17 @@ async function ask<T>(run: () => Promise<T>): Promise<{ answer: Promise<T> }> {
   return { answer: box.answer };
 }
 
+const slotLog: string[] = [];
+function makeSlot(name: string) {
+  return ({ children }: { children: React.ReactNode }) => {
+    slotLog.push(name);
+    return <>{children}</>;
+  };
+}
+const TriggerSlot = makeSlot('trigger');
+const PreviewSlot = makeSlot('preview');
+const ItemsSlot = makeSlot('items');
+
 describe('confirm()', () => {
   it('resolves true when confirmed and false when cancelled', async () => {
     await renderThemed(<OverlayHost />);
@@ -311,16 +322,12 @@ describe('ActionMenu preview', () => {
   });
 
   it('NativePreviewMenu puts the card in the context menu preview slot', async () => {
-    const slots: string[] = [];
-    const slot = (name: string) =>
-      function Slot({ children }: { children: React.ReactNode }) {
-        slots.push(name);
-        return <>{children}</>;
-      };
+    slotLog.length = 0;
+    const slots = slotLog;
     const ContextMenu = Object.assign(FakeMenu, {
-      Trigger: slot('trigger'),
-      Preview: slot('preview'),
-      Items: slot('items'),
+      Trigger: TriggerSlot,
+      Preview: PreviewSlot,
+      Items: ItemsSlot,
     });
     await renderThemed(
       <NativePreviewMenu
