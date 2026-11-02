@@ -443,7 +443,7 @@ Interactions: left opens the SessionDrawer, right opens the header menu (Chat/Te
 
 Variants (gallery variant id = the id before the colon):
 
-- `default`: two floating glass circles over the content: sidebar/session drawer at left, more (...) at right; no title bar · crop [ref](ref/AgentHeader.png) · [light](ref/AgentHeader.light.png)
+- `default`: two glass circles (sidebar/session drawer at left, more (...) at right) with the mid-bar identity between them: eyebrow HOST · AGENT KIND, bold mono title, mono workspace · branch subtitle (optional props eyebrow, title, subtitle) · crop [ref](ref/AgentHeader.png) · [light](ref/AgentHeader.light.png)
 
 Acceptance (the judge ticks each on the side-by-side):
 
