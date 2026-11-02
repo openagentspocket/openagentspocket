@@ -1,18 +1,10 @@
 import type { AgentStatus } from '../agents';
-import { TransportFailure } from '../errors/transport-error';
 import { FakeClock } from '../hosts/cancellation';
-import { type AgentStatusUpdate, REFRESH_DEBOUNCE_MS } from './auto-refresh';
+import type { AgentStatusUpdate } from './auto-refresh';
 import type { ExecGate } from './observable';
 import { makeFile } from './status';
 import { ChangesStore } from './store';
-import { APPEARANCE_SETTLE_MS } from './store-types';
-import {
-  type ChangedFile,
-  ChangesReadError,
-  type CheckoutChanges,
-  type CheckoutChangesRead,
-  type FilePatch,
-} from './types';
+import type { ChangedFile, CheckoutChanges, CheckoutChangesRead, FilePatch } from './types';
 
 export function changesOf(files: ChangedFile[], topLevel = '/r'): CheckoutChanges {
   return {

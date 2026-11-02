@@ -1,14 +1,8 @@
-import type { Translate } from '../errors/text';
-import {
-  type Cancellation,
-  type CancelSignal,
-  type Clock,
-  createCancellation,
-} from '../hosts/cancellation';
-import { type AgentStatusSource, ChangesAutoRefresh } from './auto-refresh';
+import { type Cancellation, type CancelSignal, createCancellation } from '../hosts/cancellation';
+import { ChangesAutoRefresh } from './auto-refresh';
 import { isCancellation } from './describe-failure';
 import { FileDiffPresenter } from './file-diff-store';
-import { type ExecGate, gated, Observable } from './observable';
+import { gated, Observable } from './observable';
 import { type Say, sourceSay } from './say';
 import { failureUpdate } from './store-failure';
 import {
@@ -18,19 +12,7 @@ import {
   sameFiles,
   UNAVAILABLE,
 } from './store-types';
-import {
-  type ChangedFile,
-  ChangesReadError,
-  type ChangesReadReason,
-  type ChangesReadRequest,
-  type CheckoutChanges,
-  type CheckoutChangesRead,
-  type CheckoutLocation,
-  type FilePatch,
-  type FilePatchRequest,
-  type UntrackedDirectoryListing,
-  type UntrackedDirectoryRequest,
-} from './types';
+import type { ChangedFile, CheckoutLocation } from './types';
 import { UntrackedDirectoryExpansions } from './untracked-expansions';
 
 /**

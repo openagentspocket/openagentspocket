@@ -21,7 +21,7 @@ describe('Changes parsing: line counts', () => {
     );
 
   it('tracked counts use raw paths and keep untracked items separate', () => {
-    const status = headers() + ordinary('.M', 'a.txt') + ordinary('.M', 'bin.dat') + '? new.txt\0';
+    const status = `${headers() + ordinary('.M', 'a.txt') + ordinary('.M', 'bin.dat')}? new.txt\0`;
     const numstat = '3\t1\ta.txt\0-\t-\tbin.dat\0';
     const read = parse(changesRecording({ status, numstat }));
     expect(counts({ status, numstat })).toEqual({
