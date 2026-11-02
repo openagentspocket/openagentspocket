@@ -1,4 +1,5 @@
 export * from './agent-model-probe';
+export * from './attachment-stager';
 export * from './bounded-script';
 export * from './commands';
 export * from './config-files';
@@ -9,4 +10,5 @@ export * from './plugin-step';
 export * from './recent-directories';
 export * from './remote-files';
 export * from './shell';
+export * from './skills';
 export * from './staging';
