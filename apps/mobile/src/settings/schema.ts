@@ -1,4 +1,4 @@
-import type { SettingKey, SettingsValues } from '@openagentspocket/core';
+import type { SettingKey, SettingsThemeId, SettingsValues } from '@openagentspocket/core';
 import type { IconName } from '@openagentspocket/ui';
 
 /** What a row may read to show a value or decide to appear. */
@@ -8,6 +8,9 @@ export interface SettingsContext {
   authKind: string | null;
   version: string;
   themeName: string;
+  themeId: SettingsThemeId;
+  /** Live values for the root rows: notification state, Host count. */
+  summary: { notifications?: string; hostCount: number };
 }
 
 type Text = (ctx: SettingsContext) => string;
@@ -25,9 +28,19 @@ interface RowBase {
 }
 
 export type SettingsRow =
-  | (RowBase & { kind: 'page'; page: string; value?: (ctx: SettingsContext) => string | undefined })
+  | (RowBase & {
+      kind: 'page';
+      page: string;
+      value?: (ctx: SettingsContext) => string | undefined;
+      /** Drawn before the value: the active theme's palette dots. */
+      accessory?: 'themeDots';
+    })
   /** Opens another screen of the app. `route` stays null until that screen exists. */
-  | (RowBase & { kind: 'route'; route: string | null })
+  | (RowBase & {
+      kind: 'route';
+      route: string | null;
+      value?: (ctx: SettingsContext) => string | undefined;
+    })
   | (RowBase & { kind: 'external'; url: string })
   | (RowBase & { kind: 'info'; value: (ctx: SettingsContext) => string })
   | (RowBase & { kind: 'toggle'; key: BoolKey; requireAuth?: boolean })
@@ -48,6 +61,8 @@ export type SettingsRow =
   | (RowBase & { kind: 'custom'; component: CustomComponent });
 
 export type CustomComponent =
+  | 'themePreview'
+  | 'toolbarPreview'
   | 'themeCards'
   | 'chatSample'
   | 'chatCache'
@@ -56,6 +71,8 @@ export type CustomComponent =
 
 export interface SettingsSection {
   id: string;
+  /** Rows lay out loose (cards of their own) instead of inside one grouped card. */
+  loose?: boolean;
   title?: Text;
   footer?: (ctx: SettingsContext) => string | undefined;
   rows: readonly SettingsRow[];

@@ -2,6 +2,7 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useEffect, useRef, useState } from 'react';
 import { Linking, View } from 'react-native';
 import { Button } from '../primitives/Button';
+import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 import { QRNotice } from './QRNotice';
 import type { QRScannerLabels } from './qrLabels';
@@ -16,6 +17,13 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.control,
   },
   camera: { flex: 1 },
+  corner: { position: 'absolute', width: 28, height: 28, borderColor: t.colors.accent },
+  tl: { top: t.spacing.md, left: t.spacing.md, borderTopWidth: 2, borderLeftWidth: 2 },
+  tr: { top: t.spacing.md, right: t.spacing.md, borderTopWidth: 2, borderRightWidth: 2 },
+  bl: { bottom: t.spacing.md, left: t.spacing.md, borderBottomWidth: 2, borderLeftWidth: 2 },
+  br: { bottom: t.spacing.md, right: t.spacing.md, borderBottomWidth: 2, borderRightWidth: 2 },
+  hint: { textAlign: 'center' },
+  root: { gap: t.spacing.sm },
   torch: { position: 'absolute', right: t.spacing.xs, bottom: t.spacing.xs },
 }));
 
@@ -74,34 +82,46 @@ export function QRCamera({ labels, onCode, paused = false, torch = false }: QRCa
   }
   const ready = state === 'ready';
   return (
-    <View style={styles.frame} testID="qr-camera">
-      {ready ? (
-        <CameraView
-          style={styles.camera}
-          facing="back"
-          enableTorch={torchOn}
-          barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-          onBarcodeScanned={
-            paused
-              ? undefined
-              : ({ data }) => {
-                  if (gate(data)) onCode(data);
-                }
-          }
-          onMountError={() => setMountFailed(true)}
-          accessibilityLabel={labels.preview}
-        />
-      ) : null}
-      {ready ? (
-        <View style={styles.torch}>
-          <Button
-            kind="capsule"
-            icon="torch"
-            accessibilityLabel={torchOn ? labels.torchOff : labels.torchOn}
-            onPress={() => setTorchOn((on) => !on)}
-            testID="qr-torch"
+    <View style={styles.root}>
+      <View style={styles.frame} testID="qr-camera">
+        {ready ? (
+          <CameraView
+            style={styles.camera}
+            facing="back"
+            enableTorch={torchOn}
+            barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+            onBarcodeScanned={
+              paused
+                ? undefined
+                : ({ data }) => {
+                    if (gate(data)) onCode(data);
+                  }
+            }
+            onMountError={() => setMountFailed(true)}
+            accessibilityLabel={labels.preview}
           />
-        </View>
+        ) : null}
+        {ready
+          ? (['tl', 'tr', 'bl', 'br'] as const).map((corner) => (
+              <View key={corner} style={[styles.corner, styles[corner]]} pointerEvents="none" />
+            ))
+          : null}
+        {ready ? (
+          <View style={styles.torch}>
+            <Button
+              kind="capsule"
+              icon="torch"
+              accessibilityLabel={torchOn ? labels.torchOff : labels.torchOn}
+              onPress={() => setTorchOn((on) => !on)}
+              testID="qr-torch"
+            />
+          </View>
+        ) : null}
+      </View>
+      {ready && labels.hint ? (
+        <Text variant="callout" tone="secondary" style={styles.hint}>
+          {labels.hint}
+        </Text>
       ) : null}
     </View>
   );

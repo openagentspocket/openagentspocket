@@ -1,8 +1,13 @@
 import {
+  AGENTICO_PLUGIN_ID,
+  BUNDLED_PLUGIN_VERSION,
   fingerprintFromBlob,
+  formatPluginVersion,
   type Host,
   type HostKeyFingerprint,
   type HostKeyPolicy,
+  installationFromList,
+  type PluginStatus,
   PREFLIGHT_ALL_PASSED,
   type PreflightError,
   type PreflightReport,
@@ -17,6 +22,10 @@ export interface ProbeOutcome {
   readonly routeInUse: string | null;
   /** The key the Host presented when it differs from the trusted one. */
   readonly changedKey: { known: HostKeyFingerprint; presented: HostKeyFingerprint } | null;
+  /** Round trip of the herdr ping in milliseconds; absent when the checks did not pass. */
+  readonly latencyMs?: number | null;
+  /** What the Host's herdr says about the Agentico plugin; absent when the checks did not pass. */
+  readonly plugin?: PluginStatus;
 }
 
 /**
@@ -25,6 +34,21 @@ export interface ProbeOutcome {
  */
 export interface HostProbe {
   run(host: Host, policy: HostKeyPolicy): Promise<ProbeOutcome>;
+}
+
+/** An enabled GitHub install of the plugin at `version`, as herdr lists it. */
+function installedPlugin(version: string): PluginStatus {
+  const installation = installationFromList([
+    {
+      pluginId: AGENTICO_PLUGIN_ID,
+      pluginRoot: null,
+      version,
+      enabled: true,
+      source: { kind: 'github', owner: null, repo: null },
+      warnings: null,
+    },
+  ]);
+  return installation ? { kind: 'installed', installation } : { kind: 'notInstalled' };
 }
 
 const ALGORITHM = 'ssh-ed25519';
@@ -51,6 +75,12 @@ function keyBlob(seed: string): Uint8Array {
 export class DemoHostProbe implements HostProbe {
   private readonly rotations = new Map<string, number>();
   private readonly failures = new Map<string, PreflightError>();
+  private readonly plugins = new Map<string, string>();
+
+  /** The plugin version the Host reports from now on (the bundled one by default). */
+  setPluginVersion(hostId: string, version: string): void {
+    this.plugins.set(hostId, version);
+  }
 
   /** The Host presents a different key from now on, as a reinstalled server does. */
   rotateKey(hostId: string): void {
@@ -99,6 +129,14 @@ export class DemoHostProbe implements HostProbe {
         changedKey: null,
       };
     }
-    return { report: PREFLIGHT_ALL_PASSED, routeInUse: route.id, changedKey: null };
+    return {
+      report: PREFLIGHT_ALL_PASSED,
+      routeInUse: route.id,
+      changedKey: null,
+      latencyMs: 0,
+      plugin: installedPlugin(
+        this.plugins.get(host.id) ?? formatPluginVersion(BUNDLED_PLUGIN_VERSION),
+      ),
+    };
   }
 }

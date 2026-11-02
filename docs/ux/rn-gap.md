@@ -58,7 +58,7 @@ shell.* (sidebar, switcher, app lock, banner, commands), files.* sheets, browser
 ## 3b. Home: accepted gaps after UX1-home review
 
 - Skin decision: inbox card titles are subheadline semibold (as Swift); Agent list row titles stay headline.
-- The Fab is 56 pt (brief says 58); New Terminal uses the first Host; Sessions strip lists Agents only (no shell tabs yet).
+- New Terminal uses the first Host; Sessions strip lists Agents only (no shell tabs yet).
 - Setup Guide on No Hosts opens the repository: there is no in-app guide screen.
 - Details in the row long-press menu opens the Agent detail (no quick-detail sheet yet).
 - Not captured: two-column layout at width >= 600, AX-size stacked header, Papel sheets besides shell.home.

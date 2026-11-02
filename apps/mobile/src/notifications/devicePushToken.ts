@@ -17,6 +17,15 @@ export interface NotificationsApi {
   ): Promise<unknown>;
 }
 
+/** Loaded on first use, so the app still starts on a build without the native module. */
+export const lazyNotifications: NotificationsApi = {
+  getPermissionsAsync: () => require('expo-notifications').getPermissionsAsync(),
+  requestPermissionsAsync: () => require('expo-notifications').requestPermissionsAsync(),
+  getDevicePushTokenAsync: () => require('expo-notifications').getDevicePushTokenAsync(),
+  setNotificationChannelAsync: (id, channel) =>
+    require('expo-notifications').setNotificationChannelAsync(id, channel),
+};
+
 export interface DevicePushTokenOptions {
   readonly platform: 'ios' | 'android';
   /** iOS: a development build registers with the APNs sandbox. */

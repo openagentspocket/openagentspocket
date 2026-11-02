@@ -4,15 +4,17 @@ import {
   fingerprintFromDigest,
   type Host,
   type HostKeyPolicy,
+  type PluginStatus,
   PREFLIGHT_ALL_PASSED,
   type PreflightError,
+  pluginStatusFromRead,
   preflightReportFor,
   renderText,
   serverInfoFromPing,
   type TransportError,
   UNKNOWN_HOST_KEY_ALGORITHM,
 } from '@openagentspocket/core';
-import { connectTransport } from '@openagentspocket/transport';
+import { connectTransport, readPlugin } from '@openagentspocket/transport';
 import type { HostKey, SshModule } from 'agentico-ssh';
 import type { HostProbe, ProbeOutcome } from '@/features/hosts/HostProbe';
 import { digestOf } from '@/features/hosts/pairingAdapters';
@@ -105,8 +107,18 @@ export class SshHostProbe implements HostProbe {
         policy,
       });
       const transport = await (options.connect ?? connectTransport)(recording, settings);
+      let latencyMs: number | null = null;
+      let plugin: PluginStatus = { kind: 'unavailable' };
       try {
+        const started = Date.now();
         serverInfoFromPing(await transport.ping());
+        latencyMs = Math.max(0, Math.round(Date.now() - started));
+        plugin = pluginStatusFromRead(
+          await readPlugin(transport).then(
+            (installation) => ({ ok: true as const, installation }),
+            (error: unknown) => ({ ok: false as const, error }),
+          ),
+        );
       } catch (error) {
         return this.failed(error, host, usesEndpoint, presentedKey, transport.routeId ?? null);
       } finally {
@@ -116,6 +128,8 @@ export class SshHostProbe implements HostProbe {
         report: PREFLIGHT_ALL_PASSED,
         routeInUse: transport.routeId ?? null,
         changedKey: null,
+        latencyMs,
+        plugin,
       };
     } catch (error) {
       return this.failed(error, host, usesEndpoint, presentedKey, null);

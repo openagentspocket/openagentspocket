@@ -72,3 +72,9 @@ appId: com.openagentspocket.app
     id: agent-more-menu
 - assertVisible: "Changes"
 - assertVisible: "Ports"
+- tapOn: "Changes"
+- extendedWaitUntil:
+    visible:
+      id: changes-screen
+    timeout: 20000
+- takeScreenshot: live-changes

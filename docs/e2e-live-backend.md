@@ -17,3 +17,16 @@
 
 Notes: on the Android emulator the Mac is `10.0.2.2`. The first connect asks "Trust this Host?" once; compare the
 fingerprint with the one `status` printed.
+
+## Demo build for e2e/hosts.yaml
+
+`e2e/hosts.yaml` and `e2e/home.yaml` expect scripted data: the offline probe answers "Trust this Host?" without SSH.
+They need a build with demo mode compiled in, not the live build used above:
+
+```
+EXPO_PUBLIC_DEMO=1 npx expo run:ios --configuration Release     # or: run:android --variant release
+maestro test e2e/hosts.yaml
+```
+
+(`EXPO_PUBLIC_DEMO` is inlined at bundle time; a Release/Debug build made without it is a live build and
+`hosts.yaml` stops at the missing trust prompt.) Native builds are the integrator's.

@@ -28,7 +28,18 @@ export function AuthFields({ draft, keepsPassword, onChange }: AuthFieldsProps) 
   const method = draft.authMethod === 'password' ? 'password' : 'deviceKey';
   return (
     <>
-      <Section title={t('Authentication')}>
+      <Section
+        title={t('Authentication')}
+        footer={
+          method === 'deviceKey'
+            ? t(
+                'Add this line to ~/.ssh/authorized_keys on the Host. The private key never leaves this device.',
+              )
+            : keepsPassword
+              ? extra('Leave blank to keep the saved password.')
+              : undefined
+        }
+      >
         <PickerRow
           title={t('Method')}
           value={method}
@@ -36,29 +47,20 @@ export function AuthFields({ draft, keepsPassword, onChange }: AuthFieldsProps) 
           onChange={(authMethod) => onChange({ authMethod })}
           testID="host-auth-method"
         />
+        {method === 'deviceKey' ? <DeviceKeyLine /> : null}
+        {method === 'password' ? (
+          <TextField
+            inline
+            label={t('Password')}
+            value={draft.password}
+            onChangeText={(password) => onChange({ password })}
+            secureTextEntry
+            autoCapitalize="none"
+            autoCorrect={false}
+            testID="host-password"
+          />
+        ) : null}
       </Section>
-      {method === 'deviceKey' ? (
-        <Section
-          grouped={false}
-          footer={t(
-            'Add this line to ~/.ssh/authorized_keys on the Host. The private key never leaves this device.',
-          )}
-        >
-          <DeviceKeyLine />
-        </Section>
-      ) : null}
-      {method === 'password' ? (
-        <TextField
-          label={t('Password')}
-          value={draft.password}
-          onChangeText={(password) => onChange({ password })}
-          secureTextEntry
-          autoCapitalize="none"
-          autoCorrect={false}
-          hint={keepsPassword ? extra('Leave blank to keep the saved password.') : undefined}
-          testID="host-password"
-        />
-      ) : null}
       {draft.herdrEndpoint ? (
         <Section
           grouped={false}
@@ -69,18 +71,22 @@ export function AuthFields({ draft, keepsPassword, onChange }: AuthFieldsProps) 
           <Text variant="mono">{`${t('Launcher')}: ${draft.herdrEndpoint.executablePath}`}</Text>
         </Section>
       ) : (
-        <TextField
-          label={t('herdr Session')}
-          placeholder={t('Session name')}
-          value={draft.sessionName}
-          onChangeText={(sessionName) => onChange({ sessionName })}
-          autoCapitalize="none"
-          autoCorrect={false}
-          hint={t('Leave blank for the default herdr session.')}
-          error={sessionError}
-          mono
-          testID="host-session"
-        />
+        <Section
+          title={t('herdr Session')}
+          footer={sessionError ?? t('Leave blank for the default herdr session.')}
+        >
+          <TextField
+            inline
+            label={t('herdr Session')}
+            placeholder={t('Session name')}
+            value={draft.sessionName}
+            onChangeText={(sessionName) => onChange({ sessionName })}
+            autoCapitalize="none"
+            autoCorrect={false}
+            error={sessionError}
+            testID="host-session"
+          />
+        </Section>
       )}
     </>
   );

@@ -1,16 +1,17 @@
 import type { Host } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, EmptyState, ListRow, Screen, Section, StatusDot } from '@openagentspocket/ui';
+import { Button, EmptyState, Screen, SheetBar, Text } from '@openagentspocket/ui';
 import { useState } from 'react';
-import { View } from 'react-native';
-import { useEntryMenus } from '../../navigation/entryMenus';
+import { Pressable } from 'react-native';
 import { extra } from './extraText';
+import { HostGroup } from './HostGroup';
 import type { HostConnection } from './HostsModel';
-import { connectionLine, groupHosts, groupStatus, groupTitle, hostTitle } from './hostRows';
-import { removeHostWithConfirmation } from './removeHost';
+import { groupHosts } from './hostRows';
 import { useHosts } from './useHosts';
 
 interface HostListScreenProps {
+  onDone: () => void;
+  onSetupGuide?: () => void;
   onOpen: (host: Host) => void;
   onAdd: () => void;
   onScan: () => void;
@@ -18,8 +19,10 @@ interface HostListScreenProps {
   onDuplicate: (host: Host) => void;
 }
 
-/** hosts.list: the saved Hosts in connection groups, with Scan to Pair and Add Host. */
+/** hosts.list: the sheet bar (Done, scan, add), then the saved Hosts in connection groups. */
 export function HostListScreen({
+  onDone,
+  onSetupGuide,
   onOpen,
   onAdd,
   onScan,
@@ -27,7 +30,6 @@ export function HostListScreen({
   onDuplicate,
 }: HostListScreenProps) {
   const snapshot = useHosts();
-  const entries = useEntryMenus();
   const [collapsed, setCollapsed] = useState<ReadonlySet<HostConnection>>(new Set());
   const toggle = (group: HostConnection) =>
     setCollapsed((current) => {
@@ -36,9 +38,22 @@ export function HostListScreen({
       return next;
     });
 
+  const bar = (
+    <SheetBar
+      title={t('Hosts')}
+      large
+      leading={{ label: t('Done'), onPress: onDone, testID: 'hosts-done' }}
+      trailing={[
+        { label: t('Scan to Pair'), icon: 'qr', onPress: onScan, testID: 'hosts-scan' },
+        { label: t('Add Host'), icon: 'add', onPress: onAdd, testID: 'hosts-add' },
+      ]}
+    />
+  );
+  const edges = ['left', 'right', 'bottom'] as const;
+
   if (snapshot.loadError) {
     return (
-      <Screen testID="hosts-unavailable">
+      <Screen header={bar} edges={edges} testID="hosts-unavailable">
         <EmptyState
           icon="error"
           title={t('Hosts Unavailable')}
@@ -49,82 +64,56 @@ export function HostListScreen({
       </Screen>
     );
   }
-
-  const actions = (
-    <>
-      <Button icon="qr" title={t('Scan to Pair')} onPress={onScan} testID="hosts-scan" />
-      <Button
-        kind="secondary"
-        icon="add"
-        title={t('Add Host')}
-        onPress={onAdd}
-        testID="hosts-add"
-      />
-    </>
-  );
   if (snapshot.hosts.length === 0) {
     return (
-      <Screen testID="hosts-empty">
+      <Screen header={bar} edges={edges} testID="hosts-empty">
         <EmptyState
           icon="server"
           title={t('No Hosts')}
           message={t('Add a machine that runs herdr to get started.')}
-          actions={actions}
+          actions={
+            <>
+              <Button icon="add" title={t('Add Host')} onPress={onAdd} testID="hosts-empty-add" />
+              <Button
+                kind="text"
+                icon="qr"
+                title={t('Scan to Pair')}
+                onPress={onScan}
+                testID="hosts-empty-scan"
+              />
+            </>
+          }
         />
       </Screen>
     );
   }
   return (
-    <Screen testID="hosts-list">
-      <View style={{ gap: 8 }}>{actions}</View>
+    <Screen header={bar} edges={edges} testID="hosts-list">
       {groupHosts(snapshot).map(({ group, hosts }) => (
-        <Section
+        <HostGroup
           key={group}
-          title={groupTitle(group)}
-          status={groupStatus(group)}
-          count={hosts.length}
-          expanded={!collapsed.has(group)}
+          group={group}
+          hosts={hosts}
+          latencies={snapshot.latencies}
+          collapsed={collapsed.has(group)}
           onToggle={() => toggle(group)}
-        >
-          {hosts.map((host) => (
-            <ListRow
-              key={host.id}
-              title={hostTitle(host)}
-              subtitle={connectionLine(host)}
-              leading={<StatusDot status={groupStatus(group)} />}
-              chevron
-              onPress={() => onOpen(host)}
-              menu={[
-                ...entries.host({ id: host.id, name: hostTitle(host) }),
-                { key: 'edit', title: t('Edit'), icon: 'edit', onPress: () => onEdit(host) },
-                {
-                  key: 'duplicate',
-                  title: t('Duplicate'),
-                  icon: 'copy',
-                  onPress: () => onDuplicate(host),
-                },
-                {
-                  key: 'remove',
-                  title: t('Remove Host'),
-                  icon: 'trash',
-                  destructive: true,
-                  onPress: () => void removeHostWithConfirmation(host),
-                },
-              ]}
-              swipeActions={[
-                {
-                  key: 'remove',
-                  title: t('Remove'),
-                  icon: 'trash',
-                  tone: 'danger',
-                  onPress: () => void removeHostWithConfirmation(host),
-                },
-              ]}
-              testID={`host-row-${host.id}`}
-            />
-          ))}
-        </Section>
+          onOpen={onOpen}
+          onEdit={onEdit}
+          onDuplicate={onDuplicate}
+        />
       ))}
+      {onSetupGuide ? (
+        <Pressable
+          accessibilityRole="link"
+          onPress={onSetupGuide}
+          style={{ alignSelf: 'flex-start', paddingHorizontal: 4, paddingVertical: 4 }}
+          testID="hosts-setup-guide"
+        >
+          <Text variant="footnote" tone="accent">
+            {t('Setup Guide')}
+          </Text>
+        </Pressable>
+      ) : null}
     </Screen>
   );
 }
