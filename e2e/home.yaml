@@ -1,8 +1,13 @@
 # Smoke: Home shows its three sections. Run with `maestro test e2e/home.yaml` (one booted simulator/emulator).
+# Demo mode is switched on explicitly through Settings, so the flow also works on a live build.
 appId: com.openagentspocket.app
 ---
 - launchApp:
     clearState: true
+- openLink: openagentspocket:///settings
+- tapOn:
+    id: settings.general.demoMode
+- back
 - assertVisible: "OpenAgentsPocket"
 - assertVisible: "NEEDS YOU.*"
 - assertVisible: "WORKING.*"

@@ -4,12 +4,13 @@
 #   - the isolated backend is up (sshd + a herdr socket with one running agent), reachable from the device;
 #   - the device key is authorized for USER on it (first run: copy the key shown by the Host form's
 #     "Copy authorized_keys Line" or authorize it from the pairing ceremony).
+# The isolated backend (scripts/isolated-herdr-backend.py in the Swift repo) listens on its own port, so
+# pass PORT; the flow has no defaults on purpose, a default in this file would override the -e values.
+# `start` prints the Host settings; `authorize` appends the device key (see docs/e2e-live-backend.md).
+# For an Agent to appear it needs one report, for example:
+#   python3 scripts/isolated-herdr-backend.py run -- pane report-agent --source verify --agent claude --state working w1:p1
 # English UI. Never point this at a personal Host.
 appId: com.openagentspocket.app
-env:
-  HOST: 127.0.0.1
-  PORT: "22"
-  USER: demo
 ---
 - launchApp:
     clearState: true
@@ -23,7 +24,15 @@ env:
 - tapOn:
     id: route-0-address
 - inputText: ${HOST}
-- hideKeyboard
+- tapOn:
+    id: route-0-port
+- eraseText: 5
+- inputText: ${PORT}
+# hideKeyboard fails on iOS 26.5: tap a static label, then scroll to the button.
+- tapOn: "Routes"
+- scrollUntilVisible:
+    element:
+      id: host-save
 - tapOn:
     id: host-save
 # The first connection asks to trust the key the backend presents.

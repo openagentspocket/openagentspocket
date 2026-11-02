@@ -16,6 +16,10 @@ appId: com.openagentspocket.app
 - tapOn:
     id: route-0-address
 - inputText: workshop.example
+- tapOn:
+    id: route-0-port
+- eraseText: 5
+- inputText: "22"
 # hideKeyboard fails on iOS 26.5: tap a static label, then scroll to the button.
 - tapOn: "Routes"
 - scrollUntilVisible:
