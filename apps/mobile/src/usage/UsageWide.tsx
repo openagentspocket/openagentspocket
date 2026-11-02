@@ -305,7 +305,7 @@ export function UsageWideScreen({
 }: WideScreenProps) {
   const styles = useStyles();
   return (
-    <Screen scroll={false} testID="usage-screen">
+    <Screen scroll={false} bare testID="usage-screen">
       <View style={styles.root}>
         <UsageHostColumn scope={all} host={host} onHost={onHost} metric={detail.metric} />
         <ScrollView style={styles.detail} testID="usage-screen-scroll">
