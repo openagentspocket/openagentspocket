@@ -10,12 +10,16 @@ const useStyles = makeStyles((t) => ({
     padding: 2,
   },
   segment: {
-    flex: 1,
+    // Natural label width first, spare room shared equally: a label is never clipped.
+    flexGrow: 1,
+    flexShrink: 0,
+    flexBasis: 'auto',
     minHeight: 32,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: t.metrics.chipRadius,
-    paddingHorizontal: t.spacing.xs,
+    paddingHorizontal: 4,
+    minWidth: 0,
   },
   selected: {
     backgroundColor: t.colors.surfaceRaised,
@@ -74,6 +78,8 @@ export function Segmented<T extends string>({
               semibold={selected}
               tone={selected ? 'primary' : 'secondary'}
               numberOfLines={1}
+              adjustsFontSizeToFit
+              minimumFontScale={0.8}
             >
               {option.label}
             </Text>
