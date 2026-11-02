@@ -41,6 +41,9 @@ export interface TransportSettings {
   readonly routeStaggerMs?: number;
   readonly homeCommand?: string;
   readonly wakeCommand?: string;
+  /** Injectable attach commands (fixtures); default `herdr agent attach` / `herdr terminal attach`. */
+  readonly attachCommand?: string;
+  readonly terminalAttachCommand?: string;
   /** Aborts the connect (the user cancelled). */
   readonly signal?: CancelSignal;
 }
