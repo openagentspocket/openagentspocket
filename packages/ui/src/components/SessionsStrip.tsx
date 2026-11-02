@@ -31,7 +31,7 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'space-between',
     padding: airy.tile,
     borderRadius: t.metrics.cardRadius,
-    backgroundColor: t.colors.terminalBackground,
+    backgroundColor: t.colors.surface,
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
   },

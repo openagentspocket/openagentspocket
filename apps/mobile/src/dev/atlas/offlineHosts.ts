@@ -3,10 +3,8 @@ import { createDemoConsoleStore } from '@/console/demo';
 import type { ConsoleStore } from '@/console/store';
 import { systemClock } from '@/console/systemClock';
 
-/** The demo Console plus a Host that never connects: its "is offline" line leads Home. */
-export function offlineHostsStore(): ConsoleStore {
-  const store = createDemoConsoleStore();
-  const session = new EventsSession({
+const neverConnects = () =>
+  new EventsSession({
     subscriptions: consoleSubscriptions([]),
     connect: async () => {
       throw new Error('unreachable');
@@ -14,6 +12,11 @@ export function offlineHostsStore(): ConsoleStore {
     clock: systemClock,
     keepalive: null,
   });
-  store.addHost({ id: 'lab', name: 'Lab', username: 'ada' }, session);
+
+/** The demo Console plus two Hosts that never connect: their "is offline" lines lead Home. */
+export function offlineHostsStore(): ConsoleStore {
+  const store = createDemoConsoleStore();
+  store.addHost({ id: 'lab', name: 'Lab', username: 'ada' }, neverConnects());
+  store.addHost({ id: 'pi', name: 'Raspberry Pi', username: 'ada' }, neverConnects());
   return store;
 }

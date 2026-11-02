@@ -48,7 +48,7 @@ const noop = () => {};
 export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'shell.home': { render: () => <Index /> },
   'shell.home-new-menu': { script: { press: ['fab'] }, render: () => <Index /> },
-  'console.row-context-menu': { script: { longPress: 'inbox-p1' }, render: () => <Index /> },
+  'console.row-context-menu': { script: { longPress: 'inbox-p2' }, render: () => <Index /> },
   'console.close-confirmation': {
     script: {
       run: () =>

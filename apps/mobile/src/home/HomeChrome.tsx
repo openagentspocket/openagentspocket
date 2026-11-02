@@ -71,6 +71,7 @@ export function NoHosts({
           <>
             <Button
               icon="add"
+              pill
               title={t('Add Host')}
               onPress={() => onAddHost?.()}
               testID="home-add-host"

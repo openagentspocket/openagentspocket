@@ -18,6 +18,13 @@ left:
 - AX-size stacked header variant and the 58 pt Fab are not verified/changed.
 - A shell-tab Sessions source (Swift lists shells next to Agents) once the Console exposes them.
 - Host issue lines are keyed by Host name (HostIssue has no id); two Hosts sharing a name open the first.
+review-fixes:
+- Sessions tiles use the surface fill (visible against the canvas); captions (mark, title, host) were already drawn.
+- Section rhythm: Home body no longer adds a bottom pad before Sessions; demo Console has an idle Agent (p5) so the idle line shows.
+- Add Host is a capsule (Button `pill`); host issue lines compact (subheadline, 16 pt glyph, 28 pt rows); atlas offline state seeds two Hosts.
+- Row menu: Details added (opens the Agent); atlas long-press targets the Working row inbox-p2.
+- Inbox card title is subheadline semibold.
+- Accepted gaps recorded in docs/ux/rn-gap.md section 3b. Not re-captured (no atlas run).
 notes:
 - age testID moved to `inbox-<pane>-age` (ui InboxCard); the Home test follows. e2e live.yaml reaches Agents through `home-see-all`.
 - Atlas states that need a tap use `AtlasActions` (web DOM click / synthetic mouse hold on a testID); close-confirmation opens the confirm directly (Swift shows it over Agents). `console: 'offline'` seeds a Host that never connects.

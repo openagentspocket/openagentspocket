@@ -21,7 +21,7 @@ const useStyles = makeStyles((th) => ({
   root: { flex: 1 },
   fill: { flex: 1 },
   content: { gap: airy.sectionGap },
-  body: { paddingHorizontal: th.metrics.screenInset, paddingBottom: th.spacing.md },
+  body: { paddingHorizontal: th.metrics.screenInset, paddingBottom: 0 },
 }));
 
 export interface HomeScreenProps {

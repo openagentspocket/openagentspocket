@@ -46,6 +46,7 @@ export function InboxItem({ item, now, pinned, onOpen, onPin, onClose }: InboxIt
     pinned,
     labels: homeLabels(),
     onPin: () => onPin(item),
+    onDetails: () => onOpen?.(item),
     onClose: () => onClose(item),
   });
   const age = ageOf(item, now);

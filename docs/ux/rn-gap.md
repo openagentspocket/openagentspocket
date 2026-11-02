@@ -55,6 +55,14 @@ shell.* (sidebar, switcher, app lock, banner, commands), files.* sheets, browser
   screen and adds a secondary "Setup Guide" link under the button, with copy about herdr, Agents and Terminals.
 - Hosts card section sits at the bottom in both; RN has no connection state text or latency.
 
+## 3b. Home: accepted gaps after UX1-home review
+
+- Skin decision: inbox card titles are subheadline semibold (as Swift); Agent list row titles stay headline.
+- The Fab is 56 pt (brief says 58); New Terminal uses the first Host; Sessions strip lists Agents only (no shell tabs yet).
+- Setup Guide on No Hosts opens the repository: there is no in-app guide screen.
+- Details in the row long-press menu opens the Agent detail (no quick-detail sheet yet).
+- Not captured: two-column layout at width >= 600, AX-size stacked header, Papel sheets besides shell.home.
+
 ## 4. Hosts (hosts.list, hosts.detail, hosts.form, hosts.pairing-scanner)
 
 - hosts.list: RN leads with two full-width buttons (Scan to Pair, Add Host) above the list. Swift has a large
