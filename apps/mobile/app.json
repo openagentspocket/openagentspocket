@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "OpenAgentsPocket",
+    "name": "Agents Pocket",
     "slug": "openagentspocket",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -34,8 +34,24 @@
           "imageWidth": 160
         }
       ],
-      "expo-sharing"
+      "expo-sharing",
+      "expo-sqlite",
+      [
+        "expo-local-authentication",
+        { "faceIDPermission": "Unlock OpenAgentsPocket with Face ID." }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "OpenAgentsPocket uses the camera to scan the Pairing Code shown on your computer, so you can add that machine without typing anything.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ]
     ],
+    "locales": {
+      "es": "./locales/es.json"
+    },
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true

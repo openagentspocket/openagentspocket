@@ -1,9 +1,9 @@
 import type { CancelSignal } from '../hosts/cancellation';
 
-export type FileKind = 'file' | 'directory' | 'symlink' | 'other';
+export type RemoteFileKind = 'file' | 'directory' | 'symlink' | 'other';
 
 export interface FileStat {
-  kind: FileKind | null;
+  kind: RemoteFileKind | null;
   size: number | null;
   /** Seconds since 1970. */
   modifiedAt: number | null;
@@ -63,7 +63,7 @@ export interface FileBrowserHost {
   download(request: DownloadRequest, progress: ProgressSink, signal: CancelSignal): Promise<void>;
   upload(request: UploadRequest, progress: ProgressSink, signal: CancelSignal): Promise<void>;
   rename(path: string, newName: string): Promise<void>;
-  delete(path: string, kind: FileKind): Promise<void>;
+  delete(path: string, kind: RemoteFileKind): Promise<void>;
   /** Which of `candidates`, names `directory` lists, git ignores; a failure means "dim nothing". */
   ignoredNames(directory: string, candidates: readonly string[]): Promise<ReadonlySet<string>>;
 }

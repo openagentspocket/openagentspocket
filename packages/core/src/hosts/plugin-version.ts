@@ -63,6 +63,8 @@ export const PLUGIN_FEATURES = [
   'approvalActions',
   /** The Live Activity can offer Approve and Deny. */
   'liveActivityApprovals',
+  /** Registration entries with `platform: "android"` and FCM tokens. */
+  'androidPush',
 ] as const;
 export type PluginFeature = (typeof PLUGIN_FEATURES)[number];
 
@@ -75,6 +77,7 @@ export const PLUGIN_FEATURE_MINIMUM: Readonly<Record<PluginFeature, PluginVersio
   claudeAccounts: pluginVersion(0, 8, 0),
   approvalActions: pluginVersion(0, 9, 0),
   liveActivityApprovals: pluginVersion(0, 10, 0),
+  androidPush: pluginVersion(0, 12, 0),
 };
 
 export function isPluginFeatureSupported(feature: PluginFeature, version: PluginVersion): boolean {

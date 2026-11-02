@@ -1,0 +1,5 @@
+{
+  "ios": {
+    "NSCameraUsageDescription": "OpenAgentsPocket usa la cámara para escanear el código de vinculación que muestra tu computadora, así esa máquina se agrega sin escribir nada."
+  }
+}

@@ -1,9 +1,10 @@
-import { FakeSsh, type FakeSshOptions } from '../../../../modules/ssh/src/fake';
 import { encodeUtf8 } from '../events/utf8';
 import { FileBrowserDownloads } from './downloads';
 import { FileBrowserError } from './errors';
+import { FakeFileSession, type FakeFileSessionOptions } from './fake-file-session';
 import { FakeLocalFiles } from './fake-local';
 import type { FileBrowserItem } from './item';
+import type { FileBrowserHost } from './ports';
 import { FilePreparer } from './preparer';
 import { HOME_COMMAND, SftpFileBrowserHost, type SftpHostOptions } from './sftp-host';
 import { FileBrowserStore } from './store';
@@ -12,20 +13,20 @@ export const bytes = (text: string) => encodeUtf8(text);
 export const text = (data: Uint8Array | undefined) =>
   data === undefined ? undefined : new TextDecoder().decode(data);
 
-export async function connect(options: FakeSshOptions = {}) {
-  const ssh = new FakeSsh({
+export async function connect(options: FakeFileSessionOptions = {}) {
+  return new FakeFileSession({
     ...options,
     exec: {
       [HOME_COMMAND]: { exitCode: 0, stdout: '__AGENTICO_HOME__=/home/me\n', stderr: '' },
       ...options.exec,
     },
   });
-  await ssh.generateKey('k');
-  const session = await ssh.connect({ host: 'h', port: 22, username: 'me', keyAlias: 'k' });
-  return session;
 }
 
-export async function setup(options: FakeSshOptions = {}, hostOptions: SftpHostOptions = {}) {
+export async function setup(
+  options: FakeFileSessionOptions = {},
+  hostOptions: SftpHostOptions = {},
+) {
   const session = await connect(options);
   const local = new FakeLocalFiles();
   const host = new SftpFileBrowserHost(session, local, {
@@ -36,10 +37,10 @@ export async function setup(options: FakeSshOptions = {}, hostOptions: SftpHostO
 }
 
 export async function setupStore(
-  options: FakeSshOptions = {},
+  options: FakeFileSessionOptions = {},
   extras: {
     startPath?: string;
-    makeHost?: (base: SftpFileBrowserHost) => SftpFileBrowserHost;
+    makeHost?: (base: SftpFileBrowserHost) => FileBrowserHost;
   } = {},
 ) {
   const base = await setup(options);

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { TransportError } from '../errors/transport-error';
 import { FakeClock } from '../hosts/cancellation';
 import { failures } from './failure';
 import { CallGate, ScriptedEventsTransport, SequencedConnector } from './scripted-transport';
@@ -137,7 +138,7 @@ describe('EventsSession revalidate', () => {
 
   it('fails when herdr is gone on return, instead of retrying', async () => {
     const transport = new ScriptedEventsTransport();
-    const gone = { kind: 'streamLocalOpenFailed', path: '/tmp/herdr.sock' };
+    const gone: TransportError = { kind: 'streamLocalOpenFailed', path: '/tmp/herdr.sock' };
     transport.failPing(2, gone);
     const { session, next } = harness(async () => transport, { keepalive: null });
     await session.resume();

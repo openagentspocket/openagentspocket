@@ -1,11 +1,11 @@
 import { looksSecret, RemotePath } from './path';
-import type { FileEntry, FileKind } from './ports';
+import type { FileEntry, RemoteFileKind } from './ports';
 
 /** One row of the file browser: a Host directory entry as SFTP listed it (a link stays a link). */
 export interface FileBrowserItem {
   name: string;
   path: string;
-  kind: FileKind | null;
+  kind: RemoteFileKind | null;
   size: number | null;
   modifiedAt: number | null;
 }

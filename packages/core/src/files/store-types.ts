@@ -1,6 +1,6 @@
 import type { Text } from '../errors/text';
 import type { FileBrowserItem } from './item';
-import type { FileKind, TransferProgress } from './ports';
+import type { RemoteFileKind, TransferProgress } from './ports';
 
 /** What a downloaded file is for. */
 export type FileIntent = 'preview' | 'share' | 'saveToFiles';
@@ -36,7 +36,7 @@ export interface FileBrowserUpload {
 export interface PendingCollision {
   upload: FileBrowserUpload;
   /** What holds the name; null when the Host said the name is taken but the listing predates it. */
-  existingKind: FileKind | null;
+  existingKind: RemoteFileKind | null;
   canReplace: boolean;
 }
 

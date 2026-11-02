@@ -10,6 +10,7 @@ import { BadgesAndMarks, Buttons, TypeAndColor } from './galleryBasics';
 import { Content, Lists } from './galleryContent';
 import { Feedback, Overlays } from './galleryFeedback';
 import { CardsAndRows, Forms } from './galleryRows';
+import { Scanner } from './galleryScanner';
 
 export interface GallerySection {
   id: string;
@@ -28,6 +29,7 @@ export const gallerySections: readonly GallerySection[] = [
   { id: 'overlays', title: 'Overlays', Body: Overlays },
   { id: 'content', title: 'Content', Body: Content },
   { id: 'lists', title: 'Lists', Body: Lists },
+  { id: 'scanner', title: 'Scanner', Body: Scanner },
 ];
 
 const isThemeId = (value: string | undefined): value is ThemeId =>

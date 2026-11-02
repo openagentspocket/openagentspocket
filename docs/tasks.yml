@@ -92,6 +92,73 @@
   files: [apps/mobile/app/hosts/**, apps/mobile/src/features/hosts/**]
   acceptance:
     - "M: add a Host manually, trust alert, saved; paste a HERDR-PAIR code, ceremony steps shown; S: elements and copy of hosts.list, hosts.form, hosts.detail from the spec"
+- id: P1.7-ssh-transport
+  phase: 1
+  kind: js
+  title: herdr over SSH - the live transport (connect, host-key check, requests, events) in a new packages/transport
+  deps: [P1.1a-ssh-ios, P1.1b-ssh-android, P1.2-core-wire, P1.3-core-hosts, P1.6-core-events]
+  files: [packages/transport/**, tsconfig.json, docs/decisions/0024-*.md]
+  swift_ref:
+    [
+      Sources/Agentico/Transport/AgenticoSSHTransport.swift,
+      AgenticoSSHTransport+Requests.swift,
+      AgenticoSSHTransport+HerdrAPI.swift,
+      AgenticoSSHTransport+Events.swift,
+      AgenticoSSHTransport+ErrorMapping.swift,
+      BootstrappedExecChannel.swift,
+      SSHChannelAdmission.swift,
+      AgenticoSSHHostKeyVerifier.swift,
+      HostKeyPolicy.swift,
+      SSHCredentials.swift,
+      SSHTransportSettings.swift,
+      AsyncDeadline.swift,
+      SharedAsyncOperation.swift,
+    ]
+  acceptance:
+    - "U against modules/ssh FakeSsh: connect through the route race, TOFU and changed-key outcomes via the core host-key rules, a request round trip per herdr method family, events stream feeding EventsSession (reconnect, drop), channel admission limits, error mapping to TransportError; implements the core EventsTransport and ConsoleTransport interfaces (no redefinition)"
+    - "ADR 0024: why a separate package (core stays free of native imports; it depends on core + agentico-ssh)"
+- id: P1.8-host-services
+  phase: 1
+  kind: js
+  title: Host services over the transport (environment, scripts, commands, plugin install/config, recent directories, staging, remote files)
+  deps: [P1.7-ssh-transport]
+  files: [packages/transport/src/host/**]
+  swift_ref:
+    [
+      Sources/Agentico/Transport/AgenticoSSHTransport+HostCommands.swift,
+      +HostEnvironment.swift,
+      +HostFiles.swift,
+      +HostScripts.swift,
+      +Plugin.swift,
+      AgenticoPluginInstallation.swift,
+      +PluginConfigFiles.swift,
+      +RecentDirectories.swift,
+      +Staging.swift,
+      RemoteFiles.swift,
+      RemoteHostEnvironment.swift,
+      RemoteHostPath.swift,
+      NodeToolchainProbe.swift,
+      AgentModelProbe.swift,
+    ]
+  acceptance:
+    - "U against FakeSsh: each service's script/command and its parse, plugin version gate and install/upgrade flow, recent directories, staging paths"
+- id: P1.9-secure-stores
+  phase: 1
+  kind: js
+  title: Persistent stores - device key, secrets, known hosts, Host catalog (expo-secure-store + sqlite)
+  deps: [P1.3-core-hosts]
+  files: [apps/mobile/src/stores/**, packages/core/src/hosts/store*.ts]
+  swift_ref:
+    [
+      Sources/Agentico/Transport/DeviceKey.swift,
+      DeviceKeyStore.swift,
+      SecretStore.swift,
+      KnownHostsStore.swift,
+      RSAKeyStore.swift,
+      Sources/Agentico/Hosts/**,
+    ]
+  acceptance:
+    - "U with in-memory adapters: catalog CRUD and migration, known-hosts trust/replace/forget, device key created once per alias through modules/ssh generateKey; adapters for expo-secure-store and expo-sqlite behind the core interfaces (the integrator rebuilds native)"
 
 # ── Foundations used by every phase ────────────────────────────────────────
 - id: P0-ui-primitives
@@ -144,18 +211,26 @@
     files: [packages/core/src/console/**],
   }
 - {
+    id: P2.1b-console-store,
+    phase: 2,
+    kind: js,
+    title: "Console store: per-Host store on HostConsoleProjection + selectConsole across Hosts (pins, clocks), Home/Agents off the demo data",
+    deps: [P2.1-core-console],
+    files: [apps/mobile/src/console/**, packages/core/src/console/select*.ts],
+  }
+- {
     id: P2.2-app-home,
     phase: 2,
     kind: js,
     title: "Home + Status Inbox on the live store",
-    deps: [P2.1-core-console, P0-ui-primitives],
+    deps: [P2.1b-console-store, P0-ui-primitives],
   }
 - {
     id: P2.3-app-agents-list,
     phase: 2,
     kind: js,
     title: "Agents list: four presentations, filter, search, pin/close/rename",
-    deps: [P2.1-core-console, P0-ui-primitives],
+    deps: [P2.1b-console-store, P0-ui-primitives],
   }
 - {
     id: P2.4-new-agent,
@@ -300,6 +375,20 @@
     kind: js,
     title: "Usage: dashboard, quick sheet, limits, accounts (gifted-charts)",
     deps: [P0-ui-primitives],
+  }
+- {
+    id: P4.1b-usage-live,
+    phase: 4,
+    kind: js,
+    title: "Usage live store: per-Host probe over SSH exec, plugin gating, refresh/backoff, accounts file over SSH, pressable chart bars",
+    deps: [P4.1-usage, P1.2-core-wire, P1.5-app-hosts],
+  }
+- {
+    id: P4.1c-usage-home,
+    phase: 4,
+    kind: js,
+    title: "Home usage ring and chips that open the Usage QuickSheet",
+    deps: [P4.1-usage, P2.2-app-home],
   }
 - {
     id: P4.2-files,

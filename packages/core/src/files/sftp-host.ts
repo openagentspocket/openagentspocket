@@ -9,11 +9,11 @@ import { looksSecret, nameProblem, RemotePath } from './path';
 import type {
   DownloadRequest,
   FileBrowserHost,
-  FileKind,
   FileListing,
   FileStat,
   LocalFiles,
   ProgressSink,
+  RemoteFileKind,
   UploadRequest,
 } from './ports';
 
@@ -305,7 +305,7 @@ export class SftpFileBrowserHost implements FileBrowserHost {
     await this.withSftp((sftp) => this.renameRefusingExisting(sftp, path, destination, false));
   }
 
-  async delete(path: string, kind: FileKind) {
+  async delete(path: string, kind: RemoteFileKind) {
     this.requirePaths(path);
     if (RemotePath.isSystemPath(path)) throw new FileBrowserError('protectedItem');
     await this.withSftp(async (sftp) => {

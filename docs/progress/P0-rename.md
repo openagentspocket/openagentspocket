@@ -11,7 +11,7 @@ acceptance:
 - full pnpm test green: met (above).
 - one native build per platform shows the new icon and name: met. `expo prebuild --clean`, iOS build on "agentico-app iPhone 17 Pro", Android build on Pixel_3a; both launch the new Home. Evidence in /private/tmp/claude-501/-Users-eaprules/96b69bbe-4c3e-4245-9ae5-f3863fee18ff/scratchpad/rn/evidence/rename: ios-splash.png, ios-springboard.png, ios-home-app.png, android-launcher.png, android-home-app.png (android-splash.png was taken mid-boot, not useful).
 left:
-- Home-screen label truncates on both platforms ("OpenAgentsPo..." on iOS, "OpenAgents..." on Android). Propose a short CFBundleDisplayName / Android label (for example "OA Pocket" or "Agents Pocket"); not changed, awaiting Enzo.
+- Home-screen label truncates on both platforms ("OpenAgentsPo..." on iOS, "OpenAgents..." on Android). Resolved after the task: Enzo chose "Agents Pocket" as the display name (ADR 0022); the integrator verifies it fits in the next native check.
 - Relay APNs topics still `com.example.agentico` (packages/relay tests + wrangler.toml); change when the Apple Developer account is active, together with the relay deploy config.
 - Android prompts for "nearby devices" permission on first launch (existing behavior, not part of this task).
 notes:
