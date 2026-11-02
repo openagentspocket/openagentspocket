@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import ChangesRoute from '@/app/changes';
 import FileDiffRoute from '@/app/changes/diff';
 import PreviewRoute from '@/app/ports/preview';
 import { DEMO_READ } from '@/changes/demo';
@@ -18,7 +17,7 @@ export function FileDiffDemo() {
       setReady(true);
     });
   }, []);
-  return ready ? <FileDiffRoute /> : <ChangesRoute />;
+  return ready ? <FileDiffRoute /> : null;
 }
 
 /** browser.preview: the demo Host's dev server opened, as a tap on its row does. */

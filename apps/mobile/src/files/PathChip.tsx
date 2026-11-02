@@ -11,7 +11,7 @@ export function PathChip({ path, loadingLabel }: { path: string | null; loadingL
   const styles = useStyles();
   return (
     <View style={styles.row} accessibilityLabel={t('Path %@', path ?? '')}>
-      <MetaChip label={path ?? loadingLabel} icon="folder" testID="files-path" />
+      <MetaChip label={path ?? loadingLabel} testID="files-path" />
     </View>
   );
 }
