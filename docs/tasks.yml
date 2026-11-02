@@ -254,6 +254,41 @@
     deps: [P0-swift-goldens],
   }
 - {
+    id: P2.6a-cache-store,
+    phase: 2,
+    kind: js,
+    title: "File-backed ChatTranscriptCache (30-day/300 MB pruning, agent directory cache)",
+    deps: [P2.6a-chat-claude],
+  }
+- {
+    id: P2.6a-engine,
+    phase: 2,
+    kind: js,
+    title: "Chat conversation engine per Agent: locator + follower + reducer + cache, SSH ChatHostFiles adapter",
+    deps: [P2.6a-chat-claude, P2.6a-cache-store, P2.1-core-console],
+  }
+- {
+    id: P2.6a-timeline-projection,
+    phase: 2,
+    kind: js,
+    title: "ChatTimelineProjection and ChatConversationStatus over ChatTranscript vs goldens",
+    deps: [P2.6a-chat-claude],
+  }
+- {
+    id: P2.6a-workflow-journal,
+    phase: 2,
+    kind: js,
+    title: "Workflow journal follower and subagent transcript reader",
+    deps: [P2.6a-chat-claude],
+  }
+- {
+    id: P2.6a-i18n-notices,
+    phase: 2,
+    kind: js,
+    title: "Localizable notice and tool titles keyed by NoticeKind",
+    deps: [P2.6a-chat-claude, P2.6a-timeline-projection],
+  }
+- {
     id: P2.6b-chat-codex,
     phase: 2,
     kind: js,
@@ -265,7 +300,7 @@
     phase: 2,
     kind: js,
     title: "Chat timeline UI: rows, tool rows, markdown (library), jump, subagent transcript",
-    deps: [P2.6a-chat-claude, P0-ui-primitives],
+    deps: [P2.6a-chat-claude, P2.6a-timeline-projection, P2.6a-engine, P0-ui-primitives],
   }
 - {
     id: P2.8-composer,
@@ -293,14 +328,14 @@
     phase: 2,
     kind: js,
     title: "Chat + dialogs for Pi/OMP, Grok, OpenCode",
-    deps: [P2.6a-chat-claude],
+    deps: [P2.6a-chat-claude, P2.6a-engine],
   }
 - {
     id: P2.11-background-work,
     phase: 2,
     kind: js,
     title: "Background Work strip and sheet",
-    deps: [P2.6a-chat-claude],
+    deps: [P2.6a-chat-claude, P2.6a-workflow-journal, P2.6a-engine],
   }
 - {
     id: P2.12-focus-mode,
@@ -321,7 +356,7 @@
     phase: 2,
     kind: js,
     title: "NEW two-line summary per agent (did / needs) from the transcript",
-    deps: [P2.6a-chat-claude],
+    deps: [P2.6a-chat-claude, P2.6a-timeline-projection, P2.6a-engine],
   }
 
 # ── Phase 3: Terminal ──────────────────────────────────────────────────────

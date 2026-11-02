@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { encodeUtf8 } from '../../events/utf8';
 import { frameLines } from '../model/lines';
 import { projectionContext } from '../model/types';
+import { plainLines } from './prompts';
 import { ClaudeTranscriptReducer } from './reducer';
 
 function lines(jsonl: string, options: { lineCap?: number; prefixCap?: number } = {}) {
@@ -310,5 +311,19 @@ describe('probe transcript', () => {
     const main = new ClaudeTranscriptReducer();
     main.append(sub);
     expect(main.transcript(projectionContext()).entries).toEqual([]);
+  });
+});
+
+describe('compaction preview (plainLines vs Swift ChatMarkdown.plainText)', () => {
+  // Cases where the Swift ChatMarkdownTests.plainText expectation and the port agree.
+  it('drops heading marks and blank lines like Swift plainText', () => {
+    expect(plainLines('## Goal\n\nTried another fix')).toBe('Goal\nTried another fix');
+    expect(plainLines('Tried another fix')).toBe('Tried another fix');
+  });
+
+  // Known divergence: Swift also strips inline marks, task boxes, HTML blocks and thematic breaks.
+  it('keeps inline marks, task boxes and HTML (documented divergence)', () => {
+    expect(plainLines('- [x] done')).toBe('- [x] done');
+    expect(plainLines('**Turn** `x`')).toBe('**Turn** `x`');
   });
 });
