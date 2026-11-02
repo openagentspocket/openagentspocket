@@ -2677,5 +2677,9 @@
   "%lld unchanged lines": "{0, plural, one {# línea sin cambios} other {# líneas sin cambios}}",
   "%lld Hosts": "{0, number} Hosts",
   "Open ${agent}": "Abrí {agent}",
-  "Open ${host}": "Abrí {host}"
+  "Open ${host}": "Abrí {host}",
+  "Chat arrives with the conversation engine.": "El Chat llega con el motor de conversaciones.",
+  "Terminal attach is not available yet.": "Adjuntar la terminal todavía no está disponible.",
+  "Agent view": "Vista del Agent",
+  "Switch Agent": "Cambiar de Agent"
 }
