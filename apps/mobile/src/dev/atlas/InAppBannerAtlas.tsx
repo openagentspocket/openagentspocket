@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Index from '@/app/index';
@@ -23,9 +23,15 @@ const BLOCKED = {
  */
 function WindowLayer() {
   const [top, setTop] = useState(0);
+  const node = useRef<{ measureInWindow: (done: (x: number, y: number) => void) => void } | null>(
+    null,
+  );
   return (
     <View
-      ref={(node) => node?.measureInWindow((_x, y) => setTop(y))}
+      ref={(n) => {
+        node.current = n;
+      }}
+      onLayout={() => node.current?.measureInWindow((_x, y) => setTop(y))}
       style={StyleSheet.absoluteFill}
       pointerEvents="box-none"
     >
