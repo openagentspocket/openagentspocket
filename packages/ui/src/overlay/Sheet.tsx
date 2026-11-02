@@ -15,11 +15,9 @@ import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles } from '../theme/theme';
 import { OverlayHost } from './OverlayHost';
+import { DETENT_SHARE, type SheetDetent, useSheetDrag } from './sheetDetents';
 
-/** medium: half the screen; large: nearly all of it; fit: as tall as its content. */
-export type SheetDetent = 'medium' | 'large' | 'fit';
-
-const DETENT_SHARE: Record<SheetDetent, number> = { medium: 0.5, large: 0.92, fit: 0.92 };
+export type { SheetDetent };
 
 const useStyles = makeStyles((t) => ({
   root: { flex: 1, justifyContent: 'flex-end' },
@@ -35,6 +33,7 @@ const useStyles = makeStyles((t) => ({
     maxWidth: t.metrics.readableWidth,
     alignSelf: 'center',
   },
+  dragArea: { alignItems: 'center', paddingBottom: t.spacing.xs },
   grabber: {
     alignSelf: 'center',
     width: 36,
@@ -83,8 +82,12 @@ export function Sheet({
   const styles = useStyles();
   const insets = useInsets();
   const { height } = useWindowDimensions();
-  const share = DETENT_SHARE[detent];
-  const size = detent === 'fit' ? { maxHeight: height * share } : { height: height * share };
+  const drag = useSheetDrag(detent, onClose, visible);
+  const live = drag.detent;
+  const share = DETENT_SHARE[live];
+  const limit = height * DETENT_SHARE.large;
+  const grown = Math.min(limit, Math.max(height * 0.2, height * share + drag.offset));
+  const size = live === 'fit' ? { maxHeight: height * share } : { height: grown };
   return (
     <Modal
       visible={visible}
@@ -109,7 +112,9 @@ export function Sheet({
           accessibilityViewIsModal
           testID={testID}
         >
-          <View style={styles.grabber} />
+          <View style={styles.dragArea} {...drag.handlers} testID={`${testID}-grabber`}>
+            <View style={styles.grabber} />
+          </View>
           <View style={styles.header}>
             <Text variant="headline" accessibilityRole="header" style={styles.title}>
               {title ?? ''}
@@ -125,7 +130,7 @@ export function Sheet({
           <ScrollView
             contentContainerStyle={styles.body}
             keyboardShouldPersistTaps="handled"
-            style={detent === 'fit' ? undefined : { flex: 1 }}
+            style={live === 'fit' ? undefined : { flex: 1 }}
           >
             <SurfaceFillProvider value="surfaceOverlay">{children}</SurfaceFillProvider>
           </ScrollView>
