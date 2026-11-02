@@ -56,6 +56,8 @@ export interface NativeSubscription {
   remove(): void;
 }
 
+export type NativeCredentialKind = 'password' | 'seed' | 'privateKey';
+
 export interface NativeSshBridge {
   generateKey(alias: string): Promise<string>;
   publicKey(alias: string): Promise<string | null>;
@@ -66,6 +68,17 @@ export interface NativeSshBridge {
     sessionId: string,
     username: string,
     keyAlias: string,
+    timeoutMs: number,
+  ): Promise<void>;
+  /**
+   * Authenticates with a credential that is not a stored key: `password` (the text), `seed`
+   * (base64 of the 32-byte Ed25519 seed) or `privateKey` (RSA PEM text).
+   */
+  authenticateWith(
+    sessionId: string,
+    username: string,
+    kind: NativeCredentialKind,
+    secret: string,
     timeoutMs: number,
   ): Promise<void>;
   disconnect(sessionId: string): Promise<void>;

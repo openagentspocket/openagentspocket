@@ -42,6 +42,15 @@ public final class AgenticoSSHModule: Module {
                     timeout: .ms(timeoutMs))
             }
         }
+        AsyncFunction("authenticateWith") {
+            (sessionId: String, username: String, kind: String, secret: String, timeoutMs: Int)
+                async throws in
+            try await bridged {
+                try await bridge.authenticate(
+                    sessionId: sessionId, username: username, kind: kind, secret: secret,
+                    timeout: .ms(timeoutMs))
+            }
+        }
         AsyncFunction("disconnect") { (sessionId: String) async in
             await bridge.disconnect(sessionId: sessionId)
         }

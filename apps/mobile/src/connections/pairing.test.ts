@@ -45,6 +45,49 @@ describe('ssh pairing connector', () => {
     expect(ssh.sessions.at(-1)?.connected).toBe(false);
   });
 
+  it('enrolls the device key with the Bootstrap Key seed, then verifies with the device key', async () => {
+    const seed = new Uint8Array(32).fill(9);
+    const probe = await deviceKey(new FakeSsh());
+    const ssh = new FakeSsh({
+      hostKey: { algorithm: 'ssh-ed25519', fingerprint: FINGERPRINT },
+      bootstrapSeeds: [seed],
+      exec: {
+        'agentico-enroll': {
+          exitCode: 0,
+          stdout: `HERDR-ENROLL:OK:${probe.fingerprint}\n`,
+          stderr: '',
+        },
+      },
+    });
+    const key = await deviceKey(ssh);
+    const steps: string[] = [];
+    await createModuleConnector({ ssh, keyAlias: 'pairing' }).pair(
+      { ...decoded(), bootstrap: { seed, expiresAt: 4_000_000_000 } },
+      key,
+      (step) => steps.push(step),
+    );
+    expect(steps).toEqual(['reach', 'enroll', 'verify']);
+    expect(ssh.credentials.map((credential) => credential.kind)).toEqual([
+      'bootstrapSeed',
+      'deviceKey',
+    ]);
+  });
+
+  it('reports a rejected Bootstrap Key as such', async () => {
+    const ssh = new FakeSsh({
+      hostKey: { algorithm: 'ssh-ed25519', fingerprint: FINGERPRINT },
+      bootstrapSeeds: [new Uint8Array(32).fill(1)],
+    });
+    const key = await deviceKey(ssh);
+    await expect(
+      createModuleConnector({ ssh, keyAlias: 'pairing' }).pair(
+        { ...decoded(), bootstrap: { seed: new Uint8Array(32).fill(2), expiresAt: 4_000_000_000 } },
+        key,
+        () => {},
+      ),
+    ).rejects.toMatchObject({ failure: { kind: 'bootstrapRejected' } });
+  });
+
   it('never authenticates against a Host presenting another key', async () => {
     const ssh = new FakeSsh({
       hostKey: {

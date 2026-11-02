@@ -61,6 +61,7 @@ export async function connectTransport(
         port: route.port,
         username: settings.username,
         keyAlias: settings.keyAlias,
+        credential: settings.credential,
         timeoutMs: settings.connectTimeoutMs ?? DEFAULT_CONNECT_TIMEOUT_MS,
         confirmHostKey: async (key) => {
           try {

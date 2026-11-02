@@ -100,6 +100,49 @@ describe('connect and the Host Key policy', () => {
     ]);
   });
 
+  it('hands a password, a seed and an RSA key to the matching native credential kind', async () => {
+    const { bridge, calls } = scriptedBridge();
+    const client = createSshClient(bridge);
+    const seed = new Uint8Array(32).fill(7);
+    await client.connect({ ...options, credential: { kind: 'password', password: 'pw' } });
+    await client.connect({ ...options, credential: { kind: 'bootstrapSeed', seed } });
+    await client.connect({ ...options, credential: { kind: 'rsaKey', privateKey: 'PEM' } });
+    const offered = calls
+      .filter(([name]) => name === 'authenticateWith')
+      .map(([, , , kind, secret]) => [kind, secret]);
+    expect(offered).toEqual([
+      ['password', 'pw'],
+      ['seed', toBase64(seed)],
+      ['privateKey', 'PEM'],
+    ]);
+    expect(calls.some(([name]) => name === 'authenticate')).toBe(false);
+  });
+
+  it('asks a credential function only after the Host Key was accepted', async () => {
+    const { bridge, names } = scriptedBridge();
+    const order: string[] = [];
+    await createSshClient(bridge).connect({
+      ...options,
+      confirmHostKey: () => {
+        order.push('confirm');
+        return true;
+      },
+      credential: async () => {
+        order.push('credential');
+        return { kind: 'password', password: 'x' };
+      },
+    });
+    expect(order).toEqual(['confirm', 'credential']);
+    expect(names()).toEqual(['connect', 'authenticateWith']);
+  });
+
+  it('refuses a connect without any credential and drops the connection', async () => {
+    const { bridge, names } = scriptedBridge();
+    const { keyAlias: _alias, ...withoutKey } = options;
+    expect(await rejectCode(createSshClient(bridge).connect(withoutKey))).toBe('invalidArgument');
+    expect(names()).toEqual(['connect', 'disconnect']);
+  });
+
   it('maps native failures to codes and disconnects a failed login', async () => {
     const { bridge, names } = scriptedBridge({
       authenticate: () => {

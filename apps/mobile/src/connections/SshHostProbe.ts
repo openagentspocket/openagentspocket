@@ -16,13 +16,14 @@ import { connectTransport } from '@openagentspocket/transport';
 import type { HostKey, SshModule } from 'agentico-ssh';
 import type { HostProbe, ProbeOutcome } from '@/features/hosts/HostProbe';
 import { digestOf } from '@/features/hosts/pairingAdapters';
-import { transportSettingsFor } from './transportSettings';
+import { type HostSecrets, transportSettingsFor } from './transportSettings';
 
 export interface SshHostProbeOptions {
   readonly ssh: SshModule;
   readonly keyAlias: string;
   readonly clock: Clock;
   readonly ensureDeviceKey: () => Promise<unknown>;
+  readonly secrets?: HostSecrets;
   readonly connect?: typeof connectTransport;
 }
 
@@ -100,6 +101,7 @@ export class SshHostProbe implements HostProbe {
       const settings = transportSettingsFor(host, {
         keyAlias: options.keyAlias,
         clock: options.clock,
+        secrets: options.secrets,
         policy,
       });
       const transport = await (options.connect ?? connectTransport)(recording, settings);

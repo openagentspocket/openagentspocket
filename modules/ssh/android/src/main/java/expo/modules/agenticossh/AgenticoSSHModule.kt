@@ -66,6 +66,9 @@ class AgenticoSSHModule : Module() {
       AsyncFunction("authenticate") Coroutine { sessionId: String, username: String, keyAlias: String, timeoutMs: Int ->
         io { authenticate(sessionId, username, keyAlias, timeoutMs.toLong()) }
       }
+      AsyncFunction("authenticateWith") Coroutine { sessionId: String, username: String, kind: String, secret: String, timeoutMs: Int ->
+        io { authenticateWith(sessionId, username, kind, secret, timeoutMs.toLong()) }
+      }
       AsyncFunction("disconnect") Coroutine { sessionId: String -> io { disconnect(sessionId) } }
       AsyncFunction("isConnected") Coroutine { sessionId: String -> io { isConnected(sessionId) } }
       AsyncFunction("exec") Coroutine { sessionId: String, command: String, input: String?, timeoutMs: Int ->

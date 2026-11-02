@@ -11,12 +11,38 @@ export interface HostKey {
   fingerprint: string;
 }
 
+/**
+ * What authenticates the connection. A device key never leaves native storage; the other three
+ * carry their secret for the one connect only (the module keeps nothing).
+ */
+export type SshCredential =
+  /** The Ed25519 key generated and kept natively under `alias` (Keychain / Keystore). */
+  | { kind: 'deviceKey'; alias: string }
+  /** The account password (also tried as keyboard-interactive on Android). */
+  | { kind: 'password'; password: string }
+  /** A Pairing Code's Bootstrap Key: the raw 32-byte Ed25519 seed. */
+  | { kind: 'bootstrapSeed'; seed: Uint8Array }
+  /**
+   * An RSA private key in PEM text (PKCS#1, PKCS#8 or unencrypted OpenSSH), signing
+   * rsa-sha2-512. An encrypted key fails with `keyEncrypted`, anything else unreadable with
+   * `keyInvalid`.
+   */
+  | { kind: 'rsaKey'; privateKey: string };
+
+export type SshCredentialSource = SshCredential | (() => SshCredential | Promise<SshCredential>);
+
 export interface ConnectOptions {
   host: string;
   port: number;
   username: string;
-  /** Alias of a key generated and kept natively (Keychain / Keystore). JS never sees private keys. */
-  keyAlias: string;
+  /** Shorthand for `credential: { kind: 'deviceKey', alias }`. */
+  keyAlias?: string;
+  /**
+   * The credential, or a function that yields it once the Host Key was accepted (a pairing
+   * ceremony learns which identity to offer only then). One of `keyAlias` and `credential`
+   * is required.
+   */
+  credential?: SshCredentialSource;
   /** Expected Host Key fingerprint. A different key fails with `hostKeyMismatch`. */
   pinnedHostKey?: string;
   /**
@@ -192,6 +218,6 @@ export interface SshModule {
   /** The OpenSSH public key line, or null when no key exists under `alias`. */
   publicKey(alias: string): Promise<string | null>;
   deleteKey(alias: string): Promise<void>;
-  /** 6. connect, apply the Host Key policy, then authenticate with the device key. */
+  /** 6. connect, apply the Host Key policy, then authenticate with the credential. */
   connect(options: ConnectOptions): Promise<SshSession>;
 }

@@ -6,6 +6,7 @@ import com.jcraft.jsch.ChannelDirectStreamLocal
 import com.jcraft.jsch.ChannelDirectTCPIP
 import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.ChannelSubsystem
+import com.jcraft.jsch.Identity
 import com.jcraft.jsch.JSch
 import com.jcraft.jsch.JSchException
 import com.jcraft.jsch.Session
@@ -101,16 +102,21 @@ internal class SshConnection private constructor(
   }
 
   /**
-   * Accepts the presented Host Key and authenticates `username` with the device key. The key
-   * signs inside this process; JSch only receives signatures.
+   * Accepts the presented Host Key and authenticates `username` with a key (`identity`, which
+   * signs inside this process; JSch only receives signatures) or, with `password`, by password
+   * (also answered to a keyboard-interactive prompt).
    */
-  fun authenticate(username: String, key: DeviceKey, timeoutMs: Long) {
+  fun authenticate(username: String, identity: Identity?, password: String?, timeoutMs: Long) {
     if (username.isEmpty() || username.contains('\u0000')) throw SshFailure.invalidArgument("username")
     synchronized(this) {
       if (!authStarted) {
         authStarted = true
         AgenticoSessionAccess.setUserName(session, username)
-        identities.identity = DeviceKeyIdentity(key)
+        if (password != null) {
+          session.setPassword(password.toByteArray(Charsets.UTF_8))
+          session.setConfig("PreferredAuthentications", "password,keyboard-interactive")
+        }
+        identities.identity = identity
         if (!gate.accept()) throw SshFailure.invalidated
       }
     }
