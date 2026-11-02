@@ -53,7 +53,8 @@ interface SheetBarProps {
   testID?: string;
 }
 
-function BarAction({ action, testID }: { action: SheetBarItem; testID: string }) {
+/** One glass-capsule action of a sheet bar (also used by `Sheet`'s trailing confirm). */
+export function BarAction({ action, testID }: { action: SheetBarItem; testID: string }) {
   const styles = useStyles();
   const theme = useTheme();
   return (

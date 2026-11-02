@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { type AccessibilityActionEvent, Switch, View } from 'react-native';
-import { ActionMenu } from '../overlay/ActionMenu';
+import { useRef, useState } from 'react';
+import { type AccessibilityActionEvent, Switch, View, type ViewInstance } from 'react-native';
+import { ActionMenu, type MenuAnchor } from '../overlay/ActionMenu';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { ListRow, type ListRowProps } from '../primitives/ListRow';
@@ -97,9 +97,23 @@ export function PickerRow<V extends string>({
   testID,
 }: PickerRowProps<V>) {
   const [open, setOpen] = useState(false);
+  const [anchor, setAnchor] = useState<MenuAnchor | undefined>();
+  const ref = useRef<ViewInstance>(null);
   const current = options.find((option) => option.value === value);
+  // The menu opens next to its row (as a popover does); unmeasurable falls back to the bottom.
+  const show = () => {
+    let shown = false;
+    const go = (next?: MenuAnchor) => {
+      if (shown) return;
+      shown = true;
+      setAnchor(next);
+      setOpen(true);
+    };
+    ref.current?.measureInWindow?.((x, y, width, height) => go({ x, y, width, height }));
+    setTimeout(() => go(), 80);
+  };
   return (
-    <>
+    <View ref={ref} collapsable={false}>
       <ListRow
         title={title}
         value={current?.label}
@@ -111,13 +125,14 @@ export function PickerRow<V extends string>({
             color={valueTone === 'accent' ? 'accent' : 'textTertiary'}
           />
         }
-        onPress={() => setOpen(true)}
+        onPress={show}
         disabled={disabled}
         testID={testID}
       />
       <ActionMenu
         title={title}
         visible={open}
+        anchor={anchor}
         onClose={() => setOpen(false)}
         items={options.map((option) => ({
           key: option.value,
@@ -130,7 +145,7 @@ export function PickerRow<V extends string>({
         }))}
         testID={testID ? `${testID}-menu` : undefined}
       />
-    </>
+    </View>
   );
 }
 

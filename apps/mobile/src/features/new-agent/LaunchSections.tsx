@@ -94,7 +94,6 @@ export function WorkspaceSection({
         options={options}
         onChange={change}
         valueTone={selected === NONE ? 'tertiary' : 'accent'}
-        disabled={state.selectedHostId === undefined}
         testID="new-agent-workspace"
       />
       {isNew ? <WorkspaceDraftFields store={store} state={state} onBrowse={onBrowse} /> : null}

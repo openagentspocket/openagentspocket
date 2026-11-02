@@ -9,7 +9,9 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { BarAction } from '../components/SheetBar';
 import { Button } from '../primitives/Button';
+import { GlassCapsule } from '../primitives/GlassCapsule';
 import { ScreenBackground } from '../primitives/ScreenBackground';
 import { SurfaceFillProvider } from '../primitives/surfaceFill';
 import { Text } from '../primitives/Text';
@@ -170,7 +172,9 @@ export function Sheet({
                 )}
                 <View style={[styles.barSlot, styles.barEnd]}>
                   {trailing ? (
-                    <BarButton action={trailing} emphasized testID={`${testID}-trailing`} />
+                    <GlassCapsule>
+                      <BarAction action={trailing} testID={`${testID}-trailing`} />
+                    </GlassCapsule>
                   ) : null}
                 </View>
               </View>
@@ -223,18 +227,10 @@ export function Sheet({
   );
 }
 
-function BarButton({
-  action,
-  emphasized = false,
-  testID,
-}: {
-  action: SheetBarAction;
-  emphasized?: boolean;
-  testID: string;
-}) {
+function BarButton({ action, testID }: { action: SheetBarAction; testID: string }) {
   return (
     <Button
-      kind={emphasized ? 'primary' : 'capsule'}
+      kind="capsule"
       size="small"
       title={action.label}
       onPress={action.onPress}
