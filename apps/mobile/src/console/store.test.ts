@@ -63,4 +63,20 @@ describe('ConsoleStore with the demo Host', () => {
     expect(blocked?.lastOutputSnippet).toBeTruthy();
     store.removeHost('demo');
   });
+
+  it('reorders pinned Agents with movePin', async () => {
+    const store = createDemoConsoleStore();
+    await ready(store);
+    const front = () =>
+      store
+        .getState()
+        .rows.slice(0, 2)
+        .map((row) => row.agent.pane_id);
+    store.togglePin('demo', 'p3');
+    store.togglePin('demo', 'p2');
+    expect(front()).toEqual(['p2', 'p3']);
+    store.movePin('demo', 'p3', 'up');
+    expect(front()).toEqual(['p3', 'p2']);
+    store.removeHost('demo');
+  });
 });

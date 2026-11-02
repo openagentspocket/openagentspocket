@@ -79,4 +79,37 @@ describe('PinnedAgents', () => {
     reloaded.removePin('h', 'gone:pane');
     expect(reloaded.revision).toBe(revision);
   });
+
+  describe('movePin', () => {
+    const pinned = (...ids: string[]) => {
+      const storage = new MemoryStorage();
+      const pins = new PinnedAgents(storage);
+      for (const id of [...ids].reverse()) pins.togglePin('h', id);
+      return { pins, storage };
+    };
+
+    it('swaps with the neighbor and persists the order', () => {
+      const { pins, storage } = pinned('a', 'b', 'c');
+      expect(pins.movePin('h', 'c', 'up')).toBe(true);
+      expect(pins.pinnedPaneIds('h')).toEqual(['a', 'c', 'b']);
+      expect(pins.movePin('h', 'a', 'down')).toBe(true);
+      expect(new PinnedAgents(storage).pinnedPaneIds('h')).toEqual(['c', 'a', 'b']);
+    });
+
+    it('stops at the ends and ignores unpinned panes', () => {
+      const { pins } = pinned('a', 'b');
+      const before = pins.revision;
+      expect(pins.movePin('h', 'a', 'up')).toBe(false);
+      expect(pins.movePin('h', 'b', 'down')).toBe(false);
+      expect(pins.movePin('h', 'zz', 'up')).toBe(false);
+      expect(pins.revision).toBe(before);
+    });
+
+    it('skips pins of panes that are no longer listed', () => {
+      const { pins } = pinned('a', 'gone', 'c');
+      const listed = (_host: string, pane: string) => pane !== 'gone';
+      expect(pins.movePin('h', 'c', 'up', listed)).toBe(true);
+      expect(pins.pinnedPaneIds('h')).toEqual(['c', 'gone', 'a']);
+    });
+  });
 });

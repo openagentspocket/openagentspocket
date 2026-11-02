@@ -108,6 +108,15 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     this.recompute();
   }
 
+  /** Moves a pinned Agent one place toward the front or back of the pins (skipping closed panes). */
+  movePin(hostId: string, paneId: string, direction: 'up' | 'down'): void {
+    const listed = new Set(this.state.rows.map((row) => `${row.hostId}\u0000${row.agent.pane_id}`));
+    const moved = this.options.pins.movePin(hostId, paneId, direction, (host, pane) =>
+      listed.has(`${host}\u0000${pane}`),
+    );
+    if (moved) this.recompute();
+  }
+
   /** Clears an Agent from the Status Inbox. */
   dismiss(key: string): void {
     this.options.clocks.dismiss(key);

@@ -73,6 +73,34 @@ export class PinnedAgents {
     this.commit();
   }
 
+  /**
+   * Swaps a pin with its nearest neighbor toward the front (`up`) or back (`down`) among the pins
+   * `isListed` accepts, so a pin of a closed pane never absorbs a move. False when it cannot move.
+   */
+  movePin(
+    hostId: string,
+    paneId: string,
+    direction: 'up' | 'down',
+    isListed: (hostId: string, paneId: string) => boolean = () => true,
+  ): boolean {
+    const from = this.pinRank(hostId, paneId);
+    if (from === undefined) return false;
+    const step = direction === 'up' ? -1 : 1;
+    for (let to = from + step; to >= 0 && to < this.entries.length; to += step) {
+      const other = this.entries[to];
+      if (!other || !isListed(other.hostId, other.paneId)) continue;
+      const next = [...this.entries];
+      const moved = next[from];
+      if (!moved) return false;
+      next[from] = other;
+      next[to] = moved;
+      this.entries = next;
+      this.commit();
+      return true;
+    }
+    return false;
+  }
+
   private drop(hostId: string, paneId: string): void {
     this.entries = this.entries.filter(
       (entry) => !(entry.hostId === hostId && entry.paneId === paneId),
