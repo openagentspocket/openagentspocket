@@ -4,20 +4,17 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
-State (2026-11-02 ~12:00): **wave 5 JS merged on main** (P1.11 app integration and entry points, P2.6a chat
-engine Claude + Codex, notices i18n, P2.9b blocked card, P2.8 composer, P3.2 terminal wiring + keys, P3.3
-selection/links, P3.4 snippets/skills/attachments, P3.5 shells, P4.6 deep links, P4.1c usage ring, board drag +
-list prefs, P6.1c live activity + keychain wiring, wave-3 verify fixes); full test green (core 2583, mobile 265,
-ui 145, transport 138, i18n 94, ssh 26, live-activity 7, plugin 833, relay 138). End to end verified on iOS:
-add the isolated herdr Host, trust, its agent shows live on Home. Still running from wave 5: P1.12 SSH auth
-(native), then P4.3b ports config. The verifier blocked 4 h on a computer-use permission prompt: native agents
-must never request computer-use (simctl/adb/Maestro only).
-**UX parity program (Enzo, 2026-11-02):** the RN screens are functional skeletons without the Swift app's UX.
-Goal: Swift structure, hierarchy, spacing, navigation and interactions with the Índigo skin. Phase A running
-(`scratchpad/rn/ux-a.js`): UX0-screen-atlas (/__atlas route, web stubs, atlas-web/ios/compare scripts, side by
-side with the Swift atlas at ../Agentico/build/ui-review/atlas, docs/ux/rn-gap.md) and UX0-briefs
-(docs/ux/design-system.md, docs/ux/briefs/*, UX1-* tasks). Then UX1-design-system, then one task per screen family,
-judged on side-by-side images. Functional leftovers (watch, intents, ACP, on-device model) wait until UX is done.
+State (2026-11-02 ~16:00): wave 5 fully merged (incl. P1.12 SSH auth: password, RSA, bootstrap seed; P4.3b ports
+native config). UX phase A (atlas tooling + briefs) and B (UX1-design-system primitives, T-verify-fixes-w4 functional
+fixes, dev client rebuild + iOS atlas baseline) merged; full test green (core 2584, mobile 287, ui 158, transport 142,
+ssh 33, i18n 94, live-activity 7, plugin 833, relay 138). The complete Swift iPhone atlas is
+../Agentico/design/screens/current (138 dark, light/ 131, ipad/ 200).
+**UX approach (Enzo, 2026-11-02): component first.** Clone each Swift visual component once (reference crops from the
+atlas, side by side in the gallery), reuse it everywhere, then assemble screens and compare whole screens.
+**Running:** UX phase C (`scratchpad/rn/ux-c.js`): UX2-component-catalog (inventory, crops, gallery compare
+harness, UX3-* component groups, UX1 family tasks turned into assembly), T-atlas-redbox (update-depth loop when
+screens open in sequence), N-rebuild-notifications (expo-notifications + haptics rebuild, push, Maestro, Android
+deep link). Next: UX3 groups in parallel, then UX1 assembly per family.
 
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
