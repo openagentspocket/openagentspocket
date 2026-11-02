@@ -12,6 +12,8 @@ import { PairingScreen } from './PairingScreen';
 import { DemoPairingConnector } from './pairingAdapters';
 import { useInitialDraft } from './useInitialDraft';
 
+const mockCopy = jest.fn();
+jest.mock('expo-clipboard', () => ({ setStringAsync: (text: string) => mockCopy(text) }));
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: require('react-native').View,
 }));
@@ -83,6 +85,15 @@ describe('hosts.form', () => {
     expect(runtime.model.getSnapshot().hosts[0]?.routes[0]?.address).toBe('workshop.example');
   });
 
+  it('copies the Device Key authorized_keys line', async () => {
+    setup();
+    await renderApp(<Form onSaved={jest.fn()} />);
+    const line = await screen.findByTestId('device-key-line');
+    await fireEvent.press(screen.getByTestId('device-key-copy'));
+    expect(mockCopy).toHaveBeenCalledWith(String(line.props.children));
+    expect(mockCopy.mock.calls[0]?.[0]).toMatch(/^ssh-ed25519 /);
+  });
+
   it('dismisses the keyboard on drag and keeps taps working while it is up', async () => {
     setup();
     await renderApp(<Form onSaved={jest.fn()} />);
@@ -127,6 +138,14 @@ describe('hosts.list', () => {
     await act(async () => runtime.model.add(SAMPLE, null));
     expect(screen.getByTestId('hosts-list')).toBeTruthy();
     expect(screen.getByTestId('host-row-h1')).toBeTruthy();
+  });
+
+  it('titles a Host without a name by its address, not by the user@address line', async () => {
+    const runtime = setup();
+    await renderApp(list);
+    await act(async () => runtime.model.add({ ...SAMPLE, name: '' }, null));
+    expect(screen.getAllByText('workshop.example')).toHaveLength(1);
+    expect(screen.getAllByText('ada@workshop.example')).toHaveLength(1);
   });
 
   it('shows Hosts Unavailable when the stored catalog is unreadable', async () => {

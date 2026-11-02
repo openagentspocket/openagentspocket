@@ -702,6 +702,11 @@
   kind: js
   title: "Fixes from the wave-3 native check: __ssh pin param, hosts Maestro flow, Add Host keyboard dismiss, in-app banner wiring, Files header and accent"
   deps: [P1.5-app-hosts]
+- id: T-verify-fixes-w4
+  phase: 1
+  kind: js
+  title: "Fixes from the end-to-end check: Maestro flows, one Trust prompt, authorized_keys copy, Host names, Home/Agents staleness, Android deep link while running, terminal attach test, notification permission"
+  deps: [P1.5-app-hosts]
 - id: P2.13b-board-drag
   phase: 2
   kind: js

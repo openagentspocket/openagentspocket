@@ -1,6 +1,7 @@
 import { type AuthMethod, type HostDraft, isValidHerdrSessionName } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { PickerRow, Section, Text, TextField } from '@openagentspocket/ui';
+import { DeviceKeyLine } from './DeviceKeyLine';
 import { extra } from './extraText';
 
 interface AuthFieldsProps {
@@ -36,6 +37,16 @@ export function AuthFields({ draft, keepsPassword, onChange }: AuthFieldsProps) 
           testID="host-auth-method"
         />
       </Section>
+      {method === 'deviceKey' ? (
+        <Section
+          grouped={false}
+          footer={t(
+            'Add this line to ~/.ssh/authorized_keys on the Host. The private key never leaves this device.',
+          )}
+        >
+          <DeviceKeyLine />
+        </Section>
+      ) : null}
       {method === 'password' ? (
         <TextField
           label={t('Password')}

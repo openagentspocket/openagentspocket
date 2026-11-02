@@ -158,6 +158,13 @@ describe('redirectLink', () => {
     expect(redirectLink(`agentico://usage/limits?host=${HOST_ID}`)).toBe('/usage-limits');
   });
 
+  it('routes a link of ours that names a screen, whether or not the scheme was stripped', () => {
+    expect(redirectLink('openagentspocket:///hosts')).toBe('/hosts');
+    expect(redirectLink('openagentspocket://hosts')).toBe('/hosts');
+    expect(redirectLink('agentico://settings/notifications')).toBe('/settings/notifications');
+    expect(redirectLink('openagentspocket://')).toBe('/');
+  });
+
   it('lets other paths through and sends a malformed link of ours Home', () => {
     expect(redirectLink('/hosts')).toBe('/hosts');
     expect(redirectLink('agentico://agent/nope')).toBe('/');

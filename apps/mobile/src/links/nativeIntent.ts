@@ -25,5 +25,22 @@ export function redirectLink(path: string): string {
     : /^\/(agent|usage)(\/|\?|$)/.test(path);
   if (!ours) return path;
   const link = parseAppLink(path);
-  return link ? routeForLink(link) : '/';
+  if (link) return routeForLink(link);
+  return plainRoute(path) ?? '/';
+}
+
+/**
+ * A link of ours that names an in-app screen (`openagentspocket:///hosts`, `agentico://settings`).
+ * Android hands the whole URL over while the app is running, where iOS has already stripped the
+ * scheme; without this such a link fell through to Home. Agent and usage links stay with
+ * `parseAppLink`, so a malformed one still opens Home.
+ */
+function plainRoute(url: string): string | null {
+  const shaped = /^[a-z][a-z0-9+.-]*:\/\/([^/?#]*)([^?#]*)(?:\?([^#]*))?/i.exec(url);
+  if (!shaped) return null;
+  const [, authority = '', path = '', query] = shaped;
+  const route = authority === '' ? path : `/${authority}${path}`;
+  const head = route.split('/')[1] ?? '';
+  if (head === '' || head === 'agent' || head === 'usage') return null;
+  return query ? `${route}?${query}` : route;
 }

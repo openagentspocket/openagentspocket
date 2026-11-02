@@ -1,4 +1,4 @@
-import { type Host, hostDisplayName } from '@openagentspocket/core';
+import type { Host } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Button, EmptyState, ListRow, Screen, Section, StatusDot } from '@openagentspocket/ui';
 import { useState } from 'react';
@@ -6,7 +6,7 @@ import { View } from 'react-native';
 import { useEntryMenus } from '../../navigation/entryMenus';
 import { extra } from './extraText';
 import type { HostConnection } from './HostsModel';
-import { connectionLine, groupHosts, groupStatus, groupTitle } from './hostRows';
+import { connectionLine, groupHosts, groupStatus, groupTitle, hostTitle } from './hostRows';
 import { removeHostWithConfirmation } from './removeHost';
 import { useHosts } from './useHosts';
 
@@ -89,13 +89,13 @@ export function HostListScreen({
           {hosts.map((host) => (
             <ListRow
               key={host.id}
-              title={hostDisplayName(host)}
+              title={hostTitle(host)}
               subtitle={connectionLine(host)}
               leading={<StatusDot status={groupStatus(group)} />}
               chevron
               onPress={() => onOpen(host)}
               menu={[
-                ...entries.host({ id: host.id, name: hostDisplayName(host) }),
+                ...entries.host({ id: host.id, name: hostTitle(host) }),
                 { key: 'edit', title: t('Edit'), icon: 'edit', onPress: () => onEdit(host) },
                 {
                   key: 'duplicate',

@@ -17,6 +17,7 @@ import {
 import type { SshModule, SshSession } from 'agentico-ssh';
 import type { ConsoleStore } from '@/console/store';
 import type { HostConnection } from '@/features/hosts/HostsModel';
+import { hostTitle } from '@/features/hosts/hostRows';
 import { type HostSecrets, transportSettingsFor } from './transportSettings';
 
 /** The saved Hosts as the manager reads them; `HostsModel` satisfies it. */
@@ -76,6 +77,7 @@ interface Entry {
 export class ConnectionManager {
   private readonly entries = new Map<string, Entry>();
   private active: boolean;
+  private transitions: Promise<void> = Promise.resolve();
   private stopped = false;
   private unsubscribe: (() => void) | undefined;
   private unsubscribeStore: (() => void) | undefined;
@@ -113,8 +115,17 @@ export class ConnectionManager {
   async setActive(active: boolean): Promise<void> {
     if (this.stopped || this.active === active) return;
     this.active = active;
-    const work = [...this.entries.values()].map((entry) => this.applyActive(entry, active));
-    await Promise.all(work);
+    // Serialized: a foreground return must see the state the background suspend left, not the
+    // one before it. Reading the status while the suspend was still winding down made the resume
+    // a plain revalidate, and the Host then settled on `suspended` for good.
+    const run = this.transitions.then(() =>
+      Promise.all([...this.entries.values()].map((entry) => this.applyActive(entry, active))),
+    );
+    this.transitions = run.then(
+      () => undefined,
+      () => undefined,
+    );
+    await run;
   }
 
   /**
@@ -189,7 +200,7 @@ export class ConnectionManager {
     });
     this.entries.set(host.id, { host, signature: this.signatureOf(host), session });
     this.options.store.addHost(
-      { id: host.id, name: host.name, username: host.username },
+      { id: host.id, name: hostTitle(host), username: host.username },
       session,
       this.active,
     );

@@ -22,13 +22,16 @@ export function useHostChecks(host: Host | null) {
   const hostId = host?.id;
 
   const run = useCallback(async () => {
-    const { model, probe, trustTimeoutMs } = hostsRuntime();
+    const { model, probe, trustTimeoutMs, confirmFirstConnect } = hostsRuntime();
     const current = hostId ? model.find(hostId) : null;
     if (!current) return;
     const mine = ++generation.current;
     model.setConnection(current.id, 'connecting');
     setState({ ...IDLE, running: true });
-    const policy = policyFor(model, (candidate) => askToTrust(candidate, trustTimeoutMs));
+    const policy = policyFor(
+      model,
+      confirmFirstConnect ?? ((candidate) => askToTrust(candidate, trustTimeoutMs)),
+    );
     const outcome = await probe.run(current, policy);
     if (mine !== generation.current) return;
     model.setConnection(current.id, outcome.report.failure ? 'cantConnect' : 'connected');

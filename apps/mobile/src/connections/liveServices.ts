@@ -3,6 +3,7 @@ import {
   type ChatTranscriptCache,
   type Clock,
   type DeviceKeyStore,
+  type DevicePushTokenSource,
   type HostCatalog,
   type HostKeyCandidate,
   type KeyValueStorage,
@@ -56,6 +57,8 @@ export interface LiveDeps {
   readonly liveActivities?: LiveActivityController;
   /** Secure bytes for Notification Keys and nonces. */
   readonly randomBytes: RandomBytes;
+  /** Asks for notification permission and reads the push token; unavailable when absent. */
+  readonly pushTokenSource?: DevicePushTokenSource;
 }
 
 export interface LiveServices {
@@ -113,6 +116,7 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
     connector,
     loadDeviceKey,
     trustTimeoutMs: deps.trustTimeoutMs ?? TRUST_TIMEOUT_MS,
+    confirmFirstConnect,
     reconnect: (hostId) => manager.reconnect(hostId),
     createScanStore: () =>
       new PairingScanStore({
@@ -142,6 +146,7 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
     storage: deps.storage,
     clock: deps.clock,
     randomBytes: deps.randomBytes,
+    tokenSource: deps.pushTokenSource,
   });
   const liveActivity = new LiveActivityRuntime({
     store,

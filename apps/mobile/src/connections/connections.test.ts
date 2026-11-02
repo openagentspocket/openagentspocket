@@ -1,6 +1,7 @@
-import { hostTrustKey } from '@openagentspocket/core';
+import { fingerprintFromDigest, hostTrustKey } from '@openagentspocket/core';
 import { waitFor } from '@testing-library/react-native';
 import { createWorld, HOST_KEY, OTHER_KEY, SAMPLE_HOST, type World } from './testWorld';
+import { TrustPromptQueue } from './trustPrompt';
 
 jest.mock('expo-secure-store', () => ({}));
 jest.mock('expo-sqlite/kv-store', () => ({}));
@@ -59,6 +60,52 @@ describe('connection manager', () => {
     await untilStatus(world, 'connected');
     expect(world.prompts.count).toBe(1);
     world.manager.stop();
+  });
+
+  it('resumes after a quick background and foreground without waiting for the suspend', async () => {
+    const world = await createWorld();
+    world.manager.start();
+    await world.runtime.model.add(SAMPLE_HOST, null);
+    await untilStatus(world, 'connected');
+
+    const background = world.manager.setActive(false);
+    const foreground = world.manager.setActive(true);
+    await Promise.all([background, foreground]);
+    await untilStatus(world, 'connected');
+    expect(world.runtime.model.connection(SAMPLE_HOST.id)).toBe('connected');
+    expect(world.prompts.count).toBe(1);
+    world.manager.stop();
+  });
+
+  it('names a Host without a name by its address in the Console', async () => {
+    const world = await createWorld();
+    world.manager.start();
+    await world.runtime.model.add({ ...SAMPLE_HOST, name: '' }, null);
+    await waitFor(() => {
+      expect(world.store.getState().hosts.map((host) => host.name)).toEqual(['workshop.example']);
+    });
+    world.manager.stop();
+  });
+
+  it('shares one Trust prompt between the preflight and the connection', async () => {
+    const world = await createWorld();
+    let asked = 0;
+    const queue = new TrustPromptQueue(async () => {
+      asked += 1;
+      return true;
+    });
+    const candidate = {
+      host: 'workshop.example',
+      port: 22,
+      fingerprint: fingerprintFromDigest(
+        Uint8Array.from({ length: 32 }, (_, i) => i),
+        'ssh-ed25519',
+      ),
+    };
+    const [first, second] = await Promise.all([queue.confirm(candidate), queue.confirm(candidate)]);
+    expect([first, second, await queue.confirm(candidate)]).toEqual([true, true, true]);
+    expect(asked).toBe(1);
+    expect(world.runtime.confirmFirstConnect).toBeDefined();
   });
 
   it('does not dial while the app is in the background', async () => {

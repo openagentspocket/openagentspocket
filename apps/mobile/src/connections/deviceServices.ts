@@ -2,14 +2,27 @@ import { DEFAULT_DEVICE_KEY_ALIAS } from '@openagentspocket/core';
 import { appGroup } from 'agentico-app-group';
 import { liveActivityController } from 'agentico-live-activity';
 import { nativeSsh } from 'agentico-ssh';
-import { AppState } from 'react-native';
+import { AppState, Platform } from 'react-native';
 import { systemClock } from '@/console/systemClock';
 import { registerLiveRuntime } from '@/features/hosts/hostsRuntime';
 import { secureRandomBytes } from '@/lib/secureRandom';
+import {
+  createDevicePushTokenSource,
+  type NotificationsApi,
+} from '@/notifications/devicePushToken';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { createDeviceStores } from '@/stores';
 import { createChatTranscriptCache } from '@/stores/expoCacheFileStore';
 import { createLiveServices, type LiveServices } from './liveServices';
+
+/** Loaded on first use, so the app still starts on a build without the native module. */
+const lazyNotifications: NotificationsApi = {
+  getPermissionsAsync: () => require('expo-notifications').getPermissionsAsync(),
+  requestPermissionsAsync: () => require('expo-notifications').requestPermissionsAsync(),
+  getDevicePushTokenAsync: () => require('expo-notifications').getDevicePushTokenAsync(),
+  setNotificationChannelAsync: (id, channel) =>
+    require('expo-notifications').setNotificationChannelAsync(id, channel),
+};
 
 let services: LiveServices | undefined;
 
@@ -30,6 +43,10 @@ export function deviceServices(): LiveServices {
       appGroup: appGroup(),
       liveActivities: liveActivityController(),
       randomBytes: secureRandomBytes,
+      pushTokenSource: createDevicePushTokenSource(lazyNotifications, {
+        platform: Platform.OS === 'android' ? 'android' : 'ios',
+        sandbox: __DEV__,
+      }),
     });
   }
   return services;
