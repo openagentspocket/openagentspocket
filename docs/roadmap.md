@@ -14,9 +14,14 @@ atlas, side by side in the gallery), reuse it everywhere, then assemble screens 
 UX phase C merged: UX2-component-catalog (58 components in 10 groups, ~160 reference crops in
 docs/ux/components/ref, gallery compare harness), T-atlas-redbox (modal presentation set after push remounted
 the scene: now static in AppStack), expo-notifications config plugin. The native retry was blocked by a full disk.
-**Running:** UX phase D (`scratchpad/rn/ux-d.js`): the 10 UX3 component groups (6 at a time, judged on Swift | RN
-compare sheets) + N-rebuild-notifications retry. Next: UX1 assembly per family (screens adopt the components,
-whole-screen compare).
+UX phase D merged: 8 of 10 component groups approved on Swift | RN sheets (agent rows, home shell, chat rows,
+blocked + terminal, nav + sheets, usage, hosts/settings/files, settings pickers); ui tests 252. Native retry: both
+platforms build; Android deep link with the app open passes; notification permission still not requested (demo
+push token source), e2e flows outdated for the new Home.
+**Running:** UX phase E (`scratchpad/rn/ux-e.js`): second fix round for UX3-agent-bar and UX3-composer-extras,
+assembly of Home, Agents list + Board, Hosts (+ its sheet routes), Usage, Settings (+ its sheet routes),
+Notifications, menu preview, and T-e2e-w5 (real push permission, e2e flows, Android cold-start link, port field).
+Next: UX1-agent-detail, UX1-files-changes-ports, UX1-new-agent, UX1-tint-audit, UX1-wide, then an iOS atlas pass.
 
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
