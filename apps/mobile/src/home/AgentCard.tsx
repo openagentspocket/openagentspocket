@@ -2,7 +2,7 @@ import { agentDisplayName, type ConsoleRow, inboxTitle } from '@openagentspocket
 import { Card, makeStyles, type Status, StatusDot, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
 
-function statusDot(status: string): Status {
+export function statusDot(status: string): Status {
   return status === 'blocked' || status === 'done' || status === 'working' ? status : 'idle';
 }
 
