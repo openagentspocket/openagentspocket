@@ -60,5 +60,10 @@
     "rn": "app/terminal.tsx (ShellTerminalScreen)",
     "note": "demo shell"
   },
+  {
+    "id": "agent-detail.chat-banners",
+    "rn": "AgentDetailScreen (ChatBanners)",
+    "note": "read failure line + locating wait"
+  },
   { "id": "rn.board", "rn": "app/board.tsx (BoardScreen)", "note": "RN-only screen, no Swift id" }
 ]

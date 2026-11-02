@@ -1,3 +1,4 @@
+import type { ChatBannerLine } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
@@ -37,6 +38,8 @@ const titled = (title: string, body: ReactNode): ReactNode => (
 );
 
 const noop = () => {};
+
+const READ_FAILURE: ChatBannerLine = { kind: 'readFailure', failure: { kind: 'timedOut' } };
 
 /**
  * Swift screen id -> the RN screen in a fixed state. Ids missing here are listed as "no RN screen
@@ -101,6 +104,20 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
           workspaceId="w0"
           cwd="/work/api-server"
           onClose={noop}
+        />,
+      ),
+  },
+  'agent-detail.chat-banners': {
+    render: () =>
+      titled(
+        '',
+        <AgentDetailScreen
+          hostId="demo"
+          paneId="p1"
+          storage={deviceStorage}
+          surface="chat"
+          chatStatus={{ lines: [READ_FAILURE], locating: true }}
+          onSwitch={noop}
         />,
       ),
   },

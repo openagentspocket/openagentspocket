@@ -14,10 +14,10 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.sm,
-    minHeight: t.metrics.minTapSize + 8,
-    paddingVertical: t.spacing.xs + 2,
+    minHeight: t.metrics.minTapSize,
+    paddingVertical: t.spacing.xs,
     paddingHorizontal: t.spacing.md,
-    borderRadius: 16,
+    borderRadius: t.metrics.cardRadius,
     backgroundColor: t.colors.surfaceRaised,
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
@@ -80,7 +80,7 @@ function Inapp({
   ).current;
   return (
     <View {...swipe.panHandlers} testID={testID}>
-      <GlassCapsule style={{ borderRadius: 24 }}>
+      <GlassCapsule style={{ borderRadius: theme.metrics.cardRadius + 6 }}>
         <Pressable
           style={styles.inapp}
           onPress={onPress}
