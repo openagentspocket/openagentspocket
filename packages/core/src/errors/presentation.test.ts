@@ -212,7 +212,7 @@ describe('Jump Host presentation', () => {
 });
 
 describe('route failures', () => {
-  const lan = { route: '192.168.1.5', mayNameAnotherMachine: true } as const;
+  const lan = { route: '192.168.1.5', mayNameAnotherMachine: true, routeId: null } as const;
 
   it('names each route with its own summary, in order', () => {
     const error: TransportError = {
@@ -222,6 +222,7 @@ describe('route failures', () => {
         {
           route: '127.0.0.1:2222 via vps.example',
           mayNameAnotherMachine: false,
+          routeId: null,
           error: { kind: 'authenticationFailed' },
         },
       ],
@@ -239,7 +240,7 @@ describe('route failures', () => {
       kind: 'noRouteReached',
       failures: [
         { ...lan, error: { kind: 'timedOut' } },
-        { route: '100.64.0.5', mayNameAnotherMachine: false, error: mismatch },
+        { route: '100.64.0.5', mayNameAnotherMachine: false, routeId: null, error: mismatch },
       ],
     };
     expect(shown(error).summary).toEqual(shown(mismatch).summary);
@@ -251,7 +252,12 @@ describe('route failures', () => {
       kind: 'noRouteReached',
       failures: [
         { ...lan, error: mismatch },
-        { route: '100.64.0.5', mayNameAnotherMachine: false, error: { kind: 'timedOut' } },
+        {
+          route: '100.64.0.5',
+          mayNameAnotherMachine: false,
+          routeId: null,
+          error: { kind: 'timedOut' },
+        },
       ],
     };
     expect(shown(error).summary).not.toEqual(shown(mismatch).summary);

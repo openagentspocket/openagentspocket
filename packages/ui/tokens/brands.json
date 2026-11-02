@@ -1,0 +1,21 @@
+{
+  "claude": { "slug": "claude", "color": "#D97757" },
+  "openai": { "slug": "openai", "color": "#000000" },
+  "gemini": { "slug": "gemini", "color": "#3186FF" },
+  "cursor": { "slug": "cursor", "color": "#000000" },
+  "cline": { "slug": "cline", "color": "#000000" },
+  "copilot": { "slug": "githubcopilot", "color": "#000000" },
+  "kimi": { "slug": "kimi", "color": "#1783FF" },
+  "opencode": { "slug": "opencode", "color": "#000000" },
+  "qwen": { "slug": "qwen", "color": "#6950EF" },
+  "pi": { "slug": "pi", "color": "#000000" },
+  "devin": { "slug": "devin", "color": "#0294DE" },
+  "antigravity": { "slug": "antigravity", "color": "#3186FF" },
+  "mastra": { "slug": "mastra", "color": "#000000" },
+  "kiro": { "slug": "kiro", "color": "#9046FF" },
+  "amp": { "slug": "amp", "color": "#F34E3F" },
+  "grok": { "slug": "grok", "color": "#000000" },
+  "hermes": { "slug": "hermesagent", "color": "#000000" },
+  "kilo": { "slug": "kilocode", "color": "#000000" },
+  "qoder": { "slug": "qoder", "color": "#2ADB5C" }
+}

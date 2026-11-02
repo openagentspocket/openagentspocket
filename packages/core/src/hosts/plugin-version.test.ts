@@ -86,13 +86,13 @@ describe('plugin feature requirements', () => {
     expect(isPluginFeatureSupported('claudeAccounts', pluginVersion(0, 7, 1))).toBe(false);
     expect(isPluginFeatureSupported('claudeAccounts', pluginVersion(0, 8, 0))).toBe(true);
     expect(features(installed('0.7.1'), ['usage', 'claudeAccounts'])).toEqual(['claudeAccounts']);
-    expect(features(installed('0.8.0'))).toEqual(['approvalActions']);
+    expect(features(installed('0.8.0'))).toEqual(['approvalActions', 'androidPush']);
   });
 
   it('Approving from notifications needs 0.9.0', () => {
     expect(isPluginFeatureSupported('approvalActions', pluginVersion(0, 8, 1))).toBe(false);
     expect(isPluginFeatureSupported('approvalActions', pluginVersion(0, 9, 0))).toBe(true);
-    expect(features(installed('0.9.0'))).toEqual(['liveActivityApprovals']);
+    expect(features(installed('0.9.0'))).toEqual(['liveActivityApprovals', 'androidPush']);
   });
 
   it('Live Activity approvals need 0.10.0 and fold into the approvals note', () => {
@@ -102,7 +102,13 @@ describe('plugin feature requirements', () => {
     expect(features(installed('0.8.1'), ['approvalActions', 'liveActivityApprovals'])).toEqual([
       'approvalActions',
     ]);
-    expect(features(installed('0.10.0'))).toEqual([]);
+    expect(features(installed('0.10.0'))).toEqual(['androidPush']);
+  });
+
+  it('Android push needs 0.12.0', () => {
+    expect(isPluginFeatureSupported('androidPush', pluginVersion(0, 11, 9))).toBe(false);
+    expect(isPluginFeatureSupported('androidPush', pluginVersion(0, 12, 0))).toBe(true);
+    expect(features(installed('0.12.0'))).toEqual([]);
   });
 
   it('needs a confirmed version to say anything', () => {

@@ -1,3 +1,4 @@
+import { PROGRAM_KINDS } from '@openagentspocket/core';
 import { View } from 'react-native';
 import { Badge, StatusPill } from '../primitives/Badge';
 import { Button } from '../primitives/Button';
@@ -161,6 +162,11 @@ export function BadgesAndMarks() {
           ))}
           <ProgramMark program="codex" size={32} status="working" />
           <ProgramMark program="zsh" size={20} />
+        </Wrap>
+        <Wrap>
+          {PROGRAM_KINDS.map((info) => (
+            <ProgramMark key={info.kind} program={info.kind} size={28} status="done" />
+          ))}
         </Wrap>
       </Specimen>
     </>

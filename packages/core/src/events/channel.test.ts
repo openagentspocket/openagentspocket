@@ -245,7 +245,7 @@ describe('openEventsChannel', () => {
     expect(ended).toBe(false);
     await clock.advance(1);
     expect(ended).toBe(true);
-    expect((await stream.events.next()).done).toBe(true);
+    expect((await stream.events[Symbol.asyncIterator]().next()).done).toBe(true);
   });
 
   it('sheds the oldest events under overflow and marks the gap', async () => {

@@ -83,6 +83,9 @@ export {
   type VirtualListProps,
   VirtualSectionList,
 } from './primitives/VirtualList';
+export { QRScanner, type QRScannerProps } from './scanner/QRScanner';
+export { defaultQRLabels, type QRScannerLabels } from './scanner/qrLabels';
+export { createCodeGate, type QRScannerState, scannerState } from './scanner/qrState';
 export { type TerminalHandle, TerminalView, type TerminalViewProps } from './terminal/TerminalView';
 export { appendOutput, gridSize, stripAnsi } from './terminal/terminalText';
 export { decodeUtf8Stream } from './terminal/utf8';

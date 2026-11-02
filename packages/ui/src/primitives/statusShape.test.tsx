@@ -46,11 +46,11 @@ describe('ProgramMark', () => {
     );
   });
 
-  it('rings the corner dot in the fill of the card that holds it', async () => {
+  it('rings the corner dot of a monogram in the fill of the card that holds it', async () => {
     setFontScale(1);
     await renderThemed(
       <Card level="overlay">
-        <ProgramMark program="codex" status="working" />
+        <ProgramMark program="zsh" status="working" />
       </Card>,
       'papel',
     );

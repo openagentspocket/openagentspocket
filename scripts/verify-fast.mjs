@@ -38,6 +38,9 @@ function run(label, cmd, args, cwd = '.') {
   });
 }
 
+// Before tsc: route types come from the route files on disk, not from the last Metro run.
+sh('node', ['scripts/typed-routes.mjs']);
+
 const checks = [
   run('biome', 'pnpm', ['exec', 'biome', 'check', '.']),
   run('tsc -b', 'pnpm', ['exec', 'tsc', '-b']),
@@ -46,6 +49,20 @@ const checks = [
   run('theme literals', 'node', ['scripts/check-theme-literals.mjs']),
   run('progress current', 'node', ['scripts/progress.mjs', '--check']),
 ];
+
+// Test files are excluded from `tsc -b` in core and i18n; their tsconfig.tests.json covers them.
+// ui, ssh and mobile include their tests in `tsc -b` already.
+for (const pkg of ['core', 'i18n']) {
+  if (inPkg(`packages/${pkg}/`).length)
+    checks.push(
+      run(
+        `${pkg} test types`,
+        'pnpm',
+        ['exec', 'tsc', '-p', 'tsconfig.tests.json'],
+        `packages/${pkg}`,
+      ),
+    );
+}
 
 // Tests related to the change; jest/vitest map source files to the suites that import them.
 const coreFiles = codeIn('packages/core/');
