@@ -1,0 +1,1146 @@
+{
+  "_doc": "Source of the component catalog. README.md is generated from it by scripts/ux-catalog.mjs (node scripts/ux-catalog.mjs; --check fails when stale or inconsistent). swift = path under Sources/Agentico + line range. variants = 'id|note'; 'default' is the bare crop ref/<Name>.png, others ref/<Name>.<id>.png (a variant with no crop in crops.json says so in the README). rnToday = file implementing it now ('none' = no RN equivalent). Targets live in packages/ui/src/components/<Name>.tsx.",
+  "groups": {
+    "agent-rows": {
+      "task": "UX3-agent-rows",
+      "gallery": "agentRows",
+      "title": "Agent list rows and headers"
+    },
+    "home-shell": {
+      "task": "UX3-home-shell",
+      "gallery": "homeShell",
+      "title": "Home cards, sessions, FAB, large title"
+    },
+    "nav-sheets": {
+      "task": "UX3-nav-sheets",
+      "gallery": "navSheets",
+      "title": "Toolbars, sidebar, sheet headers, empty detail, scanner, key/value groups"
+    },
+    "agent-bar": {
+      "task": "UX3-agent-bar",
+      "gallery": "agentBar",
+      "title": "Agent detail header, switcher, drawer, composer, status line, change rows"
+    },
+    "chat-rows": {
+      "task": "UX3-chat-rows",
+      "gallery": "chatRows",
+      "title": "Chat timeline rows and diff rows"
+    },
+    "blocked-terminal": {
+      "task": "UX3-blocked-terminal",
+      "gallery": "blockedTerminal",
+      "title": "Blocked card, background work, banners, jump control, terminal toolbar and keys"
+    },
+    "usage": {
+      "task": "UX3-usage",
+      "gallery": "usage",
+      "title": "Usage chips, totals, charts, heat map, breakdown"
+    },
+    "hosts-settings-files": {
+      "task": "UX3-hosts-settings-files",
+      "gallery": "hostsSettingsFiles",
+      "title": "Host, settings, theme, file and port rows"
+    }
+  },
+  "components": [
+    {
+      "name": "AgentCard",
+      "group": "agent-rows",
+      "swift": [
+        "Console/AgentCardView.swift:10-363",
+        "Console/AgentRowLayout.swift:1-373",
+        "Console/AgentContextLowBadge.swift:1-60"
+      ],
+      "screens": [
+        "console.agents-list-flat",
+        "console.agents-list-by-host",
+        "console.agents-list-by-status",
+        "console.agent-row",
+        "agents board",
+        "ipad/console.agents-list-flat"
+      ],
+      "variants": [
+        "default|Blocked: program mark with red dot, red mono prompt line with a ? bubble, +N -N diff counts",
+        "working|Working capsule, plain subtitle",
+        "idle-context|Idle capsule plus the amber low-context pill (16 %)",
+        "wide|iPad sidebar width (332), same layout"
+      ],
+      "interactions": "tap opens detail; swipe leading Pin (full swipe), trailing Close (full swipe); long press opens AgentRowMenu with the card lifted; hover/selected fill on iPad; Saved capsule for disconnected Hosts",
+      "rnToday": [
+        "apps/mobile/src/features/agents/AgentRow.tsx",
+        "apps/mobile/src/board/BoardCard.tsx"
+      ],
+      "props": "{ agent: AgentCardModel (title, program, status, blockedPrompt?, subtitle, host, path, diff?, contextLeft?, saved?), selected?, onPress, menu, swipe* }",
+      "composes": ["CardRow", "ProgramMark", "StatusOrb", "Badge", "SwipeRow", "Text"],
+      "accept": [
+        "title row: program mark, bold title, secondary program name, trailing status Badge wash",
+        "Blocked shows the red mono prompt line with its bubble icon under the title",
+        "meta row: subtitle left, Host right, path and +N -N counts on the third line",
+        "context-low pill sits left of the status capsule",
+        "row hairline separators on the flat list, card with hairline on workspace and board"
+      ]
+    },
+    {
+      "name": "FoldHeader",
+      "group": "agent-rows",
+      "swift": [
+        "Console/ConsoleSectionHeaders.swift:54-149",
+        "Console/ConsoleHostSectionHeaderPresentation.swift:1-136",
+        "Console/StatusInbox/StatusInboxView.swift:66-105"
+      ],
+      "screens": [
+        "console.agents-list-by-status",
+        "console.agents-list-by-host",
+        "shell.home",
+        "console.agents-list-by-workspace"
+      ],
+      "variants": [
+        "status|'Needs you 1' count capsule, trailing chevron",
+        "host|Host glyph + name + readiness text or status count pills when collapsed",
+        "inbox|Home section title with count, no chevron",
+        "see-all|footer line '1 idle' with accent 'See all'"
+      ],
+      "interactions": "tap folds/unfolds with a snappy spring and chevron turn; a Host that cannot connect opens its connection sheet instead; disabled while searching",
+      "rnToday": [
+        "apps/mobile/src/features/agents/AgentsScreen.tsx (section headers inline)",
+        "packages/ui/src/primitives/SectionHeader.tsx"
+      ],
+      "props": "{ kind: 'status'|'host'|'inbox'|'footer', title, count?, hostStatus?, readiness?, pills?, collapsed?, onToggle?, onSeeAll? }",
+      "composes": ["SectionHeader", "StatusDot", "MetaChip", "Icon", "Text"],
+      "accept": [
+        "title in secondary subheadline weight, count in a rounded capsule",
+        "chevron rotates 90 degrees on fold",
+        "collapsed Host shows count pills (2 working, 1 blocked) in status colors",
+        "footer variant: secondary text left, accent See all right"
+      ]
+    },
+    {
+      "name": "WorkspaceCard",
+      "group": "agent-rows",
+      "swift": ["Console/ConsoleWorkspaceCards.swift:47-436"],
+      "screens": ["console.agents-list-by-workspace", "console.worktree-details"],
+      "variants": [
+        "default|Workspace header (folder icon, name, Host and path, fold chip with count) then nested agent rows"
+      ],
+      "interactions": "tap header folds the card; linked git worktrees nest under their repository checkout; checkout header opens worktree details",
+      "rnToday": ["none"],
+      "props": "{ workspace: { title, host, path, agentCount, collapsed }, children: AgentCard[], onToggle, onOpen }",
+      "composes": ["Card", "CardRow", "AgentCard", "Icon", "MetaChip"],
+      "accept": [
+        "one rounded card per workspace on the page background, hairline border",
+        "header: folder icon, bold name, secondary Host and path line, count chip with chevron on the right",
+        "agent rows inside the card keep the AgentCard layout without their own card",
+        "gap between cards equals airy.sectionGap"
+      ]
+    },
+    {
+      "name": "TerminalRow",
+      "group": "agent-rows",
+      "swift": [
+        "Console/TerminalListView.swift:403-598",
+        "Console/WorkspaceTerminalDetailView.swift:1-272"
+      ],
+      "screens": ["console.terminals-list", "agent-detail.shell-terminal"],
+      "variants": [
+        "default|rounded card per workspace: terminal tile icon, mono title, mono path, chevron, '+ New Terminal' footer row",
+        "tile|session tile used by the Home Sessions strip"
+      ],
+      "interactions": "tap opens the shell; swipe Close; long press menu; New Terminal row opens the form sheet",
+      "rnToday": ["apps/mobile/src/features/terminals/ (no list yet, see ShellTerminalScreen.tsx)"],
+      "props": "{ terminal: { title, path, host }, onPress, menu, swipe }, <TerminalGroup title host> wrapper with the New Terminal row",
+      "composes": ["Card", "CardRow", "ListRow", "Icon"],
+      "accept": [
+        "leading rounded-square tile with a terminal glyph",
+        "title mono headline, path mono caption in secondary",
+        "chevron trailing, hairline between rows inside the card",
+        "last row '+ New Terminal' in secondary with a plus"
+      ]
+    },
+    {
+      "name": "AgentRowMenu",
+      "group": "agent-rows",
+      "swift": [
+        "Console/AgentActionMenuContent.swift:206-304",
+        "Console/ConsoleView+AgentRows.swift:1-311"
+      ],
+      "screens": [
+        "console.row-context-menu",
+        "console.presentation-menu",
+        "console.host-filter-menu"
+      ],
+      "variants": [
+        "default|long-press: the card lifts at full width above a glass menu (Pin, Details, Close Pane in red)"
+      ],
+      "interactions": "long press lifts the row, haptic, menu items with icon, destructive in red, dismiss on tap outside; same actions as accessibility actions",
+      "rnToday": [
+        "packages/ui/src/overlay/ActionMenu.tsx (no lifted preview, see UX1-menu-preview)"
+      ],
+      "props": "{ preview: ReactNode, items: ActionMenuItem[] } over ActionMenu",
+      "composes": ["ActionMenu", "CardRow", "Icon"],
+      "accept": [
+        "the pressed card stays visible above the menu at card width",
+        "menu rows: accent icon left, label, destructive row red below a divider",
+        "glass/blurred menu surface with the card radius"
+      ]
+    },
+    {
+      "name": "HostIssueRow",
+      "group": "agent-rows",
+      "swift": ["Console/ConsoleHostIssueRow.swift:7-294"],
+      "screens": [
+        "console.host-issue-rows",
+        "console.host-connection-sheet",
+        "console.agents-list-flat"
+      ],
+      "variants": [
+        "default|compact amber row (wifi-slash glyph + '<Host> is offline'); several Hosts become one summary row"
+      ],
+      "interactions": "tap opens the Host connection sheet or the Hosts tab on that Host; hidden while searching",
+      "rnToday": ["none"],
+      "props": "{ issues: { hostName, kind, message }[], onOpen }",
+      "composes": ["ListRow", "Icon", "Text"],
+      "accept": [
+        "amber glyph and amber-tinted text, no card, sits above the first section",
+        "two issues stack as two compact lines; three or more collapse to one summary row"
+      ]
+    },
+    {
+      "name": "InboxCard",
+      "group": "home-shell",
+      "swift": [
+        "Console/StatusInbox/StatusInboxView.swift:144-235",
+        "Console/StatusInbox/StatusInboxCardPresentation.swift:1-109",
+        "Console/Home/ConsoleHomeView.swift:135-188"
+      ],
+      "screens": ["shell.home", "console.empty-states-agents"],
+      "variants": [
+        "default|Needs you: red ring card, title + age, prompt in secondary, two mono chips (Host, directory)",
+        "working|same card without the ring, orange orb on the program mark"
+      ],
+      "interactions": "tap opens detail; long press opens the quick-detail sheet; selected state on iPad",
+      "rnToday": ["apps/mobile/src/home/InboxCard.tsx"],
+      "props": "{ presentation: { title, subtitle, age, chips[], section: 'needsYou'|'working'|'done' }, selected?, onPress, onLongPress }",
+      "composes": ["Card", "ProgramMark", "MetaChip", "StatusOrb", "Text"],
+      "accept": [
+        "Needs you card has a 1pt status-red ring, radius 8",
+        "title headline semibold, age trailing caption in secondary",
+        "chips mono caption2 in capsules with a hairline",
+        "card height and inner padding airy (x1.3 of Swift)"
+      ]
+    },
+    {
+      "name": "SessionsStrip",
+      "group": "home-shell",
+      "swift": [
+        "Console/Home/ConsoleHomeView.swift:89-141",
+        "Console/Home/ConsoleHomeView.swift:189-260"
+      ],
+      "screens": ["shell.home"],
+      "variants": [
+        "default|header 'Sessions 5' + See all; horizontal strip of tiles (icon, mono name) with the title and Host captions below each tile"
+      ],
+      "interactions": "horizontal scroll with snap; tap opens the session; See all opens the Agents list",
+      "rnToday": ["none (HomeScreen.tsx has no strip)"],
+      "props": "{ sessions: { id, kind: 'agent'|'shell', name, title, host, status? }[], onOpen, onSeeAll }",
+      "composes": ["FoldHeader", "Card", "ProgramMark", "Icon", "Text"],
+      "accept": [
+        "tiles about 130 wide, 90 tall in the Swift atlas, rounded 8 with hairline",
+        "tile: small kind glyph top-left, mono name bottom-left",
+        "caption row under the tile: program mark + title, Host below in secondary",
+        "the strip bleeds to the screen edge and the next tile peeks"
+      ]
+    },
+    {
+      "name": "HomeHostCard",
+      "group": "home-shell",
+      "swift": [
+        "Console/Home/ConsoleHomeView.swift:261-378",
+        "Console/ConsoleView+Hosts.swift:1-190"
+      ],
+      "screens": ["console.empty-states-agents", "shell.home"],
+      "variants": [
+        "default|circle glyph, Host name, mono address, trailing readiness text with a status dot (No Agents, Sync issue)"
+      ],
+      "interactions": "tap opens the Host connection sheet; long press menu",
+      "rnToday": ["apps/mobile/src/home/HostCard.tsx"],
+      "props": "{ host: { name, address, readiness, tone }, onPress }",
+      "composes": ["Card", "StatusDot", "Icon", "Text"],
+      "accept": [
+        "leading 40pt circle with the Host glyph",
+        "name headline, address mono caption truncated in the middle",
+        "trailing readiness caption with a tone dot above it"
+      ]
+    },
+    {
+      "name": "UsageRing",
+      "group": "home-shell",
+      "swift": [
+        "Console/Home/ConsoleHomeView.swift:380-448",
+        "Console/ConsoleView+Usage.swift:1-133",
+        "Console/AgentUsageStrip.swift:15-91"
+      ],
+      "screens": ["usage.quick-sheet", "shell.home"],
+      "variants": [
+        "default|ring with percentage inside (48), accent for the worst window; replaced by a bar glyph when no limits"
+      ],
+      "interactions": "tap opens the Usage quick sheet",
+      "rnToday": ["apps/mobile/src/home/UsageRing.tsx"],
+      "props": "{ percent: number | null, tone?: 'ok'|'warn'|'critical', onPress }",
+      "composes": ["GlassCapsule", "Meter", "Text"],
+      "accept": [
+        "22pt ring, 3pt stroke, rounded caps, track at 25 percent opacity",
+        "number in caption2 semibold centered",
+        "sits in the glass capsule next to Settings"
+      ]
+    },
+    {
+      "name": "Fab",
+      "group": "home-shell",
+      "swift": ["Console/Home/ConsoleHomeView.swift:340-378"],
+      "screens": ["shell.home", "console.empty-states-agents"],
+      "variants": ["default|56pt accent circle with a plus, soft accent glow, bottom right"],
+      "interactions": "tap opens the New menu (New Agent, New Terminal, Add Host); haptic light; hides while a sheet is up",
+      "rnToday": ["none"],
+      "props": "{ onPress, items: ActionMenuItem[] }",
+      "composes": ["ActionMenuButton", "Icon"],
+      "accept": [
+        "accent fill, plus glyph in accent-foreground, diameter 56",
+        "shadow/glow in accent at 35 percent",
+        "bottom inset = safe area + 16, right inset = screenInset"
+      ]
+    },
+    {
+      "name": "LargeTitleBar",
+      "group": "home-shell",
+      "swift": ["Console/ConsoleView+Home.swift:1-188", "Console/ConsoleTabBarBridge.swift:1-169"],
+      "screens": ["shell.home", "console.agents-list-flat", "hosts.list", "settings.root"],
+      "variants": [
+        "default|34pt bold large title left, glass capsule on the right with the actions"
+      ],
+      "interactions": "title collapses into a small centered title on scroll; capsule buttons have haptics",
+      "rnToday": ["apps/mobile/src/navigation/ (header options only, no capsule)"],
+      "props": "{ title, actions: { icon, label, onPress }[] }",
+      "composes": ["GlassCapsule", "Icon", "Text"],
+      "accept": [
+        "title largeTitle bold, left aligned at screenInset",
+        "capsule height 44, buttons 40 wide, accent icons",
+        "background is the ScreenBackground glow, no opaque bar"
+      ]
+    },
+    {
+      "name": "ListToolbar",
+      "group": "nav-sheets",
+      "swift": [
+        "Console/TerminalListPresentation.swift:1-120",
+        "Console/ConsoleSidebarChrome.swift:42-134",
+        "Console/ConsoleView+AgentList.swift:1-327"
+      ],
+      "screens": [
+        "console.agents-list-flat",
+        "console.agents-list-by-status",
+        "console.terminals-list",
+        "console.presentation-menu"
+      ],
+      "variants": [
+        "default|Home button in its own circle at left; at right one glass capsule with Host filter, Presentation and New (+)"
+      ],
+      "interactions": "Presentation menu switches flat / By Host / By Status / By Workspace; Host filter menu; + opens New Agent",
+      "rnToday": ["apps/mobile/src/features/agents/AgentsToolbar.tsx"],
+      "props": "{ onHome, filter, presentation, onNew }",
+      "composes": ["GlassCapsule", "ActionMenuButton", "Icon"],
+      "accept": [
+        "left circle (home, accent), right capsule three accent icons",
+        "the Presentation icon changes with the active mode",
+        "no opaque navigation bar; large title below"
+      ]
+    },
+    {
+      "name": "SidebarColumn",
+      "group": "nav-sheets",
+      "swift": [
+        "Console/ConsoleView+Sidebar.swift:1-370",
+        "Console/ConsoleSidebarChrome.swift:1-220",
+        "Console/SidebarSearchDrawer.swift:1-163",
+        "Console/ConsoleView+SplitView.swift:1-395"
+      ],
+      "screens": [
+        "ipad/console.agents-list-flat",
+        "ipad/console.terminals-list",
+        "ipad/shell.hosts-settings-sheets"
+      ],
+      "variants": [
+        "default|floating rounded glass column: title menu 'Agents v', + and hide-sidebar buttons, search field, list, footer with Hosts and Settings at left and Presentation/Host filter at right"
+      ],
+      "interactions": "title menu switches Agents/Terminals; edge swipe reveals; search field is always visible on iPad; selected row fill",
+      "rnToday": ["none (UX1-wide)"],
+      "props": "{ title menu, search, children, footer actions }",
+      "composes": ["GlassCapsule", "ActionMenuButton", "TextField", "Icon"],
+      "accept": [
+        "column about 330 wide with radius 24 and a hairline, inset from the screen edges",
+        "header row then the search pill then the list, footer icons at the bottom",
+        "detail column to the right shows EmptyDetail when nothing is selected"
+      ]
+    },
+    {
+      "name": "EmptyDetail",
+      "group": "nav-sheets",
+      "swift": [
+        "Console/ConsoleEmptyDetailPresentation.swift:1-114",
+        "DesignSystem/Components/EmptyState.swift:1-183"
+      ],
+      "screens": [
+        "ipad/console.agents-list-flat",
+        "console.no-hosts-empty",
+        "console.empty-states-agents"
+      ],
+      "variants": [
+        "default|stacked windows glyph, 'No Agent Selected', explanation, tinted 'New Agent' capsule with the shortcut hint"
+      ],
+      "interactions": "button opens New Agent (cmd+N)",
+      "rnToday": ["packages/ui/src/primitives/EmptyState.tsx (no tinted capsule action)"],
+      "props": "{ icon, title, message, action?: { label, shortcut?, onPress } }",
+      "composes": ["EmptyState", "Button"],
+      "accept": [
+        "icon 48pt secondary, title title3 bold, message callout secondary max width 420",
+        "action is an accent-wash capsule, not a solid button"
+      ]
+    },
+    {
+      "name": "QuickSheetHeader",
+      "group": "nav-sheets",
+      "swift": [
+        "Usage/UsageQuickSheet.swift:9-142",
+        "Console/ConsoleView+QuickDetail.swift:128-181",
+        "Console/ConsoleSheetPresentation.swift:1-225"
+      ],
+      "screens": ["usage.quick-sheet", "console.quick-detail-sheet", "usage.day-sheet"],
+      "variants": [
+        "default|grabber, bold title left, circular close button right",
+        "detail|grabber, program line 'Codex - Working' with age, large title, chips"
+      ],
+      "interactions": "drag on the grabber resizes between detents; close button dismisses; haptic on detent change",
+      "rnToday": ["packages/ui/src/overlay/Sheet.tsx (bar actions exist, no quick header)"],
+      "props": "{ title, onClose, subtitle?, trailing? } inside Sheet",
+      "composes": ["Sheet", "GlassCapsule", "Icon", "Text"],
+      "accept": [
+        "grabber 36x5 centered 6pt from the top",
+        "title title2 bold, close = 32pt circle with an x in secondary",
+        "sheet top radius 28, content inset screenInset"
+      ]
+    },
+    {
+      "name": "ScannerFrame",
+      "group": "nav-sheets",
+      "swift": ["Pairing/PairingScanView.swift:13-349", "Pairing/PairingScanStore.swift:1-335"],
+      "screens": ["hosts.pairing-scanner", "hosts.new-route"],
+      "variants": [
+        "unavailable|camera glyph, 'Scanning Unavailable', Paste Pairing Code and Add Manually (the only state the simulator atlas has; the live frame with corner brackets has no crop)"
+      ],
+      "interactions": "camera preview with corner brackets and a hint; Cancel at left; Paste Pairing Code as a capsule; torch toggle",
+      "rnToday": ["packages/ui/src/scanner/QRScanner.tsx", "packages/ui/src/scanner/QRNotice.tsx"],
+      "props": "{ state: 'scanning'|'unavailable'|'denied', onCode, onPaste, onManual }",
+      "composes": ["EmptyState", "Button", "Sheet"],
+      "accept": [
+        "scanning: square viewfinder with four accent corner brackets, dim outside the square",
+        "unavailable: icon, title, message, filled capsule primary, plain accent secondary",
+        "Cancel in the bar, title 'Scan to Pair' centered"
+      ]
+    },
+    {
+      "name": "KeyValueGroup",
+      "group": "nav-sheets",
+      "swift": [
+        "DesignSystem/Components/CopyableValueRow.swift:1-120",
+        "Console/HostConnectionDetailView.swift:113-241",
+        "Hosts/HostListView.swift:206-340"
+      ],
+      "screens": ["hosts.detail", "console.quick-detail-sheet", "usage.limits-sheet"],
+      "variants": [
+        "default|section title above a rounded card of rows: label left, value right in secondary, optional copy glyph"
+      ],
+      "interactions": "tap a value copies it with a toast; long values wrap right aligned",
+      "rnToday": [
+        "apps/mobile/src/features/hosts/HostInfoSections.tsx",
+        "packages/ui/src/primitives/CopyButton.tsx"
+      ],
+      "props": "{ title?, rows: { label, value, mono?, copy? }[] }",
+      "composes": ["Section", "ListRow", "CopyButton", "Text"],
+      "accept": [
+        "labels body primary, values body secondary right aligned",
+        "hairline between rows inset by screenInset",
+        "mono values for ids, paths and hashes"
+      ]
+    },
+    {
+      "name": "AgentHeader",
+      "group": "agent-bar",
+      "swift": [
+        "Console/AgentDetailHeader.swift:31-459",
+        "Console/AgentSurfaceToggle.swift:38-120",
+        "Console/MessageJumpControl.swift:577-700"
+      ],
+      "screens": [
+        "agent-detail.header",
+        "agent-detail.chat",
+        "agent-detail.header-more-menu",
+        "agent-detail.terminal"
+      ],
+      "variants": [
+        "default|two floating glass circles over the content: sidebar/session drawer at left, more (...) at right; no title bar"
+      ],
+      "interactions": "left opens the SessionDrawer, right opens the header menu (Chat/Terminal toggle, Changes, Files, Ports, Rename, Close); edge swipe back",
+      "rnToday": ["apps/mobile/src/agent-detail/AgentHeader.tsx"],
+      "props": "{ onSidebar, menu: ActionMenuItem[], surface: 'chat'|'terminal' }",
+      "composes": ["GlassCapsule", "ActionMenuButton", "Icon"],
+      "accept": [
+        "circles 44pt, glass fill with hairline, 12pt from the safe area top",
+        "content scrolls under them with a top fade"
+      ]
+    },
+    {
+      "name": "AgentSwitcher",
+      "group": "agent-bar",
+      "swift": ["Terminal/TerminalAgentSwitcher.swift:1-900"],
+      "screens": [
+        "agent-detail.agent-switcher",
+        "agent-detail.composer-skill-suggestions",
+        "agent-detail.control-keys"
+      ],
+      "variants": [
+        "default|glass capsule at the bottom: other agents as faded chips, the current one as a filled pill with its mark and orb, trailing surface/keyboard toggles",
+        "tools|extra trailing icons (compose, skills, keyboard)"
+      ],
+      "interactions": "tap a chip switches agent with a haptic; horizontal scroll, current pill stays centered; trailing icons toggle the keys dock and the keyboard",
+      "rnToday": ["apps/mobile/src/agent-detail/AgentSwitcher.tsx"],
+      "props": "{ agents: { id, title, program, status }[], currentId, onSelect, trailing: { icon, onPress, active }[] }",
+      "composes": ["GlassCapsule", "ProgramMark", "StatusOrb", "Icon", "Text"],
+      "accept": [
+        "capsule height 44 over the keyboard dock, 12pt side inset",
+        "current agent is a pill with a lighter fill, mark with status orb, 'Title - Program'",
+        "neighbours are secondary and clipped at the capsule edge"
+      ]
+    },
+    {
+      "name": "SessionDrawer",
+      "group": "agent-bar",
+      "swift": ["Console/SessionDrawer/SessionDrawerView.swift:22-561"],
+      "screens": ["agent-detail.session-drawer", "agent-detail.session-drawer--agents"],
+      "variants": [
+        "default|left drawer over a dimmed detail: search pill + two toggle buttons, Host line with counts and +, Workspaces with fold rows and the selected row in an accent wash"
+      ],
+      "interactions": "opens from the header button or an edge swipe; tap a row switches; fold per workspace; search filters workspaces, tabs and panes; swipe left to close",
+      "rnToday": ["none"],
+      "props": "{ host line, workspaces: { title, branch?, items: { id, kind, title, age, status }[] }[], selectedId, onSelect }",
+      "composes": ["Sheet", "FoldHeader", "ListRow", "TextField", "ProgramMark"],
+      "accept": [
+        "drawer about 330 wide, radius 24 on the free edge, glass surface",
+        "selected row has an accent wash at 25 percent and its age in secondary",
+        "group headers bold with a count at the right"
+      ]
+    },
+    {
+      "name": "ComposerCard",
+      "group": "agent-bar",
+      "swift": [
+        "Console/AgentComposerView.swift:10-623",
+        "Console/AgentComposerButtons.swift:4-90",
+        "Console/AgentComposerStop.swift:1-232",
+        "Console/AgentComposerSkillSuggestions.swift:1-113"
+      ],
+      "screens": [
+        "agent-detail.chat",
+        "agent-detail.header",
+        "agent-detail.composer-skill-suggestions",
+        "agent-detail.composer-add-menu",
+        "agent-detail.composer-more-menu"
+      ],
+      "variants": [
+        "default|one line: + circle, agent mark circle, placeholder, stop (red) or send (white arrow) circle at right",
+        "expanded|multi-line input above a button row: +, agent, more (...), spacer, stop/send",
+        "skills|suggestion panel above the input (SKILLS header, close, mono name + description rows)"
+      ],
+      "interactions": "grows with text up to 6 lines; + opens Add File/Add Image menu; more menu (Paste, Snippets, Clear); send is disabled when empty; stop while working; slash opens skills",
+      "rnToday": [
+        "packages/ui/src/composer/Composer.tsx",
+        "apps/mobile/src/agent-detail/composer/AgentComposer.tsx"
+      ],
+      "props": "{ value, onChange, working, onSend, onStop, leading: ReactNode, suggestions?, agent: ProgramMark props }",
+      "composes": ["GlassCapsule", "Button", "ProgramMark", "ActionMenuButton", "TextField"],
+      "accept": [
+        "rounded 28 glass card with a hairline, 12pt inset, floating above the switcher",
+        "stop is a red filled circle with a white square, send a white circle with a dark arrow",
+        "button row circles are 40pt in a secondary fill",
+        "skills panel mono names in primary, descriptions secondary, hairlines between"
+      ]
+    },
+    {
+      "name": "StatusLine",
+      "group": "agent-bar",
+      "swift": [
+        "Console/AgentDetailStatusChrome.swift:6-210",
+        "Console/AgentContextLowBadge.swift:1-60"
+      ],
+      "screens": [
+        "agent-detail.chat",
+        "agent-detail.status-line",
+        "agent-detail.composer-skill-suggestions"
+      ],
+      "variants": [
+        "default|status dot + 'Working' (orange), branch with arrows, ahead/behind counters, +N -N, latency at right",
+        "low-context|Idle and the amber '16 % context left' pill"
+      ],
+      "interactions": "tap opens Changes; hidden when no data",
+      "rnToday": ["none"],
+      "props": "{ status, branch?, counts?, diff?, contextLeft?, latencyMs?, onOpenChanges }",
+      "composes": ["StatusOrb", "MetaChip", "Text"],
+      "accept": [
+        "one line caption mono-ish, truncating the branch first",
+        "status colors from tokens, +N green and -N red",
+        "sits directly above the ComposerCard, 12pt side inset"
+      ]
+    },
+    {
+      "name": "ChangeRow",
+      "group": "agent-bar",
+      "swift": [
+        "Changes/ChangesView.swift:147-355",
+        "Changes/ChangesCountsViews.swift:1-119",
+        "Changes/ChangesBadge.swift:1-160"
+      ],
+      "screens": ["changes.list", "agent-detail.status-line"],
+      "variants": [
+        "summary|card: repo name + Worktree capsule + totals, branch with counters, last commit line, 'Possibly incomplete - Read at'",
+        "file|file name, directory in secondary, +N -N and a colored kind letter (M)"
+      ],
+      "interactions": "tap a file opens the diff; section header 'CHANGES 2' uppercase; long press reference menu",
+      "rnToday": [
+        "apps/mobile/src/changes/ChangedFileRow.tsx",
+        "apps/mobile/src/changes/ChangesHeader.tsx"
+      ],
+      "props": "{ summary | file: { name, dir, added, removed, kind, staged }, onPress }",
+      "composes": ["Card", "CardRow", "Badge", "MetaChip", "Text"],
+      "accept": [
+        "summary card with Worktree capsule next to the repo name, totals right aligned",
+        "file rows inside one card with hairlines, kind letter amber for M, green A, red D",
+        "section header caption uppercase with the count at the right"
+      ]
+    },
+    {
+      "name": "ChatUserBubble",
+      "group": "chat-rows",
+      "swift": ["Chat/Timeline/ChatRowView.swift:150-255"],
+      "screens": ["agent-detail.chat", "agent-detail.chat-timeline"],
+      "variants": [
+        "default|right aligned rounded bubble in the secondary surface, max 80 percent width",
+        "pending|dimmed with a sending spinner"
+      ],
+      "interactions": "long press: copy, select text; attachments render as chips under the text",
+      "rnToday": ["none"],
+      "props": "{ text, attachments?, pending? }",
+      "composes": ["Card", "MetaChip", "Text"],
+      "accept": [
+        "bubble radius 20, surface fill, no border, body text primary",
+        "aligned to the right with 16pt trailing inset, assistant text has no bubble"
+      ]
+    },
+    {
+      "name": "ChatDivider",
+      "group": "chat-rows",
+      "swift": [
+        "Chat/Timeline/ChatRowView.swift:301-387",
+        "Chat/Timeline/ChatRowView.swift:1148-1236"
+      ],
+      "screens": ["agent-detail.chat", "agent-detail.chat-timeline"],
+      "variants": [
+        "turn|'Worked for 26s >' collapsible turn header",
+        "working|'Working for 1:45' with a live timer",
+        "compacted|centered 'Context compacted' between hairlines"
+      ],
+      "interactions": "tap on the turn header folds the turn's tools; timer ticks each second",
+      "rnToday": ["none"],
+      "props": "{ kind: 'turn'|'working'|'compacted', label, collapsed?, onToggle? }",
+      "composes": ["Icon", "Text"],
+      "accept": [
+        "footnote secondary text, chevron after the label for turn",
+        "compacted: label centered between two hairlines, caption2"
+      ]
+    },
+    {
+      "name": "ChatThoughtRow",
+      "group": "chat-rows",
+      "swift": ["Chat/Timeline/ChatRowView.swift:255-301"],
+      "screens": ["agent-detail.chat", "agent-detail.chat-timeline"],
+      "variants": [
+        "default|brain glyph, 'Thought for 4s', chevron; expands to the reasoning text in secondary"
+      ],
+      "interactions": "tap expands inline",
+      "rnToday": ["none"],
+      "props": "{ seconds, text?, expanded, onToggle }",
+      "composes": ["Icon", "Text"],
+      "accept": [
+        "subheadline secondary, glyph 16pt, chevron right of the label",
+        "expanded text indented under the glyph"
+      ]
+    },
+    {
+      "name": "ChatToolRow",
+      "group": "chat-rows",
+      "swift": [
+        "Chat/Timeline/ChatRowView.swift:387-1014",
+        "Chat/Timeline/ChatFileDiffView.swift:139-300"
+      ],
+      "screens": [
+        "agent-detail.chat",
+        "agent-detail.chat-blocked-card",
+        "agent-detail.chat-background-strip",
+        "agent-detail.subagent-transcript"
+      ],
+      "variants": [
+        "default|tool card: kind icon, mono command (2 lines), trailing status (Exit 1 red)",
+        "waiting|orange hand glyph 'Waiting', command line in secondary",
+        "subagents|group of subagent rows: icon, name, kind, check or spinner, 'Open Subagent Transcript' link"
+      ],
+      "interactions": "tap expands output; subagent rows open the transcript; long press copy",
+      "rnToday": ["none"],
+      "props": "{ tool: { kind, title, detail, status, exitCode? }, expanded, onToggle }",
+      "composes": ["Card", "StatusOrb", "Badge", "Icon", "Text"],
+      "accept": [
+        "card radius 8 on the secondary surface, mono footnote command",
+        "status at the right in its tone (red x Exit 1, orange Waiting, green check)",
+        "subagent group: one card per row, link row with a chevron"
+      ]
+    },
+    {
+      "name": "ChatNoticeRow",
+      "group": "chat-rows",
+      "swift": ["Chat/Timeline/ChatRowView.swift:1088-1148"],
+      "screens": ["agent-detail.chat-floating-controls", "agent-detail.chat-background-strip"],
+      "variants": ["default|bell glyph, 'Agent \"X\" completed' title and a caption line below"],
+      "interactions": "none (informational)",
+      "rnToday": ["none"],
+      "props": "{ icon, title, detail }",
+      "composes": ["Icon", "Text"],
+      "accept": [
+        "subheadline secondary title with a 16pt glyph, caption2 detail indented",
+        "no background"
+      ]
+    },
+    {
+      "name": "DiffRow",
+      "group": "chat-rows",
+      "swift": [
+        "Changes/DiffLineViews.swift:7-407",
+        "Changes/FileDiffView.swift:5-715",
+        "Changes/FileDiffSideBySideRow.swift:6-111",
+        "Chat/Timeline/ChatFileDiffView.swift:267-456"
+      ],
+      "screens": ["changes.file-diff", "agent-detail.chat (inline diff)"],
+      "variants": [
+        "default|file bar (kind badge, 'Modified - Unstaged', +1 -1), hunk band, numbered lines with +/- gutters and word highlights, 'unchanged lines' gap"
+      ],
+      "interactions": "long press a line: reference menu; tap a gap expands; side-by-side on wide",
+      "rnToday": ["packages/ui/src/diff/DiffView.tsx"],
+      "props": "{ file, hunks, layout: 'unified'|'sideBySide', onReference }",
+      "composes": ["DiffView", "Badge", "Text"],
+      "accept": [
+        "added lines green wash with a green gutter +, removed red wash",
+        "changed words get a stronger wash",
+        "line numbers in secondary mono, 2 columns",
+        "hunk band caption mono on the surface fill with the gap count at the right"
+      ]
+    },
+    {
+      "name": "BlockedCard",
+      "group": "blocked-terminal",
+      "swift": [
+        "Chat/Blocked/BlockedCardView.swift:9-1008",
+        "Chat/Blocked/QuestionFormCardView.swift:7-197",
+        "Chat/Blocked/GenericDialogCardView.swift:5-156"
+      ],
+      "screens": ["agent-detail.chat-blocked-card", "agent-detail.chat"],
+      "variants": [
+        "default|header (hand glyph, 'Bash command', chevron), description, code box, filled accent 'Yes', secondary option, red 'No', 'Add a Note'",
+        "collapsed|single bar with the title and a chevron (no atlas crop)",
+        "question|form card with options and a text field (no atlas crop)"
+      ],
+      "interactions": "option tap sends the key and haptics; chevron collapses; Add a Note opens a text field; rule warning line under rules",
+      "rnToday": ["apps/mobile/src/blocked/BlockedCard.tsx"],
+      "props": "{ prompt: BlockedPrompt (title, description, code?, options[], warning?), onChoose, onNote, collapsed }",
+      "composes": ["Card", "Button", "Icon", "TextField", "Text"],
+      "accept": [
+        "card radius 20 over the composer area, hairline",
+        "Yes: solid accent button full width, other options secondary fill, No red wash",
+        "warning line amber with a triangle glyph",
+        "code box mono footnote on the darker surface"
+      ]
+    },
+    {
+      "name": "BackgroundWorkStrip",
+      "group": "blocked-terminal",
+      "swift": [
+        "Chat/BackgroundWork/ChatBackgroundWorkStrip.swift:8-266",
+        "Chat/BackgroundWork/ChatBackgroundWorkSheet.swift:7-214"
+      ],
+      "screens": [
+        "agent-detail.chat-blocked-card",
+        "agent-detail.chat-floating-controls",
+        "agent-detail.chat-background-strip",
+        "agent-detail.chat-background-sheet"
+      ],
+      "variants": [
+        "default|collapsed pill: spinner, '1 running - Find other retry callers', chevron",
+        "expanded|card with up to 3 rows (spinner, name, kind, progress 2/3, time) and '+1 more'"
+      ],
+      "interactions": "tap opens the background work sheet; rows update live",
+      "rnToday": ["none"],
+      "props": "{ items: { id, title, kind, state, progress?, elapsed }[], onOpen }",
+      "composes": ["Card", "StatusOrb", "Meter", "Icon", "Text"],
+      "accept": [
+        "pill radius 14 on the secondary surface above the composer",
+        "running rows with the accent spinner, finished with a check",
+        "+N more in accent bold"
+      ]
+    },
+    {
+      "name": "NoticeBanner",
+      "group": "blocked-terminal",
+      "swift": [
+        "Chat/Timeline/ChatConversationStatus.swift:333-420",
+        "Notifications/AgentNotificationBannerView.swift:7-60",
+        "Notifications/AgentNotificationBannerStore.swift:1-190"
+      ],
+      "screens": ["agent-detail.chat-banners", "agent-detail.chat"],
+      "variants": [
+        "default|in-chat banner: warning glyph, message, accent Retry",
+        "locating|centered spinner + 'Looking for the conversation...'",
+        "inapp|top-of-screen notification banner (no atlas crop)"
+      ],
+      "interactions": "Retry re-reads; the in-app banner taps into the agent and swipes up to dismiss",
+      "rnToday": [
+        "packages/ui/src/primitives/Banner.tsx",
+        "apps/mobile/src/notifications/InAppBanner.tsx"
+      ],
+      "props": "{ tone, icon?, message, action?: { label, onPress } }",
+      "composes": ["Banner", "GlassCapsule", "Icon", "Text"],
+      "accept": [
+        "rounded 16 secondary surface, glyph left, message subheadline, action accent semibold at the right",
+        "locating: spinner above 17pt secondary text, centered in the free area"
+      ]
+    },
+    {
+      "name": "JumpControl",
+      "group": "blocked-terminal",
+      "swift": [
+        "Console/MessageJumpControl.swift:445-576",
+        "Chat/Timeline/ChatTimelineView.swift:75-134"
+      ],
+      "screens": ["agent-detail.chat (appears when scrolled away; no atlas crop)"],
+      "variants": [
+        "default|floating glass circle with a chevron-down (jump to latest), up/down message jump pair on long press"
+      ],
+      "interactions": "tap jumps to latest with a haptic; long press expands to previous/next user message; fades after 2 s idle",
+      "rnToday": ["none"],
+      "props": "{ visible, onJumpLatest, onPrevious, onNext }",
+      "composes": ["GlassCapsule", "Icon"],
+      "accept": [
+        "40pt glass circle at the trailing edge above the composer",
+        "appears only when more than one screen from the bottom"
+      ]
+    },
+    {
+      "name": "TerminalToolbar",
+      "group": "blocked-terminal",
+      "swift": [
+        "Terminal/Toolbar/TerminalToolbarCapsule.swift:1-388",
+        "Terminal/Toolbar/TerminalToolbarDPad.swift:7-65",
+        "Terminal/Toolbar/TerminalToolbarMoreMenu.swift:1-158",
+        "Terminal/Toolbar/TerminalToolbarBand.swift:1-134"
+      ],
+      "screens": [
+        "agent-detail.terminal-toolbar",
+        "agent-detail.terminal-toolbar-dpad",
+        "agent-detail.terminal-toolbar-more-menu",
+        "agent-detail.shell-keys-dock"
+      ],
+      "variants": [
+        "default|capsule: agent mark, Ctrl, Esc, Tab, arrows glyph, keyboard, more",
+        "dock|same capsule without the agent mark (shell)",
+        "dpad|long press on the arrows glyph lifts a d-pad popover (up, left, enter, right, down)"
+      ],
+      "interactions": "Ctrl is a sticky modifier (second tap locks); keys repeat on hold; d-pad drag-to-direction; More opens snippets, paste, clear",
+      "rnToday": ["apps/mobile/src/agent-detail/terminal/TerminalToolbar.tsx"],
+      "props": "{ keys: KeySpec[], modifiers, onKey, leading?: ReactNode, onMore }",
+      "composes": ["GlassCapsule", "KeyboardDock", "ActionMenuButton", "Icon"],
+      "accept": [
+        "pill capsule 52 tall, mono semibold key labels, 20pt gaps",
+        "armed modifier turns accent",
+        "d-pad popover is a rounded 28 glass shape above the arrows glyph"
+      ]
+    },
+    {
+      "name": "KeyPad",
+      "group": "blocked-terminal",
+      "swift": [
+        "Console/AgentControlKeyboard.swift:6-170",
+        "Console/AgentToolsKeyboard.swift:5-120",
+        "Console/AgentChatToolsKeyboard.swift:6-130",
+        "Terminal/TerminalFullKeyboard.swift:35-250"
+      ],
+      "screens": [
+        "agent-detail.control-keys",
+        "agent-detail.tools-keyboard",
+        "agent-detail.chat-tools-keyboard"
+      ],
+      "variants": [
+        "default|3x4 grid of key caps (Esc Tab Backspace, arrows, Shift-Tab, Enter) under an Agent / Terminal pager; bottom tab bar of pages (keys, skills, snippets, appearance)"
+      ],
+      "interactions": "tap sends; hold repeats; swipe between Agent and Terminal pages; page tab bar switches panes",
+      "rnToday": ["packages/ui/src/keys/KeyboardDock.tsx"],
+      "props": "{ pages, keys, onKey }",
+      "composes": ["KeyboardDock", "Segmented", "Icon", "Text"],
+      "accept": [
+        "key caps radius 12 on the elevated surface, 8pt gaps",
+        "pager title selected primary, other secondary with a dot indicator",
+        "bottom page tab bar with the active tab in an accent wash"
+      ]
+    },
+    {
+      "name": "UsageLimitChip",
+      "group": "usage",
+      "swift": [
+        "Usage/AgentUsageSheets.swift:102-154",
+        "Usage/AgentUsageSection.swift:239-288",
+        "Usage/AgentUsageWide.swift:101-223"
+      ],
+      "screens": ["usage.tab", "usage.limits-sheet", "usage.quick-sheet"],
+      "variants": [
+        "default|ring with percent, Host dot + name, 'Codex - Weekly'; horizontal strip, next chip peeks"
+      ],
+      "interactions": "tap opens the limits sheet; strip scrolls; 'Details' accent link in the header",
+      "rnToday": [
+        "apps/mobile/src/usage/QuickCardView.tsx",
+        "apps/mobile/src/usage/LimitWindowRow.tsx"
+      ],
+      "props": "{ percent, host, program, window, tone }",
+      "composes": ["Card", "Meter", "StatusDot", "Text"],
+      "accept": [
+        "chip radius 14 on the secondary surface, 44pt ring left",
+        "two text lines: Host with dot (caption), program and window (headline)",
+        "ring tone warn/critical from tokens"
+      ]
+    },
+    {
+      "name": "UsageTotals",
+      "group": "usage",
+      "swift": [
+        "Usage/AgentUsageTab.swift:5-130",
+        "Usage/AgentUsageDashboard.swift:30-300",
+        "Usage/AgentUsageCharts.swift:215-294"
+      ],
+      "screens": ["usage.tab", "usage.tab--host", "usage.day-sheet", "usage.scope-menu"],
+      "variants": [
+        "default|two segmented controls (Est. Cost / Tokens, Today / 7 Days / 30 Days), caption, big currency total, tokens line",
+        "day|date title, nav arrows and close, total and tokens for that day"
+      ],
+      "interactions": "segments animate the selection pill; scope menu pill 'All Hosts' filters; day arrows step days",
+      "rnToday": [
+        "apps/mobile/src/usage/UsageTotals.tsx",
+        "apps/mobile/src/usage/UsageControls.tsx"
+      ],
+      "props": "{ metric, range, total, tokens, scope, onChange* }",
+      "composes": ["Segmented", "GlassCapsule", "Text"],
+      "accept": [
+        "total in a 44pt bold rounded numeric style",
+        "selected segment is a lighter filled pill inside a darker track",
+        "caption secondary above, tokens subheadline secondary below"
+      ]
+    },
+    {
+      "name": "UsageChart",
+      "group": "usage",
+      "swift": ["Usage/AgentUsageCharts.swift:7-189", "Usage/AgentUsageCharts.swift:481-528"],
+      "screens": ["usage.tab"],
+      "variants": [
+        "default|smoothed area+line per program (orange fill, white line), legend with dots, 'Hold to read a day', y labels US$ 0/2/4, x dates"
+      ],
+      "interactions": "press and hold scrubs a day with a vertical rule and readout, haptic per day",
+      "rnToday": [
+        "apps/mobile/src/usage/DailyChart.tsx",
+        "packages/ui/src/primitives/BarChart.tsx"
+      ],
+      "props": "{ series: { program, color, points[] }[], onSelectDay }",
+      "composes": ["Card", "Text"],
+      "accept": [
+        "rounded card, legend row at the top, y axis labels at the right",
+        "gradient fill under each line, 2pt lines",
+        "x labels every ~9 days in caption2 secondary"
+      ]
+    },
+    {
+      "name": "UsageHeatMap",
+      "group": "usage",
+      "swift": ["Usage/AgentUsageCharts.swift:294-480"],
+      "screens": ["usage.tab", "usage.day-sheet"],
+      "variants": [
+        "default|month header, weekday letters, 7-column grid of rounded cells with grayscale intensity",
+        "full|expanded calendar with Less ... More legend, Today ring and hatched Not recorded"
+      ],
+      "interactions": "tap a day opens the day sheet; haptic; today has an accent outline",
+      "rnToday": ["none"],
+      "props": "{ days: { date, value, recorded }[], today, onSelect }",
+      "composes": ["Card", "Text"],
+      "accept": [
+        "cells radius 8, 5 intensity steps from track to near white",
+        "unrecorded days hatched, today outlined",
+        "legend row: Less, 5 swatches, More; Today and Not recorded keys"
+      ]
+    },
+    {
+      "name": "UsageBreakdownRow",
+      "group": "usage",
+      "swift": [
+        "Usage/AgentUsageSheets.swift:154-312",
+        "Usage/AgentUsageCharts.swift:481-528",
+        "Usage/AgentUsageDashboard.swift:851-900"
+      ],
+      "screens": ["usage.day-sheet", "usage.breakdown-list", "usage.host-section"],
+      "variants": [
+        "default|program dot + name, cost right, tokens secondary, stacked split bar (input, cache read, cache write, output) and a legend",
+        "host|Host glyph, name, date and zone caption, cost and tokens"
+      ],
+      "interactions": "rows in cards link to Models / Directories lists (accent, chevron)",
+      "rnToday": ["apps/mobile/src/usage/BreakdownList.tsx"],
+      "props": "{ title, cost, tokens, split: { input, cacheRead, cacheWrite, output } }",
+      "composes": ["Card", "Meter", "StatusDot", "Text"],
+      "accept": [
+        "split bar 6pt tall, segments gray, blue, orange, white",
+        "legend 4 swatches in caption2",
+        "amount right aligned, tokens after it in secondary"
+      ]
+    },
+    {
+      "name": "HostRow",
+      "group": "hosts-settings-files",
+      "swift": ["Hosts/HostListView.swift:206-962", "Hosts/HostConnectionTone.swift:36-110"],
+      "screens": ["hosts.list", "console.no-hosts-empty"],
+      "variants": [
+        "default|server glyph with a status dot, name, user@address, latency, chevron; grouped under a collapsible 'Connected 2' header"
+      ],
+      "interactions": "tap opens detail; swipe Edit/Remove; retry button on failed Hosts",
+      "rnToday": ["apps/mobile/src/features/hosts/HostListScreen.tsx (inline)"],
+      "props": "{ host: { name, subtitle, status, latencyMs? }, onPress, onRetry? }",
+      "composes": ["Card", "CardRow", "StatusDot", "Icon", "Text"],
+      "accept": [
+        "rows in one rounded card, hairline between",
+        "glyph 24pt with a 10pt status dot at its lower right",
+        "latency caption secondary before the chevron"
+      ]
+    },
+    {
+      "name": "HostStatusCard",
+      "group": "hosts-settings-files",
+      "swift": [
+        "Console/HostConnectionDetailView.swift:77-241",
+        "Hosts/HostConnectionTone.swift:75-110"
+      ],
+      "screens": ["hosts.detail", "console.host-connection-sheet"],
+      "variants": [
+        "default|green tinted card: check tile, 'Connected', address - route, circular reconnect button"
+      ],
+      "interactions": "reconnect button retries with a haptic; tone changes with state (amber/red)",
+      "rnToday": ["apps/mobile/src/features/hosts/HostDetailScreen.tsx"],
+      "props": "{ tone, title, subtitle, onReconnect }",
+      "composes": ["Card", "Icon", "Button", "Text"],
+      "accept": [
+        "card fill is the tone wash, tile rounded 10 with the tone glyph",
+        "reconnect is an accent-wash circle 36pt on the right"
+      ]
+    },
+    {
+      "name": "SettingsGroup",
+      "group": "hosts-settings-files",
+      "swift": ["Settings/SettingsView.swift:69-430", "Settings/SettingsSections+Row.swift:1-138"],
+      "screens": ["settings.root", "settings.appearance", "settings.theme"],
+      "variants": [
+        "default|section caption, rounded card of icon rows (glyph, title, trailing value, chevron)",
+        "subtitle|row with a caption subtitle under the title",
+        "toggle|row with a Switch (Follow System)"
+      ],
+      "interactions": "tap pushes the page; toggle with haptic; trailing value truncates",
+      "rnToday": ["apps/mobile/src/settings/SettingsRowView.tsx"],
+      "props": "{ title, rows: { icon, title, subtitle?, value?, toggle?, onPress }[] }",
+      "composes": ["Section", "ListRow", "Icon", "Text"],
+      "accept": [
+        "section title subheadline secondary above the card, 12pt gap",
+        "leading glyph 24pt secondary, title body, value secondary, chevron",
+        "hairline inset past the glyph"
+      ]
+    },
+    {
+      "name": "ThemeChoiceCard",
+      "group": "hosts-settings-files",
+      "swift": [
+        "Settings/ThemeSettingsView.swift:8-209",
+        "Settings/SettingsSections+Row.swift:78-122",
+        "Settings/TerminalAppearancePane.swift:111-180"
+      ],
+      "screens": [
+        "settings.theme",
+        "settings.theme--papel",
+        "settings.theme--nord",
+        "settings.appearance"
+      ],
+      "variants": [
+        "selected|green wash card, name, 'Dark - Default', palette dots, check circle",
+        "unselected|plain card with an empty circle",
+        "preview|miniature agent card and terminal on the theme background"
+      ],
+      "interactions": "tap selects and previews live with a haptic",
+      "rnToday": ["apps/mobile/src/settings/ThemeCards.tsx"],
+      "props": "{ theme: ThemeId, selected, onPress }",
+      "composes": ["Card", "Icon", "Text"],
+      "accept": [
+        "selected card has the accent wash and a 1pt accent ring",
+        "five palette dots 12pt overlapping in a capsule at the right",
+        "check circle 28pt accent when selected"
+      ]
+    },
+    {
+      "name": "FileRow",
+      "group": "hosts-settings-files",
+      "swift": ["Files/FileBrowserView.swift:207-336", "Files/FileBrowserItem.swift:1-131"],
+      "screens": ["files.browser", "console.directory-browser"],
+      "variants": [
+        "default|folder: accent folder glyph, name, mono date, chevron",
+        "file|document glyph, name, '40 bytes - date'"
+      ],
+      "interactions": "tap opens the folder or Quick Look; long press menu (Download, Rename, Delete); swipe Delete",
+      "rnToday": ["apps/mobile/src/files/FileRow.tsx"],
+      "props": "{ item: { name, kind, size?, modified }, onPress, menu }",
+      "composes": ["Card", "CardRow", "Icon", "Text"],
+      "accept": [
+        "folders in the accent color, files in secondary",
+        "name mono body, meta mono caption secondary",
+        "rows inside one rounded card with hairlines"
+      ]
+    },
+    {
+      "name": "PortRow",
+      "group": "hosts-settings-files",
+      "swift": ["Browser/PortsView.swift:160-238", "Browser/ListeningPort.swift:1-115"],
+      "screens": ["(no atlas image for Ports)"],
+      "variants": [
+        "default|port number mono bold, process name, 'Open' accent capsule, tunnel state dot (no crop: Swift atlas has no Ports image; read PortsView.swift)"
+      ],
+      "interactions": "tap opens the in-app preview via a tunnel; long press copies the URL",
+      "rnToday": ["apps/mobile/src/ports/PortRow.tsx"],
+      "props": "{ port: { number, process, tunnel }, onOpen }",
+      "composes": ["Card", "CardRow", "StatusDot", "Button", "Text"],
+      "accept": [
+        "follows the FileRow card and hairline spec",
+        "port in mono headline, process caption secondary",
+        "judge against PortsView.swift because there is no crop"
+      ]
+    }
+  ]
+}
