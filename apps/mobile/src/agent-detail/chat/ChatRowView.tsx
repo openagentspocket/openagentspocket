@@ -18,6 +18,7 @@ import { durationText, rowToolStatus, toolIcon, toolStatusLabel } from './chatRo
 
 const useStyles = makeStyles((th) => ({
   muted: { opacity: 0.7 },
+  inset: { paddingHorizontal: th.spacing.md },
   nested: { paddingLeft: th.spacing.sm },
   center: { alignItems: 'center' },
 }));
@@ -150,11 +151,14 @@ export const ChatRowView = memo(function ChatRowView({ row, onToggle, onLoadOlde
   };
   const node = body();
   if (!node) return null;
+  // Bubbles and prose carry no inset of their own; the cards and disclosure rows do.
+  const inset = ['user', 'pending', 'assistant', 'plan'].includes(content.type);
   return (
     <View
       style={[
         { paddingTop: row.topSpacing },
         row.isNested && styles.nested,
+        inset && styles.inset,
         row.isMuted && styles.muted,
       ]}
       testID={`chat-row-${row.id}`}

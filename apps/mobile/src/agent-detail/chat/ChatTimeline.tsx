@@ -2,7 +2,7 @@ import type { ChatAgentActivity, ChatRow } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { makeStyles, metrics, NoticeBanner } from '@openagentspocket/ui';
 import { useRef } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 import { useConsoleState } from '@/console/hooks';
 import { useConversation } from '@/conversations/useConversation';
 import { ChatBanners } from './ChatBanners';
@@ -18,7 +18,6 @@ const useStyles = makeStyles((th) => ({
     maxWidth: metrics.readableWidth,
     width: '100%',
     alignSelf: 'center',
-    paddingHorizontal: th.spacing.md,
   },
   banners: { paddingHorizontal: th.spacing.sm, paddingTop: th.spacing.xs },
 }));
@@ -49,6 +48,10 @@ export function ChatTimeline({
   const list = useRef<FlatList<ChatRow>>(null);
   /** Follows new rows only while the reader is at the end. */
   const nearEnd = useRef(true);
+  const settle = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+    nearEnd.current = contentSize.height - contentOffset.y - layoutMeasurement.height < NEAR_END;
+  };
   return (
     <View style={styles.list} testID="chat-timeline">
       <FlatList
@@ -56,12 +59,11 @@ export function ChatTimeline({
         data={rows}
         keyExtractor={(row) => row.id}
         initialNumToRender={40}
-        scrollEventThrottle={100}
-        onScroll={(event) => {
-          const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-          nearEnd.current =
-            contentSize.height - contentOffset.y - layoutMeasurement.height < NEAR_END;
+        onScrollBeginDrag={() => {
+          nearEnd.current = false;
         }}
+        onScrollEndDrag={settle}
+        onMomentumScrollEnd={settle}
         onContentSizeChange={() => {
           if (nearEnd.current) list.current?.scrollToEnd({ animated: false });
         }}
