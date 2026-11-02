@@ -12,3 +12,4 @@ overrides:
 # Build scripts allowed to run (pnpm 11 fails installs on unreviewed ones).
 allowBuilds:
   "@parcel/watcher": true
+  expo-libghostty: true
