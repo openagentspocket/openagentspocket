@@ -26,6 +26,10 @@ export interface HostFileListingRequest {
   directory: string;
   kinds: HostFileKind[];
   namePrefix?: string;
+  /** Keep only names ending in one of these. */
+  nameSuffixes?: string[];
+  /** Keep only names containing this text. */
+  nameContains?: string;
   maximumEntries: number;
   maximumScanned?: number;
 }

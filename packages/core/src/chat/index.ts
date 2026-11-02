@@ -5,6 +5,7 @@ export type { ClaudeRole } from './claude/chain';
 export * from './claude/location';
 export * from './claude/locator';
 export { CLAUDE_REVISION, ClaudeTranscriptReducer } from './claude/reducer';
+export * from './codex';
 export * from './model/cache';
 export * from './model/factories';
 export * from './model/fake-host-files';
