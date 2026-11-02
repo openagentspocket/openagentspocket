@@ -4,6 +4,17 @@ import type { HostReading } from './scope';
 /** What the Usage screens read until the live per-Host store lands. */
 export interface UsageSource {
   readings(): Promise<HostReading[]>;
+  /** Live sources only: tells when a reading changed. */
+  subscribe?(listener: () => void): () => void;
+  /** Live sources only: a pull to refresh reads every connected Host once. */
+  refresh?(): Promise<void>;
+  /** Live sources only: a visible surface starts polling; the returned function stops it. */
+  watch?(): () => void;
+  /** Live sources only: the device's Claude Code limits consent. */
+  claudeLimits?: {
+    enabled(): boolean;
+    set(enabled: boolean): void;
+  };
 }
 
 /** Where a Host's `usage-accounts.json` lives; the live one runs over SSH exec / SFTP. */
