@@ -127,7 +127,14 @@ describe('hosts.form', () => {
 describe('hosts.list', () => {
   const noop = () => {};
   const list = (
-    <HostListScreen onOpen={noop} onAdd={noop} onScan={noop} onEdit={noop} onDuplicate={noop} />
+    <HostListScreen
+      onDone={noop}
+      onOpen={noop}
+      onAdd={noop}
+      onScan={noop}
+      onEdit={noop}
+      onDuplicate={noop}
+    />
   );
 
   it('offers Scan to Pair and Add Host when empty, and groups saved Hosts', async () => {
@@ -164,7 +171,9 @@ describe('hosts.detail', () => {
   it('asks to trust the key on first connect, pins it and passes every check', async () => {
     const runtime = setup();
     await runtime.model.add(SAMPLE, null);
-    await renderApp(<HostDetailScreen hostId="h1" onEdit={jest.fn()} onRemoved={jest.fn()} />);
+    await renderApp(
+      <HostDetailScreen hostId="h1" onBack={jest.fn()} onEdit={jest.fn()} onRemoved={jest.fn()} />,
+    );
 
     await fireEvent.press(await screen.findByTestId('alert-action-confirm'));
     await waitFor(() => expect(runtime.model.connection('h1')).toBe('connected'));
@@ -176,7 +185,9 @@ describe('hosts.detail', () => {
   it('declining the trust prompt stops the checks at the connection', async () => {
     const runtime = setup();
     await runtime.model.add(SAMPLE, null);
-    await renderApp(<HostDetailScreen hostId="h1" onEdit={jest.fn()} onRemoved={jest.fn()} />);
+    await renderApp(
+      <HostDetailScreen hostId="h1" onBack={jest.fn()} onEdit={jest.fn()} onRemoved={jest.fn()} />,
+    );
 
     await fireEvent.press(await screen.findByTestId('alert-cancel'));
     await waitFor(() => expect(runtime.model.connection('h1')).toBe('cantConnect'));
@@ -187,7 +198,9 @@ describe('hosts.detail', () => {
   it('a changed key fails without a prompt until the new key is trusted', async () => {
     const runtime = setup();
     await runtime.model.add(SAMPLE, null);
-    await renderApp(<HostDetailScreen hostId="h1" onEdit={jest.fn()} onRemoved={jest.fn()} />);
+    await renderApp(
+      <HostDetailScreen hostId="h1" onBack={jest.fn()} onEdit={jest.fn()} onRemoved={jest.fn()} />,
+    );
     await fireEvent.press(await screen.findByTestId('alert-action-confirm'));
     await waitFor(() => expect(runtime.model.connection('h1')).toBe('connected'));
 
@@ -207,7 +220,9 @@ describe('hosts.pairing', () => {
   it('pairs from a pasted code, shows the steps and saves the Host', async () => {
     const runtime = setup();
     const onPaired = jest.fn();
-    await renderApp(<PairingScreen onPaired={onPaired} onAddManually={jest.fn()} />);
+    await renderApp(
+      <PairingScreen onCancel={jest.fn()} onPaired={onPaired} onAddManually={jest.fn()} />,
+    );
 
     await fireEvent.changeText(await screen.findByTestId('qr-paste-field'), CONFIG_ONLY_CODE);
     await fireEvent.press(screen.getByTestId('qr-paste-submit'));
@@ -224,7 +239,9 @@ describe('hosts.pairing', () => {
   it('explains a code that is not a Pairing Code and lets the user add manually', async () => {
     setup();
     const onAddManually = jest.fn();
-    await renderApp(<PairingScreen onPaired={jest.fn()} onAddManually={onAddManually} />);
+    await renderApp(
+      <PairingScreen onCancel={jest.fn()} onPaired={jest.fn()} onAddManually={onAddManually} />,
+    );
     await fireEvent.changeText(await screen.findByTestId('qr-paste-field'), 'hello');
     await fireEvent.press(screen.getByTestId('qr-paste-submit'));
     expect(await screen.findByTestId('pairing-scan-failure')).toBeTruthy();
@@ -240,7 +257,9 @@ describe('hosts.pairing', () => {
     };
     const runtime = createDemoRuntime({ probe, connector: failing });
     setHostsRuntime(runtime);
-    await renderApp(<PairingScreen onPaired={jest.fn()} onAddManually={jest.fn()} />);
+    await renderApp(
+      <PairingScreen onCancel={jest.fn()} onPaired={jest.fn()} onAddManually={jest.fn()} />,
+    );
     await fireEvent.changeText(await screen.findByTestId('qr-paste-field'), CONFIG_ONLY_CODE);
     await fireEvent.press(screen.getByTestId('qr-paste-submit'));
     expect(await screen.findByTestId('pairing-failure')).toBeTruthy();

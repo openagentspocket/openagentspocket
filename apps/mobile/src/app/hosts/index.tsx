@@ -6,6 +6,7 @@ export default function HostsRoute() {
   const router = useRouter();
   return (
     <HostListScreen
+      onDone={() => router.dismiss()}
       onOpen={(host) => router.push({ pathname: '/hosts/[id]', params: { id: host.id } })}
       onAdd={() => router.push('/hosts/form')}
       onScan={() => router.push('/hosts/pair')}

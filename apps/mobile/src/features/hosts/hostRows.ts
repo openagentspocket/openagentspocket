@@ -32,6 +32,18 @@ export function groupStatus(group: HostConnection): Status {
   }
 }
 
+/** The glyph state of a Host row for its group. */
+export function rowConnection(
+  group: HostConnection,
+): 'connected' | 'connecting' | 'failed' | 'idle' {
+  return {
+    cantConnect: 'failed',
+    connecting: 'connecting',
+    connected: 'connected',
+    notConnected: 'idle',
+  }[group] as 'connected' | 'connecting' | 'failed' | 'idle';
+}
+
 /** Hosts per connection group, empty groups left out. */
 export function groupHosts(snapshot: HostsSnapshot): { group: HostConnection; hosts: Host[] }[] {
   return GROUP_ORDER.map((group) => ({

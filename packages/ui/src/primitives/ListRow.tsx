@@ -30,6 +30,8 @@ export interface ListRowProps {
   leading?: ReactNode;
   /** A settings-style leading symbol: 22 pt, tinted secondary. */
   icon?: IconName;
+  /** Sets the title in the monospaced face (addresses). */
+  titleMono?: boolean;
   /** Sets the subtitle in monospaced caption (dates, sizes, paths). */
   subtitleMono?: boolean;
   /** Lines the subtitle may take before it truncates (2 by default). */
@@ -67,6 +69,7 @@ export function ListRow({
   title,
   subtitle,
   subtitleMono = false,
+  titleMono = false,
   subtitleLines = 2,
   leading,
   icon,
@@ -117,7 +120,9 @@ export function ListRow({
     >
       {icon ? <Icon name={icon} size={22} color="textSecondary" /> : leading}
       <View style={styles.text}>
-        <Text numberOfLines={1}>{title}</Text>
+        <Text numberOfLines={1} monospaced={titleMono}>
+          {title}
+        </Text>
         {subtitle ? (
           <Text
             variant={subtitleMono ? 'caption' : 'footnote'}

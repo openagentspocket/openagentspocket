@@ -8,7 +8,7 @@ import {
   updateRoute,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, confirm, Screen, Section, TextField } from '@openagentspocket/ui';
+import { Button, confirm, Screen, Section, SheetBar, TextField } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { AuthFields } from './AuthFields';
 import { hostsRuntime } from './hostsRuntime';
@@ -49,8 +49,23 @@ export function HostFormScreen({ initial, onSaved, onCancel }: HostFormScreenPro
     }
   };
 
+  const bar = (
+    <SheetBar
+      title={editing ? t('Edit Host') : t('Add Host')}
+      leading={{ label: t('Cancel'), onPress: onCancel, testID: 'host-cancel' }}
+      trailing={[
+        {
+          label: t('Save'),
+          onPress: () => void save(),
+          disabled: !canSaveHostDraft(draft, editing) || saving,
+          testID: 'host-save',
+        },
+      ]}
+    />
+  );
+
   return (
-    <Screen edges={['left', 'right', 'bottom']} testID="host-form">
+    <Screen header={bar} edges={['left', 'right', 'bottom']} testID="host-form">
       <Section title={t('Host')} grouped={false}>
         <TextField
           label={t('Name (optional)')}
@@ -69,7 +84,13 @@ export function HostFormScreen({ initial, onSaved, onCancel }: HostFormScreenPro
           testID="host-user"
         />
       </Section>
-      <Section title={t('Routes')} grouped={false}>
+      <Section
+        title={t('Routes')}
+        grouped={false}
+        footer={t(
+          'Add another way to reach this Host, such as its LAN address at home and an overlay network or Jump Host elsewhere.',
+        )}
+      >
         {draft.routes.map((route, index) => (
           <RouteFields
             key={route.id}
@@ -81,7 +102,7 @@ export function HostFormScreen({ initial, onSaved, onCancel }: HostFormScreenPro
           />
         ))}
         <Button
-          kind="secondary"
+          kind="text"
           icon="add"
           title={t('Add Route')}
           onPress={() => change({ routes: [...draft.routes, emptyRouteDraft(model.newId())] })}
@@ -93,14 +114,6 @@ export function HostFormScreen({ initial, onSaved, onCancel }: HostFormScreenPro
         keepsPassword={editing?.authMethod === 'password'}
         onChange={change}
       />
-      <Button
-        title={t('Save')}
-        onPress={() => void save()}
-        disabled={!canSaveHostDraft(draft, editing)}
-        loading={saving}
-        testID="host-save"
-      />
-      <Button kind="text" title={t('Cancel')} onPress={onCancel} testID="host-cancel" />
     </Screen>
   );
 }

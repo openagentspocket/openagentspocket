@@ -50,8 +50,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'hosts.list': { render: () => <HostsRoute /> },
   'hosts.form': { render: () => <HostFormRoute /> },
   'hosts.detail': {
-    render: () =>
-      titled(t('Host Details'), <HostDetailScreen hostId="demo" onEdit={noop} onRemoved={noop} />),
+    render: () => <HostDetailScreen hostId="demo" onBack={noop} onEdit={noop} onRemoved={noop} />,
   },
   'hosts.pairing-scanner': { render: () => <PairRoute /> },
   'settings.root': { render: () => <SettingsRoot /> },

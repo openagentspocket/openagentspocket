@@ -1,19 +1,20 @@
 import { needsConfirmation } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Button, QRScanner, Screen, Text } from '@openagentspocket/ui';
+import { Banner, Button, QRScanner, Screen, SheetBar, Text } from '@openagentspocket/ui';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { hostsRuntime } from './hostsRuntime';
 import { PairingCeremony } from './PairingCeremony';
 import { pairingMessageText, scannerLabels } from './pairingText';
 
 interface PairingScreenProps {
+  onCancel: () => void;
   /** Called once with the saved Host's id, after the verified reconnect. */
   onPaired: (hostId: string) => void;
   onAddManually: () => void;
 }
 
 /** hosts.pairing-scanner: scan or paste a HERDR-PAIR code, then run the ceremony. */
-export function PairingScreen({ onPaired, onAddManually }: PairingScreenProps) {
+export function PairingScreen({ onCancel, onPaired, onAddManually }: PairingScreenProps) {
   const [store] = useState(() => hostsRuntime().createScanStore());
   const state = useSyncExternalStore(store.subscribe, store.getState);
   const code = state.pairingCode;
@@ -28,7 +29,16 @@ export function PairingScreen({ onPaired, onAddManually }: PairingScreenProps) {
   useEffect(() => () => store.cancel(), [store]);
 
   return (
-    <Screen edges={['left', 'right', 'bottom']} testID="pairing-screen">
+    <Screen
+      header={
+        <SheetBar
+          title={t('Scan to Pair')}
+          leading={{ label: t('Cancel'), onPress: onCancel, testID: 'pairing-cancel' }}
+        />
+      }
+      edges={['left', 'right', 'bottom']}
+      testID="pairing-screen"
+    >
       {code ? (
         <PairingCeremony
           state={state}

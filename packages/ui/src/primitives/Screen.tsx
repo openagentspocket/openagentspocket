@@ -22,6 +22,8 @@ interface ScreenProps {
   onRefresh?: () => void;
   /** Safe-area edges to inset; a screen under a navigation header drops 'top'. */
   edges?: readonly Edge[];
+  /** Pinned above the scrolling body (a sheet bar); it never scrolls. */
+  header?: ReactNode;
   testID?: string;
 }
 
@@ -32,6 +34,7 @@ export function Screen({
   refreshing = false,
   onRefresh,
   edges = ALL_EDGES,
+  header,
   testID = 'screen',
 }: ScreenProps) {
   const styles = useStyles();
@@ -48,6 +51,7 @@ export function Screen({
   return (
     <SafeAreaView style={styles.root} edges={edges} testID={testID}>
       <ScreenBackground />
+      {header}
       {scroll ? (
         <ScrollView
           style={styles.fill}

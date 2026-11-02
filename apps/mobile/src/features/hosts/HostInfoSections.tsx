@@ -1,11 +1,7 @@
-import {
-  type Host,
-  type HostConnectionSummary,
-  hostConnectionSummary,
-  routeSummary,
-} from '@openagentspocket/core';
+import { type Host, primaryRoute, routeEndpoint, routeUsesJumpHost } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Badge, ListRow, Section, StatusPill } from '@openagentspocket/ui';
+import { Icon, KeyValueGroup, ListRow, Section, StatusPill } from '@openagentspocket/ui';
+import { View } from 'react-native';
 import type { HostConnection } from './HostsModel';
 
 export function connectionTitle(connection: HostConnection): string {
@@ -21,14 +17,32 @@ export function connectionTitle(connection: HostConnection): string {
   }
 }
 
-/** The routes, with the one in use tagged and, when no route reached the Host, none tagged. */
+const routeKind = (host: Host, id: string): string => {
+  const route = host.routes.find((r) => r.id === id);
+  return route && routeUsesJumpHost(route) ? t('Jump Host') : t('Direct');
+};
+
+/** "address · Direct": the status card's second line, for the route in use or the first one. */
+export function routeLine(host: Host, routeInUse: string | null): string {
+  const route = host.routes.find((r) => r.id === routeInUse) ?? primaryRoute(host);
+  return `${routeEndpoint(route)} · ${routeKind(host, route.id)}`;
+}
+
+/** The routes: glyph tile, mono address, how it connects, and the one in use tagged. */
 export function RoutesSection({ host, routeInUse }: { host: Host; routeInUse: string | null }) {
   return (
-    <Section title={t('Routes')} count={host.routes.length} testID="routes-section">
+    <Section title={t('Routes')} testID="routes-section">
       {host.routes.map((route) => (
         <ListRow
           key={route.id}
-          title={routeSummary(route)}
+          title={routeEndpoint(route)}
+          titleMono
+          subtitle={routeKind(host, route.id)}
+          leading={
+            <View style={{ width: 28, alignItems: 'center' }}>
+              <Icon name="wifi" size={22} color="accent" />
+            </View>
+          }
           trailing={
             route.id === routeInUse ? <StatusPill status="done" label={t('In Use')} /> : undefined
           }
@@ -39,33 +53,18 @@ export function RoutesSection({ host, routeInUse }: { host: Host; routeInUse: st
   );
 }
 
-/** User, session or herdr endpoint, and how the Host authenticates. */
+/** Account, session or herdr endpoint, and how the Host authenticates. */
 export function HostFacts({ host }: { host: Host }) {
-  const summary: HostConnectionSummary = hostConnectionSummary(host);
-  return (
-    <Section title={t('Host')} testID="host-facts">
-      <ListRow title={t('User')} value={host.username} />
-      {host.herdrEndpoint ? (
-        <>
-          <ListRow title={t('herdr Socket')} subtitle={host.herdrEndpoint.socketPath} />
-          <ListRow title={t('herdr Launcher')} subtitle={host.herdrEndpoint.executablePath} />
-        </>
-      ) : (
-        <ListRow
-          title={t('Session')}
-          value={host.sessionName === '' ? t('Default') : host.sessionName}
-        />
-      )}
-      <ListRow
-        title={t('Authentication')}
-        trailing={
-          <Badge
-            kind="control"
-            label={host.authMethod === 'password' ? t('Password') : t('Device Key')}
-          />
-        }
-        subtitle={summary.kind === 'address' ? summary.text : undefined}
-      />
-    </Section>
-  );
+  const endpoint = host.herdrEndpoint;
+  const rows = [
+    { label: t('Account'), value: host.username },
+    endpoint
+      ? { label: t('herdr Socket'), value: endpoint.socketPath, mono: true }
+      : { label: t('Session'), value: host.sessionName === '' ? t('Default') : host.sessionName },
+    ...(endpoint
+      ? [{ label: t('herdr Launcher'), value: endpoint.executablePath, mono: true }]
+      : []),
+    { label: t('Auth'), value: host.authMethod === 'password' ? t('Password') : t('Device Key') },
+  ];
+  return <KeyValueGroup title={t('Host')} rows={rows} testID="host-facts" />;
 }
