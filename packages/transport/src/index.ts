@@ -21,6 +21,12 @@ export {
   startAgentInNewWorkspace,
   startAgentInNewWorktree,
 } from './launch';
+export {
+  launchAgent,
+  listWorktreeEntries,
+  type RemovalGuard,
+  WorktreeRemover,
+} from './new-agent';
 export * from './settings';
 export { SharedOperation } from './shared-operation';
 export { type ExecOutcome, markerValue, SshTransport } from './transport';
