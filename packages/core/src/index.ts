@@ -1,4 +1,5 @@
 export * from './agents';
+export * from './blocked';
 export * from './changes';
 export * from './console';
 export * from './errors';
