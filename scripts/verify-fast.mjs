@@ -52,7 +52,7 @@ const checks = [
 
 // Test files are excluded from `tsc -b` in core and i18n; their tsconfig.tests.json covers them.
 // ui, ssh and mobile include their tests in `tsc -b` already.
-for (const pkg of ['core', 'i18n']) {
+for (const pkg of ['core', 'i18n', 'transport']) {
   if (inPkg(`packages/${pkg}/`).length)
     checks.push(
       run(
@@ -79,6 +79,23 @@ if (coreFiles.length) {
         ...coreFiles.map((f) => f.replace('packages/core/', '')),
       ],
       'packages/core',
+    ),
+  );
+}
+const transportFiles = codeIn('packages/transport/');
+if (transportFiles.length) {
+  checks.push(
+    run(
+      'transport tests (related)',
+      'pnpm',
+      [
+        'exec',
+        'vitest',
+        'related',
+        '--run',
+        ...transportFiles.map((f) => f.replace('packages/transport/', '')),
+      ],
+      'packages/transport',
     ),
   );
 }

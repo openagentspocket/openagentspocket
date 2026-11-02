@@ -1,5 +1,6 @@
 import { type SshModule, type SshSession, toSshError, utf8Decode, utf8Encode } from 'agentico-ssh';
 import { check, herdr, post, tap } from './harnessIo';
+import { runHerdrLive } from './herdrLive';
 
 /**
  * The SSH module's integration run (dev only): every primitive against a local sshd + herdr
@@ -139,6 +140,8 @@ export async function runSshHarness(
     check(result && typeof result === 'object', 'no result');
     return `${bytes} bytes, keys ${Object.keys(result).slice(0, 6).join(',')}`;
   });
+
+  await step('herdr live: transport connect, snapshot, one event', () => runHerdrLive(ssh, params));
 
   await step('streamlocal response bound keeps the connection', async () => {
     const code = await herdr(live(), params.herdrSocket, 'session.snapshot', {}, 64).then(

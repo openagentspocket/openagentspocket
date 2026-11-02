@@ -6,6 +6,7 @@
     "@expo/ui": "~58.0.26",
     "@openagentspocket/core": "workspace:*",
     "@openagentspocket/i18n": "workspace:*",
+    "@openagentspocket/transport": "workspace:*",
     "@openagentspocket/ui": "workspace:*",
     "agentico-ssh": "workspace:*",
     "expo": "~58.0.22",
