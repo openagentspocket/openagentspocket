@@ -4,13 +4,15 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
-State (2026-11-01 ~22:15): **wave 1 mostly merged on main** (workflow `wf_720cceaa-aa8`): P1.2 wire, P1.3 hosts,
-P1.4 pairing, P0 ui primitives + gallery, P0 i18n, P5.0 relay FCM (plugin 0.12.0), P1.1a SSH iOS, P1.1b SSH Android.
-Full `pnpm test` green (core 671, i18n 89, ssh 24, ui 100, mobile 2, plugin 833, relay). Open: P1.6 events
-(duplicated wire/hosts types; agent `reconcile-events` rebases it to reuse them), P0 Swift goldens (running in the
-Swift repo). Then: native rebuild of main on iOS + Android with the SSH harness and Maestro smoke, then wave 2.
+State (2026-11-01 ~22:30): **wave 1 complete on main** (10/10 tasks; 9 of 55 done: ui primitives is partial,
+its leftovers filed as tasks). Native check of main (`fed475e`): iOS and Android build, the SSH harness passes
+17/17 on both (herdr ping protocol 22, snapshot, >1 MiB, PTY + resize, SFTP, direct-tcpip), Maestro home passes on
+iOS. Goldens from the Swift reference landed in `packages/core/goldens` (Swift branch `goldens` merges with run 13).
+Next: P0-rename (alone, touches every package), then wave 2 (7 JS + native chain QR → brand marks → terminal
+spike). Evidence: scratchpad `rn/evidence/main-wave1/`.
 
-Integration lessons (wave 1): parallel tasks redefined shared types (RouteFailure, Clock, herdr event types) →
+Integration lessons (wave 1): a stale generated `ios/` (old deployment target) silently skipped the SSH module:
+`prebuild --clean` after native config changes; parallel tasks redefined shared types (RouteFailure, Clock, herdr event types) →
 wave briefs now name the existing modules to reuse; generated/union files (PROGRESS.md, index.ts export lists,
 package.json deps, pnpm-lock) are resolved mechanically by the lead's merge script.
 

@@ -31,7 +31,7 @@ TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/r
 | `packages/core`, `packages/ui`, `apps/mobile` JS | verify-fast (related tests) while iterating; one `pnpm test` before merging |
 | `packages/plugin`, `packages/relay` | verify-fast runs their suites |
 | A screen's look | a Maestro flow with a screenshot, by the integrator |
-| Native deps, config plugins, `app.json` native fields | integrator only: rebuild native once per batch |
+| Native deps, config plugins, `app.json` native fields | integrator only: `npx expo prebuild --clean` then rebuild native once per batch (a stale `ios/` silently skips modules) |
 
 ## Rules
 
