@@ -1,0 +1,443 @@
+{
+  "_comment": "One `result` payload per RESULT tag. Live herdr captures (protocol 17 to 22) trimmed and sanitized, except agent_started, tab_created, tab_info and plugin_enabled, which are synthetic per the schema (shapes from the Swift repo's fake herdr fixture).",
+  "pong": {
+    "type": "pong",
+    "version": "0.9.4",
+    "protocol": 22,
+    "capabilities": {
+      "live_handoff": true,
+      "detached_server_daemon": true,
+      "endpoint_protocol_generation": 1,
+      "surface_interest": true,
+      "health_check": true,
+      "ssh_agent_registration": true
+    }
+  },
+  "agent_explain": {
+    "type": "agent_explain",
+    "explain": {
+      "agent": "codex",
+      "evaluated_rules": [{ "id": "osc_title_blocked", "matched": false, "priority": 1100 }]
+    }
+  },
+  "agent_info": {
+    "type": "agent_info",
+    "agent": {
+      "terminal_id": "term_656c59f7b902d1e",
+      "agent": "codex",
+      "terminal_title": "app",
+      "terminal_title_stripped": "app",
+      "agent_status": "idle",
+      "workspace_id": "w3",
+      "tab_id": "w3:t2",
+      "pane_id": "w3:pB",
+      "focused": false,
+      "cwd": "/home/you/app",
+      "foreground_cwd": "/home/you/app",
+      "revision": 5
+    }
+  },
+  "agent_prompted": {
+    "type": "agent_prompted",
+    "agent": {
+      "terminal_id": "term_656c59f7b902d1e",
+      "agent": "codex",
+      "terminal_title": "app",
+      "terminal_title_stripped": "app",
+      "agent_status": "working",
+      "workspace_id": "w3",
+      "tab_id": "w3:t2",
+      "pane_id": "w3:pB",
+      "focused": false,
+      "cwd": "/home/you/app",
+      "foreground_cwd": "/home/you/app",
+      "revision": 6
+    }
+  },
+  "agent_started": {
+    "type": "agent_started",
+    "argv": ["codex"],
+    "agent": {
+      "terminal_id": "term_new",
+      "agent": "codex",
+      "agent_status": "unknown",
+      "workspace_id": "w1",
+      "tab_id": "w1:t2",
+      "pane_id": "w1:p3",
+      "focused": false,
+      "revision": 0
+    }
+  },
+  "agent_list": {
+    "type": "agent_list",
+    "agents": [
+      {
+        "terminal_id": "term_656c59f7b902d1e",
+        "agent": "codex",
+        "terminal_title": "✳ app",
+        "terminal_title_stripped": "app",
+        "agent_status": "working",
+        "workspace_id": "w3",
+        "tab_id": "w3:t2",
+        "pane_id": "w3:pB",
+        "focused": false,
+        "cwd": "/home/you/app",
+        "foreground_cwd": "/home/you/app",
+        "revision": 5
+      }
+    ]
+  },
+  "pane_process_info": {
+    "type": "pane_process_info",
+    "process_info": {
+      "foreground_process_group_id": 3082,
+      "foreground_processes": [
+        {
+          "argv": ["codex", "--no-daemon", "resume", "01a169c2-de61-7a01-956b-a0c632bc0481"],
+          "argv0": "codex",
+          "cmdline": "codex --no-daemon resume 01a169c2-de61-7a01-956b-a0c632bc0481",
+          "cwd": "/home/you/app",
+          "name": "codex",
+          "pid": 3082
+        }
+      ],
+      "pane_id": "w29:p1",
+      "shell_pid": 2785
+    }
+  },
+  "pane_read": {
+    "type": "pane_read",
+    "read": {
+      "pane_id": "w3:pB",
+      "workspace_id": "w3",
+      "tab_id": "w3:t2",
+      "source": "visible",
+      "format": "text",
+      "text": "› 为什么失败？\n",
+      "revision": 0,
+      "truncated": false
+    }
+  },
+  "plugin_enabled": {
+    "type": "plugin_enabled",
+    "plugin": {
+      "description": "Pair an Agentico device by scanning a QR Pairing Code",
+      "enabled": true,
+      "manifest_path": "/home/you/agentico/plugin/herdr-plugin.toml",
+      "min_herdr_version": "0.7.5",
+      "name": "agentico",
+      "platforms": ["linux", "macos"],
+      "plugin_id": "agentico",
+      "plugin_root": "/home/you/agentico/plugin",
+      "source": { "kind": "local" },
+      "version": "0.6.0"
+    }
+  },
+  "plugin_list": {
+    "type": "plugin_list",
+    "plugins": [
+      {
+        "actions": [
+          {
+            "command": ["node", "src/pair-action.js"],
+            "contexts": ["global"],
+            "description": "Show a Pairing Code QR for the Agentico app",
+            "id": "pair",
+            "title": "Pair a mobile device"
+          }
+        ],
+        "build": [{ "command": ["npm", "ci"] }],
+        "description": "Pair an Agentico device by scanning a QR Pairing Code",
+        "enabled": true,
+        "events": [
+          { "command": ["node", "src/activity-hook.js"], "on": "pane.agent_status_changed" }
+        ],
+        "manifest_path": "/home/you/agentico/plugin/herdr-plugin.toml",
+        "min_herdr_version": "0.7.5",
+        "name": "agentico",
+        "panes": [
+          {
+            "command": ["node", "src/pair-popup.js"],
+            "height": "100%",
+            "id": "pair",
+            "placement": "popup",
+            "title": "Pair device",
+            "width": "100%"
+          }
+        ],
+        "platforms": ["linux", "macos"],
+        "plugin_id": "agentico",
+        "plugin_root": "/home/you/agentico/plugin",
+        "source": { "kind": "local" },
+        "startup": [{ "command": ["node", "src/sidebar-hook.js"] }],
+        "version": "0.6.0"
+      }
+    ]
+  },
+  "session_snapshot": {
+    "type": "session_snapshot",
+    "snapshot": {
+      "version": "0.7.5",
+      "protocol": 17,
+      "workspaces": [
+        {
+          "workspace_id": "w1",
+          "number": 1,
+          "label": "Proj",
+          "focused": false,
+          "pane_count": 3,
+          "tab_count": 3,
+          "active_tab_id": "w1:t1",
+          "agent_status": "unknown",
+          "worktree": {
+            "repo_key": "/home/you/proj/.git",
+            "repo_name": "Proj",
+            "repo_root": "/home/you/proj",
+            "checkout_path": "/home/you/proj",
+            "is_linked_worktree": false
+          }
+        }
+      ],
+      "tabs": [
+        {
+          "tab_id": "w1:t1",
+          "workspace_id": "w1",
+          "number": 1,
+          "label": "1",
+          "focused": false,
+          "pane_count": 1,
+          "agent_status": "unknown"
+        }
+      ],
+      "panes": [
+        {
+          "pane_id": "w1:pA",
+          "terminal_id": "term_656c4d830ea7d1",
+          "workspace_id": "w1",
+          "tab_id": "w1:t1",
+          "focused": false,
+          "cwd": "/home/you/proj",
+          "foreground_cwd": "/home/you/proj",
+          "terminal_title": "~/proj",
+          "terminal_title_stripped": "~/proj",
+          "agent_status": "unknown",
+          "scroll": { "offset_from_bottom": 0, "max_offset_from_bottom": 0, "viewport_rows": 49 },
+          "revision": 1
+        }
+      ],
+      "layouts": [
+        {
+          "workspace_id": "w1",
+          "tab_id": "w1:t1",
+          "zoomed": false,
+          "area": { "x": 26, "y": 1, "width": 186, "height": 49 },
+          "focused_pane_id": "w1:pA",
+          "panes": [
+            {
+              "pane_id": "w1:pA",
+              "focused": true,
+              "rect": { "x": 26, "y": 1, "width": 93, "height": 49 }
+            },
+            {
+              "pane_id": "w1:pB",
+              "focused": false,
+              "rect": { "x": 119, "y": 1, "width": 93, "height": 49 }
+            }
+          ],
+          "splits": [
+            {
+              "id": "split_0_root",
+              "direction": "right",
+              "ratio": 0.5,
+              "rect": { "x": 26, "y": 1, "width": 186, "height": 49 }
+            }
+          ]
+        }
+      ],
+      "agents": [
+        {
+          "terminal_id": "term_656c59f7b902d1e",
+          "agent": "codex",
+          "terminal_title": "app",
+          "terminal_title_stripped": "app",
+          "agent_status": "idle",
+          "workspace_id": "w3",
+          "tab_id": "w3:t2",
+          "pane_id": "w3:pB",
+          "focused": false,
+          "cwd": "/home/you/app",
+          "foreground_cwd": "/home/you/app",
+          "revision": 5
+        }
+      ],
+      "focused_workspace_id": "wS",
+      "focused_tab_id": "wS:t1",
+      "focused_pane_id": "wS:p1"
+    }
+  },
+  "subscription_started": { "type": "subscription_started" },
+  "tab_created": {
+    "type": "tab_created",
+    "tab": {
+      "tab_id": "w1:t2",
+      "workspace_id": "w1",
+      "number": 2,
+      "label": "2",
+      "focused": false,
+      "pane_count": 1,
+      "agent_status": "unknown"
+    },
+    "root_pane": {
+      "pane_id": "w1:p3",
+      "terminal_id": "term_tab",
+      "workspace_id": "w1",
+      "tab_id": "w1:t2",
+      "focused": false,
+      "agent_status": "unknown",
+      "revision": 0
+    }
+  },
+  "tab_info": {
+    "type": "tab_info",
+    "tab": {
+      "tab_id": "w1:t2",
+      "workspace_id": "w1",
+      "number": 2,
+      "label": "review",
+      "focused": false,
+      "pane_count": 1,
+      "agent_status": "unknown"
+    }
+  },
+  "ok": { "type": "ok" },
+  "workspace_created": {
+    "type": "workspace_created",
+    "workspace": {
+      "workspace_id": "wN",
+      "number": 4,
+      "label": "app",
+      "focused": false,
+      "pane_count": 1,
+      "tab_count": 1,
+      "active_tab_id": "wN:t1",
+      "agent_status": "unknown"
+    },
+    "tab": {
+      "tab_id": "wN:t1",
+      "workspace_id": "wN",
+      "number": 1,
+      "label": "1",
+      "focused": false,
+      "pane_count": 1,
+      "agent_status": "unknown"
+    },
+    "root_pane": {
+      "pane_id": "wN:p1",
+      "terminal_id": "term_ws",
+      "workspace_id": "wN",
+      "tab_id": "wN:t1",
+      "focused": false,
+      "agent_status": "unknown",
+      "revision": 0
+    }
+  },
+  "workspace_info": {
+    "type": "workspace_info",
+    "workspace": {
+      "workspace_id": "w9",
+      "number": 12,
+      "label": "Proj",
+      "focused": false,
+      "pane_count": 1,
+      "tab_count": 1,
+      "active_tab_id": "w9:t1",
+      "agent_status": "unknown"
+    }
+  },
+  "worktree_created": {
+    "type": "worktree_created",
+    "workspace": {
+      "workspace_id": "w9",
+      "number": 9,
+      "label": "calm-field-cc11",
+      "focused": false,
+      "pane_count": 1,
+      "tab_count": 1,
+      "active_tab_id": "w9:t1",
+      "agent_status": "unknown",
+      "worktree": {
+        "repo_key": "/home/you/proj/.git",
+        "repo_name": "Proj",
+        "repo_root": "/home/you/proj",
+        "checkout_path": "/home/you/worktree/proj/calm-field-cc11",
+        "is_linked_worktree": true
+      }
+    },
+    "tab": {
+      "tab_id": "w9:t1",
+      "workspace_id": "w9",
+      "number": 1,
+      "label": "1",
+      "focused": false,
+      "pane_count": 1,
+      "agent_status": "unknown"
+    },
+    "root_pane": {
+      "pane_id": "w9:p1",
+      "terminal_id": "term_wt",
+      "workspace_id": "w9",
+      "tab_id": "w9:t1",
+      "focused": false,
+      "agent_status": "unknown",
+      "revision": 0
+    },
+    "worktree": {
+      "path": "/home/you/worktree/proj/calm-field-cc11",
+      "branch": "worktree/calm-field-cc11",
+      "is_bare": false,
+      "is_detached": false,
+      "is_prunable": false,
+      "is_linked_worktree": true,
+      "label": "calm-field-cc11",
+      "open_workspace_id": "w9"
+    }
+  },
+  "worktree_list": {
+    "type": "worktree_list",
+    "source": {
+      "repo_key": "/home/you/proj/.git",
+      "repo_name": "Proj",
+      "repo_root": "/home/you/proj",
+      "source_checkout_path": "/home/you/proj",
+      "source_workspace_id": "wV"
+    },
+    "worktrees": [
+      {
+        "path": "/home/you/proj",
+        "branch": "main",
+        "is_bare": false,
+        "is_detached": false,
+        "is_prunable": false,
+        "is_linked_worktree": false,
+        "label": "Proj",
+        "open_workspace_id": "wV"
+      },
+      {
+        "path": "/home/you/wt/proj/feat-x",
+        "branch": null,
+        "is_bare": false,
+        "is_detached": true,
+        "is_prunable": false,
+        "is_linked_worktree": true,
+        "label": "Proj",
+        "open_workspace_id": "w15"
+      }
+    ]
+  },
+  "worktree_removed": {
+    "type": "worktree_removed",
+    "workspace_id": "w9",
+    "path": "/home/you/worktree/proj/calm-field-cc11",
+    "forced": false
+  }
+}
