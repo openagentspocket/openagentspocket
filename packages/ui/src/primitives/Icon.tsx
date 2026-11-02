@@ -58,6 +58,7 @@ const ICONS = {
   statusIdle: { ios: 'circle', android: 'radio_button_unchecked' },
   // Ports and the browser preview.
   globe: { ios: 'globe', android: 'language' },
+  wifiSlash: { ios: 'wifi.slash', android: 'wifi_off' },
   container: { ios: 'shippingbox', android: 'inventory_2' },
   paused: { ios: 'pause.circle', android: 'pause_circle' },
   share: { ios: 'square.and.arrow.up', android: 'share' },
@@ -68,6 +69,26 @@ const ICONS = {
   quote: { ios: 'quote.bubble', android: 'format_quote' },
   palette: { ios: 'paintpalette', android: 'palette' },
   document: { ios: 'doc.text', android: 'article' },
+  // Chat timeline rows.
+  brain: { ios: 'brain', android: 'psychology' },
+  hand: { ios: 'hand.raised', android: 'pan_tool' },
+  errorCircle: { ios: 'xmark.circle', android: 'cancel' },
+  bot: { ios: 'cpu', android: 'smart_toy' },
+  // Blocked card, terminal toolbar and key pad.
+  chevronUp: { ios: 'chevron.up', android: 'expand_less' },
+  note: { ios: 'text.bubble', android: 'chat' },
+  dpad: { ios: 'arrow.up.and.down.and.arrow.left.and.right', android: 'open_with' },
+  enter: { ios: 'return', android: 'keyboard_return' },
+  shift: { ios: 'shift', android: 'keyboard_capslock' },
+  skills: { ios: 'sparkle', android: 'auto_awesome' },
+  snippets: { ios: 'text.alignleft', android: 'notes' },
+  appearance: { ios: 'paintpalette', android: 'palette' },
+  // Toolbars and the iPad sidebar.
+  home: { ios: 'house', android: 'home' },
+  filter: { ios: 'line.3.horizontal.decrease.circle', android: 'filter_list' },
+  list: { ios: 'list.bullet', android: 'list' },
+  sidebar: { ios: 'sidebar.left', android: 'view_sidebar' },
+  windows: { ios: 'rectangle.on.rectangle', android: 'flip_to_front' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;

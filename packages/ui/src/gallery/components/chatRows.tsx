@@ -1,4 +1,162 @@
+import { ChatDivider } from '../../components/ChatDivider';
+import { ChatNoticeRow } from '../../components/ChatNoticeRow';
+import { ChatThoughtRow } from '../../components/ChatThoughtRow';
+import { ChatToolRow } from '../../components/ChatToolRow';
+import { ChatUserBubble } from '../../components/ChatUserBubble';
+import { DiffRow } from '../../components/DiffRow';
 import type { CatalogEntry } from './types';
 
-/** Demos of the UX3 group 'chatRows' (owned by its UX3 task): one entry per component, one variant per catalog variant id. */
-export const chatRowsEntries: readonly CatalogEntry[] = [];
+const noop = () => {};
+
+const diffHunk = {
+  header: '@@ -4,3 +4,3 @@ struct AttachChrome',
+  gapLabel: '3 unchanged lines',
+  lines: [
+    { kind: 'context', oldNumber: 4, newNumber: 4, text: '    var title: String' },
+    {
+      kind: 'del',
+      oldNumber: 5,
+      segments: [{ text: '    var ' }, { text: 'subtitle', changed: true }, { text: ': String' }],
+    },
+    {
+      kind: 'add',
+      newNumber: 5,
+      segments: [
+        { text: '    var ' },
+        { text: 'spokenTitle', changed: true },
+        { text: ': String' },
+      ],
+    },
+    { kind: 'context', oldNumber: 6, newNumber: 6, text: '    var isLive: Bool' },
+  ],
+} as const;
+
+const diffFile = {
+  letter: 'M',
+  tone: 'warning',
+  title: 'Modified · Unstaged',
+  added: 1,
+  removed: 1,
+} as const;
+
+/** Demos of the UX3 group 'chatRows': one entry per component, one variant per catalog variant id. */
+export const chatRowsEntries: readonly CatalogEntry[] = [
+  {
+    name: 'ChatUserBubble',
+    variants: [
+      {
+        id: 'default',
+        render: () => (
+          <ChatUserBubble text="The Attach toolbar feels crowded on small phones. Can you tighten it up without hiding anything people use often?" />
+        ),
+      },
+      {
+        id: 'pending',
+        render: () => <ChatUserBubble text="Run the tests again" pending pendingLabel="Sending" />,
+      },
+    ],
+  },
+  {
+    name: 'ChatDivider',
+    variants: [
+      {
+        id: 'turn',
+        render: () => <ChatDivider kind="turn" label="Worked for 26s" onToggle={noop} />,
+      },
+      {
+        id: 'working',
+        render: () => <ChatDivider kind="working" label="Working for" elapsedSeconds={105} />,
+      },
+      {
+        id: 'compacted',
+        render: () => <ChatDivider kind="compacted" label="Context compacted" />,
+      },
+    ],
+  },
+  {
+    name: 'ChatThoughtRow',
+    variants: [
+      {
+        id: 'default',
+        render: () => <ChatThoughtRow label="Thought for 4s" expanded={false} onToggle={noop} />,
+      },
+    ],
+  },
+  {
+    name: 'ChatToolRow',
+    variants: [
+      {
+        id: 'default',
+        render: () => (
+          <ChatToolRow
+            tool={{
+              title: 'swift test --filter AttachToolbarSnapshotTests',
+              status: 'failed',
+              statusLabel: 'Exit 1',
+            }}
+            onToggle={noop}
+          />
+        ),
+      },
+      {
+        id: 'waiting',
+        render: () => (
+          <ChatToolRow
+            tool={{
+              title: 'git push origin main',
+              status: 'waiting',
+              statusLabel: 'Waiting',
+            }}
+            onToggle={noop}
+          />
+        ),
+      },
+      {
+        id: 'subagents',
+        render: () => (
+          <ChatToolRow
+            openLabel="Open Subagent Transcript"
+            subagents={[
+              {
+                id: 'a',
+                name: 'Check link anchors',
+                kind: 'Explore',
+                status: 'done',
+                onOpen: noop,
+              },
+              {
+                id: 'b',
+                name: 'docs-audit',
+                detail: 'Check every guide page against the QR code flow',
+                status: 'running',
+              },
+            ]}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    name: 'ChatNoticeRow',
+    variants: [
+      {
+        id: 'default',
+        render: () => (
+          <ChatNoticeRow
+            title='Agent "Check link anchors" completed'
+            detail="Every link to the pairing section resolves."
+          />
+        ),
+      },
+    ],
+  },
+  {
+    name: 'DiffRow',
+    variants: [
+      {
+        id: 'default',
+        render: () => <DiffRow file={diffFile} hunks={[diffHunk]} onReference={noop} />,
+      },
+    ],
+  },
+];

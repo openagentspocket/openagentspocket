@@ -40,6 +40,9 @@ const reachable = async () => {
   }
 };
 
+const notRegistered = async () =>
+  browser('eval', 'document.body.innerText.includes("No catalog component")').includes('true');
+
 let server;
 if (!options['no-server'])
   server = spawn('npx', ['expo', 'start', '--web', '--port', String(port)], {
@@ -73,10 +76,19 @@ try {
         'eval',
         "(function(){var s=document.createElement('style');s.textContent='#error-toast{display:none!important}';document.head.appendChild(s);})()",
       );
-      const rect = browser(
-        'eval',
-        `(function(){var e=document.querySelector('[data-testid="capture-${key}"]');if(!e)return 'null';var r=e.getBoundingClientRect();return JSON.stringify({x:r.x,y:r.y,width:r.width,height:r.height});})()`,
-      ).trim();
+      const probe = () =>
+        browser(
+          'eval',
+          `(function(){var e=document.querySelector('[data-testid="capture-${key}"]');if(!e)return 'null';var r=e.getBoundingClientRect();return JSON.stringify({x:r.x,y:r.y,width:r.width,height:r.height});})()`,
+        ).trim();
+      // Poll: a cold Metro bundle can take well over the fixed wait, which left the first capture blank.
+      let rect = probe();
+      for (let i = 0; i < 20 && !rect.includes('{') && !(await notRegistered()); i++) {
+        await sleep(1500);
+        rect = probe();
+      }
+      await sleep(500);
+      rect = probe();
       // agent-browser prints the eval result as a JSON string, so the rect arrives escaped: unwrap it.
       const unwrapped = rect.startsWith('"') ? JSON.parse(rect) : rect;
       const parsed = unwrapped.match(/\{.*\}/)?.[0];
