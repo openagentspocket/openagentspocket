@@ -27,11 +27,11 @@ describe('UsageScreen', () => {
 
   it('shows the total, switches range and metric, and lists the host left out', async () => {
     await wrap(<UsageScreen source={source} files={new MemoryAccountFileStore()} />);
-    await waitFor(() => expect(screen.getByTestId('usage-total-figure')).toBeTruthy());
-    const week = screen.getByTestId('usage-total-figure').props.children;
-    await fireEvent.press(screen.getByTestId('range-last30Days'));
-    expect(screen.getByTestId('usage-total-figure').props.children).not.toBe(week);
-    await fireEvent.press(screen.getByTestId('metric-tokens'));
+    await waitFor(() => expect(screen.getByTestId('usage-total')).toBeTruthy());
+    const week = screen.getByTestId('usage-total').props.children;
+    await fireEvent.press(screen.getByTestId('usage-range-last7Days'));
+    expect(screen.getByTestId('usage-total').props.children).not.toBe(week);
+    await fireEvent.press(screen.getByTestId('usage-metric-tokens'));
     expect(screen.getByTestId('program-claude')).toBeTruthy();
     expect(screen.getByTestId('excluded-offline')).toBeTruthy();
     expect(screen.getByTestId('usage-day-note')).toBeTruthy();
@@ -47,6 +47,7 @@ describe('UsageScreen', () => {
   it('opens the day sheet from a day row', async () => {
     await wrap(<UsageScreen source={source} files={new MemoryAccountFileStore()} />);
     await waitFor(() => expect(screen.getByTestId('usage-daily')).toBeTruthy());
+    await fireEvent.press(screen.getByTestId('usage-breakdown-kind-days'));
     const day = screen.getAllByTestId(/^day-2026/)[0];
     if (!day) throw new Error('no day row');
     await fireEvent.press(day);
@@ -109,7 +110,9 @@ describe('LimitsScreen', () => {
   it('hides every Claude Code reading while the switch is off', async () => {
     await wrap(<LimitsScreen source={source} />);
     await waitFor(() => expect(screen.getAllByTestId('meter-fiveHour').length).toBeGreaterThan(0));
-    await fireEvent(screen.getByTestId('claude-limits-toggle'), 'valueChange', false);
+    const [toggle] = screen.getAllByTestId(/^claude-limits-toggle-/);
+    if (!toggle) throw new Error('no switch');
+    await fireEvent(toggle, 'valueChange', false);
     await waitFor(() => expect(screen.queryAllByTestId('meter-fiveHour')).toHaveLength(0));
   });
 });

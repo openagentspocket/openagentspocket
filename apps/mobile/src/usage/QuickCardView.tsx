@@ -1,4 +1,9 @@
-import { cardSubtitle, cardTitle, type QuickCard } from '@openagentspocket/core';
+import {
+  cardSubtitle,
+  cardTitle,
+  programDisplayName,
+  type QuickCard,
+} from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Card, Chip, makeStyles, ProgramMark, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
@@ -14,19 +19,25 @@ const useStyles = makeStyles((th) => ({
 interface Props {
   card: QuickCard;
   now: Date;
+  /** Limits sheet: the Host is the group's heading, windows are one line each. */
+  compact?: boolean;
 }
 
 /** One Usage Limits card: a program's (or one Claude Code Account's) windows on one Host. */
-export function QuickCardView({ card, now }: Props) {
+export function QuickCardView({ card, now, compact }: Props) {
   const styles = useStyles();
   const subtitle = cardSubtitle(card, now, localeTag(), translateKey);
   const { body } = card;
   return (
     <Card level="overlay" accent={card.isStale ? 'warning' : undefined} testID={`card-${card.id}`}>
       <View style={styles.head}>
-        <ProgramMark program={card.program} size={28} />
+        <ProgramMark program={card.program} size={compact ? 20 : 32} />
         <View style={styles.titles}>
-          <Text variant="headline">{cardTitle(card)}</Text>
+          <Text variant="headline">
+            {compact
+              ? [programDisplayName(card.program), card.account].filter(Boolean).join(' · ')
+              : cardTitle(card)}
+          </Text>
           {subtitle ? (
             <Text variant="footnote" tone={card.isStale ? 'warning' : 'secondary'}>
               {subtitle}
@@ -38,7 +49,7 @@ export function QuickCardView({ card, now }: Props) {
       <View style={styles.body}>
         {body.kind === 'windows'
           ? body.windows.map((window) => (
-              <LimitWindowRow key={window.id} window={window} now={now} />
+              <LimitWindowRow key={window.id} window={window} now={now} compact={compact} />
             ))
           : null}
         {body.kind === 'reading' ? (

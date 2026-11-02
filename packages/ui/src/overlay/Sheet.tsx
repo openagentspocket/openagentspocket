@@ -83,6 +83,8 @@ interface SheetProps {
   trailing?: SheetBarAction;
   /** Title drawn large under the bar (Settings, Hosts) instead of inline. */
   largeTitle?: boolean;
+  /** No bar and no title row: the content draws its own header (a day sheet). */
+  headerless?: boolean;
   /** Hide the grabber (large form sheets). Default shown. */
   grabber?: boolean;
   /** Pinned under the scrolling body (a primary action). */
@@ -100,6 +102,7 @@ export function Sheet({
   leading,
   trailing,
   largeTitle = false,
+  headerless = false,
   grabber = true,
   closeLabel = 'Close',
   footer,
@@ -146,7 +149,7 @@ export function Sheet({
               <View style={styles.grabber} />
             </View>
           ) : null}
-          {bar ? (
+          {headerless ? null : bar ? (
             <>
               <View style={styles.header} testID={`${testID}-bar`}>
                 <View style={styles.barSlot}>

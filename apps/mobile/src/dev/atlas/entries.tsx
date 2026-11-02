@@ -22,6 +22,8 @@ import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
+import { UsageBreakdownListScreen } from '@/usage/UsageBreakdownListScreen';
+import { UsageScreen } from '@/usage/UsageScreen';
 import type { AtlasData } from './AtlasFrame';
 
 export interface AtlasEntry {
@@ -61,6 +63,13 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   },
   'settings.acknowledgements': { render: () => <LicenseNoticeScreen /> },
   'usage.tab': { render: () => <Usage /> },
+  'usage.tab--host': { render: () => <UsageScreen initial={{ host: 'demo' }} /> },
+  'usage.scope-menu': { render: () => <UsageScreen initial={{ menu: true }} /> },
+  'usage.quick-sheet': { render: () => <UsageScreen initial={{ quick: true }} /> },
+  'usage.day-sheet': { render: () => <UsageScreen initial={{ day: 'latest' }} /> },
+  'usage.accounts-sheet': { render: () => <UsageScreen initial={{ accounts: true }} /> },
+  'usage.breakdown-list': { render: () => <UsageBreakdownListScreen /> },
+  'usage.limits-sheet': { render: () => <UsageLimits /> },
   'usage.limits-page': { render: () => <UsageLimits /> },
   'files.browser': { render: () => <FilesRoute /> },
   'browser.ports': { render: () => <PortsRoute /> },
