@@ -56,7 +56,7 @@ describe('AgentsScreen', () => {
 
   it('lists every Agent flat, in Console order', async () => {
     await open();
-    expect(order()).toEqual(['p1', 'p4', 'p2', 'p3']);
+    expect(order()).toEqual(['p1', 'p4', 'p2', 'p3', 'p5']);
   });
 
   it('opens the agent detail route for the tapped Agent', async () => {
@@ -67,7 +67,7 @@ describe('AgentsScreen', () => {
 
   it('starts from the persisted Host filter', async () => {
     await open((store) => store.listPrefs.setHostId('demo'));
-    expect(order()).toHaveLength(4);
+    expect(order()).toHaveLength(5);
   });
 
   it('searches by text and shows the empty result', async () => {

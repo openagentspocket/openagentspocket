@@ -1,4 +1,5 @@
 import { t } from '@openagentspocket/i18n';
+import { confirm } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
@@ -26,12 +27,14 @@ import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
 import { NOTICES } from '@/settings/notices.generated';
 import { SettingsScreen } from '@/settings/SettingsScreen';
+import type { AtlasScript } from './AtlasActions';
 import type { AtlasData } from './AtlasFrame';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
 export interface AtlasEntry {
   data?: AtlasData;
+  script?: AtlasScript;
   render: () => ReactNode;
 }
 
@@ -58,6 +61,21 @@ const settingsPage = (page: string): ReactNode => (
  */
 export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'shell.home': { render: () => <Index /> },
+  'shell.home-new-menu': { script: { press: ['fab'] }, render: () => <Index /> },
+  'console.row-context-menu': { script: { longPress: 'inbox-p2' }, render: () => <Index /> },
+  'console.close-confirmation': {
+    script: {
+      run: () =>
+        void confirm({
+          title: t('Close %@?', 'Migration'),
+          confirmLabel: t('Close'),
+          destructive: true,
+        }),
+    },
+    render: () => <Index />,
+  },
+  'console.host-issue-rows': { data: { console: 'offline' }, render: () => <Index /> },
+  'usage.quick-sheet': { script: { press: ['home-usage-ring'] }, render: () => <Index /> },
   'console.no-hosts-empty': { data: { console: 'empty', hosts: 'empty' }, render: () => <Index /> },
   'console.agents-list-flat': { render: () => <Agents /> },
   'console.start-agent': { render: () => titled(t('New Agent'), <NewAgentRoute />) },

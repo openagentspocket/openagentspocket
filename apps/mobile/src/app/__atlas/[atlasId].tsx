@@ -1,5 +1,6 @@
 import { EmptyState, Screen } from '@openagentspocket/ui';
 import { useLocalSearchParams } from 'expo-router';
+import { AtlasActions } from '@/dev/atlas/AtlasActions';
 import { AtlasFrame } from '@/dev/atlas/AtlasFrame';
 import { atlasEntries } from '@/dev/atlas/entries';
 
@@ -16,7 +17,7 @@ export default function AtlasRoute() {
   }
   return (
     <AtlasFrame key={atlasId} data={entry.data ?? {}}>
-      {entry.render()}
+      <AtlasActions script={entry.script ?? {}}>{entry.render()}</AtlasActions>
     </AtlasFrame>
   );
 }

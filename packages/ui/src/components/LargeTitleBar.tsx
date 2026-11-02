@@ -23,6 +23,7 @@ const useStyles = makeStyles((t) => ({
     minHeight: t.metrics.minTapSize + t.spacing.xs,
   },
   title: { flex: 1 },
+  long: { fontSize: 26, lineHeight: 32 },
   action: {
     width: 40,
     height: t.metrics.minTapSize,
@@ -43,7 +44,14 @@ export function LargeTitleBar({ title, actions, testID = 'large-title-bar' }: La
   const styles = useStyles();
   return (
     <View style={styles.bar} testID={testID}>
-      <Text variant="title" numberOfLines={1} accessibilityRole="header" style={styles.title}>
+      <Text
+        variant="title"
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.7}
+        accessibilityRole="header"
+        style={[styles.title, title.length > 12 && styles.long]}
+      >
         {title}
       </Text>
       {actions.length > 0 ? (

@@ -64,7 +64,11 @@
     "rn": "HostFormScreen (DeviceKeyLine)",
     "note": "device key cannot be loaded; the Replace the Device Key? dialog is open"
   },
-  { "id": "hosts.setup-guide", "rn": "app/hosts/guide.tsx (SetupGuideScreen)", "note": "" },
+  {
+    "id": "hosts.setup-guide",
+    "rn": "app/hosts/guide.tsx (SetupGuideScreen)",
+    "note": ""
+  },
   {
     "id": "hosts.remove-confirm",
     "rn": "app/hosts/index.tsx (HostListScreen)",
@@ -179,5 +183,30 @@
     "id": "rn.board",
     "rn": "app/board.tsx (BoardScreen)",
     "note": "RN-only screen, no Swift id"
+  },
+  {
+    "id": "shell.home-new-menu",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "FAB menu open"
+  },
+  {
+    "id": "console.row-context-menu",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "long-press on the Needs you card (web: synthetic mouse hold)"
+  },
+  {
+    "id": "console.close-confirmation",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "Close confirm alert opened directly (the swipe is not drivable on web)"
+  },
+  {
+    "id": "console.host-issue-rows",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "demo plus a Host that never connects"
+  },
+  {
+    "id": "usage.quick-sheet",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "ring pressed"
   }
 ]
