@@ -2,7 +2,8 @@ import { FakeClock } from '@openagentspocket/core';
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { useEffect } from 'react';
-import { InAppBanner, useBannerFeed } from './InAppBanner';
+import { Pressable } from 'react-native';
+import { InAppBanner, useBannerDemo, useBannerFeed } from './InAppBanner';
 
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: require('react-native').View,
@@ -17,6 +18,11 @@ function Feeder({ steps }: { steps: Agents[] }) {
     for (const step of steps) feed(step);
   }, [feed, steps]);
   return null;
+}
+
+function Trigger() {
+  const demo = useBannerDemo();
+  return <Pressable testID="demo" onPress={demo} />;
 }
 
 const steps: Agents[] = [
@@ -51,6 +57,21 @@ describe('InAppBanner', () => {
     await fireEvent.press(await screen.findByTestId('toast'));
     expect(openAgent).toHaveBeenCalledWith({ hostId: 'h', paneId: 'p' });
     expect(screen.queryByTestId('toast')).toBeNull();
+  });
+
+  it('shows the gallery demo trigger even when Host preferences are unknown', async () => {
+    const clock = new FakeClock();
+    await render(
+      <ThemeProvider themeId="indigo">
+        <InAppBanner clock={clock}>
+          <Trigger />
+        </InAppBanner>
+        <OverlayHost />
+      </ThemeProvider>,
+    );
+    await fireEvent.press(screen.getByTestId('demo'));
+    await act(() => clock.advance(3000));
+    expect(await screen.findByTestId('toast')).toBeTruthy();
   });
 
   it('stays silent when that Agent is on screen', async () => {

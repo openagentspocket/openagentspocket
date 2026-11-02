@@ -1,5 +1,6 @@
 import { Gallery } from '@openagentspocket/ui';
 import { useLocalSearchParams } from 'expo-router';
+import { useBannerDemo } from '@/notifications/InAppBanner';
 
 /**
  * The component gallery (`/__gallery?theme=papel&section=overlays`): every
@@ -8,5 +9,6 @@ import { useLocalSearchParams } from 'expo-router';
  */
 export default function GalleryRoute() {
   const { theme, section } = useLocalSearchParams<{ theme?: string; section?: string }>();
-  return <Gallery initialTheme={theme} initialSection={section} />;
+  const showBanner = useBannerDemo();
+  return <Gallery initialTheme={theme} initialSection={section} demos={{ showBanner }} />;
 }

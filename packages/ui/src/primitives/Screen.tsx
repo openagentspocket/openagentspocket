@@ -49,8 +49,10 @@ export function Screen({
       {scroll ? (
         <ScrollView
           style={styles.fill}
+          testID={`${testID}-scroll`}
           contentContainerStyle={[styles.content, styles.readable]}
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
           refreshControl={refresh}
         >
           {children}

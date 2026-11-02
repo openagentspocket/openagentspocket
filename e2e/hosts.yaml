@@ -16,7 +16,11 @@ appId: com.openagentspocket.app
 - tapOn:
     id: route-0-address
 - inputText: workshop.example
-- hideKeyboard
+# hideKeyboard fails on iOS 26.5: tap a static label, then scroll to the button.
+- tapOn: "Routes"
+- scrollUntilVisible:
+    element:
+      id: host-save
 - tapOn:
     id: host-save
 # The detail page opens and asks to trust the key on the first connection.

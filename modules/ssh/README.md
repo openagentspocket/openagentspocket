@@ -46,6 +46,8 @@ python3 modules/ssh/scripts/harness-fixture.py --http-port 47451 --socket <short
   --out <evidence dir> --authorize-cmd "python3 <Agentico repo>/scripts/isolated-herdr-backend.py authorize"
 pnpm -F @openagentspocket/mobile ios
 xcrun simctl openurl <udid> "agentico:///__ssh?host=127.0.0.1&port=<port>&user=<user>&sock=<herdr socket>&fsock=<fx.sock>&fport=47451&pin=<SHA256:...>&auto=1"
+# pin: write the fingerprint's `+` as `%2B` (or use base64url: `-` for `+`, `_` for `/`);
+# a bare `+` arrives as a space (the harness repairs that too).
 ```
 
 The harness posts each step to the fixture (`harness.log`) and the final report
