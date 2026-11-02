@@ -1,3 +1,4 @@
+import { Stack } from 'expo-router';
 import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,8 +19,8 @@ const BLOCKED = {
 };
 
 /**
- * The layer the app mounts over the whole window: here the route sits below the navigation
- * header, so the layer is lifted back to the window's top edge before the safe area applies.
+ * The layer the app mounts over the whole window (the native header cannot be drawn over from a
+ * route, so this entry hides it): lifted back to the window's top edge before the safe area applies.
  */
 function WindowLayer() {
   const [top, setTop] = useState(0);
@@ -47,6 +48,7 @@ export function InAppBannerAtlas() {
   const device = useSafeAreaInsets();
   const content = (
     <>
+      <Stack.Screen options={{ headerShown: false }} />
       <Index />
       <WindowLayer />
     </>
