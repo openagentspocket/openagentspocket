@@ -2,6 +2,7 @@ import { agentKey, type ConsoleRow, type KeyValueStorage } from '@openagentspock
 import { t } from '@openagentspocket/i18n';
 import { EmptyState, makeStyles, Screen, TerminalView, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
+import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
 import { useAgent, useConsole } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
 import { AgentSwitcher } from './AgentSwitcher';
@@ -46,6 +47,7 @@ export function AgentDetailScreen({
     <Screen scroll={false} edges={['bottom']} testID="agent-detail">
       <AgentHeader row={row} surface={surface} onSurface={setSurface} />
       <AgentSwitcher rows={rows} currentKey={key} onSelect={onSwitch} />
+      {surface === 'chat' ? <BlockedCardSlot row={row} /> : null}
       <View style={styles.slot} testID={`slot-${surface}`}>
         {surface === 'chat' ? (
           <Text variant="body" tone="secondary" testID="chat-slot">
