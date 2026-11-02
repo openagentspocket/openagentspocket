@@ -30,6 +30,7 @@ export {
   toSideBySide,
 } from './diff/parseUnifiedDiff';
 export { NavRow, type PickerOption, PickerRow, StepperRow, ToggleRow } from './form/FormRows';
+export { SearchField, type SearchFieldProps } from './form/SearchField';
 export { TextField, type TextFieldProps } from './form/TextField';
 export { ComponentCapture } from './gallery/ComponentsSection';
 export { componentCatalog, findCatalogEntry } from './gallery/components/registry';

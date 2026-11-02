@@ -1,9 +1,14 @@
-import { agentKind, type ConsoleRow, inboxTitle } from '@openagentspocket/core';
+import type { ConsoleRow } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { type ActionMenuItem, Icon, ListRow, ProgramMark } from '@openagentspocket/ui';
+import {
+  AgentCard,
+  type AgentCardPresentation,
+  type AgentRowLabels,
+  agentRowActions,
+} from '@openagentspocket/ui';
 import { type Href, useRouter } from 'expo-router';
-import { statusDot } from '../../console/agentStatus';
 import { useEntryMenus } from '../../navigation/entryMenus';
+import { agentCardModel } from './agentCardModel';
 
 /** The agent detail route (built by the detail task). */
 export function agentHref(row: Pick<ConsoleRow, 'hostId' | 'agent'>): Href {
@@ -14,50 +19,57 @@ export function agentHref(row: Pick<ConsoleRow, 'hostId' | 'agent'>): Href {
 interface AgentRowProps {
   row: ConsoleRow;
   pinned: boolean;
-  /** Name the Host under the row (the flat list has no Host header). */
+  /** Name the Host on the card (a Host group has its own header). */
   showHost: boolean;
+  presentation?: AgentCardPresentation;
+  /** Inside a workspace card: no workspace, Host or path lines. */
+  nested?: boolean;
+  labels: AgentRowLabels;
   onTogglePin: (row: ConsoleRow) => void;
   onRename: (row: ConsoleRow) => void;
   onClose: (row: ConsoleRow) => void;
+  onDetails: (row: ConsoleRow) => void;
 }
 
-export function AgentRow({ row, pinned, showHost, onTogglePin, onRename, onClose }: AgentRowProps) {
+/** One Agent card with the swipes (Pin right, Close left) and the lifted long-press menu. */
+export function AgentRow({
+  row,
+  pinned,
+  showHost,
+  presentation = 'row',
+  nested = false,
+  labels,
+  onTogglePin,
+  onRename,
+  onClose,
+  onDetails,
+}: AgentRowProps) {
   const router = useRouter();
   const entries = useEntryMenus();
-  const subtitle = [
-    row.lastOutputSnippet,
-    showHost ? row.hostName : undefined,
-    row.workspaceLabel,
-  ].filter((part) => part !== undefined && part !== '');
-  const menu: ActionMenuItem[] = [
+  const actions = agentRowActions({
+    pinned,
+    labels,
+    onPin: () => onTogglePin(row),
+    onDetails: () => onDetails(row),
+    onClose: () => onClose(row),
+  });
+  const [pin, details, close] = actions.menu;
+  const menu = [
     ...entries.agent(row),
-    {
-      key: 'pin',
-      title: pinned ? t('Unpin') : t('Pin'),
-      icon: 'pin',
-      onPress: () => onTogglePin(row),
-    },
-    { key: 'rename', title: t('Rename…'), icon: 'edit', onPress: () => onRename(row) },
-    {
-      key: 'close',
-      title: t('Close'),
-      icon: 'close',
-      destructive: true,
-      onPress: () => onClose(row),
-    },
+    ...(pin ? [pin] : []),
+    ...(details ? [details] : []),
+    { key: 'rename', title: t('Rename…'), icon: 'edit' as const, onPress: () => onRename(row) },
+    ...(close ? [close] : []),
   ];
   return (
-    <ListRow
+    <AgentCard
       testID={`agent-row-${row.agent.pane_id}`}
-      title={inboxTitle(row)}
-      subtitle={subtitle.join(' · ') || undefined}
-      leading={
-        <ProgramMark program={agentKind(row.agent)} status={statusDot(row.agent.agent_status)} />
-      }
-      trailing={pinned ? <Icon name="pin" accessibilityLabel={t('Pinned')} /> : undefined}
+      agent={{ ...agentCardModel(row, showHost, nested), pinned }}
+      presentation={presentation}
+      labels={labels}
       menu={menu}
-      menuTitle={inboxTitle(row)}
-      chevron
+      leadingSwipeActions={actions.leading}
+      swipeActions={actions.trailing}
       onPress={() => router.push(agentHref(row))}
     />
   );

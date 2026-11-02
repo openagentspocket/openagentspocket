@@ -37,6 +37,7 @@ const useStyles = makeStyles((t) => ({
 interface ListToolbarProps {
   presentation: ListPresentation;
   presentationItems: readonly ActionMenuItem[];
+  /** Empty with a single Host: the filter is hidden. */
   hostItems: readonly ActionMenuItem[];
   onHome: () => void;
   onNew: () => void;
@@ -75,13 +76,15 @@ export function ListToolbar({
         />
       </GlassCapsule>
       <GlassCapsule style={styles.capsule} testID={`${testID}-capsule`}>
-        <ActionMenuButton
-          items={hostItems}
-          icon="filter"
-          iconSize={TOOLBAR_ICON}
-          accessibilityLabel={labels.host}
-          testID={`${testID}-host`}
-        />
+        {hostItems.length > 0 ? (
+          <ActionMenuButton
+            items={hostItems}
+            icon="filter"
+            iconSize={TOOLBAR_ICON}
+            accessibilityLabel={labels.host}
+            testID={`${testID}-host`}
+          />
+        ) : null}
         <ActionMenuButton
           items={presentationItems}
           icon={PRESENTATION_ICON[presentation]}

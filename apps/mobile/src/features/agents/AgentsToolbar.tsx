@@ -1,6 +1,13 @@
 import { LIST_PRESENTATIONS, type ListPresentation } from '@openagentspocket/core';
 import { type AppKey, t } from '@openagentspocket/i18n';
-import { ActionMenuButton, type ActionMenuItem, makeStyles, TextField } from '@openagentspocket/ui';
+import {
+  type ActionMenuItem,
+  ListToolbar,
+  makeStyles,
+  SearchField,
+  Text,
+  type ListPresentation as ToolbarPresentation,
+} from '@openagentspocket/ui';
 import { View } from 'react-native';
 import type { HostSummary } from '../../console/store';
 
@@ -11,9 +18,16 @@ const PRESENTATION_TITLES = {
   byStatus: 'By Status',
 } as const satisfies Record<ListPresentation, AppKey>;
 
+const TOOLBAR_ICON: Record<ListPresentation, ToolbarPresentation> = {
+  flat: 'flat',
+  byHost: 'host',
+  byWorkspace: 'workspace',
+  byStatus: 'status',
+};
+
 const useStyles = makeStyles((theme) => ({
-  bar: { flexDirection: 'row', alignItems: 'flex-end', gap: theme.spacing.xs },
-  search: { flex: 1 },
+  bar: { marginHorizontal: -theme.metrics.screenInset },
+  head: { gap: theme.spacing.xs },
 }));
 
 interface AgentsToolbarProps {
@@ -24,25 +38,30 @@ interface AgentsToolbarProps {
   onPresentation: (presentation: ListPresentation) => void;
   query: string;
   onQuery: (query: string) => void;
+  onHome: () => void;
+  onNew: () => void;
 }
 
-/** Search beside the Host filter and the presentation picker. */
+/** Home and the Host filter, presentation and New capsule, the large title, then the search field. */
 export function AgentsToolbar(props: AgentsToolbarProps) {
   const styles = useStyles();
-  const hostItems: ActionMenuItem[] = [
-    {
-      key: 'all',
-      title: t('All Hosts'),
-      checked: props.hostId === undefined,
-      onPress: () => props.onHost(undefined),
-    },
-    ...props.hosts.map((host) => ({
-      key: host.id,
-      title: host.name,
-      checked: props.hostId === host.id,
-      onPress: () => props.onHost(host.id),
-    })),
-  ];
+  const hostItems: ActionMenuItem[] =
+    props.hosts.length > 1
+      ? [
+          {
+            key: 'all',
+            title: t('All Hosts'),
+            checked: props.hostId === undefined,
+            onPress: () => props.onHost(undefined),
+          },
+          ...props.hosts.map((host) => ({
+            key: host.id,
+            title: host.name,
+            checked: props.hostId === host.id,
+            onPress: () => props.onHost(host.id),
+          })),
+        ]
+      : [];
   const presentationItems: ActionMenuItem[] = LIST_PRESENTATIONS.map((presentation) => ({
     key: presentation,
     title: t(PRESENTATION_TITLES[presentation]),
@@ -50,32 +69,38 @@ export function AgentsToolbar(props: AgentsToolbarProps) {
     onPress: () => props.onPresentation(presentation),
   }));
   return (
-    <View style={styles.bar}>
-      <View style={styles.search}>
-        <TextField
+    <>
+      <View style={styles.bar}>
+        <ListToolbar
+          presentation={TOOLBAR_ICON[props.presentation]}
+          presentationItems={presentationItems}
+          hostItems={hostItems}
+          onHome={props.onHome}
+          onNew={props.onNew}
+          labels={{
+            home: t('Home'),
+            host: t('Filter by Host'),
+            presentation: t('Presentation'),
+            new: t('New Agent'),
+          }}
+          testID="agents-toolbar"
+        />
+      </View>
+      <View style={styles.head}>
+        <Text variant="title" accessibilityRole="header">
+          {t('Agents')}
+        </Text>
+        <SearchField
           label={t('Search Agents')}
           value={props.query}
           onChangeText={props.onQuery}
+          clearLabel={t('Clear Filter')}
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="search"
           testID="agents-search"
         />
       </View>
-      <ActionMenuButton
-        items={hostItems}
-        title={t('Filter by Host')}
-        accessibilityLabel={t('Filter by Host')}
-        icon="server"
-        testID="host-filter"
-      />
-      <ActionMenuButton
-        items={presentationItems}
-        title={t('Presentation')}
-        accessibilityLabel={t('Presentation')}
-        icon="chevronUpDown"
-        testID="presentation-menu"
-      />
-    </View>
+    </>
   );
 }

@@ -6,6 +6,7 @@
   "Demo mode is set by the EXPO_PUBLIC_DEMO build flag.": "Demo mode is set by the EXPO_PUBLIC_DEMO build flag.",
   "Drag to reorder": "Drag to reorder",
   "New Agent Here": "New Agent Here",
+  "Open Chat": "Open Chat",
   "Show scripted sample data instead of connecting to your Hosts.": "Show scripted sample data instead of connecting to your Hosts.",
   "Switch Agent": "Switch Agent",
   "Teammate @%@": "Teammate @{0}",

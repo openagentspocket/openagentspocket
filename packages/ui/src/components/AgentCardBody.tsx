@@ -24,6 +24,8 @@ export interface AgentCardModel {
   contextLeft?: string;
   /** The Host is disconnected; the card is the saved copy. */
   saved?: boolean;
+  /** Pinned rows carry a tertiary pin glyph before the title. */
+  pinned?: boolean;
 }
 
 const useStyles = makeStyles((t) => ({
@@ -84,6 +86,7 @@ export function AgentCardBody({
             <Text variant="headline" numberOfLines={1} style={styles.grow}>
               {agent.title}
             </Text>
+            {agent.pinned ? <Icon name="pin" size={12} color="textTertiary" /> : null}
             {showProgramName ? (
               <Text variant="caption" tone="secondary" numberOfLines={1}>
                 {agent.program}

@@ -2,6 +2,7 @@ import {
   AgentStatusClocks,
   type Host,
   hostRoute,
+  type ListPresentation,
   MemoryStorage,
   PinnedAgents,
 } from '@openagentspocket/core';
@@ -17,6 +18,8 @@ export interface AtlasData {
   /** `empty`: no Hosts at all (first run). Default `demo`: the scripted Hosts and Agents. */
   console?: 'demo' | 'empty';
   hosts?: 'demo' | 'empty';
+  /** The Agents list grouping, for the list ids. Default flat. */
+  presentation?: ListPresentation;
 }
 
 const DEMO_HOSTS: readonly Host[] = [
@@ -55,10 +58,11 @@ function emptyConsoleStore(): ConsoleStore {
 export function AtlasFrame({ data, children }: { data: AtlasData; children: ReactNode }) {
   freezeAtlasClock();
   const [ready, setReady] = useState(false);
-  const store = useMemo(
-    () => (data.console === 'empty' ? emptyConsoleStore() : createDemoConsoleStore()),
-    [data.console],
-  );
+  const store = useMemo(() => {
+    const created = data.console === 'empty' ? emptyConsoleStore() : createDemoConsoleStore();
+    if (data.presentation) created.listPrefs.setPresentation(data.presentation);
+    return created;
+  }, [data.console, data.presentation]);
   useEffect(() => {
     let live = true;
     const runtime = createDemoRuntime();
