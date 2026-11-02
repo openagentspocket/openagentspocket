@@ -34,6 +34,7 @@
           "imageWidth": 160
         }
       ],
+      "expo-sharing",
       "expo-sqlite",
       [
         "expo-local-authentication",
