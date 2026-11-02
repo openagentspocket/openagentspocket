@@ -2,5 +2,6 @@
   "Agent view": "Vista del Agent",
   "Chat arrives with the conversation engine.": "El Chat llega con el motor de conversaciones.",
   "Switch Agent": "Cambiar de Agent",
+  "Teammate @%@": "Compañero @{0}",
   "Terminal attach is not available yet.": "Adjuntar la terminal todavía no está disponible."
 }
