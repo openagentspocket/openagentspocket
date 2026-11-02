@@ -2,7 +2,6 @@ import { t } from '@openagentspocket/i18n';
 import { confirm, Screen } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
-import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import Agents from '@/app/agents';
 import Board from '@/app/board';
 import ChangesRoute from '@/app/changes';
@@ -32,6 +31,7 @@ import { UsageBreakdownListScreen } from '@/usage/UsageBreakdownListScreen';
 import { UsageScreen } from '@/usage/UsageScreen';
 import type { AtlasScript } from './AtlasActions';
 import type { AtlasData } from './AtlasFrame';
+import { agentDetailEntries } from './agentDetailEntries';
 import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
@@ -185,32 +185,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'browser.ports': { render: () => <PortsRoute /> },
   'changes.list': { render: () => <ChangesRoute /> },
   'changes.file-diff': { render: () => <FileDiffRoute /> },
-  'agent-detail.container': {
-    render: () =>
-      titled(
-        '',
-        <AgentDetailScreen
-          hostId="demo"
-          paneId="p1"
-          storage={deviceStorage}
-          surface="chat"
-          onSwitch={noop}
-        />,
-      ),
-  },
-  'agent-detail.terminal': {
-    render: () =>
-      titled(
-        '',
-        <AgentDetailScreen
-          hostId="demo"
-          paneId="p1"
-          storage={deviceStorage}
-          surface="terminal"
-          onSwitch={noop}
-        />,
-      ),
-  },
+  ...agentDetailEntries,
   'agent-detail.shell-terminal': {
     render: () =>
       titled(
