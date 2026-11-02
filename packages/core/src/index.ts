@@ -2,6 +2,7 @@ export * from './agents';
 export * from './blocked';
 export * from './changes';
 export * from './chat';
+export * from './composer';
 export * from './console';
 export * from './errors';
 export * from './events';

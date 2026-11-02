@@ -1,10 +1,17 @@
-import { agentKey, type ConsoleRow, type KeyValueStorage } from '@openagentspocket/core';
+import {
+  agentKey,
+  type ConsoleRow,
+  type KeyValueStorage,
+  terminalStopAvailable,
+} from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { EmptyState, makeStyles, Screen, TerminalView, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { useAgent, useConsole } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
 import { AgentSwitcher } from './AgentSwitcher';
+import { AgentComposerBar } from './composer/AgentComposer';
+import { useAgentComposer } from './composer/composerContext';
 import { type Surface, useSurface } from './surface';
 import { useFocusDone } from './useFocusDone';
 
@@ -35,6 +42,7 @@ export function AgentDetailScreen({
   const rows = useConsole();
   const [surface, setSurface] = useSurface(storage, requested);
   useFocusDone(hostId, paneId, row?.agent.agent_status === 'done');
+  const composer = useAgentComposer(hostId, paneId, row?.agent.agent_status ?? 'unknown', storage);
   if (!row) {
     return (
       <Screen scroll={false} edges={['bottom']} testID="agent-gone">
@@ -59,6 +67,11 @@ export function AgentDetailScreen({
           />
         )}
       </View>
+      <AgentComposerBar
+        composer={composer}
+        surface={surface}
+        canStop={terminalStopAvailable(row.agent.agent ?? '')}
+      />
     </Screen>
   );
 }
