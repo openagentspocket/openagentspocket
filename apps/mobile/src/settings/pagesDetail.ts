@@ -13,6 +13,19 @@ export const theme: SettingsPage = {
   title: () => t('Theme'),
   sections: [
     {
+      id: 'preview',
+      title: () => t('Preview'),
+      loose: true,
+      rows: [
+        {
+          kind: 'custom',
+          id: 'settings.theme.preview',
+          title: () => t('Preview'),
+          component: 'themePreview',
+        },
+      ],
+    },
+    {
       id: 'automatic',
       title: () => t('Automatic'),
       rows: [
@@ -26,6 +39,7 @@ export const theme: SettingsPage = {
     },
     {
       id: 'themes',
+      loose: true,
       rows: [
         {
           kind: 'custom',
@@ -101,6 +115,10 @@ export const chat: SettingsPage = {
   sections: [
     {
       id: 'turns',
+      footer: () =>
+        t(
+          "A finished turn's steps fold behind one line above its answer; a turn stays open while it runs or while its background work does.",
+        ),
       rows: [
         {
           kind: 'toggle',
@@ -134,7 +152,25 @@ export const toolbar: SettingsPage = {
   title: () => t('Toolbar'),
   sections: [
     {
+      id: 'preview',
+      title: () => t('Preview'),
+      loose: true,
+      rows: [
+        {
+          kind: 'custom',
+          id: 'settings.toolbar.previewBar',
+          title: () => t('Preview'),
+          component: 'toolbarPreview',
+        },
+      ],
+    },
+    {
       id: 'keys',
+      title: () => t('Keys'),
+      footer: () =>
+        t(
+          'Ctrl, the keyboard key and More always show. A key you hide stays one menu away, in More › Commands.',
+        ),
       rows: [
         {
           kind: 'toggle',
@@ -147,8 +183,19 @@ export const toolbar: SettingsPage = {
           kind: 'toggle',
           id: 'settings.toolbar.dpad',
           title: () => t('D-pad'),
+          subtitle: () => t('Arrows and Enter in one control'),
           key: 'toolbarDPad',
         },
+      ],
+    },
+    {
+      id: 'behavior',
+      title: () => t('Behavior'),
+      footer: () =>
+        t(
+          'Tap Ctrl to apply it to the next key. Touch and hold it to keep it on until you tap it again.',
+        ),
+      rows: [
         {
           kind: 'toggle',
           id: 'settings.toolbar.haptics',

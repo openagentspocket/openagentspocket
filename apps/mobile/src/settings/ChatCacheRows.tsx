@@ -1,6 +1,6 @@
 import { formatByteCount } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, confirm, ListRow, Text } from '@openagentspocket/ui';
+import { confirm, ListRow, Text } from '@openagentspocket/ui';
 import { useCallback, useEffect, useState } from 'react';
 import { useChatCache } from './SettingsProvider';
 
@@ -43,11 +43,10 @@ export function ChatCacheRows() {
         trailing={size ? <Text tone="secondary">{`${size.value} ${size.unit}`}</Text> : undefined}
         testID="settings.chat.cacheSize"
       />
-      <Button
-        kind="text"
+      <ListRow
         title={t('Clear Chat Cache')}
         disabled={state.kind !== 'measured' || state.bytes === 0}
-        onPress={clear}
+        onPress={() => void clear()}
         testID="settings.chat.clearCache"
       />
     </>
