@@ -67,6 +67,16 @@ const ICONS = {
   hand: { ios: 'hand.raised', android: 'pan_tool' },
   errorCircle: { ios: 'xmark.circle', android: 'cancel' },
   bot: { ios: 'cpu', android: 'smart_toy' },
+  // Blocked card, terminal toolbar and key pad.
+  chevronUp: { ios: 'chevron.up', android: 'expand_less' },
+  chevronLeft: { ios: 'chevron.left', android: 'chevron_left' },
+  note: { ios: 'text.bubble', android: 'chat' },
+  dpad: { ios: 'arrow.up.and.down.and.arrow.left.and.right', android: 'open_with' },
+  enter: { ios: 'return', android: 'keyboard_return' },
+  shift: { ios: 'shift', android: 'keyboard_capslock' },
+  skills: { ios: 'sparkle', android: 'auto_awesome' },
+  snippets: { ios: 'text.alignleft', android: 'notes' },
+  appearance: { ios: 'paintpalette', android: 'palette' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
