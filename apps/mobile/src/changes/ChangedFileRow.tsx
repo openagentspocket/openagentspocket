@@ -11,7 +11,13 @@ import { Badge, copyToClipboard, Icon, ListRow, makeStyles, Text } from '@openag
 import { View } from 'react-native';
 import { say } from './say';
 
-const useStyles = makeStyles((t) => ({ nested: { paddingLeft: t.spacing.lg } }));
+const useStyles = makeStyles((t) => ({
+  nested: { paddingLeft: t.spacing.lg },
+  // One width for every change letter, so names start on the same edge in every row.
+  kind: { width: 36, alignItems: 'center' },
+  // One width and right edge for the line counts, so the deltas stack in a column.
+  delta: { minWidth: 92, alignItems: 'flex-end' },
+}));
 
 interface ChangedFileRowProps {
   file: ChangedFile;
@@ -44,18 +50,22 @@ export function ChangedFileRow({
       subtitle={detail ?? undefined}
       accessibilityLabel={label}
       leading={
-        <Badge
-          label={kindSymbol(file.kind)}
-          kind={file.kind === 'conflicted' ? 'accent' : 'control'}
-        />
+        <View style={styles.kind}>
+          <Badge
+            label={kindSymbol(file.kind)}
+            kind={file.kind === 'conflicted' ? 'accent' : 'control'}
+          />
+        </View>
       }
       trailing={
         expanded !== null ? (
           <Icon name={expanded ? 'chevronDown' : 'chevronRight'} size={12} />
         ) : counts && file.kind !== 'untracked' ? (
-          <Text variant="caption" tone="secondary">
-            {lineCountsSummary(counts, say)}
-          </Text>
+          <View style={styles.delta}>
+            <Text variant="caption" tone="secondary">
+              {lineCountsSummary(counts, say)}
+            </Text>
+          </View>
         ) : undefined
       }
       chevron={expanded === null}

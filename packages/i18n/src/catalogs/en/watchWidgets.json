@@ -1,11 +1,11 @@
 {
   "%lld Agents need you": "{0, number} Agents need you",
   "1 Agent needs you": "1 Agent needs you",
-  "Agentico": "Agentico",
+  "Agentico": "OpenAgentsPocket",
   "Agents that need you": "Agents that need you",
   "How many Agents are Blocked, as of your iPhone's last update.": "How many Agents are Blocked, as of your iPhone's last update.",
   "Need you": "Need you",
-  "Open Agentico on your iPhone": "Open Agentico on your iPhone",
+  "Open Agentico on your iPhone": "Open OpenAgentsPocket on your iPhone",
   "The fullest Usage Limits window, as of your iPhone's last update.": "The fullest Usage Limits window, as of your iPhone's last update.",
   "Updated %@ ago": "Updated {0} ago",
   "Usage Limits": "Usage Limits"

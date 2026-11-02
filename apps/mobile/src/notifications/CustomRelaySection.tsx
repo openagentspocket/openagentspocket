@@ -1,6 +1,9 @@
 import { DEFAULT_RELAY_BASE_URL, type NotificationRelaySettings } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Section, TextField } from '@openagentspocket/ui';
+import { makeStyles, Section, TextField } from '@openagentspocket/ui';
+import { View } from 'react-native';
+
+const useStyles = makeStyles((t) => ({ field: { padding: t.spacing.md } }));
 
 interface Props {
   relay: NotificationRelaySettings;
@@ -13,6 +16,7 @@ interface Props {
  * and uses the default relay; the last section on purpose, most people never touch it.
  */
 export function CustomRelaySection({ relay, value }: Props) {
+  const styles = useStyles();
   const warning = relay.hasInsecureHTTPEntry
     ? t(
         'HTTP exposes the device token and notification metadata. Use HTTPS except for local development.',
@@ -26,21 +30,23 @@ export function CustomRelaySection({ relay, value }: Props) {
       )}
       testID="notifications-custom-relay"
     >
-      <TextField
-        label={t('Custom Push Relay')}
-        placeholder={DEFAULT_RELAY_BASE_URL}
-        value={value}
-        onChangeText={(text) => {
-          relay.rawValue = text;
-        }}
-        error={relay.hasInvalidEntry ? t('Enter a valid HTTP or HTTPS URL.') : undefined}
-        hint={warning}
-        mono
-        autoCapitalize="none"
-        autoCorrect={false}
-        keyboardType="url"
-        testID="notifications-relay-field"
-      />
+      <View style={styles.field}>
+        <TextField
+          label={t('Custom Push Relay')}
+          placeholder={DEFAULT_RELAY_BASE_URL}
+          value={value}
+          onChangeText={(text) => {
+            relay.rawValue = text;
+          }}
+          error={relay.hasInvalidEntry ? t('Enter a valid HTTP or HTTPS URL.') : undefined}
+          hint={warning}
+          mono
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType="url"
+          testID="notifications-relay-field"
+        />
+      </View>
     </Section>
   );
 }

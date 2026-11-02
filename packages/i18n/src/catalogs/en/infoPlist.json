@@ -1,7 +1,7 @@
 {
-  "CFBundleDisplayName": "Agentico",
-  "NSCameraUsageDescription": "Agentico uses the camera to scan the Pairing Code shown on your computer, so you can add that machine without typing anything.",
-  "NSFaceIDUsageDescription": "Agentico uses Face ID, when you turn it on in Settings › Security, to lock the app and to confirm it's you before your SSH keys connect to a Host.",
-  "NSLocalNetworkUsageDescription": "Agentico uses your local network to connect over SSH to Hosts on the same network, including Hosts on your Tailscale, ZeroTier, or EasyTier network when they are nearby.",
-  "NSMicrophoneUsageDescription": "Agentico uses the microphone, when you tap the microphone button in the Composer, to turn your voice into text in the draft. Speech is transcribed on your device and is never sent anywhere."
+  "CFBundleDisplayName": "OpenAgentsPocket",
+  "NSCameraUsageDescription": "OpenAgentsPocket uses the camera to scan the Pairing Code shown on your computer, so you can add that machine without typing anything.",
+  "NSFaceIDUsageDescription": "OpenAgentsPocket uses Face ID, when you turn it on in Settings › Security, to lock the app and to confirm it's you before your SSH keys connect to a Host.",
+  "NSLocalNetworkUsageDescription": "OpenAgentsPocket uses your local network to connect over SSH to Hosts on the same network, including Hosts on your Tailscale, ZeroTier, or EasyTier network when they are nearby.",
+  "NSMicrophoneUsageDescription": "OpenAgentsPocket uses the microphone, when you tap the microphone button in the Composer, to turn your voice into text in the draft. Speech is transcribed on your device and is never sent anywhere."
 }

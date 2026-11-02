@@ -8,7 +8,7 @@ export function LicenseNoticeScreen({ id }: { id?: string }) {
   const notice = NOTICES.find((candidate) => candidate.id === id);
   return (
     <Screen edges={['bottom', 'left', 'right']} testID="settings-license">
-      <Stack.Screen options={{ title: notice?.name ?? t('Acknowledgements'), headerShown: true }} />
+      <Stack.Screen options={{ title: notice?.name ?? t('Acknowledgements') }} />
       {notice ? (
         <>
           <Text variant="headline">{notice.name}</Text>

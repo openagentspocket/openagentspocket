@@ -9,7 +9,9 @@
 //   with `#` for the count; Apple's `zero` case becomes the exact match `=0`.
 // - App Intents placeholders (`${agent}`) become named arguments (`{agent}`).
 // - The English value is the catalog's `en` localization when it has one, else the key itself;
-//   Spanish falls back to English only for keys marked "don't translate". No text is rewritten.
+//   Spanish falls back to English only for keys marked "don't translate".
+// - The only rewrite is the product name: literal text says OpenAgentsPocket where Swift says
+//   Agentico (see `brand`). Keys stay as the Swift source wrote them.
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -18,6 +20,12 @@ export const LOCALES = ['en', 'es'];
 const SPECIFIER =
   /%%|%(?:(\d+)\$)?[-+ #0']*\d*(?:\.\d+)?(?:hh|h|ll|l|q|z|t|j|L)?([@dDuUxXoOfFeEgGcCsSpaAi])/g;
 const NAMED = /\$\{(\w+)\}/g;
+/** The product name of this app, which replaces the Swift app's name in every user-facing value. */
+export const BRAND = 'OpenAgentsPocket';
+
+/** Swift value text as this app says it. */
+export const brand = (text) => text.replace(/\bAgentico\b/g, BRAND);
+
 const PLURAL_ORDER = ['zero', 'one', 'two', 'few', 'many', 'other'];
 
 /** The arguments a Swift format string reads, as `{ index, kind }` in reading order. */
@@ -40,7 +48,8 @@ export function specifiersOf(text) {
 /** Splits text into literal runs and arguments. `format` decides whether `%` means anything. */
 export function tokenize(text, format) {
   const tokens = [];
-  const pushText = (value) => {
+  const pushText = (raw) => {
+    const value = brand(raw);
     let last = 0;
     for (const match of value.matchAll(NAMED)) {
       if (match.index > last) tokens.push({ type: 'text', value: value.slice(last, match.index) });

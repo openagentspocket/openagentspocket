@@ -68,6 +68,8 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: t.spacing.xxs,
   },
   value: { flex: 1, textAlign: 'right' },
+  // The copy button's slot, kept when there is no button so every value ends on the same edge.
+  slot: { width: t.metrics.minTapSize, alignItems: 'center', justifyContent: 'center' },
 }));
 
 interface CopyableValueRowProps {
@@ -95,9 +97,11 @@ export function CopyableValueRow({
       <Text variant="mono" selectable style={styles.value}>
         {value}
       </Text>
-      {copyable ? (
-        <CopyButton value={value} accessibilityLabel={copyLabel ?? `Copy ${label}`} />
-      ) : null}
+      <View style={styles.slot}>
+        {copyable ? (
+          <CopyButton value={value} accessibilityLabel={copyLabel ?? `Copy ${label}`} />
+        ) : null}
+      </View>
     </View>
   );
 }

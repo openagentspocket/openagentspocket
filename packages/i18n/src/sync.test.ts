@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
-import { convertSwiftCatalogs, specifiersOf } from '../scripts/xcstrings.mjs';
+import { brand, convertSwiftCatalogs, specifiersOf } from '../scripts/xcstrings.mjs';
 import { catalogSources, formatMessage, type Locale, locales, message, type Table } from './index';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -77,7 +77,9 @@ describe.skipIf(!hasSwift)('Swift catalogs', () => {
             const plural = localization?.variations?.plural !== undefined;
             const count = plural ? COUNT[category] : undefined;
             const values = count === undefined ? args : withCount(icu, args, count);
-            const expected = swiftRender(unit.stringUnit?.value ?? '', format, locale, count);
+            const expected = brand(
+              swiftRender(unit.stringUnit?.value ?? '', format, locale, count),
+            );
             expect(
               formatMessage(icu, values, locale),
               `${table} ${locale} ${key} ${category}`,
