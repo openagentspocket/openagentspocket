@@ -1,5 +1,7 @@
 import type { ArgsOf } from './args';
 import { catalogs } from './catalogs.generated';
+import extrasEn from './extras/en.json';
+import extrasEs from './extras/es.json';
 import { formatMessage, type MessageArgs } from './format';
 import { getLocale, getLocaleTag } from './locale';
 import type { Locale } from './plural';
@@ -12,13 +14,27 @@ export { type Locale, locales, type PluralCategory, pluralCategory } from './plu
 
 /** A catalog table: `app` is the main app's Localizable; the rest mirror Swift tables/targets. */
 export type Table = keyof (typeof catalogs)['en'];
-/** Every key of the main app table: the Swift catalog key, verbatim (`'%lld blocked'`). */
-export type AppKey = keyof (typeof catalogs)['en']['app'] & string;
+/**
+ * Every key of the main app table: the Swift catalog key, verbatim (`'%lld blocked'`), or an app
+ * extra (src/extras: strings only the React Native app has).
+ */
+export type AppKey = (keyof (typeof catalogs)['en']['app'] | keyof typeof extrasEn) & string;
 
 export const tables = Object.keys(catalogs.en) as Table[];
 
+/** The RN-only strings per locale; the Swift catalog wins on a shared key. */
+export const appExtras: Record<Locale, Readonly<Record<string, string>>> = {
+  en: extrasEn,
+  es: extrasEs,
+};
+
+const app: Record<Locale, Readonly<Record<string, string>>> = {
+  en: { ...extrasEn, ...catalogs.en.app },
+  es: { ...extrasEs, ...catalogs.es.app },
+};
+
 const table = (locale: Locale, name: Table) =>
-  catalogs[locale][name] as Readonly<Record<string, string>>;
+  (name === 'app' ? app[locale] : catalogs[locale][name]) as Readonly<Record<string, string>>;
 
 /** The ICU message for a key, falling back to English; undefined when no table has it. */
 export function message(locale: Locale, name: Table, key: string): string | undefined {

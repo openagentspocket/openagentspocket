@@ -39,6 +39,8 @@ TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/r
 - Screens (`apps/mobile/src/app/**`, `*Screen.tsx`) stay at 150 lines or fewer; any file at 400 or fewer (ratchet:
   `scripts/file-length-baseline.json` may only shrink; run `node scripts/check-file-length.mjs --update` after a split).
 - Colors only from theme tokens (`useTheme()`); no hex/rgb literal in app or UI source.
+- Strings through `t()`. A string the Swift catalogs lack goes in `packages/i18n/src/extras/{en,es}.json` (both
+  languages); never edit `packages/i18n/src/catalogs/*` (regenerated from Swift, pinned by the sync test).
 - Tests pin behavior, not copy: assert a key resolves or a reducer output, never an exact sentence. Snapshots only tiny.
 - Never copy GPL code (for example agentbox, GPL-3.0). Ideas are fine, code is not.
 - Agents never run native builds (`expo run:*`, `prebuild`, `pod install`, Gradle). Work in JS; ask the integrator.
