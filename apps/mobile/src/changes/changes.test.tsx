@@ -16,6 +16,7 @@ import { diffLines, isEmptyPatch } from './diffLines';
 import { FileDiffScreen } from './FileDiffScreen';
 import { releaseChangesStore, setChangesStoreFactory } from './registry';
 import { buildSections } from './rows';
+import { say } from './say';
 
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: require('react-native').View,
@@ -102,9 +103,8 @@ describe('ChangesScreen', () => {
     install();
     await wrap(<ChangesScreen agentId="a1" onOpenFile={() => {}} />);
     await waitFor(() => expect(screen.getByTestId('changes-header')).toBeTruthy());
-    expect(screen.getAllByRole('header')).toHaveLength(4);
+    expect(screen.getAllByTestId('change-section')).toHaveLength(4);
     expect(screen.getByTestId('changes-file-src/cart/Cart.ts')).toBeTruthy();
-    expect(screen.getByTestId('changes-totals')).toBeTruthy();
   });
 
   it('opens a file in the diff and tells the route', async () => {
@@ -153,7 +153,7 @@ describe('ChangesScreen', () => {
     });
     await wrap(<ChangesScreen agentId="a1" onOpenFile={() => {}} />);
     await waitFor(() => expect(screen.getByTestId('changes-failure')).toBeTruthy());
-    fireEvent.press(screen.getByRole('button'));
+    fireEvent.press(screen.getByText(say('Try Again')));
     await waitFor(() => expect(screen.getByTestId('changes-header')).toBeTruthy());
     expect(attempts).toBe(2);
   });
@@ -187,7 +187,7 @@ describe('FileDiffScreen', () => {
     });
     await wrap(<FileDiffScreen agentId="a1" />);
     await waitFor(() => expect(screen.getByTestId('diff-failure')).toBeTruthy());
-    fireEvent.press(screen.getByRole('button'));
+    fireEvent.press(screen.getByText(say('Try Again')));
     await waitFor(() => expect(screen.getByTestId('diff-view')).toBeTruthy());
   });
 

@@ -24,6 +24,7 @@ const useStyles = makeStyles((t) => ({
     minHeight: t.metrics.rowMinHeight,
     paddingHorizontal: airy.stack,
   },
+  indented: { paddingLeft: airy.stack * 2 },
   name: { flexShrink: 1 },
   commitLine: { gap: 6 },
   title: { flexShrink: 1, minWidth: 0 },
@@ -43,7 +44,8 @@ const useStyles = makeStyles((t) => ({
   },
 }));
 
-export type ChangeKind = 'M' | 'A' | 'D' | 'R' | '?';
+/** M modified, A added, D deleted, R renamed, ? untracked, U conflicted. */
+export type ChangeKind = 'M' | 'A' | 'D' | 'R' | '?' | 'U';
 
 export interface ChangeSummary {
   repo: string;
@@ -60,9 +62,12 @@ export interface ChangeSummary {
 export interface ChangeFile {
   name: string;
   dir?: string;
-  added: number;
-  removed: number;
+  /** Line counts; absent (untracked, binary) draws none. */
+  added?: number;
+  removed?: number;
   kind: ChangeKind;
+  /** An untracked directory: a chevron that says whether its listing is open. */
+  expanded?: boolean;
   staged?: boolean;
 }
 
@@ -72,6 +77,8 @@ export type ChangeRowProps = (
 ) & {
   onPress?: () => void;
   onLongPress?: () => void;
+  /** A file inside an expanded directory sits one step in. */
+  indent?: boolean;
   labels?: AgentBarLabels;
   testID?: string;
 };
@@ -92,6 +99,7 @@ export function ChangeRow({
   file,
   onPress,
   onLongPress,
+  indent = false,
   labels = defaultAgentBarLabels,
   testID = 'change-row',
 }: ChangeRowProps) {
@@ -162,15 +170,20 @@ export function ChangeRow({
     A: theme.colors.success,
     D: theme.colors.danger,
     R: theme.colors.info,
-    '?': theme.colors.textSecondary,
+    '?': theme.colors.textTertiary,
+    U: theme.colors.danger,
   }[file.kind];
   return (
     <Pressable
-      style={styles.file}
+      style={[styles.file, indent && styles.indented]}
       onPress={onPress}
       onLongPress={onLongPress}
       accessibilityRole="button"
-      accessibilityLabel={`${file.name}, ${file.dir ?? ''}, +${file.added} −${file.removed}, ${file.kind}`}
+      accessibilityLabel={
+        file.added === undefined
+          ? `${file.name}, ${file.dir ?? ''}, ${file.kind}`
+          : `${file.name}, ${file.dir ?? ''}, +${file.added} −${file.removed ?? 0}, ${file.kind}`
+      }
       testID={testID}
     >
       <View style={[styles.nameLine, styles.grow]}>
@@ -183,7 +196,14 @@ export function ChangeRow({
           </Text>
         ) : null}
       </View>
-      <Totals added={file.added} removed={file.removed} />
+      {file.added !== undefined ? <Totals added={file.added} removed={file.removed ?? 0} /> : null}
+      {file.expanded !== undefined ? (
+        <Icon
+          name={file.expanded ? 'chevronDown' : 'chevronRight'}
+          size={11}
+          color="textTertiary"
+        />
+      ) : null}
       <Text variant="subheadline" semibold monospaced style={[styles.kind, { color: kindColor }]}>
         {file.kind}
       </Text>

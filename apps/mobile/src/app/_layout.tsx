@@ -50,7 +50,7 @@ function AppStack() {
       <Stack.Screen name="usage" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-breakdown" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-limits" options={{ title: t('Usage Limits') }} />
-      <Stack.Screen name="files" options={{ title: t('Files') }} />
+      <Stack.Screen name="files" options={{ ...bare, title: t('Files'), presentation: 'modal' }} />
       <Stack.Screen
         name="settings"
         options={{ ...bare, title: t('Settings'), presentation: 'modal' }}

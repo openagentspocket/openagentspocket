@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useComposition } from '@/composition/CompositionProvider';
 import { FilesScreen } from '@/files/FilesScreen';
 
@@ -8,7 +8,13 @@ import { FilesScreen } from '@/files/FilesScreen';
  */
 export default function FilesRoute() {
   const { host, path } = useLocalSearchParams<{ host?: string; path?: string }>();
+  const router = useRouter();
   const composition = useComposition();
   const source = host ? composition?.fileSource(host, path) : undefined;
-  return <FilesScreen source={source} />;
+  return (
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <FilesScreen source={source} onDone={() => router.back()} />
+    </>
+  );
 }
