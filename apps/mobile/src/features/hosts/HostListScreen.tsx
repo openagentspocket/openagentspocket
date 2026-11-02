@@ -1,7 +1,8 @@
 import type { Host } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, EmptyState, Screen, SheetBar } from '@openagentspocket/ui';
+import { Button, EmptyState, Screen, SheetBar, Text } from '@openagentspocket/ui';
 import { useState } from 'react';
+import { Pressable } from 'react-native';
 import { extra } from './extraText';
 import { HostGroup } from './HostGroup';
 import type { HostConnection } from './HostsModel';
@@ -93,6 +94,7 @@ export function HostListScreen({
           key={group}
           group={group}
           hosts={hosts}
+          latencies={snapshot.latencies}
           collapsed={collapsed.has(group)}
           onToggle={() => toggle(group)}
           onOpen={onOpen}
@@ -101,12 +103,16 @@ export function HostListScreen({
         />
       ))}
       {onSetupGuide ? (
-        <Button
-          kind="text"
-          title={t('Setup Guide')}
+        <Pressable
+          accessibilityRole="link"
           onPress={onSetupGuide}
+          style={{ alignSelf: 'flex-start', paddingHorizontal: 4, paddingVertical: 4 }}
           testID="hosts-setup-guide"
-        />
+        >
+          <Text variant="footnote" tone="accent">
+            {t('Setup Guide')}
+          </Text>
+        </Pressable>
       ) : null}
     </Screen>
   );

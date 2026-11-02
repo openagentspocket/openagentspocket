@@ -70,3 +70,9 @@ export function hostTitle(host: Host): string {
   const name = host.name.trim();
   return name === '' ? primaryRoute(host).address : name;
 }
+
+/** "<1 ms" or "12 ms": the row's trailing latency, nothing before the first check passed. */
+export function latencyLabel(milliseconds: number | undefined): string | undefined {
+  if (milliseconds === undefined) return undefined;
+  return milliseconds < 1 ? '<1 ms' : `${Math.round(milliseconds)} ms`;
+}

@@ -1,12 +1,23 @@
 import { t } from '@openagentspocket/i18n';
-import { Button, Text } from '@openagentspocket/ui';
+import { Button, confirm, Icon, Text } from '@openagentspocket/ui';
 import * as Clipboard from 'expo-clipboard';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { hostsRuntime } from './hostsRuntime';
 
 /** The comment the line carries in `authorized_keys`, as the Swift app's. */
 export const DEVICE_KEY_COMMENT = 'openagentspocket';
+
+/** hosts.replace-auth-key-confirm: the dialog that guards replacing this device's key. */
+export function askReplaceDeviceKey(): Promise<boolean> {
+  return confirm({
+    title: t('Replace the Device Key?'),
+    message: t('Replace it and register the new public key on every Host that uses it.'),
+    confirmLabel: t('Replace Device Key'),
+    destructive: true,
+    presentation: 'dialog',
+  });
+}
 
 /**
  * The Device Key's `authorized_keys` line with a Copy button (Swift `HostFormView.deviceKeySection`):
@@ -16,6 +27,9 @@ export function DeviceKeyLine() {
   const [line, setLine] = useState<string | null | undefined>(undefined);
   const [copied, setCopied] = useState(false);
 
+  const [attempt, setAttempt] = useState(0);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `attempt` reloads the key (Try Again)
   useEffect(() => {
     let live = true;
     hostsRuntime()
@@ -26,14 +40,52 @@ export function DeviceKeyLine() {
     return () => {
       live = false;
     };
+  }, [attempt]);
+
+  const replace = useCallback(async () => {
+    const { replaceDeviceKey } = hostsRuntime();
+    if (!replaceDeviceKey) return;
+    const sure = await askReplaceDeviceKey();
+    if (!sure) return;
+    try {
+      await replaceDeviceKey();
+      setLine(undefined);
+      setAttempt((count) => count + 1);
+    } catch {
+      await confirm({
+        title: t('Could not replace the Device Key'),
+        cancelLabel: null,
+        confirmLabel: t('OK'),
+      });
+    }
   }, []);
 
   if (line === undefined) return null;
   if (line === null) {
     return (
-      <Text tone="danger" testID="device-key-unavailable">
-        {t('Device key unavailable')}
-      </Text>
+      <View style={{ padding: 16, gap: 8 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <Icon name="warning" size={18} color="danger" />
+          <Text tone="danger" testID="device-key-unavailable">
+            {t('Device key unavailable')}
+          </Text>
+        </View>
+        <Button
+          kind="text"
+          title={t('Try Again')}
+          onPress={() => setAttempt((count) => count + 1)}
+          testID="device-key-retry"
+        />
+        {hostsRuntime().replaceDeviceKey ? (
+          <Button
+            kind="text"
+            icon="refresh"
+            title={t('Replace Device Key')}
+            onPress={() => void replace()}
+            testID="device-key-replace"
+          />
+        ) : null}
+      </View>
     );
   }
   return (

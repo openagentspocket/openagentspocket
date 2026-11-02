@@ -1,8 +1,15 @@
-import { type Host, primaryRoute, routeEndpoint, routeUsesJumpHost } from '@openagentspocket/core';
+import {
+  type Host,
+  type PluginValue,
+  primaryRoute,
+  routeEndpoint,
+  routeUsesJumpHost,
+} from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Icon, KeyValueGroup, ListRow, Section, StatusPill } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import type { HostConnection } from './HostsModel';
+import { pluginValueText } from './pluginText';
 
 export function connectionTitle(connection: HostConnection): string {
   switch (connection) {
@@ -54,7 +61,17 @@ export function RoutesSection({ host, routeInUse }: { host: Host; routeInUse: st
 }
 
 /** Account, session or herdr endpoint, and how the Host authenticates. */
-export function HostFacts({ host }: { host: Host }) {
+export function HostFacts({
+  host,
+  plugin,
+  onPluginPress,
+}: {
+  host: Host;
+  /** The plugin row's value; absent hides the row (Hosts that cannot run the plugin keep it). */
+  plugin: PluginValue;
+  /** Opens the plugin notice; absent when there is nothing to do. */
+  onPluginPress?: () => void;
+}) {
   const endpoint = host.herdrEndpoint;
   const rows = [
     { label: t('Account'), value: host.username },
@@ -65,6 +82,12 @@ export function HostFacts({ host }: { host: Host }) {
       ? [{ label: t('herdr Launcher'), value: endpoint.executablePath, mono: true }]
       : []),
     { label: t('Auth'), value: host.authMethod === 'password' ? t('Password') : t('Device Key') },
+    {
+      label: t('Agentico Plugin'),
+      value: pluginValueText(plugin),
+      onPress: onPluginPress,
+      testID: 'host-plugin-row',
+    },
   ];
   return <KeyValueGroup title={t('Host')} rows={rows} testID="host-facts" />;
 }

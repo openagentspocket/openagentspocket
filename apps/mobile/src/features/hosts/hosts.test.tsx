@@ -1,16 +1,10 @@
-import { type Host, hostRoute } from '@openagentspocket/core';
-import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import type { ReactElement } from 'react';
+import { act, fireEvent, screen, waitFor, within } from '@testing-library/react-native';
 import { extraKeys, extraTables } from './extraText';
 import { HostDetailScreen } from './HostDetailScreen';
-import { HostFormScreen } from './HostFormScreen';
 import { HostListScreen } from './HostListScreen';
-import { DemoHostProbe } from './HostProbe';
 import { createDemoRuntime, setHostsRuntime } from './hostsRuntime';
+import { Form, fillRoute, probe, renderApp, SAMPLE, setup } from './hostsTestKit';
 import { PairingScreen } from './PairingScreen';
-import { DemoPairingConnector } from './pairingAdapters';
-import { useInitialDraft } from './useInitialDraft';
 
 const mockCopy = jest.fn();
 jest.mock('expo-clipboard', () => ({ setStringAsync: (text: string) => mockCopy(text) }));
@@ -31,40 +25,6 @@ jest.mock('expo-camera', () => {
 const CONFIG_ONLY_CODE =
   'HERDR-PAIR:1:eyJhZGRycyI6WyIxOTIuMTY4LjEuNDIiXSwicG9ydCI6MjIsInVzZXIiOiJhZGEiLCJmcCI6IlNIQTI1Njo2K2puY05kaWJzRzJjcXZmb0xBcEdyTzhDdkl3QUVNenNCK0lpbE9zOHRnIn0';
 
-const probe = new DemoHostProbe();
-
-function setup() {
-  const runtime = createDemoRuntime({ probe, connector: new DemoPairingConnector(0) });
-  setHostsRuntime(runtime);
-  return runtime;
-}
-
-function renderApp(ui: ReactElement) {
-  return render(
-    <ThemeProvider themeId="indigo">
-      <OverlayHost />
-      {ui}
-    </ThemeProvider>,
-  );
-}
-
-const SAMPLE: Host = {
-  id: 'h1',
-  name: 'Workshop',
-  username: 'ada',
-  authMethod: 'deviceKey',
-  sessionName: '',
-  herdrEndpoint: null,
-  routes: [hostRoute({ id: 'r1', address: 'workshop.example' })],
-};
-
-function Form({ onSaved }: { onSaved: (id: string, created: boolean) => void }) {
-  const initial = useInitialDraft();
-  return initial ? (
-    <HostFormScreen initial={initial} onSaved={onSaved} onCancel={() => {}} />
-  ) : null;
-}
-
 afterEach(() => setHostsRuntime(null));
 
 describe('hosts.form', () => {
@@ -76,7 +36,7 @@ describe('hosts.form', () => {
     expect(save).toBeDisabled();
 
     await fireEvent.changeText(screen.getByTestId('host-user'), 'ada');
-    await fireEvent.changeText(screen.getByTestId('route-0-address'), 'workshop.example');
+    await fillRoute('workshop.example');
     expect(screen.getByTestId('host-save')).toBeEnabled();
     await act(async () => fireEvent.press(screen.getByTestId('host-save')));
 
@@ -107,20 +67,51 @@ describe('hosts.form', () => {
     setup();
     await renderApp(<Form onSaved={jest.fn()} />);
     await fireEvent.changeText(await screen.findByTestId('host-user'), 'ada');
-    await fireEvent.changeText(screen.getByTestId('route-0-address'), 'workshop.example');
-    await fireEvent.changeText(screen.getByTestId('route-0-port'), '99999');
+    await fillRoute('workshop.example', '99999');
     expect(screen.getByTestId('host-save')).toBeDisabled();
   });
 
-  it('adds and deletes routes, keeping at least one', async () => {
+  it('lists each route as a chevron row and opens its page', async () => {
     setup();
     await renderApp(<Form onSaved={jest.fn()} />);
     await screen.findByTestId('host-save');
-    expect(screen.queryByTestId('route-0-delete')).toBeNull();
+    await fillRoute('workshop.example');
+    expect(within(screen.getByTestId('route-0')).getByText('workshop.example')).toBeTruthy();
+    expect(within(screen.getByTestId('route-0')).getByText('Direct')).toBeTruthy();
+  });
+
+  it('adds a route from the New Route page only on Save, and deletes keeping at least one', async () => {
+    setup();
+    await renderApp(<Form onSaved={jest.fn()} />);
+    await screen.findByTestId('host-save');
+
     await fireEvent.press(screen.getByTestId('host-add-route'));
+    await fireEvent.press(screen.getByTestId('route-back'));
+    expect(screen.queryByTestId('route-1')).toBeNull();
+
+    await fireEvent.press(screen.getByTestId('host-add-route'));
+    expect(screen.getByTestId('route-save')).toBeDisabled();
+    await fireEvent.changeText(screen.getByTestId('new-route-address'), 'second.example');
+    await fireEvent.press(screen.getByTestId('route-save'));
     expect(screen.getByTestId('route-1')).toBeTruthy();
+
+    await fireEvent.press(screen.getByTestId('route-1'));
     await fireEvent.press(screen.getByTestId('route-1-delete'));
     expect(screen.queryByTestId('route-1')).toBeNull();
+    await fireEvent.press(screen.getByTestId('route-0'));
+    expect(screen.getByTestId('route-0-delete')).toBeDisabled();
+  });
+
+  it('fills the route address and the Host name from the peer picker', async () => {
+    setup();
+    await renderApp(<Form onSaved={jest.fn()} />);
+    await screen.findByTestId('host-save');
+    await fireEvent.press(screen.getByTestId('route-0'));
+    await fireEvent.press(screen.getByTestId('route-0-choose-peer'));
+    await fireEvent.press(await screen.findByTestId('peer-build-server'));
+    expect(screen.getByTestId('route-0-address').props.value).toBe('100.101.102.12');
+    await fireEvent.press(screen.getByTestId('route-back'));
+    expect(screen.getByTestId('host-name').props.value).toBe('build-server');
   });
 });
 
@@ -147,6 +138,17 @@ describe('hosts.list', () => {
     expect(screen.getByTestId('host-row-h1')).toBeTruthy();
   });
 
+  it('shows the latency of a connected Host before the chevron', async () => {
+    const runtime = setup();
+    await runtime.model.add(SAMPLE, null);
+    runtime.model.setConnection('h1', 'connected');
+    runtime.model.setLatency('h1', 0);
+    await renderApp(list);
+    expect(within(screen.getByTestId('host-row-h1')).getByText('<1 ms')).toBeTruthy();
+    await act(async () => runtime.model.setLatency('h1', 12));
+    expect(within(screen.getByTestId('host-row-h1')).getByText('12 ms')).toBeTruthy();
+  });
+
   it('titles a Host without a name by its address, not by the user@address line', async () => {
     const runtime = setup();
     await renderApp(list);
@@ -161,6 +163,7 @@ describe('hosts.list', () => {
       hosts: [],
       loadError: 'catalogUnreadable',
       connections: {},
+      latencies: {},
     });
     await renderApp(list);
     expect(screen.getByTestId('hosts-unavailable')).toBeTruthy();

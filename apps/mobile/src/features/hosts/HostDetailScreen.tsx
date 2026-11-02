@@ -1,4 +1,4 @@
-import { hostDisplayName } from '@openagentspocket/core';
+import { hostDisplayName, pluginPresentation } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   Button,
@@ -8,9 +8,11 @@ import {
   Screen,
   SheetBar,
 } from '@openagentspocket/ui';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ChangedKeySection } from './ChangedKeySection';
 import { connectionTitle, HostFacts, RoutesSection, routeLine } from './HostInfoSections';
+import { hostsRuntime } from './hostsRuntime';
+import { PluginNoticeSheet } from './PluginNoticeSheet';
 import { PreflightSection } from './PreflightSection';
 import { removeHostWithConfirmation } from './removeHost';
 import { useHostChecks } from './useHostChecks';
@@ -21,6 +23,8 @@ interface HostDetailScreenProps {
   onBack: () => void;
   onEdit: (hostId: string) => void;
   onRemoved: () => void;
+  /** Opens with the plugin notice presented (atlas). */
+  initiallyShowingPluginNotice?: boolean;
 }
 
 const TONE: Record<string, HostStatusTone> = {
@@ -31,12 +35,19 @@ const TONE: Record<string, HostStatusTone> = {
 };
 
 /** hosts.detail: status card, key change, routes, Host facts and the preflight checklist. */
-export function HostDetailScreen({ hostId, onBack, onEdit, onRemoved }: HostDetailScreenProps) {
+export function HostDetailScreen({
+  hostId,
+  onBack,
+  onEdit,
+  onRemoved,
+  initiallyShowingPluginNotice = false,
+}: HostDetailScreenProps) {
   const snapshot = useHosts();
   const host = snapshot.hosts.find((candidate) => candidate.id === hostId) ?? null;
   const { state, run, cancel, trustNewKey } = useHostChecks(host);
   const connection = snapshot.connections[hostId] ?? 'notConnected';
   const exists = host !== null;
+  const [noticeOpen, setNoticeOpen] = useState(initiallyShowingPluginNotice);
 
   // Checks run when the page opens, as the Swift app's onboarding does.
   // biome-ignore lint/correctness/useExhaustiveDependencies: once per opened Host
@@ -63,6 +74,10 @@ export function HostDetailScreen({ hostId, onBack, onEdit, onRemoved }: HostDeta
     );
   }
   const running = connection === 'connecting';
+  const presentation = pluginPresentation(state.plugin, {
+    session: host.sessionName,
+    endpoint: host.herdrEndpoint,
+  });
   return (
     <Screen header={bar} edges={edges} testID="host-detail">
       <HostStatusCard
@@ -89,12 +104,33 @@ export function HostDetailScreen({ hostId, onBack, onEdit, onRemoved }: HostDeta
         />
       ) : null}
       <RoutesSection host={host} routeInUse={state.routeInUse} />
-      <HostFacts host={host} />
+      <HostFacts
+        host={host}
+        plugin={presentation.value}
+        onPluginPress={presentation.notice ? () => setNoticeOpen(true) : undefined}
+      />
       <PreflightSection
         report={state.report}
         running={state.running}
         onToggleRun={running ? cancel : () => void run()}
       />
+      {presentation.notice ? (
+        <PluginNoticeSheet
+          notice={presentation.notice}
+          visible={noticeOpen}
+          onClose={() => setNoticeOpen(false)}
+          onRunChecks={() => void run()}
+          onRunAction={
+            hostsRuntime().runPluginSteps
+              ? async (steps) => {
+                  await hostsRuntime().runPluginSteps?.(host.id, steps);
+                  setNoticeOpen(false);
+                  void run();
+                }
+              : undefined
+          }
+        />
+      ) : null}
       <Button
         kind="text"
         icon="trash"

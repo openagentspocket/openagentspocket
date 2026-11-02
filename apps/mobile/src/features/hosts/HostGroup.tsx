@@ -4,12 +4,14 @@ import { FoldHeader, HostRow, Section } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { useEntryMenus } from '../../navigation/entryMenus';
 import type { HostConnection } from './HostsModel';
-import { connectionLine, groupTitle, hostTitle, rowConnection } from './hostRows';
+import { connectionLine, groupTitle, hostTitle, latencyLabel, rowConnection } from './hostRows';
 import { removeHostWithConfirmation } from './removeHost';
 
 interface HostGroupProps {
   group: HostConnection;
   hosts: readonly Host[];
+  /** Round trip per Host id, in milliseconds. */
+  latencies: Readonly<Record<string, number>>;
   collapsed: boolean;
   onToggle: () => void;
   onOpen: (host: Host) => void;
@@ -21,6 +23,7 @@ interface HostGroupProps {
 export function HostGroup({
   group,
   hosts,
+  latencies,
   collapsed,
   onToggle,
   onOpen,
@@ -47,6 +50,7 @@ export function HostGroup({
                 name: hostTitle(host),
                 subtitle: connectionLine(host),
                 connection: rowConnection(group),
+                latencyLabel: latencyLabel(latencies[host.id]),
               }}
               onPress={() => onOpen(host)}
               onRetry={() => onOpen(host)}

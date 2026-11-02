@@ -1,3 +1,4 @@
+import { PLUGIN_REPOSITORY, pluginInstallArguments } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 
 export type SetupPlatform = 'unix' | 'windows';
@@ -11,8 +12,14 @@ export interface GuideStep {
   link?: { label: string; url: string };
 }
 
-/** The plugin is installed from the repository you publish it in; the command names it generically. */
-export const PLUGIN_INSTALL_COMMAND = 'herdr plugin install <repository> --ref plugin --yes';
+/**
+ * Where the guide's links and the plugin command point. All derive from `PLUGIN_REPOSITORY`
+ * (core), the one place that names the project's GitHub repository.
+ */
+export const GUIDE_URL = `https://github.com/${PLUGIN_REPOSITORY}#installation`;
+export const WINDOWS_GUIDE_URL = `https://github.com/${PLUGIN_REPOSITORY}/blob/main/docs/guides/windows-setup.md`;
+export const HERDR_INSTALL_URL = 'https://herdr.dev/docs/install/';
+export const PLUGIN_INSTALL_COMMAND = ['herdr', ...pluginInstallArguments()].join(' ');
 export const PAIR_COMMAND = 'herdr plugin action invoke agentico.pair';
 
 /** The numbered steps of the guide, as the Swift Setup Guide lists them (reference-only variant). */
@@ -22,7 +29,7 @@ export function guideSteps(platform: SetupPlatform): readonly GuideStep[] {
       {
         title: t('Set Up herdr on Windows'),
         detail: t('Native Windows needs herdr 0.9.3 or newer and OpenSSH Server.'),
-        link: { label: t('Windows Setup Guide'), url: 'https://herdr.dev/docs/install/' },
+        link: { label: t('Windows Setup Guide'), url: WINDOWS_GUIDE_URL },
       },
       {
         title: t('Add the Host'),
@@ -36,7 +43,7 @@ export function guideSteps(platform: SetupPlatform): readonly GuideStep[] {
     {
       title: t('Install herdr'),
       detail: t('Version 0.7.5 or newer, with Node 20 or newer.'),
-      link: { label: t('herdr Install Guide'), url: 'https://herdr.dev/docs/install/' },
+      link: { label: t('herdr Install Guide'), url: HERDR_INSTALL_URL },
     },
     {
       title: t('Turn on SSH'),

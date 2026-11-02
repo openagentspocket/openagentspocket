@@ -47,6 +47,7 @@ const ICONS = {
   arrowLeft: { ios: 'arrow.left', android: 'arrow_back' },
   arrowRight: { ios: 'arrow.right', android: 'arrow_forward' },
   sparkles: { ios: 'sparkles', android: 'auto_awesome' },
+  book: { ios: 'book', android: 'menu_book' },
   qr: { ios: 'qrcode.viewfinder', android: 'qr_code_scanner' },
   emptyTray: { ios: 'tray', android: 'inbox' },
   // Agent status at accessibility text sizes: one shape per status (StatusDot). Material's
@@ -54,6 +55,7 @@ const ICONS = {
   statusBlocked: { ios: 'exclamationmark.circle.fill', android: 'error' },
   statusDone: { ios: 'checkmark.circle.fill', android: 'check_circle' },
   statusWorking: { ios: 'circle.fill', android: 'radio_button_checked' },
+  statusFailed: { ios: 'xmark.circle.fill', android: 'cancel' },
   statusIdle: { ios: 'circle', android: 'radio_button_unchecked' },
   // Ports and the browser preview.
   globe: { ios: 'globe', android: 'language' },

@@ -1,5 +1,6 @@
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { CopyButton } from '../primitives/CopyButton';
+import { Icon } from '../primitives/Icon';
 import { Section } from '../primitives/Section';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
@@ -25,6 +26,9 @@ export interface KeyValueRow {
   /** Adds a copy button after the value. */
   copy?: boolean;
   copyLabel?: string;
+  /** Makes the row a button with a disclosure chevron (the plugin row opens its notice). */
+  onPress?: () => void;
+  testID?: string;
 }
 
 interface KeyValueGroupProps {
@@ -38,31 +42,37 @@ export function KeyValueGroup({ title, rows, testID = 'key-value-group' }: KeyVa
   const styles = useStyles();
   return (
     <Section title={title} testID={testID}>
-      {rows.map((row) => (
-        <View
-          key={row.label}
-          style={styles.row}
-          accessible
-          accessibilityLabel={`${row.label}, ${row.value}`}
-          testID={`${testID}-row`}
-        >
-          <Text style={styles.label}>{row.label}</Text>
-          <Text
-            variant={row.mono ? 'mono' : 'body'}
-            tone="secondary"
-            selectable
-            style={styles.value}
+      {rows.map((row) => {
+        const Row = row.onPress ? Pressable : View;
+        return (
+          <Row
+            key={row.label}
+            style={styles.row}
+            accessible
+            accessibilityRole={row.onPress ? 'button' : undefined}
+            accessibilityLabel={`${row.label}, ${row.value}`}
+            onPress={row.onPress}
+            testID={row.testID ?? `${testID}-row`}
           >
-            {row.value}
-          </Text>
-          {row.copy ? (
-            <CopyButton
-              value={row.value}
-              accessibilityLabel={row.copyLabel ?? `Copy ${row.label}`}
-            />
-          ) : null}
-        </View>
-      ))}
+            <Text style={styles.label}>{row.label}</Text>
+            <Text
+              variant={row.mono ? 'mono' : 'body'}
+              tone="secondary"
+              selectable
+              style={styles.value}
+            >
+              {row.value}
+            </Text>
+            {row.copy ? (
+              <CopyButton
+                value={row.value}
+                accessibilityLabel={row.copyLabel ?? `Copy ${row.label}`}
+              />
+            ) : null}
+            {row.onPress ? <Icon name="chevronRight" size={13} color="textTertiary" /> : null}
+          </Row>
+        );
+      })}
     </Section>
   );
 }

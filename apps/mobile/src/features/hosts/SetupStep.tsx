@@ -1,5 +1,6 @@
-import { CopyButton, Text, useTheme } from '@openagentspocket/ui';
+import { Text, useTheme } from '@openagentspocket/ui';
 import { Linking, Pressable, View } from 'react-native';
+import { CommandBlock } from './CommandBlock';
 import type { GuideStep } from './setupGuideSteps';
 
 interface SetupStepProps {
@@ -65,23 +66,7 @@ export function SetupStep({ number, step, divider }: SetupStepProps) {
             </Pressable>
           ) : null}
           {step.commands?.map((command) => (
-            <View
-              key={command}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: theme.spacing.xs,
-                padding: theme.spacing.xs,
-                paddingLeft: theme.spacing.sm,
-                borderRadius: 8,
-                backgroundColor: theme.colors.control,
-              }}
-            >
-              <Text variant="mono" numberOfLines={1} style={{ flex: 1 }}>
-                {command}
-              </Text>
-              <CopyButton value={command} accessibilityLabel={command} />
-            </View>
+            <CommandBlock key={command} command={command} />
           ))}
         </View>
       </View>

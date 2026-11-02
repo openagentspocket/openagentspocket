@@ -13,9 +13,9 @@ function icon(status: PreflightCheckStatus | null): IconName {
   if (!status) return 'statusIdle';
   switch (status.state) {
     case 'passed':
-      return 'success';
+      return 'statusDone';
     case 'failed':
-      return 'error';
+      return 'statusFailed';
     case 'blocked':
       return 'statusIdle';
   }
@@ -54,6 +54,7 @@ export function PreflightSection({ report, running, onToggleRun }: PreflightSect
             leading={
               <Icon
                 name={icon(status)}
+                size={22}
                 color={failed ? 'danger' : status?.state === 'passed' ? 'success' : 'textTertiary'}
               />
             }

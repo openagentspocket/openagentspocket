@@ -12,6 +12,10 @@ export default function HostFormRoute() {
     <HostFormScreen
       initial={initial}
       onCancel={() => router.back()}
+      onOpenRoute={(index) =>
+        router.push({ pathname: '/hosts/route', params: { index: String(index) } })
+      }
+      onAddRoute={() => router.push('/hosts/route')}
       onSaved={(hostId, created) =>
         created
           ? router.replace({ pathname: '/hosts/[id]', params: { id: hostId } })

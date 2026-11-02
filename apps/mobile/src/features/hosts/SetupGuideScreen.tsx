@@ -1,9 +1,9 @@
 import { t } from '@openagentspocket/i18n';
-import { Card, Screen, Segmented, SheetBar, Text } from '@openagentspocket/ui';
+import { Card, ListRow, Screen, Section, Segmented, SheetBar, Text } from '@openagentspocket/ui';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Linking, View } from 'react-native';
 import { SetupStep } from './SetupStep';
-import { guideSteps, type SetupPlatform } from './setupGuideSteps';
+import { GUIDE_URL, guideSteps, type SetupPlatform } from './setupGuideSteps';
 
 interface SetupGuideScreenProps {
   onBack: () => void;
@@ -44,6 +44,15 @@ export function SetupGuideScreen({ onBack }: SetupGuideScreenProps) {
           <SetupStep key={step.title} number={index + 1} step={step} divider={index > 0} />
         ))}
       </Card>
+      <Section>
+        <ListRow
+          icon="book"
+          title={t('Full Guide on GitHub')}
+          chevron
+          onPress={() => void Linking.openURL(GUIDE_URL)}
+          testID="guide-full"
+        />
+      </Section>
     </Screen>
   );
 }
