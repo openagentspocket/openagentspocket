@@ -1,2 +1,8 @@
-// Barrel of the UX3 group 'settingsPickers': its task exports the components here.
-export {};
+// Barrel of the UX3 group 'settingsPickers' (Terminal palette, agent list fields, overlay peers, port preview).
+export * from './AgentListFieldsEditor';
+export * from './AgentListFieldsPreview';
+export * from './OverlayPeerPicker';
+export * from './OverlayPeerViews';
+export * from './PortPreview';
+export * from './TerminalThemePicker';
+export * from './TerminalThemePreview';

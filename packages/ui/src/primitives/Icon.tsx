@@ -57,17 +57,37 @@ const ICONS = {
   statusIdle: { ios: 'circle', android: 'radio_button_unchecked' },
   // Ports and the browser preview.
   globe: { ios: 'globe', android: 'language' },
+  wifiSlash: { ios: 'wifi.slash', android: 'wifi_off' },
   container: { ios: 'shippingbox', android: 'inventory_2' },
   paused: { ios: 'pause.circle', android: 'pause_circle' },
   share: { ios: 'square.and.arrow.up', android: 'share' },
   usage: { ios: 'chart.bar.xaxis', android: 'bar_chart' },
+  // Chat timeline rows.
+  brain: { ios: 'brain', android: 'psychology' },
+  hand: { ios: 'hand.raised', android: 'pan_tool' },
+  errorCircle: { ios: 'xmark.circle', android: 'cancel' },
+  bot: { ios: 'cpu', android: 'smart_toy' },
+  // Blocked card, terminal toolbar and key pad.
+  chevronUp: { ios: 'chevron.up', android: 'expand_less' },
+  chevronLeft: { ios: 'chevron.left', android: 'chevron_left' },
+  note: { ios: 'text.bubble', android: 'chat' },
+  dpad: { ios: 'arrow.up.and.down.and.arrow.left.and.right', android: 'open_with' },
+  enter: { ios: 'return', android: 'keyboard_return' },
+  shift: { ios: 'shift', android: 'keyboard_capslock' },
+  skills: { ios: 'sparkle', android: 'auto_awesome' },
+  snippets: { ios: 'text.alignleft', android: 'notes' },
+  appearance: { ios: 'paintpalette', android: 'palette' },
+  // Toolbars and the iPad sidebar.
+  home: { ios: 'house', android: 'home' },
+  filter: { ios: 'line.3.horizontal.decrease.circle', android: 'filter_list' },
+  list: { ios: 'list.bullet', android: 'list' },
+  sidebar: { ios: 'sidebar.left', android: 'view_sidebar' },
+  windows: { ios: 'rectangle.on.rectangle', android: 'flip_to_front' },
   // Agent bar.
-  sidebar: { ios: 'sidebar.left', android: 'side_navigation' },
   branch: { ios: 'arrow.triangle.branch', android: 'call_split' },
-  keysDock: { ios: 'rectangle.bottomhalf.filled', android: 'dock_to_bottom' },
-  tools: { ios: 'wrench.and.screwdriver', android: 'build' },
+  keysDock: { ios: 'creditcard.fill', android: 'credit_card' },
+  tools: { ios: 'hammer.fill', android: 'construction' },
   people: { ios: 'person.2', android: 'group' },
-  list: { ios: 'list.bullet', android: 'format_list_bulleted' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;

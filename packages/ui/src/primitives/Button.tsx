@@ -49,6 +49,8 @@ interface CommonProps {
   /** Shows a spinner and ignores presses. */
   loading?: boolean;
   accessibilityHint?: string;
+  /** Overrides the glyph size (toolbars draw glyphs near 60 percent of the control). */
+  iconSize?: number;
   testID?: string;
 }
 
@@ -69,6 +71,7 @@ export function Button({
   loading = false,
   accessibilityLabel,
   accessibilityHint,
+  iconSize,
   testID,
 }: ButtonProps) {
   const styles = useStyles();
@@ -100,7 +103,9 @@ export function Button({
       ]}
     >
       {loading ? <ActivityIndicator size="small" color={ink} testID="button-spinner" /> : null}
-      {!loading && icon ? <Icon name={icon} size={size === 'small' ? 15 : 17} tint={ink} /> : null}
+      {!loading && icon ? (
+        <Icon name={icon} size={iconSize ?? (size === 'small' ? 15 : 17)} tint={ink} />
+      ) : null}
       {title !== undefined ? (
         <Text variant={size === 'small' ? 'callout' : 'headline'} style={{ color: ink }}>
           {title}

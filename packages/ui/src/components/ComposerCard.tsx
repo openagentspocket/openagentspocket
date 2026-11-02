@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react';
-import { Pressable, TextInput, View } from 'react-native';
+import { Platform, Pressable, TextInput, View } from 'react-native';
 import { composerAction } from '../composer/Composer';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { Icon, type IconName } from '../primitives/Icon';
@@ -39,6 +39,7 @@ const useStyles = makeStyles((t) => ({
   spacer: { flex: 1 },
   input: {
     flex: 1,
+    minWidth: 0,
     color: t.colors.textPrimary,
     fontSize: 17,
     lineHeight: 22,
@@ -47,6 +48,7 @@ const useStyles = makeStyles((t) => ({
     minHeight: CIRCLE,
     textAlignVertical: 'center',
   },
+  inputOneLine: { height: CIRCLE, paddingVertical: 0, lineHeight: 22, width: 0, flexBasis: 0 },
   inputStack: { paddingHorizontal: t.spacing.xs },
   skills: { paddingHorizontal: t.spacing.sm, paddingTop: t.spacing.sm },
   skillsHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
@@ -56,7 +58,17 @@ const useStyles = makeStyles((t) => ({
     borderBottomColor: t.colors.separator,
     gap: 2,
   },
-  skillLast: { borderBottomWidth: 0 },
+  badge: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: t.colors.surfaceRaised,
+  },
   close: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
 }));
 
@@ -83,6 +95,8 @@ export interface ComposerCardProps {
   onSkill?: (name: string) => void;
   /** Forces the stacked layout; otherwise it grows once the draft has a line break or is long. */
   expanded?: boolean;
+  /** The corner glyph on the agent circle: the surface the Agent is on (chat or keyboard). */
+  surfaceIcon?: IconName;
   placeholder?: string;
   disabled?: boolean;
   labels?: AgentBarLabels;
@@ -136,6 +150,7 @@ export function ComposerCard({
   skills,
   onSkill,
   expanded,
+  surfaceIcon = 'note',
   placeholder,
   disabled = false,
   labels = defaultAgentBarLabels,
@@ -161,8 +176,8 @@ export function ComposerCard({
       selectionColor={theme.colors.accent}
       keyboardAppearance={theme.appearance}
       editable={!disabled}
-      multiline
-      style={[styles.input, stacked && styles.inputStack]}
+      multiline={stacked || Platform.OS !== 'web'}
+      style={[styles.input, stacked ? styles.inputStack : styles.inputOneLine]}
       accessibilityLabel={hint}
       testID={`${testID}-input`}
     />
@@ -191,6 +206,14 @@ export function ComposerCard({
         <Icon name="send" size={18} color="canvas" />
       </Pressable>
     );
+  const leadingMark = leading ? (
+    <View style={styles.circle}>
+      {leading}
+      <View style={styles.badge} testID={`${testID}-surface-badge`}>
+        <Icon name={surfaceIcon} size={10} color="textPrimary" />
+      </View>
+    </View>
+  ) : null;
   const plus = (
     <Circle
       icon="add"
@@ -224,13 +247,13 @@ export function ComposerCard({
               onPress={() => onSkill?.(skill.name)}
               accessibilityRole="button"
               accessibilityLabel={`${skill.name}. ${skill.description}`}
-              style={[styles.skill, index === skills.length - 1 && styles.skillLast]}
+              style={styles.skill}
               testID={`${testID}-skill-${skill.name}`}
             >
               <Text variant="body" monospaced>
                 {skill.name}
               </Text>
-              <Text variant="footnote" tone="secondary">
+              <Text variant="caption" tone="secondary" numberOfLines={1}>
                 {skill.description}
               </Text>
             </Pressable>
@@ -242,7 +265,7 @@ export function ComposerCard({
           {input}
           <View style={styles.buttons}>
             {plus}
-            {leading ? <View style={styles.circle}>{leading}</View> : null}
+            {leadingMark}
             {moreMenu?.length ? (
               <Circle
                 icon="more"
@@ -258,7 +281,7 @@ export function ComposerCard({
       ) : (
         <View style={styles.oneLine}>
           {plus}
-          {leading ? <View style={styles.circle}>{leading}</View> : null}
+          {leadingMark}
           {input}
           {trailing}
         </View>

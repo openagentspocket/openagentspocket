@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { StatusDot } from '../primitives/StatusDot';
 import { Text } from '../primitives/Text';
@@ -9,27 +9,29 @@ import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 
 /** Under this width the latency is dropped so the branch name keeps fitting. */
-const COMPACT_WIDTH = 340;
+const COMPACT_WIDTH = 300;
 
 const useStyles = makeStyles((t) => ({
   line: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: t.spacing.xxs,
+    gap: t.spacing.xxs + 1,
     marginHorizontal: t.spacing.sm,
-    minHeight: 28,
+    minHeight: 32,
   },
   group: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
   branch: { flexShrink: 1, minWidth: 0 },
   fixed: { flexShrink: 0 },
-  spacer: { flex: 1 },
-  pill: { borderRadius: 999, paddingHorizontal: airy.stack, paddingVertical: 2 },
+  spacer: { flex: 1, minWidth: 4 },
+  sep: { width: StyleSheet.hairlineWidth * 2, height: 16, backgroundColor: t.colors.separator },
+  pillRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  pill: { borderRadius: 999, paddingHorizontal: airy.stack, paddingVertical: 2, flexShrink: 0 },
 }));
 
 export interface StatusLineProps {
   status?: Status;
   branch?: string;
-  counts?: { behind?: number; ahead?: number; changed?: number };
+  counts?: { behind?: number; ahead?: number; untracked?: number; changed?: number };
   diff?: { added: number; removed: number };
   /** Percent of context left; shown as an amber pill under 20. */
   contextLeft?: number;
@@ -59,7 +61,9 @@ export function StatusLine({
   const styles = useStyles();
   const theme = useTheme();
   const [width, setWidth] = useState(Number.POSITIVE_INFINITY);
-  const hasCounts = Boolean(counts && (counts.behind || counts.ahead || counts.changed));
+  const hasCounts = Boolean(
+    counts && (counts.behind || counts.ahead || counts.untracked || counts.changed),
+  );
   if (
     !status &&
     !branch &&
@@ -74,7 +78,7 @@ export function StatusLine({
     latencyMs === undefined || width < COMPACT_WIDTH
       ? null
       : latencyMs < 1
-        ? '< 1 ms'
+        ? '<1 ms'
         : `${Math.round(latencyMs)} ms`;
   const summary = [
     status ? statusWord(status, labels) : null,
@@ -86,6 +90,7 @@ export function StatusLine({
   const countText = [
     counts?.behind ? `↓${counts.behind}` : null,
     counts?.ahead ? `↑${counts.ahead}` : null,
+    counts?.untracked ? `?${counts.untracked}` : null,
     counts?.changed ? `!${counts.changed}` : null,
   ]
     .filter(Boolean)
@@ -103,17 +108,18 @@ export function StatusLine({
     >
       {status ? (
         <View style={styles.group}>
-          <StatusDot status={status} size={airy.statusLineDot} />
-          <Text variant="caption" semibold style={{ color: theme.status(status) }}>
+          <StatusDot status={status} size={airy.statusLineDot + 2} />
+          <Text variant="subheadline" semibold style={{ color: theme.status(status) }}>
             {statusWord(status, labels)}
           </Text>
         </View>
       ) : null}
+      {status && branch ? <View style={styles.sep} /> : null}
       {branch ? (
         <View style={[styles.group, styles.branch]}>
-          <Icon name="branch" size={12} tint={theme.colors.info} />
+          <Icon name="branch" size={15} tint={theme.colors.info} />
           <Text
-            variant="caption2"
+            variant="footnote"
             monospaced
             semibold
             numberOfLines={1}
@@ -125,8 +131,9 @@ export function StatusLine({
       ) : null}
       {hasCounts ? (
         <Text
-          variant="caption2"
+          variant="caption"
           monospaced
+          semibold
           tone="secondary"
           tabularNums
           numberOfLines={1}
@@ -138,24 +145,28 @@ export function StatusLine({
       <View style={styles.spacer} />
       {lowContext ? (
         <View style={[styles.pill, { backgroundColor: theme.wash(theme.colors.warning) }]}>
-          <Text variant="caption2" semibold tone="warning">
-            {labels.contextLeft(contextLeft)}
-          </Text>
+          <View style={styles.pillRow}>
+            <Icon name="warning" size={13} tint={theme.colors.warning} />
+            <Text variant="footnote" semibold tone="warning" numberOfLines={1}>
+              {labels.contextLeft(contextLeft)}
+            </Text>
+          </View>
         </View>
       ) : null}
       {diff ? (
         <View style={styles.group}>
-          <Text variant="caption2" monospaced tone="success" tabularNums>
+          <Text variant="caption" monospaced semibold tone="success" tabularNums>
             {`+${diff.added}`}
           </Text>
-          <Text variant="caption2" monospaced tone="danger" tabularNums>
+          <Text variant="caption" monospaced semibold tone="danger" tabularNums>
             {`−${diff.removed}`}
           </Text>
         </View>
       ) : null}
+      {latency && (diff || lowContext) ? <View style={styles.sep} /> : null}
       {latency ? (
         <Text
-          variant="caption2"
+          variant="caption"
           monospaced
           tone="secondary"
           tabularNums

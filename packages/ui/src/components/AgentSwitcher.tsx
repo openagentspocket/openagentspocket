@@ -10,29 +10,32 @@ import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 
+/** How much of the previous Agent stays visible left of the current pill. */
+const NEIGHBOUR_PEEK = 34;
+
 const useStyles = makeStyles((t) => ({
-  capsule: { marginHorizontal: t.spacing.sm, height: t.metrics.minTapSize, overflow: 'hidden' },
+  capsule: { marginHorizontal: t.spacing.sm, height: 52, overflow: 'hidden' },
   scroll: { flex: 1 },
   content: { alignItems: 'center', paddingHorizontal: t.spacing.xxs, gap: t.spacing.xxs },
   chip: {
-    height: 34,
-    paddingHorizontal: t.spacing.sm,
+    height: 40,
+    paddingHorizontal: t.spacing.xs,
     borderRadius: 999,
     justifyContent: 'center',
-    maxWidth: 160,
+    flexShrink: 0,
   },
-  neighbour: { opacity: 0.55 },
+  neighbour: { opacity: 0.7, flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.xs,
     backgroundColor: t.colors.control,
     borderRadius: 999,
-    height: 34,
-    paddingHorizontal: airy.card,
+    height: 40,
+    paddingHorizontal: airy.stack + 4,
   },
   trailing: { flexDirection: 'row', alignItems: 'center', paddingRight: t.spacing.xxs },
-  toggle: { width: 38, height: 38, alignItems: 'center', justifyContent: 'center' },
+  toggle: { width: 40, height: 44, alignItems: 'center', justifyContent: 'center' },
 }));
 
 export interface SwitcherAgent {
@@ -73,9 +76,13 @@ export function AgentSwitcher({
   const theme = useTheme();
   const scroll = useRef<ScrollViewInstance>(null);
   const viewport = useRef(0);
-  const centre = (x: number, width: number) => {
+  const currentBox = useRef<{ x: number; width: number } | null>(null);
+  /** Centres the current pill once both its box and the viewport are measured. */
+  const centre = () => {
+    const box = currentBox.current;
+    if (!box || viewport.current === 0) return;
     scroll.current?.scrollTo({
-      x: Math.max(0, x - (viewport.current - width) / 2),
+      x: Math.max(0, box.x - NEIGHBOUR_PEEK, box.x + box.width - viewport.current),
       animated: false,
     });
   };
@@ -89,6 +96,7 @@ export function AgentSwitcher({
         contentContainerStyle={styles.content}
         onLayout={(event) => {
           viewport.current = event.nativeEvent.layout.width;
+          centre();
         }}
         accessibilityLabel={labels.switcher}
       >
@@ -98,7 +106,9 @@ export function AgentSwitcher({
             <Pressable
               key={agent.id}
               onLayout={(event) => {
-                if (current) centre(event.nativeEvent.layout.x, event.nativeEvent.layout.width);
+                if (!current) return;
+                currentBox.current = event.nativeEvent.layout;
+                centre();
               }}
               onPress={() => {
                 if (current) return;
@@ -111,16 +121,14 @@ export function AgentSwitcher({
               testID={`${testID}-${agent.id}`}
               style={current ? styles.pill : [styles.chip, styles.neighbour]}
             >
-              {current ? (
-                <ProgramMark
-                  program={agent.program}
-                  status={agent.status}
-                  size={20}
-                  surface="control"
-                />
-              ) : null}
+              <ProgramMark
+                program={agent.program}
+                status={agent.status}
+                size={26}
+                surface={current ? 'control' : 'surfaceRaised'}
+              />
               <Text
-                variant="subheadline"
+                variant="body"
                 semibold={current}
                 numberOfLines={1}
                 tone={current ? 'primary' : 'secondary'}
@@ -144,7 +152,7 @@ export function AgentSwitcher({
           >
             <Icon
               name={item.icon}
-              size={18}
+              size={24}
               tint={item.active ? theme.colors.accent : theme.colors.textPrimary}
             />
           </Pressable>

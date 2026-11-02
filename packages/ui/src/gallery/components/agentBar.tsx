@@ -27,8 +27,8 @@ const addMenu: readonly ActionMenuItem[] = [
 ];
 
 const agents = [
-  { id: 'a', title: 'iOS App', program: 'codex', status: 'working' },
-  { id: 'b', title: 'Product Docs', program: 'claude', status: 'idle' },
+  { id: 'a', title: 'Payments API', program: 'codex', status: 'working' },
+  { id: 'b', title: 'iOS App · Codex', program: 'codex', status: 'idle' },
   { id: 'c', title: 'api', program: 'codex', status: 'done' },
 ] as const;
 
@@ -94,13 +94,26 @@ const file = (name: string) => (
   />
 );
 
-const inset = { paddingHorizontal: 16 } as const;
+const inset = { paddingHorizontal: 0 } as const;
 
 /** Demos of the UX3 group 'agentBar'. */
 export const agentBarEntries: readonly CatalogEntry[] = [
   {
     name: 'AgentHeader',
-    variants: [{ id: 'default', render: () => <AgentHeader onSidebar={noop} menu={menu} /> }],
+    variants: [
+      {
+        id: 'default',
+        render: () => (
+          <AgentHeader
+            onSidebar={noop}
+            menu={menu}
+            eyebrow="Studio Mac · Claude Code"
+            title="Checkout flow review"
+            subtitle="storefront · checkout:p3"
+          />
+        ),
+      },
+    ],
   },
   {
     name: 'AgentSwitcher',
@@ -185,9 +198,9 @@ export const agentBarEntries: readonly CatalogEntry[] = [
           <StatusLine
             status="idle"
             branch="attach-polish"
-            counts={{ behind: 1, ahead: 3 }}
+            counts={{ untracked: 1, changed: 1 }}
             contextLeft={16}
-            latencyMs={42}
+            latencyMs={0.4}
           />
         ),
       },

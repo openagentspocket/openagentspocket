@@ -11,6 +11,8 @@ import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 
 const DRAWER_WIDTH = 330;
+/** Left padding of a tab row: its icon sits under the Workspace title, not the chevron. */
+const ROW_INDENT = 30;
 
 const useStyles = makeStyles((t) => ({
   scrim: { flex: 1, flexDirection: 'row', backgroundColor: t.backdrop },
@@ -87,13 +89,13 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: 7,
     paddingVertical: 1,
   },
-  group: { paddingTop: t.spacing.xs },
+  group: { paddingTop: t.spacing.xxs },
   groupHead: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.xs,
     paddingHorizontal: t.spacing.md,
-    minHeight: t.metrics.minTapSize,
+    height: 48,
   },
   groupTitle: { flex: 1 },
   branch: {
@@ -108,8 +110,9 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     gap: t.spacing.xs,
     marginHorizontal: airy.stack,
-    paddingHorizontal: t.spacing.sm,
-    minHeight: t.metrics.rowMinHeight,
+    paddingLeft: ROW_INDENT,
+    paddingRight: t.spacing.sm,
+    height: 50,
     borderRadius: t.metrics.cardRadius + 4,
   },
   rowTitle: { flex: 1 },

@@ -28,6 +28,15 @@ describe('AgentHeader', () => {
     expect(onSidebar).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId('agent-header-right')).toBeTruthy();
   });
+
+  it('draws the mid-bar identity only when given', async () => {
+    await renderThemed(
+      <AgentHeader onSidebar={jest.fn()} menu={[]} eyebrow="Mac" title="Review" subtitle="web" />,
+    );
+    expect(screen.getByText('MAC')).toBeTruthy();
+    expect(screen.getByText('Review')).toBeTruthy();
+    expect(screen.getByText('web')).toBeTruthy();
+  });
 });
 
 describe('AgentSwitcher', () => {

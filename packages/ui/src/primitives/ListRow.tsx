@@ -17,6 +17,7 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: airy.rowInset,
   },
   pressed: { backgroundColor: t.colors.surfaceRaised },
+  selected: { backgroundColor: t.colors.control },
   disabled: { opacity: 0.4 },
   text: { flex: 1, gap: 2 },
   trailing: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexShrink: 0 },
@@ -29,6 +30,10 @@ export interface ListRowProps {
   leading?: ReactNode;
   /** A settings-style leading symbol: 22 pt, tinted secondary. */
   icon?: IconName;
+  /** Sets the subtitle in monospaced caption (dates, sizes, paths). */
+  subtitleMono?: boolean;
+  /** Lines the subtitle may take before it truncates (2 by default). */
+  subtitleLines?: number;
   /** A short value in secondary text before the trailing slot ("Índigo", "3 hosts"). */
   value?: string;
   /** A badge, a switch, a copy button. */
@@ -45,6 +50,8 @@ export interface ListRowProps {
   leadingSwipeActions?: readonly SwipeAction[];
   /** Full swipe runs the first action of the edge. */
   fullSwipe?: { leading?: boolean; trailing?: boolean };
+  /** The row shown in the detail column: filled with the control surface. */
+  selected?: boolean;
   disabled?: boolean;
   /** Overrides the spoken label (title, subtitle and value by default). */
   accessibilityLabel?: string;
@@ -59,6 +66,8 @@ export interface ListRowProps {
 export function ListRow({
   title,
   subtitle,
+  subtitleMono = false,
+  subtitleLines = 2,
   leading,
   icon,
   value,
@@ -70,6 +79,7 @@ export function ListRow({
   swipeActions,
   leadingSwipeActions,
   fullSwipe,
+  selected = false,
   disabled = false,
   accessibilityLabel,
   accessibilityHint,
@@ -94,11 +104,12 @@ export function ListRow({
       accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={spoken}
       accessibilityHint={accessibilityHint}
-      accessibilityState={{ disabled }}
+      accessibilityState={{ disabled, selected }}
       accessibilityActions={extra.map((action) => ({ name: action.key, label: action.title }))}
       onAccessibilityAction={onAccessibilityAction}
       style={({ pressed }) => [
         styles.row,
+        selected && styles.selected,
         pressed && (onPress || menu?.length) ? styles.pressed : null,
         disabled && styles.disabled,
       ]}
@@ -108,7 +119,12 @@ export function ListRow({
       <View style={styles.text}>
         <Text numberOfLines={1}>{title}</Text>
         {subtitle ? (
-          <Text variant="footnote" tone="secondary" numberOfLines={2}>
+          <Text
+            variant={subtitleMono ? 'caption' : 'footnote'}
+            monospaced={subtitleMono}
+            tone="secondary"
+            numberOfLines={subtitleLines}
+          >
             {subtitle}
           </Text>
         ) : null}

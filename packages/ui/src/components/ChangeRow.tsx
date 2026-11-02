@@ -25,6 +25,9 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: airy.stack,
   },
   name: { flexShrink: 1 },
+  commitLine: { gap: 6 },
+  title: { flexShrink: 1, minWidth: 0 },
+  age: { flexShrink: 0 },
   kind: { width: 14, textAlign: 'center' },
   rule: {
     height: t.metrics.hairlineWidth,
@@ -136,12 +139,12 @@ export function ChangeRow({
           </View>
         ) : null}
         {summary.lastCommit ? (
-          <View style={styles.line}>
+          <View style={[styles.line, styles.commitLine]}>
             <Icon name="info" size={14} />
-            <Text variant="subheadline" numberOfLines={1} style={styles.name}>
+            <Text variant="subheadline" numberOfLines={1} style={styles.title}>
               {summary.lastCommit.subject}
             </Text>
-            <Text variant="subheadline" tone="secondary" numberOfLines={1} style={styles.fixed}>
+            <Text variant="caption" tone="secondary" numberOfLines={1} style={styles.age}>
               {`· ${summary.lastCommit.age}`}
             </Text>
           </View>
