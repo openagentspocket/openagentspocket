@@ -33,7 +33,7 @@ describe('HomeScreen', () => {
 
   it('shows a status age on each inbox card', async () => {
     await renderHome();
-    await waitFor(() => expect(screen.getByTestId('age-p1')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('inbox-p1-age')).toBeTruthy());
   });
 
   it('opens the Agent when its card is tapped', async () => {
@@ -61,6 +61,14 @@ describe('HomeScreen', () => {
       expect(spanish).not.toBe(translate('en', 'app', key));
       expect(screen.getByText(spanish)).toBeTruthy();
     }
+  });
+
+  it('opens the + menu with New Agent, New Terminal and Add Host', async () => {
+    const onNewAgent = jest.fn();
+    await renderHome({ onNewAgent });
+    fireEvent.press(await screen.findByTestId('fab'));
+    fireEvent.press(await screen.findByText(translate('en', 'app', 'New Agent')));
+    await waitFor(() => expect(onNewAgent).toHaveBeenCalledTimes(1));
   });
 
   it('leads a first run with no Hosts to adding one', async () => {

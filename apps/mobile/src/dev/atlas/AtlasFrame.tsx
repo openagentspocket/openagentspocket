@@ -12,10 +12,11 @@ import { ConsoleStore } from '@/console/store';
 import { systemClock } from '@/console/systemClock';
 import { createDemoRuntime, setHostsRuntime } from '@/features/hosts/hostsRuntime';
 import { freezeAtlasClock } from './atlasClock';
+import { offlineHostsStore } from './offlineHosts';
 
 export interface AtlasData {
   /** `empty`: no Hosts at all (first run). Default `demo`: the scripted Hosts and Agents. */
-  console?: 'demo' | 'empty';
+  console?: 'demo' | 'empty' | 'offline';
   hosts?: 'demo' | 'empty';
 }
 
@@ -56,7 +57,12 @@ export function AtlasFrame({ data, children }: { data: AtlasData; children: Reac
   freezeAtlasClock();
   const [ready, setReady] = useState(false);
   const store = useMemo(
-    () => (data.console === 'empty' ? emptyConsoleStore() : createDemoConsoleStore()),
+    () =>
+      data.console === 'empty'
+        ? emptyConsoleStore()
+        : data.console === 'offline'
+          ? offlineHostsStore()
+          : createDemoConsoleStore(),
     [data.console],
   );
   useEffect(() => {

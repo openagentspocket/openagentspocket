@@ -1,112 +1,120 @@
-import { rowKey, type StatusInboxItem } from '@openagentspocket/core';
-import { type AppKey, t } from '@openagentspocket/i18n';
-import {
-  Button,
-  EmptyState,
-  Screen,
-  SectionHeader,
-  SkeletonRows,
-  type Status,
-  Text,
-} from '@openagentspocket/ui';
-import { Fragment, useMemo } from 'react';
-import { useConsoleState, useStatusInbox } from '../console/hooks';
-import { useEntryMenus } from '../navigation/entryMenus';
-import { HostCard } from './HostCard';
-import { type HomeInboxSection, homeContent } from './homeModel';
-import { InboxCard } from './InboxCard';
+import type { ConsoleRow } from '@openagentspocket/core';
+import { t } from '@openagentspocket/i18n';
+import { airy, HostIssueRow, makeStyles, ScreenBackground } from '@openagentspocket/ui';
+import { useMemo } from 'react';
+import { ScrollView, useWindowDimensions, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useConsoleState, useConsoleStore, useStatusInbox } from '../console/hooks';
+import { useHosts } from '../features/hosts/useHosts';
+import { HomeTitle, NewStrip, NoHosts } from './HomeChrome';
+import { HomeHosts } from './HomeHosts';
+import { HomeInbox } from './HomeInbox';
+import { HomeSessions } from './HomeSessions';
+import { homeLabels } from './homeLabels';
+import { homeContent } from './homeModel';
+import { useUsageRing } from './UsageRingSlot';
+import { useHomeActions } from './useHomeActions';
 
-const TITLES = {
-  needsYou: { title: 'Needs you', status: 'blocked' },
-  working: { title: 'Working', status: 'working' },
-  doneRecent: { title: 'Done', status: 'done' },
-} as const satisfies Record<HomeInboxSection['section'], { title: AppKey; status: Status }>;
+const WIDE = 600;
+
+const useStyles = makeStyles((th) => ({
+  root: { flex: 1 },
+  fill: { flex: 1 },
+  content: { gap: airy.sectionGap },
+  body: { paddingHorizontal: th.metrics.screenInset, paddingBottom: th.spacing.md },
+}));
 
 export interface HomeScreenProps {
   /** Opens the Agent's detail; unset until the detail route exists. */
-  onOpenAgent?: (item: StatusInboxItem) => void;
+  onOpenAgent?: (row: ConsoleRow) => void;
   onOpenHost?: (hostId: string) => void;
   /** Leads to adding a Host (the Hosts screen). */
   onAddHost?: () => void;
+  onSetupGuide?: () => void;
   /** Opens the full Agents list. */
   onSeeAll?: () => void;
+  onOpenSettings?: () => void;
+  onNewAgent?: () => void;
+  onNewTerminal?: () => void;
 }
 
-/** The launcher Home: the Status Inbox (Needs you, Working, Done), idle count and Host cards. */
-export function HomeScreen({ onOpenAgent, onOpenHost, onAddHost, onSeeAll }: HomeScreenProps) {
+/** The launcher Home: title capsule, Status Inbox, Sessions strip, Host cards and the + button. */
+export function HomeScreen(props: HomeScreenProps) {
+  const { onOpenAgent, onOpenHost, onAddHost, onSetupGuide, onSeeAll } = props;
+  const styles = useStyles();
   const { hosts, rows } = useConsoleState();
+  const store = useConsoleStore();
   const inbox = useStatusInbox();
   const content = useMemo(() => homeContent(inbox, hosts), [inbox, hosts]);
-  const now = Date.now();
-  const menus = useEntryMenus();
+  const actions = useHomeActions();
+  const usage = useUsageRing();
+  const columns = useWindowDimensions().width >= WIDE ? 2 : 1;
+  const saved = useHosts().hosts;
 
-  if (hosts.length === 0) {
-    return (
-      <Screen testID="home-empty">
-        <EmptyState
-          icon="server"
-          title={t('No Hosts')}
-          message={t('Add a Host to start an Agent and view its live terminal.')}
-          actions={
-            <Button
-              icon="add"
-              title={t('Add Host')}
-              onPress={() => onAddHost?.()}
-              testID="home-add-host"
-            />
-          }
-        />
-      </Screen>
-    );
-  }
-
+  const issues = content.offlineHosts.map((host) => ({
+    hostName: host.name || t('Offline'),
+    kind: 'offline' as const,
+  }));
+  const newMenu = [
+    { key: 'new-agent', title: t('New Agent'), icon: 'add', onPress: () => props.onNewAgent?.() },
+    {
+      key: 'new-terminal',
+      title: t('New Terminal'),
+      icon: 'terminal',
+      onPress: () => props.onNewTerminal?.(),
+    },
+    { key: 'add-host', title: t('Add Host'), icon: 'server', onPress: () => onAddHost?.() },
+  ] as const;
+  const empty = hosts.length === 0;
   return (
-    <Screen testID="home">
-      {content.offlineHosts.map((host) => (
-        <Text key={host.id} variant="callout" tone="secondary" testID={`offline-${host.id}`}>
-          {host.name === '' ? t('Offline') : `${host.name}: ${t('Offline')}`}
-        </Text>
-      ))}
-      {content.isLoading && content.isQuiet ? (
-        <SkeletonRows rows={2} accessibilityLabel={t('Loading Agents…')} />
-      ) : content.isQuiet ? (
-        <Text variant="body" tone="secondary" testID="home-quiet">
-          {t('All quiet. Nothing needs you.')}
-        </Text>
+    <SafeAreaView
+      style={styles.root}
+      edges={['top', 'left', 'right', 'bottom']}
+      testID={empty ? 'home-empty' : 'home'}
+    >
+      <ScreenBackground />
+      {empty ? (
+        <>
+          <HomeTitle usage={usage} onOpenSettings={props.onOpenSettings} />
+          <NoHosts onAddHost={onAddHost} onSetupGuide={onSetupGuide} />
+        </>
       ) : (
-        content.sections.map(({ section, items, total }) => (
-          <Fragment key={section}>
-            <SectionHeader
-              title={t(TITLES[section].title)}
-              status={TITLES[section].status}
-              count={total}
-              action={
-                total > items.length && onSeeAll
-                  ? { title: t('See all'), onPress: onSeeAll }
-                  : undefined
-              }
+        <ScrollView style={styles.fill} testID="home-scroll" contentContainerStyle={styles.content}>
+          <HomeTitle usage={usage} onOpenSettings={props.onOpenSettings} />
+          <HostIssueRow
+            issues={issues}
+            labels={homeLabels()}
+            onOpen={(issue) => {
+              const host = hosts.find((h) => h.name === issue?.hostName);
+              if (host) onOpenHost?.(host.id);
+            }}
+          />
+          <View style={styles.body}>
+            <HomeInbox
+              content={content}
+              now={Date.now()}
+              columns={columns}
+              isPinned={(item) => store.isPinned(item.row.hostId, item.row.agent.pane_id)}
+              onOpen={onOpenAgent ? (item) => onOpenAgent(item.row) : undefined}
+              onPin={actions.pin}
+              onClose={actions.close}
+              onSeeAll={onSeeAll}
             />
-            {items.map((item) => (
-              <InboxCard key={rowKey(item.row)} item={item} now={now} onOpen={onOpenAgent} />
-            ))}
-          </Fragment>
-        ))
+          </View>
+          <HomeSessions rows={rows} onOpen={(row) => onOpenAgent?.(row)} onSeeAll={onSeeAll} />
+          <View style={styles.body}>
+            <HomeHosts
+              hosts={hosts}
+              rows={rows}
+              saved={saved}
+              columns={columns}
+              onOpen={onOpenHost}
+            />
+          </View>
+        </ScrollView>
       )}
-      {content.idleCount > 0 ? (
-        <Text variant="footnote" tone="secondary" testID="home-idle">
-          {t('%lld idle', content.idleCount)}
-        </Text>
-      ) : null}
-      <SectionHeader title={t('Hosts')} />
-      {hosts.map((host) => (
-        <HostCard
-          key={host.id}
-          host={host}
-          agentCount={rows.filter((row) => row.hostId === host.id).length}
-          onOpen={(id) => onOpenHost?.(id)}
-          menu={menus.host(host)}
-        />
-      ))}
-    </Screen>
+      {empty ? null : <NewStrip items={newMenu} />}
+      {usage.sheet}
+    </SafeAreaView>
   );
 }

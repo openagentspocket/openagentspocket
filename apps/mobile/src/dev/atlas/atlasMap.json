@@ -1,6 +1,14 @@
 [
-  { "id": "shell.home", "rn": "app/index.tsx (HomeScreen)", "note": "demo console, 4 agents" },
-  { "id": "console.no-hosts-empty", "rn": "app/index.tsx (HomeScreen)", "note": "empty console" },
+  {
+    "id": "shell.home",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "demo console, 4 agents"
+  },
+  {
+    "id": "console.no-hosts-empty",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "empty console"
+  },
   {
     "id": "console.agents-list-flat",
     "rn": "app/agents.tsx (AgentsScreen)",
@@ -11,7 +19,11 @@
     "rn": "app/new-agent.tsx (NewAgentScreen)",
     "note": "demo services"
   },
-  { "id": "hosts.list", "rn": "app/hosts/index.tsx (HostListScreen)", "note": "two demo hosts" },
+  {
+    "id": "hosts.list",
+    "rn": "app/hosts/index.tsx (HostListScreen)",
+    "note": "two demo hosts"
+  },
   {
     "id": "hosts.form",
     "rn": "app/hosts/form.tsx (HostFormScreen)",
@@ -27,19 +39,51 @@
     "rn": "app/hosts/pair.tsx (PairingScreen)",
     "note": "web: no camera"
   },
-  { "id": "settings.root", "rn": "app/settings (SettingsScreen)", "note": "" },
-  { "id": "settings.notifications", "rn": "NotificationSettingsScreen", "note": "demo services" },
-  { "id": "settings.notification-privacy", "rn": "NotificationPrivacyScreen", "note": "" },
-  { "id": "settings.acknowledgements", "rn": "LicenseNoticeScreen", "note": "list of notices" },
-  { "id": "usage.tab", "rn": "app/usage.tsx (UsageScreen)", "note": "demo readings" },
+  {
+    "id": "settings.root",
+    "rn": "app/settings (SettingsScreen)",
+    "note": ""
+  },
+  {
+    "id": "settings.notifications",
+    "rn": "NotificationSettingsScreen",
+    "note": "demo services"
+  },
+  {
+    "id": "settings.notification-privacy",
+    "rn": "NotificationPrivacyScreen",
+    "note": ""
+  },
+  {
+    "id": "settings.acknowledgements",
+    "rn": "LicenseNoticeScreen",
+    "note": "list of notices"
+  },
+  {
+    "id": "usage.tab",
+    "rn": "app/usage.tsx (UsageScreen)",
+    "note": "demo readings"
+  },
   {
     "id": "usage.limits-page",
     "rn": "app/usage-limits.tsx (LimitsScreen)",
     "note": "demo readings"
   },
-  { "id": "files.browser", "rn": "app/files.tsx (FilesScreen)", "note": "demo host files" },
-  { "id": "browser.ports", "rn": "app/ports (PortsScreen)", "note": "demo ports" },
-  { "id": "changes.list", "rn": "app/changes (ChangesScreen)", "note": "demo checkout" },
+  {
+    "id": "files.browser",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "demo host files"
+  },
+  {
+    "id": "browser.ports",
+    "rn": "app/ports (PortsScreen)",
+    "note": "demo ports"
+  },
+  {
+    "id": "changes.list",
+    "rn": "app/changes (ChangesScreen)",
+    "note": "demo checkout"
+  },
   {
     "id": "changes.file-diff",
     "rn": "app/changes/diff.tsx (FileDiffScreen)",
@@ -60,5 +104,34 @@
     "rn": "app/terminal.tsx (ShellTerminalScreen)",
     "note": "demo shell"
   },
-  { "id": "rn.board", "rn": "app/board.tsx (BoardScreen)", "note": "RN-only screen, no Swift id" }
+  {
+    "id": "rn.board",
+    "rn": "app/board.tsx (BoardScreen)",
+    "note": "RN-only screen, no Swift id"
+  },
+  {
+    "id": "shell.home-new-menu",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "FAB menu open"
+  },
+  {
+    "id": "console.row-context-menu",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "long-press on the Needs you card (web: synthetic mouse hold)"
+  },
+  {
+    "id": "console.close-confirmation",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "Close confirm alert opened directly (the swipe is not drivable on web)"
+  },
+  {
+    "id": "console.host-issue-rows",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "demo plus a Host that never connects"
+  },
+  {
+    "id": "usage.quick-sheet",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "ring pressed"
+  }
 ]
