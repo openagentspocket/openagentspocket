@@ -34,6 +34,8 @@ const ICONS = {
   terminal: { ios: 'terminal', android: 'terminal' },
   folder: { ios: 'folder', android: 'folder' },
   file: { ios: 'doc', android: 'description' },
+  camera: { ios: 'camera', android: 'photo_camera' },
+  torch: { ios: 'flashlight.on.fill', android: 'flashlight_on' },
   server: { ios: 'server.rack', android: 'dns' },
   model: { ios: 'cpu', android: 'memory' },
   clock: { ios: 'clock', android: 'schedule' },
