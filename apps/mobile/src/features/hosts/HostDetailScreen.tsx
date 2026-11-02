@@ -9,6 +9,7 @@ import {
   SheetBar,
 } from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
+import { HostUsageSection } from '@/usage/HostUsageSection';
 import { ChangedKeySection } from './ChangedKeySection';
 import { connectionTitle, HostFacts, RoutesSection, routeLine } from './HostInfoSections';
 import { hostsRuntime } from './hostsRuntime';
@@ -23,6 +24,7 @@ interface HostDetailScreenProps {
   onBack: () => void;
   onEdit: (hostId: string) => void;
   onRemoved: () => void;
+  onOpenUsage?: (hostId: string) => void;
   /** Opens with the plugin notice presented (atlas). */
   initiallyShowingPluginNotice?: boolean;
 }
@@ -40,6 +42,7 @@ export function HostDetailScreen({
   onBack,
   onEdit,
   onRemoved,
+  onOpenUsage,
   initiallyShowingPluginNotice = false,
 }: HostDetailScreenProps) {
   const snapshot = useHosts();
@@ -113,6 +116,10 @@ export function HostDetailScreen({
         report={state.report}
         running={state.running}
         onToggleRun={running ? cancel : () => void run()}
+      />
+      <HostUsageSection
+        hostId={hostId}
+        onOpenUsage={onOpenUsage ? () => onOpenUsage(hostId) : undefined}
       />
       {presentation.notice ? (
         <PluginNoticeSheet

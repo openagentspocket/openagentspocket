@@ -11,4 +11,5 @@ export const closeTerminalConfirmation = (): ConfirmOptions => ({
   cancelLabel: t('Cancel'),
   destructive: true,
   presentation: 'popover',
+  anchor: 'end',
 });

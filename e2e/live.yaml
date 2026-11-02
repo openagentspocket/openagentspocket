@@ -50,9 +50,9 @@ appId: com.openagentspocket.app
       text: "WORKING.*|NEEDS YOU.*|DONE.*"
     timeout: 20000
 - takeScreenshot: live-home
-# Home -> Agents (More menu) -> agent detail. Home lists no agent rows; the Agents list does.
-- tapOn: "More"
-- tapOn: "Agents"
+# Home -> Agents -> agent detail, through the footer's See all.
+- tapOn:
+    id: home-see-all
 - extendedWaitUntil:
     visible:
       id: "agent-row-.*"

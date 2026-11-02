@@ -56,6 +56,14 @@ const AGENTS: readonly {
     title: 'Lint cleanup',
     seq: 2,
   },
+  {
+    pane: 'p5',
+    program: 'claude',
+    status: 'idle',
+    workspace: 'scratch',
+    title: 'Scratch pad',
+    seq: 1,
+  },
 ];
 
 function demoSnapshot(): herdr.SessionSnapshot {

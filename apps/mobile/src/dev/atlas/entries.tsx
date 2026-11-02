@@ -1,5 +1,6 @@
 import type { ChatBannerLine } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
+import { confirm, Screen } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
@@ -28,21 +29,20 @@ import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
 import { NOTICES } from '@/settings/notices.generated';
 import { SettingsScreen } from '@/settings/SettingsScreen';
+import { HostUsageSection } from '@/usage/HostUsageSection';
+import { UsageBreakdownListScreen } from '@/usage/UsageBreakdownListScreen';
+import { UsageScreen } from '@/usage/UsageScreen';
+import type { AtlasScript } from './AtlasActions';
 import type { AtlasData } from './AtlasFrame';
-import {
-  AlertOver,
-  closeConfirmation,
-  closePanePopover,
-  ExplainerOpen,
-  removeAccountPopover,
-  TerminalStatusAtlas,
-} from './atlasOverlays';
+import { AlertOver, closePanePopover, ExplainerOpen, TerminalStatusAtlas } from './atlasOverlays';
+import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
 import { InAppBannerAtlas } from './InAppBannerAtlas';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
 export interface AtlasEntry {
   data?: AtlasData;
+  script?: AtlasScript;
   render: () => ReactNode;
 }
 
@@ -79,6 +79,21 @@ const settingsPage = (page: string): ReactNode => (
  */
 export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'shell.home': { render: () => <Index /> },
+  'shell.home-new-menu': { script: { press: ['fab'] }, render: () => <Index /> },
+  'console.row-context-menu': { script: { longPress: 'inbox-p2' }, render: () => <Index /> },
+  'console.close-confirmation': {
+    script: {
+      run: () =>
+        void confirm({
+          title: t('Close %@?', 'Migration'),
+          confirmLabel: t('Close'),
+          destructive: true,
+        }),
+    },
+    render: () => <Index />,
+  },
+  'console.host-issue-rows': { data: { console: 'offline' }, render: () => <Index /> },
+  'usage.quick-sheet': { script: { press: ['home-usage-ring'] }, render: () => <Index /> },
   'console.no-hosts-empty': { data: { console: 'empty', hosts: 'empty' }, render: () => <Index /> },
   'console.agents-list-flat': { render: () => <Agents /> },
   'console.start-agent': { render: () => titled(t('New Agent'), <NewAgentRoute />) },
@@ -120,7 +135,65 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'shell.app-lock': {
     render: () => <AppLockView kind="Face ID" locked message={null} onUnlock={noop} />,
   },
-  'usage.tab': { render: () => <Usage /> },
+  'usage.tab': { render: () => titled(t('Usage'), <Usage />) },
+  'usage.tab--host': {
+    render: () => titled(t('Usage'), <UsageScreen initial={{ host: 'demo' }} />),
+  },
+  'usage.scope-menu': { render: () => <UsageScreen initial={{ menu: true }} /> },
+  'usage.day-sheet': { render: () => <UsageScreen initial={{ day: 'latest' }} /> },
+  'usage.quick-sheet--limits-off': {
+    render: () => <UsageScreen initial={{ quick: true, limitsOff: true }} />,
+  },
+  'usage.accounts-sheet': { render: () => <UsageScreen initial={{ accounts: true }} /> },
+  'usage.accounts-notice': { render: () => <UsageScreen initial={{ host: 'demo' }} /> },
+  'usage.account-rename-alert': {
+    render: () => (
+      <UsageScreen
+        source={atlasUsageSource}
+        files={atlasAccountFiles()}
+        initial={{ host: 'demo', accounts: true, rename: '7f3c9a2e' }}
+      />
+    ),
+  },
+  'usage.account-remove-confirm': {
+    render: () => (
+      <UsageScreen
+        source={atlasUsageSource}
+        files={atlasAccountFiles()}
+        initial={{ host: 'demo', accounts: true, remove: '7f3c9a2e' }}
+      />
+    ),
+  },
+  'usage.host-section': {
+    render: () => (
+      <Screen testID="host-usage-screen">
+        <HostUsageSection hostId="demo" onOpenUsage={noop} />
+      </Screen>
+    ),
+  },
+  'usage.hosts-section': {
+    render: () => (
+      <UsageScreen source={atlasUsageSource} files={atlasAccountFiles()} wide={false} />
+    ),
+  },
+  'usage.ipad-split': {
+    render: () => <UsageScreen source={atlasUsageSource} files={atlasAccountFiles()} wide />,
+  },
+  'usage.wide-layout': {
+    render: () => (
+      <UsageScreen
+        source={atlasUsageSource}
+        files={atlasAccountFiles()}
+        initial={{ host: 'demo' }}
+        wide
+      />
+    ),
+  },
+  'usage.breakdown-list': { render: () => <UsageBreakdownListScreen /> },
+  'usage.breakdown-list--directories': {
+    render: () => <UsageBreakdownListScreen initial={{ kind: 'directories' }} />,
+  },
+  'usage.limits-sheet': { render: () => <UsageLimits /> },
   'usage.limits-page': { render: () => <UsageLimits /> },
   'files.browser': { render: () => <FilesRoute /> },
   'browser.ports': { render: () => <PortsRoute /> },
@@ -209,21 +282,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
       </AlertOver>
     ),
   },
-  'usage.account-remove-confirm': {
-    render: () => (
-      <AlertOver options={removeAccountPopover}>
-        <Usage />
-      </AlertOver>
-    ),
-  },
   'shell.notification-banner': { render: () => <InAppBannerAtlas /> },
-  'console.close-confirmation': {
-    render: () => (
-      <AlertOver options={closeConfirmation}>
-        <Agents />
-      </AlertOver>
-    ),
-  },
   'agent-detail.terminal-status-overlay': {
     render: () => bare(<TerminalStatusAtlas status={{ kind: 'connecting' }} />),
   },

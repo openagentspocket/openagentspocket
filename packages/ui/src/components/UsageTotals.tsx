@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { type ReactNode, useRef } from 'react';
+import { Pressable, View, type ViewInstance } from 'react-native';
+import type { MenuAnchor } from '../overlay/ActionMenu';
 import { Icon } from '../primitives/Icon';
 import { Segmented, type SegmentedOption } from '../primitives/Segmented';
 import { Text } from '../primitives/Text';
@@ -25,8 +26,9 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
   },
   flip: { transform: [{ rotate: '180deg' }] },
+  statusRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  status: { flexShrink: 1 },
   scope: {
-    alignSelf: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.xxs,
@@ -48,8 +50,10 @@ export interface UsageTotalsProps<M extends string = string, R extends string = 
   mode?: 'summary' | 'day';
   metric?: Segments<M>;
   range?: Segments<R>;
+  /** Small print at the leading end of the scope row ("Updated 01:12"). */
+  status?: string;
   /** The scope menu pill ("All Hosts"). */
-  scope?: { label: string; onPress: () => void };
+  scope?: { label: string; onPress: (anchor?: MenuAnchor) => void };
   /** Day mode: the date title and what it covers ("Token Usage on these 2 Hosts"). */
   title?: string;
   subtitle?: string;
@@ -109,6 +113,7 @@ export function UsageTotals<M extends string, R extends string>({
   metric,
   range,
   scope,
+  status,
   title,
   subtitle,
   caption,
@@ -118,6 +123,17 @@ export function UsageTotals<M extends string, R extends string>({
   testID = 'usage-totals',
 }: UsageTotalsProps<M, R>) {
   const styles = useStyles();
+  const pill = useRef<ViewInstance>(null);
+  const anchor = useRef<MenuAnchor | undefined>(undefined);
+  // The pill's window frame, kept for the menu that opens under it.
+  const measure = () =>
+    pill.current?.measureInWindow?.((x, y, width, height) => {
+      anchor.current = { x, y, width, height };
+    });
+  const openScope = () => {
+    measure();
+    scope?.onPress(anchor.current);
+  };
   const totals = (
     <View style={styles.totals}>
       {caption ? (
@@ -178,6 +194,29 @@ export function UsageTotals<M extends string, R extends string>({
   }
   return (
     <View style={styles.root} testID={testID}>
+      {scope || status ? (
+        <View style={styles.statusRow}>
+          <Text variant="footnote" tone="tertiary" style={styles.status} testID="usage-status">
+            {status}
+          </Text>
+          {scope ? (
+            <Pressable
+              ref={pill}
+              onLayout={measure}
+              onPress={openScope}
+              accessibilityRole="button"
+              accessibilityLabel={scope.label}
+              style={styles.scope}
+              testID="usage-scope"
+            >
+              <Text variant="footnote" semibold>
+                {scope.label}
+              </Text>
+              <Icon name="chevronUpDown" size={12} color="textSecondary" />
+            </Pressable>
+          ) : null}
+        </View>
+      ) : null}
       <View style={styles.controls}>
         {metric ? (
           <View style={styles.metric}>
@@ -190,20 +229,6 @@ export function UsageTotals<M extends string, R extends string>({
           </View>
         ) : null}
       </View>
-      {scope ? (
-        <Pressable
-          onPress={scope.onPress}
-          accessibilityRole="button"
-          accessibilityLabel={scope.label}
-          style={styles.scope}
-          testID="usage-scope"
-        >
-          <Text variant="footnote" semibold>
-            {scope.label}
-          </Text>
-          <Icon name="chevronUpDown" size={12} color="textSecondary" />
-        </Pressable>
-      ) : null}
       {totals}
     </View>
   );

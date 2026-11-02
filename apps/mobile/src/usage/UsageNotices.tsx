@@ -1,19 +1,25 @@
 import {
   exclusionText,
+  formatTokens,
   scopeDayNote,
   scopeRefreshing,
+  scopeTotal,
+  type UsageRange,
   type UsageScope,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Banner, ListRow, Section, Text } from '@openagentspocket/ui';
-import { renderMessage } from './usageText';
+import { localeTag, renderMessage, type UsageMetric } from './usageText';
 
 interface Props {
   scope: UsageScope;
+  range: UsageRange;
+  metric: UsageMetric;
 }
 
 /** Hosts left out and why, the days' time zone, and scan notes. */
-export function UsageNotices({ scope }: Props) {
+export function UsageNotices({ scope, range, metric }: Props) {
+  const unpriced = scopeTotal(scope, range).unpricedTokens;
   const dayNote = scopeDayNote(scope);
   // A truncated or partial scan must never read as complete: say what could not be read.
   const unreadable = scope.included.reduce(
@@ -55,6 +61,16 @@ export function UsageNotices({ scope }: Props) {
           }
           testID="usage-unreadable"
         />
+      ) : null}
+      {metric === 'cost' && unpriced > 0 ? (
+        <Text variant="footnote" tone="warning" testID="usage-unpriced">
+          {t('Includes unpriced tokens (%@)', formatTokens(unpriced, localeTag()))}
+        </Text>
+      ) : null}
+      {metric === 'cost' ? (
+        <Text variant="footnote" tone="tertiary">
+          {t('Estimated API cost is based on recorded Token Usage, not your subscription bill.')}
+        </Text>
       ) : null}
       {scopeRefreshing(scope) ? (
         <Text tone="secondary" variant="footnote">

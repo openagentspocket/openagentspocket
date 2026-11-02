@@ -18,6 +18,8 @@ interface BaseOptions {
   /** The cancel button's title; null for an informational alert with one button. Default "Cancel". */
   cancelLabel?: string | null;
   presentation?: ConfirmPresentation;
+  /** A popover's arrow: under its control at the trailing edge (`end`) or centered. Default center. */
+  anchor?: 'center' | 'end';
 }
 
 export interface ConfirmOptions extends BaseOptions {
@@ -36,6 +38,7 @@ export interface AlertRequest {
   actions: readonly ConfirmAction[];
   cancelLabel: string | null;
   presentation: ConfirmPresentation;
+  anchor?: 'center' | 'end';
   resolve: (key: string | null) => void;
 }
 
@@ -75,6 +78,7 @@ export async function confirm<K extends string>(
       actions: options.actions,
       cancelLabel,
       presentation: options.presentation ?? 'dialog',
+      anchor: options.anchor,
     });
     return key as K | null;
   }
@@ -86,6 +90,7 @@ export async function confirm<K extends string>(
     ],
     cancelLabel,
     presentation: options.presentation ?? 'alert',
+    anchor: options.anchor,
   });
   return key === 'confirm';
 }

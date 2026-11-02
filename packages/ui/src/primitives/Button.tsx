@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, type ViewStyle } from 'react-native';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
 import { Text } from './Text';
@@ -16,6 +16,7 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     gap: t.spacing.xs,
   },
+  tight: { paddingHorizontal: t.spacing.xxs },
   small: { minHeight: 32, paddingHorizontal: t.spacing.sm },
   iconOnly: { paddingHorizontal: 0, minWidth: t.metrics.minTapSize },
   iconOnlySmall: { minWidth: 32 },
@@ -28,9 +29,13 @@ const useStyles = makeStyles((t) => ({
   destructive: { backgroundColor: t.wash(t.colors.danger) },
   text: { paddingHorizontal: t.spacing.xs },
   capsule: { backgroundColor: t.colors.accentContainer, borderRadius: 999 },
+  pill: { borderRadius: 999 },
   pressed: { opacity: 0.75 },
   disabled: { opacity: 0.4 },
 }));
+
+/** Web only: the browser's blue focus ring is not part of the Swift look. */
+export const noFocusRing = (Platform.OS === 'web' ? { outlineStyle: 'none' } : {}) as ViewStyle;
 
 const inkFor = (kind: ButtonKind, t: Theme) =>
   ({
@@ -51,6 +56,10 @@ interface CommonProps {
   accessibilityHint?: string;
   /** Overrides the glyph size (toolbars draw glyphs near 60 percent of the control). */
   iconSize?: number;
+  /** Fully rounded ends (Swift capsule), whatever the kind. */
+  pill?: boolean;
+  /** Minimal side padding, for buttons that share a row (alert actions) so labels stay on one line. */
+  tight?: boolean;
   testID?: string;
 }
 
@@ -72,6 +81,8 @@ export function Button({
   accessibilityLabel,
   accessibilityHint,
   iconSize,
+  pill = false,
+  tight = false,
   testID,
 }: ButtonProps) {
   const styles = useStyles();
@@ -94,10 +105,13 @@ export function Button({
       hitSlop={size === 'small' ? 6 : 0}
       style={({ pressed }) => [
         styles.base,
+        noFocusRing,
         size === 'small' && styles.small,
         iconOnly && styles.iconOnly,
         iconOnly && size === 'small' && styles.iconOnlySmall,
         styles[kind],
+        tight && styles.tight,
+        pill && styles.pill,
         pressed && styles.pressed,
         disabled && styles.disabled,
       ]}
@@ -107,7 +121,11 @@ export function Button({
         <Icon name={icon} size={iconSize ?? (size === 'small' ? 15 : 17)} tint={ink} />
       ) : null}
       {title !== undefined ? (
-        <Text variant={size === 'small' ? 'callout' : 'headline'} style={{ color: ink }}>
+        <Text
+          variant={size === 'small' ? 'callout' : 'headline'}
+          style={{ color: ink }}
+          numberOfLines={1}
+        >
           {title}
         </Text>
       ) : null}

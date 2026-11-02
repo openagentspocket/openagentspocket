@@ -1,5 +1,6 @@
-import { Modal, Pressable, View } from 'react-native';
-import { Button } from '../primitives/Button';
+import { useEffect } from 'react';
+import { Modal, Platform, Pressable, View } from 'react-native';
+import { Button, noFocusRing } from '../primitives/Button';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { spacing } from '../theme/metrics';
@@ -32,6 +33,7 @@ const useStyles = makeStyles((t) => ({
     borderBottomWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
   },
+  arrowEnd: { alignSelf: 'flex-end', marginRight: spacing.lg + spacing.xxs },
   dialog: { width: '100%', maxWidth: t.metrics.readableWidth, alignSelf: 'center' },
   text: { gap: t.spacing.xxs },
   centered: { textAlign: 'center' },
@@ -42,6 +44,7 @@ const useStyles = makeStyles((t) => ({
 
 /** Draws the request at the head of the confirm() queue. Mounted once, by OverlayHost. */
 export function AlertHost() {
+  useWebModalNoRing();
   const active = useActiveHost('alert');
   const queue = useQueue(alertQueue);
   const current = active ? queue[0] : undefined;
@@ -70,6 +73,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
           kind="secondary"
           title={request.cancelLabel}
           onPress={() => answerAlert(request, null)}
+          tight={isAlert}
           testID="alert-cancel"
         />
       </View>
@@ -80,6 +84,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
         kind={action.destructive ? 'destructive' : index === 0 && isAlert ? 'primary' : 'secondary'}
         title={action.title}
         onPress={() => answerAlert(request, action.key)}
+        tight={isAlert}
         testID={`alert-action-${action.key}`}
       />
     </View>
@@ -88,6 +93,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
     <View
       style={[
         styles.backdrop,
+        noFocusRing,
         isAlert
           ? styles.center
           : [
@@ -106,7 +112,11 @@ function AlertPanel({ request }: { request: AlertRequest }) {
         />
       )}
       <View
-        style={[styles.panel, isAlert ? styles.alert : isPopover ? styles.popover : styles.dialog]}
+        style={[
+          noFocusRing,
+          styles.panel,
+          isAlert ? styles.alert : isPopover ? styles.popover : styles.dialog,
+        ]}
         accessibilityViewIsModal
         testID={`alert-${request.presentation}`}
       >
@@ -136,7 +146,29 @@ function AlertPanel({ request }: { request: AlertRequest }) {
           </View>
         )}
       </View>
-      {isPopover ? <View style={styles.arrow} /> : null}
+      {isPopover ? (
+        <View style={[styles.arrow, request.anchor === 'end' && styles.arrowEnd]} />
+      ) : null}
     </View>
   );
+}
+
+/** Web only: react-native-web focuses the Modal's container, which the browser outlines in blue. */
+function useWebModalNoRing() {
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    // The package has no DOM typings; this branch only runs on web.
+    const doc = (globalThis as unknown as { document?: WebDocument }).document;
+    if (!doc || doc.getElementById('oap-no-modal-ring')) return;
+    const style = doc.createElement('style');
+    style.id = 'oap-no-modal-ring';
+    style.textContent = '[aria-modal="true"], [aria-modal="true"] * { outline: none !important; }';
+    doc.head.appendChild(style);
+  }, []);
+}
+
+interface WebDocument {
+  getElementById(id: string): unknown;
+  createElement(tag: string): { id: string; textContent: string };
+  head: { appendChild(node: unknown): void };
 }

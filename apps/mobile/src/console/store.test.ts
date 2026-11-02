@@ -15,7 +15,7 @@ describe('ConsoleStore with the demo Host', () => {
     const store = createDemoConsoleStore();
     await ready(store);
     const panes = store.getState().rows.map((row) => row.agent.pane_id);
-    expect(panes).toEqual(['p1', 'p4', 'p2', 'p3']);
+    expect(panes).toEqual(['p1', 'p4', 'p2', 'p3', 'p5']);
     expect(store.getState().readyHosts.has('demo')).toBe(true);
     store.removeHost('demo');
   });

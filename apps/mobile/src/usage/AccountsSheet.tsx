@@ -9,7 +9,7 @@ import {
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Banner, confirm, Section, Sheet } from '@openagentspocket/ui';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AccountRow } from './AccountRow';
 import { AccountSuggestions } from './AccountSuggestions';
 import { AddAccountForm } from './AddAccountForm';
@@ -23,15 +23,28 @@ interface Props {
   hostName: string;
   report: UsageReport;
   store: AccountFileStore;
+  /** Atlas: start with this Account's name field open. */
+  initialRename?: string;
+  /** Atlas: ask to remove this Account as soon as the list is read. */
+  initialRemove?: string;
 }
 
 /** usage.accounts-sheet: add, rename, remove and dismiss a Host's Claude Code Accounts. */
-export function AccountsSheet({ visible, onClose, hostId, hostName, report, store }: Props) {
+export function AccountsSheet({
+  visible,
+  onClose,
+  hostId,
+  hostName,
+  report,
+  store,
+  initialRename,
+  initialRemove,
+}: Props) {
   const claude = claudeProgram(report);
   const reported = claude?.accounts ?? [];
   const defaultDirectory = reported.find((a) => a.isDefault)?.directory ?? null;
   const state = useAccountFile(store, hostId, defaultDirectory, visible);
-  const [renaming, setRenaming] = useState<string | null>(null);
+  const [renaming, setRenaming] = useState<string | null>(initialRename ?? null);
   const { file } = state;
   const stateLine = (id: string) => {
     const account = reported.find((a) => a.id === id);
@@ -68,6 +81,14 @@ export function AccountsSheet({ visible, onClose, hostId, hostName, report, stor
     });
     if (ok) await state.remove(id);
   };
+  const asked = useRef(false);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: asks once, when the list first loads
+  useEffect(() => {
+    const row = rows.find((r) => r.id === initialRemove);
+    if (!initialRemove || asked.current || !row) return;
+    asked.current = true;
+    void askRemove(row.id, row.name);
+  }, [file]);
   return (
     <Sheet
       visible={visible}

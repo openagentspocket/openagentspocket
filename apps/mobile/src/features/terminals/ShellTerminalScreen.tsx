@@ -93,9 +93,9 @@ function Opened({
           <ShellSurface entry={state.entry} />
           <View style={styles.toolbar}>
             <Button
-              kind="destructive"
-              icon="trash"
-              title={t('Close Terminal')}
+              kind="capsule"
+              icon="more"
+              accessibilityLabel={t('Close Terminal')}
               disabled={closing}
               onPress={() => void close()}
               testID="shell-close"
