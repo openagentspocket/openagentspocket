@@ -98,16 +98,24 @@ export class DemoConsoleTransport extends ScriptedEventsTransport implements Con
   async readPane(): Promise<{ text: string }> {
     return { text: 'Run the migration on the staging database?\n1. Yes\n2. No' };
   }
+
+  /** The demo has no panes to close; the live Transport sends `pane.close`. */
+  async closePane(_paneId: string): Promise<void> {}
+
+  /** The demo keeps no names; the live Transport sends `agent.rename`. */
+  async renameAgent(_params: { target: string; name: string | null }): Promise<void> {}
 }
 
 /** A Console store fed by one demo Host, until the live Transport lands. */
-export function createDemoConsoleStore(clock: Clock = systemClock): ConsoleStore {
+export function createDemoConsoleStore(
+  clock: Clock = systemClock,
+  transport: DemoConsoleTransport = new DemoConsoleTransport(),
+): ConsoleStore {
   const store = new ConsoleStore({
     pins: new PinnedAgents(new MemoryStorage()),
     clocks: new AgentStatusClocks(new MemoryStorage()),
     clock,
   });
-  const transport = new DemoConsoleTransport();
   const session = new EventsSession<DemoConsoleTransport>({
     subscriptions: consoleSubscriptions([]),
     connect: async () => transport,
