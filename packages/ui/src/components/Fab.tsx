@@ -6,7 +6,7 @@ import { Icon } from '../primitives/Icon';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
 
-export const FAB_SIZE = 56;
+export const FAB_SIZE = 58;
 const GLOW_OPACITY = 0.35;
 
 const useStyles = makeStyles((t) => ({
@@ -36,7 +36,7 @@ interface FabProps {
   testID?: string;
 }
 
-/** Swift's Home FAB: 56 pt accent circle with a plus and a soft accent glow; opens the New menu. */
+/** Swift's Home FAB: 58 pt accent circle with a plus and a soft accent glow; opens the New menu. */
 export function Fab({
   items,
   accessibilityLabel,

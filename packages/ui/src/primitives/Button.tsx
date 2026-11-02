@@ -31,6 +31,7 @@ const useStyles = makeStyles((t) => ({
   text: { paddingHorizontal: t.spacing.xs },
   capsule: { backgroundColor: t.colors.accentContainer, borderRadius: 999 },
   label: { flexShrink: 1 },
+  pill: { borderRadius: 999 },
   pressed: { opacity: 0.75 },
   disabled: { opacity: 0.4 },
 }));
@@ -54,6 +55,8 @@ interface CommonProps {
   accessibilityHint?: string;
   /** Overrides the glyph size (toolbars draw glyphs near 60 percent of the control). */
   iconSize?: number;
+  /** Fully rounded ends (Swift capsule), whatever the kind. */
+  pill?: boolean;
   testID?: string;
 }
 
@@ -75,6 +78,7 @@ export function Button({
   accessibilityLabel,
   accessibilityHint,
   iconSize,
+  pill = false,
   testID,
 }: ButtonProps) {
   const styles = useStyles();
@@ -102,6 +106,7 @@ export function Button({
         iconOnly && styles.iconOnly,
         iconOnly && size === 'small' && styles.iconOnlySmall,
         styles[kind],
+        pill && styles.pill,
         pressed && styles.pressed,
         disabled && styles.disabled,
       ]}

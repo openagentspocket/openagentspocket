@@ -30,6 +30,8 @@ interface ScreenProps {
   keyboardAvoiding?: boolean;
   /** Pinned above the scrolling body (a sheet bar); it never scrolls. */
   header?: ReactNode;
+  /** Full width, no inset or readable column: the screen lays out its own columns (non-scrolling). */
+  bare?: boolean;
   testID?: string;
 }
 
@@ -42,6 +44,7 @@ export function Screen({
   edges = ALL_EDGES,
   keyboardAvoiding = false,
   header,
+  bare = false,
   testID = 'screen',
 }: ScreenProps) {
   const styles = useStyles();
@@ -65,7 +68,9 @@ export function Screen({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         testID={`${testID}-keyboard`}
       >
-        {scroll ? (
+        {bare ? (
+          <View style={styles.fill}>{children}</View>
+        ) : scroll ? (
           <ScrollView
             style={styles.fill}
             testID={`${testID}-scroll`}

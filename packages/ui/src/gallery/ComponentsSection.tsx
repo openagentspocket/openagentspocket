@@ -24,12 +24,22 @@ const useStageStyles = makeStyles((t) => ({
     paddingVertical: t.spacing.md,
     overflow: 'hidden',
   },
+  bleed: { marginHorizontal: -t.metrics.screenInset, width: CAPTURE_WIDTH },
 }));
 
-function Stage({ children, testID }: { children: ReactNode; testID?: string }) {
+function Stage({
+  children,
+  testID,
+  bleed,
+}: {
+  children: ReactNode;
+  testID?: string;
+  /** Cancels the Screen inset so the stage is the full 402pt of a Swift atlas crop. */
+  bleed?: boolean;
+}) {
   const styles = useStageStyles();
   return (
-    <View style={styles.stage} testID={testID}>
+    <View style={[styles.stage, bleed && styles.bleed]} testID={testID}>
       {children}
     </View>
   );
@@ -85,7 +95,7 @@ export function ComponentCapture({ name, theme }: ComponentCaptureProps) {
   return (
     <ThemeProvider themeId={themeId}>
       <Screen>
-        <Stage testID={`capture-${name}`}>
+        <Stage testID={`capture-${name}`} bleed>
           {variant ? (
             variant.render()
           ) : (

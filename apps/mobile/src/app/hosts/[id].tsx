@@ -11,6 +11,7 @@ export default function HostDetailRoute() {
       onBack={() => router.back()}
       onEdit={(hostId) => router.push({ pathname: '/hosts/form', params: { edit: hostId } })}
       onRemoved={() => router.back()}
+      onOpenUsage={(hostId) => router.push({ pathname: '/usage', params: { host: hostId } })}
     />
   );
 }

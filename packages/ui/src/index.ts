@@ -151,6 +151,7 @@ export {
 export { withAlpha } from './theme/color';
 export { useInsets } from './theme/insets';
 export { airy, metrics, spacing } from './theme/metrics';
+export { programTint } from './theme/programTint';
 export { type Status, statusColorKey, type Tone, toneColorKey } from './theme/status';
 export { buildTheme, makeStyles, type Theme, ThemeProvider, useTheme } from './theme/theme';
 export {

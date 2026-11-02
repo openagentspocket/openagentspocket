@@ -29,3 +29,10 @@ notes:
 - Atlas: `AtlasData.presentation` seeds the list grouping; `AgentsScreen openDetail=<paneId>` opens the quick detail.
 - The demo Console has one Host and four single-Agent workspaces, so the by-Host and by-workspace sheets show less structure than Swift's.
 - Evidence: scratchpad rn/evidence/UX1-agents-list (dark) and /papel.
+
+## Round 4
+
+- Quick detail: footer rows now sit in a tight stack (gap xs, as Swift) and the floating sheet's bottom padding is `lg` (was `md`), so Pin and Close clear the rounded corners.
+- WorkspaceCard draws a hairline divider between nested Agent rows.
+- `scripts/atlas-web.mjs` waits for the page to render (polls `[data-testid]` count) instead of a fixed 8 s on the first id, fixing the blank first capture.
+- Merged main; the agents test now expects 5 checkout totals (demo data grew).

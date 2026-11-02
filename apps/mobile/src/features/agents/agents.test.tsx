@@ -56,12 +56,12 @@ describe('AgentsScreen', () => {
 
   it('lists every Agent flat, in Console order', async () => {
     await open();
-    expect(order()).toEqual(['p1', 'p4', 'p2', 'p3']);
+    expect(order()).toEqual(['p1', 'p4', 'p2', 'p3', 'p5']);
   });
 
   it('shows the checkout totals and the low-context pill on the rows that have them', async () => {
     await open();
-    expect(screen.getAllByTestId('agent-card-diff')).toHaveLength(4);
+    expect(screen.getAllByTestId('agent-card-diff')).toHaveLength(5);
     expect(screen.getAllByTestId('agent-card-context')).toHaveLength(1);
   });
 
@@ -73,7 +73,7 @@ describe('AgentsScreen', () => {
 
   it('starts from the persisted Host filter', async () => {
     await open((store) => store.listPrefs.setHostId('demo'));
-    expect(order()).toHaveLength(4);
+    expect(order()).toHaveLength(5);
   });
 
   it('searches by text and shows the empty result', async () => {

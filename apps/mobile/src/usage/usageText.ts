@@ -46,3 +46,9 @@ export const accountLabel = (account: ClaudeAccount): string =>
 
 export const metricTitle = (metric: UsageMetric): string =>
   metric === 'cost' ? t('Est. Cost') : t('Tokens');
+
+/** The dashboard's status line: "Refreshing" or "Updated 01:12". */
+export const updatedText = (refreshing: boolean, now: Date): string =>
+  refreshing
+    ? t('Refreshing')
+    : t('Updated %@', new Intl.DateTimeFormat(getLocaleTag(), { timeStyle: 'short' }).format(now));

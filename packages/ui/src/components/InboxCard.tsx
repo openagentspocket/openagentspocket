@@ -80,7 +80,7 @@ export function InboxCard({
         <View style={styles.body}>
           <View style={styles.header}>
             <ProgramMark program={p.program} status={SECTION_STATUS[p.section]} size={24} />
-            <Text variant="headline" numberOfLines={1} style={styles.title}>
+            <Text variant="subheadline" semibold numberOfLines={1} style={styles.title}>
               {p.title}
             </Text>
             {p.age ? (

@@ -65,6 +65,14 @@ const AGENTS: readonly DemoAgent[] = [
     title: 'Lint cleanup',
     seq: 2,
   },
+  {
+    pane: 'p5',
+    program: 'claude',
+    status: 'idle',
+    workspace: 'scratch',
+    title: 'Scratch pad',
+    seq: 1,
+  },
 ];
 
 /** Rich demo: a second Agent in the mobile workspace, so it nests two rows. */

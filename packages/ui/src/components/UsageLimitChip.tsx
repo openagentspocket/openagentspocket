@@ -7,8 +7,8 @@ import { Text } from '../primitives/Text';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 
-const RING = 44;
-const STROKE = 4;
+const RING = 36;
+const STROKE = 3.5;
 
 const useStyles = makeStyles((t) => ({
   row: {
@@ -112,7 +112,7 @@ export function UsageLimitChip({
               {host}
             </Text>
           </View>
-          <Text variant="headline" numberOfLines={1}>
+          <Text variant="subheadline" semibold numberOfLines={1}>
             {`${program} · ${window}`}
           </Text>
         </View>

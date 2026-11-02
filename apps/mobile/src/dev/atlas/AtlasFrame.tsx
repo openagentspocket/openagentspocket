@@ -14,10 +14,11 @@ import { systemClock } from '@/console/systemClock';
 import type { DemoHostProbe } from '@/features/hosts/HostProbe';
 import { createDemoRuntime, policyFor, setHostsRuntime } from '@/features/hosts/hostsRuntime';
 import { freezeAtlasClock } from './atlasClock';
+import { offlineHostsStore } from './offlineHosts';
 
 export interface AtlasData {
   /** `empty`: no Hosts at all (first run). Default `demo`: the scripted Hosts and Agents. */
-  console?: 'demo' | 'empty';
+  console?: 'demo' | 'empty' | 'offline';
   hosts?: 'demo' | 'empty';
   /** The Agents list grouping, for the list ids. Default flat. */
   presentation?: ListPresentation;
@@ -69,7 +70,9 @@ export function AtlasFrame({ data, children }: { data: AtlasData; children: Reac
     const created =
       data.console === 'empty'
         ? emptyConsoleStore()
-        : createDemoConsoleStore(undefined, undefined, true);
+        : data.console === 'offline'
+          ? offlineHostsStore()
+          : createDemoConsoleStore(undefined, undefined, true);
     if (data.presentation) created.listPrefs.setPresentation(data.presentation);
     return created;
   }, [data.console, data.presentation]);

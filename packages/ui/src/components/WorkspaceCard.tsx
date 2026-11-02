@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Children, Fragment, type ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
@@ -21,7 +21,12 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: 2,
     minHeight: 24,
   },
-  body: { marginTop: t.spacing.xs, marginLeft: 0, gap: t.spacing.sm },
+  body: { marginTop: t.spacing.xs, marginLeft: 0 },
+  divider: {
+    height: t.metrics.hairlineWidth,
+    backgroundColor: t.hairline,
+    marginVertical: t.spacing.xs,
+  },
   nested: { marginLeft: t.spacing.md },
 }));
 
@@ -100,7 +105,16 @@ export function WorkspaceCard({
     <View style={styles.slot}>
       <Card testID={testID}>
         {header}
-        {collapsed ? null : <View style={styles.body}>{children}</View>}
+        {collapsed ? null : (
+          <View style={styles.body}>
+            {Children.toArray(children).map((child, index) => (
+              <Fragment key={(child as { key?: string }).key ?? index}>
+                {index > 0 ? <View style={styles.divider} testID={`${testID}-divider`} /> : null}
+                {child}
+              </Fragment>
+            ))}
+          </View>
+        )}
       </Card>
     </View>
   );

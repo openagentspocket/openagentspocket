@@ -496,7 +496,7 @@
         "agent-detail.terminal"
       ],
       "variants": [
-        "default|two floating glass circles over the content: sidebar/session drawer at left, more (...) at right; no title bar"
+        "default|two glass circles (sidebar/session drawer at left, more (...) at right) with the mid-bar identity between them: eyebrow HOST · AGENT KIND, bold mono title, mono workspace · branch subtitle (optional props eyebrow, title, subtitle)"
       ],
       "interactions": "left opens the SessionDrawer, right opens the header menu (Chat/Terminal toggle, Changes, Files, Ports, Rename, Close); edge swipe back",
       "rnToday": ["apps/mobile/src/agent-detail/AgentHeader.tsx"],

@@ -24,6 +24,7 @@ import { useConsoleStore } from '../../console/hooks';
 import { ageText, inboxAge } from '../../home/inboxAge';
 
 const useStyles = makeStyles((theme) => ({
+  stack: { gap: theme.spacing.xs },
   pair: { flexDirection: 'row', gap: theme.spacing.xs },
   fill: { flex: 1 },
 }));
@@ -75,7 +76,7 @@ export function QuickDetailSheet({
       closeButton={false}
       testID="quick-detail"
       footer={
-        <>
+        <View style={styles.stack}>
           <View style={styles.pair}>
             <View style={styles.fill}>
               <Button
@@ -116,7 +117,7 @@ export function QuickDetailSheet({
               />
             </View>
           </View>
-        </>
+        </View>
       }
     >
       <QuickSheetHeader

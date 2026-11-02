@@ -12,14 +12,14 @@ export interface HostIssue {
 }
 
 const useStyles = makeStyles((t) => ({
-  stack: { paddingHorizontal: t.spacing.md, paddingVertical: t.spacing.xxs },
+  stack: { paddingHorizontal: t.spacing.md, paddingVertical: 0 },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: t.spacing.sm,
-    minHeight: t.metrics.minTapSize,
+    gap: t.spacing.xs,
+    minHeight: 28,
   },
-  glyph: { width: 28, alignItems: 'center' },
+  glyph: { width: 24, alignItems: 'center' },
   text: { flexShrink: 1 },
   pressed: { opacity: 0.6 },
 }));
@@ -64,9 +64,9 @@ export function HostIssueRow({
           testID={`${testID}-${line.key}`}
         >
           <View style={styles.glyph}>
-            <Icon name="wifiSlash" size={20} tint={ink} />
+            <Icon name="wifiSlash" size={16} tint={ink} />
           </View>
-          <Text variant="body" style={[styles.text, { color: ink }]} numberOfLines={1}>
+          <Text variant="subheadline" style={[styles.text, { color: ink }]} numberOfLines={1}>
             {line.text}
           </Text>
         </Pressable>

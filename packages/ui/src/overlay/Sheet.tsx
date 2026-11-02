@@ -38,7 +38,7 @@ const useStyles = makeStyles((t) => ({
   floating: {
     borderRadius: t.metrics.sheetRadius * 2,
     borderBottomWidth: t.metrics.hairlineWidth,
-    paddingBottom: t.spacing.md,
+    paddingBottom: t.spacing.lg,
   },
   dragArea: { alignItems: 'center', paddingBottom: t.spacing.xs },
   grabber: {
@@ -92,6 +92,8 @@ interface SheetProps {
   closeButton?: boolean;
   /** Inset from the screen edges with every corner rounded (the quick detail), as in SwiftUI. */
   floating?: boolean;
+  /** No bar and no title row: the content draws its own header (a day sheet). */
+  headerless?: boolean;
   /** Hide the grabber (large form sheets). Default shown. */
   grabber?: boolean;
   /** Pinned under the scrolling body (a primary action). */
@@ -109,6 +111,7 @@ export function Sheet({
   leading,
   trailing,
   largeTitle = false,
+  headerless = false,
   grabber = true,
   closeButton = true,
   floating = false,
@@ -166,7 +169,7 @@ export function Sheet({
               <View style={styles.grabber} />
             </View>
           ) : null}
-          {bar ? (
+          {headerless ? null : bar ? (
             <>
               <View style={styles.header} testID={`${testID}-bar`}>
                 <View style={styles.barSlot}>
