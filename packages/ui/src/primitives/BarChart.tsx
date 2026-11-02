@@ -1,4 +1,5 @@
-import { View } from 'react-native';
+import type { ReactNode } from 'react';
+import { Pressable, View } from 'react-native';
 import { makeStyles, useTheme } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
 import { Text } from './Text';
@@ -31,6 +32,37 @@ const useStyles = makeStyles((t) => ({
   label: { flex: 1, textAlign: 'center' },
 }));
 
+interface SlotProps {
+  height: number;
+  slotStyle: object;
+  label: string;
+  testID: string;
+  onPress?: () => void;
+  children: ReactNode;
+}
+
+/** One bar's column: a button when the chart is pressable, else a plain accessible element. */
+function Slot({ height, slotStyle, label, testID, onPress, children }: SlotProps) {
+  if (!onPress) {
+    return (
+      <View style={[slotStyle, { height }]} accessible accessibilityLabel={label} testID={testID}>
+        {children}
+      </View>
+    );
+  }
+  return (
+    <Pressable
+      style={[slotStyle, { height }]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      testID={testID}
+    >
+      {children}
+    </Pressable>
+  );
+}
+
 interface BarChartProps {
   data: readonly BarDatum[];
   height?: number;
@@ -39,6 +71,8 @@ interface BarChartProps {
   highlightKey?: string;
   /** Spoken value of a bar ("12.4k tokens"). */
   formatValue?: (value: number) => string;
+  /** Makes each bar pressable (opens that day); bars stay plain elements without it. */
+  onPressBar?: (key: string) => void;
   /** Names the chart for screen readers ("Daily tokens"). */
   accessibilityLabel: string;
   testID?: string;
@@ -52,6 +86,7 @@ export function BarChart({
   highlightKey,
   formatValue = String,
   accessibilityLabel,
+  onPressBar,
   testID = 'bar-chart',
 }: BarChartProps) {
   const styles = useStyles();
@@ -63,12 +98,13 @@ export function BarChart({
     <View style={styles.chart} testID={testID} accessibilityLabel={accessibilityLabel}>
       <View style={[styles.bars, { height }]}>
         {data.map((datum, index) => (
-          <View
+          <Slot
             key={datum.key}
-            style={[styles.slot, { height }]}
-            accessible
-            accessibilityLabel={`${datum.label}, ${formatValue(datum.value)}`}
+            height={height}
+            slotStyle={styles.slot}
+            label={`${datum.label}, ${formatValue(datum.value)}`}
             testID={`bar-${datum.key}`}
+            onPress={onPressBar ? () => onPressBar(datum.key) : undefined}
           >
             <View
               style={[
@@ -82,7 +118,7 @@ export function BarChart({
                 },
               ]}
             />
-          </View>
+          </Slot>
         ))}
       </View>
       <View

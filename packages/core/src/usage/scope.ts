@@ -85,7 +85,8 @@ export type UsageHostState =
   | { readonly kind: 'idle' }
   | { readonly kind: 'loading' }
   | { readonly kind: 'available'; readonly report: UsageReport }
-  | { readonly kind: 'requirement' }
+  /** The Host's plugin is missing, off or too old; `note` says what to do. */
+  | { readonly kind: 'requirement'; readonly note?: Message }
   | { readonly kind: 'unsupportedPlatform' }
   | { readonly kind: 'runtimeMissing' }
   | { readonly kind: 'updateRequired' }

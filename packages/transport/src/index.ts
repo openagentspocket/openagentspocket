@@ -31,3 +31,9 @@ export {
 export * from './settings';
 export { SharedOperation } from './shared-operation';
 export { type ExecOutcome, markerValue, SshTransport } from './transport';
+export {
+  ACCOUNT_FILE_NAME,
+  USAGE_QUERY_TIMEOUT_MS,
+  type UsagePortOptions,
+  usageHostPort,
+} from './usage-port';
