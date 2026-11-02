@@ -66,9 +66,12 @@ function AlertPanel({ request }: { request: AlertRequest }) {
   const insets = useInsets();
   const isAlert = request.presentation === 'alert';
   const isPopover = request.presentation === 'popover';
+  // iOS stacks the buttons when their labels would not fit on one line side by side.
+  const sideBySide =
+    isAlert && request.actions.length === 1 && (request.actions[0]?.title.length ?? 0) <= 12;
   const cancel =
     request.cancelLabel === null || isPopover ? null : (
-      <View style={isAlert ? styles.grow : undefined}>
+      <View style={sideBySide ? styles.grow : undefined}>
         <Button
           kind="secondary"
           title={request.cancelLabel}
@@ -79,7 +82,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
       </View>
     );
   const actions = request.actions.map((action, index) => (
-    <View key={action.key} style={isAlert ? styles.grow : undefined}>
+    <View key={action.key} style={sideBySide ? styles.grow : undefined}>
       <Button
         kind={action.destructive ? 'destructive' : index === 0 && isAlert ? 'primary' : 'secondary'}
         title={action.title}
@@ -134,7 +137,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
             </Text>
           ) : null}
         </View>
-        {isAlert && request.actions.length === 1 ? (
+        {sideBySide ? (
           <View style={styles.row}>
             {cancel}
             {actions}
