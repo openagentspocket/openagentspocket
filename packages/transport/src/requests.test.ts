@@ -6,7 +6,6 @@ import {
 } from '@openagentspocket/core';
 import { SshError, utf8Decode, utf8Encode } from 'agentico-ssh';
 import { describe, expect, it } from 'vitest';
-import { agentSource } from './agent-source';
 import { DEFAULT_HOME_COMMAND } from './settings';
 import { connected, methodOf, paramsOf, reply, SOCKET, settingsFor, settle } from './test-helpers';
 
@@ -117,11 +116,11 @@ describe('herdr request round trips', () => {
     expect(params).toEqual({ pane_id: 'p9', source: 'recent', lines: 5, strip_ansi: false });
   });
 
-  it('feeds the Home screen an AgentSource', async () => {
+  it('lists agents with their wire status and state sequence', async () => {
     const { transport } = await connected(answer);
-    const rows = await agentSource(transport, { id: 'h1', name: 'Host' }).listAgents();
+    const rows = await transport.listAgents();
     expect(rows).toEqual([
-      expect.objectContaining({ hostId: 'h1', paneId: 'p1', status: 'blocked', stateChangeSeq: 4 }),
+      expect.objectContaining({ pane_id: 'p1', agent_status: 'blocked', state_change_seq: 4 }),
     ]);
   });
 

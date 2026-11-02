@@ -4,7 +4,6 @@ export {
   type ChannelLease,
   PRODUCTION_LIMITS,
 } from './admission';
-export { agentSource, consoleAgentFrom } from './agent-source';
 export { systemClock } from './clock';
 export { connectTransport } from './connect';
 export { withDeadline } from './deadline';

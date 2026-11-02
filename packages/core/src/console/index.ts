@@ -5,6 +5,8 @@ export * from './projection';
 export * from './projection-types';
 export * from './prompt-reader';
 export * from './row';
+export * from './select';
+export * from './select-home';
 export * from './snapshot-rows';
 export * from './snippet';
 export * from './status-clocks';
