@@ -527,6 +527,26 @@
       ],
   }
 - {
+    id: P6.1c-live-activity-wiring,
+    phase: 6,
+    kind: js,
+    title: "Wire HostLiveActivityCoordinator into the app: per-Host console stores, device token, pins, foreground reconcile, Settings toggle; mirror Notification Keys to the App Group; secure RandomBytes",
+    deps: [P6.1b-live-activities],
+    acceptance:
+      [
+        "the coordinator runs from the app services and follows useConsole rows per Host",
+        "notification-keys.json mirror in the App Group is rewritten whenever key records change",
+        "a per-Host Live Activity toggle in Settings drives setEnabled; reconcile runs on foreground",
+      ],
+  }
+- {
+    id: P6.1d-live-activity-rows,
+    phase: 6,
+    kind: js,
+    title: "Port AgentRowRenderer and the registration row_layout so the activity carries configured Agent List rows",
+    deps: [P6.1b-live-activities],
+  }
+- {
     id: P6.2-watch,
     phase: 6,
     kind: native,

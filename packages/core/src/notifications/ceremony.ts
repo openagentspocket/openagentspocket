@@ -2,6 +2,7 @@ import { sessionFromSocketPath } from '../hosts/herdr-endpoint';
 import { type Host, hostDisplayName } from '../hosts/host';
 import { trimSpaces } from '../hosts/text';
 import { NotificationConfigFile } from './config-file';
+import { NotificationRegistrationError } from './errors';
 import {
   generateNotificationKey,
   type NotificationKeyRecord,
@@ -46,6 +47,17 @@ export interface RegisterOptions {
   readonly notify?: NotificationTriggerPreferences;
   /** The custom Push Relay base URL; null/absent writes the default relay. */
   readonly relayBaseURL?: string | null;
+  readonly transport: NotificationTransport;
+}
+
+export interface LiveActivityTokenOptions {
+  readonly host: Host;
+  readonly deviceToken: PushDeviceToken;
+  readonly tokenHex: string;
+  /** ISO 8601 UTC. */
+  readonly startedAt: string;
+  readonly pinnedPaneIds: readonly string[];
+  readonly hostName?: string;
   readonly transport: NotificationTransport;
 }
 
@@ -134,6 +146,76 @@ export class NotificationRegistrationCeremony {
       const normalized = file.normalized(owner);
       if (!normalized.equals(file)) await transport.replaceRegistration(normalized.encoded());
       return normalized;
+    });
+  }
+
+  /**
+   * Writes this device's Live Activity push token into the Host's own entry, first dropping that
+   * token from every other entry. The Host must already be registered (`deviceNotRegistered`).
+   */
+  setLiveActivityToken(options: LiveActivityTokenOptions): Promise<void> {
+    const { host, deviceToken, transport } = options;
+    const owner = this.registrationOwner(host, deviceToken);
+    return this.rewrite(owner, transport, (file) => {
+      if (!owner) throw new NotificationRegistrationError({ kind: 'deviceNotRegistered' });
+      return file.settingLiveActivity(
+        {
+          token: options.tokenHex,
+          startedAt: options.startedAt,
+          pinnedPaneIds: options.pinnedPaneIds,
+          hostName: options.hostName,
+        },
+        owner,
+      );
+    });
+  }
+
+  /** Updates the pin list on the Host's own `live_activity`; a no-op while that field is absent. */
+  async setLiveActivityPinnedPaneIds(
+    host: Host,
+    deviceToken: PushDeviceToken,
+    pinnedPaneIds: readonly string[],
+    transport: NotificationTransport,
+  ): Promise<void> {
+    const owner = this.registrationOwner(host, deviceToken);
+    if (!owner) return;
+    await this.rewrite(owner, transport, (file) =>
+      file.settingLiveActivityPinnedPaneIds(pinnedPaneIds, owner),
+    );
+  }
+
+  /**
+   * Drops `live_activity` from the Host's own entry. `liveToken` is the token last written, when
+   * known: it limits the own-entry clear to that token and finds a stale copy without an entry.
+   */
+  clearLiveActivityToken(
+    host: Host,
+    deviceToken: PushDeviceToken,
+    liveToken: string | null,
+    transport: NotificationTransport,
+  ): Promise<void> {
+    const owner = this.registrationOwner(host, deviceToken);
+    return this.rewrite(owner, transport, (file) => file.clearingLiveActivity(liveToken, owner));
+  }
+
+  /** One read-modify-write: normalize toward the Host's session, apply `change`, write if different. */
+  private rewrite(
+    owner: NotificationRegistrationOwner | null,
+    transport: NotificationTransport,
+    change: (file: NotificationRegistrationFile) => NotificationRegistrationFile,
+  ): Promise<void> {
+    return this.gate.run(async () => {
+      const read = NotificationRegistrationFile.decode(await transport.readRegistration());
+      const base = owner ? read.normalized(owner) : read;
+      let result = base;
+      let failure: unknown;
+      try {
+        result = change(base);
+      } catch (thrown) {
+        failure = thrown;
+      }
+      if (!result.equals(read)) await transport.replaceRegistration(result.encoded());
+      if (failure !== undefined) throw failure;
     });
   }
 

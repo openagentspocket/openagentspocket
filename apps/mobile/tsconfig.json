@@ -16,6 +16,7 @@
     { "path": "../../packages/transport" },
     { "path": "../../packages/ui" },
     { "path": "../../modules/ssh" },
-    { "path": "../../modules/app-group" }
+    { "path": "../../modules/app-group" },
+    { "path": "../../modules/live-activity" }
   ]
 }

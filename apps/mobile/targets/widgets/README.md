@@ -23,4 +23,9 @@ Set `ios.appleTeamId` in app.json once the Apple team is active (needed for a de
 ## Scope
 
 Usage widgets are wired (TS snapshot builder -> `modules/app-group` -> `usage-widgets.json`).
-The Live Activity views compile here, but starting/updating one from JS is task P6.1b.
+The Live Activity views live here; `modules/live-activity` starts, updates and ends the activity through
+ActivityKit (task P6.1b). `AgentActivityAttributes` exists twice on purpose: here and in
+`modules/live-activity/ios/AgentActivityAttributes.swift` (an activity is matched by type name and its
+Codable shape, so keep both identical; the type name is shipped-forever). The widget decrypts with the
+Notification Key from the Keychain, or from `notification-keys.json` in the App Group when the device is
+locked.

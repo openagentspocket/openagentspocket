@@ -6,6 +6,7 @@
     { "path": "packages/ui" },
     { "path": "modules/ssh" },
     { "path": "modules/app-group" },
+    { "path": "modules/live-activity" },
     { "path": "packages/transport" },
     { "path": "apps/mobile" }
   ]

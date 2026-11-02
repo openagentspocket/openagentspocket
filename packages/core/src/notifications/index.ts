@@ -3,6 +3,7 @@ export { AgentBannerStore, BANNER_DISMISS_MS, BANNER_HOLD_MS } from './banner-st
 export type { AgentBanner, BannerAgent, BannerStoreOptions } from './banner-types';
 export {
   hostNotificationSession,
+  type LiveActivityTokenOptions,
   NotificationRegistrationCeremony,
   type RegisterOptions,
   RegistrationGate,
@@ -41,6 +42,8 @@ export {
 } from './push-token';
 export {
   entryOwner,
+  type LiveActivityFields,
+  type LiveActivityRegistration,
   type NotificationDeviceEntry,
   NotificationRegistrationFile,
   type NotificationRegistrationOwner,

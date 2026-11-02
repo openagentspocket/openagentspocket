@@ -105,6 +105,11 @@ if (inPkg('packages/i18n/').length)
 const sshFiles = codeIn('modules/ssh/');
 if (sshFiles.length)
   checks.push(run('ssh tests', 'pnpm', ['exec', 'vitest', 'run'], 'modules/ssh'));
+const liveActivityFiles = codeIn('modules/live-activity/');
+if (liveActivityFiles.length)
+  checks.push(
+    run('live-activity tests', 'pnpm', ['exec', 'vitest', 'run'], 'modules/live-activity'),
+  );
 for (const dir of ['packages/ui', 'apps/mobile']) {
   const files = codeIn(`${dir}/`)
     .filter((f) => /\.tsx?$/.test(f))
