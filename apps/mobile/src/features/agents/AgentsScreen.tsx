@@ -43,7 +43,10 @@ export function AgentsScreen() {
     const name = row.agent.name ?? row.agent.agent ?? row.agent.pane_id;
     const ok = await confirm({
       title: t('Close %@?', name),
-      confirmLabel: t('Close'),
+      message: t(
+        "Closes this pane. Anything running in it stops. The tab's other panes stay open.",
+      ),
+      confirmLabel: t('Close Pane'),
       destructive: true,
     });
     if (ok) await actions.close(row).catch(() => undefined);

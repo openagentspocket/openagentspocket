@@ -1,13 +1,16 @@
 import {
   bannerIcon,
   bannerId,
+  bannerLines,
   bannerText,
   type ChatBannerLine,
   type EventsSessionStatus,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { type IconName, makeStyles, NoticeBanner } from '@openagentspocket/ui';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
+import { useConsoleState, useConsoleStore } from '../console/hooks';
 import { renderMessage } from './renderText';
 
 const ICONS: Record<ReturnType<typeof bannerIcon>, IconName> = {
@@ -20,7 +23,7 @@ const ICONS: Record<ReturnType<typeof bannerIcon>, IconName> = {
 };
 
 const useStyles = makeStyles((th) => ({
-  stack: { gap: th.spacing.xs, paddingHorizontal: th.spacing.md, paddingTop: th.spacing.xs },
+  stack: { gap: th.spacing.xs, paddingTop: th.spacing.xs },
 }));
 
 /** What the chat surface knows of its connection: the Host's events status and the read outcome. */
@@ -36,11 +39,42 @@ interface Props extends ChatStatusInput {
   onShowTerminal?: () => void;
 }
 
+/**
+ * The chat's banner lines from the real Host status: Connecting while the events session dials,
+ * Not connected when it is down. Read failures and launch notices join once the conversation
+ * engine feeds a conversation in.
+ */
+export function useChatStatus(hostId: string): ChatStatusInput {
+  const { hosts } = useConsoleState();
+  const status = hosts.find((host) => host.id === hostId)?.status;
+  return useMemo(
+    () => ({
+      hostStatus: status ?? null,
+      lines: bannerLines({
+        hostStatus: status,
+        conversation: null,
+        hasPendingEchoes: false,
+      }),
+    }),
+    [status],
+  );
+}
+
+/** Re-dials the Host (the Console's retry); failures surface through the status itself. */
+export function useChatRetry(hostId: string): () => void {
+  const store = useConsoleStore();
+  return useCallback(() => {
+    if (store.hasHost(hostId)) void store.retry(hostId).catch(() => {});
+  }, [store, hostId]);
+}
+
 /** Calm washes: connecting is info, everything else a warning; never danger (nothing is lost). */
 const toneOf = (line: ChatBannerLine) => (line.kind === 'connecting' ? 'info' : 'warning');
 
 function actionFor(line: ChatBannerLine, retry?: () => void, terminal?: () => void) {
-  if (line.kind === 'readFailure' && retry) return { label: t('Retry'), onPress: retry };
+  // Not connected also offers Retry: it re-dials the Host (an RN addition; Swift only reconnects on its own).
+  if ((line.kind === 'readFailure' || line.kind === 'notConnected') && retry)
+    return { label: t('Retry'), onPress: retry };
   if (line.kind === 'launch' && terminal) {
     return { label: t('Show Agent Terminal'), onPress: terminal };
   }

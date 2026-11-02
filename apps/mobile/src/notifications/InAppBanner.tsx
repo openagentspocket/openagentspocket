@@ -6,9 +6,9 @@ import {
   type BannerStoreOptions,
   type Clock,
 } from '@openagentspocket/core';
-import { ProgramMark, toast } from '@openagentspocket/ui';
-import { createContext, type ReactNode, useContext, useEffect, useMemo } from 'react';
-import { AccessibilityInfo } from 'react-native';
+import { NoticeBanner, ProgramMark, useInsets, useTheme } from '@openagentspocket/ui';
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import { renderMessage } from './renderText';
 
 const systemClock: Clock = {
@@ -57,8 +57,9 @@ interface InAppBannerProps {
 }
 
 /**
- * Mounted once in the app layout. Owns the banner store and shows its banner through the shared
- * toast host (top overlay, swipe up to dismiss, tap opens the Agent).
+ * Mounted once in the app layout. Owns the banner store and draws its banner as a NoticeBanner
+ * (kind inapp) pinned to the top of the whole app: slides and fades in, a blocked Agent's question
+ * in three monospaced lines, tap opens the Agent, swipe up dismisses.
  */
 export function InAppBanner(props: InAppBannerProps) {
   const { presentedAgent, triggers, openAgent, clock, screenReader, children } = props;
@@ -74,36 +75,61 @@ export function InAppBanner(props: InAppBannerProps) {
       }),
     [clock, presentedAgent, triggers, screenReader],
   );
+  // The banner on screen, kept past the store clearing it so the exit can play.
+  const [shown, setShown] = useState<{ banner: AgentBanner; leaving: boolean } | undefined>();
   useEffect(() => {
-    let dismissToast: (() => void) | undefined;
-    let shown: AgentBanner | undefined;
     const sync = () => {
       const next = store.banner;
-      if (next === shown) return;
-      shown = next;
-      dismissToast?.();
-      dismissToast = undefined;
-      if (!next) return;
-      dismissToast = toast({
-        title: next.title,
-        message: next.question ?? renderMessage(next.body),
-        tone: next.status === 'blocked' ? 'warning' : 'success',
-        leading: <ProgramMark program={bannerProgram(next)} size={28} />,
-        durationMs: 0,
-        onPress: () => {
-          store.dismiss();
-          openAgent?.(next.target);
-        },
+      setShown((current) => {
+        if (next) return { banner: next, leaving: false };
+        return current ? { ...current, leaving: true } : undefined;
       });
     };
-    const off = store.subscribe(sync);
-    return () => {
-      off();
-      dismissToast?.();
-    };
-  }, [store, openAgent]);
-  return <BannerContext.Provider value={store}>{children}</BannerContext.Provider>;
+    sync();
+    return store.subscribe(sync);
+  }, [store]);
+  const insets = useInsets();
+  const theme = useTheme();
+  const banner = shown?.banner;
+  return (
+    <BannerContext.Provider value={store}>
+      {children}
+      {banner ? (
+        <View
+          style={[styles.layer, { paddingTop: insets.top + theme.spacing.xs }]}
+          pointerEvents="box-none"
+          testID="in-app-banner-layer"
+        >
+          <View style={{ width: '100%', paddingHorizontal: theme.spacing.md }}>
+            <NoticeBanner
+              key={bannerKey(banner)}
+              kind="inapp"
+              title={banner.title}
+              message={renderMessage(banner.body)}
+              question={banner.question}
+              tone={banner.status === 'blocked' ? 'warning' : 'success'}
+              leading={<ProgramMark program={bannerProgram(banner)} size={28} />}
+              visible={!shown?.leaving}
+              onExited={() => setShown((c) => (c?.leaving ? undefined : c))}
+              onPress={() => {
+                store.dismiss();
+                openAgent?.(banner.target);
+              }}
+              onDismiss={() => store.dismiss()}
+              testID="in-app-banner"
+            />
+          </View>
+        </View>
+      ) : null}
+    </BannerContext.Provider>
+  );
 }
+
+const styles = StyleSheet.create({
+  layer: { ...StyleSheet.absoluteFill, alignItems: 'center' },
+});
+
+const bannerKey = (banner: AgentBanner) => `${banner.target.hostId}:${banner.target.paneId}`;
 
 function bannerProgram(banner: AgentBanner): string {
   return banner.title.split(' · ').at(-1) ?? banner.title;

@@ -24,6 +24,14 @@ import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacySc
 import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
 import type { AtlasData } from './AtlasFrame';
+import {
+  AlertOver,
+  closeConfirmation,
+  ExplainerOpen,
+  removeHostConfirmation,
+  TerminalStatusAtlas,
+} from './atlasOverlays';
+import { InAppBannerAtlas } from './InAppBannerAtlas';
 
 export interface AtlasEntry {
   data?: AtlasData;
@@ -120,6 +128,31 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
           onSwitch={noop}
         />,
       ),
+  },
+  'shell.notification-banner': { render: () => <InAppBannerAtlas /> },
+  'console.close-confirmation': {
+    render: () => (
+      <AlertOver options={closeConfirmation}>
+        <Agents />
+      </AlertOver>
+    ),
+  },
+  'hosts.remove-confirm': {
+    render: () => (
+      <AlertOver options={removeHostConfirmation}>
+        <HostsRoute />
+      </AlertOver>
+    ),
+  },
+  'agent-detail.terminal-status-overlay': {
+    render: () => titled('', <TerminalStatusAtlas status={{ kind: 'connecting' }} />),
+  },
+  'settings.notification-explainer': {
+    render: () => (
+      <ExplainerOpen>
+        <NotificationsRoute />
+      </ExplainerOpen>
+    ),
   },
   'rn.board': { render: () => <Board /> },
 };

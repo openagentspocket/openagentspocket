@@ -196,6 +196,23 @@ export const blockedTerminalEntries: readonly CatalogEntry[] = [
           </Padded>
         ),
       },
+      {
+        id: 'inapp-question',
+        render: () => (
+          <Padded>
+            <NoticeBanner
+              kind="inapp"
+              title="agentico · claude"
+              message="Blocked"
+              question={'Do you want to make this edit to AgenticoAppModel.swift?'}
+              icon="hand"
+              tone="warning"
+              onPress={noop}
+              onDismiss={noop}
+            />
+          </Padded>
+        ),
+      },
     ],
   },
   {

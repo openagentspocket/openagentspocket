@@ -1,12 +1,14 @@
 # UX1-notifications: assemble banners, alerts and toasts from cloned components
-status: partial
+status: done
 branch: worktree branch of wf_308cc08d-920-18
-changed: apps/mobile/src/notifications/ChatBanners.tsx, apps/mobile/src/agent-detail/AgentDetailScreen.tsx, apps/mobile/src/dev/atlas/{entries.tsx,atlasMap.json}, packages/ui/src/components/NoticeBanner.tsx (radius from tokens, tighter), packages/ui/src/primitives/Icon.tsx (wifi)
-tests: pnpm verify-fast -> green (ui + mobile related suites)
+changed: packages/ui/src/components/NoticeBanner.tsx (inapp: question block, slide+fade, 520 pin; inline: compact pill, no hairline), apps/mobile/src/notifications/{InAppBanner,ChatBanners}.tsx, apps/mobile/src/agent-detail/{AgentDetailScreen.tsx,terminal/StatusOverlay.tsx}, apps/mobile/src/features/agents/AgentsScreen.tsx (Close Pane copy), apps/mobile/src/dev/atlas/{entries.tsx,atlasMap.json,atlasOverlays.tsx,InAppBannerAtlas.tsx}
+tests: pnpm verify-fast green; pnpm test green (ui 252, mobile 290, core 2584, i18n, ssh, plugin, relay). Maestro: e2e/home.yaml fails at "tap settings.general.demoMode" (id not found on the installed Debug build, before any screen this task touches); e2e/hosts.yaml fails at "Trust this Host?" (needs demo probe). Not caused by this task; flows need the integrator's matching build. atlas-ios.mjs on the simulator served a bundle without the new ids ("No RN screen for ...": installed build/Metro root mismatch), so iOS evidence was not produced; web atlas only.
 acceptance:
-- Chat banners (connecting / not connected / read failure / launch) with Retry and Show Agent Terminal, tone washes from tokens: met (ChatBanners from core bannerLines, rendered under the header; atlas agent-detail.chat-banners). Engine not wired: lines come from a `chatStatus` prop until the conversation engine exists.
-- Locating wait via NoticeBanner kind=locating: met.
-- In-app banner pinned top / blocked question mono / motion: not met (still the shared toast host); NoticeBanner `inapp` exists but InAppBanner does not use it yet.
-- Alerts, close-confirmation, terminal status overlay atlas entries: not done.
-left: switch InAppBanner to NoticeBanner inapp with question block (3 mono lines) and slide+fade; atlas ids shell.notification-banner, console.close-confirmation, agent-detail.terminal-status-overlay, settings.notification-explainer; wire real host status into chatStatus; Papel sheet (atlas-compare --theme light had no Swift Papel shot for this id).
-notes: banner moved above the Agent switcher to match Swift order. Evidence sheet: scratchpad/rn/evidence/UX1-notifications/agent-detail.chat-banners.png
+- In-app banner: met. InAppBanner renders NoticeBanner kind=inapp pinned to the top of the app (max 520, 14 pt corners), title + 2-line body or 3-line mono question, slide+fade in and out (Reduce Motion jumps), tap opens the Agent, swipe up dismisses. No longer uses the toast host.
+- Chat banners (connecting / not connected / read failure / launch): met, now a compact 2-line pill at content width, no hairline; lines come from the real Host status (useChatStatus -> bannerLines). Retry calls ConsoleStore.retry(hostId) (re-dials the Host). RN addition: Not connected also offers Retry (Swift only reconnects by itself). Read failure and launch lines still wait for the conversation engine.
+- Terminal status overlay: met (centered 320 pt card, spinner + headline, scrim only when ended).
+- Close confirmation alert copy matches Swift (message + Close Pane).
+- Atlas ids added: shell.notification-banner, console.close-confirmation, hosts.remove-confirm, agent-detail.terminal-status-overlay, settings.notification-explainer (agent-detail.chat-banners existed). Swift has no toast ids; no Swift shot exists for shell.notification-banner.
+- Papel: real light captures (atlas-web --theme papel) for all six ids; Swift light shots exist for chat-banners, close-confirmation, terminal-status-overlay, explainer.
+left: header and Chat/Terminal switcher above the banner, agent switcher tiles and composer differ from Swift (agent-detail family); read-failure/launch banner lines need the conversation engine; remaining Swift alerts (hosts.trust-alert, rename alerts, etc.) have no atlas entry; iOS simulator evidence and fixing the Maestro flows belong to the integrator.
+notes: atlas pins the clock, which stalls JS timing animations on web: NoticeBanner takes animated={false} for the atlas pin. Evidence: scratchpad/rn/evidence/UX1-notifications/<id>[.papel].png

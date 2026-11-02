@@ -1,6 +1,6 @@
 import { FakeClock } from '@openagentspocket/core';
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { useEffect } from 'react';
 import { Pressable } from 'react-native';
 import { InAppBanner, useBannerDemo, useBannerFeed } from './InAppBanner';
@@ -45,18 +45,18 @@ describe('InAppBanner', () => {
     const clock = new FakeClock();
     await mountWith({}, clock);
     await act(() => clock.advance(4000));
-    expect(screen.queryByTestId('toast')).toBeNull();
+    expect(screen.queryByTestId('in-app-banner')).toBeNull();
   });
 
   it('shows the held transition and a tap opens the Agent', async () => {
     const clock = new FakeClock();
     const openAgent = jest.fn();
     await mountWith({ triggers: () => ({ blocked: true, done: true }), openAgent }, clock);
-    expect(screen.queryByTestId('toast')).toBeNull();
+    expect(screen.queryByTestId('in-app-banner')).toBeNull();
     await act(() => clock.advance(3000));
-    await fireEvent.press(await screen.findByTestId('toast'));
+    await fireEvent.press(await screen.findByTestId('in-app-banner'));
     expect(openAgent).toHaveBeenCalledWith({ hostId: 'h', paneId: 'p' });
-    expect(screen.queryByTestId('toast')).toBeNull();
+    await waitFor(() => expect(screen.queryByTestId('in-app-banner')).toBeNull());
   });
 
   it('shows the gallery demo trigger even when Host preferences are unknown', async () => {
@@ -71,7 +71,35 @@ describe('InAppBanner', () => {
     );
     await fireEvent.press(screen.getByTestId('demo'));
     await act(() => clock.advance(3000));
-    expect(await screen.findByTestId('toast')).toBeTruthy();
+    expect(await screen.findByTestId('in-app-banner')).toBeTruthy();
+  });
+
+  it('pins a NoticeBanner at the top with the three-line mono question', async () => {
+    const clock = new FakeClock();
+    const feed: Agents[] = [
+      [{ hostId: 'h', paneId: 'p', status: 'working', kind: 'claude', workspaceLabel: 'Caterm' }],
+      [
+        {
+          hostId: 'h',
+          paneId: 'p',
+          status: 'blocked',
+          kind: 'claude',
+          workspaceLabel: 'Caterm',
+          lastOutputSnippet: 'Allow the edit to Model.swift?',
+        },
+      ],
+    ];
+    await render(
+      <ThemeProvider themeId="indigo">
+        <InAppBanner clock={clock} triggers={() => ({ blocked: true, done: true })}>
+          <Feeder steps={feed} />
+        </InAppBanner>
+      </ThemeProvider>,
+    );
+    await act(() => clock.advance(3000));
+    expect(await screen.findByTestId('in-app-banner-layer')).toBeTruthy();
+    const question = await screen.findByTestId('notice-inapp-question');
+    expect(question.props.numberOfLines).toBe(3);
   });
 
   it('stays silent when that Agent is on screen', async () => {
@@ -84,6 +112,6 @@ describe('InAppBanner', () => {
       clock,
     );
     await act(() => clock.advance(3000));
-    expect(screen.queryByTestId('toast')).toBeNull();
+    expect(screen.queryByTestId('in-app-banner')).toBeNull();
   });
 });
