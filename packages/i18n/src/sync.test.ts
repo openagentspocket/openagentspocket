@@ -26,7 +26,7 @@ function swiftRender(text: string, format: boolean, locale: Locale, count?: numb
     .replace(/%%|%(?:(\d+)\$)?(?:ll|l)?([@d])/g, (match, position?: string) => {
       if (match === '%%') return '%';
       const index = position ? Number(position) - 1 : next++;
-      const [{ kind }] = specifiersOf(match.replace(/^%\d+\$/, '%'));
+      const kind = specifiersOf(match.replace(/^%\d+\$/, '%'))[0]?.kind;
       if (kind === 'number' && count !== undefined)
         return new Intl.NumberFormat(locale).format(count);
       return `«${index}»`;

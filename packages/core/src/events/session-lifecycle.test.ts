@@ -142,7 +142,9 @@ describe('EventsSession reconnect backoff', () => {
     });
     await session.resume();
     expect(await next()).toEqual(connecting);
-    expect(await next()).toEqual(statusUpdate({ kind: 'failed', failure: { kind } }));
+    expect(await next()).toEqual(
+      statusUpdate({ kind: 'failed', failure: { kind } as TransportError }),
+    );
     await clock.advance(120_000);
     expect(dials).toBe(1);
     expect(session.updates.size).toBe(0);
