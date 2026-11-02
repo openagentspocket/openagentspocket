@@ -6,7 +6,16 @@
 
 import { sha256 } from '@noble/hashes/sha2';
 import { encodeUtf8 } from '../../events/utf8';
+import type { Host } from '../../hosts/host';
 import { encodeBase64 } from '../../hosts/text';
+import {
+  type ChatAgentDirectory,
+  type ChatCachedAgent,
+  directoryBelongsTo,
+  directoryEntries,
+  makeAgentDirectory,
+  type TrustedHostKeys,
+} from './agent-directory';
 import type {
   ChatBackgroundWorkItem,
   ChatEntry,
@@ -115,6 +124,12 @@ export interface ChatTranscriptCache {
   /** Deletes every Host's documents except these, and refuses later saves for any other Host. */
   retainHosts(hostIDs: ReadonlySet<string>): Promise<void>;
   removeAll(): Promise<void>;
+  /** The saved Chat entry points of `host`; empty when none, or they belong to another machine. */
+  loadAgentDirectory(host: Host): Promise<ChatCachedAgent[]>;
+  /** Replaces the Host's entry points; an empty (or all-invalid) list deletes them. */
+  saveAgentDirectory(agents: readonly ChatCachedAgent[], host: Host): Promise<void>;
+  /** False only when a readable directory was saved for another machine. */
+  agentDirectoryBelongs(host: Host): Promise<boolean>;
   diskUsage(): Promise<number>;
   prune(): Promise<void>;
 }
@@ -230,7 +245,10 @@ export async function loadCurrent(
 /** A cache that lives only as long as the process: the default for demo mode and tests. */
 export class VolatileChatTranscriptCache implements ChatTranscriptCache {
   private documents = new Map<string, ChatCacheDocument>();
+  private directories = new Map<string, ChatAgentDirectory>();
   private allowedHosts: ReadonlySet<string> | null = null;
+
+  constructor(private readonly trustedHostKeys: TrustedHostKeys = () => []) {}
 
   async load(key: ChatCacheKey): Promise<ChatCacheLoadResult> {
     const document = this.documents.get(cacheStorageName(key));
@@ -250,10 +268,34 @@ export class VolatileChatTranscriptCache implements ChatTranscriptCache {
     this.allowedHosts = hostIDs;
     for (const [name, document] of this.documents)
       if (!hostIDs.has(document.key.hostID)) this.documents.delete(name);
+    for (const hostID of this.directories.keys())
+      if (!hostIDs.has(hostID)) this.directories.delete(hostID);
   }
 
   async removeAll(): Promise<void> {
     this.documents.clear();
+    this.directories.clear();
+  }
+
+  async loadAgentDirectory(host: Host): Promise<ChatCachedAgent[]> {
+    const directory = this.directories.get(host.id);
+    if (!directory) return [];
+    return directoryEntries(directory, host, await this.trustedHostKeys(host.id));
+  }
+
+  async saveAgentDirectory(agents: readonly ChatCachedAgent[], host: Host): Promise<void> {
+    const keys = await this.trustedHostKeys(host.id);
+    if (this.allowedHosts && !this.allowedHosts.has(host.id)) return;
+    const directory = makeAgentDirectory(agents, host, keys);
+    if (directory.agents.length === 0) this.directories.delete(host.id);
+    else this.directories.set(host.id, directory);
+  }
+
+  async agentDirectoryBelongs(host: Host): Promise<boolean> {
+    const directory = this.directories.get(host.id);
+    return directory
+      ? directoryBelongsTo(directory, host, await this.trustedHostKeys(host.id))
+      : true;
   }
 
   async diskUsage(): Promise<number> {
