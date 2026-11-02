@@ -36,7 +36,7 @@ function toPairingHost(host: Host): PairingCatalogHost {
 /** `SHA256:<unpadded base64>` back to its 32 digest bytes. */
 const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
-function digestOf(fingerprint: string): Uint8Array {
+export function digestOf(fingerprint: string): Uint8Array {
   const bytes: number[] = [];
   let bits = 0;
   let value = 0;

@@ -8,6 +8,8 @@ import {
   type PairingDeviceKeyLoad,
   PairingScanStore,
 } from '@openagentspocket/core';
+import { isDemoMode } from '@/connections/mode';
+import { newUuid } from '@/connections/uuid';
 import { DemoHostProbe, type HostProbe } from './HostProbe';
 import { HostsModel } from './HostsModel';
 import { DemoPairingConnector, demoDeviceKey, ModelPairingCatalog } from './pairingAdapters';
@@ -20,22 +22,20 @@ export interface HostsRuntime {
   readonly loadDeviceKey: () => Promise<PairingDeviceKeyLoad>;
   /** Milliseconds the Trust this Host? prompt waits before it counts as declined. */
   readonly trustTimeoutMs: number;
+  /** Tells the live connections a Host passed its checks (or trusted a new key): redial it. */
+  readonly reconnect?: (hostId: string) => Promise<void>;
   /** A fresh scan store per pairing screen. */
   createScanStore(): PairingScanStore;
 }
 
-let counter = 0;
-
-/** Ids that are unique for the session; the persistence task swaps in UUIDs. */
-function nextId(): string {
-  counter += 1;
-  return `host-${Date.now().toString(36)}-${counter}`;
-}
-
 export function createDemoRuntime(overrides: Partial<HostsRuntime> = {}): HostsRuntime {
-  const knownHosts = new KnownHostsStore(new MemoryStorage());
-  const catalog = new HostCatalog(new MemoryStorage(), new MemorySecretStore());
-  const model = overrides.model ?? new HostsModel(catalog, knownHosts, nextId);
+  const model =
+    overrides.model ??
+    new HostsModel(
+      new HostCatalog(new MemoryStorage(), new MemorySecretStore()),
+      new KnownHostsStore(new MemoryStorage()),
+      newUuid,
+    );
   const connector = overrides.connector ?? new DemoPairingConnector();
   const loadDeviceKey =
     overrides.loadDeviceKey ??
@@ -45,6 +45,7 @@ export function createDemoRuntime(overrides: Partial<HostsRuntime> = {}): HostsR
     probe: overrides.probe ?? new DemoHostProbe(),
     connector,
     loadDeviceKey,
+    reconnect: overrides.reconnect,
     trustTimeoutMs: overrides.trustTimeoutMs ?? 60_000,
     createScanStore: () =>
       new PairingScanStore({
@@ -56,13 +57,20 @@ export function createDemoRuntime(overrides: Partial<HostsRuntime> = {}): HostsR
 }
 
 let current: HostsRuntime | null = null;
+let liveFactory: (() => HostsRuntime) | null = null;
+
+/** The app root registers the persisted, SSH-backed runtime; demo mode and tests skip it. */
+export function registerLiveRuntime(factory: (() => HostsRuntime) | null): void {
+  liveFactory = factory;
+}
 
 export function hostsRuntime(): HostsRuntime {
-  current ??= createDemoRuntime();
+  const live = isDemoMode() ? null : (liveFactory?.() ?? null);
+  current ??= live ?? createDemoRuntime();
   return current;
 }
 
-/** Replaces the runtime (tests, and the live transport once it exists). */
+/** Replaces the runtime (tests). */
 export function setHostsRuntime(runtime: HostsRuntime | null): void {
   current = runtime;
 }

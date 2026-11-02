@@ -1,13 +1,8 @@
-import {
-  fingerprintDisplay,
-  type Host,
-  type HostKeyCandidate,
-  hostTrustKey,
-  type PreflightReport,
-} from '@openagentspocket/core';
+import { type Host, hostTrustKey, type PreflightReport } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { confirm } from '@openagentspocket/ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { askToTrust } from '@/connections/trustPrompt';
 import type { ProbeOutcome } from './HostProbe';
 import { hostsRuntime, policyFor } from './hostsRuntime';
 
@@ -19,26 +14,6 @@ export interface ChecksState {
 }
 
 const IDLE: ChecksState = { running: false, report: null, routeInUse: null, changedKey: null };
-
-/** The "Trust this Host?" alert; a prompt left unanswered past `timeoutMs` counts as declined. */
-function askToTrust(candidate: HostKeyCandidate, timeoutMs: number): Promise<boolean> {
-  const answer = confirm({
-    title: t('Trust this Host?'),
-    message: t(
-      "First connection to %@:%@.\n\nKey fingerprint:\n%@\n\nVerify it matches the Host's key before trusting.",
-      candidate.host,
-      String(candidate.port),
-      fingerprintDisplay(candidate.fingerprint),
-    ),
-    confirmLabel: t('Trust'),
-    cancelLabel: t("Don't Trust"),
-  });
-  let timer: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<boolean>((resolve) => {
-    timer = setTimeout(() => resolve(false), timeoutMs);
-  });
-  return Promise.race([answer, timeout]).finally(() => clearTimeout(timer));
-}
 
 /** Runs and tracks the preflight of one Host, with the TOFU and changed-key prompts. */
 export function useHostChecks(host: Host | null) {
@@ -58,6 +33,7 @@ export function useHostChecks(host: Host | null) {
     if (mine !== generation.current) return;
     model.setConnection(current.id, outcome.report.failure ? 'cantConnect' : 'connected');
     setState({ running: false, ...outcome });
+    if (!outcome.report.failure) void hostsRuntime().reconnect?.(current.id);
   }, [hostId]);
 
   const cancel = useCallback(() => {

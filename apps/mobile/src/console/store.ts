@@ -135,6 +135,15 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     return this.projection(hostId).retry();
   }
 
+  /** Re-proves a Host on a foreground return: a failed one restarts, others ping. */
+  revalidate(hostId: string): Promise<void> {
+    return this.projection(hostId).revalidate();
+  }
+
+  hasHost(hostId: string): boolean {
+    return this.projections.has(hostId);
+  }
+
   private projection(hostId: string): HostConsoleProjection<T> {
     const projection = this.projections.get(hostId);
     if (!projection) throw new Error('The Host is not listed.');

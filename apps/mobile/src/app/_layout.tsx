@@ -3,6 +3,7 @@ import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import type { ReactNode } from 'react';
+import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
 import { InAppBanner } from '@/notifications/InAppBanner';
 import { AppLockCover } from '@/settings/AppLockCover';
 import { deviceAuthenticator } from '@/settings/deviceAuthenticator';
@@ -25,9 +26,11 @@ export default function RootLayout() {
     <SettingsProvider store={settingsStore} authenticator={deviceAuthenticator}>
       <SettingsTheme>
         <StatusBar style="auto" />
-        <InAppBanner>
-          <Stack screenOptions={{ headerShown: false }} />
-        </InAppBanner>
+        <ConnectionsProvider>
+          <InAppBanner>
+            <Stack screenOptions={{ headerShown: false }} />
+          </InAppBanner>
+        </ConnectionsProvider>
         <AppLockCover />
         <OverlayHost />
       </SettingsTheme>
