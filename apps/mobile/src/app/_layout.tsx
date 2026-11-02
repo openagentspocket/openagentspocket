@@ -6,6 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import type { ReactNode } from 'react';
 import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
 import { bindDemoModeStorage } from '@/connections/mode';
+import { useOpenAgent } from '@/links/useOpenAgent';
 import { statusBarStyle } from '@/navigation/screenOptions';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
 import { InAppBanner } from '@/notifications/InAppBanner';
@@ -62,12 +63,13 @@ function AppStack() {
 
 export default function RootLayout() {
   useWidgetSync();
+  const openAgent = useOpenAgent();
   return (
     <SettingsProvider store={settingsStore} authenticator={deviceAuthenticator}>
       <SettingsTheme>
         <ThemedStatusBar />
         <ConnectionsProvider>
-          <InAppBanner>
+          <InAppBanner openAgent={openAgent}>
             <AppStack />
           </InAppBanner>
         </ConnectionsProvider>
