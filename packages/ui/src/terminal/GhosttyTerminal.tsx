@@ -1,4 +1,4 @@
-import { toBase64 } from 'agentico-ssh';
+import { toBase64, utf8Encode } from 'agentico-ssh';
 import { TerminalView as GhosttyView, type TerminalViewRef } from 'expo-libghostty';
 import { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import { useTheme } from '../theme/theme';
@@ -16,10 +16,7 @@ export function GhosttyTerminal({ onInput, onResize, fontSize = 13, ref }: Termi
   const theme = useTheme();
   const native = useRef<TerminalViewRef>(null);
   const batcher = useMemo(
-    () =>
-      createWriteBatcher((bytes) => {
-        native.current?.write(toBase64(bytes)).catch(() => {});
-      }),
+    () => createWriteBatcher((bytes) => native.current?.write(toBase64(bytes)).catch(() => {})),
     [],
   );
   useEffect(() => () => batcher.dispose(), [batcher]);
@@ -27,15 +24,12 @@ export function GhosttyTerminal({ onInput, onResize, fontSize = 13, ref }: Termi
   useImperativeHandle(
     ref,
     (): TerminalHandle => ({
-      write: (data) => {
-        batcher.flush();
-        native.current?.writeText(data).catch(() => {});
+      write: (data) => batcher.push(utf8Encode(data)),
+      writeEncoded: (base64) => {
+        native.current?.write(base64).catch(() => {});
       },
       writeBytes: (bytes) => batcher.push(bytes),
-      clear: () => {
-        batcher.flush();
-        native.current?.writeText(CLEAR).catch(() => {});
-      },
+      clear: () => batcher.push(utf8Encode(CLEAR)),
       // The native view takes focus when touched; it has no imperative focus.
       focus: () => {},
     }),

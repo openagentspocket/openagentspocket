@@ -49,6 +49,7 @@ export function XtermTerminal({ onInput, onResize, fontSize = 13, ref }: Termina
     (): TerminalHandle => ({
       write: (data) => run(`__t(${JSON.stringify(data)})`),
       writeBytes: (bytes) => batcher.push(bytes),
+      writeEncoded: (base64) => run(`__w("${base64}")`),
       clear: () => run('term.reset()'),
       focus: () => run('term.focus()'),
     }),

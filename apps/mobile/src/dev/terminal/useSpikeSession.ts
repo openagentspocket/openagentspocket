@@ -70,15 +70,15 @@ export function useSpikeSession(
         await new Promise<void>((r) => setTimeout(r, 100));
       const grid = gridRef.current ?? { cols: 80, rows: 24 };
       const stream = await session.openPty({
-        command: "env PS1='$ ' /bin/bash --norc --noprofile -i",
+        command: "env PS1='$ ' /bin/bash --norc --noprofile --noediting -i",
         cols: grid.cols,
         rows: grid.rows,
       });
       pty.current = stream;
       const sink = makeSink(decodeUtf8Stream());
-      stream.onData((bytes) => {
-        sink.push(bytes);
-        term.current?.writeBytes(bytes);
+      stream.onEncodedData?.((base64) => {
+        sink.pushEncoded(base64);
+        term.current?.writeEncoded(base64);
       });
       setStatus('attached');
       log(`attached ${grid.cols}x${grid.rows}`);

@@ -17,6 +17,10 @@ internal class SshBridge(keyDirectory: File, private val events: BridgeEvents) {
 
   private companion object {
     const val CHUNK = 32 * 1024
+
+    /** Sustained ceiling for one stream's events (see `pump`). */
+    const val MAX_BYTES_PER_SECOND = 3_000_000L
+
     /** One wait for bytes lasts this long, then waits again; not an idle limit. */
     const val READ_POLL_MS = 30_000L
     const val EXIT_STATUS_WAIT_MS = 2_000L
@@ -162,7 +166,15 @@ internal class SshBridge(keyDirectory: File, private val events: BridgeEvents) {
   private fun pump(stream: BridgeStream) {
     while (true) {
       when (val taken = stream.pipe.take(CHUNK, READ_POLL_MS)) {
-        is StreamPipe.Take.Data -> events.data(stream.id, taken.bytes)
+        is StreamPipe.Take.Data -> {
+          val started = System.nanoTime()
+          events.data(stream.id, taken.bytes)
+          // JavaScript cannot say "slow down": a flood would queue events (and OOM) faster than
+          // it runs them. Holding the pump back fills the pipe, which holds the remote back.
+          val budgetNs = taken.bytes.size * 1_000_000_000L / MAX_BYTES_PER_SECOND
+          val spentNs = System.nanoTime() - started
+          if (budgetNs > spentNs) Thread.sleep((budgetNs - spentNs) / 1_000_000L, ((budgetNs - spentNs) % 1_000_000L).toInt())
+        }
         StreamPipe.Take.Idle -> continue
         StreamPipe.Take.Aborted -> return
         StreamPipe.Take.End -> break

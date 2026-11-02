@@ -53,6 +53,26 @@ describe('createWriteBatcher', () => {
     expect(sent).toEqual([12, 3]);
   });
 
+  it('keeps one async write in flight and sends what piled up when it settles', async () => {
+    const sent: number[] = [];
+    const releases: (() => void)[] = [];
+    const batcher = createWriteBatcher(
+      (chunk) => {
+        sent.push(chunk.length);
+        return new Promise<void>((resolve) => releases.push(resolve));
+      },
+      { maxBytes: 4 },
+    );
+    batcher.push(new Uint8Array(4));
+    batcher.push(new Uint8Array(4));
+    batcher.push(new Uint8Array(4));
+    expect(sent).toEqual([4]);
+    releases.shift()?.();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(sent).toEqual([4, 8]);
+  });
+
   it('drops queued output on dispose', () => {
     const sent: Uint8Array[] = [];
     const batcher = createWriteBatcher((chunk) => sent.push(chunk));

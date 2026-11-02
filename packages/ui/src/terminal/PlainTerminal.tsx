@@ -1,3 +1,4 @@
+import { fromBase64 } from 'agentico-ssh';
 import { useImperativeHandle, useRef, useState } from 'react';
 import {
   type LayoutChangeEvent,
@@ -44,6 +45,10 @@ export function PlainTerminal({
       write: (data) => setScreen((current) => appendOutput(current, data)),
       writeBytes: (bytes) => {
         const text = decoder.current(bytes);
+        setScreen((current) => appendOutput(current, text));
+      },
+      writeEncoded: (base64) => {
+        const text = decoder.current(fromBase64(base64));
         setScreen((current) => appendOutput(current, text));
       },
       clear: () => setScreen(''),

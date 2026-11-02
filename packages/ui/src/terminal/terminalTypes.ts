@@ -6,6 +6,8 @@ export interface TerminalHandle {
   write(data: string): void;
   /** Feeds PTY output as raw bytes (a multi-byte character may be split across calls). */
   writeBytes(data: Uint8Array): void;
+  /** Feeds PTY output as base64 text, as it crossed the bridge (skips decoding in JavaScript). */
+  writeEncoded(base64: string): void;
   clear(): void;
   focus(): void;
 }

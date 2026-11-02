@@ -1,0 +1,74 @@
+{'codes': '0x0000000000000002, 0x0000007055cebff8', 'message': 'Could not determine thread index for stack guard region', 'rawCodes': [2, 482475950072], 'type': 'EXC_BAD_ACCESS', 'signal': 'SIGBUS', 'subtype': 'KERN_PROTECTION_FAILURE at 0x0000007055cebff8'}
+ExpoModulesCore: expo::dispatchOnReactScheduler(void*, int, void () block_pointer)::$_0::$_0($_0 const&)
+ExpoModulesCore: expo::dispatchOnReactScheduler(void*, int, void () block_pointer)::$_0::$_0($_0 const&)
+ExpoModulesCore: std::__1::__function::__func<expo::dispatchOnReactScheduler(void*, int, void () block_pointer)::$_0, void (facebook::jsi::Runtime&)>::__func
+ExpoModulesCore: std::__1::__function::__func<expo::dispatchOnReactScheduler(void*, int, void () block_pointer)::$_0, void (facebook::jsi::Runtime&)>::__func
+ExpoModulesCore: std::__1::__function::__func<expo::dispatchOnReactScheduler(void*, int, void () block_pointer)::$_0, void (facebook::jsi::Runtime&)>::__clon
+React: std::__1::__function::__value_func<void (facebook::jsi::Runtime&)>::__value_func[abi:de190102](std::__1::__function::__value_func<void (face
+React: std::__1::__function::__value_func<void (facebook::jsi::Runtime&)>::__value_func[abi:de190102](std::__1::__function::__value_func<void (face
+React: std::__1::function<void (facebook::jsi::Runtime&)>::function(std::__1::function<void (facebook::jsi::Runtime&)>&&)
+React: std::__1::function<void (facebook::jsi::Runtime&)>::function(std::__1::function<void (facebook::jsi::Runtime&)>&&)
+React: std::__1::__variant_detail::__alt<1ul, std::__1::function<void (facebook::jsi::Runtime&)>>::__alt[abi:de190102]<std::__1::function<void (fac
+React: std::__1::__variant_detail::__alt<1ul, std::__1::function<void (facebook::jsi::Runtime&)>>::__alt[abi:de190102]<std::__1::function<void (fac
+React: std::__1::__variant_detail::__union<(std::__1::__variant_detail::_Trait)1, 1ul, std::__1::function<void (facebook::jsi::Runtime&)>>::__union
+React: std::__1::__variant_detail::__union<(std::__1::__variant_detail::_Trait)1, 1ul, std::__1::function<void (facebook::jsi::Runtime&)>>::__union
+React: std::__1::__variant_detail::__union<(std::__1::__variant_detail::_Trait)1, 0ul, facebook::jsi::Function, std::__1::function<void (facebook::
+React: std::__1::__variant_detail::__union<(std::__1::__variant_detail::_Trait)1, 0ul, facebook::jsi::Function, std::__1::function<void (facebook::
+React: std::__1::__variant_detail::__base<(std::__1::__variant_detail::_Trait)1, facebook::jsi::Function, std::__1::function<void (facebook::jsi::R
+React: std::__1::__variant_detail::__dtor<std::__1::__variant_detail::__traits<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Run
+React: std::__1::__variant_detail::__ctor<std::__1::__variant_detail::__traits<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Run
+React: std::__1::__variant_detail::__move_constructor<std::__1::__variant_detail::__traits<facebook::jsi::Function, std::__1::function<void (facebo
+React: std::__1::__variant_detail::__copy_constructor<std::__1::__variant_detail::__traits<facebook::jsi::Function, std::__1::function<void (facebo
+React: std::__1::__variant_detail::__assignment<std::__1::__variant_detail::__traits<facebook::jsi::Function, std::__1::function<void (facebook::js
+React: std::__1::__variant_detail::__move_assignment<std::__1::__variant_detail::__traits<facebook::jsi::Function, std::__1::function<void (faceboo
+React: std::__1::__variant_detail::__copy_assignment<std::__1::__variant_detail::__traits<facebook::jsi::Function, std::__1::function<void (faceboo
+React: std::__1::__variant_detail::__impl<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>::__impl<1ul, std::__1::funct
+React: std::__1::__variant_detail::__impl<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>::__impl<1ul, std::__1::funct
+React: std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>::variant[abi:de190102]<std::__1::function<voi
+React: std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>::variant[abi:de190102]<std::__1::function<voi
+React: std::__1::__optional_destruct_base<std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>, false>::_
+React: std::__1::__optional_storage_base<std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>, false>::__
+React: std::__1::__optional_copy_base<std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>, false>::__opt
+React: std::__1::__optional_move_base<std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>, false>::__opt
+React: std::__1::__optional_copy_assign_base<std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>, false>
+React: std::__1::__optional_move_assign_base<std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>, false>
+React: std::__1::optional<std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>>::optional[abi:de190102]<s
+React: std::__1::optional<std::__1::variant<facebook::jsi::Function, std::__1::function<void (facebook::jsi::Runtime&)>>>::optional[abi:de190102]<s
+React: facebook::react::Task::Task(facebook::react::SchedulerPriority, std::__1::function<void (facebook::jsi::Runtime&)>&&, facebook::react::HighR
+React: facebook::react::Task::Task(facebook::react::SchedulerPriority, std::__1::function<void (facebook::jsi::Runtime&)>&&, facebook::react::HighR
+React: facebook::react::Task* std::__1::construct_at[abi:de190102]<facebook::react::Task, facebook::react::SchedulerPriority&, std::__1::function<v
+React: facebook::react::Task* std::__1::__construct_at[abi:de190102]<facebook::react::Task, facebook::react::SchedulerPriority&, std::__1::function
+React: void std::__1::allocator_traits<std::__1::allocator<facebook::react::Task>>::construct[abi:de190102]<facebook::react::Task, facebook::react:
+React: std::__1::__shared_ptr_emplace<facebook::react::Task, std::__1::allocator<facebook::react::Task>>::__shared_ptr_emplace[abi:de190102]<facebo
+React: std::__1::__shared_ptr_emplace<facebook::react::Task, std::__1::allocator<facebook::react::Task>>::__shared_ptr_emplace[abi:de190102]<facebo
+React: std::__1::shared_ptr<facebook::react::Task> std::__1::allocate_shared[abi:de190102]<facebook::react::Task, std::__1::allocator<facebook::rea
+React: std::__1::shared_ptr<facebook::react::Task> std::__1::make_shared[abi:de190102]<facebook::react::Task, facebook::react::SchedulerPriority&, 
+React: facebook::react::RuntimeScheduler_Modern::scheduleTask(facebook::react::SchedulerPriority, std::__1::function<void (facebook::jsi::Runtime&)
+React: facebook::react::RuntimeScheduler::scheduleTask(facebook::react::SchedulerPriority, std::__1::function<void (facebook::jsi::Runtime&)>&&)
+ExpoModulesCore: expo::dispatchOnReactScheduler(void*, int, void () block_pointer)
+ExpoModulesJSI: expo::RuntimeScheduler::scheduleTask(expo::RuntimeScheduler::Priority, void () block_pointer)
+ExpoModulesJSI: JavaScriptRuntime.schedule(priority:_:)
+ExpoModulesCore: LegacyEventEmitterCompat.sendEvent(withName:body:)
+ExpoModulesCore: BaseModule.sendEvent(_:_:)
+ExpoModulesCore: dispatch thunk of BaseModule.sendEvent(_:_:)
+AgentsPocket.debug.dylib: AgenticoSSHModule.send(_:)
+AgentsPocket.debug.dylib: closure #1 in closure #1 in AgenticoSSHModule.definition()
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@guaranteed BridgeEvent) -> ()
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@in_guaranteed BridgeEvent) -> (@out ())
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@guaranteed BridgeEvent) -> ()
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@in_guaranteed BridgeEvent) -> (@out ())
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@guaranteed BridgeEvent) -> ()
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@in_guaranteed BridgeEvent) -> (@out ())
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@guaranteed BridgeEvent) -> ()
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@in_guaranteed BridgeEvent) -> (@out ())
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@guaranteed BridgeEvent) -> ()
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@in_guaranteed BridgeEvent) -> (@out ())
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@guaranteed BridgeEvent) -> ()
+AgentsPocket.debug.dylib: thunk for @escaping @callee_guaranteed @Sendable (@in_guaranteed BridgeEvent) -> (@out ())
+AgentsPocket.debug.dylib: SSHBridge.emit(_:)
+AgentsPocket.debug.dylib: SSHBridge.pump(streamId:channel:)
+AgentsPocket.debug.dylib: closure #1 in closure #1 in SSHBridge.startStream(streamId:)
+AgentsPocket.debug.dylib: partial apply for closure #1 in closure #1 in SSHBridge.startStream(streamId:)
+AgentsPocket.debug.dylib: thunk for @escaping @isolated(any) @callee_guaranteed @async () -> (@out A)
+AgentsPocket.debug.dylib: partial apply for thunk for @escaping @isolated(any) @callee_guaranteed @async () -> (@out A)
+libswift_Concurrency.dylib: completeTaskWithClosure(swift::AsyncContext*, swift::SwiftError*)

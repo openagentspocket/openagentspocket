@@ -1,0 +1,45 @@
+2026-11-02T06:31:33.668Z [ghostty] grid 51x50
+2026-11-02T06:31:34.321Z [ghostty] attached 51x50
+2026-11-02T06:31:35.856Z [ghostty] RESULT grid-and-stty {"grid":{"cols":51,"rows":50},"sttyMatchesGrid":true,"ms":3,"totalMs":13}
+2026-11-02T06:31:35.878Z [ghostty] SHOW colors
+2026-11-02T06:31:38.409Z [ghostty] RESULT colors-unicode {"ms":16,"totalMs":2553}
+2026-11-02T06:31:39.646Z [ghostty] SHOW altscreen
+2026-11-02T06:31:42.430Z [ghostty] SHOW after-altscreen
+2026-11-02T06:31:44.460Z [ghostty] RESULT alt-screen {"ms":1254,"note":"primary screen must be back with PRIMARY-MARK","totalMs":6051}
+2026-11-02T06:31:44.526Z [ghostty] input "\u001b[2;2R\u001b[3;1R\u001b[>1;0;0c"
+2026-11-02T06:31:44.542Z [ghostty] input "\u001b[?12;2$y"
+2026-11-02T06:31:46.009Z [ghostty] SHOW vim
+2026-11-02T06:31:48.553Z [ghostty] RESULT tui-vim {"ms":1,"totalMs":4093}
+2026-11-02T06:31:51.091Z [ghostty] SHOW top
+2026-11-02T06:31:53.637Z [ghostty] RESULT tui-top {"ms":1,"totalMs":5084}
+2026-11-02T06:31:53.663Z [ghostty] grid 51x35
+2026-11-02T06:31:53.686Z [ghostty] SHOW shrunk
+2026-11-02T06:31:55.230Z [ghostty] grid 51x50
+2026-11-02T06:31:55.256Z [ghostty] RESULT resize-round-trip {"before":{"cols":51,"rows":50},"after":{"cols":51,"rows":35},"back":{"cols":51,"rows":50},"shrinkOk":true,"backOk":true,"shrinkMs":46,"backMs":43,"totalMs":1618}
+2026-11-02T06:31:55.261Z [ghostty] SHOW typing
+2026-11-02T06:31:56.828Z [ghostty] grid 51x24
+2026-11-02T06:31:57.611Z [ghostty] input "e"
+2026-11-02T06:31:57.612Z [ghostty] input "c"
+2026-11-02T06:31:57.625Z [ghostty] input "o"
+2026-11-02T06:31:57.625Z [ghostty] input "h"
+2026-11-02T06:31:57.626Z [ghostty] input "y"
+2026-11-02T06:31:57.626Z [ghostty] input "t"
+2026-11-02T06:31:57.626Z [ghostty] input " "
+2026-11-02T06:31:57.644Z [ghostty] input "d"
+2026-11-02T06:31:57.644Z [ghostty] input "-"
+2026-11-02T06:31:57.643Z [ghostty] input "e"
+2026-11-02T06:31:57.643Z [ghostty] input "p"
+2026-11-02T06:31:57.660Z [ghostty] input "-"
+2026-11-02T06:31:57.660Z [ghostty] input "y"
+2026-11-02T06:31:57.660Z [ghostty] input "a"
+2026-11-02T06:31:57.661Z [ghostty] input "d"
+2026-11-02T06:31:57.679Z [ghostty] input "1"
+2026-11-02T06:31:57.659Z [ghostty] input "b"
+2026-11-02T06:31:57.675Z [ghostty] input "b"
+2026-11-02T06:31:57.678Z [ghostty] input " "
+2026-11-02T06:31:57.679Z [ghostty] input "2"
+2026-11-02T06:31:57.679Z [ghostty] input "5"
+2026-11-02T06:31:57.679Z [ghostty] input "3"
+2026-11-02T06:31:57.679Z [ghostty] input "4"
+2026-11-02T06:31:57.726Z [ghostty] input "\r"
+2026-11-02T06:32:07.295Z [ghostty] RESULT typing-window {"events":26,"chars":54,"tail":"$ ecoh typed-by-adb1 2345\r\nbash: ecoh: command not found\r\n$ ","totalMs":12039}

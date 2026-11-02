@@ -23,3 +23,4 @@ One short ADR per founding decision. Add a new numbered file for any decision th
 - [0019](./0019-push.md) Push: raw device tokens, end-to-end encrypted payloads
 - [0020](./0020-build-speed.md) Native code is rebuilt in batches; ios/ and android/ are generated
 - [0021](./0021-agent-workflow.md) How agents work in this repo
+- [0023](./0023-terminal-renderer.md) Terminal renderer: expo-libghostty, with the SSH backpressure and ordering fixes the spike found

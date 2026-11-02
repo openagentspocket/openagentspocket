@@ -9,6 +9,12 @@ extension SSHBridge {
     static let openTimeout: Duration = .seconds(10)
     /// One read waits this long, then reads again; not an idle limit.
     static let readPollTimeout: Duration = .seconds(30)
+    static let coalesceBytes = 131_072
+    static let coalesceWindow: Duration = .milliseconds(8)
+    /// Sustained ceiling for one stream's events. JavaScript has no way to say "slow down", and a
+    /// flood (`yes`, `cat` of a big file) otherwise queues events faster than it can run them and
+    /// starves its timers. Pausing the reads fills the SSH window, so the remote process blocks.
+    static let maxBytesPerSecond = 3_000_000
 
     func openStreamLocal(sessionId: String, socketPath: String, timeout: Duration) async throws
         -> String
@@ -86,9 +92,21 @@ extension SSHBridge {
         var reason: String?
         while !Task.isCancelled {
             do {
-                guard let chunk = try await channel.read(timeout: Self.readPollTimeout) else { break }
+                guard var chunk = try await channel.read(timeout: Self.readPollTimeout) else { break }
                 if !chunk.isEmpty {
+                    // A flood arrives as thousands of small reads; coalesce what follows within a
+                    // few milliseconds so JavaScript gets a few large events, not one per read.
+                    let started = ContinuousClock.now
+                    while chunk.count < Self.coalesceBytes,
+                        ContinuousClock.now - started < Self.coalesceWindow,
+                        let more = try? await channel.read(timeout: .milliseconds(1)), !more.isEmpty
+                    {
+                        chunk.append(more)
+                    }
                     emit(.data(streamId: streamId, base64: chunk.base64EncodedString()))
+                    let budget = Duration.nanoseconds(chunk.count * 1_000_000_000 / Self.maxBytesPerSecond)
+                    let spent = ContinuousClock.now - started
+                    if budget > spent { try? await Task.sleep(for: budget - spent) }
                 }
             } catch SSHError.timedOut {
                 continue

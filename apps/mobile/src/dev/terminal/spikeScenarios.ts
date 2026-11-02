@@ -138,6 +138,10 @@ export function scenarios(): Scenario[] {
         const bytes0 = rig.sink.bytes();
         const parsed0 = rig.parsed();
         const cadence = measureCadence();
+        // The scripted typing may still be arriving; let it finish, then clear the line.
+        for (let last = -1; last !== rig.typed().events; await sleep(1500))
+          last = rig.typed().events;
+        await rig.send('\x15');
         const started = Date.now();
         await rig.send(`${YES}\r`);
         const samples: number[] = [];

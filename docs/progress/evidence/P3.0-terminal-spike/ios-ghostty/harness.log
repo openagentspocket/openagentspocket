@@ -1,0 +1,58 @@
+2026-11-02T06:22:04.969Z [ghostty] grid 32x11
+2026-11-02T06:22:04.969Z [ghostty] grid 38x34
+2026-11-02T06:22:04.973Z [ghostty] grid 38x34
+2026-11-02T06:22:05.072Z [ghostty] attached 38x34
+2026-11-02T06:22:06.585Z [ghostty] RESULT grid-and-stty {"grid":{"cols":38,"rows":34},"sttyMatchesGrid":true,"ms":0,"totalMs":10}
+2026-11-02T06:22:06.609Z [ghostty] SHOW colors
+2026-11-02T06:22:09.110Z [ghostty] RESULT colors-unicode {"ms":15,"totalMs":2525}
+2026-11-02T06:22:10.319Z [ghostty] SHOW altscreen
+2026-11-02T06:22:13.129Z [ghostty] SHOW after-altscreen
+2026-11-02T06:22:15.129Z [ghostty] RESULT alt-screen {"ms":1308,"note":"primary screen must be back with PRIMARY-MARK","totalMs":6018}
+2026-11-02T06:22:15.160Z [ghostty] input "\u001b[I"
+2026-11-02T06:22:15.166Z [ghostty] input "\u001b[3;1R"
+2026-11-02T06:22:15.166Z [ghostty] input "\u001b[2;2R"
+2026-11-02T06:22:15.167Z [ghostty] input "\u001b[>1;10;0c"
+2026-11-02T06:22:15.171Z [ghostty] input "\u001b[?12;1$y"
+2026-11-02T06:22:16.637Z [ghostty] SHOW vim
+2026-11-02T06:22:19.146Z [ghostty] RESULT tui-vim {"ms":6,"totalMs":4016}
+2026-11-02T06:22:21.659Z [ghostty] SHOW top
+2026-11-02T06:22:24.164Z [ghostty] RESULT tui-top {"ms":3,"totalMs":5018}
+2026-11-02T06:22:24.193Z [ghostty] grid 38x24
+2026-11-02T06:22:24.201Z [ghostty] SHOW shrunk
+2026-11-02T06:22:24.210Z [ghostty] grid 38x24
+2026-11-02T06:22:25.720Z [ghostty] grid 38x34
+2026-11-02T06:22:25.731Z [ghostty] RESULT resize-round-trip {"before":{"cols":38,"rows":34},"after":{"cols":38,"rows":24},"back":{"cols":38,"rows":34},"shrinkOk":true,"backOk":true,"shrinkMs":37,"backMs":28,"totalMs":1566}
+2026-11-02T06:22:25.735Z [ghostty] SHOW typing
+2026-11-02T06:22:25.735Z [ghostty] grid 38x34
+2026-11-02T06:22:37.640Z [ghostty] input "e"
+2026-11-02T06:22:37.736Z [ghostty] RESULT typing-window {"events":6,"chars":35,"tail":"y size; echo D$((40+7))\r\n34 38\r\nD47\r\n$ clear\r\n\u001b[3J\u001b[H\u001b[2J$ e","totalMs":12004}
+2026-11-02T06:22:38.356Z [ghostty] input "c"
+2026-11-02T06:22:38.388Z [ghostty] input "h"
+2026-11-02T06:22:38.422Z [ghostty] input "o"
+2026-11-02T06:22:38.455Z [ghostty] input " "
+2026-11-02T06:22:38.491Z [ghostty] input "t"
+2026-11-02T06:22:38.521Z [ghostty] input "y"
+2026-11-02T06:22:38.556Z [ghostty] input "p"
+2026-11-02T06:22:38.588Z [ghostty] input "e"
+2026-11-02T06:22:38.621Z [ghostty] input "d"
+2026-11-02T06:22:38.655Z [ghostty] input "-"
+2026-11-02T06:22:38.689Z [ghostty] input "b"
+2026-11-02T06:22:38.724Z [ghostty] input "y"
+2026-11-02T06:22:38.754Z [ghostty] input "-"
+2026-11-02T06:22:38.789Z [ghostty] input "m"
+2026-11-02T06:22:38.821Z [ghostty] input "a"
+2026-11-02T06:22:38.855Z [ghostty] input "e"
+2026-11-02T06:22:38.888Z [ghostty] input "s"
+2026-11-02T06:22:38.922Z [ghostty] input "t"
+2026-11-02T06:22:38.955Z [ghostty] input "r"
+2026-11-02T06:22:38.988Z [ghostty] input "o"
+2026-11-02T06:22:39.022Z [ghostty] input " "
+2026-11-02T06:22:39.057Z [ghostty] input "1"
+2026-11-02T06:22:39.088Z [ghostty] input "2"
+2026-11-02T06:22:39.121Z [ghostty] input "3"
+2026-11-02T06:22:39.156Z [ghostty] input "4"
+2026-11-02T06:22:39.188Z [ghostty] input "5"
+2026-11-02T06:22:40.575Z [ghostty] input "\r"
+2026-11-02T06:22:57.785Z [ghostty] SHOW flood
+2026-11-02T06:23:39.999Z [ghostty] RESULT flood-yes-60s {"seconds":62.259,"megabytes":173.11,"mbPerSec":2.89,"cadence":{"frames":3700,"over33":0,"over100":0,"maxGapMs":26,"timerMaxMs":23},"cumulativeBytesEvery5s":[14155948,28311724,42205356,56361132,74711212,88866988,102858924,116883628,130908332,144933036,159088812,173113516],"parsedByRenderer":null,"interruptToPromptMs":598,"totalMs":62263}
+2026-11-02T06:23:40.016Z [ghostty] DONE

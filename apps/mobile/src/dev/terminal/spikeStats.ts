@@ -1,3 +1,5 @@
+import { fromBase64 } from 'agentico-ssh';
+
 /** Frame and timer cadence of the JS thread while a scenario runs; the spike's jank signal. */
 export interface Cadence {
   stop(): { frames: number; over33: number; over100: number; maxGapMs: number; timerMaxMs: number };
@@ -40,6 +42,8 @@ export function measureCadence(): Cadence {
 /** Everything a PTY printed: byte count, a bounded tail of text, and waiters for a marker. */
 export interface Sink {
   push(data: Uint8Array): void;
+  /** A chunk still base64: counts its bytes and decodes only its last few KB for the tail. */
+  pushEncoded(base64: string): void;
   bytes(): number;
   tail(): string;
   waitFor(text: string, timeoutMs?: number): Promise<number>;
@@ -49,10 +53,23 @@ export function makeSink(decode: (bytes: Uint8Array) => string, limit = 4096): S
   let total = 0;
   let tail = '';
   const waiters = new Set<() => void>();
+  const add = (data: Uint8Array) => {
+    tail = (tail + decode(data)).slice(-limit);
+    for (const waiter of [...waiters]) waiter();
+  };
   return {
+    pushEncoded(base64) {
+      const padding = base64.endsWith('==') ? 2 : base64.endsWith('=') ? 1 : 0;
+      total += (base64.length / 4) * 3 - padding;
+      const from = Math.max(0, Math.floor((base64.length - limit * 2) / 4) * 4);
+      add(fromBase64(base64.slice(from)));
+    },
     push(data) {
       total += data.length;
-      tail = (tail + decode(data)).slice(-limit);
+      // Only the last `limit` bytes can reach the tail; decoding a flood in JS would be the load.
+      tail = (tail + decode(data.length > limit ? data.subarray(data.length - limit) : data)).slice(
+        -limit,
+      );
       for (const waiter of [...waiters]) waiter();
     },
     bytes: () => total,
