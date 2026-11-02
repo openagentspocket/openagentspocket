@@ -7,6 +7,7 @@ export * from './errors';
 export * from './events';
 export * from './files';
 export * from './hosts';
+export * from './new-agent';
 export * from './notifications';
 export * from './pairing';
 export * from './ports';
