@@ -50,7 +50,7 @@ export function HostFormScreen({ initial, onSaved, onCancel }: HostFormScreenPro
   };
 
   return (
-    <Screen edges={['left', 'right', 'bottom']} testID="host-form">
+    <Screen edges={['left', 'right', 'bottom']} keyboardAvoiding testID="host-form">
       <Section title={t('Host')} grouped={false}>
         <TextField
           label={t('Name (optional)')}

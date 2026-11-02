@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, RefreshControl, ScrollView, View } from 'react-native';
 import { type Edge, SafeAreaView } from 'react-native-safe-area-context';
 import { makeStyles, useTheme } from '../theme/theme';
 import { ScreenBackground } from './ScreenBackground';
@@ -22,6 +22,12 @@ interface ScreenProps {
   onRefresh?: () => void;
   /** Safe-area edges to inset; a screen under a navigation header drops 'top'. */
   edges?: readonly Edge[];
+  /**
+   * Lifts the content above the software keyboard. Android draws edge to edge, so the window no
+   * longer resizes and the keyboard would cover the lower fields (a tap on them hit the keys and the
+   * text went to the previously focused field).
+   */
+  keyboardAvoiding?: boolean;
   testID?: string;
 }
 
@@ -32,6 +38,7 @@ export function Screen({
   refreshing = false,
   onRefresh,
   edges = ALL_EDGES,
+  keyboardAvoiding = false,
   testID = 'screen',
 }: ScreenProps) {
   const styles = useStyles();
@@ -48,20 +55,27 @@ export function Screen({
   return (
     <SafeAreaView style={styles.root} edges={edges} testID={testID}>
       <ScreenBackground />
-      {scroll ? (
-        <ScrollView
-          style={styles.fill}
-          testID={`${testID}-scroll`}
-          contentContainerStyle={[styles.content, styles.readable]}
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
-          refreshControl={refresh}
-        >
-          {children}
-        </ScrollView>
-      ) : (
-        <View style={[styles.fill, styles.content, styles.readable]}>{children}</View>
-      )}
+      <KeyboardAvoidingView
+        style={styles.fill}
+        enabled={keyboardAvoiding}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        testID={`${testID}-keyboard`}
+      >
+        {scroll ? (
+          <ScrollView
+            style={styles.fill}
+            testID={`${testID}-scroll`}
+            contentContainerStyle={[styles.content, styles.readable]}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
+            refreshControl={refresh}
+          >
+            {children}
+          </ScrollView>
+        ) : (
+          <View style={[styles.fill, styles.content, styles.readable]}>{children}</View>
+        )}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
