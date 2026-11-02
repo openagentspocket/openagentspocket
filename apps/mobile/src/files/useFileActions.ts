@@ -1,6 +1,6 @@
 import type { FileBrowserItem, FileBrowserStore } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { type ActionMenuItem, confirm } from '@openagentspocket/ui';
+import { type ActionMenuItem, confirm, prompt } from '@openagentspocket/ui';
 import { rowDetail } from './FileRow';
 import { pickDocument, pickPhoto } from './pickers';
 
@@ -21,8 +21,21 @@ export async function confirmDelete(store: FileBrowserStore, item: FileBrowserIt
   if (ok) store.delete(item);
 }
 
+/** files.rename-alert: a centered alert with the name in a field; an existing name is never replaced. */
+export async function promptRename(store: FileBrowserStore, item: FileBrowserItem) {
+  const name = await prompt({
+    title: t('Rename'),
+    message: t('A new name for "%@". An existing name is never replaced.', item.name),
+    initial: item.name,
+    confirmLabel: t('Rename'),
+    cancelLabel: t('Cancel'),
+    testID: 'rename-field',
+  });
+  if (name !== null) store.rename(item, name);
+}
+
 /** The folder-level menu (uploads, refresh) and each row's long-press menu. */
-export function fileMenus(store: FileBrowserStore, rename: (item: FileBrowserItem) => void) {
+export function fileMenus(store: FileBrowserStore) {
   const upload = async (pick: typeof pickDocument, asPhoto: boolean) => {
     const picked = await pick();
     if (!picked) return;
@@ -66,7 +79,7 @@ export function fileMenus(store: FileBrowserStore, rename: (item: FileBrowserIte
       title: t('Rename…'),
       icon: 'edit',
       disabled: !store.canRename(item),
-      onPress: () => rename(item),
+      onPress: () => void promptRename(store, item),
     },
     {
       key: 'delete',

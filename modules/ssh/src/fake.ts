@@ -73,6 +73,8 @@ export interface FakeSshOptions {
   files?: Record<string, Uint8Array>;
   /** Directories that exist (the parents of `files` are added). */
   directories?: string[];
+  /** Modification times (Unix seconds) by path; others read as 0. */
+  modified?: Record<string, number>;
   hostKey?: HostKey;
   /** Users whose key is authorized; default: any. */
   authorizedUsers?: string[];
@@ -215,7 +217,7 @@ export class FakeSession implements SshSession {
   }
   async sftp(): Promise<Sftp> {
     this.check();
-    return fakeSftp(this.files, this.directories);
+    return fakeSftp(this.files, this.directories, this.options.modified);
   }
   async forwardLocal(_remoteHost: string, _remotePort: number): Promise<LocalForward> {
     this.check();

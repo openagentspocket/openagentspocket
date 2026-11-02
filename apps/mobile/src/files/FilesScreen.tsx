@@ -1,4 +1,4 @@
-import type { FileBrowserItem, FileBrowserStore } from '@openagentspocket/core';
+import type { FileBrowserStore } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   ActionMenu,
@@ -16,7 +16,6 @@ import { ScrollView, View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
 import { FileRow } from './FileRow';
 import { PathChip } from './PathChip';
-import { RenameSheet } from './RenameSheet';
 import { type FileBrowserSource, useFileBrowserSource } from './source';
 import { TransferBar } from './TransferBar';
 import { fileMenus } from './useFileActions';
@@ -25,7 +24,12 @@ import { useFileDialogs } from './useFileDialogs';
 
 const useStyles = makeStyles((theme) => ({
   list: { flex: 1 },
-  content: { padding: theme.metrics.screenInset, gap: theme.spacing.sm },
+  content: {
+    paddingHorizontal: theme.metrics.screenInset,
+    paddingTop: theme.spacing.xs,
+    paddingBottom: theme.spacing.lg,
+    gap: theme.spacing.sm,
+  },
   transfer: { paddingHorizontal: theme.metrics.screenInset, paddingBottom: theme.spacing.sm },
 }));
 
@@ -53,9 +57,8 @@ function FileBrowser({ store, onDone }: { store: FileBrowserStore; onDone?: () =
   const styles = useStyles();
   const [adding, setAdding] = useState(false);
   const state = useFileBrowserState(store);
-  const [renaming, setRenaming] = useState<FileBrowserItem | null>(null);
   useFileDialogs(store, state);
-  const menus = fileMenus(store, setRenaming);
+  const menus = fileMenus(store);
   const partial = state.truncated
     ? t('Showing the first %@ items of this folder.', String(state.items.length))
     : state.scanIncomplete
@@ -82,7 +85,13 @@ function FileBrowser({ store, onDone }: { store: FileBrowserStore; onDone?: () =
   );
 
   return (
-    <Screen scroll={false} header={bar} edges={['left', 'right', 'bottom']} testID="files-screen">
+    <Screen
+      scroll={false}
+      bare
+      header={bar}
+      edges={['left', 'right', 'bottom']}
+      testID="files-screen"
+    >
       <PathChip path={store.displayPath} loadingLabel={t('Loading %@…', state.hostName)} />
       <ScrollView style={styles.list} contentContainerStyle={styles.content}>
         {partial ? <Banner title={partial} tone="info" /> : null}
@@ -118,11 +127,6 @@ function FileBrowser({ store, onDone }: { store: FileBrowserStore; onDone?: () =
         title={t('Upload')}
         visible={adding}
         onClose={() => setAdding(false)}
-      />
-      <RenameSheet
-        item={renaming}
-        onClose={() => setRenaming(null)}
-        onRename={(item, name) => store.rename(item, name)}
       />
     </Screen>
   );

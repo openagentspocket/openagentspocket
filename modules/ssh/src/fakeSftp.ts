@@ -11,12 +11,16 @@ const parentOf = (path: string) => path.slice(0, Math.max(path.lastIndexOf('/'),
  * rename refuses an existing target unless `overwrite`, rmdir only empties, missing paths read
  * as null from stat/list/read.
  */
-export function fakeSftp(files: Map<string, Uint8Array>, dirs: Set<string>): Sftp {
+export function fakeSftp(
+  files: Map<string, Uint8Array>,
+  dirs: Set<string>,
+  modified: Readonly<Record<string, number>> = {},
+): Sftp {
   const exists = (path: string) => files.has(path) || dirs.has(path);
   const statOf = (path: string): SftpStat | null => {
     const data = files.get(path);
-    if (data) return { kind: 'file', size: data.length, modifiedAt: 0 };
-    return dirs.has(path) ? { kind: 'directory', size: 0, modifiedAt: 0 } : null;
+    if (data) return { kind: 'file', size: data.length, modifiedAt: modified[path] ?? 0 };
+    return dirs.has(path) ? { kind: 'directory', size: 0, modifiedAt: modified[path] ?? 0 } : null;
   };
   const write = (path: string, data: Uint8Array) => {
     if (exists(path)) throw failure('exists');
