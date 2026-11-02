@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
@@ -32,7 +33,7 @@ interface EmptyDetailProps {
   icon?: IconName;
   title: string;
   message: string;
-  action?: { label: string; shortcut?: string; onPress: () => void };
+  action?: { label: string; shortcut?: ReactNode; onPress: () => void };
   testID?: string;
 }
 
@@ -73,11 +74,13 @@ export function EmptyDetail({
           <Text variant="callout" tone="accent">
             {action.label}
           </Text>
-          {action.shortcut ? (
+          {typeof action.shortcut === 'string' ? (
             <Text variant="caption2" tone="secondary">
               {action.shortcut}
             </Text>
-          ) : null}
+          ) : (
+            (action.shortcut ?? null)
+          )}
         </Pressable>
       ) : null}
     </View>

@@ -15,6 +15,9 @@ export const PRESENTATION_ICON: Record<ListPresentation, IconName> = {
   workspace: 'folder',
 };
 
+/** Glyphs fill about 60 percent of the 44 pt control, as in Swift. */
+const TOOLBAR_ICON = 26;
+
 const useStyles = makeStyles((t) => ({
   bar: {
     flexDirection: 'row',
@@ -65,6 +68,7 @@ export function ListToolbar({
         <Button
           kind="text"
           icon="home"
+          iconSize={TOOLBAR_ICON}
           accessibilityLabel={labels.home}
           onPress={onHome}
           testID={`${testID}-home`}
@@ -74,18 +78,21 @@ export function ListToolbar({
         <ActionMenuButton
           items={hostItems}
           icon="filter"
+          iconSize={TOOLBAR_ICON}
           accessibilityLabel={labels.host}
           testID={`${testID}-host`}
         />
         <ActionMenuButton
           items={presentationItems}
           icon={PRESENTATION_ICON[presentation]}
+          iconSize={TOOLBAR_ICON}
           accessibilityLabel={labels.presentation}
           testID={`${testID}-presentation`}
         />
         <Button
           kind="text"
           icon="add"
+          iconSize={TOOLBAR_ICON}
           accessibilityLabel={labels.new}
           onPress={onNew}
           testID={`${testID}-new`}

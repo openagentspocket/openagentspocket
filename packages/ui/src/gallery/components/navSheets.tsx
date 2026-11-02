@@ -6,9 +6,9 @@ import { ListToolbar } from '../../components/ListToolbar';
 import { QuickSheetHeader } from '../../components/QuickSheetHeader';
 import { ScannerFrame } from '../../components/ScannerFrame';
 import { SidebarColumn } from '../../components/SidebarColumn';
-import { Icon } from '../../primitives/Icon';
 import { ListRow } from '../../primitives/ListRow';
 import { MetaChip } from '../../primitives/MetaChip';
+import { ProgramMark } from '../../primitives/ProgramMark';
 import { Text } from '../../primitives/Text';
 import type { CatalogEntry } from './types';
 
@@ -37,9 +37,25 @@ function SidebarDemo() {
           { key: 'presentation', icon: 'list', label: 'Presentation', items: items(['Flat']) },
         ]}
       >
-        <ListRow title="Checkout" subtitle="/workspace/storefront" value="Blocked" />
-        <ListRow title="Payments API" subtitle="/workspace/payments-api" value="Working" />
-        <ListRow title="Product Docs" subtitle="/workspace/product-docs" value="Idle" />
+        <ListRow
+          selected
+          leading={<ProgramMark program="claude" status="blocked" size={18} />}
+          title="Checkout"
+          subtitle="/workspace/storefront"
+          value="Blocked"
+        />
+        <ListRow
+          leading={<ProgramMark program="codex" status="working" size={18} />}
+          title="Payments API"
+          subtitle="/workspace/payments-api"
+          value="Working"
+        />
+        <ListRow
+          leading={<ProgramMark program="claude" status="idle" size={18} />}
+          title="Product Docs"
+          subtitle="/workspace/product-docs"
+          value="Idle"
+        />
       </SidebarColumn>
     </View>
   );
@@ -73,7 +89,7 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
           <EmptyDetail
             title="No Agent Selected"
             message="Choose an Agent or start a new one to view its live terminal."
-            action={{ label: 'New Agent', shortcut: 'Cmd N', onPress: noop }}
+            action={{ label: 'New Agent', shortcut: '⌘N', onPress: noop }}
           />
         ),
       },
@@ -99,9 +115,9 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
               onClose={noop}
               eyebrow={
                 <>
-                  <Icon name="sparkles" size={16} />
+                  <ProgramMark program="codex" status="working" size={18} />
                   <Text variant="callout" tone="secondary">
-                    Codex - Working
+                    Codex · Working
                   </Text>
                 </>
               }

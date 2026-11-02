@@ -6,6 +6,9 @@ import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
+/** Swift's footer glyphs are small, well under the 44 pt target. */
+const FOOTER_ICON = 18;
+
 const useStyles = makeStyles((t) => ({
   column: {
     width: 330,
@@ -21,22 +24,23 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.xs,
-    paddingHorizontal: t.spacing.md,
-    paddingTop: t.spacing.sm,
+    paddingLeft: t.spacing.md,
+    paddingRight: t.spacing.xs,
+    paddingTop: t.spacing.xs,
   },
   titleMenu: { flex: 1, flexDirection: 'row', alignItems: 'center' },
   search: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: t.spacing.xs,
-    minHeight: t.metrics.minTapSize,
-    marginHorizontal: t.spacing.md,
-    marginTop: t.spacing.sm,
-    paddingHorizontal: t.spacing.sm,
+    gap: t.spacing.xxs,
+    minHeight: 36,
+    marginHorizontal: t.spacing.sm,
+    marginTop: t.spacing.xs,
+    paddingHorizontal: t.spacing.xs,
     borderRadius: 999,
     backgroundColor: t.colors.control,
   },
-  input: { flex: 1, color: t.colors.textPrimary, fontSize: 17, paddingVertical: 0 },
+  input: { flex: 1, color: t.colors.textPrimary, fontSize: 15, paddingVertical: 0 },
   list: { flex: 1, paddingTop: t.spacing.xs },
   footer: {
     flexDirection: 'row',
@@ -101,12 +105,13 @@ export function SidebarColumn({
     <View style={styles.column} testID={testID}>
       <View style={styles.header}>
         <View style={styles.titleMenu}>
-          <Text variant="title2" accessibilityRole="header">
+          <Text variant="headline" accessibilityRole="header">
             {title}
           </Text>
           <ActionMenuButton
             items={titleItems}
             icon="chevronDown"
+            iconSize={13}
             accessibilityLabel={titleLabel}
             testID={`${testID}-title-menu`}
           />
@@ -114,6 +119,7 @@ export function SidebarColumn({
         <Button
           kind="text"
           icon="add"
+          iconSize={20}
           accessibilityLabel={labels.new}
           onPress={onNew}
           testID={`${testID}-new`}
@@ -121,13 +127,14 @@ export function SidebarColumn({
         <Button
           kind="text"
           icon="sidebar"
+          iconSize={20}
           accessibilityLabel={labels.hide}
           onPress={onHide}
           testID={`${testID}-hide`}
         />
       </View>
       <View style={styles.search}>
-        <Icon name="search" size={18} />
+        <Icon name="search" size={15} />
         <TextInput
           value={search}
           onChangeText={onSearchChange}
@@ -146,6 +153,7 @@ export function SidebarColumn({
               key={action.key}
               kind="text"
               icon={action.icon}
+              iconSize={FOOTER_ICON}
               accessibilityLabel={action.label}
               onPress={action.onPress}
               testID={`${testID}-footer-${action.key}`}
@@ -158,6 +166,7 @@ export function SidebarColumn({
               key={menu.key}
               items={menu.items}
               icon={menu.icon}
+              iconSize={FOOTER_ICON}
               accessibilityLabel={menu.label}
               testID={`${testID}-footer-${menu.key}`}
             />

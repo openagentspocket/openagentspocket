@@ -66,7 +66,7 @@ const ICONS = {
   filter: { ios: 'line.3.horizontal.decrease.circle', android: 'filter_list' },
   list: { ios: 'list.bullet', android: 'list' },
   sidebar: { ios: 'sidebar.left', android: 'view_sidebar' },
-  windows: { ios: 'rectangle.on.rectangle', android: 'filter_none' },
+  windows: { ios: 'rectangle.on.rectangle', android: 'flip_to_front' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
