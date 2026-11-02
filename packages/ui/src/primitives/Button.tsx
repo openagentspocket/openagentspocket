@@ -4,7 +4,8 @@ import { Icon, type IconName } from './Icon';
 import { Text } from './Text';
 
 export type ButtonKind = 'primary' | 'secondary' | 'destructive' | 'text' | 'capsule';
-export type ButtonSize = 'regular' | 'small';
+/** dense: full tap height with callout text and tight padding (paired buttons in a sheet footer). */
+export type ButtonSize = 'regular' | 'small' | 'dense';
 
 const useStyles = makeStyles((t) => ({
   base: {
@@ -17,6 +18,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xs,
   },
   small: { minHeight: 32, paddingHorizontal: t.spacing.sm },
+  dense: { paddingHorizontal: t.spacing.xs, gap: t.spacing.xxs },
   iconOnly: { paddingHorizontal: 0, minWidth: t.metrics.minTapSize },
   iconOnlySmall: { minWidth: 32 },
   primary: { backgroundColor: t.colors.accent },
@@ -28,6 +30,7 @@ const useStyles = makeStyles((t) => ({
   destructive: { backgroundColor: t.wash(t.colors.danger) },
   text: { paddingHorizontal: t.spacing.xs },
   capsule: { backgroundColor: t.colors.accentContainer, borderRadius: 999 },
+  label: { flexShrink: 1 },
   pressed: { opacity: 0.75 },
   disabled: { opacity: 0.4 },
 }));
@@ -95,6 +98,7 @@ export function Button({
       style={({ pressed }) => [
         styles.base,
         size === 'small' && styles.small,
+        size === 'dense' && styles.dense,
         iconOnly && styles.iconOnly,
         iconOnly && size === 'small' && styles.iconOnlySmall,
         styles[kind],
@@ -107,7 +111,13 @@ export function Button({
         <Icon name={icon} size={iconSize ?? (size === 'small' ? 15 : 17)} tint={ink} />
       ) : null}
       {title !== undefined ? (
-        <Text variant={size === 'small' ? 'callout' : 'headline'} style={{ color: ink }}>
+        <Text
+          variant={size === 'regular' ? 'headline' : 'callout'}
+          numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.8}
+          style={[styles.label, { color: ink }]}
+        >
           {title}
         </Text>
       ) : null}

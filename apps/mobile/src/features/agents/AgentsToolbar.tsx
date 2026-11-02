@@ -46,7 +46,7 @@ interface AgentsToolbarProps {
 export function AgentsToolbar(props: AgentsToolbarProps) {
   const styles = useStyles();
   const hostItems: ActionMenuItem[] =
-    props.hosts.length > 1
+    props.hosts.length > 0
       ? [
           {
             key: 'all',

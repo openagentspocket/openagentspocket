@@ -9,7 +9,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.sm,
-    minHeight: t.metrics.rowMinHeight,
+    minHeight: t.metrics.minTapSize,
     paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.xs,
   },

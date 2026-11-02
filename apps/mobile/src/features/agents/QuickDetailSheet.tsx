@@ -70,13 +70,15 @@ export function QuickDetailSheet({
     <Sheet
       visible
       onClose={onClose}
-      detent="medium"
+      detent={{ fraction: 0.64 }}
+      closeButton={false}
       testID="quick-detail"
       footer={
         <>
           <View style={styles.pair}>
             <View style={styles.fill}>
               <Button
+                size="dense"
                 icon="bot"
                 title={t('Open Chat')}
                 onPress={() => onOpen(row)}
@@ -85,6 +87,7 @@ export function QuickDetailSheet({
             </View>
             <View style={styles.fill}>
               <Button
+                size="dense"
                 icon="terminal"
                 title={t('Open Terminal')}
                 onPress={() => onOpen(row)}
@@ -95,6 +98,7 @@ export function QuickDetailSheet({
           <View style={styles.pair}>
             <View style={styles.fill}>
               <Button
+                size="dense"
                 kind="secondary"
                 icon="pin"
                 title={pinned ? labels.unpin : labels.pin}
@@ -103,6 +107,7 @@ export function QuickDetailSheet({
             </View>
             <View style={styles.fill}>
               <Button
+                size="dense"
                 kind="destructive"
                 icon="close"
                 title={labels.close}

@@ -83,6 +83,8 @@ interface SheetProps {
   trailing?: SheetBarAction;
   /** Title drawn large under the bar (Settings, Hosts) instead of inline. */
   largeTitle?: boolean;
+  /** False on an untitled sheet that dismisses by swipe or backdrop (the quick detail): no header row. */
+  closeButton?: boolean;
   /** Hide the grabber (large form sheets). Default shown. */
   grabber?: boolean;
   /** Pinned under the scrolling body (a primary action). */
@@ -101,6 +103,7 @@ export function Sheet({
   trailing,
   largeTitle = false,
   grabber = true,
+  closeButton = true,
   closeLabel = 'Close',
   footer,
   children,
@@ -183,7 +186,7 @@ export function Sheet({
                 </View>
               ) : null}
             </>
-          ) : (
+          ) : closeButton || title !== undefined ? (
             <View style={styles.header}>
               <Text variant="headline" accessibilityRole="header" style={styles.title}>
                 {title ?? ''}
@@ -196,7 +199,7 @@ export function Sheet({
                 testID={`${testID}-close`}
               />
             </View>
-          )}
+          ) : null}
           <ScrollView
             contentContainerStyle={styles.body}
             keyboardShouldPersistTaps="handled"

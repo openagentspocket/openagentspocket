@@ -37,7 +37,7 @@ const useStyles = makeStyles((t) => ({
 interface ListToolbarProps {
   presentation: ListPresentation;
   presentationItems: readonly ActionMenuItem[];
-  /** Empty with a single Host: the filter is hidden. */
+  /** Empty only before any Host exists: the filter is hidden. */
   hostItems: readonly ActionMenuItem[];
   onHome: () => void;
   onNew: () => void;

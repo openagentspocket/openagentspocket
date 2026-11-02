@@ -59,7 +59,10 @@ export function AtlasFrame({ data, children }: { data: AtlasData; children: Reac
   freezeAtlasClock();
   const [ready, setReady] = useState(false);
   const store = useMemo(() => {
-    const created = data.console === 'empty' ? emptyConsoleStore() : createDemoConsoleStore();
+    const created =
+      data.console === 'empty'
+        ? emptyConsoleStore()
+        : createDemoConsoleStore(undefined, undefined, true);
     if (data.presentation) created.listPrefs.setPresentation(data.presentation);
     return created;
   }, [data.console, data.presentation]);

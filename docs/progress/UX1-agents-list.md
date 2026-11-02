@@ -11,13 +11,14 @@ acceptance:
 - Section headers with count capsule, fold chevron: met (FoldHeader status/host, WorkspaceCard; a workspace with one Agent is a plain card as in Swift).
 - Search filters live, empty states: met (SearchField; EmptyState fill/compact).
 - Quick detail sheet (kind, status, age, title, chips, copyable ids, Open Chat / Open Terminal, Pin, Close pinned in the footer): met, opened from the Details menu item.
+- Review fixes: rows align with the title and dividers run edge to edge (AgentCard row padding removed, hairline bleeds through the screen inset, FoldHeader no side padding); toolbar always shows the filter (All Hosts + Hosts); rich demo (2 Hosts, workspaces with 2 Agents, session id) drives by-workspace and by-host; quick detail: no stray close, dense single-line footer buttons, 44 pt detail rows, detent 0.64 so Session and Pane id show.
 - Board: not changed (kept as is, same ListRow card); see left.
 left:
 - Terminals list (console.terminals-list): RN has no shell-pane inventory in the Console store, so TerminalRow/TerminalGroup have no screen yet. Needs a core inventory first.
 - Worktrees nested under the repository card, worktree details and remove confirmation (console.worktree-*): RepositoryCheckout is on the row but no grouping by repository exists in core.
-- Diff totals (+12 -7) and context-left per Agent need Host data in ConsoleRow.
+- Diff totals and context-left: tracked in docs/ux/rn-gap.md section 10 (need ConsoleRow data).
 - Board still uses ListRow; move it to AgentCard presentation card in a compact mode.
-- Atlas ids rename-sheet, close-confirmation, row-context-menu, search have no entry (sheets over the list need a way to open them).
+- Also tracked in rn-gap.md section 10: SearchField gallery entry, quick detail age seed. Atlas ids rename-sheet, close-confirmation, row-context-menu, search have no entry (sheets over the list need a way to open them).
 notes:
 - Swift has no stack header on this screen: the route hides it and draws ListToolbar (Home circle, capsule), a large title and the new SearchField.
 - ListToolbar's Host filter is omitted when its item list is empty.

@@ -117,3 +117,17 @@ shell.* (sidebar, switcher, app lock, banner, commands), files.* sheets, browser
 - Terminal and chat surfaces are the heart of Swift; RN has neither on web (PlainTerminal) and a placeholder for chat.
 - Atlas caveats: web has no glass, native menus or safe-area insets (RN headers look shorter than on iOS);
   changes.file-diff needs a selected file; usage.limits-page, browser.ports and rn.board have no Swift shot yet.
+
+## 10. Agents list follow-ups (UX1-agents-list, tracked)
+
+- Row diff totals (+12 -7) and the context-low pill (16 %): AgentCard renders both (`diff`, `contextLeft`) but
+  `ConsoleRow` has no diff or context fields, so the Console rows never carry them. Needs git diff stats and context
+  usage from the Host in core first; then wire them in `agentCardModel` and add them to the demo Hosts.
+- Board still uses ListRow: move it to AgentCard (`presentation="card"`, compact) so it matches the list.
+- SearchField has no gallery entry (`/__gallery/components/SearchField`).
+- No atlas entries for rename-sheet, close-confirmation, row-context-menu or search: sheets over the list need a way
+  to open them from `AtlasData` (like `openDetail`).
+- Quick detail age shows "now" in the atlas: seed the demo status stamps with a past `since` so it reads like Swift's 7m.
+- Papel iPhone: Swift has no light iPhone shot of these screens, the compare uses iPad references.
+- The atlas now uses the rich demo (`createDemoConsoleStore(undefined, undefined, true)`: two Hosts, a workspace with
+  two Agents on each); the plain demo store stays one Host for tests.

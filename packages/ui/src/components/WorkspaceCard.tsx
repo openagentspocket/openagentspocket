@@ -21,7 +21,7 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: 4,
     minHeight: 30,
   },
-  body: { marginTop: t.spacing.xs, marginLeft: t.spacing.md },
+  body: { marginTop: t.spacing.xs, marginLeft: t.spacing.md, gap: t.spacing.sm },
   nested: { marginLeft: t.spacing.md },
 }));
 

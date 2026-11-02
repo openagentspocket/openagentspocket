@@ -16,14 +16,14 @@ export type { AgentCardModel } from './AgentCardBody';
 export type AgentCardPresentation = 'row' | 'card' | 'plain';
 
 const useStyles = makeStyles((t) => ({
-  row: {
-    paddingHorizontal: t.spacing.md,
-    paddingVertical: t.spacing.sm,
-  },
-  rowSeparator: {
-    borderBottomWidth: t.metrics.hairlineWidth,
-    borderBottomColor: t.hairline,
-    marginHorizontal: t.spacing.md,
+  row: { paddingVertical: t.spacing.sm },
+  /** The divider runs edge to edge: it bleeds through the screen inset the row content respects. */
+  separator: {
+    ...({ position: 'absolute', bottom: 0 } as const),
+    left: -t.metrics.screenInset,
+    right: -t.metrics.screenInset,
+    height: t.metrics.hairlineWidth,
+    backgroundColor: t.hairline,
   },
   cardSlot: { paddingVertical: airy.rowInset },
   pressed: { backgroundColor: t.colors.surfaceRaised },
@@ -136,13 +136,11 @@ export function AgentCard({
     front
   );
   return (
-    <View
-      style={[
-        presentation === 'card' && styles.cardSlot,
-        presentation === 'row' && styles.rowSeparator,
-      ]}
-    >
+    <View style={presentation === 'card' ? styles.cardSlot : undefined}>
       {slot}
+      {presentation === 'row' ? (
+        <View style={styles.separator} pointerEvents="none" testID={`separator-${testID}`} />
+      ) : null}
       {menu?.length ? (
         <AgentRowMenu
           preview={<Card>{body}</Card>}
