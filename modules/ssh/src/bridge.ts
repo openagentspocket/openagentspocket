@@ -1,7 +1,8 @@
 /**
- * The raw native module surface (`AgenticoSSH`, ios/Module/AgenticoSSHModule.swift). Ids name
- * native objects, bytes are base64, failures reject with an error whose `code` is an
- * `SshErrorCode`. Only `client.ts` talks to it; apps use the `SshModule` it builds.
+ * The raw native module surface (`AgenticoSSH`: ios/Module/AgenticoSSHModule.swift and
+ * android/.../AgenticoSSHModule.kt implement it alike). Ids name native objects, bytes are base64,
+ * failures reject with an error whose `code` is an `SshErrorCode`. Only `client.ts` talks to it;
+ * apps use the `SshModule` it builds.
  */
 
 export interface NativeHello {

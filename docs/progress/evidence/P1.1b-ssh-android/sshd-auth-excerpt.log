@@ -1,0 +1,30 @@
+Connection from 127.0.0.1 port 56090 on 127.0.0.1 port 47420
+Connection closed by 127.0.0.1 port 56090 [preauth]
+Connection from 127.0.0.1 port 56140 on 127.0.0.1 port 47420
+Accepted key ED25519 SHA256:cks7c4xJSX6cLeKQkrpos2csy4EBxF+xg/nMiZVI4iA found at /tmp/agp11b/ssh/authorized_keys:4
+Postponed publickey for <user> from 127.0.0.1 port 56140 ssh2 [preauth]
+Accepted key ED25519 SHA256:cks7c4xJSX6cLeKQkrpos2csy4EBxF+xg/nMiZVI4iA found at /tmp/agp11b/ssh/authorized_keys:4
+Accepted publickey for <user> from 127.0.0.1 port 56140 ssh2: ED25519 SHA256:cks7c4xJSX6cLeKQkrpos2csy4EBxF+xg/nMiZVI4iA
+BSM audit: bsm_audit_session_setup: setaudit_addr failed: Operation not permitted
+User child is on pid 98096
+Connection from 127.0.0.1 port 56147 on 127.0.0.1 port 47420
+Accepted key ED25519 SHA256:cks7c4xJSX6cLeKQkrpos2csy4EBxF+xg/nMiZVI4iA found at /tmp/agp11b/ssh/authorized_keys:4
+Postponed publickey for <user> from 127.0.0.1 port 56147 ssh2 [preauth]
+Accepted key ED25519 SHA256:cks7c4xJSX6cLeKQkrpos2csy4EBxF+xg/nMiZVI4iA found at /tmp/agp11b/ssh/authorized_keys:4
+Accepted publickey for <user> from 127.0.0.1 port 56147 ssh2: ED25519 SHA256:cks7c4xJSX6cLeKQkrpos2csy4EBxF+xg/nMiZVI4iA
+BSM audit: bsm_audit_session_setup: setaudit_addr failed: Operation not permitted
+User child is on pid 98111
+Connection closed by 127.0.0.1 port 56147
+Transferred: sent 3376, received 2632 bytes
+Closing connection to 127.0.0.1 port 56147
+Starting session: forced-command (config) 'exec /bin/sh /tmp/agp11b/force-command.sh' for <user> from 127.0.0.1 port 56140 id 0
+Close session: user <user> from 127.0.0.1 port 56140 id 0
+Starting session: forced-command (config) 'exec /bin/sh /tmp/agp11b/force-command.sh' for <user> from 127.0.0.1 port 56140 id 0
+Close session: user <user> from 127.0.0.1 port 56140 id 0
+Attempt to write login records by non-root user (aborting)
+Starting session: forced-command (config) 'exec /bin/sh /tmp/agp11b/force-command.sh' on ttys006 for <user> from 127.0.0.1 port 56140 id 0
+Attempt to write login records by non-root user (aborting)
+Close session: user <user> from 127.0.0.1 port 56140 id 0
+Starting session: forced-command (config) 'exec /bin/sh /tmp/agp11b/force-command.sh' for <user> from 127.0.0.1 port 56140 id 0
+Close session: user <user> from 127.0.0.1 port 56140 id 0
+Starting session: forced-command (config) 'exec /bin/sh /tmp/agp11b/force-command.sh' for <user> from 127.0.0.1 port 56140 id 0

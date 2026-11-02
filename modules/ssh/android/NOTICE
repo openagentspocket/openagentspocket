@@ -1,0 +1,14 @@
+Agentico SSH module, Android
+Copyright 2026 Agentico contributors
+
+The Kotlin sources under src/ are new code: the Android twin of the iOS Expo
+bridge in ../ios/Module (the same JavaScript contract, src/bridge.ts), under the
+Apache License 2.0 (LICENSE in this directory), like that bridge.
+src/main/java/com/jcraft/jsch/AgenticoSessionAccess.kt is one helper placed in
+JSch's package to reach a package-private setter; it contains no JSch code.
+
+Third-party components, fetched from Maven Central by build.gradle and keeping
+their own licenses: JSch (com.github.mwiede:jsch, BSD-3-Clause, with ISC
+jBCrypt and BSD-3-Clause JZlib parts) and the Bouncy Castle provider
+(org.bouncycastle:bcprov-jdk18on, MIT-style Bouncy Castle licence). A release
+build must ship their notices with the app.

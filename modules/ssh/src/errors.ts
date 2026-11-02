@@ -1,6 +1,6 @@
 /** Every failure the SSH module reports, as a stable code callers switch on. */
 export const SSH_ERROR_CODES = [
-  // From the native SSH layer (libssh2 on iOS).
+  // From the native SSH layer (libssh2 on iOS, JSch on Android).
   'invalidEndpoint',
   'connectionFailed',
   'algorithmNegotiationFailed',
