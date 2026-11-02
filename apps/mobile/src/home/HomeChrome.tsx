@@ -7,6 +7,7 @@ import {
   Fab,
   LargeTitleBar,
   makeStyles,
+  useTheme,
 } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import type { useUsageRing } from './UsageRingSlot';
@@ -20,6 +21,7 @@ const useStyles = makeStyles((th) => ({
     justifyContent: 'center',
     paddingRight: th.metrics.screenInset,
   },
+  floating: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   empty: { flex: 1 },
 }));
 
@@ -42,11 +44,16 @@ export function HomeTitle({
   );
 }
 
-/** The reserved strip under the list that holds the + button. */
+/** Height the list reserves at its end so the last row never hides behind the + button. */
+export function useNewStripHeight(): number {
+  return FAB_SIZE + 2 * useTheme().spacing.xs;
+}
+
+/** The + button floats bottom trailing over the list (content peeks beneath, as in Swift). */
 export function NewStrip({ items }: { items: readonly ActionMenuItem[] }) {
   const styles = useStyles();
   return (
-    <View style={styles.strip}>
+    <View style={[styles.strip, styles.floating]} pointerEvents="box-none">
       <Fab items={items} accessibilityLabel={t('New')} />
     </View>
   );

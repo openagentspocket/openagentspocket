@@ -6,7 +6,7 @@ import { ScrollView, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useConsoleState, useConsoleStore, useStatusInbox } from '../console/hooks';
 import { useHosts } from '../features/hosts/useHosts';
-import { HomeTitle, NewStrip, NoHosts } from './HomeChrome';
+import { HomeTitle, NewStrip, NoHosts, useNewStripHeight } from './HomeChrome';
 import { HomeHosts } from './HomeHosts';
 import { HomeInbox } from './HomeInbox';
 import { HomeSessions } from './HomeSessions';
@@ -50,6 +50,7 @@ export function HomeScreen(props: HomeScreenProps) {
   const usage = useUsageRing();
   const columns = useWindowDimensions().width >= WIDE ? 2 : 1;
   const saved = useHosts().hosts;
+  const reserved = useNewStripHeight();
 
   const issues = content.offlineHosts.map((host) => ({
     hostName: host.name || t('Offline'),
@@ -79,7 +80,11 @@ export function HomeScreen(props: HomeScreenProps) {
           <NoHosts onAddHost={onAddHost} onSetupGuide={onSetupGuide} />
         </>
       ) : (
-        <ScrollView style={styles.fill} testID="home-scroll" contentContainerStyle={styles.content}>
+        <ScrollView
+          style={styles.fill}
+          testID="home-scroll"
+          contentContainerStyle={[styles.content, { paddingBottom: reserved }]}
+        >
           <HomeTitle usage={usage} onOpenSettings={props.onOpenSettings} />
           <HostIssueRow
             issues={issues}
