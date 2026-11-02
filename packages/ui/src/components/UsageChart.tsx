@@ -7,7 +7,7 @@ import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 import { chartMax, niceCeiling, type Point, scrubIndex, smoothPath } from './usageChartMath';
 
-const HEIGHT = 150;
+const HEIGHT = 128;
 const AXIS_WIDTH = 52;
 const HOLD_MS = 250;
 

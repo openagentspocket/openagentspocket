@@ -20,7 +20,13 @@ export function UsageLimitsStrip({ readings, now, onDetails }: Props) {
   const styles = useStyles();
   const chips = quickContent(readings, now).cards.flatMap((card) => {
     if (card.body.kind !== 'windows') return [];
-    const window = card.body.windows.filter((w) => w.usedPercent !== null && !w.isExpired).at(-1);
+    // The tightest live window, as Swift's chips read it.
+    const window = card.body.windows
+      .filter((w) => w.usedPercent !== null && !w.isExpired)
+      .reduce<(typeof card.body.windows)[number] | null>(
+        (best, w) => (best === null || (w.usedPercent ?? 0) > (best.usedPercent ?? 0) ? w : best),
+        null,
+      );
     return window && window.usedPercent !== null
       ? [{ card, window, percent: window.usedPercent }]
       : [];

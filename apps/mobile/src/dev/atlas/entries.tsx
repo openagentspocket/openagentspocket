@@ -104,8 +104,10 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'shell.app-lock': {
     render: () => <AppLockView kind="Face ID" locked message={null} onUnlock={noop} />,
   },
-  'usage.tab': { render: () => <Usage /> },
-  'usage.tab--host': { render: () => <UsageScreen initial={{ host: 'demo' }} /> },
+  'usage.tab': { render: () => titled(t('Usage'), <Usage />) },
+  'usage.tab--host': {
+    render: () => titled(t('Usage'), <UsageScreen initial={{ host: 'demo' }} />),
+  },
   'usage.scope-menu': { render: () => <UsageScreen initial={{ menu: true }} /> },
   'usage.quick-sheet': { render: () => <UsageScreen initial={{ quick: true }} /> },
   'usage.day-sheet': { render: () => <UsageScreen initial={{ day: 'latest' }} /> },
