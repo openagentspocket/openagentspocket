@@ -3,7 +3,7 @@ appId: com.openagentspocket.app
 ---
 - launchApp:
     clearState: true
-- assertVisible: "Agentico"
+- assertVisible: "OpenAgentsPocket"
 - assertVisible: "NEEDS YOU.*"
 - assertVisible: "WORKING.*"
 - assertVisible: "DONE.*"
