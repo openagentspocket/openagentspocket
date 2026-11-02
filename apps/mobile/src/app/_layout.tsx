@@ -45,17 +45,15 @@ function AppStack() {
     <Stack screenOptions={options}>
       <Stack.Screen name="index" options={{ ...bare, title: t('Home') }} />
       <Stack.Screen name="changes" options={{ ...bare, title: t('Changes') }} />
-      <Stack.Screen name="hosts" options={{ ...bare, title: t('Hosts') }} />
+      <Stack.Screen name="hosts" options={{ ...bare, title: t('Hosts'), presentation: 'modal' }} />
       <Stack.Screen name="ports" options={{ ...bare, title: t('Ports') }} />
       <Stack.Screen name="usage" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-breakdown" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-limits" options={{ title: t('Usage Limits') }} />
       <Stack.Screen name="files" options={{ title: t('Files') }} />
-      <Stack.Screen name="settings/index" options={{ title: t('Settings') }} />
-      <Stack.Screen name="settings/notifications" options={{ title: t('Notifications') }} />
       <Stack.Screen
-        name="settings/notification-privacy"
-        options={{ title: t('How notifications stay private') }}
+        name="settings"
+        options={{ ...bare, title: t('Settings'), presentation: 'modal' }}
       />
       <Stack.Screen name="new-agent" options={{ title: t('New Agent'), presentation: 'modal' }} />
       <Stack.Screen name="worktree" options={{ title: t('Worktree'), presentation: 'modal' }} />

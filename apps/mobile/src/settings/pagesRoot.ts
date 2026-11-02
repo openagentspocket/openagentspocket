@@ -1,7 +1,7 @@
 import { type CHAT_FONTS, GRACE_PERIODS, type TERMINAL_FONTS } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import type { IconName } from '@openagentspocket/ui';
-import type { SettingsPage, SettingsRow } from './schema';
+import type { SettingsContext, SettingsPage, SettingsRow } from './schema';
 
 type Text = SettingsRow['title'];
 
@@ -41,12 +41,18 @@ const GRACE_TITLES: Record<(typeof GRACE_PERIODS)[number], () => string> = {
   fifteenMinutes: () => t('After 15 Minutes'),
 };
 
-const route = (id: keyof typeof SETTINGS_ROUTES, title: Text, icon: IconName): SettingsRow => ({
+const route = (
+  id: keyof typeof SETTINGS_ROUTES,
+  title: Text,
+  icon: IconName,
+  value?: (ctx: SettingsContext) => string | undefined,
+): SettingsRow => ({
   kind: 'route',
   id: `settings.${id}`,
   title,
   icon,
   route: SETTINGS_ROUTES[id],
+  value,
 });
 
 export const root: SettingsPage = {
@@ -61,16 +67,19 @@ export const root: SettingsPage = {
           kind: 'page',
           id: 'settings.appearance.theme',
           title: () => t('Theme'),
-          icon: 'sparkles',
+          icon: 'appearance',
           page: 'theme',
+          accessory: 'themeDots',
           value: (ctx) => ctx.themeName,
         },
         {
           kind: 'page',
           id: 'settings.appearance.fontsAndSize',
           title: () => t('Fonts & Size'),
-          icon: 'edit',
+          icon: 'fontSize',
           page: 'fonts',
+          value: (ctx) =>
+            `${TERMINAL_FONT_TITLES[ctx.values.terminalFont]} ${ctx.values.terminalFontSize}`,
         },
       ],
     },
@@ -78,16 +87,21 @@ export const root: SettingsPage = {
       id: 'agents',
       title: () => t('Agents'),
       rows: [
-        route('notifications', () => t('Notifications'), 'bell'),
+        route(
+          'notifications',
+          () => t('Notifications'),
+          'bell',
+          (ctx) => ctx.summary.notifications,
+        ),
         {
           kind: 'page',
           id: 'settings.agents.chat',
           title: () => t('Chat'),
           subtitle: () => t('Finished turns, cache'),
-          icon: 'file',
+          icon: 'chat',
           page: 'chat',
         },
-        route('agentRows', () => t('Agent Rows'), 'settings'),
+        route('agentRows', () => t('Agent Rows'), 'agentRows'),
       ],
     },
     {
@@ -101,13 +115,20 @@ export const root: SettingsPage = {
           icon: 'keyboard',
           page: 'toolbar',
         },
-        route('snippets', () => t('Snippets'), 'terminal'),
+        route('snippets', () => t('Snippets'), 'snippets'),
       ],
     },
     {
       id: 'hosts',
       title: () => t('Hosts and Network'),
-      rows: [route('hosts', () => t('Hosts'), 'server')],
+      rows: [
+        route(
+          'hosts',
+          () => t('Hosts'),
+          'server',
+          (ctx) => String(ctx.summary.hostCount),
+        ),
+      ],
     },
     {
       id: 'security',

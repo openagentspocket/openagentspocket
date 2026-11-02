@@ -43,6 +43,7 @@ export function NotificationSettingsScreen() {
       >
         <NavRow
           title={t('How notifications stay private')}
+          icon="lock"
           testID="notifications-privacy-link"
           onPress={() => router.push('/settings/notification-privacy')}
         />

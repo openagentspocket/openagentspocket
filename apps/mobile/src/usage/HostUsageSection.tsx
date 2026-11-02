@@ -22,7 +22,7 @@ export function HostUsageSection({ hostId, onOpenUsage }: Props) {
   const styles = useStyles();
   const { readings } = useUsage();
   const reading = readings?.find((r) => r.id === hostId);
-  if (!reading || reading.state.kind !== 'available') return null;
+  if (reading?.state.kind !== 'available') return null;
   const scope = buildUsageScope([reading]);
   const total = scopeTotal(scope, 'last30Days');
   return (

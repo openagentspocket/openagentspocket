@@ -28,9 +28,9 @@ describe('modal routes', () => {
       });
   });
 
-  it('declares new-agent and worktree as modals in the root stack', () => {
+  it('declares new-agent, worktree and the settings group as modals in the root stack', () => {
     const layout = read('_layout.tsx');
-    for (const name of ['new-agent', 'worktree']) {
+    for (const name of ['new-agent', 'worktree', 'settings']) {
       expect(layout).toMatch(new RegExp(`name="${name}"[^>]*presentation: 'modal'`, 's'));
     }
   });

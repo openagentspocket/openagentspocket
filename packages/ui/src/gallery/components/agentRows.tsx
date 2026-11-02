@@ -4,6 +4,7 @@ import { FoldHeader } from '../../components/FoldHeader';
 import { HostIssueRow } from '../../components/HostIssueRow';
 import { TerminalGroup, TerminalRow, TerminalTile } from '../../components/TerminalRow';
 import { WorkspaceCard } from '../../components/WorkspaceCard';
+import { ActionMenu } from '../../overlay/ActionMenu';
 import { Card } from '../../primitives/Card';
 import type { CatalogEntry } from './types';
 
@@ -189,6 +190,22 @@ export const agentRowsEntries: readonly CatalogEntry[] = [
         id: 'default',
         render: () => (
           <AgentRowMenu
+            visible
+            inline
+            preview={
+              <Card>
+                <AgentCardPreview />
+              </Card>
+            }
+            items={actions.menu}
+            onClose={noop}
+          />
+        ),
+      },
+      {
+        id: 'action-menu-preview',
+        render: () => (
+          <ActionMenu
             visible
             inline
             preview={

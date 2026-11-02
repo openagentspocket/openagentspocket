@@ -1,12 +1,19 @@
-import { hostDisplayName } from '@openagentspocket/core';
+import { hostDisplayName, pluginPresentation } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, Card, EmptyState, Screen, StatusDot, Text } from '@openagentspocket/ui';
-import { useEffect } from 'react';
-import { View } from 'react-native';
+import {
+  Button,
+  EmptyState,
+  HostStatusCard,
+  type HostStatusTone,
+  Screen,
+  SheetBar,
+} from '@openagentspocket/ui';
+import { useEffect, useState } from 'react';
 import { HostUsageSection } from '@/usage/HostUsageSection';
 import { ChangedKeySection } from './ChangedKeySection';
-import { connectionTitle, HostFacts, RoutesSection } from './HostInfoSections';
-import { groupStatus } from './hostRows';
+import { connectionTitle, HostFacts, RoutesSection, routeLine } from './HostInfoSections';
+import { hostsRuntime } from './hostsRuntime';
+import { PluginNoticeSheet } from './PluginNoticeSheet';
 import { PreflightSection } from './PreflightSection';
 import { removeHostWithConfirmation } from './removeHost';
 import { useHostChecks } from './useHostChecks';
@@ -14,24 +21,36 @@ import { useHosts } from './useHosts';
 
 interface HostDetailScreenProps {
   hostId: string;
+  onBack: () => void;
   onEdit: (hostId: string) => void;
   onRemoved: () => void;
-  /** Opens Usage scoped to this Host. */
   onOpenUsage?: (hostId: string) => void;
+  /** Opens with the plugin notice presented (atlas). */
+  initiallyShowingPluginNotice?: boolean;
 }
 
-/** hosts.detail: the connection status, routes, Host facts and the preflight checklist. */
+const TONE: Record<string, HostStatusTone> = {
+  connected: 'success',
+  connecting: 'warning',
+  notConnected: 'warning',
+  cantConnect: 'danger',
+};
+
+/** hosts.detail: status card, key change, routes, Host facts and the preflight checklist. */
 export function HostDetailScreen({
   hostId,
+  onBack,
   onEdit,
   onRemoved,
   onOpenUsage,
+  initiallyShowingPluginNotice = false,
 }: HostDetailScreenProps) {
   const snapshot = useHosts();
   const host = snapshot.hosts.find((candidate) => candidate.id === hostId) ?? null;
   const { state, run, cancel, trustNewKey } = useHostChecks(host);
   const connection = snapshot.connections[hostId] ?? 'notConnected';
   const exists = host !== null;
+  const [noticeOpen, setNoticeOpen] = useState(initiallyShowingPluginNotice);
 
   // Checks run when the page opens, as the Swift app's onboarding does.
   // biome-ignore lint/correctness/useExhaustiveDependencies: once per opened Host
@@ -39,32 +58,48 @@ export function HostDetailScreen({
     if (exists) void run();
   }, [exists, hostId]);
 
+  const bar = (
+    <SheetBar
+      title={host ? hostDisplayName(host) : t('Host Details')}
+      back
+      leading={{ label: t('Back'), onPress: onBack, testID: 'host-back' }}
+      trailing={
+        host ? [{ label: t('Edit'), onPress: () => onEdit(hostId), testID: 'host-edit' }] : []
+      }
+    />
+  );
+  const edges = ['left', 'right', 'bottom'] as const;
   if (!host) {
     return (
-      <Screen testID="host-removed">
+      <Screen header={bar} edges={edges} testID="host-removed">
         <EmptyState icon="server" title={t('Host removed')} />
       </Screen>
     );
   }
   const running = connection === 'connecting';
+  const presentation = pluginPresentation(state.plugin, {
+    session: host.sessionName,
+    endpoint: host.herdrEndpoint,
+  });
   return (
-    <Screen testID="host-detail">
-      <Card padded testID="host-status-card">
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <StatusDot status={groupStatus(connection)} />
-          <Text variant="headline">{hostDisplayName(host)}</Text>
-        </View>
-        <Text tone="secondary" testID="host-status-title">
-          {connectionTitle(connection)}
-        </Text>
+    <Screen header={bar} edges={edges} testID="host-detail">
+      <HostStatusCard
+        tone={TONE[connection] ?? 'warning'}
+        title={connectionTitle(connection)}
+        subtitle={routeLine(host, state.routeInUse)}
+        onReconnect={running ? undefined : () => void run()}
+        reconnectLabel={t('Reconnect')}
+        testID="host-status-card"
+      />
+      {running ? (
         <Button
-          kind={running ? 'secondary' : 'primary'}
-          icon={running ? 'stop' : 'refresh'}
-          title={running ? t('Stop Connecting') : t('Reconnect')}
-          onPress={running ? cancel : () => void run()}
+          kind="text"
+          icon="stop"
+          title={t('Stop Connecting')}
+          onPress={cancel}
           testID="host-reconnect"
         />
-      </Card>
+      ) : null}
       {state.changedKey ? (
         <ChangedKeySection
           presented={state.changedKey.presented}
@@ -72,27 +107,39 @@ export function HostDetailScreen({
         />
       ) : null}
       <RoutesSection host={host} routeInUse={state.routeInUse} />
-      <HostFacts host={host} />
-      <PreflightSection report={state.report} running={state.running} />
+      <HostFacts
+        host={host}
+        plugin={presentation.value}
+        onPluginPress={presentation.notice ? () => setNoticeOpen(true) : undefined}
+      />
+      <PreflightSection
+        report={state.report}
+        running={state.running}
+        onToggleRun={running ? cancel : () => void run()}
+      />
       <HostUsageSection
         hostId={hostId}
         onOpenUsage={onOpenUsage ? () => onOpenUsage(hostId) : undefined}
       />
+      {presentation.notice ? (
+        <PluginNoticeSheet
+          notice={presentation.notice}
+          visible={noticeOpen}
+          onClose={() => setNoticeOpen(false)}
+          onRunChecks={() => void run()}
+          onRunAction={
+            hostsRuntime().runPluginSteps
+              ? async (steps) => {
+                  await hostsRuntime().runPluginSteps?.(host.id, steps);
+                  setNoticeOpen(false);
+                  void run();
+                }
+              : undefined
+          }
+        />
+      ) : null}
       <Button
-        kind="secondary"
-        title={running ? t('Cancel Checks') : t('Run Checks Again')}
-        onPress={running ? cancel : () => void run()}
-        testID="host-run-checks"
-      />
-      <Button
-        kind="secondary"
-        icon="edit"
-        title={t('Edit')}
-        onPress={() => onEdit(hostId)}
-        testID="host-edit"
-      />
-      <Button
-        kind="destructive"
+        kind="text"
         icon="trash"
         title={t('Remove Host')}
         onPress={() => void removeHostWithConfirmation(host).then((gone) => gone && onRemoved())}
