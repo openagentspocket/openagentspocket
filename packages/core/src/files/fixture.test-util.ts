@@ -5,10 +5,9 @@ import { FileBrowserError } from './errors';
 import { FakeLocalFiles } from './fake-local';
 import type { FileBrowserItem } from './item';
 import { FilePreparer } from './preparer';
-import { SftpFileBrowserHost, type SftpHostOptions } from './sftp-host';
+import { HOME_COMMAND, SftpFileBrowserHost, type SftpHostOptions } from './sftp-host';
 import { FileBrowserStore } from './store';
 
-export const HOME_COMMAND = `/bin/sh -c 'printf "__AGENTICO_HOME__=%s\\n" "$HOME"'`;
 export const bytes = (text: string) => encodeUtf8(text);
 export const text = (data: Uint8Array | undefined) =>
   data === undefined ? undefined : new TextDecoder().decode(data);

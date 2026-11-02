@@ -9,6 +9,7 @@ export {
   formatBytes,
   mutationFailureText,
 } from './errors';
+export { FakeLocalFiles } from './fake-local';
 export {
   type FileBrowserItem,
   isDirectory,
@@ -33,6 +34,7 @@ export { FilePreparer, type PreparedFile } from './preparer';
 export {
   type FileSftp,
   type FileSshSession,
+  HOME_COMMAND,
   SftpFileBrowserHost,
   type SftpHostOptions,
 } from './sftp-host';

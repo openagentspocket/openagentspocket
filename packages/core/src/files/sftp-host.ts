@@ -61,7 +61,7 @@ export interface SftpHostOptions {
   monotonicMs?: () => number;
 }
 
-const HOME_COMMAND = `/bin/sh -c 'printf "__AGENTICO_HOME__=%s\\n" "$HOME"'`;
+export const HOME_COMMAND = `/bin/sh -c 'printf "__AGENTICO_HOME__=%s\\n" "$HOME"'`;
 const HOME_PREFIX = '__AGENTICO_HOME__=';
 /** OpenSSH's catch-all failure: a rename onto an existing name, a folder with entries, other refusals. */
 const SFTP_FAILURE = 4;
