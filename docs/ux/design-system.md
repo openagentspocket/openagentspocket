@@ -1,0 +1,293 @@
+# UX design system: the Swift app's rules, in the Índigo skin
+
+Audience: the UX workers (phase 9, tasks UX1-*). Read this first, then your family brief in
+[briefs/](briefs/). The goal is the Swift app's structure, hierarchy, spacing, navigation and interactions wearing the
+Índigo skin; this file is the translation table. Swift sources are read-only references under
+`Sources/Agentico/DesignSystem/**` of the Swift repo (`../Agentico`).
+
+Legend: **Swift** = what the Swift app does today (verified in code). **Índigo** = what RN must do (the owner's
+decisions are marked *decided*; anything else is a proposal a UX worker may refine in its own PR, with a note in its
+progress file). **Gap** = what `packages/ui` lacks today (read from `packages/ui/src` on the base commit).
+
+## 0. What to trust, and the atlas caveat
+
+- Swift sources and `docs/ux/screens.yml` of the Swift repo are the contract for structure and behavior.
+- The Swift atlas PNGs are a reference for **structure only**: they were captured with the old skin (Noche, green accent,
+  radius 20). Never copy their colors or radii. Judge color against the Índigo/Papel tokens, structure against the PNG.
+- Atlas availability (checked 2026-11-02): the iPad atlas is complete, `build/ui-review/atlas-pad/screenshots/
+  ScreenAtlasTests/<test>/<screen-id>.png` (dark, 104 files) and `.../ScreenAtlasPapelTests/<test>/<screen-id>.png`
+  (light, 98 files). The iPhone atlas at `build/ui-review/atlas/screenshots` currently holds only three files
+  (`console.no-hosts-empty`, `console.worktree-removed`, `agent-detail.alerts`, plus the Papel pair of the last two).
+  **There is no atlas image of Home**: Home is an iPhone-only screen (an iPad window with a sidebar has no Home). For
+  phone-width layouts the sources of truth are the SwiftUI views named in each brief; the iPad sidebar column is the
+  closest picture of the phone list. Briefs say "no image" where that is the case, and give the numbers instead.
+- Image file names are screen ids: `console.agents-list-by-status.png` is screen id `console.agents-list-by-status`.
+  Each brief lists the `<test>` folder next to the id.
+
+## 1. Color and surfaces (tokens already exist)
+
+`packages/ui/src/theme/tokens.generated.ts` already carries the Swift token names (canvas, surface, surfaceRaised,
+surfaceOverlay, control, separator, textPrimary/Secondary/Tertiary, accent, onAccent, accentContainer, accentStrong, glow,
+statusBlocked/Working/Done/Idle, success, warning, danger, info, terminal*). *Decided*: Índigo default (canvas #08080F,
+surface #12131F, accent #8E7CFF, text #F6F6FC / #9C9FB8), Papel light with an indigo accent, Noche optional. Never a hex
+in app or UI source (`pnpm verify-fast` enforces it).
+
+| Swift use | Token | Notes |
+|---|---|---|
+| Screen background | canvas + `glow` radial wash | Swift `ScreenBackground`: `RadialGradient` from `glow` at 55% to 0%, centered at the top edge, radius 320 pt, 320 pt tall, behind every screen and sheet (`screenBackground()`, `sheetBackground()`). **Gap**: `Screen` paints flat canvas. Add a `ScreenBackground` (react-native-svg `RadialGradient`, already a dependency) used by `Screen` and `Sheet`. Papel's `glow` (#D3CCF0) is paler, keep the same opacity. |
+| Cards, grouped rows | surface | `themedCard()` level `.surface` |
+| Cards inside sheets, skeletons | surfaceOverlay | level `.overlay` |
+| Sheets, drawers, popovers | surfaceRaised (Swift) | RN `Sheet` uses surfaceOverlay: keep it; cards inside a sheet use `CardLevel` overlay, as today. |
+| Unselected controls, count capsules, chips | control | |
+| Selected row fill | accentContainer | |
+| Small solid accent fills | accentStrong | |
+| Attention outline | status/tone color at 40% | `accent:` on `themedCard`; RN `Card accent` already does it |
+| Status wash | color at 15% | `statusWashOpacity` = `metrics.washOpacity` |
+
+Gap: Swift sets the system `tint` to `accent` (links, toggles, pickers, progress). RN controls (Switch, selection
+handles, RefreshControl, native menus) must be tinted from tokens too; audit every `Switch` and native picker.
+
+## 2. Type scale
+
+*Decided*: SF Pro (the platform system font). Swift uses SwiftUI text styles, so everything scales with Dynamic Type.
+Sizes below are the iOS defaults at the Large setting. The x1.3 airy rule applies to **space**, never to type.
+
+| Style | Size / weight (line) | Where Swift uses it | RN `Text` today |
+|---|---|---|---|
+| largeTitle | 34 regular, bold on large nav title | empty-state symbol only (as an icon size) | none |
+| title (nav large title) | 34 bold | Settings / Hosts sheet large titles | none (`title` is 28/34) |
+| title2 | 22 bold | empty state heading (fill layout) | none |
+| headline | 17 semibold | Agent row title, quick-detail title, empty heading (compact), sheet titles | `headline` 17/22 ok |
+| body | 17 regular | form rows, option buttons, composer input | `body` is 15/21: **too small**; Gap |
+| callout | 16 regular | empty-state message, settings values | `callout` 14/19: too small; Gap |
+| subheadline | 15 regular / semibold | inbox card title (semibold), host card name (semibold), banner title (semibold), toolbar chips | missing |
+| footnote | 13 regular / semibold | section header (semibold, secondary), card detail text, "See all" (semibold, accent), settings captions | `caption` 13/18 close |
+| caption | 12 regular / semibold | row secondary rows, host name, age (monospacedDigit), session tile title (semibold) | `label` is 12 uppercase: wrong role |
+| caption2 | 11 regular / semibold | badge text (semibold), chip text (mono), status line | missing |
+| fixed 15 semibold | | detail header title; 12 regular subtitle; 12 mono model | |
+| fixed 9 bold monospacedDigit | | usage ring number | |
+| mono | `.monospaced()` = SF Mono at the style's size | addresses, paths, models, blocked prompt, chips, ages, ports, file sizes | Menlo 13 (`monoFamily`) |
+
+Índigo changes:
+- Rebuild `Text` variants as the iOS text styles: `largeTitle, title, title2, headline, body, callout, subheadline,
+  footnote, caption, caption2` plus a `mono` modifier (`fontFamily: 'ui-monospace'` renders SF Mono on iOS; keep `monospace`
+  on Android) and a `tabularNums` flag. Keep the old names as aliases during the migration (`title`->`title2`
+  etc. is a rename: grep first; the UX1-design-system task owns it).
+- Section headers are **sentence case** footnote semibold secondary ("Needs you", "Sessions", "Agents"), not the
+  uppercase tracked label RN draws today (`SectionHeader` calls `title.toUpperCase()`). Drop the uppercase.
+- Dynamic Type: RN scales text by default; cap at the accessibility font scale already in `metrics`
+  (`accessibilityFontScale` 1.4) via `useFontScale`. Layouts must switch to stacked variants at accessibility sizes
+  exactly where Swift does (inbox card header, status dot to glyph, chips `ViewThatFits`).
+
+## 3. Spacing, the x1.3 airy mapping, radii, hairlines
+
+Swift scale `ThemeMetrics.spacing = [4, 8, 12, 16, 24, 32]` (indices 0..5), `screenInset` 16.
+RN `spacing` already holds the x1.3 values (rounded): `xxs 5, xs 10, sm 16, md 21, lg 31, xl 42`, `screenInset` 21.
+Note the index shift: Swift `spacing[1]` (8) is RN `xs` (10), Swift `spacing[3]` (16) is RN `md` (21).
+
+Rule for off-scale literals in Swift views (14, 20, 6, 3, 10, 2): multiply by 1.3 and round, then use the nearest token
+if within 1 pt, else a named constant in the screen's own style file (never a bare number twice).
+
+| Swift literal | Where | Índigo (x1.3) |
+|---|---|---|
+| 4 / 8 / 12 / 16 / 24 / 32 | scale | 5 / 10 / 16 / 21 / 31 / 42 (tokens) |
+| 14 | host card padding, banner horizontal padding | 18 |
+| 20 | gap before a Home section (`sectionGap`) | 26 |
+| 10 | banner vertical padding, session tile padding, blocked option vertical padding | 13 |
+| 6 | VStack spacing in rows and composer, badge horizontal padding | 8 |
+| 3 / 2 | chip vertical padding, badge vertical padding, tiny gaps | 4 / 3 |
+| row inset top/bottom 4 | list rows | 5 |
+
+**Do not scale**: type sizes, glyph sizes, tap targets (44 stays 44; the 58 pt "+" button and 34 pt host icon circle stay),
+the status dot (8; RN draws 10: set to 8 for list rows, 7 in the status line), strokes (1 pt hairline, 2 pt selection
+ring), the 24 pt usage ring, grabber (36x5).
+
+Radii (*decided* cards 8):
+
+| Swift | Value | Índigo |
+|---|---|---|
+| `cardRadius` (cards, grouped sections, inbox card, host card, skeletons) | 20 | **8** (`metrics.cardRadius`) |
+| `chipRadius` (chips, rows inside cards) | 10 | **6** (`metrics.chipRadius`) |
+| session tile, option buttons, quick-detail rows | 12 | 8 (they are cards) |
+| banner | 14 continuous | 8 |
+| composer container | 24 continuous | 16 (`metrics.sheetRadius`): the one rounder container, proposal |
+| capsule badges, round buttons, header capsules | capsule/circle | stays 999 |
+| sheet top corners | system | 16 (`metrics.sheetRadius`) |
+
+Hairlines: Swift draws **no** border on a card (flat surface on canvas). *Decided* skin: a 1 pt hairline at
+`textPrimary` 16% (`theme.hairline`, `metrics.hairlineOpacity`), already on `Card`. Separators between grouped rows are
+the same hairline, inset to the text column in lists with a leading icon (Swift system inset: from the title's leading edge).
+Attention outline: 1 pt, status color at 40%, replaces the hairline (Needs you card, drop target). Selected row in a
+sidebar column: 2 pt `accent` stroke around the card (`HomeCardSelection`), not a fill.
+
+## 4. Elevation, materials, motion budget
+
+- Swift is flat: no card shadows. The only shadow is the Home "+" button (`accent` at 35%, blur radius 12).
+- Materials: banner and composer use `.regularMaterial`; the Agent detail header controls use glass capsules at 0.8
+  opacity (`AgentDetailHeader.glassOpacity`, iOS 26 `glassEffect`). Índigo: `expo-glass-effect` (already in
+  `apps/mobile`) on iOS 26, else `surfaceRaised` at 80% with the hairline; Android always the fallback. Wrap this in one
+  primitive (`GlassCapsule`) so screens never choose.
+- Keep radii and hairlines as the "skin"; do not add shadows beyond the "+" button.
+
+## 5. Components: Swift anatomy, RN primitive, gap
+
+### 5.1 Cards (`themedCard`) -> `Card`
+Fill surface (overlay level inside sheets), radius 8, hairline, optional attention outline. Content padding: inbox card
+spacing[3]=16 -> `md` 21 uniform (RN `Card` padded uses `md` with `gap xs`: matches). Host card 14 -> 18 (use
+`padded={false}` + own style). Pressed state: Swift `.plain` button has no highlight on cards, iPad adds `.hoverEffect(.highlight)`;
+RN `Card` pressed = `surfaceRaised` fill: keep. Gap: none beyond the screen glow.
+
+### 5.2 List rows -> `ListRow` (+ `Section grouped`, + a new `CardRow`)
+Two row families, both must exist:
+1. **Card rows** (Home, Agents list, board): each row is its own card on the glowing canvas; list rows are transparent with
+   insets `top 5, bottom 5, leading/trailing screenInset`, separators hidden, 26 pt before a section header. RN has no
+   primitive for this: add `CardList`/`CardRow` (a `Card` as a list item, selection ring, accessibility actions, long-press
+   menu, swipe), the single row used by Home cards, Agents list, Hosts list, Files, Ports.
+2. **Grouped rows** (Settings, Hosts detail, forms): rows inside one card, hairline separators, optional header above
+   (footnote semibold secondary) and footer below (footnote, secondary, inset 10). `ListRow` + `Section` do this. Gaps:
+   `ListRow` min height is `minTapSize + 8` = 52 (airy 44 x1.3 = 57: raise to 56), title is `body`, subtitle `caption`;
+   Swift settings rows are icon (20, secondary) + title (body) + subtitle (footnote secondary) + value (secondary) + chevron
+   (footnote semibold, textSecondary; 12 wide). Add a leading icon slot that tints `textSecondary` and sizes to 22.
+Row text rules: title one line; subtitle up to two; mono for machine values (addresses, paths, models, ports).
+
+### 5.3 Section headers -> `SectionHeader`
+Swift: footnote semibold secondary title + optional count capsule (`control` fill, caption2 monospacedDigit) + optional
+trailing "See all" footnote semibold accent, own tap target (borderless inside a row). 4 pt top padding. Collapsible
+headers use `DisclosureChevron`: `chevron.right` footnote semibold secondary, rotates 90 degrees, 12 pt wide,
+`.snappy` (see 7). RN `SectionHeader` has all of it except sentence case (2) and the 12-wide fixed chevron column.
+
+### 5.4 Badges, pills, chips -> `Badge`, `StatusPill`, `Chip`
+- `CapsuleBadge`: capsule, padding 6x2 (-> 8x3), caption2 semibold. Styles: control (control fill, secondary ink), tertiaryFill,
+  quaternaryFill, wash(color) (color at 15% fill, color ink), outline (1 pt tertiary stroke; the "Saved" badge).
+  RN `Badge` has accent/control/outline: add `wash`.
+- `StatusPill` = wash badge in the status color, ink from the status color for the current appearance; Working shows the
+  `SolvingOrbView` (12 pt) before the word. **Gap**: no orb primitive; add `StatusOrb` (animated, reduce-motion = static dot).
+- `MetadataChip`: caption2 monospaced, secondary ink, padding 8x3, `control` fill, radius `chipRadius`, optional leading
+  SF Symbol small. This is the inbox chip (host, workspace, model + context). RN `Chip` is a selectable control chip; add
+  `MetaChip` (non-interactive) instead of overloading it.
+- Context-low badge (triangle + "16 %") before the status pill when 20% or less of the context is left.
+
+### 5.5 Status dots and program marks -> `StatusDot`, `ProgramMark`
+Dot diameter 8 (7 in the status line), color from `theme.status`; at accessibility text sizes a glyph replaces it
+(`exclamationmark.circle.fill`, `checkmark.circle.fill`, `circle.fill`, `circle`): RN `STATUS_GLYPH` already does. In rows
+the status lives **on the program logo**: the dot is cut into the logo's lower trailing corner (quarter of the dot pokes out,
+with a gap ring in the surface color); Working pulses. RN `ProgramMark` has `status`; verify the cut-out gap and add the pulse
+(1.0 -> 0.5 opacity loop, 1.2 s, off with reduce motion; Swift pulses via a Core Animation layer).
+
+### 5.6 Toolbars and navigation bars
+- Home: large inline title "Agentico" (RN: the app name), trailing glass capsule with the usage ring (24 pt, 3 pt stroke)
+  and the gear. Hosts/Settings are **sheets** from Home, not stack pushes (Swift removed the tab bar). The "+" lives bottom
+  trailing, not in the bar.
+- Pushed screens: inline title, back chevron in `accent`, no hairline under the bar, canvas background (RN
+  `stackScreenOptions` already: opaque canvas bar, accent tint, no shadow). Large titles only on Settings (sheet root) and the
+  Hosts sheet root and "Agent List Fields". Gap: `headerLargeTitle` is not wired anywhere; add per-screen options through
+  `useStackScreenOptions`.
+- Agent detail: **no navigation bar**. Floating glass capsules over the content (see brief): leading capsule (Back + Sessions),
+  center title capsule (task / program, harness, model, directory), trailing "more" circle; 44 pt controls, 8 pt apart.
+- Sidebar header (iPad): title menu "Agents v", + button, sidebar toggle; footer icons Hosts, Settings, list menu, presentation.
+
+### 5.7 Sheets -> `Sheet`
+Swift: system sheets with detents `[.medium, .large]` (quick detail, usage day, host connection), `[.fraction(0.65), .large]`
+(workspace/files-like pickers), `[.fraction(0.6), .large]`, `[.medium]` only (small confirmations), `[.large]` for forms (New
+Agent form on iPad is a form sheet 540 wide); drag indicator visible on the short ones; glow background; corner radius system
+(~38 on iOS 26: Índigo uses 16). Header patterns: (a) large title + leading `Done` capsule (Hosts, Settings), (b) inline title
++ leading `Cancel` + trailing confirm (`Start`, `Save`) (New Agent, forms), (c) title + round close (x) (usage quick sheet).
+Gaps in RN `Sheet`: detents only 0.5 / 0.92 / fit (add `fraction`); no leading/trailing bar actions (only a trailing close);
+no large-title variant; no glow; no nested pushes inside a sheet (Settings and Hosts push pages inside their sheet:
+use an `expo-router` modal route group with its own Stack, not the overlay `Sheet`, for these two). Backdrop dim 45%
+(`backdropOpacity`) ok; swipe-down dismiss exists (`useSheetDrag`).
+
+### 5.8 Menus and confirmations -> `ActionMenu`, `confirm`
+Context menus long-press with a card **preview** lifted at card width (`contentShape(.contextMenuPreview, radius)`); menu
+sections titled by context ("Host name", "terminal title · workspace · host"), a divider before the destructive item, items
+with SF Symbols, destructive in red. `+` menus use fixed order. Confirmation dialogs name the scope ("Close Workspace" /
+"Close Tab" / "Close Pane"), destructive primary. RN `ActionMenu`/`NativeActionMenu` (@expo/ui): **Gap**: `ActionMenuItem`
+has no `section`/`divider`/`subtitle` and no lifted preview; add `title` section support (native menu sections) and a preview
+renderer where the native menu supports it, else the current popover.
+
+### 5.9 Swipe actions -> `SwipeRow`
+Swift (agent rows): leading full-swipe **Pin/Unpin** (tint `warning`, the pin applies 1000 ms after the swipe so the row
+settles first, then re-sorts with `.snappy`); trailing full-swipe **Close** (tint `danger`; never `.destructive` role: it asks
+for confirmation first and the row must stay while the alert is up). Hosts: trailing full-swipe Remove. Files: trailing
+non-full Rename, Delete. Terminals: trailing full-swipe Close. Gap: RN `SwipeRow` is trailing only, fixed 76 pt buttons,
+spring bounciness 0, no leading edge, no full-swipe commit, no tinted fills (it uses `Tone`: fine, extend to leading and add
+`fullSwipe` that triggers on release past ~55% of the row width with a light haptic at the threshold).
+
+### 5.10 Empty states -> `EmptyState`, `ErrorState`
+Fill layout: centered, max width 440 (scales with text), padding `screenInset`, symbol largeTitle large scale secondary,
+heading title2 bold, message callout secondary, actions below with 16 -> 21 gap, inner 8 -> 10. Compact layout (inside a
+card or list): symbol title2, heading headline, message footnote, actions 10 above. Palette `theme` (themed) or `system`.
+RN `EmptyState` has layouts; verify type roles against 2. Quiet inline state ("All quiet. Nothing needs you.") is a card
+with subheadline secondary text, not a bare text.
+
+### 5.11 Banners and toasts -> `Banner`, `toast`
+Notification banner (in-app): material card, radius 14 -> 8, padding 14x10 -> 18x13, max width 520 centered, title
+subheadline semibold one line, body footnote secondary 2 lines (Blocked question: footnote monospaced 3 lines), slides from
+the top with opacity (`.move(edge: .top)` + opacity), `.snappy`. Inline banners (chat) are footnote text in a tinted wash
+row. See `briefs/notifications-banners.md`.
+
+### 5.12 Loading
+Skeleton card: `surfaceOverlay`, radius 8, 72 pt high, two of them for the inbox; no shimmer in Swift (static). RN
+`Skeleton` shimmers: keep static under reduce motion. Pull to refresh: system control, tint `accent`.
+
+### 5.13 Copy affordance -> `CopyButton`
+Icon swaps `doc.on.doc` to `checkmark` (symbol replace transition) for 1.5 s; announces "Copied" to VoiceOver. RN
+`COPY_CONFIRMATION_MS` exists; check it equals 1500.
+
+## 6. Haptics
+
+Swift fires `UIImpactFeedbackGenerator` **light** on: terminal toolbar buttons (when the setting is on), the D-pad, the
+full keyboard keys, the control keyboard, message jump; **medium** on: edge-dock lift, chat timeline pin/jump (lines noted in
+`Chat/Timeline/ChatTimelineController.swift`, `Console/EdgeDockLift.swift`). Nothing on list taps, swipes, sheets, menus
+(system provides those). RN: **no haptics module at all** today (only a `haptics` preference in core). Gap: add
+`packages/ui/src/haptics.ts` over `expo-haptics` (`impact('light'|'medium')`, no-op on web and in tests, honors the setting).
+`expo-haptics` is a native dependency: install with `npx expo install`; the integrator rebuilds once. Do not add other haptics
+(Android gets the platform's own on menus and swipes).
+
+## 7. Animation and timing
+
+SwiftUI `.snappy` is the house curve: a critically damped-ish spring, 0.5 s default duration with a small bounce (about
+0.15), used for most state changes. All of it is skipped when Reduce Motion is on (`reduceMotion ? nil : ...`).
+
+| Interaction | Swift timing | RN (Reanimated 4, `LinearTransition`/`withSpring`) |
+|---|---|---|
+| Collapse/expand section, toggle pin re-sort, status/headline change | `.snappy` (default 0.5 s) | `withSpring({ damping: 20, stiffness: 220 })` or layout transition 250 to 350 ms |
+| Overlay open (drawer, keyboard overlays) | `.snappy(duration: 0.28)` | spring ~280 ms |
+| Toggle (composer fold, pill) | `.snappy(duration: 0.2)` | 200 ms |
+| Drag settle / snap back | `.snappy(duration: 0.2)` | 200 ms |
+| Availability change (banner of Chat unavailable) | `.snappy(duration: 0.22)` | 220 ms |
+| Lift (edge dock) | `.snappy(duration: 0.18)` | 180 ms |
+| Page switch (settings page, tabs) | `.easeInOut(0.2)` | 200 ms ease in-out |
+| Button press highlight | `.easeOut(0.12)` | 120 ms opacity |
+| Scroll-to-bottom button / "more below" | `.easeOut(0.15)` | 150 ms |
+| Height settle (composer) | `.easeOut(0.25)` | 250 ms |
+| Drawer group open | `.easeOut(0.22)` | 220 ms |
+| Banner in/out | `.snappy` + `.move(top)+opacity` | spring + translateY -24 and fade |
+| Status color change | `.smooth(0.25)` | 250 ms color timing |
+| Presented sheet | system | RN modal slide (current) |
+| Pending-state transition | `.scale(0.85)+opacity` insert | scale 0.85 -> 1 + fade |
+
+Rule: no animation longer than 350 ms; every one gated by `useReducedMotion()`. Gap: RN code uses `Animated` in places
+(`SwipeRow`) and plain state flips elsewhere; standardize on Reanimated `useReducedMotion` + two helpers
+(`motion.snappy`, `motion.quick`) in `packages/ui/src/motion.ts`.
+
+## 8. Gaps summary (feeds UX1-design-system)
+
+1. `ScreenBackground` glow in `Screen` and `Sheet`.
+2. Text styles to the iOS scale, SF Mono, sentence-case section headers.
+3. `CardRow`/`CardList` primitive; `MetaChip`; `Badge wash`; `StatusOrb`; status dot size 8 and corner cut-out audit.
+4. `SwipeRow` leading edge, full swipe, haptic at threshold.
+5. `Sheet`: fractional detents, bar actions (leading Cancel/Done, trailing confirm), large-title variant, glow.
+6. `ActionMenu` sections/dividers and lifted preview.
+7. `GlassCapsule` for the Agent detail header and Home toolbar.
+8. `haptics.ts` + `motion.ts`.
+9. Tint audit (Switch, RefreshControl, selection handles) from tokens.
+10. Gallery: a screen-parity section in `/__gallery` showing each primitive in Índigo, Papel, Noche, at default and
+    accessibility sizes (the acceptance image for the primitive task).
+
+## 9. Papel and Noche
+
+Papel (light, canvas #F2EDE2, surface #FBF8F1, accent #5B47D6, status inks darkened) must pass every acceptance below with
+the same layout: it is not a recolor of Índigo. Differences to verify: hairline reads at 16% of near-black ink, the glow is
+a pale lavender wash, status pills use the darker status inks, on-accent text is white. Noche stays a token set; nothing
+screen-specific.
