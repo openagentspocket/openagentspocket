@@ -1,0 +1,27 @@
+# Hosts: add a Host by hand, trust its key, see it in the list.
+# Run with `maestro test e2e/hosts.yaml` (one booted simulator/emulator, English UI).
+# The Hosts screens run on the offline demo probe: the trust prompt is scripted, no SSH.
+appId: com.openagentspocket.app
+---
+- launchApp:
+    clearState: true
+- openLink: openagentspocket:///hosts
+- assertVisible: "No Hosts"
+- tapOn:
+    id: hosts-add
+- tapOn:
+    id: host-user
+- inputText: demo
+- tapOn:
+    id: route-0-address
+- inputText: workshop.example
+- hideKeyboard
+- tapOn:
+    id: host-save
+# The detail page opens and asks to trust the key on the first connection.
+- assertVisible: "Trust this Host?"
+- tapOn: "Trust"
+- assertVisible: "Connected"
+- assertVisible: "In Use"
+- back
+- assertVisible: "demo@workshop.example"
