@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Side-by-side Swift | RN sheets for every mapped atlas id.
 
-  python3 scripts/atlas-compare.py [--rn web|ios] [--theme dark|light]
+  python3 scripts/atlas-compare.py [--rn web|ios] [--theme dark|light] [--components [Name ...]]
 
 Needs Pillow (a venv is fine: python3 -m venv .venv-atlas && .venv-atlas/bin/pip install pillow).
 Writes design/atlas/compare/<id>.png and design/atlas/compare/index.html (gitignored).
@@ -64,6 +64,74 @@ def sheet(left, right):
     out.paste(right, (left.width + 24, 0))
     return out
 
+
+def components_mode():
+    """Swift crop | RN Indigo | RN Papel per catalog key -> design/atlas/components/compare/<key>.png.
+
+    Crops come from docs/ux/components/ref (scripts/ux-crop.py), RN captures from
+    design/atlas/components/rn-web (scripts/ux-components.mjs, with the component rect in a .json).
+    """
+    ref_dir = ROOT / "docs/ux/components/ref"
+    rn_dir = ATLAS / "components/rn-web"
+    out = ATLAS / "components/compare"
+    out.mkdir(parents=True, exist_ok=True)
+    scale = 3  # the atlas crops are 1x, the web captures 3x
+    only = [a for a in args if not a.startswith("--") and a not in ("web", "ios", "dark", "light")]
+    rows = []
+
+    def rn_crop(key, theme_suffix):
+        png = rn_dir / f"{key}{theme_suffix}.png"
+        meta = rn_dir / f"{key}{theme_suffix}.json"
+        if not png.exists() or not meta.exists():
+            return None
+        rect = json.loads(meta.read_text())
+        image = Image.open(png).convert("RGB")
+        box = (int(rect["x"] * scale), int(rect["y"] * scale), int((rect["x"] + rect["width"]) * scale), int((rect["y"] + rect["height"]) * scale))
+        return image.crop(box)
+
+    def labeled(image, label, height):
+        width = round(image.width * height / image.height)
+        canvas = Image.new("RGB", (width, height + 30), (40, 40, 40))
+        canvas.paste(image.resize((width, height), Image.LANCZOS), (0, 30))
+        ImageDraw.Draw(canvas).text((8, 8), label, fill=(255, 255, 255))
+        return canvas
+
+    crops = json.loads((ROOT / "docs/ux/components/crops.json").read_text())["crops"]
+    for key in crops:
+        if only and key not in only and key.split(".")[0] not in only:
+            continue
+        ref = ref_dir / (f"{key}.light.png" if light else f"{key}.png")
+        if not ref.exists():
+            continue
+        indigo, papel = rn_crop(key, ""), rn_crop(key, ".papel")
+        if indigo is None and papel is None:
+            rows.append((key, "no RN capture"))
+            continue
+        swift = Image.open(ref).convert("RGB")
+        height = max(240, swift.height * scale)
+        parts = [labeled(swift, f"Swift {'Papel' if light else 'dark'} (ref/{key})", height)]
+        parts += [labeled(im, label, height) for im, label in ((indigo, "RN Indigo"), (papel, "RN Papel")) if im is not None]
+        sheet_image = Image.new("RGB", (sum(p.width for p in parts) + 16 * (len(parts) - 1), height + 30), (90, 90, 90))
+        x = 0
+        for part in parts:
+            sheet_image.paste(part, (x, 0))
+            x += part.width + 16
+        sheet_image.save(out / f"{key}.png")
+        rows.append((key, "ok"))
+    cells = "".join(f'<figure><figcaption>{html.escape(k)}</figcaption><img loading="lazy" src="{html.escape(k)}.png"></figure>' for k, s in rows if s == "ok")
+    (out / "index.html").write_text(
+        "<!doctype html><meta charset=utf-8><title>UX components</title>"
+        "<style>body{font:14px system-ui;background:#222;color:#eee;margin:16px}figure{margin:0 0 32px}img{max-width:100%}</style>"
+        f"<h1>Swift crop | RN Indigo | RN Papel</h1>{cells}"
+    )
+    for key, status in rows:
+        print(f"{status:14} {key}")
+    print(f"{sum(1 for _, s in rows if s == 'ok')} sheets in design/atlas/components/compare")
+
+
+if "--components" in args:
+    components_mode()
+    sys.exit(0)
 
 mapped = json.loads((ROOT / "apps/mobile/src/dev/atlas/atlasMap.json").read_text())
 swift_ids = re.findall(r"^  ([a-z-]+\.[a-z0-9-]+):$", (SWIFT / "docs/ux/screens.yml").read_text(), re.M)

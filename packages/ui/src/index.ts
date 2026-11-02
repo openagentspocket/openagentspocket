@@ -1,3 +1,13 @@
+export * from './components/agentBar';
+export * from './components/agentRows';
+export * from './components/blockedTerminal';
+export * from './components/chatRows';
+export * from './components/composerExtras';
+export * from './components/homeShell';
+export * from './components/hostsSettingsFiles';
+export * from './components/navSheets';
+export * from './components/settingsPickers';
+export * from './components/usage';
 export {
   Composer,
   type ComposerAction,
@@ -21,6 +31,9 @@ export {
 } from './diff/parseUnifiedDiff';
 export { NavRow, type PickerOption, PickerRow, StepperRow, ToggleRow } from './form/FormRows';
 export { TextField, type TextFieldProps } from './form/TextField';
+export { ComponentCapture } from './gallery/ComponentsSection';
+export { componentCatalog, findCatalogEntry } from './gallery/components/registry';
+export type { CatalogEntry, CatalogVariant } from './gallery/components/types';
 export { Gallery, type GallerySection, gallerySections } from './gallery/Gallery';
 export { type HapticWeight, hapticsEnabled, impact, setHapticsEnabled } from './haptics';
 export {

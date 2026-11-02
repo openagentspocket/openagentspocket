@@ -108,3 +108,10 @@ node scripts/atlas-ios.mjs --udid <sim udid> [--theme papel] [id ...] # design/a
   "Cannot find native module"). It starts Metro on 8081 with `EXPO_PUBLIC_DEMO=1`, launches the app and deep-links
   `openagentspocket://__atlas/<id>`.
 - What RN lacks versus Swift, per screen family, worst first: [docs/ux/rn-gap.md](../ux/rn-gap.md).
+- Component loop (UX3 workers, before whole screens): crops of every Swift component live in `docs/ux/components/ref`
+  (`scripts/ux-crop.py` regenerates them from `components/crops.json`; catalog and checklists in
+  [docs/ux/components/README.md](../ux/components/README.md), generated from `catalog.json` by `scripts/ux-catalog.mjs`).
+  Register demos in `packages/ui/src/gallery/components/<group>.tsx`, then
+  `node scripts/ux-components.mjs --port 8123 [Name ...]` (captures `/__gallery/components/<Name>[.variant]`) and
+  `V/bin/python3 scripts/atlas-compare.py --components [Name ...]` (`--theme light` against the Papel crop) writes
+  `design/atlas/components/compare/<key>.png`: Swift crop | RN Indigo | RN Papel.

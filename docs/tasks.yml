@@ -748,6 +748,235 @@
   files: [docs/ux/**, docs/tasks.yml]
   acceptance:
     - docs/ux/design-system.md and ten docs/ux/briefs/*.md written from the Swift DesignSystem, views and atlas
+- id: UX2-component-catalog
+  phase: 9
+  kind: js
+  title: "Component first: inventory of the Swift visual components, reference crops, catalog README with RN targets and checklists, /__gallery components harness, UX3 tasks and assembly retitle"
+  deps: [UX0-briefs, UX1-design-system]
+  files:
+    [
+      docs/ux/components/**,
+      scripts/ux-crop.py,
+      scripts/ux-catalog.mjs,
+      scripts/ux-components.mjs,
+      scripts/atlas-compare.py,
+      packages/ui/src/gallery/**,
+      packages/ui/src/components/*.ts,
+      apps/mobile/src/app/__gallery/**,
+      docs/tasks.yml,
+    ]
+  acceptance:
+    - docs/ux/components/README.md lists every component with Swift sources, atlas screens, variants, RN target, props and an acceptance checklist; crops in docs/ux/components/ref regenerate with scripts/ux-crop.py
+    - /__gallery?section=components and /__gallery/components/<name> render catalog entries in Indigo and Papel; scripts/ux-components.mjs captures them and atlas-compare.py --components builds Swift | RN sheets
+    - ten UX3 tasks with disjoint files; the UX1 family tasks are assembly tasks that depend on them
+
+- id: UX3-agent-rows
+  phase: 9
+  kind: js
+  title: "Clone AgentCard, FoldHeader, WorkspaceCard, TerminalRow, AgentRowMenu, HostIssueRow (Agent list rows and headers) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/AgentCard.tsx,
+      packages/ui/src/components/FoldHeader.tsx,
+      packages/ui/src/components/WorkspaceCard.tsx,
+      packages/ui/src/components/TerminalRow.tsx,
+      packages/ui/src/components/AgentRowMenu.tsx,
+      packages/ui/src/components/HostIssueRow.tsx,
+      packages/ui/src/components/agentRows.test.tsx,
+      packages/ui/src/components/agentRows.ts,
+      packages/ui/src/gallery/components/agentRows.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
+    - component tests pin the interactions listed in the catalog; no screen files touched
+
+- id: UX3-home-shell
+  phase: 9
+  kind: js
+  title: "Clone InboxCard, SessionsStrip, HomeHostCard, UsageRing, Fab, LargeTitleBar (Home cards, sessions, FAB, large title) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/InboxCard.tsx,
+      packages/ui/src/components/SessionsStrip.tsx,
+      packages/ui/src/components/HomeHostCard.tsx,
+      packages/ui/src/components/UsageRing.tsx,
+      packages/ui/src/components/Fab.tsx,
+      packages/ui/src/components/LargeTitleBar.tsx,
+      packages/ui/src/components/homeShell.test.tsx,
+      packages/ui/src/components/homeShell.ts,
+      packages/ui/src/gallery/components/homeShell.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
+    - component tests pin the interactions listed in the catalog; no screen files touched
+
+- id: UX3-nav-sheets
+  phase: 9
+  kind: js
+  title: "Clone ListToolbar, SidebarColumn, EmptyDetail, QuickSheetHeader, ScannerFrame, KeyValueGroup (Toolbars, sidebar, sheet headers, empty detail, scanner, key/value groups) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/ListToolbar.tsx,
+      packages/ui/src/components/SidebarColumn.tsx,
+      packages/ui/src/components/EmptyDetail.tsx,
+      packages/ui/src/components/QuickSheetHeader.tsx,
+      packages/ui/src/components/ScannerFrame.tsx,
+      packages/ui/src/components/KeyValueGroup.tsx,
+      packages/ui/src/components/navSheets.test.tsx,
+      packages/ui/src/components/navSheets.ts,
+      packages/ui/src/gallery/components/navSheets.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
+    - component tests pin the interactions listed in the catalog; no screen files touched
+
+- id: UX3-agent-bar
+  phase: 9
+  kind: js
+  title: "Clone AgentHeader, AgentSwitcher, SessionDrawer, ComposerCard, StatusLine, ChangeRow (Agent detail header, switcher, drawer, composer, status line, change rows) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/AgentHeader.tsx,
+      packages/ui/src/components/AgentSwitcher.tsx,
+      packages/ui/src/components/SessionDrawer.tsx,
+      packages/ui/src/components/ComposerCard.tsx,
+      packages/ui/src/components/StatusLine.tsx,
+      packages/ui/src/components/ChangeRow.tsx,
+      packages/ui/src/components/agentBar.test.tsx,
+      packages/ui/src/components/agentBar.ts,
+      packages/ui/src/gallery/components/agentBar.tsx,
+      packages/ui/src/composer/**,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
+    - component tests pin the interactions listed in the catalog; no screen files touched (apps/mobile/**)
+    - owns packages/ui/src/composer/** (wrap or replace Composer.tsx under ComposerCard); UX1-agent-detail only consumes it
+
+- id: UX3-chat-rows
+  phase: 9
+  kind: js
+  title: "Clone ChatUserBubble, ChatDivider, ChatThoughtRow, ChatToolRow, ChatNoticeRow, DiffRow (Chat timeline rows and diff rows) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/ChatUserBubble.tsx,
+      packages/ui/src/components/ChatDivider.tsx,
+      packages/ui/src/components/ChatThoughtRow.tsx,
+      packages/ui/src/components/ChatToolRow.tsx,
+      packages/ui/src/components/ChatNoticeRow.tsx,
+      packages/ui/src/components/DiffRow.tsx,
+      packages/ui/src/components/chatRows.test.tsx,
+      packages/ui/src/components/chatRows.ts,
+      packages/ui/src/gallery/components/chatRows.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
+    - component tests pin the interactions listed in the catalog; no screen files touched
+
+- id: UX3-blocked-terminal
+  phase: 9
+  kind: js
+  title: "Clone BlockedCard, BackgroundWorkStrip, NoticeBanner, JumpControl, TerminalToolbar, KeyPad (Blocked card, background work, banners, jump control, terminal toolbar and keys) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/BlockedCard.tsx,
+      packages/ui/src/components/BackgroundWorkStrip.tsx,
+      packages/ui/src/components/NoticeBanner.tsx,
+      packages/ui/src/components/JumpControl.tsx,
+      packages/ui/src/components/TerminalToolbar.tsx,
+      packages/ui/src/components/KeyPad.tsx,
+      packages/ui/src/components/blockedTerminal.test.tsx,
+      packages/ui/src/components/blockedTerminal.ts,
+      packages/ui/src/gallery/components/blockedTerminal.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
+    - component tests pin the interactions listed in the catalog; no screen files touched
+
+- id: UX3-usage
+  phase: 9
+  kind: js
+  title: "Clone UsageLimitChip, UsageTotals, UsageChart, UsageHeatMap, UsageBreakdownRow (Usage chips, totals, charts, heat map, breakdown) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/UsageLimitChip.tsx,
+      packages/ui/src/components/UsageTotals.tsx,
+      packages/ui/src/components/UsageChart.tsx,
+      packages/ui/src/components/UsageHeatMap.tsx,
+      packages/ui/src/components/UsageBreakdownRow.tsx,
+      packages/ui/src/components/usage.test.tsx,
+      packages/ui/src/components/usage.ts,
+      packages/ui/src/gallery/components/usage.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
+    - component tests pin the interactions listed in the catalog; no screen files touched
+
+- id: UX3-hosts-settings-files
+  phase: 9
+  kind: js
+  title: "Clone HostRow, HostStatusCard, SettingsGroup, ThemeChoiceCard, FileRow, PortRow (Host, settings, theme, file and port rows) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/HostRow.tsx,
+      packages/ui/src/components/HostStatusCard.tsx,
+      packages/ui/src/components/SettingsGroup.tsx,
+      packages/ui/src/components/ThemeChoiceCard.tsx,
+      packages/ui/src/components/FileRow.tsx,
+      packages/ui/src/components/PortRow.tsx,
+      packages/ui/src/components/hostsSettingsFiles.test.tsx,
+      packages/ui/src/components/hostsSettingsFiles.ts,
+      packages/ui/src/gallery/components/hostsSettingsFiles.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
+    - component tests pin the interactions listed in the catalog; no screen files touched
+- id: UX3-settings-pickers
+  phase: 9
+  kind: js
+  title: "Clone TerminalThemePicker, TerminalThemePreview, AgentListFieldsEditor, AgentListFieldsPreview, OverlayPeerPicker, OverlayPeerViews, PortPreview (Terminal palette, agent list fields, overlay peer picker and port preview) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/TerminalThemePicker.tsx,
+      packages/ui/src/components/TerminalThemePreview.tsx,
+      packages/ui/src/components/AgentListFieldsEditor.tsx,
+      packages/ui/src/components/AgentListFieldsPreview.tsx,
+      packages/ui/src/components/OverlayPeerPicker.tsx,
+      packages/ui/src/components/OverlayPeerViews.tsx,
+      packages/ui/src/components/PortPreview.tsx,
+      packages/ui/src/components/settingsPickers.test.tsx,
+      packages/ui/src/components/settingsPickers.ts,
+      packages/ui/src/gallery/components/settingsPickers.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared (components without a crop are judged against their Swift file)
+    - component tests pin the interactions listed in the catalog; no screen files touched
+- id: UX3-composer-extras
+  phase: 9
+  kind: js
+  title: "Clone SkillsKeyboardPane, SkillContentSheet, ComposerStagingStatusBar, ClaudeSubagentTranscript (Skills pane and content sheet, attachment staging bar, subagent transcript) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/SkillsKeyboardPane.tsx,
+      packages/ui/src/components/SkillContentSheet.tsx,
+      packages/ui/src/components/ComposerStagingStatusBar.tsx,
+      packages/ui/src/components/ClaudeSubagentTranscript.tsx,
+      packages/ui/src/components/composerExtras.test.tsx,
+      packages/ui/src/components/composerExtras.ts,
+      packages/ui/src/gallery/components/composerExtras.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared (components without a crop are judged against their Swift file)
+    - component tests pin the interactions listed in the catalog; no screen files touched
 - id: UX1-design-system
   phase: 9
   kind: js
@@ -784,63 +1013,87 @@
 - id: UX1-home
   phase: 9
   kind: js
-  title: "Home + Status Inbox to the Swift structure (briefs/home-inbox.md)"
-  deps: [UX1-design-system]
+  title: "assemble Home + Status Inbox from the cloned components and compare whole screens (briefs/home-inbox.md, components in docs/ux/components/README.md)"
+  deps: [UX1-design-system, UX3-home-shell, UX3-agent-rows, UX3-nav-sheets]
   files: [apps/mobile/src/home/**, apps/mobile/src/app/index.tsx]
 - id: UX1-agents-list
   phase: 9
   kind: js
-  title: "Agents list presentations, row card, swipes, menus, quick detail, Board card (briefs/agents-board.md)"
-  deps: [UX1-design-system]
+  title: "assemble Agents list presentations, Board and quick detail from the cloned components and compare whole screens (briefs/agents-board.md, components in docs/ux/components/README.md)"
+  deps: [UX1-design-system, UX3-agent-rows, UX3-home-shell, UX3-nav-sheets]
   files: [apps/mobile/src/features/agents/**, apps/mobile/src/board/**]
 - id: UX1-agent-detail
   phase: 9
   kind: js
-  title: "Agent detail: floating header, switcher, composer, blocked card, chat polish, terminal toolbar, session drawer (briefs/agent-detail.md)"
-  deps: [UX1-design-system, UX1-agents-list]
-  files: [apps/mobile/src/agent-detail/**, apps/mobile/src/blocked/**, packages/ui/src/composer/**]
+  title: "assemble Agent detail (header, switcher, composer, blocked card, chat, terminal, session drawer) from the cloned components and compare whole screens (briefs/agent-detail.md, components in docs/ux/components/README.md)"
+  deps:
+    [
+      UX1-design-system,
+      UX1-agents-list,
+      UX3-agent-bar,
+      UX3-chat-rows,
+      UX3-blocked-terminal,
+      UX3-composer-extras,
+    ]
+  files: [apps/mobile/src/agent-detail/**, apps/mobile/src/blocked/**]
 - id: UX1-hosts
   phase: 9
   kind: js
-  title: "Hosts sheet, grouped list, detail, pairing scanner and form (briefs/hosts-pairing.md)"
-  deps: [UX1-design-system]
+  title: "assemble Hosts sheet, detail, pairing scanner and form from the cloned components and compare whole screens (briefs/hosts-pairing.md, components in docs/ux/components/README.md)"
+  deps: [UX1-design-system, UX3-hosts-settings-files, UX3-nav-sheets, UX3-settings-pickers]
   files: [apps/mobile/src/app/hosts/**, apps/mobile/src/features/hosts/**]
 - id: UX1-usage
   phase: 9
   kind: js
-  title: "Usage quick sheet and full dashboard, segmented controls, heat map (briefs/usage.md)"
-  deps: [UX1-design-system]
+  title: "assemble Usage quick sheet and full dashboard from the cloned components and compare whole screens (briefs/usage.md, components in docs/ux/components/README.md)"
+  deps: [UX1-design-system, UX3-usage, UX3-nav-sheets, UX3-home-shell]
   files: [apps/mobile/src/usage/**, apps/mobile/src/home/UsageRing*.tsx]
 - id: UX1-settings
   phase: 9
   kind: js
-  title: "Settings as a sheet with the grouped icon rows, theme cards, agent rows editor preview (briefs/settings.md)"
-  deps: [UX1-design-system]
+  title: "assemble Settings sheet and sub pages from the cloned components and compare whole screens (briefs/settings.md, components in docs/ux/components/README.md)"
+  deps: [UX1-design-system, UX3-hosts-settings-files, UX3-nav-sheets, UX3-settings-pickers]
   files: [apps/mobile/src/settings/**, apps/mobile/src/app/settings/**]
 - id: UX1-files-changes-ports
   phase: 9
   kind: js
-  title: "Files, Changes (summary card, groups, diff) and Ports screens (briefs/files-changes-ports.md)"
-  deps: [UX1-design-system]
+  title: "assemble Files, Changes and Ports screens from the cloned components and compare whole screens (briefs/files-changes-ports.md, components in docs/ux/components/README.md)"
+  deps:
+    [
+      UX1-design-system,
+      UX3-hosts-settings-files,
+      UX3-agent-bar,
+      UX3-chat-rows,
+      UX3-settings-pickers,
+    ]
   files: [apps/mobile/src/files/**, apps/mobile/src/changes/**, apps/mobile/src/ports/**]
 - id: UX1-new-agent
   phase: 9
   kind: js
-  title: "New Agent / New Terminal form sheets (briefs/new-agent.md)"
-  deps: [UX1-design-system, UX1-home]
+  title: "assemble New Agent and New Terminal form sheets from the cloned components and compare whole screens (briefs/new-agent.md, components in docs/ux/components/README.md)"
+  deps: [UX1-design-system, UX1-home, UX3-nav-sheets, UX3-agent-rows]
   files: [apps/mobile/src/features/new-agent/**, apps/mobile/src/app/new-agent.tsx]
 - id: UX1-notifications
   phase: 9
   kind: js
-  title: "In-app banner, chat banners, alerts, toasts (briefs/notifications-banners.md)"
-  deps: [UX1-design-system]
+  title: "assemble In-app banner, chat banners, alerts and toasts from the cloned components and compare whole screens (briefs/notifications-banners.md, components in docs/ux/components/README.md)"
+  deps: [UX1-design-system, UX3-blocked-terminal]
   files: [apps/mobile/src/notifications/**, packages/ui/src/overlay/**]
 - id: UX1-wide
   phase: 9
   kind: js
-  title: "iPad and wide layouts: useLayoutMode, floating sidebar column, empty detail, form sheets (briefs/wide-layouts.md)"
+  title: "assemble the iPad and wide layouts from the cloned components (useLayoutMode, SidebarColumn, EmptyDetail, form sheets) and compare whole screens (briefs/wide-layouts.md)"
   deps:
-    [UX1-home, UX1-agents-list, UX1-agent-detail, UX1-hosts, UX1-usage, UX1-settings, UX1-new-agent]
+    [
+      UX1-home,
+      UX1-agents-list,
+      UX1-agent-detail,
+      UX1-hosts,
+      UX1-usage,
+      UX1-settings,
+      UX1-new-agent,
+      UX3-nav-sheets,
+    ]
   files: [apps/mobile/src/app/_layout.tsx, apps/mobile/src/navigation/**, packages/ui/src/**]
 - id: UX0-screen-atlas
   phase: 9
