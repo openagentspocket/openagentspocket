@@ -587,6 +587,31 @@
   kind: js
   title: "ActionMenu on @expo/ui native menus (same props); Sheet drag-to-resize detents"
   deps: [P0-rename]
+- id: P0-shell-polish
+  phase: 0
+  kind: js
+  title: "App shell polish from the wave-2 native check: status bar and native headers from theme tokens, back titles, brand copy, spacing fixes"
+  deps: [P0-rename]
+  files: [apps/mobile/src/app/_layout.tsx, apps/mobile/src/navigation/**, packages/i18n/**]
+  acceptance:
+    - "S: status bar light on Índigo/Noche, dark on Papel; every native header (iOS and Android) takes background, title and tint from tokens, opaque or with content insets so nothing scrolls under it; back buttons show the previous screen's title, never a route name"
+    - "U: user-facing copy says OpenAgentsPocket where the Swift catalogs say Agentico (done in the Swift-to-catalog conversion, so sync tests keep pinning the source)"
+    - "S: notification settings relay field padding; Changes renamed-row subtitle and delta column alignment; gallery copy row alignment"
+- id: P1.10-live-wiring
+  phase: 1
+  kind: js
+  title: "Live wiring: persisted Host catalog, per-Host connection manager on packages/transport, console store and hosts screens on real connections"
+  deps: [P1.7-ssh-transport, P1.9-secure-stores, P2.1b-console-store, P1.5-app-hosts]
+  files:
+    [
+      apps/mobile/src/connections/**,
+      apps/mobile/src/console/**,
+      apps/mobile/src/features/hosts/**,
+      apps/mobile/src/stores/**,
+    ]
+  acceptance:
+    - "U with FakeSsh: a connection manager owns one transport per enabled Host (connect with the device key alias, host-key decisions through the trust alert, EventsSession resume on foreground and suspend on background, backoff), exposes ConsoleTransport to the console store; hosts screens use the persisted catalog (createDeviceStores), the real preflight probe and the SSH pairing connector; demo data only behind an explicit demo mode"
+    - "M: the integrator runs it against the isolated herdr backend: add Host, trust, see its agents on Home"
 - id: T-typecheck-tests
   phase: 0
   kind: js
