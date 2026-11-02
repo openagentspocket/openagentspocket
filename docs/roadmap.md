@@ -4,12 +4,15 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
-State (2026-11-01 ~20:30): scaffold done (`a627655`), swarm manual + backlog + generated PROGRESS
-(`9b4cf9d`). **Wave 1 is running** (workflow `wf_720cceaa-aa8`, launched by the lead session):
-7 JS tasks in parallel (P1.2 wire, P1.3 hosts, P1.4 pairing, P1.6 events, P0 ui primitives + gallery, P0 i18n,
-P5.0 relay FCM) and the native chain in series (P1.1a SSH iOS → P1.1b SSH Android → P0 Swift goldens), each
-judged, one fix round. Workers commit on their worktree branches; the lead merges ship-verdict branches onto main,
-regenerates `pnpm progress`, runs `pnpm test` once and the native builds + Maestro after native merges.
+State (2026-11-01 ~22:15): **wave 1 mostly merged on main** (workflow `wf_720cceaa-aa8`): P1.2 wire, P1.3 hosts,
+P1.4 pairing, P0 ui primitives + gallery, P0 i18n, P5.0 relay FCM (plugin 0.12.0), P1.1a SSH iOS, P1.1b SSH Android.
+Full `pnpm test` green (core 671, i18n 89, ssh 24, ui 100, mobile 2, plugin 833, relay). Open: P1.6 events
+(duplicated wire/hosts types; agent `reconcile-events` rebases it to reuse them), P0 Swift goldens (running in the
+Swift repo). Then: native rebuild of main on iOS + Android with the SSH harness and Maestro smoke, then wave 2.
+
+Integration lessons (wave 1): parallel tasks redefined shared types (RouteFailure, Clock, herdr event types) →
+wave briefs now name the existing modules to reuse; generated/union files (PROGRESS.md, index.ts export lists,
+package.json deps, pnpm-lock) are resolved mechanically by the lead's merge script.
 
 How the swarm works: [docs/agents/swarm.md](agents/swarm.md). What is done and left: [docs/PROGRESS.md](PROGRESS.md)
 (generated from [docs/tasks.yml](tasks.yml) + `docs/progress/*.md`).
