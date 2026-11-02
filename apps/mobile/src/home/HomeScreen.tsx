@@ -15,7 +15,7 @@ export function HomeScreen() {
   const groups = groupForHome(useAgents());
   return (
     <Screen>
-      <Text variant="title">Agentico</Text>
+      <Text variant="title">OpenAgentsPocket</Text>
       {SECTIONS.map(({ key, title, status }) => (
         <Fragment key={key}>
           <SectionHeader title={t(title)} status={status} count={groups[key].length} />

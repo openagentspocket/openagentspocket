@@ -1,4 +1,4 @@
-# Agentico
+# OpenAgentsPocket
 
 A mobile companion for [herdr](https://herdr.dev): an agent console over SSH.
 See which coding Agents on your Hosts need you, answer them in a tap, and open

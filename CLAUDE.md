@@ -1,4 +1,4 @@
-# Agentico (React Native) - start here
+# OpenAgentsPocket (React Native) - start here
 
 Mobile companion for herdr (agent console over SSH). Expo SDK 58, React Native 0.88.1, React 19.3.0,
 TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/roadmap.md](docs/roadmap.md)

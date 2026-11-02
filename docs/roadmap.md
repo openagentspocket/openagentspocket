@@ -69,8 +69,7 @@ Scaffold facts:
 
 - Name (2026-11-01, ADR 0022): the app is **OpenAgentsPocket**. Domain `openagentspocket.com` registered by Enzo
   (2026-11-01); planned: DNS on Cloudflare, landing + `/privacy` on Cloudflare Pages, relay on
-  `relay.openagentspocket.com`. Enzo creates the GitHub org himself; the internal rename (`@openagentspocket/*`, scheme, ids) is one task after wave 1 merges; new icon
-  in the chosen solid-indigo style with a new mark.
+  `relay.openagentspocket.com`. Enzo creates the GitHub org himself. Internal rename done (P0-rename): workspace scope `@openagentspocket/*`, bundle/package id `com.openagentspocket.app`, schemes `openagentspocket` + legacy `agentico` (the plugin and the Swift app still emit `agentico://`); `agentico-ssh` keeps its name (native module, Swift/Kotlin/C identifiers; renaming is not mechanical). Icon and splash from `design/icon`.
 
 - Stores (2026-11-01): Apple Developer Program (Individual) paid by Enzo, enrollment processing (up to 2 business
   days); then he sends the Team ID, accepts the agreements, creates the APNs `.p8` himself. Google Play: his 2024
@@ -80,5 +79,4 @@ Scaffold facts:
 
 - Plugin/relay: legacy Heeler relay URLs stay in `notification-config.js` on purpose (migration of old configs).
 - `ThemeProvider` follows the system appearance (light: Papel, dark: Índigo); no in-app theme setting yet.
-- App icon and splash are still the Expo template's; Índigo variants pending a design pass.
-- `apps/mobile/app.json` uses placeholder ids `com.example.agentico`.
+- `apps/mobile/app.json` uses `com.openagentspocket.app` (the project owns openagentspocket.com); the relay still has `com.example.agentico` APNs topics until the Apple Developer account is active.

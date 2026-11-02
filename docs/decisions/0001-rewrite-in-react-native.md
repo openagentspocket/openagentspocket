@@ -1,4 +1,4 @@
-# 0001. Rebuild Agentico in React Native + Expo
+# 0001. Rebuild Agentico (now OpenAgentsPocket) in React Native + Expo
 
 Status: accepted (2026-11-01)
 

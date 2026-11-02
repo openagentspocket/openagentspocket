@@ -1,5 +1,5 @@
 # Smoke: Home shows its three sections. Run with `maestro test e2e/home.yaml` (one booted simulator/emulator).
-appId: com.example.agentico
+appId: com.openagentspocket.app
 ---
 - launchApp:
     clearState: true

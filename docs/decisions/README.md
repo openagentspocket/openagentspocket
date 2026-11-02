@@ -2,7 +2,7 @@
 
 One short ADR per founding decision. Add a new numbered file for any decision that is hard to reverse or surprising.
 
-- [0001](./0001-rewrite-in-react-native.md) Rebuild Agentico in React Native + Expo
+- [0001](./0001-rewrite-in-react-native.md) Rebuild Agentico (now OpenAgentsPocket) in React Native + Expo
 - [0002](./0002-monorepo.md) One monorepo: app, plugin, relay, schema
 - [0003](./0003-open-source-licenses.md) Open source: MIT, with Apache-2.0 for the Heeler-derived packages
 - [0004](./0004-no-embedded-overlay-networks.md) Drop embedded overlay networks
