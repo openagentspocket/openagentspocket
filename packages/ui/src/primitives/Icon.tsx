@@ -61,6 +61,13 @@ const ICONS = {
   paused: { ios: 'pause.circle', android: 'pause_circle' },
   share: { ios: 'square.and.arrow.up', android: 'share' },
   usage: { ios: 'chart.bar.xaxis', android: 'bar_chart' },
+  // Agent bar.
+  sidebar: { ios: 'sidebar.left', android: 'side_navigation' },
+  branch: { ios: 'arrow.triangle.branch', android: 'call_split' },
+  keysDock: { ios: 'rectangle.bottomhalf.filled', android: 'dock_to_bottom' },
+  tools: { ios: 'wrench.and.screwdriver', android: 'build' },
+  people: { ios: 'person.2', android: 'group' },
+  list: { ios: 'list.bullet', android: 'format_list_bulleted' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
