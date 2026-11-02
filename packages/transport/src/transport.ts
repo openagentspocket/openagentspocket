@@ -71,7 +71,7 @@ export class SshTransport extends HerdrApi implements EventsTransport {
   constructor(
     /** The authenticated SSH session; host services (exec, SFTP) build on it. */
     readonly session: SshSession,
-    private readonly settings: TransportSettings,
+    readonly settings: TransportSettings,
     routeId: string | null,
   ) {
     super();
@@ -237,8 +237,18 @@ export class SshTransport extends HerdrApi implements EventsTransport {
   async resolvedSocketPath(signal?: CancelSignal): Promise<string> {
     const { socket } = this.settings;
     if (socket.kind === 'absolutePath' && socket.path.startsWith('/')) return socket.path;
-    const home = await this.home.value(() => this.probeHome(), signal);
+    const home = await this.homeDirectory(signal);
     return herdrSocketPath(socket, home);
+  }
+
+  /** The Host account's home directory, probed once per connection (host services build on it). */
+  homeDirectory(signal?: CancelSignal): Promise<string> {
+    return this.home.value(() => this.probeHome(), signal);
+  }
+
+  /** The per-request budget host services run their execs and SFTP operations under. */
+  get requestBudgetMs(): number {
+    return this.requestTimeoutMs;
   }
 
   private async probeHome(): Promise<string> {
