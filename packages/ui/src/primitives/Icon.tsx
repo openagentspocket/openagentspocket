@@ -61,6 +61,12 @@ const ICONS = {
   paused: { ios: 'pause.circle', android: 'pause_circle' },
   share: { ios: 'square.and.arrow.up', android: 'share' },
   usage: { ios: 'chart.bar.xaxis', android: 'bar_chart' },
+  // Composer extras: read-only hint, keyboard pane switcher, skill document.
+  eye: { ios: 'eye', android: 'visibility' },
+  grid: { ios: 'square.grid.3x3', android: 'apps' },
+  quote: { ios: 'quote.bubble', android: 'format_quote' },
+  palette: { ios: 'paintpalette', android: 'palette' },
+  document: { ios: 'doc.text', android: 'article' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
