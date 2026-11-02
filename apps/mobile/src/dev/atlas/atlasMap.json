@@ -213,5 +213,15 @@
     "id": "agent-detail.shell-close-confirm",
     "rn": "ShellTerminalScreen + confirm() Close Terminal",
     "note": "dialog open over the demo shell"
+  },
+  {
+    "id": "agent-detail.close-confirm",
+    "rn": "agent-detail/AgentDetailScreen.tsx (terminal) + popover confirm",
+    "note": "Close Pane popover; RN has no Close Agent menu item yet"
+  },
+  {
+    "id": "usage.account-remove-confirm",
+    "rn": "app/usage.tsx + popover confirm",
+    "note": "Accounts sheet is not in RN: the popover sits over the Usage tab"
   }
 ]

@@ -10,5 +10,5 @@ export const closeTerminalConfirmation = (): ConfirmOptions => ({
   confirmLabel: t('Close Terminal'),
   cancelLabel: t('Cancel'),
   destructive: true,
-  presentation: 'dialog',
+  presentation: 'popover',
 });

@@ -5,17 +5,17 @@ import { Pressable, ScrollView } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
 
 const useStyles = makeStyles((th) => ({
-  strip: { gap: th.spacing.xs, paddingVertical: th.spacing.xxs },
+  // Swift TerminalAgentSwitcher: one 40 pt row of chips inside the composer card.
+  strip: { gap: th.spacing.xs, alignItems: 'center', paddingHorizontal: th.spacing.xxs },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: th.spacing.xxs,
+    height: 32,
     paddingHorizontal: th.spacing.xs,
-    paddingVertical: th.spacing.xxs,
-    borderRadius: th.metrics.chipRadius,
-    backgroundColor: th.colors.control,
+    borderRadius: 16,
   },
-  current: { backgroundColor: th.colors.accentContainer },
+  current: { backgroundColor: th.colors.control },
 }));
 
 interface Props {
@@ -24,7 +24,7 @@ interface Props {
   onSelect: (row: ConsoleRow) => void;
 }
 
-/** The Console's Agents in a strip, to hop between them without going back to the list. */
+/** The Console's Agents as compact chips, to hop between them without going back to the list. */
 export function AgentSwitcher({ rows, currentKey, onSelect }: Props) {
   const styles = useStyles();
   if (rows.length < 2) return null;
@@ -33,6 +33,7 @@ export function AgentSwitcher({ rows, currentKey, onSelect }: Props) {
       horizontal
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.strip}
+      style={{ flexGrow: 0, height: 40 }}
       accessibilityLabel={t('Switch Agent')}
       testID="agent-switcher"
     >
@@ -55,7 +56,7 @@ export function AgentSwitcher({ rows, currentKey, onSelect }: Props) {
               status={statusDot(row.agent.agent_status)}
               size={18}
             />
-            <Text variant="footnote" tone={current ? 'accent' : 'secondary'} numberOfLines={1}>
+            <Text variant="footnote" tone={current ? 'primary' : 'secondary'} numberOfLines={1}>
               {agentDisplayName(row.agent)}
             </Text>
           </Pressable>

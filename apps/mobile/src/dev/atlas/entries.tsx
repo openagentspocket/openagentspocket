@@ -29,7 +29,14 @@ import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
 import { NOTICES } from '@/settings/notices.generated';
 import { SettingsScreen } from '@/settings/SettingsScreen';
 import type { AtlasData } from './AtlasFrame';
-import { AlertOver, closeConfirmation, ExplainerOpen, TerminalStatusAtlas } from './atlasOverlays';
+import {
+  AlertOver,
+  closeConfirmation,
+  closePanePopover,
+  ExplainerOpen,
+  removeAccountPopover,
+  TerminalStatusAtlas,
+} from './atlasOverlays';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
 import { InAppBannerAtlas } from './InAppBannerAtlas';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
@@ -46,7 +53,16 @@ const titled = (title: string, body: ReactNode): ReactNode => (
   </>
 );
 
+/** A screen that draws its own floating header (Agent detail): no route header. */
+const bare = (body: ReactNode): ReactNode => (
+  <>
+    <Stack.Screen options={{ headerShown: false }} />
+    {body}
+  </>
+);
+
 const noop = () => {};
+const MORE = [{ key: 'changes', title: t('Changes'), onPress: noop }];
 
 const READ_FAILURE: ChatBannerLine = { kind: 'readFailure', failure: { kind: 'timedOut' } };
 /** A settings sub page as it pushes inside the sheet: native header, inline title, back button. */
@@ -112,27 +128,27 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'changes.file-diff': { render: () => <FileDiffRoute /> },
   'agent-detail.container': {
     render: () =>
-      titled(
-        '',
+      bare(
         <AgentDetailScreen
           hostId="demo"
           paneId="p1"
           storage={deviceStorage}
           surface="chat"
           onSwitch={noop}
+          moreItems={MORE}
         />,
       ),
   },
   'agent-detail.terminal': {
     render: () =>
-      titled(
-        '',
+      bare(
         <AgentDetailScreen
           hostId="demo"
           paneId="p1"
           storage={deviceStorage}
           surface="terminal"
           onSwitch={noop}
+          moreItems={MORE}
         />,
       ),
   },
@@ -165,8 +181,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   },
   'agent-detail.chat-banners': {
     render: () =>
-      titled(
-        '',
+      bare(
         <AgentDetailScreen
           hostId="demo"
           paneId="p1"
@@ -174,8 +189,32 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
           surface="chat"
           chatStatus={{ lines: [READ_FAILURE], locating: true }}
           onSwitch={noop}
+          moreItems={MORE}
         />,
       ),
+  },
+  'agent-detail.close-confirm': {
+    render: () => (
+      <AlertOver options={closePanePopover}>
+        {bare(
+          <AgentDetailScreen
+            hostId="demo"
+            paneId="p1"
+            storage={deviceStorage}
+            surface="terminal"
+            onSwitch={noop}
+            moreItems={MORE}
+          />,
+        )}
+      </AlertOver>
+    ),
+  },
+  'usage.account-remove-confirm': {
+    render: () => (
+      <AlertOver options={removeAccountPopover}>
+        <Usage />
+      </AlertOver>
+    ),
   },
   'shell.notification-banner': { render: () => <InAppBannerAtlas /> },
   'console.close-confirmation': {
@@ -186,7 +225,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
     ),
   },
   'agent-detail.terminal-status-overlay': {
-    render: () => titled('', <TerminalStatusAtlas status={{ kind: 'connecting' }} />),
+    render: () => bare(<TerminalStatusAtlas status={{ kind: 'connecting' }} />),
   },
   'settings.notification-explainer': {
     render: () => (

@@ -17,6 +17,29 @@ export function AlertOver({ options, children }: { options: ConfirmOptions; chil
   return <>{children}</>;
 }
 
+/** agent-detail.close-confirm: Close Pane as a popover over the terminal (Swift anchors it to the composer's "..."). */
+export const closePanePopover: ConfirmOptions = {
+  title: t('Close %@?', '“Polish the Attach experience”'),
+  message: t("Closes this pane. Anything running in it stops. The tab's other panes stay open."),
+  confirmLabel: t('Close Pane'),
+  cancelLabel: t('Cancel'),
+  destructive: true,
+  presentation: 'popover',
+};
+
+/** usage.account-remove-confirm: Swift anchors it to the Account row. */
+export const removeAccountPopover: ConfirmOptions = {
+  title: t('Remove %@?', 'claude-2'),
+  message: t(
+    'Its Token Usage and Usage Limits stop showing. The directory and its sign-in stay on %@.',
+    'Studio Mac',
+  ),
+  confirmLabel: t('Remove Account'),
+  cancelLabel: t('Cancel'),
+  destructive: true,
+  presentation: 'popover',
+};
+
 export const closeConfirmation: ConfirmOptions = {
   title: t('Close %@?', 'iOS App'),
   message: t("Closes this pane. Anything running in it stops. The tab's other panes stay open."),
@@ -34,6 +57,7 @@ export function TerminalStatusAtlas({ status }: { status: AttachStatus }) {
         storage={deviceStorage}
         surface="terminal"
         onSwitch={noop}
+        moreItems={[{ key: 'changes', title: t('Changes'), onPress: noop }]}
       />
       <StatusOverlay status={status} onRetry={noop} />
     </>

@@ -8,9 +8,18 @@ import {
   terminalPolicy,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Composer, KeyboardDock, type KeySpec } from '@openagentspocket/ui';
+import {
+  Banner,
+  Composer,
+  KeyboardDock,
+  type KeySpec,
+  makeStyles,
+  ProgramMark,
+  useTheme,
+} from '@openagentspocket/ui';
+import type { ReactNode } from 'react';
 import { useState, useSyncExternalStore } from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { renderMessage } from '@/usage/usageText';
 import type { Surface } from '../surface';
 import type { AgentComposer } from './composerContext';
@@ -31,7 +40,22 @@ const ATTACH_KEYS: readonly (readonly KeySpec[])[] = [
   ],
 ];
 
+const useStyles = makeStyles(() => ({
+  toggle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+}));
+
 interface Props {
+  /** The Agent's program: its mark is the Chat/Terminal toggle. */
+  program?: string;
+  onToggleSurface?: () => void;
+  /** Inside the card under the buttons (the switcher). */
+  footer?: ReactNode;
   composer: AgentComposer;
   surface: Surface;
   /** Commands or Skills the draft's trailing token can complete; empty when the source is unknown. */
@@ -45,6 +69,9 @@ interface Props {
 
 /** The Composer under the Chat or Terminal slot: draft, Send or Stop, suggestions and what went wrong. */
 export function AgentComposerBar({
+  program = 'unknown',
+  onToggleSurface,
+  footer,
   composer,
   surface,
   skills = [],
@@ -52,6 +79,8 @@ export function AgentComposerBar({
   canStop = true,
   onAttachKey,
 }: Props) {
+  const styles = useStyles();
+  const theme = useTheme();
   const { store, snapshot, interrupt } = composer;
   const policy = surface === 'chat' ? chatPolicy : terminalPolicy;
   useSyncExternalStore(store.stop.subscribe, () => store.stop.phase);
@@ -127,6 +156,20 @@ export function AgentComposerBar({
         onSuggestion={(command) => {
           if (trigger) store.replaceTrailingToken(trigger.token, `${command} `);
         }}
+        footer={footer}
+        tools={
+          onToggleSurface ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={surface === 'chat' ? t('Terminal') : t('Chat')}
+              onPress={onToggleSurface}
+              style={[styles.toggle, { backgroundColor: theme.colors.control }]}
+              testID={surface === 'chat' ? 'surface-terminal' : 'surface-chat'}
+            >
+              <ProgramMark program={program} size={22} />
+            </Pressable>
+          ) : undefined
+        }
         testID="composer"
       />
       {attachDraft && onAttachKey ? (

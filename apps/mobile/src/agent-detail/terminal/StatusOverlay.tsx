@@ -23,7 +23,7 @@ const useStyles = makeStyles((th) => ({
     alignItems: 'center',
     gap: th.spacing.sm,
     paddingHorizontal: th.spacing.lg,
-    paddingVertical: th.spacing.xl,
+    paddingVertical: th.spacing.lg,
     borderRadius: th.metrics.cardRadius + 8,
     backgroundColor: th.colors.surfaceOverlay,
     borderWidth: th.metrics.hairlineWidth,

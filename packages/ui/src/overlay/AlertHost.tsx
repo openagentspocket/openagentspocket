@@ -20,6 +20,18 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.sm,
   },
   alert: { width: '100%', maxWidth: 340 },
+  popover: { width: '100%', maxWidth: 320, alignSelf: 'center', borderRadius: 20 },
+  arrow: {
+    alignSelf: 'center',
+    width: 16,
+    height: 16,
+    marginTop: -9,
+    transform: [{ rotate: '45deg' }],
+    backgroundColor: t.colors.surfaceOverlay,
+    borderRightWidth: t.metrics.hairlineWidth,
+    borderBottomWidth: t.metrics.hairlineWidth,
+    borderColor: t.hairline,
+  },
   dialog: { width: '100%', maxWidth: t.metrics.readableWidth, alignSelf: 'center' },
   text: { gap: t.spacing.xxs },
   centered: { textAlign: 'center' },
@@ -50,8 +62,9 @@ function AlertPanel({ request }: { request: AlertRequest }) {
   const styles = useStyles();
   const insets = useInsets();
   const isAlert = request.presentation === 'alert';
+  const isPopover = request.presentation === 'popover';
   const cancel =
-    request.cancelLabel === null ? null : (
+    request.cancelLabel === null || isPopover ? null : (
       <View style={isAlert ? styles.grow : undefined}>
         <Button
           kind="secondary"
@@ -75,19 +88,25 @@ function AlertPanel({ request }: { request: AlertRequest }) {
     <View
       style={[
         styles.backdrop,
-        isAlert ? styles.center : [styles.bottom, { paddingBottom: insets.bottom + spacing.xs }],
+        isAlert
+          ? styles.center
+          : [
+              styles.bottom,
+              // A popover sits above the key toolbar (about 64 pt) and its arrow points down at it.
+              { paddingBottom: insets.bottom + (isPopover ? 72 : spacing.xs) },
+            ],
       ]}
     >
       {isAlert ? null : (
         <Pressable
           style={styles.grow}
-          onPress={() => request.cancelLabel !== null && answerAlert(request, null)}
+          onPress={() => (isPopover || request.cancelLabel !== null) && answerAlert(request, null)}
           accessibilityElementsHidden
           importantForAccessibility="no"
         />
       )}
       <View
-        style={[styles.panel, isAlert ? styles.alert : styles.dialog]}
+        style={[styles.panel, isAlert ? styles.alert : isPopover ? styles.popover : styles.dialog]}
         accessibilityViewIsModal
         testID={`alert-${request.presentation}`}
       >
@@ -117,6 +136,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
           </View>
         )}
       </View>
+      {isPopover ? <View style={styles.arrow} /> : null}
     </View>
   );
 }

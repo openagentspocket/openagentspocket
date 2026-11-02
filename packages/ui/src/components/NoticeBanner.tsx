@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useRef } from 'react';
-import { ActivityIndicator, Animated, PanResponder, Pressable, View } from 'react-native';
+import { ActivityIndicator, Animated, PanResponder, Platform, Pressable, View } from 'react-native';
 import { quick, useReducedMotion } from '../motion';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
@@ -81,6 +81,9 @@ interface NoticeBannerProps {
   testID?: string;
 }
 
+// Web paints a focus ring on the first focusable thing in a Modal; the banner is not a form control.
+const WEB_NO_RING = (Platform.OS === 'web' ? { outlineStyle: 'none' } : null) as object | null;
+
 function Inapp({
   title,
   message,
@@ -139,7 +142,7 @@ function Inapp({
     >
       <Pressable
         testID={testID}
-        style={styles.inapp}
+        style={[styles.inapp, WEB_NO_RING]}
         onPress={onPress}
         accessibilityRole="button"
         accessibilityLabel={title ? `${title}. ${body}` : body}
@@ -191,7 +194,7 @@ export function NoticeBanner(props: NoticeBannerProps) {
         testID={testID ?? 'notice-locating'}
       >
         <ActivityIndicator size="large" color={theme.colors.accent} />
-        <Text variant="body" tone="secondary">
+        <Text variant="subheadline" tone="secondary">
           {message}
         </Text>
       </View>
@@ -205,7 +208,7 @@ export function NoticeBanner(props: NoticeBannerProps) {
       testID={testID ?? 'notice-banner'}
     >
       <Icon name={icon} tint={theme.tone(tone)} />
-      <Text variant="subheadline" tone="secondary" style={styles.message}>
+      <Text variant="footnote" tone="secondary" style={styles.message}>
         {message}
       </Text>
       {action ? (
@@ -217,7 +220,7 @@ export function NoticeBanner(props: NoticeBannerProps) {
           hitSlop={8}
           testID="notice-action"
         >
-          <Text variant="subheadline" tone="accent" semibold>
+          <Text variant="footnote" tone="accent" semibold>
             {action.label}
           </Text>
         </Pressable>

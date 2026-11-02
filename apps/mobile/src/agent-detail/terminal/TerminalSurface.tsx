@@ -11,8 +11,8 @@ import {
 } from '@openagentspocket/ui';
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from 'expo-router';
-import { useCallback, useState, useSyncExternalStore } from 'react';
-import { View } from 'react-native';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
+import { Keyboard, View } from 'react-native';
 import { useSettings } from '@/settings/SettingsProvider';
 import type { AgentTerminalSession } from './AgentTerminalSession';
 import { CONTROL_KEYS, FULL_KEYBOARD, type KeyRows, keyLabel } from './keyTables';
@@ -35,6 +35,20 @@ export function TerminalSurface({ hostId, paneId }: { hostId: string; paneId: st
   return session ? <LiveTerminal session={session} /> : null;
 }
 
+/** True while the software keyboard is up: Swift docks the key toolbar to it and shows it only then. */
+function useKeyboardShown(): boolean {
+  const [shown, setShown] = useState(false);
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', () => setShown(true));
+    const hide = Keyboard.addListener('keyboardDidHide', () => setShown(false));
+    return () => {
+      show.remove();
+      hide.remove();
+    };
+  }, []);
+  return shown;
+}
+
 function LiveTerminal({ session }: { session: AgentTerminalSession }) {
   const router = useRouter();
   const settings = useSettings();
@@ -44,6 +58,7 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
   const [keys, setKeys] = useState<Keys>('system');
   const [menu, setMenu] = useState(false);
   const [dPad, setDPad] = useState(false);
+  const keyboardShown = useKeyboardShown();
   const { keyboard } = session;
   const configuration = {
     showsEscape: settings.toolbarEscape,
@@ -101,16 +116,18 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
         />
         <StatusOverlay status={terminal.snapshot.status} onRetry={store.retry.bind(store)} />
       </View>
-      <TerminalToolbar
-        keyboard={keyboard}
-        configuration={configuration}
-        onKey={sendKey}
-        fullKeyboardShown={keys === 'full'}
-        onToggleKeyboard={() => showKeys(keys === 'full' ? 'system' : 'full')}
-        onMore={() => setMenu(true)}
-        dPadOpen={dPad}
-        onToggleDPad={setDPad}
-      />
+      {keyboardShown || keys !== 'system' || dPad ? (
+        <TerminalToolbar
+          keyboard={keyboard}
+          configuration={configuration}
+          onKey={sendKey}
+          fullKeyboardShown={keys === 'full'}
+          onToggleKeyboard={() => showKeys(keys === 'full' ? 'system' : 'full')}
+          onMore={() => setMenu(true)}
+          dPadOpen={dPad}
+          onToggleDPad={setDPad}
+        />
+      ) : null}
       {dock ? <KeyboardDock rows={dock.rows} onKey={dockKey(dock)} testID="keys-dock" /> : null}
       <ActionMenu items={items} visible={menu} onClose={() => setMenu(false)} />
       <PasteReviewSheet

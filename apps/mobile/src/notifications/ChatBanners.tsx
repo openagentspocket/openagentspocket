@@ -23,7 +23,8 @@ const ICONS: Record<ReturnType<typeof bannerIcon>, IconName> = {
 };
 
 const useStyles = makeStyles((th) => ({
-  stack: { gap: th.spacing.xs, paddingTop: th.spacing.xs },
+  stack: { gap: th.spacing.xs, paddingTop: th.spacing.xs, paddingHorizontal: th.spacing.md },
+  wait: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 }));
 
 /** What the chat surface knows of its connection: the Host's events status and the read outcome. */
@@ -81,7 +82,7 @@ function actionFor(line: ChatBannerLine, retry?: () => void, terminal?: () => vo
 }
 
 /** The lines under the chat header ("Connecting...", "Not connected.", "Couldn't read...") and the wait. */
-export function ChatBanners({ lines, locating, onRetry, onShowTerminal }: Props) {
+export function ChatBanners({ lines, onRetry, onShowTerminal }: Props) {
   const styles = useStyles();
   return (
     <>
@@ -99,9 +100,16 @@ export function ChatBanners({ lines, locating, onRetry, onShowTerminal }: Props)
           ))}
         </View>
       ) : null}
-      {locating ? (
-        <NoticeBanner kind="locating" message={t('Looking for the conversation…')} />
-      ) : null}
     </>
+  );
+}
+
+/** The centered wait while the conversation is searched for (Swift centers it in the free area). */
+export function ChatWait() {
+  const styles = useStyles();
+  return (
+    <View style={styles.wait}>
+      <NoticeBanner kind="locating" message={t('Looking for the conversation…')} />
+    </View>
   );
 }

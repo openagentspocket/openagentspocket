@@ -1,7 +1,10 @@
 import { createQueue, hasHost } from './store';
 
-/** alert: a centered dialog; dialog: an action sheet anchored to the bottom (iOS confirmationDialog). */
-export type ConfirmPresentation = 'alert' | 'dialog';
+/**
+ * alert: a centered dialog; dialog: an action sheet anchored to the bottom (iOS confirmationDialog);
+ * popover: a card with an arrow above the bottom toolbar, dismissed by tapping outside (no Cancel).
+ */
+export type ConfirmPresentation = 'alert' | 'dialog' | 'popover';
 
 export interface ConfirmAction<K extends string = string> {
   key: K;

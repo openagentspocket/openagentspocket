@@ -1,6 +1,4 @@
 import { agentKey } from '@openagentspocket/core';
-import { t } from '@openagentspocket/i18n';
-import { ActionMenuButton } from '@openagentspocket/ui';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import { parseSurface } from '@/agent-detail/surface';
@@ -17,26 +15,15 @@ export default function AgentRoute() {
   const items = row ? entries.agent(row).filter((item) => item.key !== 'open') : [];
   return (
     <>
-      <Stack.Screen
-        options={{
-          headerShown: true,
-          title: '',
-          headerRight: () =>
-            items.length > 0 ? (
-              <ActionMenuButton
-                items={items}
-                accessibilityLabel={t('More')}
-                testID="agent-more-menu"
-              />
-            ) : null,
-        }}
-      />
+      <Stack.Screen options={{ headerShown: false }} />
       <AgentDetailScreen
         key={`${params.hostId}/${params.paneId}`}
         hostId={params.hostId}
         paneId={params.paneId}
         storage={deviceStorage}
         surface={parseSurface(params.surface)}
+        moreItems={items}
+        onSessions={() => router.back()}
         onSwitch={(next) =>
           router.replace({
             pathname: '/agent/[hostId]/[paneId]',
