@@ -11,4 +11,5 @@ export * from './probe-filter';
 export * from './recovery-latch';
 export * from './scripted';
 export * from './session-handler';
+export * from './text-safety';
 export * from './types';
