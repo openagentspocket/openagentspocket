@@ -29,6 +29,7 @@ import {
 } from "./activity-state.js";
 import { parseActivityRowLayout } from "./activity-rows.js";
 import { readNotificationConfig } from "./notification-config.js";
+import { APNS_ENVIRONMENTS, platformOf } from "./notify-platform.js";
 import { readUsageRuntime, recordUsageRuntime } from "./usage-runtime.js";
 import { noteClaudeAgent } from "./usage/claude-agents.js";
 import { refreshSidebarSnapshotForEvent } from "./sidebar-config.js";
@@ -38,7 +39,6 @@ import { deliversToSession, hookSession, sessionStateDir } from "./session.js";
 const SEND_ATTEMPTS = 3;
 const REQUEST_TIMEOUT_MS = 10_000;
 const KEY_BYTES = 32;
-const APNS_ENVIRONMENTS = new Set(["production", "sandbox"]);
 const ACTIVITY_TOKEN_PATTERN = /^[0-9a-f]{16,200}$/;
 const CT_BUDGET = 2800;
 const APNS_PAYLOAD_BUDGET = 4096;
@@ -70,8 +70,8 @@ function parseStatusEvent(raw) {
 }
 
 /**
- * Devices whose registration entry carries a usable Live Activity token.
- * `notify` flags do not apply; a missing `live_activity` object means skip.
+ * Devices whose registration entry carries a usable Live Activity token (iOS
+ * only). `notify` flags do not apply; a missing `live_activity` object means skip.
  * Only entries delivered to this hook's herdr session count (src/session.js).
  */
 function readActivityDevices(configDir, session) {
@@ -84,7 +84,7 @@ function readActivityDevices(configDir, session) {
   if (file?.v !== 1 || !Array.isArray(file.devices)) return [];
   const devices = [];
   for (const entry of file.devices) {
-    if (!deliversToSession(entry, session)) continue;
+    if (!deliversToSession(entry, session) || platformOf(entry) !== "ios") continue;
     const live = entry?.live_activity;
     if (typeof live !== "object" || live === null || Array.isArray(live)) continue;
     if (typeof live.token !== "string" || !ACTIVITY_TOKEN_PATTERN.test(live.token)) continue;

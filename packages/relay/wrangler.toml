@@ -1,9 +1,13 @@
 # Cloudflare Workers deployment for the herdr Push Relay (ADR 0008).
 #
-# Non-secret config goes in [vars]; the APNs signing key is a deploy-time
-# secret and must NEVER be committed:
+# Non-secret config goes in [vars]; the APNs signing key and the FCM service
+# account are deploy-time secrets and must NEVER be committed:
 #
-#   wrangler secret put APNS_KEY_P8   # paste the .p8 PEM contents
+#   wrangler secret put APNS_KEY_P8   # paste the .p8 PEM contents (iOS)
+#   wrangler secret put FCM_SERVICE_ACCOUNT_JSON < <key file>.json   # Android
+#
+# Configure either platform or both; a request for a platform without
+# credentials answers 500 relay_misconfigured.
 #
 # See README.md for the full deploy walkthrough.
 
@@ -28,5 +32,6 @@ APNS_TOPIC = "com.example.agentico"
 PRIVACY_CONTACT = ""
 # Live Activity pushes use `${APNS_TOPIC}.push-type.liveactivity`
 # (suffix-derived; no extra var).
+# FCM_PROJECT_ID = ""                            # optional; defaults to the service account's project_id
 # RATE_LIMIT_IP_PER_MIN = "120"                  # optional override
 # RATE_LIMIT_TOKEN_PER_MIN = "60"                # optional override

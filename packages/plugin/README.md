@@ -568,6 +568,14 @@ herdr session; removing an entry revokes that device for that session.
       "session": "",
       "notify": { "blocked": true, "done": true, "approve": false },
       "live_activity": { "token": "c4d5e6...", "started_at": "2026-01-01T00:00:00Z" }
+    },
+    {
+      "platform": "android",
+      "token": "cX9...:APA91b...",
+      "key": "__79_Pv6-fj39vX08_Lx8O_u7ezr6uno5-bl5OPi4eA",
+      "env": "fcm",
+      "session": "",
+      "notify": { "blocked": true, "done": true, "approve": false }
     }
   ]
 }
@@ -577,14 +585,15 @@ herdr session; removing an entry revokes that device for that session.
 | ---------------- | ------- | ------- |
 | `v`              | integer | File format version. This document specifies version `1`; a reader finding any other value must treat the file as absent (send nothing) rather than guess. |
 | `devices`        | array   | One entry per registered device. Empty means no notifications. |
-| `token`          | string  | The device's APNs device token, lowercase hex. Unique within the file per `session`: a device with Hosts on several herdr sessions of this user has one entry per session. |
+| `platform`       | string  | Plugin 0.12.0+: the push service. Missing (every entry older apps wrote) or `ios` means APNs; `android` means FCM. An entry naming any other platform is skipped. Older plugins ignore the field and skip Android entries by their `env`. |
+| `token`          | string  | The device's push token: the APNs device token, lowercase hex (iOS), or the FCM registration token (Android). Unique within the file per `session`: a device with Hosts on several herdr sessions of this user has one entry per session. |
 | `key`            | string  | Raw 32-byte Notification Key, unpadded base64url. Generated on the device, per Host. |
 | `session`        | string  | The herdr session the entry was registered for: `""` for the default session (never the literal `"default"`), otherwise the session name. See [herdr sessions](#herdr-sessions). Entries without a string `session` were written by older apps and receive every session's deliveries. |
-| `env`            | string  | `production` or `sandbox`: which APNs environment the token belongs to, following the app build that registered it. |
+| `env`            | string  | iOS: `production` or `sandbox`, which APNs environment the token belongs to, following the app build that registered it. Android: `fcm`. An entry whose `env` does not belong to its platform is skipped. |
 | `notify.blocked` | boolean | Send a push when an Agent becomes Blocked. |
 | `notify.done`    | boolean | Send a push when an Agent reaches Done. A missing flag means do not send (fail closed). |
 | `notify.approve` | boolean | Plugin 0.9.0+: send the [approval preview](#approval-preview) with Blocked pushes, so the device can Approve or Deny a permission prompt from the notification. Off when missing; older plugins ignore it. Plugin 0.10.0+ also records the preview for the Live Activity ([Approval asks](#approval-asks)). |
-| `live_activity`  | object  | Optional per-device Live Activity registration. Present while the app is showing this Host's activity. See [Activity hook](#activity-hook). |
+| `live_activity`  | object  | Optional per-device Live Activity registration, iOS only (ignored on any other platform). Present while the app is showing this Host's activity. See [Activity hook](#activity-hook). |
 | `live_activity.token` | string | The per-activity APNs push token, lowercase hex. Distinct from the alert `token`. |
 | `live_activity.started_at` | string | ISO 8601 timestamp the app wrote when it started (or rotated) the activity. Ignored by the hook; preserved on rewrite. |
 | `live_activity.pinned_pane_ids` | string[] | Optional. Pane ids the device has pinned, most-recently-pinned first. Reorders Live Activity rows; does not change eligibility or counts. Missing, null, non-array, or any non-string entry is ignored (treated as empty). |
@@ -731,6 +740,16 @@ the app's update notice installs from that branch. See
 - Plugin 0.11.0 adds the optional "Only from Tailscale" pairing option (see
   [Only from Tailscale](#only-from-tailscale-device-keys)). Nothing changes
   unless you turn it on; the app does not need an update to pair.
+
+### Updating to 0.12.0
+
+- Plugin 0.12.0 delivers notifications to Android devices: registration
+  entries with `platform: "android"` and `env: "fcm"` (see
+  [Notification Registration file](#notification-registration-file-v1)) go
+  through the relay's FCM path, which needs a relay with FCM credentials
+  (`relay/README.md`). Older plugins skip those entries, so the app should
+  offer Android notifications only on 0.12.0 or newer. iOS deliveries are
+  unchanged.
 
 ## Usage
 
@@ -1028,11 +1047,14 @@ Each eligible device gets one `POST http://127.0.0.1:8787/push` by
 default (see `relay/README.md`), carrying the encrypted envelope and an opaque
 per-pane `collapse` key (derived from the device's Notification Key and the
 pane id, so the relay cannot guess the pane while newer statuses still replace
-older notifications). Transient failures (network errors, 429, 5xx) are
-retried up to 3 attempts; a `410 Unregistered` verdict prunes every entry
-with that token from `notifications.json`, whatever its session (preserving
-any fields this plugin does not understand);
-other 4xx verdicts are final.
+older notifications). An iOS entry's body is `{token, env, envelope,
+collapse}`, byte for byte what earlier plugins sent; an Android entry's body
+adds `platform: "android"` and carries `env: "fcm"`, and the relay sends it
+through FCM (`src/notify-platform.js`). Transient failures (network errors,
+429, 5xx) are retried up to 3 attempts; a `410 Unregistered` verdict (APNs,
+or FCM's `UNREGISTERED` as the relay maps it) prunes every entry with that
+token from `notifications.json`, whatever its session (preserving any fields
+this plugin does not understand); other 4xx verdicts are final.
 
 ### Approval preview
 
@@ -1194,8 +1216,9 @@ details envelope uses the same Notification Key as alerts, sealed under AAD
 
 Anti-noise, in order:
 
-1. **Cheap exits**: no device has a `live_activity` object with a plausible
-   hex token, valid env, and 32-byte key; or `activity/last-state.json`
+1. **Cheap exits**: no iOS device (Live Activities are iOS-only, so entries
+   naming another `platform` never count) has a `live_activity` object with a
+   plausible hex token, valid env, and 32-byte key; or `activity/last-state.json`
    recorded `ended: true` and the incoming status is not working/blocked/done.
 2. **Latest-wins debounce**: the script writes `activity/claim.json` and
    sleeps `activity_debounce_ms` (default 1500). A newer claim from an

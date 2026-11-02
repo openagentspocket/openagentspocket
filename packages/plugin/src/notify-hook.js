@@ -13,9 +13,8 @@
 // opted in with `notify.approve` also carries the approval preview read off
 // the Agent's screen (src/approval-preview.js, spec F5), and the hook records
 // the same fields for the app's Live Activity (src/approval-ask-records.js,
-// R5) until the pane leaves Blocked. herdr's status detection is
-// heuristic and can flap, so nothing is sent unless the status still holds
-// after the debounce.
+// R5) until the pane leaves Blocked. herdr's status detection is heuristic
+// and can flap, so nothing is sent unless the status still holds after the debounce.
 //
 // Event JSON shape, captured empirically against a live herdr 0.7.5 (note
 // the envelope `event` name is snake_case on the wire even though the
@@ -46,6 +45,7 @@ import {
 import { approvalEpisodeId, approvalScope, extractApprovalPreview } from "./approval-preview.js";
 import { encryptNotificationEnvelope, encryptWithApprovalFallback } from "./notification-envelope.js";
 import { readNotificationConfig } from "./notification-config.js";
+import { alertPushBody, pushTarget } from "./notify-platform.js";
 import { refreshSidebarSnapshotForEvent } from "./sidebar-config.js";
 import { forDisplay, optionalText } from "./display-text.js";
 import { deliversToSession, hookSession, sessionStateDir } from "./session.js";
@@ -57,7 +57,6 @@ const NOTIFY_FLAG_BY_STATUS = { blocked: "blocked", done: "done" };
 const SEND_ATTEMPTS = 3;
 const REQUEST_TIMEOUT_MS = 10_000;
 const KEY_BYTES = 32;
-const APNS_ENVIRONMENTS = new Set(["production", "sandbox"]);
 // The screen read for the approval preview is a nicety: past this bound the
 // push goes without it rather than later.
 const SCREEN_READ_TIMEOUT_MS = 1_500;
@@ -107,7 +106,8 @@ function readEligibleDevices(configDir, status, session) {
   for (const entry of file.devices) {
     if (typeof entry?.token !== "string" || entry.token.length === 0) continue;
     if (!deliversToSession(entry, session)) continue;
-    if (!APNS_ENVIRONMENTS.has(entry.env)) continue;
+    const target = pushTarget(entry); // APNs or FCM, per the optional `platform`
+    if (target === null) continue;
     // Per the v1 contract a missing notify flag means do not send (fail closed).
     if (entry.notify?.[flag] !== true) continue;
     const key = typeof entry.key === "string" ? Buffer.from(entry.key, "base64url") : null;
@@ -115,7 +115,7 @@ function readEligibleDevices(configDir, status, session) {
     // Approval fields go only to devices that opted in, and only with
     // Blocked; a missing flag means off, like every notify flag.
     const approve = status === "blocked" && entry.notify?.approve === true;
-    devices.push({ token: entry.token, env: entry.env, key, approve });
+    devices.push({ token: entry.token, ...target, key, approve });
   }
   return devices;
 }
@@ -330,11 +330,11 @@ function collapseKeyFor(key, paneId) {
 /**
  * POST one push, retrying transient failures (network errors, 429, 5xx) up
  * to SEND_ATTEMPTS. The relay itself never retries by design (ADR 0008).
- * Returns "ok", "pruned" (APNs 410 Unregistered: the token is dead), or a
- * thrown Error for a delivery that conclusively failed.
+ * Returns "ok", "pruned" (410 Unregistered from APNs, or FCM's UNREGISTERED
+ * as relayed: the token is dead), or a thrown Error for a conclusive failure.
  */
 async function postPush(relayUrl, device, envelope, collapse, retryDelayMs) {
-  const body = JSON.stringify({ token: device.token, env: device.env, envelope, collapse });
+  const body = alertPushBody(device, envelope, collapse);
   let lastFailure = "";
   for (let attempt = 1; attempt <= SEND_ATTEMPTS; attempt += 1) {
     if (attempt > 1) await sleep(retryDelayMs);

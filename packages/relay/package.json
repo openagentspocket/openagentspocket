@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "license": "Apache-2.0",
-  "description": "Stateless Push Relay forwarding encrypted Agent Notifications to APNs (ADR 0008)",
+  "description": "Stateless Push Relay forwarding encrypted Agent Notifications to APNs and FCM (ADR 0008)",
   "type": "module",
   "engines": {
     "node": ">=20"
