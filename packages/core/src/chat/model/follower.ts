@@ -78,6 +78,20 @@ function sameStart(a: Uint8Array | null, b: Uint8Array | null): boolean {
   return shared > 0 && bytesEqual(a.subarray(0, shared), b.subarray(0, shared));
 }
 
+/** Whether two reads of a file's first bytes name one conversation: by identity when it reads, else by content. */
+export function sameConversationHeads(
+  a: Uint8Array | null,
+  b: Uint8Array | null,
+  identity: HeadIdentity | null,
+): boolean {
+  if (identity && a && b) {
+    const first = identity(a);
+    const second = identity(b);
+    if (first !== null && second !== null) return first === second;
+  }
+  return sameStart(a, b);
+}
+
 export class TranscriptFollower {
   readonly limits: FollowerLimits;
   framer: JsonlLineFramer;
@@ -312,12 +326,7 @@ export class TranscriptFollower {
   }
 
   private sameConversation(a: Uint8Array | null, b: Uint8Array | null): boolean {
-    if (this.identity && a && b) {
-      const first = this.identity(a);
-      const second = this.identity(b);
-      if (first !== null && second !== null) return first === second;
-    }
-    return sameStart(a, b);
+    return sameConversationHeads(a, b, this.identity);
   }
 
   /**

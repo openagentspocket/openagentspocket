@@ -5,6 +5,7 @@ import { systemClock } from '@/console/systemClock';
 import { registerLiveRuntime } from '@/features/hosts/hostsRuntime';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { createDeviceStores } from '@/stores';
+import { createChatTranscriptCache } from '@/stores/expoCacheFileStore';
 import { createLiveServices, type LiveServices } from './liveServices';
 
 let services: LiveServices | undefined;
@@ -19,6 +20,7 @@ export function deviceServices(): LiveServices {
       knownHosts: stores.knownHosts,
       deviceKey: stores.deviceKey,
       storage: deviceStorage,
+      chatCache: createChatTranscriptCache(stores.knownHosts),
       clock: systemClock,
       keyAlias: DEFAULT_DEVICE_KEY_ALIAS,
       initiallyActive: AppState.currentState === 'active',

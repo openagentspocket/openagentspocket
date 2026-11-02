@@ -3,6 +3,7 @@ import { AppState } from 'react-native';
 import { CompositionProvider } from '@/composition/CompositionProvider';
 import { deviceComposition } from '@/composition/deviceComposition';
 import { ConsoleStoreProvider } from '@/console/hooks';
+import { ConversationsProvider } from '@/conversations/useConversation';
 import { deviceServices } from './deviceServices';
 import { isDemoMode, subscribeDemoMode } from './mode';
 
@@ -20,16 +21,21 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
     void manager.setActive(AppState.currentState === 'active');
     const subscription = AppState.addEventListener('change', (state) => {
       void manager.setActive(state === 'active');
+      deviceServices().conversations.setActive(state === 'active');
     });
     return () => {
       subscription.remove();
       void manager.setActive(false);
+      deviceServices().conversations.setActive(false);
     };
   }, [demo]);
   if (demo) return <>{children}</>;
+  const services = deviceServices();
   return (
-    <ConsoleStoreProvider store={deviceServices().store}>
-      <CompositionProvider composition={deviceComposition()}>{children}</CompositionProvider>
+    <ConsoleStoreProvider store={services.store}>
+      <ConversationsProvider registry={services.conversations}>
+        <CompositionProvider composition={deviceComposition()}>{children}</CompositionProvider>
+      </ConversationsProvider>
     </ConsoleStoreProvider>
   );
 }
