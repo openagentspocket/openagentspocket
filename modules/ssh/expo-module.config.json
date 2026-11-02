@@ -1,6 +1,9 @@
 {
-  "platforms": ["apple"],
+  "platforms": ["apple", "android"],
   "apple": {
     "modules": ["AgenticoSSHModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.agenticossh.AgenticoSSHModule"]
   }
 }
