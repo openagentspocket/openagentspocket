@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { withAlpha } from './color';
 import { metrics, spacing } from './metrics';
+import { type Status, statusColorKey, type Tone, toneColorKey } from './status';
 import { type ThemeId, type ThemeTokens, themes } from './tokens.generated';
 
 export interface Theme extends ThemeTokens {
@@ -15,6 +16,14 @@ export interface Theme extends ThemeTokens {
   metrics: typeof metrics;
   /** Card and divider border color. */
   hairline: string;
+  /** The color of an Agent status in this theme. */
+  status: (status: Status) => string;
+  /** The color of a semantic tone in this theme. */
+  tone: (tone: Tone) => string;
+  /** A color at the wash opacity, for a fill under that same color as ink. */
+  wash: (color: string) => string;
+  /** The dim behind sheets, menus and alerts: the theme's dark scrim ink, never the canvas. */
+  backdrop: string;
 }
 
 export function buildTheme(id: ThemeId): Theme {
@@ -24,6 +33,10 @@ export function buildTheme(id: ThemeId): Theme {
     spacing,
     metrics,
     hairline: withAlpha(tokens.colors.textPrimary, metrics.hairlineOpacity),
+    status: (status) => tokens.colors[statusColorKey[status]],
+    tone: (tone) => tokens.colors[toneColorKey[tone]],
+    wash: (color) => withAlpha(color, metrics.washOpacity),
+    backdrop: withAlpha(tokens.colors.scrim, metrics.backdropOpacity),
   };
 }
 

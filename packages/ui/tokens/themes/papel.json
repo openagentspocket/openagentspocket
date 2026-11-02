@@ -7,6 +7,7 @@
     "surface": "#FBF8F1",
     "surfaceRaised": "#FFFDF8",
     "surfaceOverlay": "#F4EFE5",
+    "scrim": "#1F1B16",
     "control": "#E4DED1",
     "separator": "#E0D9CB",
     "textPrimary": "#1F1B16",
