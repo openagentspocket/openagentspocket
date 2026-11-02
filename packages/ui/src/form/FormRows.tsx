@@ -95,7 +95,8 @@ export function PickerRow<V extends string>({
       <ListRow
         title={title}
         value={current?.label}
-        trailing={<Icon name="chevronUpDown" size={13} color="textTertiary" />}
+        valueTone="accent"
+        trailing={<Icon name="chevronUpDown" size={13} color="accent" />}
         onPress={() => setOpen(true)}
         disabled={disabled}
         testID={testID}

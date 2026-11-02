@@ -18,10 +18,13 @@ UX phase D merged: 8 of 10 component groups approved on Swift | RN sheets (agent
 blocked + terminal, nav + sheets, usage, hosts/settings/files, settings pickers); ui tests 252. Native retry: both
 platforms build; Android deep link with the app open passes; notification permission still not requested (demo
 push token source), e2e flows outdated for the new Home.
-**Running:** UX phase E (`scratchpad/rn/ux-e.js`): second fix round for UX3-agent-bar and UX3-composer-extras,
-assembly of Home, Agents list + Board, Hosts (+ its sheet routes), Usage, Settings (+ its sheet routes),
-Notifications, menu preview, and T-e2e-w5 (real push permission, e2e flows, Android cold-start link, port field).
-Next: UX1-agent-detail, UX1-files-changes-ports, UX1-new-agent, UX1-tint-audit, UX1-wide, then an iOS atlas pass.
+UX phase E merged what the judges approved: UX3-composer-extras (round 2), UX1-settings, UX1-hosts (+ sheet
+routes, keyboard avoiding + pinned sheet bar in Screen), UX1-menu-preview, T-e2e-w5 (real push permission, e2e flows,
+Android cold-start link, port field); ui 265, mobile 301. Rejected on stale evidence or real gaps: UX1-home,
+UX1-agents-list, UX1-usage, UX1-notifications, UX3-agent-bar.
+**Running:** UX phase F (`scratchpad/rn/ux-f.js`): third round for those five in their worktrees, fresh captures
+enforced (new server, cleared Metro cache, evidence newer than the last commit) and judges regenerate the sheets
+themselves. Next: UX1-agent-detail, UX1-files-changes-ports, UX1-new-agent, UX1-tint-audit, UX1-wide, iOS atlas pass.
 
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in

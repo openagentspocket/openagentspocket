@@ -5,9 +5,14 @@ appId: com.openagentspocket.app
 - launchApp:
     clearState: true
 - openLink: openagentspocket:///settings
+# The switch is below the fold of the Settings root: scroll to it, then open Home by link
+# (Settings is a root screen here, so `back` has nowhere to go).
+- scrollUntilVisible:
+    element:
+      id: settings.general.demoMode
 - tapOn:
     id: settings.general.demoMode
-- back
+- openLink: openagentspocket:///
 - assertVisible: "OpenAgentsPocket"
 - assertVisible: "NEEDS YOU.*"
 - assertVisible: "WORKING.*"

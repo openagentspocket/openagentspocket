@@ -1,10 +1,11 @@
 import type { AttachStatus } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { type ConfirmOptions, confirm, Screen } from '@openagentspocket/ui';
+import { type ConfirmOptions, confirm } from '@openagentspocket/ui';
 import { type ReactNode, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import { StatusOverlay } from '@/agent-detail/terminal/StatusOverlay';
 import { NotificationExplainerSheet } from '@/notifications/NotificationDisclosure';
+import { deviceStorage } from '@/settings/deviceStorage';
 
 const noop = () => {};
 
@@ -23,21 +24,19 @@ export const closeConfirmation: ConfirmOptions = {
   destructive: true,
 };
 
-export const removeHostConfirmation: ConfirmOptions = {
-  title: t('Remove %@?', 'Demo Host'),
-  message: `${t('This permanently deletes the Host configuration and any saved password from the Keychain.')} ${t('This cannot be undone.')}`,
-  confirmLabel: t('Remove Host'),
-  destructive: true,
-};
-
-/** The terminal canvas with its status card over it, in a fixed state. */
+/** The Agent's Terminal surface (header, canvas, toolbar) with its status card over the canvas. */
 export function TerminalStatusAtlas({ status }: { status: AttachStatus }) {
   return (
-    <Screen scroll={false} edges={['bottom']}>
-      <View style={{ flex: 1 }}>
-        <StatusOverlay status={status} onRetry={noop} />
-      </View>
-    </Screen>
+    <>
+      <AgentDetailScreen
+        hostId="demo"
+        paneId="p1"
+        storage={deviceStorage}
+        surface="terminal"
+        onSwitch={noop}
+      />
+      <StatusOverlay status={status} onRetry={noop} />
+    </>
   );
 }
 

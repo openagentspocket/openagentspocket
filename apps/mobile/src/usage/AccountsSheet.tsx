@@ -62,7 +62,7 @@ export function AccountsSheet({ visible, onClose, hostId, hostName, report, stor
         'Its Token Usage and Usage Limits stop showing. The directory and its sign-in stay on %@.',
         hostName,
       ),
-      confirmLabel: t('Remove'),
+      confirmLabel: t('Remove Account'),
       cancelLabel: t('Cancel'),
       destructive: true,
     });

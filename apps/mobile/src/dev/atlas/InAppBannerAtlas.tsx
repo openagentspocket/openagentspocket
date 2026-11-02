@@ -1,33 +1,26 @@
-import { NoticeBanner, ProgramMark, useInsets } from '@openagentspocket/ui';
-import { StyleSheet, View } from 'react-native';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import Index from '@/app/index';
+import { BannerLayer } from '@/notifications/InAppBanner';
 
 const noop = () => {};
 
-/** The Home console with the in-app banner pinned over it: a blocked Agent with its question. */
+// iPhone 17 Pro: web has no safe area, so the atlas supplies the device's.
+const IPHONE_INSETS = { top: 59, bottom: 34, left: 0, right: 0 };
+
+const BLOCKED = {
+  target: { hostId: 'demo', paneId: 'p1' },
+  status: 'blocked',
+  title: 'agentico · claude',
+  body: { key: 'Blocked' },
+  question: 'Do you want to make this edit to AgenticoAppModel.swift?',
+};
+
+/** The Home console with the in-app banner pinned below the status bar: a blocked Agent's question. */
 export function InAppBannerAtlas() {
-  const insets = useInsets();
   return (
-    <>
+    <SafeAreaInsetsContext.Provider value={IPHONE_INSETS}>
       <Index />
-      <View
-        style={[StyleSheet.absoluteFill, { paddingTop: insets.top + 4, alignItems: 'center' }]}
-        pointerEvents="none"
-      >
-        <View style={{ width: '100%', paddingHorizontal: 16 }}>
-          <NoticeBanner
-            kind="inapp"
-            animated={false}
-            title="agentico · claude"
-            message="Blocked"
-            question="Do you want to make this edit to AgenticoAppModel.swift?"
-            tone="warning"
-            leading={<ProgramMark program="claude" size={28} />}
-            onPress={noop}
-            onDismiss={noop}
-          />
-        </View>
-      </View>
-    </>
+      <BannerLayer banner={BLOCKED} animated={false} onPress={noop} onDismiss={noop} />
+    </SafeAreaInsetsContext.Provider>
   );
 }

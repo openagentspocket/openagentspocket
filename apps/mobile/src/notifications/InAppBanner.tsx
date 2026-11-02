@@ -88,40 +88,61 @@ export function InAppBanner(props: InAppBannerProps) {
     sync();
     return store.subscribe(sync);
   }, [store]);
-  const insets = useInsets();
-  const theme = useTheme();
   const banner = shown?.banner;
   return (
     <BannerContext.Provider value={store}>
       {children}
       {banner ? (
-        <View
-          style={[styles.layer, { paddingTop: insets.top + theme.spacing.xs }]}
-          pointerEvents="box-none"
-          testID="in-app-banner-layer"
-        >
-          <View style={{ width: '100%', paddingHorizontal: theme.spacing.md }}>
-            <NoticeBanner
-              key={bannerKey(banner)}
-              kind="inapp"
-              title={banner.title}
-              message={renderMessage(banner.body)}
-              question={banner.question}
-              tone={banner.status === 'blocked' ? 'warning' : 'success'}
-              leading={<ProgramMark program={bannerProgram(banner)} size={28} />}
-              visible={!shown?.leaving}
-              onExited={() => setShown((c) => (c?.leaving ? undefined : c))}
-              onPress={() => {
-                store.dismiss();
-                openAgent?.(banner.target);
-              }}
-              onDismiss={() => store.dismiss()}
-              testID="in-app-banner"
-            />
-          </View>
-        </View>
+        <BannerLayer
+          key={bannerKey(banner)}
+          banner={banner}
+          visible={!shown?.leaving}
+          onExited={() => setShown((c) => (c?.leaving ? undefined : c))}
+          onPress={() => {
+            store.dismiss();
+            openAgent?.(banner.target);
+          }}
+          onDismiss={() => store.dismiss()}
+        />
       ) : null}
     </BannerContext.Provider>
+  );
+}
+
+interface BannerLayerProps {
+  banner: AgentBanner;
+  visible?: boolean;
+  /** False jumps to the end state (the atlas pins its clock). */
+  animated?: boolean;
+  onExited?: () => void;
+  onPress?: () => void;
+  onDismiss?: () => void;
+}
+
+/** The banner pinned below the status bar (safe area top) and over the screen's header. */
+export function BannerLayer({ banner, animated, ...rest }: BannerLayerProps) {
+  const insets = useInsets();
+  const theme = useTheme();
+  return (
+    <View
+      style={[styles.layer, { paddingTop: insets.top + theme.spacing.xs }]}
+      pointerEvents="box-none"
+      testID="in-app-banner-layer"
+    >
+      <View style={{ width: '100%', paddingHorizontal: theme.spacing.md }}>
+        <NoticeBanner
+          kind="inapp"
+          animated={animated}
+          title={banner.title}
+          message={renderMessage(banner.body)}
+          question={banner.question}
+          tone={banner.status === 'blocked' ? 'warning' : 'success'}
+          leading={<ProgramMark program={bannerProgram(banner)} size={28} />}
+          testID="in-app-banner"
+          {...rest}
+        />
+      </View>
+    </View>
   );
 }
 

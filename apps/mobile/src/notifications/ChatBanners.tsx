@@ -72,9 +72,8 @@ export function useChatRetry(hostId: string): () => void {
 const toneOf = (line: ChatBannerLine) => (line.kind === 'connecting' ? 'info' : 'warning');
 
 function actionFor(line: ChatBannerLine, retry?: () => void, terminal?: () => void) {
-  // Not connected also offers Retry: it re-dials the Host (an RN addition; Swift only reconnects on its own).
-  if ((line.kind === 'readFailure' || line.kind === 'notConnected') && retry)
-    return { label: t('Retry'), onPress: retry };
+  // Not connected has no button, as in Swift (it reconnects on its own).
+  if (line.kind === 'readFailure' && retry) return { label: t('Retry'), onPress: retry };
   if (line.kind === 'launch' && terminal) {
     return { label: t('Show Agent Terminal'), onPress: terminal };
   }

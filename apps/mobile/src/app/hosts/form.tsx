@@ -1,5 +1,4 @@
-import { t } from '@openagentspocket/i18n';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { HostFormScreen } from '@/features/hosts/HostFormScreen';
 import { useInitialDraft } from '@/features/hosts/useInitialDraft';
 
@@ -10,17 +9,18 @@ export default function HostFormRoute() {
   const initial = useInitialDraft(edit, duplicate);
   if (!initial) return null;
   return (
-    <>
-      <Stack.Screen options={{ title: initial.editing ? t('Edit Host') : t('Add Host') }} />
-      <HostFormScreen
-        initial={initial}
-        onCancel={() => router.back()}
-        onSaved={(hostId, created) =>
-          created
-            ? router.replace({ pathname: '/hosts/[id]', params: { id: hostId } })
-            : router.back()
-        }
-      />
-    </>
+    <HostFormScreen
+      initial={initial}
+      onCancel={() => router.back()}
+      onOpenRoute={(index) =>
+        router.push({ pathname: '/hosts/route', params: { index: String(index) } })
+      }
+      onAddRoute={() => router.push('/hosts/route')}
+      onSaved={(hostId, created) =>
+        created
+          ? router.replace({ pathname: '/hosts/[id]', params: { id: hostId } })
+          : router.back()
+      }
+    />
   );
 }

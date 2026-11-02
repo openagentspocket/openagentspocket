@@ -8,6 +8,7 @@ import { Button, confirm, EmptyState, makeStyles, Screen } from '@openagentspock
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
+import { closeTerminalConfirmation } from './closeConfirmation';
 import { ShellSurface } from './ShellSurface';
 import { useShellTerminalServices } from './services';
 import { useShellTerminal } from './useShellTerminal';
@@ -61,16 +62,7 @@ function Opened({
 
   const close = async () => {
     if (state.phase !== 'ready' || closing) return;
-    const ok = await confirm({
-      title: t('Close Terminal?'),
-      message: t(
-        'This closes the pane on the Host, ending anything running in it. Going Back instead leaves it for desktop handoff.',
-      ),
-      confirmLabel: t('Close Terminal'),
-      cancelLabel: t('Cancel'),
-      destructive: true,
-      presentation: 'dialog',
-    });
+    const ok = await confirm(closeTerminalConfirmation());
     if (!ok) return;
     setClosing(true);
     const { identity } = state.entry.store;

@@ -14,6 +14,8 @@ export interface HostsSnapshot {
   readonly hosts: readonly Host[];
   readonly loadError: HostCatalogErrorCode | null;
   readonly connections: Readonly<Record<string, HostConnection>>;
+  /** Round trip of the last passed check per Host, in milliseconds. */
+  readonly latencies: Readonly<Record<string, number>>;
 }
 
 /**
@@ -22,6 +24,7 @@ export interface HostsSnapshot {
  */
 export class HostsModel {
   private snapshot: HostsSnapshot;
+  private latencies: Record<string, number> = {};
   private readonly listeners = new Set<() => void>();
 
   constructor(
@@ -51,6 +54,12 @@ export class HostsModel {
     this.publish({ ...this.snapshot.connections, [id]: state });
   }
 
+  setLatency(id: string, milliseconds: number | null): void {
+    const { [id]: _previous, ...rest } = this.latencies;
+    this.latencies = milliseconds === null ? rest : { ...rest, [id]: milliseconds };
+    this.publish(this.snapshot.connections);
+  }
+
   async add(host: Host, password: string | null): Promise<void> {
     await this.catalog.add(host, password);
     this.publish(this.snapshot.connections);
@@ -67,6 +76,8 @@ export class HostsModel {
     const key = hostTrustKey(id);
     this.knownHosts.forgetFingerprints(key.host, key.port);
     const { [id]: _gone, ...connections } = this.snapshot.connections;
+    const { [id]: _latency, ...latencies } = this.latencies;
+    this.latencies = latencies;
     this.publish(connections);
   }
 
@@ -75,6 +86,7 @@ export class HostsModel {
       hosts: this.catalog.hosts,
       loadError: this.catalog.catalogLoadError,
       connections,
+      latencies: this.latencies,
     };
   }
 
