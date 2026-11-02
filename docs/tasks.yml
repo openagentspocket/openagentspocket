@@ -302,6 +302,20 @@
     deps: [P0-ui-primitives],
   }
 - {
+    id: P4.1b-usage-live,
+    phase: 4,
+    kind: js,
+    title: "Usage live store: per-Host probe over SSH exec, plugin gating, refresh/backoff, accounts file over SSH, pressable chart bars",
+    deps: [P4.1-usage, P1.2-core-wire, P1.5-app-hosts],
+  }
+- {
+    id: P4.1c-usage-home,
+    phase: 4,
+    kind: js,
+    title: "Home usage ring and chips that open the Usage QuickSheet",
+    deps: [P4.1-usage, P2.2-app-home],
+  }
+- {
     id: P4.2-files,
     phase: 4,
     kind: js,

@@ -1,4 +1,4 @@
-import { paceTitle, type QuickWindow, resetText } from '@openagentspocket/core';
+import { formatShare, paceTitle, type QuickWindow, resetText } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Meter, makeStyles, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
@@ -26,10 +26,7 @@ export function LimitWindowRow({ window, now }: Props) {
   const styles = useStyles();
   const name = renderMessage(window.name);
   const used = window.usedPercent;
-  const percent =
-    used === null
-      ? null
-      : new Intl.NumberFormat(localeTag(), { style: 'percent' }).format(used / 100);
+  const percent = used === null ? null : formatShare(used, 100, localeTag());
   return (
     <View
       style={styles.row}

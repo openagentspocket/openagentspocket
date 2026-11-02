@@ -4,8 +4,23 @@ const MINUTE = 60_000;
 const HOUR = 60 * MINUTE;
 const DAY = 24 * HOUR;
 
+const UNIT_NAMES = { d: 'day', h: 'hour', m: 'minute' } as const;
+
+/** One unit of a countdown in the locale's narrow style ("2h", "14min"); plain "2h" if Intl lacks units. */
+function unitText(count: number, unit: keyof typeof UNIT_NAMES, locale: string): string {
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: 'unit',
+      unit: UNIT_NAMES[unit],
+      unitDisplay: 'narrow',
+    }).format(count);
+  } catch {
+    return `${count}${unit}`;
+  }
+}
+
 /** The time left before a reset as "1h 48m" or "3d 16h": two units at most, rounded down, 1 min floor. */
-export function countdown(reset: Date, now: Date): string {
+export function countdown(reset: Date, now: Date, locale = 'en'): string {
   let left = Math.max(reset.getTime() - now.getTime(), MINUTE);
   const parts: string[] = [];
   for (const [size, unit] of [
@@ -15,7 +30,7 @@ export function countdown(reset: Date, now: Date): string {
   ] as const) {
     const count = Math.floor(left / size);
     left -= count * size;
-    if (count > 0 && parts.length < 2) parts.push(`${count}${unit}`);
+    if (count > 0 && parts.length < 2) parts.push(unitText(count, unit, locale));
     else if (parts.length > 0) break;
   }
   return parts.join(' ');
@@ -23,7 +38,8 @@ export function countdown(reset: Date, now: Date): string {
 
 /** "resets in 2h 14m" within a day, else the reset's weekday and time. */
 export function resetText(reset: Date, now: Date, locale: string, timeZone?: string): Message {
-  if (reset.getTime() - now.getTime() < DAY) return message('resets in %@', countdown(reset, now));
+  if (reset.getTime() - now.getTime() < DAY)
+    return message('resets in %@', countdown(reset, now, locale));
   const when = new Intl.DateTimeFormat(locale, {
     weekday: 'short',
     hour: 'numeric',

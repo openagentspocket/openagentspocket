@@ -89,11 +89,31 @@ describe('pace and level', () => {
   });
 });
 
+describe('countdown units', () => {
+  it('localizes the unit suffixes (Spanish minutes read "min")', () => {
+    expect(countdown(at(2 * HOUR + 14 * 60), NOW, 'es')).toBe('2h 14min');
+    expect(countdown(at(3 * 86_400 + 16 * HOUR), NOW, 'es')).toBe('3d 16h');
+  });
+
+  it('falls back to d/h/m when Intl has no unit formatting', () => {
+    const real = Intl.NumberFormat;
+    Intl.NumberFormat = (() => {
+      throw new RangeError('unsupported');
+    }) as unknown as typeof Intl.NumberFormat;
+    try {
+      expect(countdown(at(2 * HOUR + 14 * 60), NOW, 'es')).toBe('2h 14m');
+    } finally {
+      Intl.NumberFormat = real;
+    }
+  });
+});
+
 describe('reset line', () => {
   it('counts down within a day and names the day for a later reset', () => {
     expect(countdown(at(2 * HOUR + 14 * 60), NOW)).toBe('2h 14m');
     expect(countdown(at(3 * 86_400 + 16 * HOUR), NOW)).toBe('3d 16h');
     expect(countdown(at(5), NOW)).toBe('1m');
+    expect(countdown(at(86_400 + 60), NOW)).toBe('1d');
     expect(text(resetText(at(2 * HOUR + 14 * 60), NOW, 'en'))).toBe('resets in 2h 14m');
     const later = text(resetText(new Date('2026-11-05T09:00:00Z'), NOW, 'en', 'UTC'));
     expect(later).toMatch(/^resets Thu/);

@@ -13,15 +13,19 @@ interface Props {
 
 /** usage.breakdown-list: the busiest models and directories over the last 30 days. */
 export function BreakdownList({ scope, metric }: Props) {
-  const models = scope.programs.flatMap((p) => p.models).slice(0, TOP);
-  const directories = scope.programs.flatMap((p) => p.directories).slice(0, TOP);
+  const models = scope.programs
+    .flatMap((p) => p.models.map((model) => ({ program: p.program, model })))
+    .slice(0, TOP);
+  const directories = scope.programs
+    .flatMap((p) => p.directories.map((entry) => ({ program: p.program, ...entry })))
+    .slice(0, TOP);
   return (
     <>
       {models.length > 0 ? (
         <Section grouped title={t('Models')} footer={t('Last 30 days')}>
-          {models.map((model) => (
+          {models.map(({ program, model }) => (
             <ListRow
-              key={model.model}
+              key={`${program}\0${model.model}`}
               title={model.model}
               subtitle={model.priced ? undefined : t('Unpriced')}
               value={metricText(model, metric)}
@@ -32,9 +36,9 @@ export function BreakdownList({ scope, metric }: Props) {
       ) : null}
       {directories.length > 0 ? (
         <Section grouped title={t('Directories')} footer={t('Last 30 days')}>
-          {directories.map(({ hostName, directory }) => (
+          {directories.map(({ program, hostName, directory }) => (
             <ListRow
-              key={`${hostName}\0${directory.path}`}
+              key={`${program}\0${hostName}\0${directory.path}`}
               title={directory.path}
               subtitle={scope.included.length > 1 ? hostName : undefined}
               value={metricText(directory, metric)}
