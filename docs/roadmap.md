@@ -4,19 +4,23 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
-State (2026-11-02 ~05:30): **wave 3 merged on main** (P1.7 transport in `packages/transport`, P1.9 secure
-stores, P1.5 hosts screens, P2.1b console store, P2.6a chat Claude, P2.9a blocked parsers, P4.3 ports, P4.2 files,
-P0-native-menus, P5.1 banner, P3.0 terminal spike: libghostty chosen (ADR 0023), P6.1 widgets target; full test
-green: core 1823, transport 59, ui 134, mobile 83, ssh 26, i18n 89, plugin 833, relay 138). Native check of
-wave 2 main: both platforms build, SSH harness 17/17, Maestro home passes, "Agents Pocket" fits on iOS, Android
-drawer shows "Agents Pock…"; visual issues filed as P0-shell-polish.
-**Running:** wave 4 (`scratchpad/rn/wave4.js`): P1.10 live wiring, P1.8 host services, P0-shell-polish, P2.2
-Home, P2.3 agents list, P2.5 agent detail, P2.4 new agent, P2.13 board, P2.6a timeline projection / cache store /
-workflow journal, P2.6b Codex, P3.1 attach, P4.1b usage live; native chain: verify main (widget, libghostty,
-herdr live step) → P6.1b Live Activities → P5.4 iOS NSE (simulator only).
+State (2026-11-02 ~07:00): **wave 4 merged on main** (P1.10 live wiring: ConnectionManager over packages/transport,
+persisted Hosts; P1.8 host services; P0-shell-polish: themed status bar and headers, OpenAgentsPocket in catalog
+copy; P2.2 Home, P2.3 Agents list, P2.5 agent detail, P2.4 New Agent, P2.13 Board; P2.6a timeline projection,
+cache store, workflow journal; P2.6b Codex reducer; P3.1 attach pipeline; P4.1b usage live store; P6.1b Live
+Activities module + coordinator; P5.4 iOS NSE target). Full test green: core 2253, mobile 165, ui 138, transport
+127, i18n 94, ssh 26, live-activity 7, plugin 833, relay 138. Native check of wave-3 main: both platforms build,
+SSH harness 18/18 incl. "herdr live" (transport connect, snapshot, event) on iOS and Android.
+**Running:** wave 5 (`scratchpad/rn/wave5.js`): P1.11 app integration + entry points, P2.6a engine (Claude +
+Codex), notices i18n, P2.9b blocked card, P2.8 composer, P3.2 terminal wiring + keys, P4.6 deep links, P4.1c
+usage ring, P3.5 shells, P3.3 selection/links, P3.4 snippets/skills/attachments, board drag + list prefs, P6.1c
+live activity + keychain wiring, verify fixes; native: verify main end to end (e2e/live.yaml against the isolated
+backend, widget, Live Activity, simctl push) → P1.12 SSH auth (bootstrap key, password, RSA) → P4.3b ports config.
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
-favor of the console store; ChatProgram lives in chat/model only.
+favor of the console store; ChatProgram lives in chat/model only; RN-only strings live in
+packages/i18n/src/extras (the merge script moves keys a branch adds to the generated catalogs there); the merge
+script now merges with --no-commit so the pre-commit gate runs on every merge.
 
 Lead's integration loop per wave: merge each ship branch with `scratchpad/rn/merge-branch.sh <branch>` (resolves
 PROGRESS.md, index.ts export unions, package.json unions and the lockfile; stops on real conflicts), `pnpm test`,
