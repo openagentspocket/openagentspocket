@@ -57,6 +57,7 @@ const ICONS = {
   statusIdle: { ios: 'circle', android: 'radio_button_unchecked' },
   // Ports and the browser preview.
   globe: { ios: 'globe', android: 'language' },
+  wifiSlash: { ios: 'wifi.slash', android: 'wifi_off' },
   container: { ios: 'shippingbox', android: 'inventory_2' },
   paused: { ios: 'pause.circle', android: 'pause_circle' },
   share: { ios: 'square.and.arrow.up', android: 'share' },

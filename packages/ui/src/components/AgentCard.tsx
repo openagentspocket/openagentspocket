@@ -1,0 +1,156 @@
+import { useState } from 'react';
+import type { AccessibilityActionEvent } from 'react-native';
+import { Pressable, View } from 'react-native';
+import type { ActionMenuItem } from '../overlay/ActionMenu';
+import { Card } from '../primitives/Card';
+import { type SwipeAction, SwipeRow } from '../primitives/SwipeRow';
+import { airy } from '../theme/metrics';
+import { makeStyles } from '../theme/theme';
+import { AgentCardBody, type AgentCardModel, agentCardLabel } from './AgentCardBody';
+import { AgentRowMenu } from './AgentRowMenu';
+import { type AgentRowLabels, defaultAgentRowLabels } from './agentRowLabels';
+
+export type { AgentCardModel } from './AgentCardBody';
+
+/** row: the flat list row with a hairline below; card: its own card (workspace, board); plain: no chrome. */
+export type AgentCardPresentation = 'row' | 'card' | 'plain';
+
+const useStyles = makeStyles((t) => ({
+  row: {
+    paddingHorizontal: t.spacing.md,
+    paddingVertical: t.spacing.sm,
+  },
+  rowSeparator: {
+    borderBottomWidth: t.metrics.hairlineWidth,
+    borderBottomColor: t.hairline,
+    marginHorizontal: t.spacing.md,
+  },
+  cardSlot: { paddingVertical: airy.rowInset },
+  pressed: { backgroundColor: t.colors.surfaceRaised },
+  ring: {
+    ...({ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } as const),
+    borderWidth: 2,
+    borderColor: t.colors.accent,
+    borderRadius: t.metrics.cardRadius,
+  },
+}));
+
+export interface AgentCardProps {
+  agent: AgentCardModel;
+  presentation?: AgentCardPresentation;
+  /** The row open in the detail column (iPad): a 2 pt accent ring. */
+  selected?: boolean;
+  onPress?: () => void;
+  /** Long press lifts the card above these (see `agentRowActions`). */
+  menu?: readonly ActionMenuItem[];
+  /** Swipe right (Pin); a full swipe runs the first. */
+  leadingSwipeActions?: readonly SwipeAction[];
+  /** Swipe left (Close); a full swipe runs the first. */
+  swipeActions?: readonly SwipeAction[];
+  showProgramName?: boolean;
+  labels?: AgentRowLabels;
+  testID?: string;
+}
+
+/**
+ * An Agent on the Agents list, Home and the board: program mark, title, status capsule, the
+ * blocked prompt, subtitle and Host, path and diff counts. Tap opens the detail; swipe pins or
+ * closes; long press lifts the card above its menu.
+ */
+export function AgentCard({
+  agent,
+  presentation = 'row',
+  selected = false,
+  onPress,
+  menu,
+  leadingSwipeActions,
+  swipeActions,
+  showProgramName,
+  labels = defaultAgentRowLabels,
+  testID = 'agent-card',
+}: AgentCardProps) {
+  const styles = useStyles();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const body = (
+    <AgentCardBody
+      agent={agent}
+      chevron={presentation === 'row'}
+      showProgramName={showProgramName}
+      labels={labels}
+    />
+  );
+  const actions = [...(swipeActions ?? []), ...(leadingSwipeActions ?? []), ...(menu ?? [])].filter(
+    (action, index, all) => all.findIndex((other) => other.key === action.key) === index,
+  );
+  const a11y = {
+    accessible: true,
+    accessibilityRole: 'button' as const,
+    accessibilityLabel: agentCardLabel(agent, labels),
+    accessibilityActions: actions.map((action) => ({ name: action.key, label: action.title })),
+    onAccessibilityAction: (event: AccessibilityActionEvent) =>
+      actions.find((action) => action.key === event.nativeEvent.actionName)?.onPress(),
+  };
+  const open = menu?.length ? () => setMenuOpen(true) : undefined;
+  const front =
+    presentation === 'card' ? (
+      <View>
+        <Card
+          onPress={onPress}
+          onLongPress={open}
+          accessibilityLabel={a11y.accessibilityLabel}
+          accessibilityActions={a11y.accessibilityActions}
+          onAccessibilityAction={a11y.onAccessibilityAction}
+          testID={testID}
+        >
+          {body}
+        </Card>
+        {selected ? (
+          <View style={styles.ring} pointerEvents="none" testID="agent-card-selected" />
+        ) : null}
+      </View>
+    ) : (
+      <Pressable
+        {...a11y}
+        onPress={onPress}
+        onLongPress={open}
+        style={({ pressed }) => [
+          presentation === 'row' && styles.row,
+          pressed && styles.pressed,
+          selected && styles.pressed,
+        ]}
+        testID={testID}
+      >
+        {body}
+      </Pressable>
+    );
+  const swipeable = swipeActions?.length || leadingSwipeActions?.length;
+  const slot = swipeable ? (
+    <SwipeRow
+      actions={swipeActions}
+      leadingActions={leadingSwipeActions}
+      fullSwipe={{ leading: true, trailing: true }}
+    >
+      {front}
+    </SwipeRow>
+  ) : (
+    front
+  );
+  return (
+    <View
+      style={[
+        presentation === 'card' && styles.cardSlot,
+        presentation === 'row' && styles.rowSeparator,
+      ]}
+    >
+      {slot}
+      {menu?.length ? (
+        <AgentRowMenu
+          preview={<Card>{body}</Card>}
+          items={menu}
+          visible={menuOpen}
+          onClose={() => setMenuOpen(false)}
+        />
+      ) : null}
+    </View>
+  );
+}
