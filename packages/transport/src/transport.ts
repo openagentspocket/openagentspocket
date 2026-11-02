@@ -1,6 +1,8 @@
 import {
   type CancelSignal,
   type Clock,
+  DEFAULT_AGENT_ATTACH_COMMAND,
+  DEFAULT_TERMINAL_ATTACH_COMMAND,
   decodeResult,
   type EventSubscription,
   type EventsTransport,
@@ -16,11 +18,14 @@ import {
   type ParamsOf,
   quotedAbsolutePath,
   requestLine,
+  type TerminalAttachRequest,
+  type TerminalAttachSession,
   TransportFailure,
   type WireMethod,
 } from '@openagentspocket/core';
 import { SshError, type SshSession, utf8Decode, utf8Encode } from 'agentico-ssh';
 import { ChannelAdmission } from './admission';
+import { attachTerminal } from './attach';
 import { abortable, withDeadline } from './deadline';
 import { invalidatesConnection, mapOperationError, operationFailure } from './error-mapping';
 import { HerdrApi } from './herdr-api';
@@ -65,6 +70,7 @@ export class SshTransport extends HerdrApi implements EventsTransport {
   private readonly wake = new SharedOperation<void>(false);
   private connected = true;
   private eventsOpen = false;
+  private readonly openTargets = new Set<string>();
   private requestCounter = 0;
   private readonly requestPrefix = Math.random().toString(36).slice(2, 8);
 
@@ -250,6 +256,29 @@ export class SshTransport extends HerdrApi implements EventsTransport {
       kind: 'homeDirectoryUnresolvable',
       detail: 'The home directory probe did not return an absolute path.',
     });
+  }
+
+  /** One interactive PTY attach to an Agent's Pane or a shell terminal; see `attachTerminal`. */
+  attachTerminal(request: TerminalAttachRequest): Promise<TerminalAttachSession> {
+    return attachTerminal(
+      {
+        session: this.session,
+        admission: this.admission,
+        clock: this.clock,
+        requestTimeoutMs: this.requestTimeoutMs,
+        commands: {
+          agentAttachCommand: this.settings.attachCommand ?? DEFAULT_AGENT_ATTACH_COMMAND,
+          terminalAttachCommand:
+            this.settings.terminalAttachCommand ?? DEFAULT_TERMINAL_ATTACH_COMMAND,
+        },
+        endpoint: this.settings.endpoint ?? null,
+        openTargets: this.openTargets,
+        requireConnected: () => this.requireConnected(),
+        resolvedSocketPath: (signal) => this.resolvedSocketPath(signal),
+        fail: (error) => this.fail(error),
+      },
+      request,
+    );
   }
 
   async subscribeToEvents(subscriptions: readonly EventSubscription[]): Promise<HerdrEventStream> {

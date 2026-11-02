@@ -88,6 +88,7 @@ export { defaultQRLabels, type QRScannerLabels } from './scanner/qrLabels';
 export { createCodeGate, type QRScannerState, scannerState } from './scanner/qrState';
 export { type TerminalHandle, TerminalView, type TerminalViewProps } from './terminal/TerminalView';
 export { appendOutput, gridSize, stripAnsi } from './terminal/terminalText';
+export { type AttachedTerminal, useAttachedTerminal } from './terminal/useAttachedTerminal';
 export { decodeUtf8Stream } from './terminal/utf8';
 export { createWriteBatcher, type WriteBatcher } from './terminal/writeBatcher';
 export { type FontScale, useFontScale } from './theme/accessibility';
