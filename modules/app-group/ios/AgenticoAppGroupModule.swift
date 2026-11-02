@@ -1,5 +1,6 @@
 import ExpoModulesCore
 import Foundation
+import UserNotifications
 import WidgetKit
 
 /// Writes the widgets' snapshot into the App Group container the widget extension reads, and
@@ -34,6 +35,30 @@ public final class AgenticoAppGroupModule: Module {
             guard Self.isPlainName(name), let url = Self.container(group)?.appendingPathComponent(name)
             else { return nil }
             return try? String(contentsOf: url, encoding: .utf8)
+        }
+
+        /// Keychain items shared with the Notification Service Extension (see KeychainSecrets).
+        /// Synchronous: the core key store contract is synchronous.
+        Function("keychainSave") { (service: String, group: String, account: String, value: String) -> Bool in
+            KeychainSecrets.save(service: service, group: group, account: account, value: value)
+        }
+
+        Function("keychainRead") { (service: String, group: String, account: String) -> String? in
+            KeychainSecrets.read(service: service, group: group, account: account)
+        }
+
+        Function("keychainReadAll") { (service: String, group: String) -> [String: String] in
+            KeychainSecrets.readAll(service: service, group: group)
+        }
+
+        Function("keychainRemove") { (service: String, group: String, account: String) -> Bool in
+            KeychainSecrets.remove(service: service, group: group, account: account)
+        }
+
+        /// Asks iOS for alert/sound/badge permission; the extension only runs for allowed pushes.
+        AsyncFunction("requestNotificationAuthorization") { () async -> Bool in
+            (try? await UNUserNotificationCenter.current()
+                .requestAuthorization(options: [.alert, .sound, .badge])) ?? false
         }
 
         AsyncFunction("reloadWidgets") { (kinds: [String]) in

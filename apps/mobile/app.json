@@ -11,6 +11,7 @@
       "bundleIdentifier": "com.openagentspocket.app",
       "deploymentTarget": "18.0",
       "entitlements": {
+        "aps-environment": "development",
         "com.apple.security.application-groups": ["group.com.openagentspocket.app"]
       },
       "infoPlist": {

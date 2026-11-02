@@ -14,6 +14,8 @@ function memoryStore(): AppGroupStore & { files: Map<string, string> } {
     },
     readFile: async (name) => files.get(name) ?? null,
     reloadWidgets: async () => undefined,
+    requestNotificationAuthorization: async () => true,
+    notificationKeychain: null,
   };
 }
 
