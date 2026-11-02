@@ -1,4 +1,4 @@
-import { type AgentSource, type ConsoleAgent, FakeTransport } from '@agentico/core';
+import { type AgentSource, type ConsoleAgent, FakeTransport } from '@openagentspocket/core';
 import { useEffect, useState } from 'react';
 
 const demoSource = new FakeTransport();

@@ -1,4 +1,4 @@
-# @agentico/i18n
+# @openagentspocket/i18n
 
 English and Spanish strings for the app, converted from the Swift app's String Catalogs. No
 retranslation: the Spanish (Rioplatense voseo) is the Swift catalog's, byte for byte.
@@ -6,7 +6,7 @@ retranslation: the Spanish (Rioplatense voseo) is the Swift catalog's, byte for 
 ## Use
 
 ```ts
-import { t } from '@agentico/i18n';
+import { t } from '@openagentspocket/i18n';
 
 t('Needs you'); // SwiftUI Text("Needs you")
 t('%lld blocked', count); // Text("\(count) blocked"), plural-aware
@@ -29,8 +29,8 @@ The JSON under `src/catalogs/<locale>/<table>.json` is generated. Fix wording in
 catalog, then:
 
 ```sh
-pnpm -F @agentico/i18n convert -- --swift <path to the Swift checkout>   # or AGENTICO_SWIFT_DIR
-pnpm -F @agentico/i18n convert:check -- --swift <path>                    # fails when stale
+pnpm -F @openagentspocket/i18n convert -- --swift <path to the Swift checkout>   # or AGENTICO_SWIFT_DIR
+pnpm -F @openagentspocket/i18n convert:check -- --swift <path>                    # fails when stale
 ```
 
 The converter keeps format arguments (`%@` → `{0}`, `%lld` → `{0, number}`, `%2$@` keeps its
@@ -41,7 +41,7 @@ ICU subset with CLDR en/es plural rules, so no Intl.PluralRules polyfill is need
 
 ## Tests
 
-`pnpm -F @agentico/i18n test`: every key resolves in both locales, every Spanish message keeps the
+`pnpm -F @openagentspocket/i18n test`: every key resolves in both locales, every Spanish message keeps the
 key's arguments, every message formats like `intl-messageformat` (the reference ICU runtime, a
 dev dependency only), the Swift app's Spanish localization cases, and the `t()` API. With the
 Swift checkout present, `sync.test.ts` also proves the JSON is current and that every Swift value

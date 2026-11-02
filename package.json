@@ -13,8 +13,8 @@
     "typecheck": "tsc -b",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "gen": "pnpm -F @agentico/core gen && pnpm -F @agentico/ui gen",
-    "gen:check": "pnpm -F @agentico/core gen:check && pnpm -F @agentico/ui gen:check",
+    "gen": "pnpm -F @openagentspocket/core gen && pnpm -F @openagentspocket/ui gen",
+    "gen:check": "pnpm -F @openagentspocket/core gen:check && pnpm -F @openagentspocket/ui gen:check",
     "e2e:ios": "maestro test e2e/home.yaml",
     "progress": "node scripts/progress.mjs"
   },

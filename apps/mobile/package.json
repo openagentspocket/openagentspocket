@@ -1,11 +1,11 @@
 {
-  "name": "@agentico/mobile",
+  "name": "@openagentspocket/mobile",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
-    "@agentico/core": "workspace:*",
-    "@agentico/i18n": "workspace:*",
-    "@agentico/ui": "workspace:*",
+    "@openagentspocket/core": "workspace:*",
+    "@openagentspocket/i18n": "workspace:*",
+    "@openagentspocket/ui": "workspace:*",
     "@expo/ui": "~58.0.26",
     "agentico-ssh": "workspace:*",
     "expo": "~58.0.22",

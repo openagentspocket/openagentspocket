@@ -1,6 +1,6 @@
-import { groupForHome, type HomeSection } from '@agentico/core';
-import { type AppKey, t } from '@agentico/i18n';
-import { Screen, SectionHeader, type Status, Text } from '@agentico/ui';
+import { groupForHome, type HomeSection } from '@openagentspocket/core';
+import { type AppKey, t } from '@openagentspocket/i18n';
+import { Screen, SectionHeader, type Status, Text } from '@openagentspocket/ui';
 import { Fragment } from 'react';
 import { AgentCard } from './AgentCard';
 import { useAgents } from './useAgents';

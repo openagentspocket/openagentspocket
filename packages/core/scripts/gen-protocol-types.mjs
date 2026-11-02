@@ -80,7 +80,7 @@ const output = body.replace(/[ \t]+$/gm, '');
 
 if (process.argv.includes('--check')) {
   const current = existsSync(outputPath) ? readFileSync(outputPath, 'utf8') : '';
-  if (current !== output) fail('output is stale; run `pnpm -F @agentico/core gen`');
+  if (current !== output) fail('output is stale; run `pnpm -F @openagentspocket/core gen`');
   console.log('gen-protocol-types: up to date');
 } else {
   writeFileSync(outputPath, output);

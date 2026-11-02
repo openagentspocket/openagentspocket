@@ -1,4 +1,4 @@
-import { Button, Card, Screen, Text } from '@agentico/ui';
+import { Button, Card, Screen, Text } from '@openagentspocket/ui';
 import { nativeSsh } from 'agentico-ssh';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { type HarnessParams, runSshHarness, type StepResult } from './sshHarness';

@@ -1,5 +1,5 @@
-import type { ConsoleAgent } from '@agentico/core';
-import { Card, makeStyles, StatusDot, Text } from '@agentico/ui';
+import type { ConsoleAgent } from '@openagentspocket/core';
+import { Card, makeStyles, StatusDot, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
 
 const useStyles = makeStyles((t) => ({

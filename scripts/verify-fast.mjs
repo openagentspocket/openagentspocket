@@ -88,7 +88,7 @@ for (const dir of ['packages/ui', 'apps/mobile']) {
 }
 for (const pkg of ['plugin', 'relay']) {
   if (inPkg(`packages/${pkg}/`).length)
-    checks.push(run(`${pkg} tests`, 'pnpm', ['-F', `@agentico/${pkg}`, 'test']));
+    checks.push(run(`${pkg} tests`, 'pnpm', ['-F', `@openagentspocket/${pkg}`, 'test']));
 }
 
 const results = await Promise.all(checks);

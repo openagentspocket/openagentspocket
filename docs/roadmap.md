@@ -29,7 +29,7 @@ Scaffold facts:
   (core 4, ui 12, mobile 1, ssh 4, relay 90, plugin 814 pass / 0 fail), `pnpm tsc -b`, `pnpm gen:check`.
 - Native: one iOS simulator build (`expo run:ios`) and one Android emulator build (`expo run:android`) of the
   themed Home on demo data both ran; Maestro `e2e/home.yaml` passes on iOS.
-- Commands: `pnpm -F @agentico/mobile ios` / `android` (native build, integrator only), `pnpm e2e:ios`
+- Commands: `pnpm -F @openagentspocket/mobile ios` / `android` (native build, integrator only), `pnpm e2e:ios`
   (needs `~/.maestro/bin` on PATH and one booted simulator; use `maestro --device <udid> test e2e/home.yaml`).
 - Gotchas found:
   - pnpm 11 fails `install` on unreviewed build scripts: `allowBuilds` in `pnpm-workspace.yaml` lists them.
@@ -69,7 +69,7 @@ Scaffold facts:
 
 - Name (2026-11-01, ADR 0022): the app is **OpenAgentsPocket**. Domain `openagentspocket.com` registered by Enzo
   (2026-11-01); planned: DNS on Cloudflare, landing + `/privacy` on Cloudflare Pages, relay on
-  `relay.openagentspocket.com`. Enzo creates the GitHub org himself; the internal rename (`@agentico/*`, scheme, ids) is one task after wave 1 merges; new icon
+  `relay.openagentspocket.com`. Enzo creates the GitHub org himself; the internal rename (`@openagentspocket/*`, scheme, ids) is one task after wave 1 merges; new icon
   in the chosen solid-indigo style with a new mark.
 
 - Stores (2026-11-01): Apple Developer Program (Individual) paid by Enzo, enrollment processing (up to 2 business

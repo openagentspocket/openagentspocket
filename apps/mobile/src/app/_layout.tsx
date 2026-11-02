@@ -1,4 +1,4 @@
-import { OverlayHost, ThemeProvider } from '@agentico/ui';
+import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 

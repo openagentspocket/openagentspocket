@@ -1,4 +1,4 @@
-import { Gallery } from '@agentico/ui';
+import { Gallery } from '@openagentspocket/ui';
 import { useLocalSearchParams } from 'expo-router';
 
 /**

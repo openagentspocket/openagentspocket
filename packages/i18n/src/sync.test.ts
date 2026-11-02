@@ -37,7 +37,7 @@ function swiftRender(text: string, format: boolean, locale: Locale, count?: numb
 describe.skipIf(!hasSwift)('Swift catalogs', () => {
   const converted = hasSwift ? convertSwiftCatalogs(swiftDir) : [];
 
-  it('are the source of the checked-in JSON (run `pnpm -F @agentico/i18n convert`)', () => {
+  it('are the source of the checked-in JSON (run `pnpm -F @openagentspocket/i18n convert`)', () => {
     expect(
       Object.fromEntries(converted.map((c: { table: string; path: string }) => [c.table, c.path])),
     ).toEqual(catalogSources);

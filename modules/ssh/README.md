@@ -44,7 +44,7 @@ Both platforms implement the same contract (`src/bridge.ts`); the TypeScript abo
 python3 <Agentico repo>/scripts/isolated-herdr-backend.py start --plugin   # prints port, user, host key
 python3 modules/ssh/scripts/harness-fixture.py --http-port 47451 --socket <short path>/fx.sock \
   --out <evidence dir> --authorize-cmd "python3 <Agentico repo>/scripts/isolated-herdr-backend.py authorize"
-pnpm -F @agentico/mobile ios
+pnpm -F @openagentspocket/mobile ios
 xcrun simctl openurl <udid> "agentico:///__ssh?host=127.0.0.1&port=<port>&user=<user>&sock=<herdr socket>&fsock=<fx.sock>&fport=47451&pin=<SHA256:...>&auto=1"
 ```
 
@@ -58,7 +58,7 @@ The same backend and fixture; the emulator reaches the Mac's loopback at `10.0.2
 
 ```sh
 adb reverse tcp:47451 tcp:47451
-pnpm -F @agentico/mobile android
+pnpm -F @openagentspocket/mobile android
 adb shell am start -a android.intent.action.VIEW \
   -d "'agentico:///__ssh?host=10.0.2.2&port=<port>&user=<user>&sock=<herdr socket>&fsock=<fx.sock>&fport=47451&pin=<SHA256:...>&auto=1'"
 ```

@@ -1,5 +1,5 @@
-import { setLocale, translate } from '@agentico/i18n';
-import { ThemeProvider } from '@agentico/ui';
+import { setLocale, translate } from '@openagentspocket/i18n';
+import { ThemeProvider } from '@openagentspocket/ui';
 import { render, screen, waitFor } from '@testing-library/react-native';
 import { HomeScreen } from './HomeScreen';
 

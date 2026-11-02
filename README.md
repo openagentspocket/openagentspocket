@@ -27,7 +27,7 @@ Requires Node 22.13+ and pnpm 11.
 pnpm install
 pnpm verify-fast     # lint, types, generated files, ratchets, related tests
 pnpm test            # every unit and component test
-pnpm -F @agentico/mobile start
+pnpm -F @openagentspocket/mobile start
 ```
 
 Native builds (`expo run:ios` / `expo run:android`) need Xcode / Android Studio.

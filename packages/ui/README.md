@@ -1,4 +1,4 @@
-# @agentico/ui
+# @openagentspocket/ui
 
 Tokens, theme and the shared component set (docs/spec/parity.md section 3). Screens compose these; search
 `src/index.ts` before writing UI, and add a primitive here when a second screen needs it.

@@ -66,7 +66,7 @@ const output = lines.join('\n');
 
 if (process.argv.includes('--check')) {
   const current = existsSync(outputPath) ? readFileSync(outputPath, 'utf8') : '';
-  if (current !== output) fail('output is stale; run `pnpm -F @agentico/ui gen`');
+  if (current !== output) fail('output is stale; run `pnpm -F @openagentspocket/ui gen`');
   console.log('gen-tokens: up to date');
 } else {
   writeFileSync(outputPath, output);

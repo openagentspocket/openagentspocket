@@ -25,7 +25,7 @@ left:
 - Integrator: one native rebuild (expo-clipboard was added); until then copy buttons fail quietly (lazy require) instead of crashing. Then a Maestro screenshot pass over `/__gallery?theme=<id>&section=<id>`.
 notes:
 - Dependencies added: packages/ui: `expo-symbols ~58.0.4` (already native in the app), `expo-clipboard ~58.0.4` (native, new), `@shopify/flash-list 2.3.2` (JS only), `marked ^18.1.2` (JS only, MIT). apps/mobile: `expo-clipboard` via `npx expo install` (autolinking).
-- FlashList and marked ship ESM: both jest configs extend jest-expo's transformIgnorePatterns; any new package with jest tests that imports `@agentico/ui` needs the same.
+- FlashList and marked ship ESM: both jest configs extend jest-expo's transformIgnorePatterns; any new package with jest tests that imports `@openagentspocket/ui` needs the same.
 - Overlay hosts form a stack: the most recently mounted OverlayHost presents. Sheet mounts its own while open (iOS cannot present a root-level modal over another modal); the gallery mounts its own to draw in its theme.
 - Button drops a promise returned by `onPress`, so `onPress={() => confirm(...)}` does not deadlock RNTL's awaited `fireEvent.press` (it awaits the handler's result).
 - RNTL 14: `toBeChecked` only accepts checkbox/radio/switch; menu items and modifier keys also set `selected`, which tests query.
