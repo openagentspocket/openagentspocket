@@ -20,8 +20,20 @@ interface Props {
  * never add up), with the Claude Code limits switch. While it is off no Host shows a cached reading.
  */
 export function LimitsScreen({ source }: Props) {
-  const { readings, now, refreshing, refresh } = useUsage(source);
-  const [claudeLimits, setClaudeLimits] = useState(true);
+  const { readings, now, refreshing, refresh, source: used } = useUsage(source);
+  // A live source keeps the device's consent per Host; the demo one only remembers it here.
+  const [local, setLocal] = useState(true);
+  const live = used.claudeLimits;
+  const [, rerender] = useState(0);
+  const claudeLimits = live ? live.enabled() : local;
+  const setClaudeLimits = (enabled: boolean) => {
+    if (live) {
+      live.set(enabled);
+      rerender((n) => n + 1);
+    } else {
+      setLocal(enabled);
+    }
+  };
   const shown = (readings ?? []).map((reading) =>
     claudeLimits || reading.state.kind !== 'available'
       ? reading

@@ -2,7 +2,6 @@ import {
   type AccountFileStore,
   buildUsageScope,
   claudeProgram,
-  MemoryAccountFileStore,
   scopeIsEmpty,
   type UsageRange,
   type UsageSource,
@@ -18,11 +17,10 @@ import { DaySheet } from './DaySheet';
 import { QuickSheet } from './QuickSheet';
 import { UsageControls } from './UsageControls';
 import { UsageNotices } from './UsageNotices';
+import { useAccountFiles } from './UsageSourceProvider';
 import { UsageTotals } from './UsageTotals';
 import type { UsageMetric } from './usageText';
 import { useUsage } from './useUsage';
-
-const demoFiles = new MemoryAccountFileStore();
 
 interface Props {
   source?: UsageSource;
@@ -30,7 +28,9 @@ interface Props {
 }
 
 /** usage.tab: totals, daily chart, breakdown and notices for All Hosts or one Host. */
-export function UsageScreen({ source, files = demoFiles }: Props) {
+export function UsageScreen({ source, files: explicitFiles }: Props) {
+  const providedFiles = useAccountFiles();
+  const files = explicitFiles ?? providedFiles;
   const router = useRouter();
   const { readings, now, refreshing, refresh } = useUsage(source);
   const [host, setHost] = useState<string | null>(null);

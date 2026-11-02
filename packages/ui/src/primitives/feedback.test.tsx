@@ -133,6 +133,18 @@ describe('BarChart', () => {
     expect(screen.getByLabelText('Tue, 100 tokens')).toBeTruthy();
     expect(screen.getByLabelText('Wed, 0 tokens')).toBeTruthy();
   });
+
+  it('is plain without onPressBar and makes each bar a button with it', async () => {
+    await renderThemed(<BarChart data={data} accessibilityLabel="Tokens" />);
+    expect(screen.queryByRole('button')).toBeNull();
+    const onPressBar = jest.fn();
+    await renderThemed(
+      <BarChart data={data} accessibilityLabel="Tokens" onPressBar={onPressBar} />,
+    );
+    expect(screen.getAllByRole('button')).toHaveLength(3);
+    fireEvent.press(screen.getByRole('button', { name: 'Tue, 100' }));
+    expect(onPressBar).toHaveBeenCalledWith('tue');
+  });
 });
 
 describe('ProgramMark', () => {

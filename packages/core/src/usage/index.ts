@@ -2,6 +2,7 @@ export * from './account-file';
 export * from './demo';
 export * from './format';
 export * from './host-port';
+export * from './host-port-fake';
 export * from './host-store';
 export * from './limits';
 export * from './live-source';

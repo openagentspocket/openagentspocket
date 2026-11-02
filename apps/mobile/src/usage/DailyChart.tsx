@@ -50,6 +50,7 @@ export function DailyChart({ scope, range, metric, onDay }: Props) {
           highlightKey={dates.at(-1)}
           formatValue={(value) => metricNumberText(value, metric)}
           accessibilityLabel={metric === 'cost' ? t('Daily estimated API cost') : t('Daily tokens')}
+          onPressBar={onDay}
         />
       </Card>
       <Section
