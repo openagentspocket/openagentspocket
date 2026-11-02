@@ -865,7 +865,16 @@
   kind: native
   title: "Atlas iOS 'Maximum update depth exceeded' (SafeAreaView -> SceneView) when ids are opened in sequence in one session"
   deps: [UX0-screen-atlas]
-  files: [scripts/atlas-ios.mjs, apps/mobile/src/dev/atlas/**, apps/mobile/src/app/new-agent.tsx]
+  files:
+    [
+      scripts/atlas-ios.mjs,
+      scripts/atlas-lib.mjs,
+      apps/mobile/src/dev/atlas/**,
+      apps/mobile/src/app/_layout.tsx,
+      apps/mobile/src/app/new-agent.tsx,
+      apps/mobile/src/app/worktree.tsx,
+      apps/mobile/src/navigation/modalRoutes.test.ts,
+    ]
   acceptance:
     - "the loop is reproduced, its root cause explained and fixed with a regression test"
     - "atlas-ios.mjs terminates and relaunches the app per id so captures never cascade"

@@ -46,7 +46,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'shell.home': { render: () => <Index /> },
   'console.no-hosts-empty': { data: { console: 'empty', hosts: 'empty' }, render: () => <Index /> },
   'console.agents-list-flat': { render: () => <Agents /> },
-  'console.start-agent': { render: () => <NewAgentRoute /> },
+  'console.start-agent': { render: () => titled(t('New Agent'), <NewAgentRoute />) },
   'hosts.list': { render: () => <HostsRoute /> },
   'hosts.form': { render: () => <HostFormRoute /> },
   'hosts.detail': {

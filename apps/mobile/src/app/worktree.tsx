@@ -1,5 +1,4 @@
-import { t } from '@openagentspocket/i18n';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { useNewAgentServices } from '@/features/new-agent/services';
 import { WorktreeDetailsScreen } from '@/features/new-agent/WorktreeDetailsScreen';
@@ -25,7 +24,6 @@ export default function WorktreeRoute() {
   }, [host, pane, services, router]);
   return (
     <>
-      <Stack.Screen options={{ headerShown: true, title: t('Worktree'), presentation: 'modal' }} />
       {detail ? (
         <WorktreeDetailsScreen
           options={detail}
