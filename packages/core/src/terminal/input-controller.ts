@@ -1,22 +1,9 @@
 import { message, type Text } from '../errors/text';
 import { utf8Encode } from '../pairing/bytes';
 import type { InputSessionGeneration, TerminalInputPort } from './input-port';
+import type { PasteRequestResult, PasteReview } from './paste-review';
 import { containsOnlySafeScalars, encodePaste, isMultiline } from './text-safety';
-
-export interface PasteReview {
-  readonly lineCount: number;
-  readonly characterCount: number;
-  readonly preview: string;
-}
-
-export type PasteRequestResult =
-  | { readonly kind: 'inserted' }
-  | { readonly kind: 'requiresReview'; readonly review: PasteReview }
-  | { readonly kind: 'rejected' }
-  | { readonly kind: 'blocked' };
-
-/** Where outgoing bytes came from; the message index (jump to a sent message) reads it. */
-export type OutgoingSource = 'keystroke' | 'composerInsert' | 'escapeKey' | 'snippet' | 'paste';
+import type { OutgoingSource } from './user-message-index';
 
 export interface InputSnapshot {
   readonly live: boolean;
