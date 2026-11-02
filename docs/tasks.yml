@@ -405,3 +405,17 @@
     title: "Spike: ACP bridge in the plugin, driven by Vercel Labs' fx",
     deps: [P2.5-agent-detail],
   }
+
+# ── Phase 8: on-device model (Enzo's idea, 2026-11-01) ──────────────────────
+- id: P8.0-on-device-model-spike
+  phase: 8
+  kind: native
+  title: "Spike: a small on-device model for agent summaries (system models vs a Hugging Face download)"
+  deps: [P2.14-summaries]
+  acceptance:
+    - "compare Apple's on-device foundation models (iOS 26+) and Android Gemini Nano with a small GGUF model downloaded from Hugging Face and run through llama.rn or ExecuTorch: quality of the two-line summary on the golden transcripts, latency, memory, download size, battery; recommend one path"
+- id: P8.1-on-device-uses
+  phase: 8
+  kind: js
+  title: "On-device triage, reply suggestions, diff summaries, voice commands"
+  deps: [P8.0-on-device-model-spike]
