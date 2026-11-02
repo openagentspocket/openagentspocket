@@ -732,3 +732,84 @@
   kind: js
   title: "Type-check test files in verify-fast (tsc -b excludes them today) and fix what it finds"
   deps: [P0-rename]
+
+# ── Phase 9: UX parity (the Swift app's UX/UI in the Índigo skin, 2026-11-02) ─
+# Briefs: docs/ux/design-system.md and docs/ux/briefs/<family>.md. Primitives first, then one task per family.
+- id: UX0-briefs
+  phase: 9
+  kind: js
+  title: "UX parity briefs: design-system.md, one brief per family with acceptance checklists, this task list"
+  deps: []
+  files: [docs/ux/**, docs/tasks.yml]
+  acceptance:
+    - docs/ux/design-system.md and ten docs/ux/briefs/*.md written from the Swift DesignSystem, views and atlas
+- id: UX1-design-system
+  phase: 9
+  kind: js
+  title: "UX primitives: screen glow, iOS text scale, CardRow, MetaChip, Badge wash, StatusOrb, Segmented, SwipeRow leading/full swipe, Sheet fractional detents and bar actions, ActionMenu sections, GlassCapsule, haptics.ts, motion.ts, gallery parity section"
+  deps: [UX0-briefs]
+  files: [packages/ui/src/**]
+  acceptance:
+    - every gap in docs/ux/design-system.md section 8 closed or split into a named follow-up, each primitive shown in /__gallery in Índigo, Papel and at an accessibility text size
+    - expo-haptics added with `npx expo install`; the integrator rebuilds native once
+- id: UX1-home
+  phase: 9
+  kind: js
+  title: "Home + Status Inbox to the Swift structure (briefs/home-inbox.md)"
+  deps: [UX1-design-system]
+  files: [apps/mobile/src/home/**, apps/mobile/src/app/index.tsx]
+- id: UX1-agents-list
+  phase: 9
+  kind: js
+  title: "Agents list presentations, row card, swipes, menus, quick detail, Board card (briefs/agents-board.md)"
+  deps: [UX1-design-system]
+  files: [apps/mobile/src/features/agents/**, apps/mobile/src/board/**]
+- id: UX1-agent-detail
+  phase: 9
+  kind: js
+  title: "Agent detail: floating header, switcher, composer, blocked card, chat polish, terminal toolbar, session drawer (briefs/agent-detail.md)"
+  deps: [UX1-design-system, UX1-agents-list]
+  files: [apps/mobile/src/agent-detail/**, apps/mobile/src/blocked/**, packages/ui/src/composer/**]
+- id: UX1-hosts
+  phase: 9
+  kind: js
+  title: "Hosts sheet, grouped list, detail, pairing scanner and form (briefs/hosts-pairing.md)"
+  deps: [UX1-design-system]
+  files: [apps/mobile/src/app/hosts/**, apps/mobile/src/features/hosts/**]
+- id: UX1-usage
+  phase: 9
+  kind: js
+  title: "Usage quick sheet and full dashboard, segmented controls, heat map (briefs/usage.md)"
+  deps: [UX1-design-system]
+  files: [apps/mobile/src/usage/**, apps/mobile/src/home/UsageRing*.tsx]
+- id: UX1-settings
+  phase: 9
+  kind: js
+  title: "Settings as a sheet with the grouped icon rows, theme cards, agent rows editor preview (briefs/settings.md)"
+  deps: [UX1-design-system]
+  files: [apps/mobile/src/settings/**, apps/mobile/src/app/settings/**]
+- id: UX1-files-changes-ports
+  phase: 9
+  kind: js
+  title: "Files, Changes (summary card, groups, diff) and Ports screens (briefs/files-changes-ports.md)"
+  deps: [UX1-design-system]
+  files: [apps/mobile/src/files/**, apps/mobile/src/changes/**, apps/mobile/src/ports/**]
+- id: UX1-new-agent
+  phase: 9
+  kind: js
+  title: "New Agent / New Terminal form sheets (briefs/new-agent.md)"
+  deps: [UX1-design-system, UX1-home]
+  files: [apps/mobile/src/features/new-agent/**, apps/mobile/src/app/new-agent.tsx]
+- id: UX1-notifications
+  phase: 9
+  kind: js
+  title: "In-app banner, chat banners, alerts, toasts (briefs/notifications-banners.md)"
+  deps: [UX1-design-system]
+  files: [apps/mobile/src/notifications/**, packages/ui/src/overlay/**]
+- id: UX1-wide
+  phase: 9
+  kind: js
+  title: "iPad and wide layouts: useLayoutMode, floating sidebar column, empty detail, form sheets (briefs/wide-layouts.md)"
+  deps:
+    [UX1-home, UX1-agents-list, UX1-agent-detail, UX1-hosts, UX1-usage, UX1-settings, UX1-new-agent]
+  files: [apps/mobile/src/app/_layout.tsx, apps/mobile/src/navigation/**, packages/ui/src/**]
