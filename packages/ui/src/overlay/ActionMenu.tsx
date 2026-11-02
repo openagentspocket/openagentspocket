@@ -12,7 +12,13 @@ import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
+import { groupMenuItems } from './menuGroups';
 import { loadSwiftUi, NativeActionMenu } from './NativeActionMenu';
+
+export type { MenuGroup } from './menuGroups';
+export { groupMenuItems };
+
+const MEASURE_TIMEOUT_MS = 80;
 
 export interface ActionMenuItem {
   key: string;
@@ -22,6 +28,10 @@ export interface ActionMenuItem {
   disabled?: boolean;
   /** A checkmark, for a picker's current choice. */
   checked?: boolean;
+  /** Starts a titled group ("Host name", "terminal · workspace · host"); runs until the next. */
+  section?: string;
+  /** A second line under the title, secondary ink. */
+  subtitle?: string;
   onPress: () => void;
 }
 
@@ -36,7 +46,6 @@ export interface MenuAnchor {
 /** iOS cannot present an alert while a menu's modal is still closing: run the action after it. */
 export const MENU_DISMISS_MS = Platform.OS === 'ios' ? 300 : 0;
 const MENU_WIDTH = 250;
-const MEASURE_TIMEOUT_MS = 80;
 
 const useStyles = makeStyles((t) => ({
   backdrop: { flex: 1, backgroundColor: t.backdrop },
@@ -58,6 +67,13 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.spacing.md,
   },
   separator: { height: t.metrics.hairlineWidth, backgroundColor: t.hairline },
+  groupGap: { height: 6, backgroundColor: t.colors.separator },
+  sectionTitle: {
+    paddingHorizontal: t.spacing.md,
+    paddingTop: t.spacing.xs,
+    paddingBottom: t.spacing.xxs,
+  },
+  itemText: { flex: 1 },
   pressed: { backgroundColor: t.colors.surfaceRaised },
   disabled: { opacity: 0.4 },
   label: { flex: 1 },
@@ -122,45 +138,68 @@ export function ActionMenu({
       />
       <View style={[styles.menu, position]} accessibilityViewIsModal testID={testID}>
         {title ? (
-          <Text variant="caption" tone="secondary" style={styles.title} accessibilityRole="header">
+          <Text variant="footnote" tone="secondary" style={styles.title} accessibilityRole="header">
             {title}
           </Text>
         ) : null}
-        {items.map((item, index) => (
-          <View key={item.key}>
-            {index > 0 || title ? <View style={styles.separator} /> : null}
-            <Pressable
-              accessibilityRole="menuitem"
-              accessibilityLabel={item.title}
-              accessibilityState={{
-                disabled: item.disabled ?? false,
-                checked: item.checked,
-                selected: item.checked,
-              }}
-              disabled={item.disabled}
-              onPress={() => {
-                pending.current = item.onPress;
-                onClose();
-              }}
-              style={({ pressed }) => [
-                styles.item,
-                pressed && styles.pressed,
-                item.disabled && styles.disabled,
-              ]}
-              testID={`${testID}-${item.key}`}
-            >
+        {groupMenuItems(items).map((group, groupIndex) => (
+          <View key={group.items[0]?.key}>
+            {groupIndex > 0 ? (
+              <View style={styles.groupGap} testID={`${testID}-group-gap`} />
+            ) : null}
+            {group.title ? (
               <Text
-                tone={item.destructive ? 'danger' : 'primary'}
-                style={styles.label}
-                numberOfLines={1}
+                variant="footnote"
+                semibold
+                tone="secondary"
+                style={styles.sectionTitle}
+                accessibilityRole="header"
               >
-                {item.title}
+                {group.title}
               </Text>
-              {item.checked ? <Icon name="check" color="accent" /> : null}
-              {item.icon ? (
-                <Icon name={item.icon} color={item.destructive ? 'danger' : 'textSecondary'} />
-              ) : null}
-            </Pressable>
+            ) : null}
+            {group.items.map((item, index) => (
+              <View key={item.key}>
+                {index > 0 || (groupIndex === 0 && title) ? (
+                  <View style={styles.separator} />
+                ) : null}
+                <Pressable
+                  accessibilityRole="menuitem"
+                  accessibilityLabel={item.title}
+                  accessibilityState={{
+                    disabled: item.disabled ?? false,
+                    checked: item.checked,
+                    selected: item.checked,
+                  }}
+                  disabled={item.disabled}
+                  onPress={() => {
+                    pending.current = item.onPress;
+                    onClose();
+                  }}
+                  style={({ pressed }) => [
+                    styles.item,
+                    pressed && styles.pressed,
+                    item.disabled && styles.disabled,
+                  ]}
+                  testID={`${testID}-${item.key}`}
+                >
+                  <View style={styles.itemText}>
+                    <Text tone={item.destructive ? 'danger' : 'primary'} numberOfLines={1}>
+                      {item.title}
+                    </Text>
+                    {item.subtitle ? (
+                      <Text variant="footnote" tone="secondary" numberOfLines={1}>
+                        {item.subtitle}
+                      </Text>
+                    ) : null}
+                  </View>
+                  {item.checked ? <Icon name="check" color="accent" /> : null}
+                  {item.icon ? (
+                    <Icon name={item.icon} color={item.destructive ? 'danger' : 'textSecondary'} />
+                  ) : null}
+                </Pressable>
+              </View>
+            ))}
           </View>
         ))}
       </View>

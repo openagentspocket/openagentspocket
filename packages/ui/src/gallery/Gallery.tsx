@@ -10,6 +10,7 @@ import { BadgesAndMarks, Buttons, TypeAndColor } from './galleryBasics';
 import { Content, Lists } from './galleryContent';
 import { GalleryDemoContext, type GalleryDemos } from './galleryDemo';
 import { Feedback, Overlays } from './galleryFeedback';
+import { Parity } from './galleryParity';
 import { CardsAndRows, Forms } from './galleryRows';
 import { Scanner } from './galleryScanner';
 
@@ -31,6 +32,7 @@ export const gallerySections: readonly GallerySection[] = [
   { id: 'content', title: 'Content', Body: Content },
   { id: 'lists', title: 'Lists', Body: Lists },
   { id: 'scanner', title: 'Scanner', Body: Scanner },
+  { id: 'parity', title: 'Parity', Body: Parity },
 ];
 
 const isThemeId = (value: string | undefined): value is ThemeId =>

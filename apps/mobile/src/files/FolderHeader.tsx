@@ -47,7 +47,7 @@ export function FolderHeader({
           {title}
         </Text>
         <Text
-          variant="caption"
+          variant="footnote"
           tone="secondary"
           numberOfLines={1}
           accessibilityLabel={t('Path %@', path ?? '')}

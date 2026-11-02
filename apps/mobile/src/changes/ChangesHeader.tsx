@@ -53,16 +53,16 @@ export function ChangesHeader({ changes, now, possiblyIncompleteSince }: Changes
         </Text>
         <Text variant="callout">{branchTitle(head, say)}</Text>
         {head.upstream ? (
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             {upstreamSummary(head.upstream, say)}
           </Text>
         ) : null}
         {latest ? (
-          <Text variant="caption" tone="secondary" numberOfLines={1}>
+          <Text variant="footnote" tone="secondary" numberOfLines={1}>
             {`${latest.subject} · ${ageText(latest.committedAt, now)}`}
           </Text>
         ) : null}
-        <Text variant="caption" tone="secondary" testID="changes-totals">
+        <Text variant="footnote" tone="secondary" testID="changes-totals">
           {totalsLine(changes.totals, changes.isStatusTruncated)}
         </Text>
       </Card>

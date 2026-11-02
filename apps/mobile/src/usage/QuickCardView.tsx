@@ -28,7 +28,7 @@ export function QuickCardView({ card, now }: Props) {
         <View style={styles.titles}>
           <Text variant="headline">{cardTitle(card)}</Text>
           {subtitle ? (
-            <Text variant="caption" tone={card.isStale ? 'warning' : 'secondary'}>
+            <Text variant="footnote" tone={card.isStale ? 'warning' : 'secondary'}>
               {subtitle}
             </Text>
           ) : null}

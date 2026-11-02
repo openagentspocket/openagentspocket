@@ -29,7 +29,7 @@ export function TransferBar({
             {name}
           </Text>
           {transfer.preparing ? null : (
-            <Text variant="caption" tone="secondary">
+            <Text variant="footnote" tone="secondary">
               {fraction === null
                 ? moved
                 : `${moved} / ${formatBytes(transfer.progress.totalBytes)}`}

@@ -93,7 +93,7 @@ export function HomeScreen({ onOpenAgent, onOpenHost, onAddHost, onSeeAll }: Hom
         ))
       )}
       {content.idleCount > 0 ? (
-        <Text variant="caption" tone="secondary" testID="home-idle">
+        <Text variant="footnote" tone="secondary" testID="home-idle">
           {t('%lld idle', content.idleCount)}
         </Text>
       ) : null}

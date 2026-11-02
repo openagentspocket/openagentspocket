@@ -752,6 +752,30 @@
   acceptance:
     - every gap in docs/ux/design-system.md section 8 closed or split into a named follow-up, each primitive shown in /__gallery in Índigo, Papel and at an accessibility text size
     - expo-haptics added with `npx expo install`; the integrator rebuilds native once
+- id: UX1-menu-preview
+  phase: 9
+  kind: js
+  title: "ActionMenu lifted card preview (long-press preview at card width) where the native menu supports it, popover fallback"
+  deps: [UX1-design-system]
+  files: [packages/ui/src/overlay/**]
+- id: UX1-tint-audit
+  phase: 9
+  kind: js
+  title: "Tint audit: every Switch, native picker, selection handle and RefreshControl takes accent from tokens; ProgramMark status cut-out gap and Working pulse verified against Swift"
+  deps: [UX1-design-system]
+  files: [packages/ui/src/**, apps/mobile/src/settings/**]
+- id: UX1-sheet-routes
+  phase: 9
+  kind: js
+  title: "Settings and Hosts as expo-router modal route groups with their own Stack (pushes inside a sheet), using Sheet bar actions and largeTitle; headerLargeTitle wired through useStackScreenOptions"
+  deps: [UX1-design-system]
+  files:
+    [
+      apps/mobile/src/app/_layout.tsx,
+      apps/mobile/src/navigation/**,
+      apps/mobile/src/app/settings/**,
+      apps/mobile/src/app/hosts/**,
+    ]
 - id: UX1-home
   phase: 9
   kind: js

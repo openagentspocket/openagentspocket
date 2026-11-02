@@ -38,7 +38,7 @@ export function PasteReviewSheet({ review, onConfirm, onCancel }: Props) {
     >
       {review ? (
         <View style={styles.body}>
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             {t('%lld lines, %lld characters', review.lineCount, review.characterCount)}
           </Text>
           <Text variant="mono" testID="paste-preview">

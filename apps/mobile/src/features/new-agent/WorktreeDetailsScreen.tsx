@@ -135,7 +135,7 @@ export function WorktreeDetailsScreen({ options, onRemoved, onDone }: WorktreeDe
         onPress={() => store.prepareConfirmation()}
         testID="worktree-remove"
       />
-      <Text variant="caption" tone="secondary">
+      <Text variant="footnote" tone="secondary">
         {phaseNote}
       </Text>
     </Screen>

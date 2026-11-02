@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { RefreshControl, ScrollView, View } from 'react-native';
 import { type Edge, SafeAreaView } from 'react-native-safe-area-context';
 import { makeStyles, useTheme } from '../theme/theme';
+import { ScreenBackground } from './ScreenBackground';
 
 const ALL_EDGES: readonly Edge[] = ['top', 'right', 'bottom', 'left'];
 
@@ -46,6 +47,7 @@ export function Screen({
   ) : undefined;
   return (
     <SafeAreaView style={styles.root} edges={edges} testID={testID}>
+      <ScreenBackground />
       {scroll ? (
         <ScrollView
           style={styles.fill}

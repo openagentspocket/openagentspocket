@@ -29,7 +29,7 @@ export function AgentHeader({ row, surface, onSurface }: Props) {
           <Text variant="headline" numberOfLines={1}>
             {agentDisplayName(row.agent)}
           </Text>
-          <Text variant="caption" tone="secondary" numberOfLines={1}>
+          <Text variant="footnote" tone="secondary" numberOfLines={1}>
             {place}
           </Text>
         </View>

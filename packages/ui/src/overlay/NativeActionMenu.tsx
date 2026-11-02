@@ -2,11 +2,13 @@ import { Platform } from 'react-native';
 import { iconSymbol } from '../primitives/Icon';
 import { useTheme } from '../theme/theme';
 import type { ActionMenuItem } from './ActionMenu';
+import { groupMenuItems } from './menuGroups';
 
 interface SwiftUiMenu {
   Host: React.ComponentType<Record<string, unknown>>;
   Menu: React.ComponentType<Record<string, unknown>>;
   Button: React.ComponentType<Record<string, unknown>>;
+  Section?: React.ComponentType<Record<string, unknown>>;
 }
 
 let cached: SwiftUiMenu | null | undefined;
@@ -50,21 +52,33 @@ export function NativeActionMenu({
   icon,
   testID,
 }: NativeActionMenuProps) {
-  const { Host, Menu, Button } = ui;
+  const { Host, Menu, Button, Section } = ui;
   const theme = useTheme();
   return (
     <Host matchContents seedColor={theme.colors.accent} testID={testID}>
       <Menu label={title ?? accessibilityLabel} systemImage={iconSymbol(icon)}>
-        {items.map((item) => (
-          <Button
-            key={item.key}
-            label={item.title}
-            systemImage={item.checked ? 'checkmark' : item.icon ? iconSymbol(item.icon) : undefined}
-            role={item.destructive ? 'destructive' : undefined}
-            disabled={item.disabled}
-            onPress={item.disabled ? undefined : item.onPress}
-          />
-        ))}
+        {groupMenuItems(items).map((group) => {
+          const buttons = group.items.map((item) => (
+            <Button
+              key={item.key}
+              label={item.title}
+              systemImage={
+                item.checked ? 'checkmark' : item.icon ? iconSymbol(item.icon) : undefined
+              }
+              role={item.destructive ? 'destructive' : undefined}
+              disabled={item.disabled}
+              onPress={item.disabled ? undefined : item.onPress}
+            />
+          ));
+          // A SwiftUI Section draws the divider (and the title) between groups.
+          return Section ? (
+            <Section key={group.items[0]?.key} title={group.title}>
+              {buttons}
+            </Section>
+          ) : (
+            buttons
+          );
+        })}
       </Menu>
     </Host>
   );

@@ -22,6 +22,7 @@ export {
 export { NavRow, type PickerOption, PickerRow, StepperRow, ToggleRow } from './form/FormRows';
 export { TextField, type TextFieldProps } from './form/TextField';
 export { Gallery, type GallerySection, gallerySections } from './gallery/Gallery';
+export { type HapticWeight, hapticsEnabled, impact, setHapticsEnabled } from './haptics';
 export {
   KeyboardDock,
   type KeyModifier,
@@ -32,11 +33,21 @@ export {
 export { CodeBlock } from './markdown/CodeBlock';
 export { Markdown } from './markdown/Markdown';
 export {
+  MAX_MS,
+  quick,
+  snappy,
+  snappySpring,
+  timing,
+  useReducedMotion,
+} from './motion';
+export {
   ActionMenu,
   ActionMenuButton,
   type ActionMenuItem,
+  groupMenuItems,
   MENU_DISMISS_MS,
   type MenuAnchor,
+  type MenuGroup,
 } from './overlay/ActionMenu';
 export { AlertHost } from './overlay/AlertHost';
 export {
@@ -47,7 +58,8 @@ export {
   confirm,
 } from './overlay/confirm';
 export { OverlayHost } from './overlay/OverlayHost';
-export { Sheet, type SheetDetent } from './overlay/Sheet';
+export { Sheet, type SheetBarAction, type SheetDetent } from './overlay/Sheet';
+export { detentShare, type FractionDetent } from './overlay/sheetDetents';
 export { ToastHost } from './overlay/ToastHost';
 export { TOAST_DEFAULT_MS, type ToastOptions, toast } from './overlay/toast';
 export { Badge, type BadgeKind, StatusPill } from './primitives/Badge';
@@ -55,26 +67,38 @@ export { Banner } from './primitives/Banner';
 export { BarChart, type BarDatum, barShares, labeledIndexes } from './primitives/BarChart';
 export { Button, type ButtonKind, type ButtonSize } from './primitives/Button';
 export { CARD_FILL, Card, type CardLevel } from './primitives/Card';
+export { CardRow } from './primitives/CardRow';
 export { Chip, ChipRow } from './primitives/Chip';
 export { COPY_CONFIRMATION_MS, CopyableValueRow, CopyButton } from './primitives/CopyButton';
 export { copyToClipboard } from './primitives/clipboard';
 export { EmptyState, type EmptyStateLayout, ErrorState } from './primitives/EmptyState';
+export { GLASS_OPACITY, GlassCapsule } from './primitives/GlassCapsule';
 export { Icon, type IconName, iconNames } from './primitives/Icon';
 export { ListRow, type ListRowProps } from './primitives/ListRow';
+export { MetaChip } from './primitives/MetaChip';
 export { METER_DANGER, METER_WARNING, Meter, meterColor } from './primitives/Meter';
 export { ProgramMark } from './primitives/ProgramMark';
 export { Screen } from './primitives/Screen';
+export { ScreenBackground } from './primitives/ScreenBackground';
 export { Section } from './primitives/Section';
 export {
   DisclosureChevron,
   SectionHeader,
   type SectionHeaderAction,
 } from './primitives/SectionHeader';
+export { Segmented, type SegmentedOption } from './primitives/Segmented';
 export { Skeleton, SkeletonRows } from './primitives/Skeleton';
 export { STATUS_GLYPH, StatusDot } from './primitives/StatusDot';
+export { StatusOrb } from './primitives/StatusOrb';
 export { type SwipeAction, SwipeRow } from './primitives/SwipeRow';
 export { SurfaceFillProvider, useSurfaceFill } from './primitives/surfaceFill';
-export { monoFamily, Text, type TextTone, type TextVariant } from './primitives/Text';
+export {
+  monoFamily,
+  Text,
+  type TextTone,
+  type TextVariant,
+  uiMonoFamily,
+} from './primitives/Text';
 export {
   flattenSections,
   type ListSection,
@@ -98,10 +122,15 @@ export { appendOutput, gridSize, stripAnsi } from './terminal/terminalText';
 export { type AttachedTerminal, useAttachedTerminal } from './terminal/useAttachedTerminal';
 export { decodeUtf8Stream } from './terminal/utf8';
 export { createWriteBatcher, type WriteBatcher } from './terminal/writeBatcher';
-export { type FontScale, useFontScale } from './theme/accessibility';
+export {
+  type FontScale,
+  FontScaleOverride,
+  useFontScale,
+  useFontScaleOverride,
+} from './theme/accessibility';
 export { withAlpha } from './theme/color';
 export { useInsets } from './theme/insets';
-export { metrics, spacing } from './theme/metrics';
+export { airy, metrics, spacing } from './theme/metrics';
 export { type Status, statusColorKey, type Tone, toneColorKey } from './theme/status';
 export { buildTheme, makeStyles, type Theme, ThemeProvider, useTheme } from './theme/theme';
 export {

@@ -38,7 +38,7 @@ export function DailyChart({ scope, range, metric, onDay }: Props) {
   return (
     <>
       <Card testID="usage-daily">
-        <Text variant="caption" tone="secondary">
+        <Text variant="footnote" tone="secondary">
           {metric === 'cost' ? t('Estimated API cost per day') : t('Tokens per day')}
         </Text>
         <BarChart

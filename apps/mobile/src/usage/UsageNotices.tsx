@@ -35,7 +35,7 @@ export function UsageNotices({ scope }: Props) {
         </Section>
       ) : null}
       {scope.loading.map((host) => (
-        <Text key={host.id} tone="secondary" variant="caption">
+        <Text key={host.id} tone="secondary" variant="footnote">
           {t('%@: Loading Usage…', host.name)}
         </Text>
       ))}
@@ -57,12 +57,12 @@ export function UsageNotices({ scope }: Props) {
         />
       ) : null}
       {scopeRefreshing(scope) ? (
-        <Text tone="secondary" variant="caption">
+        <Text tone="secondary" variant="footnote">
           {t('Token Usage is still being summarized.')}
         </Text>
       ) : null}
       {dayNote ? (
-        <Text tone="tertiary" variant="caption" testID="usage-day-note">
+        <Text tone="tertiary" variant="footnote" testID="usage-day-note">
           {renderMessage(dayNote)}
         </Text>
       ) : null}

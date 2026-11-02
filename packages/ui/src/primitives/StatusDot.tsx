@@ -22,7 +22,7 @@ const GLYPH_SIZE = 12;
  * sizes a glyph whose shape names the status, so status is never color alone.
  * Hidden from screen readers: the row says it in words.
  */
-export function StatusDot({ status, size = 10 }: { status: Status; size?: number }) {
+export function StatusDot({ status, size = 8 }: { status: Status; size?: number }) {
   const theme = useTheme();
   const { scale, isAccessibilitySize } = useFontScale();
   if (isAccessibilitySize) {

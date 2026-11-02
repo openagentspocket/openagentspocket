@@ -48,7 +48,7 @@ export function TextField({
   const theme = useTheme();
   return (
     <View style={styles.field}>
-      <Text variant="caption" tone="secondary">
+      <Text variant="footnote" tone="secondary">
         {label}
       </Text>
       <TextInput
@@ -70,11 +70,11 @@ export function TextField({
         testID={testID}
       />
       {error !== undefined ? (
-        <Text variant="caption" tone="danger" testID={testID ? `${testID}-error` : undefined}>
+        <Text variant="footnote" tone="danger" testID={testID ? `${testID}-error` : undefined}>
           {error}
         </Text>
       ) : hint ? (
-        <Text variant="caption" tone="tertiary">
+        <Text variant="footnote" tone="tertiary">
           {hint}
         </Text>
       ) : null}

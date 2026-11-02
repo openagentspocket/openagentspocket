@@ -46,7 +46,7 @@ export function ToggleRow({
       <View style={styles.text} importantForAccessibility="no-hide-descendants">
         <Text>{title}</Text>
         {subtitle ? (
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             {subtitle}
           </Text>
         ) : null}

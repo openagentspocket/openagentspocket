@@ -31,7 +31,7 @@ export function AddAccountForm({ busy, onAdd }: Props) {
         onPress={add}
         testID="account-add"
       />
-      <Text variant="caption" tone="tertiary">
+      <Text variant="footnote" tone="tertiary">
         {t(
           'The plugin asks Claude Code on this computer for your plan limits. Neither the plugin nor Agentico handles your sign-in. This automated use is not officially supported.',
         )}

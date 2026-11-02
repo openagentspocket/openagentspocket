@@ -71,7 +71,7 @@ export function TypeAndColor() {
                   backgroundColor: theme.colors[key],
                 }}
               />
-              <Text variant="caption" tone="tertiary" numberOfLines={1} style={{ fontSize: 10 }}>
+              <Text variant="footnote" tone="tertiary" numberOfLines={1} style={{ fontSize: 10 }}>
                 {key}
               </Text>
             </View>
