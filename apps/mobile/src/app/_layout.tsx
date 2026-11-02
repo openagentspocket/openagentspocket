@@ -56,6 +56,7 @@ function AppStack() {
         options={{ title: t('How notifications stay private') }}
       />
       <Stack.Screen name="__gallery" options={bare} />
+      <Stack.Screen name="__atlas" options={bare} />
       <Stack.Screen name="__ssh" options={bare} />
       <Stack.Screen name="__terminal" options={bare} />
     </Stack>

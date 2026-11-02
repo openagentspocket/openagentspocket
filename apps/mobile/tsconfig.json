@@ -9,7 +9,7 @@
     "outDir": "dist",
     "noEmit": false
   },
-  "include": ["src", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "include": ["src", "src/dev/atlas/atlasMap.json", ".expo/types/**/*.ts", "expo-env.d.ts"],
   "references": [
     { "path": "../../packages/core" },
     { "path": "../../packages/i18n" },
