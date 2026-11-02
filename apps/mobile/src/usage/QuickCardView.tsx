@@ -5,7 +5,7 @@ import {
   type QuickCard,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Card, Chip, makeStyles, ProgramMark, Text } from '@openagentspocket/ui';
+import { Card, Chip, makeStyles, ProgramMark, Text, ToggleRow } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { LimitWindowRow } from './LimitWindowRow';
 import { localeTag, renderMessage, translateKey } from './usageText';
@@ -21,10 +21,12 @@ interface Props {
   now: Date;
   /** Limits sheet: the Host is the group's heading, windows are one line each. */
   compact?: boolean;
+  /** Limits off: the card carries the switch and its consent note. Without it the card only says so. */
+  claudeLimits?: { onChange: (enabled: boolean) => void };
 }
 
 /** One Usage Limits card: a program's (or one Claude Code Account's) windows on one Host. */
-export function QuickCardView({ card, now, compact }: Props) {
+export function QuickCardView({ card, now, compact, claudeLimits }: Props) {
   const styles = useStyles();
   const subtitle = cardSubtitle(card, now, localeTag(), translateKey);
   const { body } = card;
@@ -55,7 +57,25 @@ export function QuickCardView({ card, now, compact }: Props) {
         {body.kind === 'reading' ? (
           <Text tone="secondary">{t('Reading Usage Limits…')}</Text>
         ) : null}
-        {body.kind === 'limitsOff' ? <Text tone="secondary">{t('Limits off')}</Text> : null}
+        {body.kind === 'limitsOff' && claudeLimits ? (
+          <>
+            <ToggleRow
+              title={t('Claude Code limits')}
+              subtitle={t('Usage Limits are off.')}
+              value={false}
+              onValueChange={claudeLimits.onChange}
+              testID={`claude-limits-toggle-${card.hostId}`}
+            />
+            <Text variant="footnote" tone="secondary">
+              {t(
+                'The plugin asks Claude Code on this computer for your plan limits. Neither the plugin nor Agentico handles your sign-in. This automated use is not officially supported.',
+              )}
+            </Text>
+          </>
+        ) : null}
+        {body.kind === 'limitsOff' && !claudeLimits ? (
+          <Text tone="secondary">{t('Usage Limits are off.')}</Text>
+        ) : null}
         {body.kind === 'message' ? <Text tone="secondary">{renderMessage(body.text)}</Text> : null}
         {body.kind === 'uncounted' ? (
           <Text tone="secondary">{renderMessage(body.reason)}</Text>

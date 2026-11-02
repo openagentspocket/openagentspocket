@@ -2,7 +2,8 @@
 // Captures every mapped atlas screen on Expo web with the agent-browser CLI (no simulator).
 //   node scripts/atlas-web.mjs [--port 8123] [--theme indigo|papel|noche] [--no-server] [id ...]
 // Starts `expo start --web` (demo data) unless --no-server (reuse one on --port), then writes
-// design/atlas/rn-web/<id>.png (402x874 @3x, iPhone 17 Pro; Papel ones as <id>.papel.png).
+// design/atlas/rn-web/<id>.png (402x874 @3x, iPhone 17 Pro; Papel ones as <id>.papel.png; ids with
+// "device": "ipad" in atlasMap.json at 1366x1024 @2 as <id>.ipad.png).
 import { execFileSync, spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -50,10 +51,19 @@ try {
   for (let i = 0; i < 120 && !(await reachable()); i++) await sleep(1000);
   if (!(await reachable())) throw new Error(`ERROR web server not reachable on ${base}`);
   const targets = ids.length ? ids : mappedScreens().map((screen) => screen.id);
-  browser('set', 'viewport', '402', '874', '3');
+  // Screens marked "device": "ipad" in atlasMap.json need the wide window (iPad 13" landscape).
+  const devices = new Map(mappedScreens().map((screen) => [screen.id, screen.device ?? 'iphone']));
+  let viewport = '';
+  const setViewport = (device) => {
+    if (device === viewport) return;
+    viewport = device;
+    if (device === 'ipad') browser('set', 'viewport', '1366', '1024', '2');
+    else browser('set', 'viewport', '402', '874', '3');
+  };
   // The first load bundles; later ones are instant.
   const suffix = theme === 'indigo' ? '' : `.${theme}`;
   for (const id of targets) {
+    setViewport(devices.get(id) ?? 'iphone');
     browser('open', `${base}/__atlas/${id}?theme=${theme}`);
     await sleep(id === targets[0] ? 8000 : 1800);
     // Expo's dev error toast (web-only DOM prop warnings) must not cover the capture.
@@ -61,8 +71,9 @@ try {
       'eval',
       "(function(){var s=document.createElement('style');s.textContent='#error-toast{display:none!important}';document.head.appendChild(s);})()",
     );
-    browser('screenshot', join(outDir, `${id}${suffix}.png`));
-    console.log(`ok ${id}${suffix}`);
+    const device = devices.get(id) === 'ipad' ? '.ipad' : '';
+    browser('screenshot', join(outDir, `${id}${device}${suffix}.png`));
+    console.log(`ok ${id}${device}${suffix}`);
   }
 } catch (error) {
   console.error(String(error.message ?? error).split('\n')[0]);

@@ -2,6 +2,7 @@ import { FakeUsageSource, MemoryAccountFileStore } from '@openagentspocket/core'
 import { setLocale, translate } from '@openagentspocket/i18n';
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
+import { atlasUsageSource } from '@/dev/atlas/atlasUsage';
 import { LimitsScreen } from './LimitsScreen';
 import { UsageScreen } from './UsageScreen';
 
@@ -9,7 +10,11 @@ jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: require('react-native').View,
 }));
 const mockPush = jest.fn();
-jest.mock('expo-router', () => ({ useRouter: () => ({ push: mockPush }) }));
+jest.mock('expo-router', () => ({
+  useRouter: () => ({ push: mockPush }),
+  useLocalSearchParams: () => ({}),
+  Stack: { Screen: () => null },
+}));
 
 // The demo windows reset relative to the real clock, as the screens read it.
 const source = new FakeUsageSource();
@@ -23,6 +28,7 @@ const wrap = (node: React.ReactElement) =>
   );
 
 describe('UsageScreen', () => {
+  beforeEach(() => mockPush.mockClear());
   afterEach(() => setLocale('en'));
 
   it('shows the total, switches range and metric, and lists the host left out', async () => {
@@ -54,6 +60,90 @@ describe('UsageScreen', () => {
     expect(
       within(screen.getByTestId('usage-day-sheet')).getByTestId('day-program-claude'),
     ).toBeTruthy();
+  });
+
+  it('right-aligns each figure with its share beneath it and pushes Show All', async () => {
+    await wrap(
+      <UsageScreen source={atlasUsageSource} files={new MemoryAccountFileStore()} wide={false} />,
+    );
+    await waitFor(() => expect(screen.getByTestId('usage-breakdown-kind')).toBeTruthy());
+    await fireEvent.press(screen.getByTestId('usage-breakdown-kind-days'));
+    const amount = screen.getAllByTestId(/^day-amount-/)[0];
+    if (!amount) throw new Error('no amount column');
+    expect(JSON.stringify(amount.props.style)).toContain('flex-end');
+    // The share sits in the same column, under the figure.
+    expect(within(amount).getAllByText(/%/).length).toBe(1);
+    await fireEvent.press(screen.getByTestId('usage-breakdown-show-all'));
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/usage-breakdown',
+      params: { kind: 'days', metric: 'cost' },
+    });
+  });
+
+  it('shows the Hosts section only with two Hosts, and the Host column when wide', async () => {
+    await wrap(
+      <UsageScreen source={atlasUsageSource} files={new MemoryAccountFileStore()} wide={false} />,
+    );
+    await waitFor(() => expect(screen.getByTestId('host-lab')).toBeTruthy());
+    expect(screen.getByTestId('host-demo')).toBeTruthy();
+    await screen.unmount();
+    await wrap(<UsageScreen source={atlasUsageSource} files={new MemoryAccountFileStore()} wide />);
+    await waitFor(() => expect(screen.getByTestId('usage-hosts-column')).toBeTruthy());
+    await fireEvent.press(screen.getByTestId('usage-host-lab'));
+    expect(screen.getByTestId('usage-wide')).toBeTruthy();
+    expect(screen.queryByTestId('usage-host-demo')).toBeTruthy();
+  });
+
+  it('offers the Accounts notice for a lone Host and opens the sheet from it', async () => {
+    await wrap(<UsageScreen source={source} files={new MemoryAccountFileStore()} />);
+    await waitFor(() => expect(screen.getByTestId('usage-total')).toBeTruthy());
+    // Two Hosts in scope (one not connected): no notice.
+    expect(screen.queryByTestId('usage-accounts-notice')).toBeNull();
+    await screen.unmount();
+    await wrap(
+      <UsageScreen
+        source={source}
+        files={new MemoryAccountFileStore()}
+        initial={{ host: 'demo' }}
+      />,
+    );
+    await waitFor(() => expect(screen.getByTestId('usage-accounts-notice')).toBeTruthy());
+    await fireEvent.press(screen.getByTestId('usage-accounts-notice-open'));
+    await waitFor(() => expect(screen.getByTestId('usage-accounts-sheet')).toBeTruthy());
+  });
+
+  it('puts the Models and Directories links under the day sheet and pushes them', async () => {
+    await wrap(
+      <UsageScreen
+        source={source}
+        files={new MemoryAccountFileStore()}
+        initial={{ day: 'latest' }}
+      />,
+    );
+    const sheet = await screen.findByTestId('usage-day-sheet');
+    expect(within(sheet).getByTestId('usage-day-link-models')).toBeTruthy();
+    await fireEvent.press(within(sheet).getByTestId('usage-day-link-directories'));
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/usage-breakdown',
+      params: { kind: 'directories', metric: 'cost' },
+    });
+  });
+
+  it('carries the Claude Code limits switch on the quick sheet while the limits are off', async () => {
+    await wrap(
+      <UsageScreen
+        source={source}
+        files={new MemoryAccountFileStore()}
+        initial={{ quick: true, limitsOff: true }}
+      />,
+    );
+    const sheet = await screen.findByTestId('usage-quick-sheet');
+    const toggle = within(sheet).getByTestId('claude-limits-toggle-demo');
+    expect(within(sheet).queryAllByTestId('meter-fiveHour')).toHaveLength(0);
+    await fireEvent(toggle, 'valueChange', true);
+    await waitFor(() =>
+      expect(within(sheet).queryByTestId('claude-limits-toggle-demo')).toBeNull(),
+    );
   });
 
   it('opens the quick sheet with a pace tick and the 80/95 colors on the right windows', async () => {

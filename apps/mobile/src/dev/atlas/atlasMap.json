@@ -95,6 +95,53 @@
     "note": "Claude Code Accounts sheet over Usage"
   },
   {
+    "id": "usage.quick-sheet--limits-off",
+    "rn": "QuickSheet",
+    "note": "quick sheet with the Claude Code limits switch off: the card carries the switch and its consent note"
+  },
+  {
+    "id": "usage.accounts-notice",
+    "rn": "UsageAccountsNotice",
+    "note": "lone Host scope: Found 1 Claude Code directory"
+  },
+  {
+    "id": "usage.account-rename-alert",
+    "rn": "AccountsSheet",
+    "note": "Accounts sheet, the work Account's name field open"
+  },
+  {
+    "id": "usage.account-remove-confirm",
+    "rn": "AccountsSheet",
+    "note": "Accounts sheet, Remove work? confirmation"
+  },
+  {
+    "id": "usage.host-section",
+    "rn": "HostUsageSection",
+    "note": "Usage section of the Host detail"
+  },
+  {
+    "id": "usage.hosts-section",
+    "rn": "UsageHostsSection",
+    "note": "phone Usage over two available Hosts: the Hosts section"
+  },
+  {
+    "id": "usage.ipad-split",
+    "rn": "UsageScreen (wide)",
+    "note": "Host column beside the two-column dashboard, All Hosts; two available Hosts",
+    "device": "ipad"
+  },
+  {
+    "id": "usage.wide-layout",
+    "rn": "UsageScreen (wide)",
+    "note": "same, scoped to one Host in the column",
+    "device": "ipad"
+  },
+  {
+    "id": "usage.breakdown-list--directories",
+    "rn": "UsageBreakdownListScreen",
+    "note": "Directories, last 30 days"
+  },
+  {
     "id": "usage.breakdown-list",
     "rn": "UsageBreakdownListScreen",
     "note": "Models, last 30 days"

@@ -16,10 +16,12 @@ interface Props {
   readings: readonly HostReading[];
   now: Date;
   onOpenFull: () => void;
+  /** The device's Claude Code limits switch, for a card whose limits are off. */
+  onClaudeLimits?: (enabled: boolean) => void;
 }
 
 /** usage.quick-sheet: every Host's Usage Limits at a glance, with the way to the full Usage tab. */
-export function QuickSheet({ visible, onClose, readings, now, onOpenFull }: Props) {
+export function QuickSheet({ visible, onClose, readings, now, onOpenFull, onClaudeLimits }: Props) {
   const styles = useStyles();
   const { cards, empty } = quickContent(readings, now);
   return (
@@ -45,7 +47,12 @@ export function QuickSheet({ visible, onClose, readings, now, onOpenFull }: Prop
       testID="usage-quick-sheet"
     >
       {cards.map((card) => (
-        <QuickCardView key={card.id} card={card} now={now} />
+        <QuickCardView
+          key={card.id}
+          card={card}
+          now={now}
+          claudeLimits={onClaudeLimits ? { onChange: onClaudeLimits } : undefined}
+        />
       ))}
       {empty?.kind === 'noHosts' ? (
         <EmptyState

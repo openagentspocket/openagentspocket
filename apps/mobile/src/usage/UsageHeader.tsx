@@ -11,7 +11,7 @@ import { t } from '@openagentspocket/i18n';
 import { ActionMenu, type MenuAnchor, makeStyles, UsageTotals } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { View } from 'react-native';
-import { localeTag, metricText, metricTitle, type UsageMetric } from './usageText';
+import { localeTag, metricText, metricTitle, type UsageMetric, updatedText } from './usageText';
 
 const RANGE_TITLE = {
   today: () => t('Today'),
@@ -72,9 +72,7 @@ export function UsageHeader({
     scope.included.length === 1
       ? t('%@ tokens on this Host', tokens)
       : t('%@ tokens on these %@ Hosts', tokens, hostCount);
-  const updated = refreshing
-    ? t('Refreshing')
-    : t('Updated %@', new Intl.DateTimeFormat(locale, { timeStyle: 'short' }).format(now));
+  const updated = updatedText(refreshing, now);
   const items = [
     {
       key: 'all',

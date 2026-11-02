@@ -10,6 +10,8 @@ import {
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
+  Card,
+  Icon,
   makeStyles,
   programTint,
   Sheet,
@@ -19,7 +21,8 @@ import {
   UsageTotals,
   useTheme,
 } from '@openagentspocket/ui';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
+import { type BreakdownKind, breakdownTitle } from './BreakdownRows';
 import { programSplit } from './usageModel';
 import { localeTag, metricText, type UsageMetric } from './usageText';
 
@@ -27,7 +30,17 @@ const useStyles = makeStyles((th) => ({
   section: { gap: th.spacing.xs },
   heading: { paddingHorizontal: th.spacing.xs },
   programs: { gap: th.spacing.md, paddingHorizontal: th.spacing.xs },
+  link: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    minHeight: 44,
+    paddingHorizontal: th.spacing.md,
+  },
+  separator: { height: th.metrics.hairlineWidth, backgroundColor: th.hairline },
 }));
+
+const LINKS = ['models', 'directories'] as const satisfies readonly BreakdownKind[];
 
 interface Props {
   /** The report day (`YYYY-MM-DD`) to open, or null while closed. */
@@ -37,10 +50,12 @@ interface Props {
   onDate: (date: string) => void;
   scope: UsageScope;
   metric: UsageMetric;
+  /** Opens usage.breakdown-list for Models or Directories (the sheet closes behind it). */
+  onBreakdown: (kind: (typeof LINKS)[number]) => void;
 }
 
 /** usage.day-sheet: the day's figure, then By Host and By program with the token split. */
-export function DaySheet({ date, onClose, onDate, scope, metric }: Props) {
+export function DaySheet({ date, onClose, onDate, scope, metric, onBreakdown }: Props) {
   const styles = useStyles();
   const theme = useTheme();
   const locale = localeTag();
@@ -56,7 +71,7 @@ export function DaySheet({ date, onClose, onDate, scope, metric }: Props) {
       visible={date !== null}
       onClose={onClose}
       headerless
-      detent="large"
+      detent={{ fraction: 0.65 }}
       closeLabel={t('Close')}
       testID="usage-day-sheet"
     >
@@ -135,6 +150,24 @@ export function DaySheet({ date, onClose, onDate, scope, metric }: Props) {
               })}
             </View>
           </View>
+          <Card padded={false} testID="usage-day-links">
+            {LINKS.map((kind, index) => (
+              <View key={kind}>
+                {index > 0 ? <View style={styles.separator} /> : null}
+                <Pressable
+                  onPress={() => onBreakdown(kind)}
+                  accessibilityRole="button"
+                  style={styles.link}
+                  testID={`usage-day-link-${kind}`}
+                >
+                  <Text variant="subheadline" tone="accent">
+                    {breakdownTitle(kind)}
+                  </Text>
+                  <Icon name="chevronRight" size={12} color="textTertiary" />
+                </Pressable>
+              </View>
+            ))}
+          </Card>
         </>
       ) : null}
     </Sheet>

@@ -3,6 +3,7 @@ import { t } from '@openagentspocket/i18n';
 import { Button, Card, EmptyState, Screen, StatusDot, Text } from '@openagentspocket/ui';
 import { useEffect } from 'react';
 import { View } from 'react-native';
+import { HostUsageSection } from '@/usage/HostUsageSection';
 import { ChangedKeySection } from './ChangedKeySection';
 import { connectionTitle, HostFacts, RoutesSection } from './HostInfoSections';
 import { groupStatus } from './hostRows';
@@ -15,10 +16,17 @@ interface HostDetailScreenProps {
   hostId: string;
   onEdit: (hostId: string) => void;
   onRemoved: () => void;
+  /** Opens Usage scoped to this Host. */
+  onOpenUsage?: (hostId: string) => void;
 }
 
 /** hosts.detail: the connection status, routes, Host facts and the preflight checklist. */
-export function HostDetailScreen({ hostId, onEdit, onRemoved }: HostDetailScreenProps) {
+export function HostDetailScreen({
+  hostId,
+  onEdit,
+  onRemoved,
+  onOpenUsage,
+}: HostDetailScreenProps) {
   const snapshot = useHosts();
   const host = snapshot.hosts.find((candidate) => candidate.id === hostId) ?? null;
   const { state, run, cancel, trustNewKey } = useHostChecks(host);
@@ -66,6 +74,10 @@ export function HostDetailScreen({ hostId, onEdit, onRemoved }: HostDetailScreen
       <RoutesSection host={host} routeInUse={state.routeInUse} />
       <HostFacts host={host} />
       <PreflightSection report={state.report} running={state.running} />
+      <HostUsageSection
+        hostId={hostId}
+        onOpenUsage={onOpenUsage ? () => onOpenUsage(hostId) : undefined}
+      />
       <Button
         kind="secondary"
         title={running ? t('Cancel Checks') : t('Run Checks Again')}

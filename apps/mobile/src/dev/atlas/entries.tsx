@@ -1,4 +1,5 @@
 import { t } from '@openagentspocket/i18n';
+import { Screen } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
@@ -22,9 +23,11 @@ import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
+import { HostUsageSection } from '@/usage/HostUsageSection';
 import { UsageBreakdownListScreen } from '@/usage/UsageBreakdownListScreen';
 import { UsageScreen } from '@/usage/UsageScreen';
 import type { AtlasData } from './AtlasFrame';
+import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
 
 export interface AtlasEntry {
   data?: AtlasData;
@@ -67,8 +70,58 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'usage.scope-menu': { render: () => <UsageScreen initial={{ menu: true }} /> },
   'usage.quick-sheet': { render: () => <UsageScreen initial={{ quick: true }} /> },
   'usage.day-sheet': { render: () => <UsageScreen initial={{ day: 'latest' }} /> },
+  'usage.quick-sheet--limits-off': {
+    render: () => <UsageScreen initial={{ quick: true, limitsOff: true }} />,
+  },
   'usage.accounts-sheet': { render: () => <UsageScreen initial={{ accounts: true }} /> },
+  'usage.accounts-notice': { render: () => <UsageScreen initial={{ host: 'demo' }} /> },
+  'usage.account-rename-alert': {
+    render: () => (
+      <UsageScreen
+        source={atlasUsageSource}
+        files={atlasAccountFiles()}
+        initial={{ host: 'demo', accounts: true, rename: '7f3c9a2e' }}
+      />
+    ),
+  },
+  'usage.account-remove-confirm': {
+    render: () => (
+      <UsageScreen
+        source={atlasUsageSource}
+        files={atlasAccountFiles()}
+        initial={{ host: 'demo', accounts: true, remove: '7f3c9a2e' }}
+      />
+    ),
+  },
+  'usage.host-section': {
+    render: () => (
+      <Screen testID="host-usage-screen">
+        <HostUsageSection hostId="demo" onOpenUsage={noop} />
+      </Screen>
+    ),
+  },
+  'usage.hosts-section': {
+    render: () => (
+      <UsageScreen source={atlasUsageSource} files={atlasAccountFiles()} wide={false} />
+    ),
+  },
+  'usage.ipad-split': {
+    render: () => <UsageScreen source={atlasUsageSource} files={atlasAccountFiles()} wide />,
+  },
+  'usage.wide-layout': {
+    render: () => (
+      <UsageScreen
+        source={atlasUsageSource}
+        files={atlasAccountFiles()}
+        initial={{ host: 'demo' }}
+        wide
+      />
+    ),
+  },
   'usage.breakdown-list': { render: () => <UsageBreakdownListScreen /> },
+  'usage.breakdown-list--directories': {
+    render: () => <UsageBreakdownListScreen initial={{ kind: 'directories' }} />,
+  },
   'usage.limits-sheet': { render: () => <UsageLimits /> },
   'usage.limits-page': { render: () => <UsageLimits /> },
   'files.browser': { render: () => <FilesRoute /> },
