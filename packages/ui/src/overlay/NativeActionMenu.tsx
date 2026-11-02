@@ -9,6 +9,11 @@ interface SwiftUiMenu {
   Menu: React.ComponentType<Record<string, unknown>>;
   Button: React.ComponentType<Record<string, unknown>>;
   Section?: React.ComponentType<Record<string, unknown>>;
+  ContextMenu?: React.ComponentType<Record<string, unknown>> & {
+    Trigger: React.ComponentType<{ children: React.ReactNode }>;
+    Preview: React.ComponentType<{ children: React.ReactNode }>;
+    Items: React.ComponentType<{ children: React.ReactNode }>;
+  };
 }
 
 let cached: SwiftUiMenu | null | undefined;
@@ -34,6 +39,67 @@ export function resetNativeMenuCache() {
   cached = undefined;
 }
 
+function menuSections(ui: SwiftUiMenu, items: readonly ActionMenuItem[]) {
+  const { Button, Section } = ui;
+  return groupMenuItems(items).map((group) => {
+    const buttons = group.items.map((item) => (
+      <Button
+        key={item.key}
+        label={item.title}
+        systemImage={item.checked ? 'checkmark' : item.icon ? iconSymbol(item.icon) : undefined}
+        role={item.destructive ? 'destructive' : undefined}
+        disabled={item.disabled}
+        onPress={item.disabled ? undefined : item.onPress}
+      />
+    ));
+    // A SwiftUI Section draws the divider (and the title) between groups.
+    return Section ? (
+      <Section key={group.items[0]?.key} title={group.title}>
+        {buttons}
+      </Section>
+    ) : (
+      buttons
+    );
+  });
+}
+
+interface NativePreviewMenuProps {
+  ui: SwiftUiMenu;
+  items: readonly ActionMenuItem[];
+  /** The lifted card the system shows above the menu. */
+  preview: React.ReactNode;
+  /** The always-visible card that opens the menu on long press. */
+  children: React.ReactNode;
+  testID?: string;
+}
+
+/** True when the system context menu (with a lifted preview) is available. */
+export function supportsNativePreview(ui: SwiftUiMenu | null): ui is SwiftUiMenu {
+  return ui?.ContextMenu != null;
+}
+
+/** A long-press context menu whose preview is the card itself (SwiftUI contextMenu with preview). */
+export function NativePreviewMenu({
+  ui,
+  items,
+  preview,
+  children,
+  testID,
+}: NativePreviewMenuProps) {
+  const { Host, ContextMenu } = ui;
+  const theme = useTheme();
+  if (!ContextMenu) return <>{children}</>;
+  return (
+    <Host matchContents seedColor={theme.colors.accent} testID={testID}>
+      <ContextMenu>
+        <ContextMenu.Trigger>{children}</ContextMenu.Trigger>
+        <ContextMenu.Preview>{preview}</ContextMenu.Preview>
+        <ContextMenu.Items>{menuSections(ui, items)}</ContextMenu.Items>
+      </ContextMenu>
+    </Host>
+  );
+}
+
 interface NativeActionMenuProps {
   ui: SwiftUiMenu;
   items: readonly ActionMenuItem[];
@@ -52,33 +118,12 @@ export function NativeActionMenu({
   icon,
   testID,
 }: NativeActionMenuProps) {
-  const { Host, Menu, Button, Section } = ui;
+  const { Host, Menu } = ui;
   const theme = useTheme();
   return (
     <Host matchContents seedColor={theme.colors.accent} testID={testID}>
       <Menu label={title ?? accessibilityLabel} systemImage={iconSymbol(icon)}>
-        {groupMenuItems(items).map((group) => {
-          const buttons = group.items.map((item) => (
-            <Button
-              key={item.key}
-              label={item.title}
-              systemImage={
-                item.checked ? 'checkmark' : item.icon ? iconSymbol(item.icon) : undefined
-              }
-              role={item.destructive ? 'destructive' : undefined}
-              disabled={item.disabled}
-              onPress={item.disabled ? undefined : item.onPress}
-            />
-          ));
-          // A SwiftUI Section draws the divider (and the title) between groups.
-          return Section ? (
-            <Section key={group.items[0]?.key} title={group.title}>
-              {buttons}
-            </Section>
-          ) : (
-            buttons
-          );
-        })}
+        {menuSections(ui, items)}
       </Menu>
     </Host>
   );

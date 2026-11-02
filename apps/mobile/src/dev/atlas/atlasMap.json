@@ -1,6 +1,14 @@
 [
-  { "id": "shell.home", "rn": "app/index.tsx (HomeScreen)", "note": "demo console, 4 agents" },
-  { "id": "console.no-hosts-empty", "rn": "app/index.tsx (HomeScreen)", "note": "empty console" },
+  {
+    "id": "shell.home",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "demo console, 4 agents"
+  },
+  {
+    "id": "console.no-hosts-empty",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "empty console"
+  },
   {
     "id": "console.agents-list-flat",
     "rn": "app/agents.tsx (AgentsScreen)",
@@ -11,7 +19,11 @@
     "rn": "app/new-agent.tsx (NewAgentScreen)",
     "note": "demo services"
   },
-  { "id": "hosts.list", "rn": "app/hosts/index.tsx (HostListScreen)", "note": "two demo hosts" },
+  {
+    "id": "hosts.list",
+    "rn": "app/hosts/index.tsx (HostListScreen)",
+    "note": "two demo hosts"
+  },
   {
     "id": "hosts.form",
     "rn": "app/hosts/form.tsx (HostFormScreen)",
@@ -20,26 +32,129 @@
   {
     "id": "hosts.detail",
     "rn": "HostDetailScreen",
-    "note": "demo host; the demo probe leaves the Trust this Host prompt open (also hosts.trust-alert)"
+    "note": "demo host, key already trusted: the preflight passes"
+  },
+  {
+    "id": "hosts.trust-alert",
+    "rn": "HostDetailScreen",
+    "note": "demo host that has never connected: the Trust this Host prompt is open"
+  },
+  {
+    "id": "hosts.route-page",
+    "rn": "app/hosts/route.tsx (RoutePageScreen)",
+    "note": "route 1 of the Demo Host's form draft"
+  },
+  {
+    "id": "hosts.new-route",
+    "rn": "app/hosts/route.tsx (RoutePageScreen)",
+    "note": "New Route page over the same draft"
+  },
+  {
+    "id": "hosts.peer-picker",
+    "rn": "RoutePageScreen (OverlayPeerPicker)",
+    "note": "scripted tailnet in demo mode"
+  },
+  {
+    "id": "hosts.plugin-notice",
+    "rn": "HostDetailScreen (PluginNoticeSheet)",
+    "note": "Hosts report plugin 0.5.0: the update notice is open"
+  },
+  {
+    "id": "hosts.replace-auth-key-confirm",
+    "rn": "HostFormScreen (DeviceKeyLine)",
+    "note": "device key cannot be loaded; the Replace the Device Key? dialog is open"
+  },
+  { "id": "hosts.setup-guide", "rn": "app/hosts/guide.tsx (SetupGuideScreen)", "note": "" },
+  {
+    "id": "hosts.remove-confirm",
+    "rn": "app/hosts/index.tsx (HostListScreen)",
+    "note": "list with the Remove Host alert open for the last Host"
   },
   {
     "id": "hosts.pairing-scanner",
     "rn": "app/hosts/pair.tsx (PairingScreen)",
     "note": "web: no camera"
   },
-  { "id": "settings.root", "rn": "app/settings (SettingsScreen)", "note": "" },
-  { "id": "settings.notifications", "rn": "NotificationSettingsScreen", "note": "demo services" },
-  { "id": "settings.notification-privacy", "rn": "NotificationPrivacyScreen", "note": "" },
-  { "id": "settings.acknowledgements", "rn": "LicenseNoticeScreen", "note": "list of notices" },
-  { "id": "usage.tab", "rn": "app/usage.tsx (UsageScreen)", "note": "demo readings" },
+  {
+    "id": "settings.root",
+    "rn": "app/settings (SettingsScreen)",
+    "note": ""
+  },
+  {
+    "id": "settings.notifications",
+    "rn": "NotificationSettingsScreen",
+    "note": "demo services"
+  },
+  {
+    "id": "settings.notification-privacy",
+    "rn": "NotificationPrivacyScreen",
+    "note": ""
+  },
+  {
+    "id": "settings.theme",
+    "rn": "SettingsScreen (theme page)",
+    "note": ""
+  },
+  {
+    "id": "settings.appearance",
+    "rn": "SettingsScreen (fonts page)",
+    "note": "Fonts & Size"
+  },
+  {
+    "id": "settings.chat",
+    "rn": "SettingsScreen (chat page)",
+    "note": ""
+  },
+  {
+    "id": "settings.chat-cache",
+    "rn": "SettingsScreen (chat page)",
+    "note": "cache rows live on the chat page"
+  },
+  {
+    "id": "settings.input-toolbar",
+    "rn": "SettingsScreen (toolbar page)",
+    "note": ""
+  },
+  {
+    "id": "settings.acknowledgements",
+    "rn": "SettingsScreen (acknowledgements page)",
+    "note": "list of notices"
+  },
+  {
+    "id": "settings.license-notice",
+    "rn": "LicenseNoticeScreen",
+    "note": "first notice"
+  },
+  {
+    "id": "shell.app-lock",
+    "rn": "AppLockView",
+    "note": "Face ID locked"
+  },
+  {
+    "id": "usage.tab",
+    "rn": "app/usage.tsx (UsageScreen)",
+    "note": "demo readings"
+  },
   {
     "id": "usage.limits-page",
     "rn": "app/usage-limits.tsx (LimitsScreen)",
     "note": "demo readings"
   },
-  { "id": "files.browser", "rn": "app/files.tsx (FilesScreen)", "note": "demo host files" },
-  { "id": "browser.ports", "rn": "app/ports (PortsScreen)", "note": "demo ports" },
-  { "id": "changes.list", "rn": "app/changes (ChangesScreen)", "note": "demo checkout" },
+  {
+    "id": "files.browser",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "demo host files"
+  },
+  {
+    "id": "browser.ports",
+    "rn": "app/ports (PortsScreen)",
+    "note": "demo ports"
+  },
+  {
+    "id": "changes.list",
+    "rn": "app/changes (ChangesScreen)",
+    "note": "demo checkout"
+  },
   {
     "id": "changes.file-diff",
     "rn": "app/changes/diff.tsx (FileDiffScreen)",
@@ -60,5 +175,9 @@
     "rn": "app/terminal.tsx (ShellTerminalScreen)",
     "note": "demo shell"
   },
-  { "id": "rn.board", "rn": "app/board.tsx (BoardScreen)", "note": "RN-only screen, no Swift id" }
+  {
+    "id": "rn.board",
+    "rn": "app/board.tsx (BoardScreen)",
+    "note": "RN-only screen, no Swift id"
+  }
 ]

@@ -28,6 +28,7 @@ const useStyles = makeStyles((t) => ({
   neighbour: { opacity: 0.7, flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   /** Mark-only chip: a full circle, used when the neighbour's label cannot fit beside the pill. */
   neighbourCompact: { width: COMPACT_CHIP, paddingHorizontal: 0, alignItems: 'center' },
+  hidden: { opacity: 0 },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -84,6 +85,19 @@ export function AgentSwitcher({
   /** Width of the previous chip with its label, captured while it is still shown in full. */
   const previousFull = useRef(0);
   const [compact, setCompact] = useState(false);
+  /** Scroll offset plus a layout tick, so a chip cut by the capsule edge can be hidden whole. */
+  const [scrollX, setScrollX] = useState(0);
+  const [, setTick] = useState(0);
+  const boxes = useRef<Record<string, { x: number; width: number }>>({});
+  const partlyShown = (id: string) => {
+    const box = boxes.current[id];
+    if (!box || viewport.current === 0) return false;
+    const left = box.x - scrollX;
+    const right = left + box.width;
+    const inside = left >= -0.5 && right <= viewport.current + 0.5;
+    const outside = right <= 0.5 || left >= viewport.current - 0.5;
+    return !inside && !outside;
+  };
   const currentIndex = agents.findIndex((agent) => agent.id === currentId);
   /** Whole previous chip when it fits beside the pill, else a mark-only chip; never a clipped label. */
   const decide = () => {
@@ -100,10 +114,9 @@ export function AgentSwitcher({
     const boxX = compact ? CHIP_GAP + currentIndex * (COMPACT_CHIP + CHIP_GAP) : box.x;
     const previousX = compact ? boxX - COMPACT_CHIP - CHIP_GAP : previousBox.current?.x;
     const start = previousX === undefined ? boxX : previousX - CHIP_GAP;
-    scroll.current?.scrollTo({
-      x: Math.max(0, start, boxX + box.width - viewport.current),
-      animated: false,
-    });
+    const x = Math.max(0, start, boxX + box.width - viewport.current);
+    scroll.current?.scrollTo({ x, animated: false });
+    setScrollX(x);
   };
   const centre = () => {
     align();
@@ -123,6 +136,8 @@ export function AgentSwitcher({
         showsHorizontalScrollIndicator={false}
         style={styles.scroll}
         contentContainerStyle={styles.content}
+        scrollEventThrottle={16}
+        onScroll={(event) => setScrollX(event.nativeEvent.contentOffset.x)}
         onLayout={(event) => {
           viewport.current = event.nativeEvent.layout.width;
           centre();
@@ -137,6 +152,8 @@ export function AgentSwitcher({
               key={agent.id}
               onLayout={(event) => {
                 const layout = event.nativeEvent.layout;
+                boxes.current[agent.id] = layout;
+                setTick((n) => n + 1);
                 if (index === currentIndex - 1) {
                   previousBox.current = layout;
                   if (!compact) previousFull.current = layout.width;
@@ -156,7 +173,12 @@ export function AgentSwitcher({
               style={
                 current
                   ? styles.pill
-                  : [styles.chip, styles.neighbour, shrink && styles.neighbourCompact]
+                  : [
+                      styles.chip,
+                      styles.neighbour,
+                      shrink && styles.neighbourCompact,
+                      partlyShown(agent.id) && styles.hidden,
+                    ]
               }
             >
               <ProgramMark

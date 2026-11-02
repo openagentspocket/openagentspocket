@@ -37,6 +37,7 @@ export function stepTitle(step: PairingStep): string {
 export function scannerLabels(): QRScannerLabels {
   return {
     preview: extra('Camera'),
+    hint: t('Point the camera at the Pairing Code shown by herdr.'),
     torchOn: extra('Turn on the light'),
     torchOff: extra('Turn off the light'),
     deniedTitle: t('Camera Access Needed'),

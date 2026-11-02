@@ -42,6 +42,9 @@ def swift_shot(screen_id):
     current = SWIFT / "design/screens/current" / f"{screen_id}.png"
     if current.exists() and not light:
         return current, "Swift (design/screens/current)"
+    papel = SWIFT / "design/screens/current/light" / f"{screen_id}.png"
+    if papel.exists() and light:
+        return papel, "Swift Papel (design/screens/current/light)"
     found = sorted((review / "atlas-pad/screenshots" / test_class).glob(f"*/{screen_id}.png"))
     if found:
         return found[0], "Swift (iPad atlas)"

@@ -32,6 +32,13 @@ const agents = [
   { id: 'c', title: 'api', program: 'codex', status: 'done' },
 ] as const;
 
+/** The tools variant has three trailing icons; a short title leaves room for the neighbour mark. */
+const toolsAgents = [
+  agents[0],
+  { id: 'b', title: 'iOS App', program: 'codex', status: 'idle' },
+  agents[2],
+] as const;
+
 const workspaces: readonly DrawerWorkspace[] = [
   {
     id: 'w1',
@@ -136,7 +143,7 @@ export const agentBarEntries: readonly CatalogEntry[] = [
         id: 'tools',
         render: () => (
           <AgentSwitcher
-            agents={agents}
+            agents={toolsAgents}
             currentId="b"
             onSelect={noop}
             trailing={[

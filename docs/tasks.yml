@@ -1131,3 +1131,8 @@
   acceptance:
     - "the loop is reproduced, its root cause explained and fixed with a regression test"
     - "atlas-ios.mjs terminates and relaunches the app per id so captures never cascade"
+- id: T-e2e-w5
+  phase: 1
+  kind: js
+  title: "Fixes from the last native check: real push token source tested, e2e flows (home, live, hosts), Android cold-start link, Host form keyboard avoidance"
+  deps: [T-verify-fixes-w4]

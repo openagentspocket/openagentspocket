@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import { useAuthenticator, useSettings } from './SettingsProvider';
 import type { SettingsContext } from './schema';
+import { useSettingsSummary } from './useSettingsSummary';
 
 /** The theme in force: the chosen one, or the Dark/Light pair slot of the system scheme. */
 export function useResolvedThemeId() {
@@ -19,6 +20,7 @@ export function useSettingsContext(): SettingsContext {
   const authenticator = useAuthenticator();
   const [authKind, setAuthKind] = useState<string | null>(null);
   const themeId = useResolvedThemeId();
+  const summary = useSettingsSummary();
 
   useEffect(() => {
     let alive = true;
@@ -35,5 +37,7 @@ export function useSettingsContext(): SettingsContext {
     authKind,
     version: Constants.expoConfig?.version ?? '',
     themeName: themes[themeId].name,
+    themeId,
+    summary,
   };
 }

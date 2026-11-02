@@ -18,11 +18,17 @@ import NotificationsRoute from '@/app/settings/notifications';
 import Usage from '@/app/usage';
 import UsageLimits from '@/app/usage-limits';
 import { HostDetailScreen } from '@/features/hosts/HostDetailScreen';
+import { SetupGuideScreen } from '@/features/hosts/SetupGuideScreen';
 import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
+import { AppLockView } from '@/settings/AppLockCover';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
+import { NOTICES } from '@/settings/notices.generated';
+import { SettingsScreen } from '@/settings/SettingsScreen';
 import type { AtlasData } from './AtlasFrame';
+import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
+import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
 export interface AtlasEntry {
   data?: AtlasData;
@@ -38,6 +44,14 @@ const titled = (title: string, body: ReactNode): ReactNode => (
 
 const noop = () => {};
 
+/** A settings sub page as it pushes inside the sheet: native header, inline title, back button. */
+const settingsPage = (page: string): ReactNode => (
+  <>
+    <Stack.Screen options={{ headerShown: true }} />
+    <SettingsScreen page={page} />
+  </>
+);
+
 /**
  * Swift screen id -> the RN screen in a fixed state. Ids missing here are listed as "no RN screen
  * yet" by scripts/atlas-compare.mjs. Add the id to atlasMap.json too (a test checks both agree).
@@ -50,16 +64,41 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'hosts.list': { render: () => <HostsRoute /> },
   'hosts.form': { render: () => <HostFormRoute /> },
   'hosts.detail': {
-    render: () =>
-      titled(t('Host Details'), <HostDetailScreen hostId="demo" onEdit={noop} onRemoved={noop} />),
+    render: () => <HostDetailScreen hostId="demo" onBack={noop} onEdit={noop} onRemoved={noop} />,
   },
+  'hosts.trust-alert': {
+    data: { trusted: false },
+    render: () => <HostDetailScreen hostId="demo" onBack={noop} onEdit={noop} onRemoved={noop} />,
+  },
+  'hosts.setup-guide': { render: () => <SetupGuideScreen onBack={noop} /> },
+  'hosts.route-page': { render: () => <RoutePageDemo /> },
+  'hosts.new-route': { render: () => <RoutePageDemo isNew /> },
+  'hosts.peer-picker': { render: () => <RoutePageDemo picking /> },
+  'hosts.plugin-notice': {
+    data: { pluginVersion: '0.5.0' },
+    render: () => <PluginNoticeDemo />,
+  },
+  'hosts.replace-auth-key-confirm': {
+    data: { deviceKey: 'unavailable' },
+    render: () => <ReplaceKeyDemo />,
+  },
+  'hosts.remove-confirm': { render: () => <RemoveConfirmDemo /> },
   'hosts.pairing-scanner': { render: () => <PairRoute /> },
   'settings.root': { render: () => <SettingsRoot /> },
   'settings.notifications': { render: () => <NotificationsRoute /> },
   'settings.notification-privacy': {
     render: () => titled(t('How notifications stay private'), <NotificationPrivacyScreen />),
   },
-  'settings.acknowledgements': { render: () => <LicenseNoticeScreen /> },
+  'settings.theme': { render: () => settingsPage('theme') },
+  'settings.appearance': { render: () => settingsPage('fonts') },
+  'settings.chat': { render: () => settingsPage('chat') },
+  'settings.chat-cache': { render: () => settingsPage('chat') },
+  'settings.input-toolbar': { render: () => settingsPage('toolbar') },
+  'settings.acknowledgements': { render: () => settingsPage('acknowledgements') },
+  'settings.license-notice': { render: () => <LicenseNoticeScreen id={NOTICES[0]?.id} /> },
+  'shell.app-lock': {
+    render: () => <AppLockView kind="Face ID" locked message={null} onUnlock={noop} />,
+  },
   'usage.tab': { render: () => <Usage /> },
   'usage.limits-page': { render: () => <UsageLimits /> },
   'files.browser': { render: () => <FilesRoute /> },

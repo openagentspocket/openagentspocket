@@ -15,6 +15,7 @@ const ICONS = {
   check: { ios: 'checkmark', android: 'check' },
   copy: { ios: 'doc.on.doc', android: 'content_copy' },
   more: { ios: 'ellipsis', android: 'more_horiz' },
+  chevronLeft: { ios: 'chevron.left', android: 'chevron_left' },
   chevronRight: { ios: 'chevron.right', android: 'chevron_right' },
   chevronDown: { ios: 'chevron.down', android: 'expand_more' },
   chevronUpDown: { ios: 'chevron.up.chevron.down', android: 'unfold_more' },
@@ -47,6 +48,7 @@ const ICONS = {
   arrowLeft: { ios: 'arrow.left', android: 'arrow_back' },
   arrowRight: { ios: 'arrow.right', android: 'arrow_forward' },
   sparkles: { ios: 'sparkles', android: 'auto_awesome' },
+  book: { ios: 'book', android: 'menu_book' },
   qr: { ios: 'qrcode.viewfinder', android: 'qr_code_scanner' },
   emptyTray: { ios: 'tray', android: 'inbox' },
   // Agent status at accessibility text sizes: one shape per status (StatusDot). Material's
@@ -54,14 +56,22 @@ const ICONS = {
   statusBlocked: { ios: 'exclamationmark.circle.fill', android: 'error' },
   statusDone: { ios: 'checkmark.circle.fill', android: 'check_circle' },
   statusWorking: { ios: 'circle.fill', android: 'radio_button_checked' },
+  statusFailed: { ios: 'xmark.circle.fill', android: 'cancel' },
   statusIdle: { ios: 'circle', android: 'radio_button_unchecked' },
   // Ports and the browser preview.
   globe: { ios: 'globe', android: 'language' },
+  wifi: { ios: 'wifi', android: 'wifi' },
   wifiSlash: { ios: 'wifi.slash', android: 'wifi_off' },
   container: { ios: 'shippingbox', android: 'inventory_2' },
   paused: { ios: 'pause.circle', android: 'pause_circle' },
   share: { ios: 'square.and.arrow.up', android: 'share' },
   usage: { ios: 'chart.bar.xaxis', android: 'bar_chart' },
+  // Composer extras: read-only hint, keyboard pane switcher, skill document.
+  eye: { ios: 'eye', android: 'visibility' },
+  grid: { ios: 'square.grid.3x3', android: 'apps' },
+  quote: { ios: 'quote.bubble', android: 'chat_bubble' },
+  palette: { ios: 'paintpalette', android: 'palette' },
+  document: { ios: 'doc.text', android: 'article' },
   // Chat timeline rows.
   brain: { ios: 'brain', android: 'psychology' },
   hand: { ios: 'hand.raised', android: 'pan_tool' },
@@ -69,7 +79,6 @@ const ICONS = {
   bot: { ios: 'cpu', android: 'smart_toy' },
   // Blocked card, terminal toolbar and key pad.
   chevronUp: { ios: 'chevron.up', android: 'expand_less' },
-  chevronLeft: { ios: 'chevron.left', android: 'chevron_left' },
   note: { ios: 'text.bubble', android: 'chat' },
   dpad: { ios: 'arrow.up.and.down.and.arrow.left.and.right', android: 'open_with' },
   enter: { ios: 'return', android: 'keyboard_return' },
@@ -77,6 +86,13 @@ const ICONS = {
   skills: { ios: 'sparkle', android: 'auto_awesome' },
   snippets: { ios: 'text.alignleft', android: 'notes' },
   appearance: { ios: 'paintpalette', android: 'palette' },
+  // Settings rows and the app lock.
+  lock: { ios: 'lock', android: 'lock' },
+  faceId: { ios: 'faceid', android: 'face' },
+  fontSize: { ios: 'textformat.size', android: 'text_fields' },
+  chat: { ios: 'bubble.left', android: 'chat_bubble' },
+  agentRows: { ios: 'list.bullet.rectangle', android: 'view_list' },
+  network: { ios: 'point.3.connected.trianglepath.dotted', android: 'hub' },
   // Toolbars and the iPad sidebar.
   home: { ios: 'house', android: 'home' },
   filter: { ios: 'line.3.horizontal.decrease.circle', android: 'filter_list' },
@@ -103,6 +119,8 @@ interface IconProps {
   color?: ColorKey;
   /** A resolved color, for ink computed from a status or tone. Wins over `color`. */
   tint?: string;
+  /** SF Symbol weight (iOS and web fallback ignore it elsewhere). */
+  weight?: 'regular' | 'semibold' | 'bold';
   /** Set only for an icon that carries meaning alone; otherwise it is hidden from screen readers. */
   accessibilityLabel?: string;
   testID?: string;
@@ -113,6 +131,7 @@ export function Icon({
   size = 17,
   color = 'textSecondary',
   tint,
+  weight,
   accessibilityLabel,
   testID,
 }: IconProps) {
@@ -123,6 +142,7 @@ export function Icon({
     <SymbolView
       name={{ ios: glyph.ios, android: glyph.android, web: glyph.android }}
       size={size}
+      weight={weight}
       tintColor={tint ?? theme.colors[color]}
       testID={testID ?? `icon-${name}`}
       accessible={!decorative}
