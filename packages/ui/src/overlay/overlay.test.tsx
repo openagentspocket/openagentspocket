@@ -12,7 +12,7 @@ import {
 } from '../index';
 import { renderThemed } from '../test-utils';
 import { themes } from '../theme/tokens.generated';
-import { NativeActionMenu } from './NativeActionMenu';
+import { NativeActionMenu, NativePreviewMenu } from './NativeActionMenu';
 
 const calls: Record<string, Record<string, unknown>[]> = { Host: [], Menu: [], Button: [] };
 function FakeHost(props: Record<string, unknown>) {
@@ -283,5 +283,54 @@ describe('ActionMenu', () => {
     const press = pin?.onPress as (() => void) | undefined;
     press?.();
     expect(onPin).toHaveBeenCalled();
+  });
+});
+
+describe('ActionMenu preview', () => {
+  const items = [
+    { key: 'pin', title: 'Pin', icon: 'pin' as const, onPress: jest.fn() },
+    { key: 'close', title: 'Close', destructive: true, onPress: jest.fn() },
+  ];
+
+  it('lifts the preview above the items and runs an item after closing', async () => {
+    jest.useFakeTimers();
+    const onClose = jest.fn();
+    await renderThemed(
+      <ActionMenu visible inline preview={<Text>card</Text>} items={items} onClose={onClose} />,
+    );
+    expect(screen.getByTestId('action-menu-preview', { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.getByText('card', { includeHiddenElements: true })).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('action-menu-pin'));
+    expect(onClose).toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
+  it('keeps the plain popover without a preview', async () => {
+    await renderThemed(<ActionMenu visible items={items} onClose={jest.fn()} />);
+    expect(screen.queryByTestId('action-menu-preview')).toBeNull();
+  });
+
+  it('NativePreviewMenu puts the card in the context menu preview slot', async () => {
+    const slots: string[] = [];
+    const slot = (name: string) =>
+      function Slot({ children }: { children: React.ReactNode }) {
+        slots.push(name);
+        return <>{children}</>;
+      };
+    const ContextMenu = Object.assign(FakeMenu, {
+      Trigger: slot('trigger'),
+      Preview: slot('preview'),
+      Items: slot('items'),
+    });
+    await renderThemed(
+      <NativePreviewMenu
+        ui={{ Host: FakeHost, Menu: FakeMenu, Button: FakeButton, ContextMenu }}
+        items={items}
+        preview={<Text>card</Text>}
+      >
+        <Text>trigger</Text>
+      </NativePreviewMenu>,
+    );
+    expect(slots).toEqual(['trigger', 'preview', 'items']);
   });
 });
