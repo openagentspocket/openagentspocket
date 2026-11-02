@@ -1,0 +1,3183 @@
+{
+  "fixture": "approvals-asks-plan.jsonl",
+  "lineOffsets": [
+    0,
+    256,
+    473,
+    667,
+    849,
+    1170,
+    1359,
+    2396,
+    2811,
+    2972,
+    3169,
+    3641,
+    4346,
+    4667,
+    5703,
+    6118,
+    6525,
+    6783,
+    7561,
+    7882,
+    8932,
+    9347,
+    9818,
+    10510,
+    10831,
+    11866,
+    12281,
+    12688,
+    13388,
+    13773,
+    14884,
+    15254,
+    15750,
+    15992,
+    16636,
+    17065,
+    18294,
+    18662,
+    19072,
+    19601,
+    19941,
+    21000,
+    21370,
+    21855,
+    22123,
+    22806,
+    22991,
+    23179,
+    30842,
+    31213,
+    32458,
+    32887,
+    33537,
+    34438,
+    34844,
+    35422,
+    35952,
+    36155
+  ],
+  "program": "omp",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-1 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:558cb6bb",
+          "sourceOffset": 849
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:2f711469:0",
+          "sourceOffset": 1359
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_adb504f60b344db78f8a700b2c1377fc|fc_009c499ecb3b022f016ad0f8735db08191bd5ad776b89a8b96",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 471,
+                "offset": 3169,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "approved-1\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-1"
+            }
+          },
+          "id": "pi:tool:call_adb504f60b344db78f8a700b2c1377fc|fc_009c499ecb3b022f016ad0f8735db08191bd5ad776b89a8b96",
+          "sourceOffset": 1359
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "```text\napproved-1\n```"
+            }
+          },
+          "id": "pi:846404e7:0",
+          "sourceOffset": 3641
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-2 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:e95de799",
+          "sourceOffset": 4346
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:f7aaaa5e:0",
+          "sourceOffset": 4667
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_74e0dc7b12f74e2b942e3c03d92bceec|fc_009c499ecb3b022f016ad0f8db67ac81919e3a396735acc0c4",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 406,
+                "offset": 6118,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Tool call denied by user: bash"
+              },
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-2"
+            }
+          },
+          "id": "pi:tool:call_74e0dc7b12f74e2b942e3c03d92bceec|fc_009c499ecb3b022f016ad0f8db67ac81919e3a396735acc0c4",
+          "sourceOffset": 4667
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "abc",
+              "wasQueued": true
+            }
+          },
+          "id": "pi:9fb8c963",
+          "sourceOffset": 6525
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "命令执行被拒绝，没有输出。你发送的 `abc` 未包含明确操作，请说明需要执行什么。"
+            }
+          },
+          "id": "pi:332d0e0c:0",
+          "sourceOffset": 6783
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-3 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:942e55e6",
+          "sourceOffset": 7561
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:749b86ff:0",
+          "sourceOffset": 7882
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_59912a803af84abf90eafe27e31022db|fc_009c499ecb3b022f016ad0f917cdb081919399e48a2136a982",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 470,
+                "offset": 9347,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "approved-3\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-3"
+            }
+          },
+          "id": "pi:tool:call_59912a803af84abf90eafe27e31022db|fc_009c499ecb3b022f016ad0f917cdb081919399e48a2136a982",
+          "sourceOffset": 7882
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "```text\napproved-3\n```"
+            }
+          },
+          "id": "pi:43f45f00:0",
+          "sourceOffset": 9818
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-4 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:938e4ab0",
+          "sourceOffset": 10510
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:4a46d811:0",
+          "sourceOffset": 10831
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_fd940fe854654555b1fda650daa8d994|fc_009c499ecb3b022f016ad0f9255c288191bdf0565f69b5fac8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 406,
+                "offset": 12281,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Tool call denied by user: bash"
+              },
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-4"
+            }
+          },
+          "id": "pi:tool:call_fd940fe854654555b1fda650daa8d994|fc_009c499ecb3b022f016ad0f9255c288191bdf0565f69b5fac8",
+          "sourceOffset": 10831
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "命令执行被拒绝，没有输出。"
+            }
+          },
+          "id": "pi:b3b8ff1f:0",
+          "sourceOffset": 12688
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool to ask me exactly one single-select question: 'Pick a fruit' with exactly 3 options: apple, pear, plum. Do not do anything else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:00e89f2e",
+          "sourceOffset": 13388
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_c20d8fdc4d9841f1b1ff4a6c0934b5c9|fc_009c499ecb3b022f016ad0f93d9f588191be0be9b426d1962d",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 495,
+                "offset": 15254,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "User selected: pear"
+              },
+              "questions": [
+                {
+                  "answer": "pear",
+                  "header": null,
+                  "id": "fruit",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "apple"
+                    },
+                    {
+                      "detail": null,
+                      "label": "pear"
+                    },
+                    {
+                      "detail": null,
+                      "label": "plum"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a fruit"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a fruit"
+            }
+          },
+          "id": "pi:tool:call_c20d8fdc4d9841f1b1ff4a6c0934b5c9|fc_009c499ecb3b022f016ad0f93d9f588191be0be9b426d1962d",
+          "sourceOffset": 13773
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "pi:ed6e7892:0",
+          "sourceOffset": 15992
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool once with exactly two questions in one call: question 1 id fruit 'Pick a fruit' options apple, pear; question 2 id size 'Pick a size' options small, large. Do nothing else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:ce7dd147",
+          "sourceOffset": 16636
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_7bfdda8a31ea4cf7ad84cb511cc20c21|fc_0f1b29fdca265971016ad0f98850708191ba286aa3771117e5",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 409,
+                "offset": 18662,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Ask tool was cancelled by the user"
+              },
+              "questions": [
+                {
+                  "answer": null,
+                  "header": null,
+                  "id": "fruit",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "apple"
+                    },
+                    {
+                      "detail": null,
+                      "label": "pear"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a fruit"
+                },
+                {
+                  "answer": null,
+                  "header": null,
+                  "id": "size",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "small"
+                    },
+                    {
+                      "detail": null,
+                      "label": "large"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a size"
+                }
+              ],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a fruit"
+            }
+          },
+          "id": "pi:tool:call_7bfdda8a31ea4cf7ad84cb511cc20c21|fc_0f1b29fdca265971016ad0f98850708191ba286aa3771117e5",
+          "sourceOffset": 17065
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "interrupted",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Interrupted"
+            }
+          },
+          "id": "pi:bd2418d1:end",
+          "sourceOffset": 19072
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool to ask exactly one question 'Pick a color' with options red, blue. Do nothing else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:ceec44cf",
+          "sourceOffset": 19601
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_a97f9e9233ca4968ba3ba33bd6a842b7|fc_05af4d230a542c09016ad0f9b42e4c81918164b76e0fd317b1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 484,
+                "offset": 21370,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "User selected: red"
+              },
+              "questions": [
+                {
+                  "answer": "red",
+                  "header": null,
+                  "id": "color",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "red"
+                    },
+                    {
+                      "detail": null,
+                      "label": "blue"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a color"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a color"
+            }
+          },
+          "id": "pi:tool:call_a97f9e9233ca4968ba3ba33bd6a842b7|fc_05af4d230a542c09016ad0f9b42e4c81918164b76e0fd317b1",
+          "sourceOffset": 19941
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "my draft text",
+              "wasQueued": true
+            }
+          },
+          "id": "pi:62cc28b8",
+          "sourceOffset": 21855
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "你想让我如何处理这段草稿？"
+            }
+          },
+          "id": "pi:b4291520:0",
+          "sourceOffset": 22123
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Plan only: append a line plan-ok to README.md. Keep the plan to 2 short steps, do not explore, and submit it for review immediately.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:a1d2aa48",
+          "sourceOffset": 30842
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_4f0a7b3a5f504a5e834beab67ca9a72d|fc_05af4d230a542c09016ad0fa01848c8191b0da827425d6751d",
+              "cardAnswer": null,
+              "diff": {
+                "added": 3,
+                "files": 1,
+                "removed": 0
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/tmp/heeler-iso-omp2/proj",
+                "files": [
+                  {
+                    "added": 3,
+                    "hunks": [
+                      {
+                        "lines": [
+                          "+## Approach",
+                          "+1. Open `README.md` (unverified — confirm first), then append the exact text `plan-ok` as a new final line, preserving existing content. If the file is missing, create it containing `plan-ok` followed by a newline.",
+                          "+2. Read the final lines of `README.md` and confirm the last line is exactly `plan-ok` and the prior content is unchanged."
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 0,
+                        "oldStart": 0
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "written",
+                    "lineCount": 3,
+                    "path": "local://append-plan-ok-plan.md",
+                    "removed": 0
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileWrite",
+              "name": "write",
+              "note": null,
+              "output": {
+                "length": 1244,
+                "offset": 31213,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "[local://append-plan-ok-plan.md#F640]\nSuccessfully wrote 351 bytes to local://append-plan-ok-plan.md"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "local://append-plan-ok-plan.md"
+            }
+          },
+          "id": "pi:tool:call_4f0a7b3a5f504a5e834beab67ca9a72d|fc_05af4d230a542c09016ad0fa01848c8191b0da827425d6751d",
+          "sourceOffset": 31213
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Plan ready for review"
+            }
+          },
+          "id": "pi:c2d14183:end",
+          "sourceOffset": 35422
+        }
+      ],
+      "latestPromptOffset": 30842,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:558cb6bb",
+          "offset": 849,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-1 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:e95de799",
+          "offset": 4346,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-2 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:9fb8c963",
+          "offset": 6525,
+          "pastedImagePaths": null,
+          "text": "abc"
+        },
+        {
+          "entryID": "pi:942e55e6",
+          "offset": 7561,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-3 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:938e4ab0",
+          "offset": 10510,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-4 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:00e89f2e",
+          "offset": 13388,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool to ask me exactly one single-select question: 'Pick a fruit' with exactly 3 options: apple, pear, plum. Do not do anything else."
+        },
+        {
+          "entryID": "pi:ce7dd147",
+          "offset": 16636,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool once with exactly two questions in one call: question 1 id fruit 'Pick a fruit' options apple, pear; question 2 id size 'Pick a size' options small, large. Do nothing else."
+        },
+        {
+          "entryID": "pi:ceec44cf",
+          "offset": 19601,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool to ask exactly one question 'Pick a color' with options red, blue. Do nothing else."
+        },
+        {
+          "entryID": "pi:62cc28b8",
+          "offset": 21855,
+          "pastedImagePaths": null,
+          "text": "my draft text"
+        },
+        {
+          "entryID": "pi:a1d2aa48",
+          "offset": 30842,
+          "pastedImagePaths": null,
+          "text": "Plan only: append a line plan-ok to README.md. Keep the plan to 2 short steps, do not explore, and submit it for review immediately."
+        }
+      ],
+      "title": " ECHO: Run echo approved-1 command",
+      "turns": [
+        {
+          "endedAt": "2026-10-15T15:59:53.155Z",
+          "ending": "completed",
+          "firstEntryID": "pi:558cb6bb",
+          "startedAt": "2026-10-15T15:59:45.145Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:04.526Z",
+          "ending": "completed",
+          "firstEntryID": "pi:e95de799",
+          "startedAt": "2026-10-15T16:00:29.307Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:36.109Z",
+          "ending": "completed",
+          "firstEntryID": "pi:942e55e6",
+          "startedAt": "2026-10-15T16:02:29.603Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:50.081Z",
+          "ending": "completed",
+          "firstEntryID": "pi:938e4ab0",
+          "startedAt": "2026-10-15T16:02:43.180Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:03:46.704Z",
+          "ending": "completed",
+          "firstEntryID": "pi:00e89f2e",
+          "startedAt": "2026-10-15T16:03:07.762Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:04:51.278Z",
+          "ending": "interrupted",
+          "firstEntryID": "pi:ce7dd147",
+          "startedAt": "2026-10-15T16:04:22.270Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:05:35.513Z",
+          "ending": "completed",
+          "firstEntryID": "pi:ceec44cf",
+          "startedAt": "2026-10-15T16:05:06.153Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:06:31.166Z",
+          "ending": "completed",
+          "firstEntryID": "pi:a1d2aa48",
+          "startedAt": "2026-10-15T16:06:23.967Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-1 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:558cb6bb",
+          "sourceOffset": 849
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:2f711469:0",
+          "sourceOffset": 1359
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_adb504f60b344db78f8a700b2c1377fc|fc_009c499ecb3b022f016ad0f8735db08191bd5ad776b89a8b96",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 471,
+                "offset": 3169,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "approved-1\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-1"
+            }
+          },
+          "id": "pi:tool:call_adb504f60b344db78f8a700b2c1377fc|fc_009c499ecb3b022f016ad0f8735db08191bd5ad776b89a8b96",
+          "sourceOffset": 1359
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "```text\napproved-1\n```"
+            }
+          },
+          "id": "pi:846404e7:0",
+          "sourceOffset": 3641
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-2 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:e95de799",
+          "sourceOffset": 4346
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:f7aaaa5e:0",
+          "sourceOffset": 4667
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_74e0dc7b12f74e2b942e3c03d92bceec|fc_009c499ecb3b022f016ad0f8db67ac81919e3a396735acc0c4",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 406,
+                "offset": 6118,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Tool call denied by user: bash"
+              },
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-2"
+            }
+          },
+          "id": "pi:tool:call_74e0dc7b12f74e2b942e3c03d92bceec|fc_009c499ecb3b022f016ad0f8db67ac81919e3a396735acc0c4",
+          "sourceOffset": 4667
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "abc",
+              "wasQueued": true
+            }
+          },
+          "id": "pi:9fb8c963",
+          "sourceOffset": 6525
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "命令执行被拒绝，没有输出。你发送的 `abc` 未包含明确操作，请说明需要执行什么。"
+            }
+          },
+          "id": "pi:332d0e0c:0",
+          "sourceOffset": 6783
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-3 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:942e55e6",
+          "sourceOffset": 7561
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:749b86ff:0",
+          "sourceOffset": 7882
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_59912a803af84abf90eafe27e31022db|fc_009c499ecb3b022f016ad0f917cdb081919399e48a2136a982",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 470,
+                "offset": 9347,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "approved-3\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-3"
+            }
+          },
+          "id": "pi:tool:call_59912a803af84abf90eafe27e31022db|fc_009c499ecb3b022f016ad0f917cdb081919399e48a2136a982",
+          "sourceOffset": 7882
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "```text\napproved-3\n```"
+            }
+          },
+          "id": "pi:43f45f00:0",
+          "sourceOffset": 9818
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-4 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:938e4ab0",
+          "sourceOffset": 10510
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:4a46d811:0",
+          "sourceOffset": 10831
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_fd940fe854654555b1fda650daa8d994|fc_009c499ecb3b022f016ad0f9255c288191bdf0565f69b5fac8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 406,
+                "offset": 12281,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Tool call denied by user: bash"
+              },
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-4"
+            }
+          },
+          "id": "pi:tool:call_fd940fe854654555b1fda650daa8d994|fc_009c499ecb3b022f016ad0f9255c288191bdf0565f69b5fac8",
+          "sourceOffset": 10831
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "命令执行被拒绝，没有输出。"
+            }
+          },
+          "id": "pi:b3b8ff1f:0",
+          "sourceOffset": 12688
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool to ask me exactly one single-select question: 'Pick a fruit' with exactly 3 options: apple, pear, plum. Do not do anything else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:00e89f2e",
+          "sourceOffset": 13388
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_c20d8fdc4d9841f1b1ff4a6c0934b5c9|fc_009c499ecb3b022f016ad0f93d9f588191be0be9b426d1962d",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 495,
+                "offset": 15254,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "User selected: pear"
+              },
+              "questions": [
+                {
+                  "answer": "pear",
+                  "header": null,
+                  "id": "fruit",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "apple"
+                    },
+                    {
+                      "detail": null,
+                      "label": "pear"
+                    },
+                    {
+                      "detail": null,
+                      "label": "plum"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a fruit"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a fruit"
+            }
+          },
+          "id": "pi:tool:call_c20d8fdc4d9841f1b1ff4a6c0934b5c9|fc_009c499ecb3b022f016ad0f93d9f588191be0be9b426d1962d",
+          "sourceOffset": 13773
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "pi:ed6e7892:0",
+          "sourceOffset": 15992
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool once with exactly two questions in one call: question 1 id fruit 'Pick a fruit' options apple, pear; question 2 id size 'Pick a size' options small, large. Do nothing else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:ce7dd147",
+          "sourceOffset": 16636
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_7bfdda8a31ea4cf7ad84cb511cc20c21|fc_0f1b29fdca265971016ad0f98850708191ba286aa3771117e5",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 409,
+                "offset": 18662,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Ask tool was cancelled by the user"
+              },
+              "questions": [
+                {
+                  "answer": null,
+                  "header": null,
+                  "id": "fruit",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "apple"
+                    },
+                    {
+                      "detail": null,
+                      "label": "pear"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a fruit"
+                },
+                {
+                  "answer": null,
+                  "header": null,
+                  "id": "size",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "small"
+                    },
+                    {
+                      "detail": null,
+                      "label": "large"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a size"
+                }
+              ],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a fruit"
+            }
+          },
+          "id": "pi:tool:call_7bfdda8a31ea4cf7ad84cb511cc20c21|fc_0f1b29fdca265971016ad0f98850708191ba286aa3771117e5",
+          "sourceOffset": 17065
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "interrupted",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Interrupted"
+            }
+          },
+          "id": "pi:bd2418d1:end",
+          "sourceOffset": 19072
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool to ask exactly one question 'Pick a color' with options red, blue. Do nothing else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:ceec44cf",
+          "sourceOffset": 19601
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_a97f9e9233ca4968ba3ba33bd6a842b7|fc_05af4d230a542c09016ad0f9b42e4c81918164b76e0fd317b1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 484,
+                "offset": 21370,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "User selected: red"
+              },
+              "questions": [
+                {
+                  "answer": "red",
+                  "header": null,
+                  "id": "color",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "red"
+                    },
+                    {
+                      "detail": null,
+                      "label": "blue"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a color"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a color"
+            }
+          },
+          "id": "pi:tool:call_a97f9e9233ca4968ba3ba33bd6a842b7|fc_05af4d230a542c09016ad0f9b42e4c81918164b76e0fd317b1",
+          "sourceOffset": 19941
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "my draft text",
+              "wasQueued": true
+            }
+          },
+          "id": "pi:62cc28b8",
+          "sourceOffset": 21855
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "你想让我如何处理这段草稿？"
+            }
+          },
+          "id": "pi:b4291520:0",
+          "sourceOffset": 22123
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Plan only: append a line plan-ok to README.md. Keep the plan to 2 short steps, do not explore, and submit it for review immediately.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:a1d2aa48",
+          "sourceOffset": 30842
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_4f0a7b3a5f504a5e834beab67ca9a72d|fc_05af4d230a542c09016ad0fa01848c8191b0da827425d6751d",
+              "cardAnswer": null,
+              "diff": {
+                "added": 3,
+                "files": 1,
+                "removed": 0
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/tmp/heeler-iso-omp2/proj",
+                "files": [
+                  {
+                    "added": 3,
+                    "hunks": [
+                      {
+                        "lines": [
+                          "+## Approach",
+                          "+1. Open `README.md` (unverified — confirm first), then append the exact text `plan-ok` as a new final line, preserving existing content. If the file is missing, create it containing `plan-ok` followed by a newline.",
+                          "+2. Read the final lines of `README.md` and confirm the last line is exactly `plan-ok` and the prior content is unchanged."
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 0,
+                        "oldStart": 0
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "written",
+                    "lineCount": 3,
+                    "path": "local://append-plan-ok-plan.md",
+                    "removed": 0
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileWrite",
+              "name": "write",
+              "note": null,
+              "output": {
+                "length": 1244,
+                "offset": 31213,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "[local://append-plan-ok-plan.md#F640]\nSuccessfully wrote 351 bytes to local://append-plan-ok-plan.md"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "local://append-plan-ok-plan.md"
+            }
+          },
+          "id": "pi:tool:call_4f0a7b3a5f504a5e834beab67ca9a72d|fc_05af4d230a542c09016ad0fa01848c8191b0da827425d6751d",
+          "sourceOffset": 31213
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Plan ready for review"
+            }
+          },
+          "id": "pi:c2d14183:end",
+          "sourceOffset": 35422
+        }
+      ],
+      "latestPromptOffset": 30842,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:558cb6bb",
+          "offset": 849,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-1 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:e95de799",
+          "offset": 4346,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-2 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:9fb8c963",
+          "offset": 6525,
+          "pastedImagePaths": null,
+          "text": "abc"
+        },
+        {
+          "entryID": "pi:942e55e6",
+          "offset": 7561,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-3 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:938e4ab0",
+          "offset": 10510,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-4 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:00e89f2e",
+          "offset": 13388,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool to ask me exactly one single-select question: 'Pick a fruit' with exactly 3 options: apple, pear, plum. Do not do anything else."
+        },
+        {
+          "entryID": "pi:ce7dd147",
+          "offset": 16636,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool once with exactly two questions in one call: question 1 id fruit 'Pick a fruit' options apple, pear; question 2 id size 'Pick a size' options small, large. Do nothing else."
+        },
+        {
+          "entryID": "pi:ceec44cf",
+          "offset": 19601,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool to ask exactly one question 'Pick a color' with options red, blue. Do nothing else."
+        },
+        {
+          "entryID": "pi:62cc28b8",
+          "offset": 21855,
+          "pastedImagePaths": null,
+          "text": "my draft text"
+        },
+        {
+          "entryID": "pi:a1d2aa48",
+          "offset": 30842,
+          "pastedImagePaths": null,
+          "text": "Plan only: append a line plan-ok to README.md. Keep the plan to 2 short steps, do not explore, and submit it for review immediately."
+        }
+      ],
+      "title": " ECHO: Run echo approved-1 command",
+      "turns": [
+        {
+          "endedAt": "2026-10-15T15:59:53.155Z",
+          "ending": "completed",
+          "firstEntryID": "pi:558cb6bb",
+          "startedAt": "2026-10-15T15:59:45.145Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:04.526Z",
+          "ending": "completed",
+          "firstEntryID": "pi:e95de799",
+          "startedAt": "2026-10-15T16:00:29.307Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:36.109Z",
+          "ending": "completed",
+          "firstEntryID": "pi:942e55e6",
+          "startedAt": "2026-10-15T16:02:29.603Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:50.081Z",
+          "ending": "completed",
+          "firstEntryID": "pi:938e4ab0",
+          "startedAt": "2026-10-15T16:02:43.180Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:03:46.704Z",
+          "ending": "completed",
+          "firstEntryID": "pi:00e89f2e",
+          "startedAt": "2026-10-15T16:03:07.762Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:04:51.278Z",
+          "ending": "interrupted",
+          "firstEntryID": "pi:ce7dd147",
+          "startedAt": "2026-10-15T16:04:22.270Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:05:35.513Z",
+          "ending": "completed",
+          "firstEntryID": "pi:ceec44cf",
+          "startedAt": "2026-10-15T16:05:06.153Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:06:31.166Z",
+          "ending": "completed",
+          "firstEntryID": "pi:a1d2aa48",
+          "startedAt": "2026-10-15T16:06:23.967Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-1 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:558cb6bb",
+          "sourceOffset": 849
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:2f711469:0",
+          "sourceOffset": 1359
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_adb504f60b344db78f8a700b2c1377fc|fc_009c499ecb3b022f016ad0f8735db08191bd5ad776b89a8b96",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 471,
+                "offset": 3169,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "approved-1\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-1"
+            }
+          },
+          "id": "pi:tool:call_adb504f60b344db78f8a700b2c1377fc|fc_009c499ecb3b022f016ad0f8735db08191bd5ad776b89a8b96",
+          "sourceOffset": 1359
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "```text\napproved-1\n```"
+            }
+          },
+          "id": "pi:846404e7:0",
+          "sourceOffset": 3641
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-2 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:e95de799",
+          "sourceOffset": 4346
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:f7aaaa5e:0",
+          "sourceOffset": 4667
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_74e0dc7b12f74e2b942e3c03d92bceec|fc_009c499ecb3b022f016ad0f8db67ac81919e3a396735acc0c4",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 406,
+                "offset": 6118,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Tool call denied by user: bash"
+              },
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-2"
+            }
+          },
+          "id": "pi:tool:call_74e0dc7b12f74e2b942e3c03d92bceec|fc_009c499ecb3b022f016ad0f8db67ac81919e3a396735acc0c4",
+          "sourceOffset": 4667
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "abc",
+              "wasQueued": true
+            }
+          },
+          "id": "pi:9fb8c963",
+          "sourceOffset": 6525
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "命令执行被拒绝，没有输出。你发送的 `abc` 未包含明确操作，请说明需要执行什么。"
+            }
+          },
+          "id": "pi:332d0e0c:0",
+          "sourceOffset": 6783
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-3 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:942e55e6",
+          "sourceOffset": 7561
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:749b86ff:0",
+          "sourceOffset": 7882
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_59912a803af84abf90eafe27e31022db|fc_009c499ecb3b022f016ad0f917cdb081919399e48a2136a982",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 470,
+                "offset": 9347,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "approved-3\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-3"
+            }
+          },
+          "id": "pi:tool:call_59912a803af84abf90eafe27e31022db|fc_009c499ecb3b022f016ad0f917cdb081919399e48a2136a982",
+          "sourceOffset": 7882
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "```text\napproved-3\n```"
+            }
+          },
+          "id": "pi:43f45f00:0",
+          "sourceOffset": 9818
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-4 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:938e4ab0",
+          "sourceOffset": 10510
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:4a46d811:0",
+          "sourceOffset": 10831
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_fd940fe854654555b1fda650daa8d994|fc_009c499ecb3b022f016ad0f9255c288191bdf0565f69b5fac8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 406,
+                "offset": 12281,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Tool call denied by user: bash"
+              },
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-4"
+            }
+          },
+          "id": "pi:tool:call_fd940fe854654555b1fda650daa8d994|fc_009c499ecb3b022f016ad0f9255c288191bdf0565f69b5fac8",
+          "sourceOffset": 10831
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "命令执行被拒绝，没有输出。"
+            }
+          },
+          "id": "pi:b3b8ff1f:0",
+          "sourceOffset": 12688
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool to ask me exactly one single-select question: 'Pick a fruit' with exactly 3 options: apple, pear, plum. Do not do anything else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:00e89f2e",
+          "sourceOffset": 13388
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_c20d8fdc4d9841f1b1ff4a6c0934b5c9|fc_009c499ecb3b022f016ad0f93d9f588191be0be9b426d1962d",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 495,
+                "offset": 15254,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "User selected: pear"
+              },
+              "questions": [
+                {
+                  "answer": "pear",
+                  "header": null,
+                  "id": "fruit",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "apple"
+                    },
+                    {
+                      "detail": null,
+                      "label": "pear"
+                    },
+                    {
+                      "detail": null,
+                      "label": "plum"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a fruit"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a fruit"
+            }
+          },
+          "id": "pi:tool:call_c20d8fdc4d9841f1b1ff4a6c0934b5c9|fc_009c499ecb3b022f016ad0f93d9f588191be0be9b426d1962d",
+          "sourceOffset": 13773
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "pi:ed6e7892:0",
+          "sourceOffset": 15992
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool once with exactly two questions in one call: question 1 id fruit 'Pick a fruit' options apple, pear; question 2 id size 'Pick a size' options small, large. Do nothing else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:ce7dd147",
+          "sourceOffset": 16636
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_7bfdda8a31ea4cf7ad84cb511cc20c21|fc_0f1b29fdca265971016ad0f98850708191ba286aa3771117e5",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 409,
+                "offset": 18662,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Ask tool was cancelled by the user"
+              },
+              "questions": [
+                {
+                  "answer": null,
+                  "header": null,
+                  "id": "fruit",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "apple"
+                    },
+                    {
+                      "detail": null,
+                      "label": "pear"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a fruit"
+                },
+                {
+                  "answer": null,
+                  "header": null,
+                  "id": "size",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "small"
+                    },
+                    {
+                      "detail": null,
+                      "label": "large"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a size"
+                }
+              ],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a fruit"
+            }
+          },
+          "id": "pi:tool:call_7bfdda8a31ea4cf7ad84cb511cc20c21|fc_0f1b29fdca265971016ad0f98850708191ba286aa3771117e5",
+          "sourceOffset": 17065
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "interrupted",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Interrupted"
+            }
+          },
+          "id": "pi:bd2418d1:end",
+          "sourceOffset": 19072
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool to ask exactly one question 'Pick a color' with options red, blue. Do nothing else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:ceec44cf",
+          "sourceOffset": 19601
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_a97f9e9233ca4968ba3ba33bd6a842b7|fc_05af4d230a542c09016ad0f9b42e4c81918164b76e0fd317b1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 484,
+                "offset": 21370,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "User selected: red"
+              },
+              "questions": [
+                {
+                  "answer": "red",
+                  "header": null,
+                  "id": "color",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "red"
+                    },
+                    {
+                      "detail": null,
+                      "label": "blue"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a color"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a color"
+            }
+          },
+          "id": "pi:tool:call_a97f9e9233ca4968ba3ba33bd6a842b7|fc_05af4d230a542c09016ad0f9b42e4c81918164b76e0fd317b1",
+          "sourceOffset": 19941
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "my draft text",
+              "wasQueued": true
+            }
+          },
+          "id": "pi:62cc28b8",
+          "sourceOffset": 21855
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "你想让我如何处理这段草稿？"
+            }
+          },
+          "id": "pi:b4291520:0",
+          "sourceOffset": 22123
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Plan only: append a line plan-ok to README.md. Keep the plan to 2 short steps, do not explore, and submit it for review immediately.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:a1d2aa48",
+          "sourceOffset": 30842
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_4f0a7b3a5f504a5e834beab67ca9a72d|fc_05af4d230a542c09016ad0fa01848c8191b0da827425d6751d",
+              "cardAnswer": null,
+              "diff": {
+                "added": 3,
+                "files": 1,
+                "removed": 0
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/tmp/heeler-iso-omp2/proj",
+                "files": [
+                  {
+                    "added": 3,
+                    "hunks": [
+                      {
+                        "lines": [
+                          "+## Approach",
+                          "+1. Open `README.md` (unverified — confirm first), then append the exact text `plan-ok` as a new final line, preserving existing content. If the file is missing, create it containing `plan-ok` followed by a newline.",
+                          "+2. Read the final lines of `README.md` and confirm the last line is exactly `plan-ok` and the prior content is unchanged."
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 0,
+                        "oldStart": 0
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "written",
+                    "lineCount": 3,
+                    "path": "local://append-plan-ok-plan.md",
+                    "removed": 0
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileWrite",
+              "name": "write",
+              "note": null,
+              "output": {
+                "length": 1244,
+                "offset": 31213,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "[local://append-plan-ok-plan.md#F640]\nSuccessfully wrote 351 bytes to local://append-plan-ok-plan.md"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "local://append-plan-ok-plan.md"
+            }
+          },
+          "id": "pi:tool:call_4f0a7b3a5f504a5e834beab67ca9a72d|fc_05af4d230a542c09016ad0fa01848c8191b0da827425d6751d",
+          "sourceOffset": 31213
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Plan ready for review"
+            }
+          },
+          "id": "pi:c2d14183:end",
+          "sourceOffset": 35422
+        }
+      ],
+      "latestPromptOffset": 30842,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:558cb6bb",
+          "offset": 849,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-1 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:e95de799",
+          "offset": 4346,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-2 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:9fb8c963",
+          "offset": 6525,
+          "pastedImagePaths": null,
+          "text": "abc"
+        },
+        {
+          "entryID": "pi:942e55e6",
+          "offset": 7561,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-3 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:938e4ab0",
+          "offset": 10510,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-4 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:00e89f2e",
+          "offset": 13388,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool to ask me exactly one single-select question: 'Pick a fruit' with exactly 3 options: apple, pear, plum. Do not do anything else."
+        },
+        {
+          "entryID": "pi:ce7dd147",
+          "offset": 16636,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool once with exactly two questions in one call: question 1 id fruit 'Pick a fruit' options apple, pear; question 2 id size 'Pick a size' options small, large. Do nothing else."
+        },
+        {
+          "entryID": "pi:ceec44cf",
+          "offset": 19601,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool to ask exactly one question 'Pick a color' with options red, blue. Do nothing else."
+        },
+        {
+          "entryID": "pi:62cc28b8",
+          "offset": 21855,
+          "pastedImagePaths": null,
+          "text": "my draft text"
+        },
+        {
+          "entryID": "pi:a1d2aa48",
+          "offset": 30842,
+          "pastedImagePaths": null,
+          "text": "Plan only: append a line plan-ok to README.md. Keep the plan to 2 short steps, do not explore, and submit it for review immediately."
+        }
+      ],
+      "title": " ECHO: Run echo approved-1 command",
+      "turns": [
+        {
+          "endedAt": "2026-10-15T15:59:53.155Z",
+          "ending": "completed",
+          "firstEntryID": "pi:558cb6bb",
+          "startedAt": "2026-10-15T15:59:45.145Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:04.526Z",
+          "ending": "completed",
+          "firstEntryID": "pi:e95de799",
+          "startedAt": "2026-10-15T16:00:29.307Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:36.109Z",
+          "ending": "completed",
+          "firstEntryID": "pi:942e55e6",
+          "startedAt": "2026-10-15T16:02:29.603Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:50.081Z",
+          "ending": "completed",
+          "firstEntryID": "pi:938e4ab0",
+          "startedAt": "2026-10-15T16:02:43.180Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:03:46.704Z",
+          "ending": "completed",
+          "firstEntryID": "pi:00e89f2e",
+          "startedAt": "2026-10-15T16:03:07.762Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:04:51.278Z",
+          "ending": "interrupted",
+          "firstEntryID": "pi:ce7dd147",
+          "startedAt": "2026-10-15T16:04:22.270Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:05:35.513Z",
+          "ending": "completed",
+          "firstEntryID": "pi:ceec44cf",
+          "startedAt": "2026-10-15T16:05:06.153Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:06:31.166Z",
+          "ending": "completed",
+          "firstEntryID": "pi:a1d2aa48",
+          "startedAt": "2026-10-15T16:06:23.967Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-1 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:558cb6bb",
+          "sourceOffset": 849
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:2f711469:0",
+          "sourceOffset": 1359
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_adb504f60b344db78f8a700b2c1377fc|fc_009c499ecb3b022f016ad0f8735db08191bd5ad776b89a8b96",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 471,
+                "offset": 3169,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "approved-1\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-1"
+            }
+          },
+          "id": "pi:tool:call_adb504f60b344db78f8a700b2c1377fc|fc_009c499ecb3b022f016ad0f8735db08191bd5ad776b89a8b96",
+          "sourceOffset": 1359
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "```text\napproved-1\n```"
+            }
+          },
+          "id": "pi:846404e7:0",
+          "sourceOffset": 3641
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-2 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:e95de799",
+          "sourceOffset": 4346
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:f7aaaa5e:0",
+          "sourceOffset": 4667
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_74e0dc7b12f74e2b942e3c03d92bceec|fc_009c499ecb3b022f016ad0f8db67ac81919e3a396735acc0c4",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 406,
+                "offset": 6118,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Tool call denied by user: bash"
+              },
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-2"
+            }
+          },
+          "id": "pi:tool:call_74e0dc7b12f74e2b942e3c03d92bceec|fc_009c499ecb3b022f016ad0f8db67ac81919e3a396735acc0c4",
+          "sourceOffset": 4667
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "abc",
+              "wasQueued": true
+            }
+          },
+          "id": "pi:9fb8c963",
+          "sourceOffset": 6525
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "命令执行被拒绝，没有输出。你发送的 `abc` 未包含明确操作，请说明需要执行什么。"
+            }
+          },
+          "id": "pi:332d0e0c:0",
+          "sourceOffset": 6783
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-3 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:942e55e6",
+          "sourceOffset": 7561
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:749b86ff:0",
+          "sourceOffset": 7882
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_59912a803af84abf90eafe27e31022db|fc_009c499ecb3b022f016ad0f917cdb081919399e48a2136a982",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 470,
+                "offset": 9347,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "approved-3\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-3"
+            }
+          },
+          "id": "pi:tool:call_59912a803af84abf90eafe27e31022db|fc_009c499ecb3b022f016ad0f917cdb081919399e48a2136a982",
+          "sourceOffset": 7882
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "```text\napproved-3\n```"
+            }
+          },
+          "id": "pi:43f45f00:0",
+          "sourceOffset": 9818
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: echo approved-4 (use your bash tool) and report its output.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:938e4ab0",
+          "sourceOffset": 10510
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会执行该命令并报告输出。"
+            }
+          },
+          "id": "pi:4a46d811:0",
+          "sourceOffset": 10831
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_fd940fe854654555b1fda650daa8d994|fc_009c499ecb3b022f016ad0f9255c288191bdf0565f69b5fac8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 406,
+                "offset": 12281,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Tool call denied by user: bash"
+              },
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo approved-4"
+            }
+          },
+          "id": "pi:tool:call_fd940fe854654555b1fda650daa8d994|fc_009c499ecb3b022f016ad0f9255c288191bdf0565f69b5fac8",
+          "sourceOffset": 10831
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "命令执行被拒绝，没有输出。"
+            }
+          },
+          "id": "pi:b3b8ff1f:0",
+          "sourceOffset": 12688
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool to ask me exactly one single-select question: 'Pick a fruit' with exactly 3 options: apple, pear, plum. Do not do anything else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:00e89f2e",
+          "sourceOffset": 13388
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_c20d8fdc4d9841f1b1ff4a6c0934b5c9|fc_009c499ecb3b022f016ad0f93d9f588191be0be9b426d1962d",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 495,
+                "offset": 15254,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "User selected: pear"
+              },
+              "questions": [
+                {
+                  "answer": "pear",
+                  "header": null,
+                  "id": "fruit",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "apple"
+                    },
+                    {
+                      "detail": null,
+                      "label": "pear"
+                    },
+                    {
+                      "detail": null,
+                      "label": "plum"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a fruit"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a fruit"
+            }
+          },
+          "id": "pi:tool:call_c20d8fdc4d9841f1b1ff4a6c0934b5c9|fc_009c499ecb3b022f016ad0f93d9f588191be0be9b426d1962d",
+          "sourceOffset": 13773
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "pi:ed6e7892:0",
+          "sourceOffset": 15992
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool once with exactly two questions in one call: question 1 id fruit 'Pick a fruit' options apple, pear; question 2 id size 'Pick a size' options small, large. Do nothing else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:ce7dd147",
+          "sourceOffset": 16636
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_7bfdda8a31ea4cf7ad84cb511cc20c21|fc_0f1b29fdca265971016ad0f98850708191ba286aa3771117e5",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 409,
+                "offset": 18662,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Ask tool was cancelled by the user"
+              },
+              "questions": [
+                {
+                  "answer": null,
+                  "header": null,
+                  "id": "fruit",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "apple"
+                    },
+                    {
+                      "detail": null,
+                      "label": "pear"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a fruit"
+                },
+                {
+                  "answer": null,
+                  "header": null,
+                  "id": "size",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "small"
+                    },
+                    {
+                      "detail": null,
+                      "label": "large"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a size"
+                }
+              ],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a fruit"
+            }
+          },
+          "id": "pi:tool:call_7bfdda8a31ea4cf7ad84cb511cc20c21|fc_0f1b29fdca265971016ad0f98850708191ba286aa3771117e5",
+          "sourceOffset": 17065
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "interrupted",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Interrupted"
+            }
+          },
+          "id": "pi:bd2418d1:end",
+          "sourceOffset": 19072
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use your ask tool to ask exactly one question 'Pick a color' with options red, blue. Do nothing else.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:ceec44cf",
+          "sourceOffset": 19601
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_a97f9e9233ca4968ba3ba33bd6a842b7|fc_05af4d230a542c09016ad0f9b42e4c81918164b76e0fd317b1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "ask",
+              "note": null,
+              "output": {
+                "length": 484,
+                "offset": 21370,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "User selected: red"
+              },
+              "questions": [
+                {
+                  "answer": "red",
+                  "header": null,
+                  "id": "color",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": null,
+                      "label": "red"
+                    },
+                    {
+                      "detail": null,
+                      "label": "blue"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Pick a color"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Pick a color"
+            }
+          },
+          "id": "pi:tool:call_a97f9e9233ca4968ba3ba33bd6a842b7|fc_05af4d230a542c09016ad0f9b42e4c81918164b76e0fd317b1",
+          "sourceOffset": 19941
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "my draft text",
+              "wasQueued": true
+            }
+          },
+          "id": "pi:62cc28b8",
+          "sourceOffset": 21855
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "你想让我如何处理这段草稿？"
+            }
+          },
+          "id": "pi:b4291520:0",
+          "sourceOffset": 22123
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Plan only: append a line plan-ok to README.md. Keep the plan to 2 short steps, do not explore, and submit it for review immediately.",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:a1d2aa48",
+          "sourceOffset": 30842
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_4f0a7b3a5f504a5e834beab67ca9a72d|fc_05af4d230a542c09016ad0fa01848c8191b0da827425d6751d",
+              "cardAnswer": null,
+              "diff": {
+                "added": 3,
+                "files": 1,
+                "removed": 0
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/tmp/heeler-iso-omp2/proj",
+                "files": [
+                  {
+                    "added": 3,
+                    "hunks": [
+                      {
+                        "lines": [
+                          "+## Approach",
+                          "+1. Open `README.md` (unverified — confirm first), then append the exact text `plan-ok` as a new final line, preserving existing content. If the file is missing, create it containing `plan-ok` followed by a newline.",
+                          "+2. Read the final lines of `README.md` and confirm the last line is exactly `plan-ok` and the prior content is unchanged."
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 0,
+                        "oldStart": 0
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "written",
+                    "lineCount": 3,
+                    "path": "local://append-plan-ok-plan.md",
+                    "removed": 0
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileWrite",
+              "name": "write",
+              "note": null,
+              "output": {
+                "length": 1244,
+                "offset": 31213,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "[local://append-plan-ok-plan.md#F640]\nSuccessfully wrote 351 bytes to local://append-plan-ok-plan.md"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "local://append-plan-ok-plan.md"
+            }
+          },
+          "id": "pi:tool:call_4f0a7b3a5f504a5e834beab67ca9a72d|fc_05af4d230a542c09016ad0fa01848c8191b0da827425d6751d",
+          "sourceOffset": 31213
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Plan ready for review"
+            }
+          },
+          "id": "pi:c2d14183:end",
+          "sourceOffset": 35422
+        }
+      ],
+      "latestPromptOffset": 30842,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:558cb6bb",
+          "offset": 849,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-1 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:e95de799",
+          "offset": 4346,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-2 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:9fb8c963",
+          "offset": 6525,
+          "pastedImagePaths": null,
+          "text": "abc"
+        },
+        {
+          "entryID": "pi:942e55e6",
+          "offset": 7561,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-3 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:938e4ab0",
+          "offset": 10510,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: echo approved-4 (use your bash tool) and report its output."
+        },
+        {
+          "entryID": "pi:00e89f2e",
+          "offset": 13388,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool to ask me exactly one single-select question: 'Pick a fruit' with exactly 3 options: apple, pear, plum. Do not do anything else."
+        },
+        {
+          "entryID": "pi:ce7dd147",
+          "offset": 16636,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool once with exactly two questions in one call: question 1 id fruit 'Pick a fruit' options apple, pear; question 2 id size 'Pick a size' options small, large. Do nothing else."
+        },
+        {
+          "entryID": "pi:ceec44cf",
+          "offset": 19601,
+          "pastedImagePaths": null,
+          "text": "Use your ask tool to ask exactly one question 'Pick a color' with options red, blue. Do nothing else."
+        },
+        {
+          "entryID": "pi:62cc28b8",
+          "offset": 21855,
+          "pastedImagePaths": null,
+          "text": "my draft text"
+        },
+        {
+          "entryID": "pi:a1d2aa48",
+          "offset": 30842,
+          "pastedImagePaths": null,
+          "text": "Plan only: append a line plan-ok to README.md. Keep the plan to 2 short steps, do not explore, and submit it for review immediately."
+        }
+      ],
+      "title": " ECHO: Run echo approved-1 command",
+      "turns": [
+        {
+          "endedAt": "2026-10-15T15:59:53.155Z",
+          "ending": "completed",
+          "firstEntryID": "pi:558cb6bb",
+          "startedAt": "2026-10-15T15:59:45.145Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:04.526Z",
+          "ending": "completed",
+          "firstEntryID": "pi:e95de799",
+          "startedAt": "2026-10-15T16:00:29.307Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:36.109Z",
+          "ending": "completed",
+          "firstEntryID": "pi:942e55e6",
+          "startedAt": "2026-10-15T16:02:29.603Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:02:50.081Z",
+          "ending": "completed",
+          "firstEntryID": "pi:938e4ab0",
+          "startedAt": "2026-10-15T16:02:43.180Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:03:46.704Z",
+          "ending": "completed",
+          "firstEntryID": "pi:00e89f2e",
+          "startedAt": "2026-10-15T16:03:07.762Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:04:51.278Z",
+          "ending": "interrupted",
+          "firstEntryID": "pi:ce7dd147",
+          "startedAt": "2026-10-15T16:04:22.270Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:05:35.513Z",
+          "ending": "completed",
+          "firstEntryID": "pi:ceec44cf",
+          "startedAt": "2026-10-15T16:05:06.153Z"
+        },
+        {
+          "endedAt": "2026-10-15T16:06:31.166Z",
+          "ending": "completed",
+          "firstEntryID": "pi:a1d2aa48",
+          "startedAt": "2026-10-15T16:06:23.967Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "program": "omp",
+    "type": "PiTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

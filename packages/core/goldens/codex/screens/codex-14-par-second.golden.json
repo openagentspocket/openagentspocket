@@ -1,0 +1,296 @@
+{
+  "fixture": "codex-14-par-second.ansi",
+  "parse": {
+    "dialog": {
+      "body": [
+        "Environment: local",
+        "Reason: 允许在当前目录创建 par-d.txt 吗？",
+        "$ touch par-d.txt"
+      ],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "3658b2eeb4d65f078fcf278449f9062b4d468867793f86d414fbb9ca2889c3a5"
+      },
+      "focus": {
+        "checked": [],
+        "composerDraftGuard": false,
+        "feedbackOrdinal": null,
+        "focusedOrdinal": 1,
+        "inputText": null,
+        "keysMissOptions": false,
+        "notesText": null
+      },
+      "kind": "codexExec",
+      "note": null,
+      "options": [
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": true,
+          "label": "Yes, proceed",
+          "number": 1,
+          "ordinal": 1,
+          "role": "approve",
+          "shortcut": "y"
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Yes, and don't ask again for commands that start with `touch par-d.txt`",
+          "number": 2,
+          "ordinal": 2,
+          "role": "approvePersistent",
+          "shortcut": "p"
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "No, and tell Codex what to do differently",
+          "number": 3,
+          "ordinal": 3,
+          "role": "decline",
+          "shortcut": "esc"
+        }
+      ],
+      "positionLabel": null,
+      "progress": null,
+      "rows": {
+        "lowerBound": 10,
+        "upperBound": 30
+      },
+      "sourceSuffix": null,
+      "subject": {
+        "command": "touch par-d.txt",
+        "commandDescription": null,
+        "destinations": [],
+        "environment": "local",
+        "filePath": null,
+        "host": null,
+        "notes": [],
+        "planFilePath": null,
+        "prompt": null,
+        "question": null,
+        "questionHeaders": [],
+        "reason": "允许在当前目录创建 par-d.txt 吗？",
+        "reviewAnswers": [],
+        "toolName": null,
+        "url": null,
+        "workspacePath": null
+      },
+      "title": "Would you like to run the following command?"
+    }
+  },
+  "plans": [
+    {
+      "action": {
+        "choose": {
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "1"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex ignores text on approvals; decline, then tell Codex in the composer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 1,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex ignores text on approvals; decline, then tell Codex in the composer."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "2"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex ignores text on approvals; decline, then tell Codex in the composer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 2,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex ignores text on approvals; decline, then tell Codex in the composer."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": true,
+          "steps": [
+            {
+              "keys": [
+                "3"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex ignores text on approvals; decline, then tell Codex in the composer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 3,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex ignores text on approvals; decline, then tell Codex in the composer."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "error": {
+          "noSuchOption": 4
+        }
+      }
+    },
+    {
+      "action": {
+        "approvePlan": {
+          "note": "Keep it small"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex ignores text on approvals; decline, then tell Codex in the composer."
+        }
+      }
+    },
+    {
+      "action": {
+        "submitSelection": []
+      },
+      "result": {
+        "error": {
+          "unsupported": "The approval has no such action."
+        }
+      }
+    },
+    {
+      "action": "dismiss",
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": true,
+          "steps": [
+            {
+              "keys": [
+                "esc"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": "expandQuestions",
+      "result": {
+        "error": {
+          "unsupported": "The approval has no such action."
+        }
+      }
+    },
+    {
+      "action": "skipQuestion",
+      "result": {
+        "error": {
+          "unsupported": "The approval has no such action."
+        }
+      }
+    }
+  ],
+  "program": "codex"
+}

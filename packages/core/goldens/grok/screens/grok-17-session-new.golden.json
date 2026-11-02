@@ -1,0 +1,6 @@
+{
+  "fixture": "grok-17-session-new.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "grok"
+}

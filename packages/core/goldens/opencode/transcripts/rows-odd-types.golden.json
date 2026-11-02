@@ -1,0 +1,533 @@
+{
+  "fixture": "rows-odd-types.jsonl",
+  "lineOffsets": [
+    10,
+    10,
+    4,
+    5,
+    8
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [
+                "diagram.png"
+              ],
+              "command": null,
+              "imageCount": 0,
+              "text": "Describe diagram.png.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Checking the file."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:0",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_K6l7Z8x9C0v1B2n3M4q5W6e7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 731,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Command failed with exit code 2"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "shell"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:1",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The shell command failed."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:4",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "42",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1",
+          "sourceOffset": 9
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Describe diagram.png."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1",
+          "offset": 9,
+          "pastedImagePaths": null,
+          "text": "42"
+        }
+      ],
+      "title": "Unexpected types",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:00.592Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": [
+        "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1"
+      ]
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [
+                "diagram.png"
+              ],
+              "command": null,
+              "imageCount": 0,
+              "text": "Describe diagram.png.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Checking the file."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:0",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_K6l7Z8x9C0v1B2n3M4q5W6e7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 731,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Command failed with exit code 2"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "shell"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:1",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The shell command failed."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:4",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "42",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1",
+          "sourceOffset": 9
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Describe diagram.png."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1",
+          "offset": 9,
+          "pastedImagePaths": null,
+          "text": "42"
+        }
+      ],
+      "title": "Unexpected types",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:00.592Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": [
+        "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1"
+      ]
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [
+                "diagram.png"
+              ],
+              "command": null,
+              "imageCount": 0,
+              "text": "Describe diagram.png.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Checking the file."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:0",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_K6l7Z8x9C0v1B2n3M4q5W6e7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 731,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Command failed with exit code 2"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "shell"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:1",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The shell command failed."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:4",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "42",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1",
+          "sourceOffset": 9
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Describe diagram.png."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1",
+          "offset": 9,
+          "pastedImagePaths": null,
+          "text": "42"
+        }
+      ],
+      "title": "Unexpected types",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:00.592Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": [
+        "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1"
+      ]
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [
+                "diagram.png"
+              ],
+              "command": null,
+              "imageCount": 0,
+              "text": "Describe diagram.png.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Checking the file."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:0",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_K6l7Z8x9C0v1B2n3M4q5W6e7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 731,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Command failed with exit code 2"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "shell"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:1",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The shell command failed."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20A9s0D1f2G3h4J5:4",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "42",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1",
+          "sourceOffset": 9
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Describe diagram.png."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1",
+          "offset": 9,
+          "pastedImagePaths": null,
+          "text": "42"
+        }
+      ],
+      "title": "Unexpected types",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:00.592Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10R2t3Y4u5I6o7P8",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": [
+        "oc:msg_0a1b2c3d4e40S5d6F7g8H9j0K1"
+      ]
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

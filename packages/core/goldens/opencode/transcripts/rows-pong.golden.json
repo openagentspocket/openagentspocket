@@ -1,0 +1,261 @@
+{
+  "fixture": "rows-pong.jsonl",
+  "lineOffsets": [
+    13,
+    13,
+    4,
+    7,
+    12
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word pong.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pong"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20qfPDcxniwu6NKr:0",
+          "sourceOffset": 7
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word pong."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:13.843Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "startedAt": "2027-01-15T08:00:00.016Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word pong.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pong"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20qfPDcxniwu6NKr:0",
+          "sourceOffset": 7
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word pong."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:13.843Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "startedAt": "2027-01-15T08:00:00.016Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word pong.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pong"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20qfPDcxniwu6NKr:0",
+          "sourceOffset": 7
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word pong."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:13.843Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "startedAt": "2027-01-15T08:00:00.016Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word pong.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pong"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20qfPDcxniwu6NKr:0",
+          "sourceOffset": 7
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word pong."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:13.843Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10bdgTHK86OgNR4o",
+          "startedAt": "2027-01-15T08:00:00.016Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

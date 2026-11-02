@@ -1,0 +1,297 @@
+{
+  "fixture": "grok-37-permission-command-62.ansi",
+  "parse": {
+    "dialog": {
+      "body": [
+        "Set README.md permissions to 644",
+        "chmod 644 README.md",
+        "Yes, and don't ask again for anything (always-approve mode)",
+        "Never allow: chmod 644"
+      ],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "409d864d81522ff3c9a54a5d4c911c9a67f75f9310d967a179899062e2cb4e73"
+      },
+      "focus": {
+        "checked": [],
+        "composerDraftGuard": false,
+        "feedbackOrdinal": null,
+        "focusedOrdinal": 2,
+        "inputText": null,
+        "keysMissOptions": false,
+        "notesText": null
+      },
+      "kind": "grokPermission",
+      "note": null,
+      "options": [
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Always allow: chmod 644 README.md",
+          "number": 2,
+          "ordinal": 1,
+          "role": "approvePersistent",
+          "shortcut": "2"
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": true,
+          "label": "Yes, proceed",
+          "number": 3,
+          "ordinal": 2,
+          "role": "approve",
+          "shortcut": "3"
+        },
+        {
+          "detail": "Ends the turn",
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "No, reject (type to add feedback)",
+          "number": 4,
+          "ordinal": 3,
+          "role": "decline",
+          "shortcut": "4"
+        }
+      ],
+      "positionLabel": null,
+      "progress": null,
+      "rows": {
+        "lowerBound": 27,
+        "upperBound": 38
+      },
+      "sourceSuffix": null,
+      "subject": {
+        "command": "chmod 644 README.md",
+        "commandDescription": "Set README.md permissions to 644",
+        "destinations": [],
+        "environment": null,
+        "filePath": null,
+        "host": null,
+        "notes": [],
+        "planFilePath": null,
+        "prompt": null,
+        "question": null,
+        "questionHeaders": [],
+        "reason": null,
+        "reviewAnswers": [],
+        "toolName": null,
+        "url": null,
+        "workspacePath": null
+      },
+      "title": "Allow Command"
+    }
+  },
+  "plans": [
+    {
+      "action": {
+        "choose": {
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "2"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type feedback into Grok Build's permissions. Add it in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 1,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type feedback into Grok Build's permissions. Add it in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "3"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type feedback into Grok Build's permissions. Add it in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 2,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type feedback into Grok Build's permissions. Add it in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "4"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type feedback into Grok Build's permissions. Add it in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 3,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type feedback into Grok Build's permissions. Add it in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "error": {
+          "noSuchOption": 4
+        }
+      }
+    },
+    {
+      "action": {
+        "approvePlan": {
+          "note": "Keep it small"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "The permission has no such action."
+        }
+      }
+    },
+    {
+      "action": {
+        "submitSelection": []
+      },
+      "result": {
+        "error": {
+          "unsupported": "The permission has no such action."
+        }
+      }
+    },
+    {
+      "action": "dismiss",
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "4"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": "expandQuestions",
+      "result": {
+        "error": {
+          "unsupported": "The permission has no such action."
+        }
+      }
+    },
+    {
+      "action": "skipQuestion",
+      "result": {
+        "error": {
+          "unsupported": "The permission has no such action."
+        }
+      }
+    }
+  ],
+  "program": "grok"
+}

@@ -1,0 +1,343 @@
+{
+  "fixture": "pending-permission.jsonl",
+  "lineOffsets": [
+    0,
+    393,
+    809
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command chmod 644 README.md and then tell me done.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:393",
+          "sourceOffset": 393
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000031-7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "awaitingApproval",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Set README.md permissions to 644",
+              "title": "chmod 644 README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000031-7",
+          "sourceOffset": 809
+        }
+      ],
+      "latestPromptOffset": 393,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [
+        {
+          "callID": "call-01900000-0000-7000-8000-000000000031-7",
+          "detail": "Set README.md permissions to 644",
+          "entryID": "grok:tool:call-01900000-0000-7000-8000-000000000031-7",
+          "kind": "command",
+          "planFilePath": null,
+          "questions": [],
+          "summary": "chmod 644 README.md",
+          "toolName": "run_terminal_command"
+        }
+      ],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:393",
+          "offset": 393,
+          "pastedImagePaths": null,
+          "text": "Run the shell command chmod 644 README.md and then tell me done."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": null,
+          "ending": null,
+          "firstEntryID": "grok:393",
+          "startedAt": "2026-10-19T15:06:54.620Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command chmod 644 README.md and then tell me done.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:393",
+          "sourceOffset": 393
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000031-7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "notCompleted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Set README.md permissions to 644",
+              "title": "chmod 644 README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000031-7",
+          "sourceOffset": 809
+        }
+      ],
+      "latestPromptOffset": 393,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:393",
+          "offset": 393,
+          "pastedImagePaths": null,
+          "text": "Run the shell command chmod 644 README.md and then tell me done."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": null,
+          "ending": null,
+          "firstEntryID": "grok:393",
+          "startedAt": "2026-10-19T15:06:54.620Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command chmod 644 README.md and then tell me done.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:393",
+          "sourceOffset": 393
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000031-7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "running",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Set README.md permissions to 644",
+              "title": "chmod 644 README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000031-7",
+          "sourceOffset": 809
+        }
+      ],
+      "latestPromptOffset": 393,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:393",
+          "offset": 393,
+          "pastedImagePaths": null,
+          "text": "Run the shell command chmod 644 README.md and then tell me done."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": null,
+          "ending": null,
+          "firstEntryID": "grok:393",
+          "startedAt": "2026-10-19T15:06:54.620Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command chmod 644 README.md and then tell me done.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:393",
+          "sourceOffset": 393
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000031-7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "running",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Set README.md permissions to 644",
+              "title": "chmod 644 README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000031-7",
+          "sourceOffset": 809
+        }
+      ],
+      "latestPromptOffset": 393,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:393",
+          "offset": 393,
+          "pastedImagePaths": null,
+          "text": "Run the shell command chmod 644 README.md and then tell me done."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": null,
+          "ending": null,
+          "firstEntryID": "grok:393",
+          "startedAt": "2026-10-19T15:06:54.620Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

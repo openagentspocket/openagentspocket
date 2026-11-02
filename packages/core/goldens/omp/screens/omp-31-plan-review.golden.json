@@ -1,0 +1,2938 @@
+{
+  "fixture": "omp-31-plan-review.ansi",
+  "parse": {
+    "unrecognized": {
+      "displayLines": [
+        "Plan Review",
+        " Approach",
+        " 1. Open README.md (unverified — confirm first), then append the exact text plan-ok as a new final line, preserving",
+        "    existing content. If the file is missing, create it containing plan-ok followed by a newline.",
+        " 2. Read the final lines of README.md and confirm the last line is exactly plan-ok and the prior content is",
+        "    unchanged.",
+        "───",
+        "Plan mode - next step",
+        "continue with  ◂  smol  default  slow  ▸",
+        "  ↳ GPT-6-Astra",
+        "❯ Approve and execute",
+        "  Approve and compact context",
+        "  Approve and keep context (~12k / 272k)",
+        "  Refine plan",
+        "  Save and quit",
+        "───",
+        "↑/↓ select · confirm · ←/→ model · c copy · regions · G editor · cancel"
+      ],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "59e6f4f47095df0513277f6501c0fcdd78345a43321531860bcb063416eaa760"
+      },
+      "numbered": {},
+      "reason": "Agentico does not know Oh My Pi's “Plan Review” panel.",
+      "rows": [
+        {
+          "index": 0,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "╭─",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " Plan Review ",
+              "width": 13
+            },
+            {
+              "column": 15,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "────────────────────────────────────────────────────────────────────────────────────────────────────────╮",
+              "width": 105
+            }
+          ],
+          "text": "╭─ Plan Review ────────────────────────────────────────────────────────────────────────────────────────────────────────╮",
+          "width": 120
+        },
+        {
+          "index": 1,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 3,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Approach",
+              "width": 8
+            },
+            {
+              "column": 11,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                            ",
+              "width": 108
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│  Approach                                                                                                            │",
+          "width": 120
+        },
+        {
+          "index": 2,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 3,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 3,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "1. ",
+              "width": 3
+            },
+            {
+              "column": 6,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Open ",
+              "width": 5
+            },
+            {
+              "column": 11,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    255,
+                    136
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "README.md",
+              "width": 9
+            },
+            {
+              "column": 20,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " (unverified — confirm first), then append the exact text ",
+              "width": 58
+            },
+            {
+              "column": 78,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    255,
+                    136
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "plan-ok",
+              "width": 7
+            },
+            {
+              "column": 85,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " as a new final line, preserving  ",
+              "width": 34
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│  1. Open README.md (unverified — confirm first), then append the exact text plan-ok as a new final line, preserving  │",
+          "width": 120
+        },
+        {
+          "index": 4,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "     existing content. If the file is missing, create it containing ",
+              "width": 68
+            },
+            {
+              "column": 69,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    255,
+                    136
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "plan-ok",
+              "width": 7
+            },
+            {
+              "column": 76,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " followed by a newline.                    ",
+              "width": 43
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│     existing content. If the file is missing, create it containing plan-ok followed by a newline.                    │",
+          "width": 120
+        },
+        {
+          "index": 5,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 3,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "2. ",
+              "width": 3
+            },
+            {
+              "column": 6,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Read the final lines of ",
+              "width": 24
+            },
+            {
+              "column": 30,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    255,
+                    136
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "README.md",
+              "width": 9
+            },
+            {
+              "column": 39,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " and confirm the last line is exactly ",
+              "width": 38
+            },
+            {
+              "column": 77,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    255,
+                    136
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "plan-ok",
+              "width": 7
+            },
+            {
+              "column": 84,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " and the prior content is          ",
+              "width": 35
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│  2. Read the final lines of README.md and confirm the last line is exactly plan-ok and the prior content is          │",
+          "width": 120
+        },
+        {
+          "index": 6,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "     unchanged.                                                                                                       ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│     unchanged.                                                                                                       │",
+          "width": 120
+        },
+        {
+          "index": 7,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 8,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 9,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 10,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 11,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 12,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 13,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 14,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 15,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 16,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 17,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 18,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 19,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 20,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 21,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 22,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 23,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 24,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 25,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 26,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 27,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 28,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤",
+              "width": 120
+            }
+          ],
+          "text": "├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤",
+          "width": 120
+        },
+        {
+          "index": 29,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Plan mode - next step",
+              "width": 21
+            },
+            {
+              "column": 23,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                ",
+              "width": 96
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│ Plan mode - next step                                                                                                │",
+          "width": 120
+        },
+        {
+          "index": 30,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    107,
+                    114,
+                    128
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "continue with",
+              "width": 13
+            },
+            {
+              "column": 15,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 17,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "◂",
+              "width": 1
+            },
+            {
+              "column": 18,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 20,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "smol",
+              "width": 4
+            },
+            {
+              "column": 24,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 26,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    255,
+                    136
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "",
+              "width": 1
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": {
+                  "rgb": [
+                    0,
+                    255,
+                    136
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    0,
+                    0,
+                    0
+                  ]
+                },
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " default ",
+              "width": 9
+            },
+            {
+              "column": 36,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    255,
+                    136
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "",
+              "width": 1
+            },
+            {
+              "column": 37,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 39,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    255,
+                    179,
+                    71
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "slow",
+              "width": 4
+            },
+            {
+              "column": 43,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 45,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "▸",
+              "width": 1
+            },
+            {
+              "column": 46,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                         ",
+              "width": 73
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│ continue with  ◂  smol   default   slow  ▸                                                                         │",
+          "width": 120
+        },
+        {
+          "index": 31,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "   ",
+              "width": 3
+            },
+            {
+              "column": 4,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    107,
+                    114,
+                    128
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "↳",
+              "width": 1
+            },
+            {
+              "column": 5,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 6,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    156,
+                    163,
+                    176
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "GPT-6-Astra",
+              "width": 11
+            },
+            {
+              "column": 17,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                      ",
+              "width": 102
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│   ↳ GPT-6-Astra                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 32,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 2
+            },
+            {
+              "column": 4,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Approve and execute",
+              "width": 19
+            },
+            {
+              "column": 23,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                ",
+              "width": 96
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│  Approve and execute                                                                                                │",
+          "width": 120
+        },
+        {
+          "index": 33,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "   Approve and compact context                                                                                        ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│   Approve and compact context                                                                                        │",
+          "width": 120
+        },
+        {
+          "index": 34,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "   Approve and keep context (~12k / 272k)                                                                             ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│   Approve and keep context (~12k / 272k)                                                                             │",
+          "width": 120
+        },
+        {
+          "index": 35,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "   Refine plan                                                                                                        ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│   Refine plan                                                                                                        │",
+          "width": 120
+        },
+        {
+          "index": 36,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "   Save and quit                                                                                                      ",
+              "width": 118
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│   Save and quit                                                                                                      │",
+          "width": 120
+        },
+        {
+          "index": 37,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤",
+              "width": 120
+            }
+          ],
+          "text": "├──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤",
+          "width": 120
+        },
+        {
+          "index": 38,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    107,
+                    114,
+                    128
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "↑/↓ select · 󰌑 confirm · ←/→ model · c copy · 󰌒 regions · 󰘴 G editor · 󱊷 cancel",
+              "width": 79
+            },
+            {
+              "column": 81,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                      ",
+              "width": 38
+            },
+            {
+              "column": 119,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│ ↑/↓ select · 󰌑 confirm · ←/→ model · c copy · 󰌒 regions · 󰘴 G editor · 󱊷 cancel                                      │",
+          "width": 120
+        },
+        {
+          "index": 39,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯",
+              "width": 120
+            }
+          ],
+          "text": "╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯",
+          "width": 120
+        }
+      ]
+    }
+  },
+  "plans": [],
+  "program": "omp"
+}

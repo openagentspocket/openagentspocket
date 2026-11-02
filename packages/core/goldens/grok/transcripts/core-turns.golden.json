@@ -1,0 +1,899 @@
+{
+  "fixture": "core-turns.jsonl",
+  "lineOffsets": [
+    0,
+    391,
+    773,
+    1266,
+    2059,
+    2478,
+    2971,
+    3761,
+    4145,
+    4640,
+    5430,
+    5853,
+    6391,
+    7309,
+    8501,
+    10999,
+    11607,
+    12169
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word pong.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pong"
+            }
+          },
+          "id": "grok:773",
+          "sourceOffset": 773
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Answer with just the word ok.\nThis is line two.\nThis is line three.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:2059",
+          "sourceOffset": 2059
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ok"
+            }
+          },
+          "id": "grok:2478",
+          "sourceOffset": 2478
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word ping. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3761",
+          "sourceOffset": 3761
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ping"
+            }
+          },
+          "id": "grok:4145",
+          "sourceOffset": 4145
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command ls -la here and tell me how many entries there are.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:5430",
+          "sourceOffset": 5430
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll list this directory and count the entries."
+            }
+          },
+          "id": "grok:5853",
+          "sourceOffset": 5853
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000009-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 2497,
+                "offset": 8501,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "total 8\ndrwxr-xr-x@  4 developer  staff  128 Oct 19 22:53 .\ndrwxr-xr-x@  4 developer  staff  128 Oct 19 22:57 ..\ndrwxr-xr-x@ 12 developer  staff  384 Oct 19 22:53 .git\n-rw-r--r--@  1 developer  staff   90 Oct 19 22:53 README.md\n---\n       5"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "List directory and count entries",
+              "title": "ls -la && echo \"---\" && ls -la | wc -l"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000009-0",
+          "sourceOffset": 6391
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will run ls -la and count the entries.\n\nThere are 4 entries. The `wc -l` output of 5 includes the \"total\" line."
+            }
+          },
+          "id": "grok:10999",
+          "sourceOffset": 10999
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "`ls -la` 列出 **4** 个条目：`.`、`..`、`.git`、`README.md`。"
+            }
+          },
+          "id": "grok:11607",
+          "sourceOffset": 11607
+        }
+      ],
+      "latestPromptOffset": 5430,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word pong."
+        },
+        {
+          "entryID": "grok:2059",
+          "offset": 2059,
+          "pastedImagePaths": null,
+          "text": "Answer with just the word ok.\nThis is line two.\nThis is line three."
+        },
+        {
+          "entryID": "grok:3761",
+          "offset": 3761,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word ping. "
+        },
+        {
+          "entryID": "grok:5430",
+          "offset": 5430,
+          "pastedImagePaths": null,
+          "text": "Run the shell command ls -la here and tell me how many entries there are."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:57:06.833Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T14:56:48.883Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:57:54.535Z",
+          "ending": "completed",
+          "firstEntryID": "grok:2059",
+          "startedAt": "2026-10-19T14:57:50.282Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:58:15.726Z",
+          "ending": "completed",
+          "firstEntryID": "grok:3761",
+          "startedAt": "2026-10-19T14:58:07.240Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:58:27.652Z",
+          "ending": "completed",
+          "firstEntryID": "grok:5430",
+          "startedAt": "2026-10-19T14:58:21.710Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word pong.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pong"
+            }
+          },
+          "id": "grok:773",
+          "sourceOffset": 773
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Answer with just the word ok.\nThis is line two.\nThis is line three.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:2059",
+          "sourceOffset": 2059
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ok"
+            }
+          },
+          "id": "grok:2478",
+          "sourceOffset": 2478
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word ping. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3761",
+          "sourceOffset": 3761
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ping"
+            }
+          },
+          "id": "grok:4145",
+          "sourceOffset": 4145
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command ls -la here and tell me how many entries there are.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:5430",
+          "sourceOffset": 5430
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll list this directory and count the entries."
+            }
+          },
+          "id": "grok:5853",
+          "sourceOffset": 5853
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000009-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 2497,
+                "offset": 8501,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "total 8\ndrwxr-xr-x@  4 developer  staff  128 Oct 19 22:53 .\ndrwxr-xr-x@  4 developer  staff  128 Oct 19 22:57 ..\ndrwxr-xr-x@ 12 developer  staff  384 Oct 19 22:53 .git\n-rw-r--r--@  1 developer  staff   90 Oct 19 22:53 README.md\n---\n       5"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "List directory and count entries",
+              "title": "ls -la && echo \"---\" && ls -la | wc -l"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000009-0",
+          "sourceOffset": 6391
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will run ls -la and count the entries.\n\nThere are 4 entries. The `wc -l` output of 5 includes the \"total\" line."
+            }
+          },
+          "id": "grok:10999",
+          "sourceOffset": 10999
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "`ls -la` 列出 **4** 个条目：`.`、`..`、`.git`、`README.md`。"
+            }
+          },
+          "id": "grok:11607",
+          "sourceOffset": 11607
+        }
+      ],
+      "latestPromptOffset": 5430,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word pong."
+        },
+        {
+          "entryID": "grok:2059",
+          "offset": 2059,
+          "pastedImagePaths": null,
+          "text": "Answer with just the word ok.\nThis is line two.\nThis is line three."
+        },
+        {
+          "entryID": "grok:3761",
+          "offset": 3761,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word ping. "
+        },
+        {
+          "entryID": "grok:5430",
+          "offset": 5430,
+          "pastedImagePaths": null,
+          "text": "Run the shell command ls -la here and tell me how many entries there are."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:57:06.833Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T14:56:48.883Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:57:54.535Z",
+          "ending": "completed",
+          "firstEntryID": "grok:2059",
+          "startedAt": "2026-10-19T14:57:50.282Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:58:15.726Z",
+          "ending": "completed",
+          "firstEntryID": "grok:3761",
+          "startedAt": "2026-10-19T14:58:07.240Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:58:27.652Z",
+          "ending": "completed",
+          "firstEntryID": "grok:5430",
+          "startedAt": "2026-10-19T14:58:21.710Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word pong.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pong"
+            }
+          },
+          "id": "grok:773",
+          "sourceOffset": 773
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Answer with just the word ok.\nThis is line two.\nThis is line three.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:2059",
+          "sourceOffset": 2059
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ok"
+            }
+          },
+          "id": "grok:2478",
+          "sourceOffset": 2478
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word ping. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3761",
+          "sourceOffset": 3761
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ping"
+            }
+          },
+          "id": "grok:4145",
+          "sourceOffset": 4145
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command ls -la here and tell me how many entries there are.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:5430",
+          "sourceOffset": 5430
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll list this directory and count the entries."
+            }
+          },
+          "id": "grok:5853",
+          "sourceOffset": 5853
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000009-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 2497,
+                "offset": 8501,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "total 8\ndrwxr-xr-x@  4 developer  staff  128 Oct 19 22:53 .\ndrwxr-xr-x@  4 developer  staff  128 Oct 19 22:57 ..\ndrwxr-xr-x@ 12 developer  staff  384 Oct 19 22:53 .git\n-rw-r--r--@  1 developer  staff   90 Oct 19 22:53 README.md\n---\n       5"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "List directory and count entries",
+              "title": "ls -la && echo \"---\" && ls -la | wc -l"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000009-0",
+          "sourceOffset": 6391
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will run ls -la and count the entries.\n\nThere are 4 entries. The `wc -l` output of 5 includes the \"total\" line."
+            }
+          },
+          "id": "grok:10999",
+          "sourceOffset": 10999
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "`ls -la` 列出 **4** 个条目：`.`、`..`、`.git`、`README.md`。"
+            }
+          },
+          "id": "grok:11607",
+          "sourceOffset": 11607
+        }
+      ],
+      "latestPromptOffset": 5430,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word pong."
+        },
+        {
+          "entryID": "grok:2059",
+          "offset": 2059,
+          "pastedImagePaths": null,
+          "text": "Answer with just the word ok.\nThis is line two.\nThis is line three."
+        },
+        {
+          "entryID": "grok:3761",
+          "offset": 3761,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word ping. "
+        },
+        {
+          "entryID": "grok:5430",
+          "offset": 5430,
+          "pastedImagePaths": null,
+          "text": "Run the shell command ls -la here and tell me how many entries there are."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:57:06.833Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T14:56:48.883Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:57:54.535Z",
+          "ending": "completed",
+          "firstEntryID": "grok:2059",
+          "startedAt": "2026-10-19T14:57:50.282Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:58:15.726Z",
+          "ending": "completed",
+          "firstEntryID": "grok:3761",
+          "startedAt": "2026-10-19T14:58:07.240Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:58:27.652Z",
+          "ending": "completed",
+          "firstEntryID": "grok:5430",
+          "startedAt": "2026-10-19T14:58:21.710Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word pong.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pong"
+            }
+          },
+          "id": "grok:773",
+          "sourceOffset": 773
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Answer with just the word ok.\nThis is line two.\nThis is line three.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:2059",
+          "sourceOffset": 2059
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ok"
+            }
+          },
+          "id": "grok:2478",
+          "sourceOffset": 2478
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word ping. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3761",
+          "sourceOffset": 3761
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ping"
+            }
+          },
+          "id": "grok:4145",
+          "sourceOffset": 4145
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command ls -la here and tell me how many entries there are.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:5430",
+          "sourceOffset": 5430
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll list this directory and count the entries."
+            }
+          },
+          "id": "grok:5853",
+          "sourceOffset": 5853
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000009-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 2497,
+                "offset": 8501,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "total 8\ndrwxr-xr-x@  4 developer  staff  128 Oct 19 22:53 .\ndrwxr-xr-x@  4 developer  staff  128 Oct 19 22:57 ..\ndrwxr-xr-x@ 12 developer  staff  384 Oct 19 22:53 .git\n-rw-r--r--@  1 developer  staff   90 Oct 19 22:53 README.md\n---\n       5"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "List directory and count entries",
+              "title": "ls -la && echo \"---\" && ls -la | wc -l"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000009-0",
+          "sourceOffset": 6391
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will run ls -la and count the entries.\n\nThere are 4 entries. The `wc -l` output of 5 includes the \"total\" line."
+            }
+          },
+          "id": "grok:10999",
+          "sourceOffset": 10999
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "`ls -la` 列出 **4** 个条目：`.`、`..`、`.git`、`README.md`。"
+            }
+          },
+          "id": "grok:11607",
+          "sourceOffset": 11607
+        }
+      ],
+      "latestPromptOffset": 5430,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word pong."
+        },
+        {
+          "entryID": "grok:2059",
+          "offset": 2059,
+          "pastedImagePaths": null,
+          "text": "Answer with just the word ok.\nThis is line two.\nThis is line three."
+        },
+        {
+          "entryID": "grok:3761",
+          "offset": 3761,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word ping. "
+        },
+        {
+          "entryID": "grok:5430",
+          "offset": 5430,
+          "pastedImagePaths": null,
+          "text": "Run the shell command ls -la here and tell me how many entries there are."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:57:06.833Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T14:56:48.883Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:57:54.535Z",
+          "ending": "completed",
+          "firstEntryID": "grok:2059",
+          "startedAt": "2026-10-19T14:57:50.282Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:58:15.726Z",
+          "ending": "completed",
+          "firstEntryID": "grok:3761",
+          "startedAt": "2026-10-19T14:58:07.240Z"
+        },
+        {
+          "endedAt": "2026-10-19T14:58:27.652Z",
+          "ending": "completed",
+          "firstEntryID": "grok:5430",
+          "startedAt": "2026-10-19T14:58:21.710Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

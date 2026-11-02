@@ -1,0 +1,482 @@
+{
+  "fixture": "rows-question-answered.jsonl",
+  "lineOffsets": [
+    122,
+    122,
+    107,
+    108,
+    115,
+    120
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the question tool to ask me whether I prefer red or blue, then reply with exactly my choice.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "sourceOffset": 107
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_hcrSLLaaATjmTdXTbaOQlnIV",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "question",
+              "note": null,
+              "output": {
+                "length": 1018,
+                "offset": 108,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Answered: blue"
+              },
+              "questions": [
+                {
+                  "answer": "blue",
+                  "header": "Color preference",
+                  "id": null,
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": "Choose red",
+                      "label": "red"
+                    },
+                    {
+                      "detail": "Choose blue",
+                      "label": "blue"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Which do you prefer, red or blue?"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Which do you prefer, red or blue?"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e209ecxMyRuwgbXTu:0",
+          "sourceOffset": 108
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "blue"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30cgjdhrfOSB178p:0",
+          "sourceOffset": 115
+        }
+      ],
+      "latestPromptOffset": 107,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "offset": 107,
+          "pastedImagePaths": null,
+          "text": "Use the question tool to ask me whether I prefer red or blue, then reply with exactly my choice."
+        }
+      ],
+      "title": "Exact one-word reply request",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:10:19.763Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "startedAt": "2027-01-15T08:09:51.414Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the question tool to ask me whether I prefer red or blue, then reply with exactly my choice.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "sourceOffset": 107
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_hcrSLLaaATjmTdXTbaOQlnIV",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "question",
+              "note": null,
+              "output": {
+                "length": 1018,
+                "offset": 108,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Answered: blue"
+              },
+              "questions": [
+                {
+                  "answer": "blue",
+                  "header": "Color preference",
+                  "id": null,
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": "Choose red",
+                      "label": "red"
+                    },
+                    {
+                      "detail": "Choose blue",
+                      "label": "blue"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Which do you prefer, red or blue?"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Which do you prefer, red or blue?"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e209ecxMyRuwgbXTu:0",
+          "sourceOffset": 108
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "blue"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30cgjdhrfOSB178p:0",
+          "sourceOffset": 115
+        }
+      ],
+      "latestPromptOffset": 107,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "offset": 107,
+          "pastedImagePaths": null,
+          "text": "Use the question tool to ask me whether I prefer red or blue, then reply with exactly my choice."
+        }
+      ],
+      "title": "Exact one-word reply request",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:10:19.763Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "startedAt": "2027-01-15T08:09:51.414Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the question tool to ask me whether I prefer red or blue, then reply with exactly my choice.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "sourceOffset": 107
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_hcrSLLaaATjmTdXTbaOQlnIV",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "question",
+              "note": null,
+              "output": {
+                "length": 1018,
+                "offset": 108,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Answered: blue"
+              },
+              "questions": [
+                {
+                  "answer": "blue",
+                  "header": "Color preference",
+                  "id": null,
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": "Choose red",
+                      "label": "red"
+                    },
+                    {
+                      "detail": "Choose blue",
+                      "label": "blue"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Which do you prefer, red or blue?"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Which do you prefer, red or blue?"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e209ecxMyRuwgbXTu:0",
+          "sourceOffset": 108
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "blue"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30cgjdhrfOSB178p:0",
+          "sourceOffset": 115
+        }
+      ],
+      "latestPromptOffset": 107,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "offset": 107,
+          "pastedImagePaths": null,
+          "text": "Use the question tool to ask me whether I prefer red or blue, then reply with exactly my choice."
+        }
+      ],
+      "title": "Exact one-word reply request",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:10:19.763Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "startedAt": "2027-01-15T08:09:51.414Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the question tool to ask me whether I prefer red or blue, then reply with exactly my choice.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "sourceOffset": 107
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_hcrSLLaaATjmTdXTbaOQlnIV",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "question",
+              "note": null,
+              "output": {
+                "length": 1018,
+                "offset": 108,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Answered: blue"
+              },
+              "questions": [
+                {
+                  "answer": "blue",
+                  "header": "Color preference",
+                  "id": null,
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": "Choose red",
+                      "label": "red"
+                    },
+                    {
+                      "detail": "Choose blue",
+                      "label": "blue"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "Which do you prefer, red or blue?"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Which do you prefer, red or blue?"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e209ecxMyRuwgbXTu:0",
+          "sourceOffset": 108
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "blue"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30cgjdhrfOSB178p:0",
+          "sourceOffset": 115
+        }
+      ],
+      "latestPromptOffset": 107,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "offset": 107,
+          "pastedImagePaths": null,
+          "text": "Use the question tool to ask me whether I prefer red or blue, then reply with exactly my choice."
+        }
+      ],
+      "title": "Exact one-word reply request",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:10:19.763Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e107JfNwaDurmNvPc",
+          "startedAt": "2027-01-15T08:09:51.414Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

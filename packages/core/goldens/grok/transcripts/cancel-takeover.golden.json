@@ -1,0 +1,607 @@
+{
+  "fixture": "cancel-takeover.jsonl",
+  "lineOffsets": [
+    0,
+    391,
+    767,
+    1220,
+    1610,
+    2412,
+    3205,
+    3627,
+    4175,
+    4727,
+    5747,
+    6427,
+    7468,
+    8305
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Count from 1 to 80, one number per line. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:1220",
+          "sourceOffset": 1220
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59\n60\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n71\n72\n73\n74\n75\n76\n77\n78\n79\n80"
+            }
+          },
+          "id": "grok:1610",
+          "sourceOffset": 1610
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use a subagent to run the shell command sleep 20 and then report done. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3205",
+          "sourceOffset": 3205
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will use a subagent to run `sleep 20` and report done."
+            }
+          },
+          "id": "grok:3627",
+          "sourceOffset": 3627
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我用子代理执行 `sleep 20`，完成后回报结果。"
+            }
+          },
+          "id": "grok:4175",
+          "sourceOffset": 4175
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000000f-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "spawn_subagent",
+              "note": "Subagent was cancelled",
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general-purpose",
+              "title": "Sleep 20 then report done"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000000f-0",
+          "sourceOffset": 4727
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "grok:7468:notice",
+          "sourceOffset": 7468
+        }
+      ],
+      "latestPromptOffset": 3205,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:1220",
+          "offset": 1220,
+          "pastedImagePaths": null,
+          "text": "Count from 1 to 80, one number per line. "
+        },
+        {
+          "entryID": "grok:3205",
+          "offset": 3205,
+          "pastedImagePaths": null,
+          "text": "Use a subagent to run the shell command sleep 20 and then report done. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:11:08.575Z",
+          "ending": "completed",
+          "firstEntryID": "grok:1220",
+          "startedAt": "2026-10-19T15:11:06.061Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:11:50.338Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:3205",
+          "startedAt": "2026-10-19T15:11:35.439Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Count from 1 to 80, one number per line. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:1220",
+          "sourceOffset": 1220
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59\n60\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n71\n72\n73\n74\n75\n76\n77\n78\n79\n80"
+            }
+          },
+          "id": "grok:1610",
+          "sourceOffset": 1610
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use a subagent to run the shell command sleep 20 and then report done. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3205",
+          "sourceOffset": 3205
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will use a subagent to run `sleep 20` and report done."
+            }
+          },
+          "id": "grok:3627",
+          "sourceOffset": 3627
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我用子代理执行 `sleep 20`，完成后回报结果。"
+            }
+          },
+          "id": "grok:4175",
+          "sourceOffset": 4175
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000000f-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "spawn_subagent",
+              "note": "Subagent was cancelled",
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general-purpose",
+              "title": "Sleep 20 then report done"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000000f-0",
+          "sourceOffset": 4727
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "grok:7468:notice",
+          "sourceOffset": 7468
+        }
+      ],
+      "latestPromptOffset": 3205,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:1220",
+          "offset": 1220,
+          "pastedImagePaths": null,
+          "text": "Count from 1 to 80, one number per line. "
+        },
+        {
+          "entryID": "grok:3205",
+          "offset": 3205,
+          "pastedImagePaths": null,
+          "text": "Use a subagent to run the shell command sleep 20 and then report done. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:11:08.575Z",
+          "ending": "completed",
+          "firstEntryID": "grok:1220",
+          "startedAt": "2026-10-19T15:11:06.061Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:11:50.338Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:3205",
+          "startedAt": "2026-10-19T15:11:35.439Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Count from 1 to 80, one number per line. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:1220",
+          "sourceOffset": 1220
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59\n60\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n71\n72\n73\n74\n75\n76\n77\n78\n79\n80"
+            }
+          },
+          "id": "grok:1610",
+          "sourceOffset": 1610
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use a subagent to run the shell command sleep 20 and then report done. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3205",
+          "sourceOffset": 3205
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will use a subagent to run `sleep 20` and report done."
+            }
+          },
+          "id": "grok:3627",
+          "sourceOffset": 3627
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我用子代理执行 `sleep 20`，完成后回报结果。"
+            }
+          },
+          "id": "grok:4175",
+          "sourceOffset": 4175
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000000f-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "spawn_subagent",
+              "note": "Subagent was cancelled",
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general-purpose",
+              "title": "Sleep 20 then report done"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000000f-0",
+          "sourceOffset": 4727
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "grok:7468:notice",
+          "sourceOffset": 7468
+        }
+      ],
+      "latestPromptOffset": 3205,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:1220",
+          "offset": 1220,
+          "pastedImagePaths": null,
+          "text": "Count from 1 to 80, one number per line. "
+        },
+        {
+          "entryID": "grok:3205",
+          "offset": 3205,
+          "pastedImagePaths": null,
+          "text": "Use a subagent to run the shell command sleep 20 and then report done. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:11:08.575Z",
+          "ending": "completed",
+          "firstEntryID": "grok:1220",
+          "startedAt": "2026-10-19T15:11:06.061Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:11:50.338Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:3205",
+          "startedAt": "2026-10-19T15:11:35.439Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Count from 1 to 80, one number per line. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:1220",
+          "sourceOffset": 1220
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59\n60\n61\n62\n63\n64\n65\n66\n67\n68\n69\n70\n71\n72\n73\n74\n75\n76\n77\n78\n79\n80"
+            }
+          },
+          "id": "grok:1610",
+          "sourceOffset": 1610
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use a subagent to run the shell command sleep 20 and then report done. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3205",
+          "sourceOffset": 3205
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will use a subagent to run `sleep 20` and report done."
+            }
+          },
+          "id": "grok:3627",
+          "sourceOffset": 3627
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我用子代理执行 `sleep 20`，完成后回报结果。"
+            }
+          },
+          "id": "grok:4175",
+          "sourceOffset": 4175
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000000f-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "spawn_subagent",
+              "note": "Subagent was cancelled",
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general-purpose",
+              "title": "Sleep 20 then report done"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000000f-0",
+          "sourceOffset": 4727
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "grok:7468:notice",
+          "sourceOffset": 7468
+        }
+      ],
+      "latestPromptOffset": 3205,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:1220",
+          "offset": 1220,
+          "pastedImagePaths": null,
+          "text": "Count from 1 to 80, one number per line. "
+        },
+        {
+          "entryID": "grok:3205",
+          "offset": 3205,
+          "pastedImagePaths": null,
+          "text": "Use a subagent to run the shell command sleep 20 and then report done. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:11:08.575Z",
+          "ending": "completed",
+          "firstEntryID": "grok:1220",
+          "startedAt": "2026-10-19T15:11:06.061Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:11:50.338Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:3205",
+          "startedAt": "2026-10-19T15:11:35.439Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

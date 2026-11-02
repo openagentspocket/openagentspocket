@@ -1,0 +1,6 @@
+{
+  "fixture": "pi-12-nonempty-editor.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "pi"
+}

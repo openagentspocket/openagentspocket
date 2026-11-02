@@ -1,0 +1,6 @@
+{
+  "fixture": "omp-32-plan-after-esc.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "omp"
+}

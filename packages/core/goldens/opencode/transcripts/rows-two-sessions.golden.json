@@ -1,0 +1,345 @@
+{
+  "fixture": "rows-two-sessions.jsonl",
+  "lineOffsets": [
+    14,
+    14,
+    4,
+    7,
+    12
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word apple.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "apple"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4120H8i9J0k1L2m3N4:0",
+          "sourceOffset": 7
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Then reply with banana.",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8",
+          "sourceOffset": 14
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word apple."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8",
+          "offset": 14,
+          "pastedImagePaths": null,
+          "text": "Then reply with banana."
+        }
+      ],
+      "title": "Apple",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:00.902Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": [
+        "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8"
+      ]
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word apple.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "apple"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4120H8i9J0k1L2m3N4:0",
+          "sourceOffset": 7
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Then reply with banana.",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8",
+          "sourceOffset": 14
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word apple."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8",
+          "offset": 14,
+          "pastedImagePaths": null,
+          "text": "Then reply with banana."
+        }
+      ],
+      "title": "Apple",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:00.902Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": [
+        "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8"
+      ]
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word apple.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "apple"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4120H8i9J0k1L2m3N4:0",
+          "sourceOffset": 7
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Then reply with banana.",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8",
+          "sourceOffset": 14
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word apple."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8",
+          "offset": 14,
+          "pastedImagePaths": null,
+          "text": "Then reply with banana."
+        }
+      ],
+      "title": "Apple",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:00.902Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": [
+        "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8"
+      ]
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly the word apple.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "apple"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4120H8i9J0k1L2m3N4:0",
+          "sourceOffset": 7
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Then reply with banana.",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8",
+          "sourceOffset": 14
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly the word apple."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8",
+          "offset": 14,
+          "pastedImagePaths": null,
+          "text": "Then reply with banana."
+        }
+      ],
+      "title": "Apple",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:00.902Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4110A1b2C3d4E5f6G7",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": [
+        "oc:msg_0a1b2c3d4e04V2w3X4y5Z6a7B8"
+      ]
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

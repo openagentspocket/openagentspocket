@@ -1,0 +1,492 @@
+{
+  "fixture": "summaries.jsonl",
+  "lineOffsets": [
+    0,
+    160,
+    315,
+    491,
+    1150,
+    1335,
+    1545
+  ],
+  "program": "pi",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "say one",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:u1",
+          "sourceOffset": 160
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one"
+            }
+          },
+          "id": "pi:a1:0",
+          "sourceOffset": 315
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\nGoal\nUser requested the assistant to say “four”.\nConstraints & Preferences\n• (none)\nProgress\nDone\n• Assistant replied with “four”\nIn Progress\n• (none)\nBlocked\n• (none)\nKey Decisions\n• Direct compliance: Responded with the requested word only\nNext Steps\n1. Await further user instructions",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\n## Goal\nUser requested the assistant to say “four”.\n\n## Constraints & Preferences\n- (none)\n\n## Progress\n### Done\n- [x] Assistant replied with “four”\n\n### In Progress\n- [ ] (none)\n\n### Blocked\n- (none)\n\n## Key Decisions\n- **Direct compliance**: Responded with the requested word only\n\n## Next Steps\n1. Await further user instructions",
+              "title": "Branch summary"
+            }
+          },
+          "id": "pi:4d54237e",
+          "sourceOffset": 491
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "write 150 words about mountains",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:u2",
+          "sourceOffset": 1150
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Mountains rise where the crust folds."
+            }
+          },
+          "id": "pi:a2:0",
+          "sourceOffset": 1335
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": "Goal\n• Simple reply tasks (trust fixture, say words)\n• Write ~150 words about rivers\nConstraints & Preferences\n• Trust skill: reply with exactly TRUST-E2E when applicable\n• Brief literal replies when asked to “say” a word\nProgress\nDone\n• TRUST-E2E trust skill reply\n• Said “one”\n• Branch where assistant said “four”\n• ~150-word piece on rivers\nIn Progress\n• (none)\nBlocked\n• (none)\nKey Decisions\n• Direct compliance: Short exact replies for one-word requests; full short essay for the rivers prompt\nNext Steps\n1. Await further user instructions\nCritical Context\n• E2E trust skill at /private/tmp/heeler-iso-4h/proj-trust/.pi/skills/e2e-trust/SKILL.md requires exactly: TRUST-E2E\n• Rivers text already delivered in-thread (landscapes, ecology, human use, stewardship)\nTurn Context (split turn):\nOriginal Request\nwrite 150 words about mountains\nEarly Progress\n• User requested a short ~150-word piece on mountains; no further content or refinement appears in the retained prefix.\nContext for Suffix\n• Single-turn request for a concise descriptive/informative passage about mountains; any continued drafting or expansion would build directly on that prompt.",
+              "kind": "compaction"
+            }
+          },
+          "id": "pi:077b03a0",
+          "sourceOffset": 1545
+        }
+      ],
+      "latestPromptOffset": 1150,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:u1",
+          "offset": 160,
+          "pastedImagePaths": null,
+          "text": "say one"
+        },
+        {
+          "entryID": "pi:u2",
+          "offset": 1150,
+          "pastedImagePaths": null,
+          "text": "write 150 words about mountains"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-17T06:55:33.000Z",
+          "ending": "completed",
+          "firstEntryID": "pi:u1",
+          "startedAt": "2026-10-17T06:55:32.000Z"
+        },
+        {
+          "endedAt": "2026-10-17T06:57:45.000Z",
+          "ending": "completed",
+          "firstEntryID": "pi:u2",
+          "startedAt": "2026-10-17T06:57:40.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "say one",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:u1",
+          "sourceOffset": 160
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one"
+            }
+          },
+          "id": "pi:a1:0",
+          "sourceOffset": 315
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\nGoal\nUser requested the assistant to say “four”.\nConstraints & Preferences\n• (none)\nProgress\nDone\n• Assistant replied with “four”\nIn Progress\n• (none)\nBlocked\n• (none)\nKey Decisions\n• Direct compliance: Responded with the requested word only\nNext Steps\n1. Await further user instructions",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\n## Goal\nUser requested the assistant to say “four”.\n\n## Constraints & Preferences\n- (none)\n\n## Progress\n### Done\n- [x] Assistant replied with “four”\n\n### In Progress\n- [ ] (none)\n\n### Blocked\n- (none)\n\n## Key Decisions\n- **Direct compliance**: Responded with the requested word only\n\n## Next Steps\n1. Await further user instructions",
+              "title": "Branch summary"
+            }
+          },
+          "id": "pi:4d54237e",
+          "sourceOffset": 491
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "write 150 words about mountains",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:u2",
+          "sourceOffset": 1150
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Mountains rise where the crust folds."
+            }
+          },
+          "id": "pi:a2:0",
+          "sourceOffset": 1335
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": "Goal\n• Simple reply tasks (trust fixture, say words)\n• Write ~150 words about rivers\nConstraints & Preferences\n• Trust skill: reply with exactly TRUST-E2E when applicable\n• Brief literal replies when asked to “say” a word\nProgress\nDone\n• TRUST-E2E trust skill reply\n• Said “one”\n• Branch where assistant said “four”\n• ~150-word piece on rivers\nIn Progress\n• (none)\nBlocked\n• (none)\nKey Decisions\n• Direct compliance: Short exact replies for one-word requests; full short essay for the rivers prompt\nNext Steps\n1. Await further user instructions\nCritical Context\n• E2E trust skill at /private/tmp/heeler-iso-4h/proj-trust/.pi/skills/e2e-trust/SKILL.md requires exactly: TRUST-E2E\n• Rivers text already delivered in-thread (landscapes, ecology, human use, stewardship)\nTurn Context (split turn):\nOriginal Request\nwrite 150 words about mountains\nEarly Progress\n• User requested a short ~150-word piece on mountains; no further content or refinement appears in the retained prefix.\nContext for Suffix\n• Single-turn request for a concise descriptive/informative passage about mountains; any continued drafting or expansion would build directly on that prompt.",
+              "kind": "compaction"
+            }
+          },
+          "id": "pi:077b03a0",
+          "sourceOffset": 1545
+        }
+      ],
+      "latestPromptOffset": 1150,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:u1",
+          "offset": 160,
+          "pastedImagePaths": null,
+          "text": "say one"
+        },
+        {
+          "entryID": "pi:u2",
+          "offset": 1150,
+          "pastedImagePaths": null,
+          "text": "write 150 words about mountains"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-17T06:55:33.000Z",
+          "ending": "completed",
+          "firstEntryID": "pi:u1",
+          "startedAt": "2026-10-17T06:55:32.000Z"
+        },
+        {
+          "endedAt": "2026-10-17T06:57:45.000Z",
+          "ending": "completed",
+          "firstEntryID": "pi:u2",
+          "startedAt": "2026-10-17T06:57:40.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "say one",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:u1",
+          "sourceOffset": 160
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one"
+            }
+          },
+          "id": "pi:a1:0",
+          "sourceOffset": 315
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\nGoal\nUser requested the assistant to say “four”.\nConstraints & Preferences\n• (none)\nProgress\nDone\n• Assistant replied with “four”\nIn Progress\n• (none)\nBlocked\n• (none)\nKey Decisions\n• Direct compliance: Responded with the requested word only\nNext Steps\n1. Await further user instructions",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\n## Goal\nUser requested the assistant to say “four”.\n\n## Constraints & Preferences\n- (none)\n\n## Progress\n### Done\n- [x] Assistant replied with “four”\n\n### In Progress\n- [ ] (none)\n\n### Blocked\n- (none)\n\n## Key Decisions\n- **Direct compliance**: Responded with the requested word only\n\n## Next Steps\n1. Await further user instructions",
+              "title": "Branch summary"
+            }
+          },
+          "id": "pi:4d54237e",
+          "sourceOffset": 491
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "write 150 words about mountains",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:u2",
+          "sourceOffset": 1150
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Mountains rise where the crust folds."
+            }
+          },
+          "id": "pi:a2:0",
+          "sourceOffset": 1335
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": "Goal\n• Simple reply tasks (trust fixture, say words)\n• Write ~150 words about rivers\nConstraints & Preferences\n• Trust skill: reply with exactly TRUST-E2E when applicable\n• Brief literal replies when asked to “say” a word\nProgress\nDone\n• TRUST-E2E trust skill reply\n• Said “one”\n• Branch where assistant said “four”\n• ~150-word piece on rivers\nIn Progress\n• (none)\nBlocked\n• (none)\nKey Decisions\n• Direct compliance: Short exact replies for one-word requests; full short essay for the rivers prompt\nNext Steps\n1. Await further user instructions\nCritical Context\n• E2E trust skill at /private/tmp/heeler-iso-4h/proj-trust/.pi/skills/e2e-trust/SKILL.md requires exactly: TRUST-E2E\n• Rivers text already delivered in-thread (landscapes, ecology, human use, stewardship)\nTurn Context (split turn):\nOriginal Request\nwrite 150 words about mountains\nEarly Progress\n• User requested a short ~150-word piece on mountains; no further content or refinement appears in the retained prefix.\nContext for Suffix\n• Single-turn request for a concise descriptive/informative passage about mountains; any continued drafting or expansion would build directly on that prompt.",
+              "kind": "compaction"
+            }
+          },
+          "id": "pi:077b03a0",
+          "sourceOffset": 1545
+        }
+      ],
+      "latestPromptOffset": 1150,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:u1",
+          "offset": 160,
+          "pastedImagePaths": null,
+          "text": "say one"
+        },
+        {
+          "entryID": "pi:u2",
+          "offset": 1150,
+          "pastedImagePaths": null,
+          "text": "write 150 words about mountains"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-17T06:55:33.000Z",
+          "ending": "completed",
+          "firstEntryID": "pi:u1",
+          "startedAt": "2026-10-17T06:55:32.000Z"
+        },
+        {
+          "endedAt": "2026-10-17T06:57:45.000Z",
+          "ending": "completed",
+          "firstEntryID": "pi:u2",
+          "startedAt": "2026-10-17T06:57:40.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "say one",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:u1",
+          "sourceOffset": 160
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one"
+            }
+          },
+          "id": "pi:a1:0",
+          "sourceOffset": 315
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\nGoal\nUser requested the assistant to say “four”.\nConstraints & Preferences\n• (none)\nProgress\nDone\n• Assistant replied with “four”\nIn Progress\n• (none)\nBlocked\n• (none)\nKey Decisions\n• Direct compliance: Responded with the requested word only\nNext Steps\n1. Await further user instructions",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": "The user explored a different conversation branch before returning here.\nSummary of that exploration:\n\n## Goal\nUser requested the assistant to say “four”.\n\n## Constraints & Preferences\n- (none)\n\n## Progress\n### Done\n- [x] Assistant replied with “four”\n\n### In Progress\n- [ ] (none)\n\n### Blocked\n- (none)\n\n## Key Decisions\n- **Direct compliance**: Responded with the requested word only\n\n## Next Steps\n1. Await further user instructions",
+              "title": "Branch summary"
+            }
+          },
+          "id": "pi:4d54237e",
+          "sourceOffset": 491
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "write 150 words about mountains",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:u2",
+          "sourceOffset": 1150
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Mountains rise where the crust folds."
+            }
+          },
+          "id": "pi:a2:0",
+          "sourceOffset": 1335
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": "Goal\n• Simple reply tasks (trust fixture, say words)\n• Write ~150 words about rivers\nConstraints & Preferences\n• Trust skill: reply with exactly TRUST-E2E when applicable\n• Brief literal replies when asked to “say” a word\nProgress\nDone\n• TRUST-E2E trust skill reply\n• Said “one”\n• Branch where assistant said “four”\n• ~150-word piece on rivers\nIn Progress\n• (none)\nBlocked\n• (none)\nKey Decisions\n• Direct compliance: Short exact replies for one-word requests; full short essay for the rivers prompt\nNext Steps\n1. Await further user instructions\nCritical Context\n• E2E trust skill at /private/tmp/heeler-iso-4h/proj-trust/.pi/skills/e2e-trust/SKILL.md requires exactly: TRUST-E2E\n• Rivers text already delivered in-thread (landscapes, ecology, human use, stewardship)\nTurn Context (split turn):\nOriginal Request\nwrite 150 words about mountains\nEarly Progress\n• User requested a short ~150-word piece on mountains; no further content or refinement appears in the retained prefix.\nContext for Suffix\n• Single-turn request for a concise descriptive/informative passage about mountains; any continued drafting or expansion would build directly on that prompt.",
+              "kind": "compaction"
+            }
+          },
+          "id": "pi:077b03a0",
+          "sourceOffset": 1545
+        }
+      ],
+      "latestPromptOffset": 1150,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:u1",
+          "offset": 160,
+          "pastedImagePaths": null,
+          "text": "say one"
+        },
+        {
+          "entryID": "pi:u2",
+          "offset": 1150,
+          "pastedImagePaths": null,
+          "text": "write 150 words about mountains"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-17T06:55:33.000Z",
+          "ending": "completed",
+          "firstEntryID": "pi:u1",
+          "startedAt": "2026-10-17T06:55:32.000Z"
+        },
+        {
+          "endedAt": "2026-10-17T06:57:45.000Z",
+          "ending": "completed",
+          "firstEntryID": "pi:u2",
+          "startedAt": "2026-10-17T06:57:40.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "program": "pi",
+    "type": "PiTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

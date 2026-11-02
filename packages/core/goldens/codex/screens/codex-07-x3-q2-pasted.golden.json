@@ -1,0 +1,230 @@
+{
+  "fixture": "codex-07-x3-q2-pasted.ansi",
+  "parse": {
+    "dialog": {
+      "body": [],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "a6b49d99f4057ec18cade3b223cbbd66b2c3633e7895ce6c4615eff3b9149775"
+      },
+      "focus": {
+        "checked": [],
+        "composerDraftGuard": false,
+        "feedbackOrdinal": null,
+        "focusedOrdinal": 3,
+        "inputText": null,
+        "keysMissOptions": false,
+        "notesText": "Medium please"
+      },
+      "kind": "codexQuestion",
+      "note": null,
+      "options": [
+        {
+          "detail": "Choose small.",
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Small",
+          "number": 1,
+          "ordinal": 1,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": "Choose large.",
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Large",
+          "number": 2,
+          "ordinal": 2,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": "Optionally, add details in notes (tab)",
+          "input": null,
+          "isChecked": null,
+          "isFocused": true,
+          "label": "None of the above",
+          "number": 3,
+          "ordinal": 3,
+          "role": "otherText",
+          "shortcut": null
+        }
+      ],
+      "positionLabel": null,
+      "progress": "Question 2/2",
+      "rows": {
+        "lowerBound": 29,
+        "upperBound": 39
+      },
+      "sourceSuffix": null,
+      "subject": {
+        "command": null,
+        "commandDescription": null,
+        "destinations": [],
+        "environment": null,
+        "filePath": null,
+        "host": null,
+        "notes": [],
+        "planFilePath": null,
+        "prompt": null,
+        "question": "Pick a size",
+        "questionHeaders": [],
+        "reason": null,
+        "reviewAnswers": [],
+        "toolName": null,
+        "url": null,
+        "workspacePath": null
+      },
+      "title": "Pick a size"
+    }
+  },
+  "plans": [
+    {
+      "action": {
+        "choose": {
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 1,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 2,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 3,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "approvePlan": {
+          "note": "Keep it small"
+        }
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": {
+        "submitSelection": []
+      },
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": "dismiss",
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": "expandQuestions",
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    },
+    {
+      "action": "skipQuestion",
+      "result": {
+        "error": "textFieldNotEmpty"
+      }
+    }
+  ],
+  "program": "codex"
+}

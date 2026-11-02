@@ -1,0 +1,507 @@
+{
+  "fixture": "claude-11-c4-q2.ansi",
+  "parse": {
+    "dialog": {
+      "body": [],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "90f6f15c871a70a512fca41cf2e41c46a2bfef7966ee8e0b4bfdef7c0a56b311"
+      },
+      "focus": {
+        "checked": [],
+        "composerDraftGuard": false,
+        "feedbackOrdinal": null,
+        "focusedOrdinal": 1,
+        "inputText": null,
+        "keysMissOptions": false,
+        "notesText": null
+      },
+      "kind": "claudeQuestion",
+      "note": null,
+      "options": [
+        {
+          "detail": "Small",
+          "input": null,
+          "isChecked": null,
+          "isFocused": true,
+          "label": "Small",
+          "number": 1,
+          "ordinal": 1,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": "Large",
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Large",
+          "number": 2,
+          "ordinal": 2,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": null,
+          "input": {
+            "placeholder": "Type something."
+          },
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Type something.",
+          "number": 3,
+          "ordinal": 3,
+          "role": "otherText",
+          "shortcut": null
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Chat about this",
+          "number": 4,
+          "ordinal": 4,
+          "role": "chat",
+          "shortcut": null
+        }
+      ],
+      "positionLabel": null,
+      "progress": "Size",
+      "rows": {
+        "lowerBound": 23,
+        "upperBound": 37
+      },
+      "sourceSuffix": null,
+      "subject": {
+        "command": null,
+        "commandDescription": null,
+        "destinations": [],
+        "environment": null,
+        "filePath": null,
+        "host": null,
+        "notes": [],
+        "planFilePath": null,
+        "prompt": null,
+        "question": "Which size?",
+        "questionHeaders": [
+          "Colors",
+          "Size"
+        ],
+        "reason": null,
+        "reviewAnswers": [],
+        "toolName": null,
+        "url": null,
+        "workspacePath": null
+      },
+      "title": "Which size?"
+    }
+  },
+  "plans": [
+    {
+      "action": {
+        "choose": {
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "1"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Review your answers"
+              }
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "1"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Review your answers"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 1,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Option 1 is not a text field."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "2"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Review your answers"
+              }
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "2"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Review your answers"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 2,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Option 2 is not a text field."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": "needsText"
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 3,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "3"
+              ]
+            },
+            {
+              "expect": {
+                "focus": {
+                  "ordinal": 3
+                }
+              }
+            },
+            {
+              "paste": "Golden answer"
+            },
+            {
+              "expect": {
+                "inputText": "Golden answer"
+              }
+            },
+            {
+              "keys": [
+                "enter"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Review your answers"
+              }
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "3"
+              ]
+            },
+            {
+              "expect": {
+                "focus": {
+                  "ordinal": 3
+                }
+              }
+            },
+            {
+              "paste": "Golden answer"
+            },
+            {
+              "expect": {
+                "inputText": "Golden answer"
+              }
+            },
+            {
+              "keys": [
+                "enter"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Review your answers"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "4"
+              ]
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "4"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 4,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Option 4 is not a text field."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 5
+        }
+      },
+      "result": {
+        "error": {
+          "noSuchOption": 5
+        }
+      }
+    },
+    {
+      "action": {
+        "approvePlan": {
+          "note": "Keep it small"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "This dialog does not offer approving with feedback."
+        }
+      }
+    },
+    {
+      "action": {
+        "submitSelection": []
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only a multi-select question takes a set of answers."
+        }
+      }
+    },
+    {
+      "action": "dismiss",
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "esc"
+              ]
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "esc"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": "expandQuestions",
+      "result": {
+        "error": {
+          "unsupported": "Only Codex queues questions."
+        }
+      }
+    },
+    {
+      "action": "skipQuestion",
+      "result": {
+        "error": {
+          "unsupported": "Only Codex queues questions."
+        }
+      }
+    }
+  ],
+  "program": "claude"
+}

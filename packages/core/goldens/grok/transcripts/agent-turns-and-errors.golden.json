@@ -1,0 +1,2212 @@
+{
+  "fixture": "agent-turns-and-errors.jsonl",
+  "lineOffsets": [
+    0,
+    391,
+    925,
+    1428,
+    1779,
+    2148,
+    2525,
+    2894,
+    3205,
+    3704,
+    4056,
+    4451,
+    5323,
+    5942,
+    6697,
+    7199,
+    7551,
+    8062,
+    8436,
+    8793,
+    9140,
+    9552,
+    9927,
+    10281,
+    10718,
+    11094,
+    11760,
+    12246,
+    12597,
+    13068,
+    13611,
+    13985,
+    14442,
+    14937,
+    15289,
+    15740,
+    16235,
+    16587,
+    16864,
+    17233,
+    17593,
+    17885,
+    18301,
+    18670,
+    19030,
+    19331,
+    19847
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": [
+          "git_branch_update"
+        ]
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": {
+                "arguments": "world",
+                "name": "probe-hello"
+              },
+              "imageCount": 0,
+              "text": "/probe-hello world",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Hello, world."
+            }
+          },
+          "id": "grok:925",
+          "sourceOffset": 925
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 1,
+              "text": "Describe this image.\nAnswer in one word.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:1779",
+          "sourceOffset": 1779
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Image 1 was dropped before send: corrupt.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Image not sent"
+            }
+          },
+          "id": "grok:2894:notice",
+          "sourceOffset": 2894
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Nothing."
+            }
+          },
+          "id": "grok:3205",
+          "sourceOffset": 3205
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 5, then say done.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4056",
+          "sourceOffset": 4056
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000001e-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 754,
+                "offset": 5942,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Wait five seconds",
+              "title": "sleep 5"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000001e-0",
+          "sourceOffset": 4451
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Also say ready.",
+              "wasQueued": true
+            }
+          },
+          "id": "grok:5323",
+          "sourceOffset": 5323
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ready\ndone"
+            }
+          },
+          "id": "grok:6697",
+          "sourceOffset": 6697
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Both words are sent."
+            }
+          },
+          "id": "grok:7551",
+          "sourceOffset": 7551
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word fig.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:8062",
+          "sourceOffset": 8062
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Connection reset by peer",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build gave up after 3 attempts"
+            }
+          },
+          "id": "grok:8793:notice",
+          "sourceOffset": 8793
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Connection reset by peer",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build stopped with an error"
+            }
+          },
+          "id": "grok:9140:notice",
+          "sourceOffset": 9140
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word lime.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:9552",
+          "sourceOffset": 9552
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Your session expired. Run /login to sign in again.",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build gave up"
+            }
+          },
+          "id": "grok:9927:notice",
+          "sourceOffset": 9927
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Your session expired. Run /login to sign in again.",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build stopped with an error"
+            }
+          },
+          "id": "grok:10281:notice",
+          "sourceOffset": 10281
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "echo hi"
+            }
+          },
+          "id": "grok:10718:notice",
+          "sourceOffset": 10718
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "bash-mode-01900000-0000-7000-8000-000000000022",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 485,
+                "offset": 11760,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "hi"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo hi"
+            }
+          },
+          "id": "grok:tool:bash-mode-01900000-0000-7000-8000-000000000022",
+          "sourceOffset": 11094
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The background sleep finished."
+            }
+          },
+          "id": "grok:13068",
+          "sourceOffset": 13068
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word pear.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:13985",
+          "sourceOffset": 13985
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "grok:14442",
+          "sourceOffset": 14442
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Before we go on: reply with the word plum.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:15289",
+          "sourceOffset": 15289
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "plum"
+            }
+          },
+          "id": "grok:15740",
+          "sourceOffset": 15740
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Summarise the plan.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:16864",
+          "sourceOffset": 16864
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Compaction was cancelled"
+            }
+          },
+          "id": "grok:17593:notice",
+          "sourceOffset": 17593
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "grok:17885:notice",
+          "sourceOffset": 17885
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Summarise it again.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:18301",
+          "sourceOffset": 18301
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The summary request failed.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Compaction failed"
+            }
+          },
+          "id": "grok:19030:notice",
+          "sourceOffset": 19030
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The plan has three steps."
+            }
+          },
+          "id": "grok:19331",
+          "sourceOffset": 19331
+        }
+      ],
+      "latestPromptOffset": 18301,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "/probe-hello world"
+        },
+        {
+          "entryID": "grok:1779",
+          "offset": 1779,
+          "pastedImagePaths": null,
+          "text": "Describe this image.\nAnswer in one word."
+        },
+        {
+          "entryID": "grok:4056",
+          "offset": 4056,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 5, then say done."
+        },
+        {
+          "entryID": "grok:5323",
+          "offset": 5323,
+          "pastedImagePaths": null,
+          "text": "Also say ready."
+        },
+        {
+          "entryID": "grok:8062",
+          "offset": 8062,
+          "pastedImagePaths": null,
+          "text": "Reply with the word fig."
+        },
+        {
+          "entryID": "grok:9552",
+          "offset": 9552,
+          "pastedImagePaths": null,
+          "text": "Reply with the word lime."
+        },
+        {
+          "entryID": "grok:13985",
+          "offset": 13985,
+          "pastedImagePaths": null,
+          "text": "Reply with the word pear."
+        },
+        {
+          "entryID": "grok:15289",
+          "offset": 15289,
+          "pastedImagePaths": null,
+          "text": "Before we go on: reply with the word plum."
+        },
+        {
+          "entryID": "grok:16864",
+          "offset": 16864,
+          "pastedImagePaths": null,
+          "text": "Summarise the plan."
+        },
+        {
+          "entryID": "grok:18301",
+          "offset": 18301,
+          "pastedImagePaths": null,
+          "text": "Summarise it again."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T17:13:32.520Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T17:13:30.120Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:13:43.700Z",
+          "ending": "completed",
+          "firstEntryID": "grok:1779",
+          "startedAt": "2026-10-19T17:13:40.040Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:13:59.470Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4056",
+          "startedAt": "2026-10-19T17:13:50.015Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:21.320Z",
+          "ending": "failed",
+          "firstEntryID": "grok:8062",
+          "startedAt": "2026-10-19T17:14:10.005Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:31.040Z",
+          "ending": "failed",
+          "firstEntryID": "grok:9552",
+          "startedAt": "2026-10-19T17:14:30.060Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:52.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:13068",
+          "startedAt": "2026-10-19T17:14:50.500Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:02.360Z",
+          "ending": "completed",
+          "firstEntryID": "grok:13985",
+          "startedAt": "2026-10-19T17:15:00.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:12.350Z",
+          "ending": "completed",
+          "firstEntryID": "grok:15289",
+          "startedAt": "2026-10-19T17:15:10.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:24.640Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:16864",
+          "startedAt": "2026-10-19T17:15:20.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:41.260Z",
+          "ending": "completed",
+          "firstEntryID": "grok:18301",
+          "startedAt": "2026-10-19T17:15:30.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": [
+          "git_branch_update"
+        ]
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": {
+                "arguments": "world",
+                "name": "probe-hello"
+              },
+              "imageCount": 0,
+              "text": "/probe-hello world",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Hello, world."
+            }
+          },
+          "id": "grok:925",
+          "sourceOffset": 925
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 1,
+              "text": "Describe this image.\nAnswer in one word.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:1779",
+          "sourceOffset": 1779
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Image 1 was dropped before send: corrupt.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Image not sent"
+            }
+          },
+          "id": "grok:2894:notice",
+          "sourceOffset": 2894
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Nothing."
+            }
+          },
+          "id": "grok:3205",
+          "sourceOffset": 3205
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 5, then say done.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4056",
+          "sourceOffset": 4056
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000001e-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 754,
+                "offset": 5942,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Wait five seconds",
+              "title": "sleep 5"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000001e-0",
+          "sourceOffset": 4451
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Also say ready.",
+              "wasQueued": true
+            }
+          },
+          "id": "grok:5323",
+          "sourceOffset": 5323
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ready\ndone"
+            }
+          },
+          "id": "grok:6697",
+          "sourceOffset": 6697
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Both words are sent."
+            }
+          },
+          "id": "grok:7551",
+          "sourceOffset": 7551
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word fig.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:8062",
+          "sourceOffset": 8062
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Connection reset by peer",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build gave up after 3 attempts"
+            }
+          },
+          "id": "grok:8793:notice",
+          "sourceOffset": 8793
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Connection reset by peer",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build stopped with an error"
+            }
+          },
+          "id": "grok:9140:notice",
+          "sourceOffset": 9140
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word lime.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:9552",
+          "sourceOffset": 9552
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Your session expired. Run /login to sign in again.",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build gave up"
+            }
+          },
+          "id": "grok:9927:notice",
+          "sourceOffset": 9927
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Your session expired. Run /login to sign in again.",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build stopped with an error"
+            }
+          },
+          "id": "grok:10281:notice",
+          "sourceOffset": 10281
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "echo hi"
+            }
+          },
+          "id": "grok:10718:notice",
+          "sourceOffset": 10718
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "bash-mode-01900000-0000-7000-8000-000000000022",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 485,
+                "offset": 11760,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "hi"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo hi"
+            }
+          },
+          "id": "grok:tool:bash-mode-01900000-0000-7000-8000-000000000022",
+          "sourceOffset": 11094
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The background sleep finished."
+            }
+          },
+          "id": "grok:13068",
+          "sourceOffset": 13068
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word pear.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:13985",
+          "sourceOffset": 13985
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "grok:14442",
+          "sourceOffset": 14442
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Before we go on: reply with the word plum.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:15289",
+          "sourceOffset": 15289
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "plum"
+            }
+          },
+          "id": "grok:15740",
+          "sourceOffset": 15740
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Summarise the plan.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:16864",
+          "sourceOffset": 16864
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Compaction was cancelled"
+            }
+          },
+          "id": "grok:17593:notice",
+          "sourceOffset": 17593
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "grok:17885:notice",
+          "sourceOffset": 17885
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Summarise it again.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:18301",
+          "sourceOffset": 18301
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The summary request failed.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Compaction failed"
+            }
+          },
+          "id": "grok:19030:notice",
+          "sourceOffset": 19030
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The plan has three steps."
+            }
+          },
+          "id": "grok:19331",
+          "sourceOffset": 19331
+        }
+      ],
+      "latestPromptOffset": 18301,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "/probe-hello world"
+        },
+        {
+          "entryID": "grok:1779",
+          "offset": 1779,
+          "pastedImagePaths": null,
+          "text": "Describe this image.\nAnswer in one word."
+        },
+        {
+          "entryID": "grok:4056",
+          "offset": 4056,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 5, then say done."
+        },
+        {
+          "entryID": "grok:5323",
+          "offset": 5323,
+          "pastedImagePaths": null,
+          "text": "Also say ready."
+        },
+        {
+          "entryID": "grok:8062",
+          "offset": 8062,
+          "pastedImagePaths": null,
+          "text": "Reply with the word fig."
+        },
+        {
+          "entryID": "grok:9552",
+          "offset": 9552,
+          "pastedImagePaths": null,
+          "text": "Reply with the word lime."
+        },
+        {
+          "entryID": "grok:13985",
+          "offset": 13985,
+          "pastedImagePaths": null,
+          "text": "Reply with the word pear."
+        },
+        {
+          "entryID": "grok:15289",
+          "offset": 15289,
+          "pastedImagePaths": null,
+          "text": "Before we go on: reply with the word plum."
+        },
+        {
+          "entryID": "grok:16864",
+          "offset": 16864,
+          "pastedImagePaths": null,
+          "text": "Summarise the plan."
+        },
+        {
+          "entryID": "grok:18301",
+          "offset": 18301,
+          "pastedImagePaths": null,
+          "text": "Summarise it again."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T17:13:32.520Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T17:13:30.120Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:13:43.700Z",
+          "ending": "completed",
+          "firstEntryID": "grok:1779",
+          "startedAt": "2026-10-19T17:13:40.040Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:13:59.470Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4056",
+          "startedAt": "2026-10-19T17:13:50.015Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:21.320Z",
+          "ending": "failed",
+          "firstEntryID": "grok:8062",
+          "startedAt": "2026-10-19T17:14:10.005Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:31.040Z",
+          "ending": "failed",
+          "firstEntryID": "grok:9552",
+          "startedAt": "2026-10-19T17:14:30.060Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:52.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:13068",
+          "startedAt": "2026-10-19T17:14:50.500Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:02.360Z",
+          "ending": "completed",
+          "firstEntryID": "grok:13985",
+          "startedAt": "2026-10-19T17:15:00.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:12.350Z",
+          "ending": "completed",
+          "firstEntryID": "grok:15289",
+          "startedAt": "2026-10-19T17:15:10.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:24.640Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:16864",
+          "startedAt": "2026-10-19T17:15:20.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:41.260Z",
+          "ending": "completed",
+          "firstEntryID": "grok:18301",
+          "startedAt": "2026-10-19T17:15:30.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": [
+          "git_branch_update"
+        ]
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": {
+                "arguments": "world",
+                "name": "probe-hello"
+              },
+              "imageCount": 0,
+              "text": "/probe-hello world",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Hello, world."
+            }
+          },
+          "id": "grok:925",
+          "sourceOffset": 925
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 1,
+              "text": "Describe this image.\nAnswer in one word.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:1779",
+          "sourceOffset": 1779
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Image 1 was dropped before send: corrupt.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Image not sent"
+            }
+          },
+          "id": "grok:2894:notice",
+          "sourceOffset": 2894
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Nothing."
+            }
+          },
+          "id": "grok:3205",
+          "sourceOffset": 3205
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 5, then say done.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4056",
+          "sourceOffset": 4056
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000001e-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 754,
+                "offset": 5942,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Wait five seconds",
+              "title": "sleep 5"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000001e-0",
+          "sourceOffset": 4451
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Also say ready.",
+              "wasQueued": true
+            }
+          },
+          "id": "grok:5323",
+          "sourceOffset": 5323
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ready\ndone"
+            }
+          },
+          "id": "grok:6697",
+          "sourceOffset": 6697
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Both words are sent."
+            }
+          },
+          "id": "grok:7551",
+          "sourceOffset": 7551
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word fig.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:8062",
+          "sourceOffset": 8062
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Connection reset by peer",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build gave up after 3 attempts"
+            }
+          },
+          "id": "grok:8793:notice",
+          "sourceOffset": 8793
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Connection reset by peer",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build stopped with an error"
+            }
+          },
+          "id": "grok:9140:notice",
+          "sourceOffset": 9140
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word lime.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:9552",
+          "sourceOffset": 9552
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Your session expired. Run /login to sign in again.",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build gave up"
+            }
+          },
+          "id": "grok:9927:notice",
+          "sourceOffset": 9927
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Your session expired. Run /login to sign in again.",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build stopped with an error"
+            }
+          },
+          "id": "grok:10281:notice",
+          "sourceOffset": 10281
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "echo hi"
+            }
+          },
+          "id": "grok:10718:notice",
+          "sourceOffset": 10718
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "bash-mode-01900000-0000-7000-8000-000000000022",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 485,
+                "offset": 11760,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "hi"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo hi"
+            }
+          },
+          "id": "grok:tool:bash-mode-01900000-0000-7000-8000-000000000022",
+          "sourceOffset": 11094
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The background sleep finished."
+            }
+          },
+          "id": "grok:13068",
+          "sourceOffset": 13068
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word pear.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:13985",
+          "sourceOffset": 13985
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "grok:14442",
+          "sourceOffset": 14442
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Before we go on: reply with the word plum.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:15289",
+          "sourceOffset": 15289
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "plum"
+            }
+          },
+          "id": "grok:15740",
+          "sourceOffset": 15740
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Summarise the plan.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:16864",
+          "sourceOffset": 16864
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Compaction was cancelled"
+            }
+          },
+          "id": "grok:17593:notice",
+          "sourceOffset": 17593
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "grok:17885:notice",
+          "sourceOffset": 17885
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Summarise it again.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:18301",
+          "sourceOffset": 18301
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The summary request failed.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Compaction failed"
+            }
+          },
+          "id": "grok:19030:notice",
+          "sourceOffset": 19030
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The plan has three steps."
+            }
+          },
+          "id": "grok:19331",
+          "sourceOffset": 19331
+        }
+      ],
+      "latestPromptOffset": 18301,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "/probe-hello world"
+        },
+        {
+          "entryID": "grok:1779",
+          "offset": 1779,
+          "pastedImagePaths": null,
+          "text": "Describe this image.\nAnswer in one word."
+        },
+        {
+          "entryID": "grok:4056",
+          "offset": 4056,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 5, then say done."
+        },
+        {
+          "entryID": "grok:5323",
+          "offset": 5323,
+          "pastedImagePaths": null,
+          "text": "Also say ready."
+        },
+        {
+          "entryID": "grok:8062",
+          "offset": 8062,
+          "pastedImagePaths": null,
+          "text": "Reply with the word fig."
+        },
+        {
+          "entryID": "grok:9552",
+          "offset": 9552,
+          "pastedImagePaths": null,
+          "text": "Reply with the word lime."
+        },
+        {
+          "entryID": "grok:13985",
+          "offset": 13985,
+          "pastedImagePaths": null,
+          "text": "Reply with the word pear."
+        },
+        {
+          "entryID": "grok:15289",
+          "offset": 15289,
+          "pastedImagePaths": null,
+          "text": "Before we go on: reply with the word plum."
+        },
+        {
+          "entryID": "grok:16864",
+          "offset": 16864,
+          "pastedImagePaths": null,
+          "text": "Summarise the plan."
+        },
+        {
+          "entryID": "grok:18301",
+          "offset": 18301,
+          "pastedImagePaths": null,
+          "text": "Summarise it again."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T17:13:32.520Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T17:13:30.120Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:13:43.700Z",
+          "ending": "completed",
+          "firstEntryID": "grok:1779",
+          "startedAt": "2026-10-19T17:13:40.040Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:13:59.470Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4056",
+          "startedAt": "2026-10-19T17:13:50.015Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:21.320Z",
+          "ending": "failed",
+          "firstEntryID": "grok:8062",
+          "startedAt": "2026-10-19T17:14:10.005Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:31.040Z",
+          "ending": "failed",
+          "firstEntryID": "grok:9552",
+          "startedAt": "2026-10-19T17:14:30.060Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:52.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:13068",
+          "startedAt": "2026-10-19T17:14:50.500Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:02.360Z",
+          "ending": "completed",
+          "firstEntryID": "grok:13985",
+          "startedAt": "2026-10-19T17:15:00.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:12.350Z",
+          "ending": "completed",
+          "firstEntryID": "grok:15289",
+          "startedAt": "2026-10-19T17:15:10.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:24.640Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:16864",
+          "startedAt": "2026-10-19T17:15:20.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:41.260Z",
+          "ending": "completed",
+          "firstEntryID": "grok:18301",
+          "startedAt": "2026-10-19T17:15:30.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": [
+          "git_branch_update"
+        ]
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": {
+                "arguments": "world",
+                "name": "probe-hello"
+              },
+              "imageCount": 0,
+              "text": "/probe-hello world",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Hello, world."
+            }
+          },
+          "id": "grok:925",
+          "sourceOffset": 925
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 1,
+              "text": "Describe this image.\nAnswer in one word.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:1779",
+          "sourceOffset": 1779
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Image 1 was dropped before send: corrupt.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Image not sent"
+            }
+          },
+          "id": "grok:2894:notice",
+          "sourceOffset": 2894
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Nothing."
+            }
+          },
+          "id": "grok:3205",
+          "sourceOffset": 3205
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 5, then say done.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4056",
+          "sourceOffset": 4056
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000001e-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 754,
+                "offset": 5942,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Wait five seconds",
+              "title": "sleep 5"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000001e-0",
+          "sourceOffset": 4451
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Also say ready.",
+              "wasQueued": true
+            }
+          },
+          "id": "grok:5323",
+          "sourceOffset": 5323
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "ready\ndone"
+            }
+          },
+          "id": "grok:6697",
+          "sourceOffset": 6697
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Both words are sent."
+            }
+          },
+          "id": "grok:7551",
+          "sourceOffset": 7551
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word fig.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:8062",
+          "sourceOffset": 8062
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Connection reset by peer",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build gave up after 3 attempts"
+            }
+          },
+          "id": "grok:8793:notice",
+          "sourceOffset": 8793
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Connection reset by peer",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build stopped with an error"
+            }
+          },
+          "id": "grok:9140:notice",
+          "sourceOffset": 9140
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word lime.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:9552",
+          "sourceOffset": 9552
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Your session expired. Run /login to sign in again.",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build gave up"
+            }
+          },
+          "id": "grok:9927:notice",
+          "sourceOffset": 9927
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Your session expired. Run /login to sign in again.",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Grok Build stopped with an error"
+            }
+          },
+          "id": "grok:10281:notice",
+          "sourceOffset": 10281
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "echo hi"
+            }
+          },
+          "id": "grok:10718:notice",
+          "sourceOffset": 10718
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "bash-mode-01900000-0000-7000-8000-000000000022",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": null,
+              "output": {
+                "length": 485,
+                "offset": 11760,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "hi"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "echo hi"
+            }
+          },
+          "id": "grok:tool:bash-mode-01900000-0000-7000-8000-000000000022",
+          "sourceOffset": 11094
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The background sleep finished."
+            }
+          },
+          "id": "grok:13068",
+          "sourceOffset": 13068
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word pear.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:13985",
+          "sourceOffset": 13985
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "grok:14442",
+          "sourceOffset": 14442
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Before we go on: reply with the word plum.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:15289",
+          "sourceOffset": 15289
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "plum"
+            }
+          },
+          "id": "grok:15740",
+          "sourceOffset": 15740
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Summarise the plan.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:16864",
+          "sourceOffset": 16864
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Compaction was cancelled"
+            }
+          },
+          "id": "grok:17593:notice",
+          "sourceOffset": 17593
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "grok:17885:notice",
+          "sourceOffset": 17885
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Summarise it again.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:18301",
+          "sourceOffset": 18301
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The summary request failed.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Compaction failed"
+            }
+          },
+          "id": "grok:19030:notice",
+          "sourceOffset": 19030
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The plan has three steps."
+            }
+          },
+          "id": "grok:19331",
+          "sourceOffset": 19331
+        }
+      ],
+      "latestPromptOffset": 18301,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "/probe-hello world"
+        },
+        {
+          "entryID": "grok:1779",
+          "offset": 1779,
+          "pastedImagePaths": null,
+          "text": "Describe this image.\nAnswer in one word."
+        },
+        {
+          "entryID": "grok:4056",
+          "offset": 4056,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 5, then say done."
+        },
+        {
+          "entryID": "grok:5323",
+          "offset": 5323,
+          "pastedImagePaths": null,
+          "text": "Also say ready."
+        },
+        {
+          "entryID": "grok:8062",
+          "offset": 8062,
+          "pastedImagePaths": null,
+          "text": "Reply with the word fig."
+        },
+        {
+          "entryID": "grok:9552",
+          "offset": 9552,
+          "pastedImagePaths": null,
+          "text": "Reply with the word lime."
+        },
+        {
+          "entryID": "grok:13985",
+          "offset": 13985,
+          "pastedImagePaths": null,
+          "text": "Reply with the word pear."
+        },
+        {
+          "entryID": "grok:15289",
+          "offset": 15289,
+          "pastedImagePaths": null,
+          "text": "Before we go on: reply with the word plum."
+        },
+        {
+          "entryID": "grok:16864",
+          "offset": 16864,
+          "pastedImagePaths": null,
+          "text": "Summarise the plan."
+        },
+        {
+          "entryID": "grok:18301",
+          "offset": 18301,
+          "pastedImagePaths": null,
+          "text": "Summarise it again."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T17:13:32.520Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T17:13:30.120Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:13:43.700Z",
+          "ending": "completed",
+          "firstEntryID": "grok:1779",
+          "startedAt": "2026-10-19T17:13:40.040Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:13:59.470Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4056",
+          "startedAt": "2026-10-19T17:13:50.015Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:21.320Z",
+          "ending": "failed",
+          "firstEntryID": "grok:8062",
+          "startedAt": "2026-10-19T17:14:10.005Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:31.040Z",
+          "ending": "failed",
+          "firstEntryID": "grok:9552",
+          "startedAt": "2026-10-19T17:14:30.060Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:14:52.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:13068",
+          "startedAt": "2026-10-19T17:14:50.500Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:02.360Z",
+          "ending": "completed",
+          "firstEntryID": "grok:13985",
+          "startedAt": "2026-10-19T17:15:00.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:12.350Z",
+          "ending": "completed",
+          "firstEntryID": "grok:15289",
+          "startedAt": "2026-10-19T17:15:10.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:24.640Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:16864",
+          "startedAt": "2026-10-19T17:15:20.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T17:15:41.260Z",
+          "ending": "completed",
+          "firstEntryID": "grok:18301",
+          "startedAt": "2026-10-19T17:15:30.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

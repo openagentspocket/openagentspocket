@@ -1,0 +1,1241 @@
+{
+  "fixture": "rows-v1-names.jsonl",
+  "lineOffsets": [
+    13,
+    13,
+    4,
+    5,
+    11
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the older tools on notes.txt.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll use the older tools."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:0",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_G5h6J7k8L9z0X1c2V3b4N5m6",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "notes.txt\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "ls"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:1",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_Q7w8E9r0T1y2U3i4O5p6A7s8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "task",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "There is 1 file."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general",
+              "title": "Count files"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:2",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_D9f0G1h2J3k4L5z6X7c8V9b0",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": null,
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          "-beta",
+                          "+BETA",
+                          " gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "apply_patch",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Success. Updated the following files:\nM notes.txt"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "notes.txt"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:3",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_N1m2Q3w4E5r6T7y8U9i0O1p2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "todo",
+              "name": "todowrite",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "[\n  {\n    \"content\": \"Rename beta\",\n    \"status\": \"completed\",\n    \"priority\": \"high\"\n  },\n  {\n    \"content\": \"Rename gamma\",\n    \"status\": \"in_progress\",\n    \"priority\": \"medium\"\n  }\n]"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "todowrite"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:4",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_A3s4D5f6G7h8J9k0L1z2X3c4",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": null,
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          " BETA",
+                          "-gamma",
+                          "+GAMMA"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "edit",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Edit applied successfully."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/notes.txt"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:5",
+          "sourceOffset": 5
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Use the older tools on notes.txt."
+        }
+      ],
+      "title": "Older tool names",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:01.992Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the older tools on notes.txt.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll use the older tools."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:0",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_G5h6J7k8L9z0X1c2V3b4N5m6",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "notes.txt\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "ls"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:1",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_Q7w8E9r0T1y2U3i4O5p6A7s8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "task",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "There is 1 file."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general",
+              "title": "Count files"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:2",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_D9f0G1h2J3k4L5z6X7c8V9b0",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": null,
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          "-beta",
+                          "+BETA",
+                          " gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "apply_patch",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Success. Updated the following files:\nM notes.txt"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "notes.txt"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:3",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_N1m2Q3w4E5r6T7y8U9i0O1p2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "todo",
+              "name": "todowrite",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "[\n  {\n    \"content\": \"Rename beta\",\n    \"status\": \"completed\",\n    \"priority\": \"high\"\n  },\n  {\n    \"content\": \"Rename gamma\",\n    \"status\": \"in_progress\",\n    \"priority\": \"medium\"\n  }\n]"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "todowrite"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:4",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_A3s4D5f6G7h8J9k0L1z2X3c4",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": null,
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          " BETA",
+                          "-gamma",
+                          "+GAMMA"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "edit",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Edit applied successfully."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/notes.txt"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:5",
+          "sourceOffset": 5
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Use the older tools on notes.txt."
+        }
+      ],
+      "title": "Older tool names",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:01.992Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the older tools on notes.txt.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll use the older tools."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:0",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_G5h6J7k8L9z0X1c2V3b4N5m6",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "notes.txt\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "ls"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:1",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_Q7w8E9r0T1y2U3i4O5p6A7s8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "task",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "There is 1 file."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general",
+              "title": "Count files"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:2",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_D9f0G1h2J3k4L5z6X7c8V9b0",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": null,
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          "-beta",
+                          "+BETA",
+                          " gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "apply_patch",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Success. Updated the following files:\nM notes.txt"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "notes.txt"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:3",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_N1m2Q3w4E5r6T7y8U9i0O1p2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "todo",
+              "name": "todowrite",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "[\n  {\n    \"content\": \"Rename beta\",\n    \"status\": \"completed\",\n    \"priority\": \"high\"\n  },\n  {\n    \"content\": \"Rename gamma\",\n    \"status\": \"in_progress\",\n    \"priority\": \"medium\"\n  }\n]"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "todowrite"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:4",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_A3s4D5f6G7h8J9k0L1z2X3c4",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": null,
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          " BETA",
+                          "-gamma",
+                          "+GAMMA"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "edit",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Edit applied successfully."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/notes.txt"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:5",
+          "sourceOffset": 5
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Use the older tools on notes.txt."
+        }
+      ],
+      "title": "Older tool names",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:01.992Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the older tools on notes.txt.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll use the older tools."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:0",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_G5h6J7k8L9z0X1c2V3b4N5m6",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "bash",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "notes.txt\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "ls"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:1",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_Q7w8E9r0T1y2U3i4O5p6A7s8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "task",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "There is 1 file."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general",
+              "title": "Count files"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:2",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_D9f0G1h2J3k4L5z6X7c8V9b0",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": null,
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          "-beta",
+                          "+BETA",
+                          " gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "apply_patch",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Success. Updated the following files:\nM notes.txt"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "notes.txt"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:3",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_N1m2Q3w4E5r6T7y8U9i0O1p2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "todo",
+              "name": "todowrite",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "[\n  {\n    \"content\": \"Rename beta\",\n    \"status\": \"completed\",\n    \"priority\": \"high\"\n  },\n  {\n    \"content\": \"Rename gamma\",\n    \"status\": \"in_progress\",\n    \"priority\": \"medium\"\n  }\n]"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "todowrite"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:4",
+          "sourceOffset": 5
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_A3s4D5f6G7h8J9k0L1z2X3c4",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": null,
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          " BETA",
+                          "-gamma",
+                          "+GAMMA"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "edit",
+              "note": null,
+              "output": {
+                "length": 4042,
+                "offset": 5,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Edit applied successfully."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/notes.txt"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20I8o9P0a1S2d3F4:5",
+          "sourceOffset": 5
+        }
+      ],
+      "latestPromptOffset": 4,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Use the older tools on notes.txt."
+        }
+      ],
+      "title": "Older tool names",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:01.992Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10Q1w2E3r4T5y6U7",
+          "startedAt": "2027-01-15T08:00:00.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

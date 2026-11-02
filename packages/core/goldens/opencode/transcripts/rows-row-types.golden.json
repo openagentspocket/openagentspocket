@@ -1,0 +1,533 @@
+{
+  "fixture": "rows-row-types.jsonl",
+  "lineOffsets": [
+    41,
+    41,
+    4,
+    6,
+    8,
+    10,
+    12,
+    14,
+    16,
+    18,
+    20,
+    22,
+    24
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 1,
+        "oversizedLines": 0,
+        "unknownRecordTypes": [
+          "future-kind"
+        ]
+      },
+      "entries": [
+        {
+          "content": {
+            "notice": {
+              "detail": "fatal: not a git repository\n",
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "git status"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10L2z3X4c5V6b7N8",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "sleep 60"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20U6i7O8p9A0s1D2",
+          "sourceOffset": 6
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Background shell job finished.",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Shell job"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30X0c1V2b3N4m5Q6",
+          "sourceOffset": 8
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Reminder"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40O4p5A6s7D8f9G0",
+          "sourceOffset": 10
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "command",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Skill Review"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e50H1j2K3l4Z5x6C7",
+          "sourceOffset": 12
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Moved to /Users/developer/work/heeler-tmp-chat/opencode-a/project/sub"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e60V8b9N0m1Q2w3E4",
+          "sourceOffset": 14
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "modelChange",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Model: gpt-6-astra"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e70R5t6Y7u8I9o0P1",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Still working."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4eb0Y3u4I5o6P7a8S9:0",
+          "sourceOffset": 24
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [],
+      "title": "Row types",
+      "turns": [],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 1,
+        "oversizedLines": 0,
+        "unknownRecordTypes": [
+          "future-kind"
+        ]
+      },
+      "entries": [
+        {
+          "content": {
+            "notice": {
+              "detail": "fatal: not a git repository\n",
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "git status"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10L2z3X4c5V6b7N8",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "sleep 60"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20U6i7O8p9A0s1D2",
+          "sourceOffset": 6
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Background shell job finished.",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Shell job"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30X0c1V2b3N4m5Q6",
+          "sourceOffset": 8
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Reminder"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40O4p5A6s7D8f9G0",
+          "sourceOffset": 10
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "command",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Skill Review"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e50H1j2K3l4Z5x6C7",
+          "sourceOffset": 12
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Moved to /Users/developer/work/heeler-tmp-chat/opencode-a/project/sub"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e60V8b9N0m1Q2w3E4",
+          "sourceOffset": 14
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "modelChange",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Model: gpt-6-astra"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e70R5t6Y7u8I9o0P1",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Still working."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4eb0Y3u4I5o6P7a8S9:0",
+          "sourceOffset": 24
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [],
+      "title": "Row types",
+      "turns": [],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 1,
+        "oversizedLines": 0,
+        "unknownRecordTypes": [
+          "future-kind"
+        ]
+      },
+      "entries": [
+        {
+          "content": {
+            "notice": {
+              "detail": "fatal: not a git repository\n",
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "git status"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10L2z3X4c5V6b7N8",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "sleep 60"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20U6i7O8p9A0s1D2",
+          "sourceOffset": 6
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Background shell job finished.",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Shell job"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30X0c1V2b3N4m5Q6",
+          "sourceOffset": 8
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Reminder"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40O4p5A6s7D8f9G0",
+          "sourceOffset": 10
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "command",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Skill Review"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e50H1j2K3l4Z5x6C7",
+          "sourceOffset": 12
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Moved to /Users/developer/work/heeler-tmp-chat/opencode-a/project/sub"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e60V8b9N0m1Q2w3E4",
+          "sourceOffset": 14
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "modelChange",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Model: gpt-6-astra"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e70R5t6Y7u8I9o0P1",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Still working."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4eb0Y3u4I5o6P7a8S9:0",
+          "sourceOffset": 24
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [],
+      "title": "Row types",
+      "turns": [],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 1,
+        "oversizedLines": 0,
+        "unknownRecordTypes": [
+          "future-kind"
+        ]
+      },
+      "entries": [
+        {
+          "content": {
+            "notice": {
+              "detail": "fatal: not a git repository\n",
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "git status"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10L2z3X4c5V6b7N8",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "shellCommand",
+              "questions": [],
+              "rawDetail": null,
+              "title": "sleep 60"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20U6i7O8p9A0s1D2",
+          "sourceOffset": 6
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "Background shell job finished.",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Shell job"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30X0c1V2b3N4m5Q6",
+          "sourceOffset": 8
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Reminder"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40O4p5A6s7D8f9G0",
+          "sourceOffset": 10
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "command",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Skill Review"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e50H1j2K3l4Z5x6C7",
+          "sourceOffset": 12
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Moved to /Users/developer/work/heeler-tmp-chat/opencode-a/project/sub"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e60V8b9N0m1Q2w3E4",
+          "sourceOffset": 14
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "modelChange",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Model: gpt-6-astra"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e70R5t6Y7u8I9o0P1",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Still working."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4eb0Y3u4I5o6P7a8S9:0",
+          "sourceOffset": 24
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [],
+      "title": "Row types",
+      "turns": [],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

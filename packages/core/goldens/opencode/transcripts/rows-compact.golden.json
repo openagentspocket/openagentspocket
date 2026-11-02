@@ -1,0 +1,264 @@
+{
+  "fixture": "rows-compact.jsonl",
+  "lineOffsets": [
+    215,
+    215,
+    210,
+    213
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "command",
+              "questions": [],
+              "rawDetail": null,
+              "title": "/compact"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "sourceOffset": 210
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": "Objective\n• The user ran short-reply, file read/write and shell command tests; the latest request is done.\nRequirements\n• Reply with the content and format each request asks for.\nWork State\nCompleted\n• Created notes.txt and replaced beta with BETA; it now holds three lines: alpha, BETA, gamma.\n• The first read of .env confirmed GREETING=hello.\n• Ran sleep 15; echo one, which printed one; then replied two as the user asked.\nActive\n• (none)\nBlocked\n• (none)\nNext Move\n1. Wait for the user's next request.\nRelevant Files\n• notes.txt: created and edited in this session, not committed.\nImportant Context\n• The user declined the tool call that read .env again; it was not retried.\n• sleep 30; echo done and sleep 20; echo finished both returned Tool execution interrupted with no output; the user then switched to other commands.",
+              "kind": "compaction"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN:divider",
+          "sourceOffset": 210
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "offset": 210,
+          "pastedImagePaths": null,
+          "text": "/compact"
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:12:56.638Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "startedAt": "2027-01-15T08:12:47.401Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "command",
+              "questions": [],
+              "rawDetail": null,
+              "title": "/compact"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "sourceOffset": 210
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": "Objective\n• The user ran short-reply, file read/write and shell command tests; the latest request is done.\nRequirements\n• Reply with the content and format each request asks for.\nWork State\nCompleted\n• Created notes.txt and replaced beta with BETA; it now holds three lines: alpha, BETA, gamma.\n• The first read of .env confirmed GREETING=hello.\n• Ran sleep 15; echo one, which printed one; then replied two as the user asked.\nActive\n• (none)\nBlocked\n• (none)\nNext Move\n1. Wait for the user's next request.\nRelevant Files\n• notes.txt: created and edited in this session, not committed.\nImportant Context\n• The user declined the tool call that read .env again; it was not retried.\n• sleep 30; echo done and sleep 20; echo finished both returned Tool execution interrupted with no output; the user then switched to other commands.",
+              "kind": "compaction"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN:divider",
+          "sourceOffset": 210
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "offset": 210,
+          "pastedImagePaths": null,
+          "text": "/compact"
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:12:56.638Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "startedAt": "2027-01-15T08:12:47.401Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "command",
+              "questions": [],
+              "rawDetail": null,
+              "title": "/compact"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "sourceOffset": 210
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": "Objective\n• The user ran short-reply, file read/write and shell command tests; the latest request is done.\nRequirements\n• Reply with the content and format each request asks for.\nWork State\nCompleted\n• Created notes.txt and replaced beta with BETA; it now holds three lines: alpha, BETA, gamma.\n• The first read of .env confirmed GREETING=hello.\n• Ran sleep 15; echo one, which printed one; then replied two as the user asked.\nActive\n• (none)\nBlocked\n• (none)\nNext Move\n1. Wait for the user's next request.\nRelevant Files\n• notes.txt: created and edited in this session, not committed.\nImportant Context\n• The user declined the tool call that read .env again; it was not retried.\n• sleep 30; echo done and sleep 20; echo finished both returned Tool execution interrupted with no output; the user then switched to other commands.",
+              "kind": "compaction"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN:divider",
+          "sourceOffset": 210
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "offset": 210,
+          "pastedImagePaths": null,
+          "text": "/compact"
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:12:56.638Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "startedAt": "2027-01-15T08:12:47.401Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "command",
+              "questions": [],
+              "rawDetail": null,
+              "title": "/compact"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "sourceOffset": 210
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": "Objective\n• The user ran short-reply, file read/write and shell command tests; the latest request is done.\nRequirements\n• Reply with the content and format each request asks for.\nWork State\nCompleted\n• Created notes.txt and replaced beta with BETA; it now holds three lines: alpha, BETA, gamma.\n• The first read of .env confirmed GREETING=hello.\n• Ran sleep 15; echo one, which printed one; then replied two as the user asked.\nActive\n• (none)\nBlocked\n• (none)\nNext Move\n1. Wait for the user's next request.\nRelevant Files\n• notes.txt: created and edited in this session, not committed.\nImportant Context\n• The user declined the tool call that read .env again; it was not retried.\n• sleep 30; echo done and sleep 20; echo finished both returned Tool execution interrupted with no output; the user then switched to other commands.",
+              "kind": "compaction"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN:divider",
+          "sourceOffset": 210
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "offset": 210,
+          "pastedImagePaths": null,
+          "text": "/compact"
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:12:56.638Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e107YWDFivnBRVaqN",
+          "startedAt": "2027-01-15T08:12:47.401Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

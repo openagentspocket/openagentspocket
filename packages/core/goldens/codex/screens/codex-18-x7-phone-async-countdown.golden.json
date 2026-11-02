@@ -1,0 +1,128 @@
+{
+  "fixture": "codex-18-x7-phone-async-countdown.ansi",
+  "parse": {
+    "dialog": {
+      "body": [],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "f55ace73e5dce8257b052eec3edff607e57eb4db5e9a5e5d2bd06777c96baabc"
+      },
+      "focus": {
+        "checked": [],
+        "composerDraftGuard": false,
+        "feedbackOrdinal": null,
+        "focusedOrdinal": null,
+        "inputText": null,
+        "keysMissOptions": false,
+        "notesText": null
+      },
+      "kind": "codexAsyncCollapsed",
+      "note": null,
+      "options": [],
+      "positionLabel": null,
+      "progress": null,
+      "rows": {
+        "lowerBound": 32,
+        "upperBound": 35
+      },
+      "sourceSuffix": null,
+      "subject": {
+        "command": null,
+        "commandDescription": null,
+        "destinations": [],
+        "environment": null,
+        "filePath": null,
+        "host": null,
+        "notes": [],
+        "planFilePath": null,
+        "prompt": null,
+        "question": null,
+        "questionHeaders": [],
+        "reason": null,
+        "reviewAnswers": [],
+        "toolName": null,
+        "url": null,
+        "workspacePath": null
+      },
+      "title": "2 questions"
+    }
+  },
+  "plans": [
+    {
+      "action": {
+        "choose": {
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Open the questions first."
+        }
+      }
+    },
+    {
+      "action": {
+        "approvePlan": {
+          "note": "Keep it small"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Open the questions first."
+        }
+      }
+    },
+    {
+      "action": {
+        "submitSelection": []
+      },
+      "result": {
+        "error": {
+          "unsupported": "Open the questions first."
+        }
+      }
+    },
+    {
+      "action": "dismiss",
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": true,
+          "steps": [
+            {
+              "keys": [
+                "esc"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": "expandQuestions",
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "shift+left"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": "skipQuestion",
+      "result": {
+        "error": {
+          "unsupported": "Open the questions first."
+        }
+      }
+    }
+  ],
+  "program": "codex"
+}

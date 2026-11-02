@@ -1,0 +1,32 @@
+{
+  "columns": 119,
+  "rows": [
+    {"index":0,"runs":[[0,76,0,"SOCK=/tmp/heeler-iso-pi2/home/.config/herdr/herdr.sock HOME=/Users/developer"]],"text":"SOCK=/tmp/heeler-iso-pi2/home/.config/herdr/herdr.sock HOME=/Users/developer","width":76},
+    {"index":1,"runs":[[0,45,0,"developer@probe-host-placeholder-01 proj % pi"]],"text":"developer@probe-host-placeholder-01 proj % pi","width":45},
+    {"index":2,"runs":[[0,119,1,"───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────"]],"text":"───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────","width":119},
+    {"index":3,"runs":[],"text":"","width":0},
+    {"index":4,"runs":[[0,1,0," "],[1,21,2,"Trust project folder?"],[22,97,3,"                                                                                                 "]],"text":" Trust project folder?                                                                                                 ","width":119},
+    {"index":5,"runs":[[0,1,0," "],[1,32,2,"/private/tmp/heeler-iso-pi2/proj"],[33,86,3,"                                                                                      "]],"text":" /private/tmp/heeler-iso-pi2/proj                                                                                      ","width":119},
+    {"index":6,"runs":[[0,1,0," "],[1,118,3,"                                                                                                                      "]],"text":"                                                                                                                       ","width":119},
+    {"index":7,"runs":[[0,1,0," "],[1,116,2,"This allows pi to load .pi settings and resources, install missing project packages, and execute project extensions."],[117,2,0,"  "]],"text":" This allows pi to load .pi settings and resources, install missing project packages, and execute project extensions.  ","width":119},
+    {"index":8,"runs":[],"text":"","width":0},
+    {"index":9,"runs":[[0,1,0," "],[1,7,3,"→ Trust"],[8,111,0,"                                                                                                               "]],"text":" → Trust                                                                                                               ","width":119},
+    {"index":10,"runs":[[0,3,0,"   "],[3,49,4,"Trust parent folder (/private/tmp/heeler-iso-pi2)"],[52,67,0,"                                                                   "]],"text":"   Trust parent folder (/private/tmp/heeler-iso-pi2)                                                                   ","width":119},
+    {"index":11,"runs":[[0,3,0,"   "],[3,25,4,"Trust (this session only)"],[28,91,0,"                                                                                           "]],"text":"   Trust (this session only)                                                                                           ","width":119},
+    {"index":12,"runs":[[0,3,0,"   "],[3,12,4,"Do not trust"],[15,104,0,"                                                                                                        "]],"text":"   Do not trust                                                                                                        ","width":119},
+    {"index":13,"runs":[[0,3,0,"   "],[3,32,4,"Do not trust (this session only)"],[35,84,0,"                                                                                    "]],"text":"   Do not trust (this session only)                                                                                    ","width":119},
+    {"index":14,"runs":[],"text":"","width":0},
+    {"index":15,"runs":[[0,1,0," "],[1,2,5,"↑↓"],[3,9,6," navigate"],[12,2,0,"  "],[14,5,5,"enter"],[19,7,6," select"],[26,2,0,"  "],[28,13,5,"escape/ctrl+c"],[41,7,6," cancel"],[48,71,0,"                                                                       "]],"text":" ↑↓ navigate  enter select  escape/ctrl+c cancel                                                                       ","width":119},
+    {"index":16,"runs":[],"text":"","width":0},
+    {"index":17,"runs":[[0,119,1,"───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────"]],"text":"───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────","width":119}
+  ],
+  "styles": [
+    {"background":null,"foreground":null,"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[95,135,255]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[138,190,183]},"isBold":true,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[138,190,183]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[212,212,212]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[102,102,102]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[128,128,128]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false}
+  ]
+}

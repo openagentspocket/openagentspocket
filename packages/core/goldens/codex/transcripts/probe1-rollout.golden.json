@@ -1,0 +1,1006 @@
+{
+  "fixture": "probe1-rollout.jsonl",
+  "lineOffsets": [
+    0,
+    540,
+    857,
+    1475,
+    1930,
+    2385,
+    2864,
+    2974,
+    3403,
+    4206,
+    4758,
+    5264,
+    6074,
+    6580,
+    6698,
+    7430,
+    7976,
+    8635,
+    8753,
+    9269,
+    9816,
+    10591,
+    11109,
+    11227,
+    11913,
+    12460,
+    12959,
+    13761,
+    13879,
+    14428,
+    14775,
+    16997,
+    17315,
+    17745,
+    18551,
+    19106,
+    19614,
+    20426,
+    20934,
+    21052,
+    21786,
+    22336,
+    22999,
+    23117,
+    23596,
+    24146,
+    24784,
+    25051,
+    35291,
+    45531,
+    45846,
+    46305,
+    46416,
+    46846,
+    47647,
+    48197,
+    48882,
+    49000,
+    49327,
+    49828,
+    50378,
+    50848,
+    51622,
+    51740,
+    52289
+  ],
+  "program": "codex",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": {
+        "usedTokens": 28880,
+        "windowTokens": 258400
+      },
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: touch heeler-probe.txt in the current directory",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "sourceOffset": 4206
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会在当前目录执行 `touch heeler-probe.txt`。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/msg_0634475145d4ce57016ac47d0dad6087d090a663bbe86bc624",
+          "sourceOffset": 4758
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "exec-163d4faf-b0fa-4eda-959d-cb05239cfcaf",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "CommandExecution",
+              "note": null,
+              "output": {
+                "length": 774,
+                "offset": 9816,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "touch heeler-probe.txt"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/exec-163d4faf-b0fa-4eda-959d-cb05239cfcaf",
+          "sourceOffset": 9816
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已执行 `touch heeler-probe.txt`，成功。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/msg_0634475145d4ce57016ac47d54349887d095d35dc978e75374",
+          "sourceOffset": 12460
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: touch heeler-probe-2.txt in the current directory",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "sourceOffset": 18551
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会在当前目录执行 `touch heeler-probe-2.txt`。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/msg_0634475145d4ce57016ac47d8d343087d0a208892bc395fa1e",
+          "sourceOffset": 19106
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/~stopped",
+          "sourceOffset": 24784
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the request_user_input tool to ask me to pick A or B, then stop",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "sourceOffset": 47647
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_zbgbLihv2BSiL0Uoja5fxlHT",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "request_user_input",
+              "note": null,
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [
+                {
+                  "answer": "B",
+                  "header": "选择",
+                  "id": "pick_a_or_b",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": "选择 A。",
+                      "label": "A"
+                    },
+                    {
+                      "detail": "选择 B。",
+                      "label": "B"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "请选择 A 或 B。"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "请选择 A 或 B。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/call_zbgbLihv2BSiL0Uoja5fxlHT",
+          "sourceOffset": 48197
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "你选择了 B。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/msg_0634475145d4ce57016ac47deba9fc87d08716c2929382cd9c",
+          "sourceOffset": 50378
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "offset": 4206,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: touch heeler-probe.txt in the current directory"
+        },
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "offset": 18551,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: touch heeler-probe-2.txt in the current directory"
+        },
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "offset": 47647,
+          "pastedImagePaths": null,
+          "text": "Use the request_user_input tool to ask me to pick A or B, then stop"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-06T04:47:16.000Z",
+          "ending": "completed",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "startedAt": "2026-10-06T04:45:58.000Z"
+        },
+        {
+          "endedAt": "2026-10-06T04:48:38.000Z",
+          "ending": "interrupted",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "startedAt": "2026-10-06T04:48:11.000Z"
+        },
+        {
+          "endedAt": "2026-10-06T04:49:47.000Z",
+          "ending": "completed",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "startedAt": "2026-10-06T04:49:33.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": {
+        "usedTokens": 28880,
+        "windowTokens": 258400
+      },
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: touch heeler-probe.txt in the current directory",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "sourceOffset": 4206
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会在当前目录执行 `touch heeler-probe.txt`。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/msg_0634475145d4ce57016ac47d0dad6087d090a663bbe86bc624",
+          "sourceOffset": 4758
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "exec-163d4faf-b0fa-4eda-959d-cb05239cfcaf",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "CommandExecution",
+              "note": null,
+              "output": {
+                "length": 774,
+                "offset": 9816,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "touch heeler-probe.txt"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/exec-163d4faf-b0fa-4eda-959d-cb05239cfcaf",
+          "sourceOffset": 9816
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已执行 `touch heeler-probe.txt`，成功。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/msg_0634475145d4ce57016ac47d54349887d095d35dc978e75374",
+          "sourceOffset": 12460
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: touch heeler-probe-2.txt in the current directory",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "sourceOffset": 18551
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会在当前目录执行 `touch heeler-probe-2.txt`。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/msg_0634475145d4ce57016ac47d8d343087d0a208892bc395fa1e",
+          "sourceOffset": 19106
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/~stopped",
+          "sourceOffset": 24784
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the request_user_input tool to ask me to pick A or B, then stop",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "sourceOffset": 47647
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_zbgbLihv2BSiL0Uoja5fxlHT",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "request_user_input",
+              "note": null,
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [
+                {
+                  "answer": "B",
+                  "header": "选择",
+                  "id": "pick_a_or_b",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": "选择 A。",
+                      "label": "A"
+                    },
+                    {
+                      "detail": "选择 B。",
+                      "label": "B"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "请选择 A 或 B。"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "请选择 A 或 B。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/call_zbgbLihv2BSiL0Uoja5fxlHT",
+          "sourceOffset": 48197
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "你选择了 B。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/msg_0634475145d4ce57016ac47deba9fc87d08716c2929382cd9c",
+          "sourceOffset": 50378
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "offset": 4206,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: touch heeler-probe.txt in the current directory"
+        },
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "offset": 18551,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: touch heeler-probe-2.txt in the current directory"
+        },
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "offset": 47647,
+          "pastedImagePaths": null,
+          "text": "Use the request_user_input tool to ask me to pick A or B, then stop"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-06T04:47:16.000Z",
+          "ending": "completed",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "startedAt": "2026-10-06T04:45:58.000Z"
+        },
+        {
+          "endedAt": "2026-10-06T04:48:38.000Z",
+          "ending": "interrupted",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "startedAt": "2026-10-06T04:48:11.000Z"
+        },
+        {
+          "endedAt": "2026-10-06T04:49:47.000Z",
+          "ending": "completed",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "startedAt": "2026-10-06T04:49:33.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": {
+        "usedTokens": 28880,
+        "windowTokens": 258400
+      },
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: touch heeler-probe.txt in the current directory",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "sourceOffset": 4206
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会在当前目录执行 `touch heeler-probe.txt`。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/msg_0634475145d4ce57016ac47d0dad6087d090a663bbe86bc624",
+          "sourceOffset": 4758
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "exec-163d4faf-b0fa-4eda-959d-cb05239cfcaf",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "CommandExecution",
+              "note": null,
+              "output": {
+                "length": 774,
+                "offset": 9816,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "touch heeler-probe.txt"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/exec-163d4faf-b0fa-4eda-959d-cb05239cfcaf",
+          "sourceOffset": 9816
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已执行 `touch heeler-probe.txt`，成功。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/msg_0634475145d4ce57016ac47d54349887d095d35dc978e75374",
+          "sourceOffset": 12460
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: touch heeler-probe-2.txt in the current directory",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "sourceOffset": 18551
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会在当前目录执行 `touch heeler-probe-2.txt`。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/msg_0634475145d4ce57016ac47d8d343087d0a208892bc395fa1e",
+          "sourceOffset": 19106
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/~stopped",
+          "sourceOffset": 24784
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the request_user_input tool to ask me to pick A or B, then stop",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "sourceOffset": 47647
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_zbgbLihv2BSiL0Uoja5fxlHT",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "request_user_input",
+              "note": null,
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [
+                {
+                  "answer": "B",
+                  "header": "选择",
+                  "id": "pick_a_or_b",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": "选择 A。",
+                      "label": "A"
+                    },
+                    {
+                      "detail": "选择 B。",
+                      "label": "B"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "请选择 A 或 B。"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "请选择 A 或 B。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/call_zbgbLihv2BSiL0Uoja5fxlHT",
+          "sourceOffset": 48197
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "你选择了 B。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/msg_0634475145d4ce57016ac47deba9fc87d08716c2929382cd9c",
+          "sourceOffset": 50378
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "offset": 4206,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: touch heeler-probe.txt in the current directory"
+        },
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "offset": 18551,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: touch heeler-probe-2.txt in the current directory"
+        },
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "offset": 47647,
+          "pastedImagePaths": null,
+          "text": "Use the request_user_input tool to ask me to pick A or B, then stop"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-06T04:47:16.000Z",
+          "ending": "completed",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "startedAt": "2026-10-06T04:45:58.000Z"
+        },
+        {
+          "endedAt": "2026-10-06T04:48:38.000Z",
+          "ending": "interrupted",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "startedAt": "2026-10-06T04:48:11.000Z"
+        },
+        {
+          "endedAt": "2026-10-06T04:49:47.000Z",
+          "ending": "completed",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "startedAt": "2026-10-06T04:49:33.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": {
+        "usedTokens": 28880,
+        "windowTokens": 258400
+      },
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: touch heeler-probe.txt in the current directory",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "sourceOffset": 4206
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会在当前目录执行 `touch heeler-probe.txt`。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/msg_0634475145d4ce57016ac47d0dad6087d090a663bbe86bc624",
+          "sourceOffset": 4758
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "exec-163d4faf-b0fa-4eda-959d-cb05239cfcaf",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "CommandExecution",
+              "note": null,
+              "output": {
+                "length": 774,
+                "offset": 9816,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "touch heeler-probe.txt"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/exec-163d4faf-b0fa-4eda-959d-cb05239cfcaf",
+          "sourceOffset": 9816
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已执行 `touch heeler-probe.txt`，成功。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/msg_0634475145d4ce57016ac47d54349887d095d35dc978e75374",
+          "sourceOffset": 12460
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command: touch heeler-probe-2.txt in the current directory",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "sourceOffset": 18551
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我会在当前目录执行 `touch heeler-probe-2.txt`。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/msg_0634475145d4ce57016ac47d8d343087d0a208892bc395fa1e",
+          "sourceOffset": 19106
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "stopped",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Stopped"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/~stopped",
+          "sourceOffset": 24784
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the request_user_input tool to ask me to pick A or B, then stop",
+              "wasQueued": false
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "sourceOffset": 47647
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_zbgbLihv2BSiL0Uoja5fxlHT",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "question",
+              "name": "request_user_input",
+              "note": null,
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [
+                {
+                  "answer": "B",
+                  "header": "选择",
+                  "id": "pick_a_or_b",
+                  "isMultiSelect": false,
+                  "options": [
+                    {
+                      "detail": "选择 A。",
+                      "label": "A"
+                    },
+                    {
+                      "detail": "选择 B。",
+                      "label": "B"
+                    }
+                  ],
+                  "queuedAnswer": null,
+                  "recommendedIndex": null,
+                  "text": "请选择 A 或 B。"
+                }
+              ],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "请选择 A 或 B。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/call_zbgbLihv2BSiL0Uoja5fxlHT",
+          "sourceOffset": 48197
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "你选择了 B。"
+            }
+          },
+          "id": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/msg_0634475145d4ce57016ac47deba9fc87d08716c2929382cd9c",
+          "sourceOffset": 50378
+        }
+      ],
+      "latestPromptOffset": null,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "offset": 4206,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: touch heeler-probe.txt in the current directory"
+        },
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "offset": 18551,
+          "pastedImagePaths": null,
+          "text": "Run the shell command: touch heeler-probe-2.txt in the current directory"
+        },
+        {
+          "entryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "offset": 47647,
+          "pastedImagePaths": null,
+          "text": "Use the request_user_input tool to ask me to pick A or B, then stop"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-06T04:47:16.000Z",
+          "ending": "completed",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f88-6279-7973-9017-25ec49a11bfa/01a10f88-76d6-7171-b1b9-156bc24e7389",
+          "startedAt": "2026-10-06T04:45:58.000Z"
+        },
+        {
+          "endedAt": "2026-10-06T04:48:38.000Z",
+          "ending": "interrupted",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8a-69b8-7af3-bb2d-f8bf6134923e/01a10f8a-6a1e-76f3-8bae-3b2b53804ff8",
+          "startedAt": "2026-10-06T04:48:11.000Z"
+        },
+        {
+          "endedAt": "2026-10-06T04:49:47.000Z",
+          "ending": "completed",
+          "firstEntryID": "codex/01a10f87-e025-7fb1-8974-8dd09937767a/01a10f8b-aa51-75c0-9800-623f70a423fb/01a10f8b-aaac-7fe0-9d2d-5fc96f3caa19",
+          "startedAt": "2026-10-06T04:49:33.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "rolloutID": "01a10f87-e025-7fb1-8974-8dd09937767a",
+    "type": "CodexRolloutReducer"
+  },
+  "unsupportedFormat": null
+}

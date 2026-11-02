@@ -1,0 +1,6 @@
+{
+  "fixture": "pi-41-compact-nothing.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "pi"
+}

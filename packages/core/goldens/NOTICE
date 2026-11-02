@@ -1,0 +1,9 @@
+Agentico Chat goldens
+Copyright 2026 Agentico contributors
+
+The fixtures in this directory are copied unchanged from the Agentico iOS
+app's Tests/AgenticoTests/ChatFixtures, a modified version of Heeler
+(https://github.com/ZingerLittleBee/Heeler, forked at commit 150e1c72 on
+2026-10-29) licensed under the Apache License 2.0. The *.golden.json and
+*.screen.json files are that app's output for those fixtures. See README.md
+for how they were produced.

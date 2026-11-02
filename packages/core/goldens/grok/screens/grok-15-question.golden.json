@@ -1,0 +1,280 @@
+{
+  "fixture": "grok-15-question.ansi",
+  "parse": {
+    "dialog": {
+      "body": [
+        "How should we handle the README rename plan?"
+      ],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "3c897d94046f4322582e6010177b926540cb57e95d264a93ebfdddfc26c36a42"
+      },
+      "focus": {
+        "checked": [],
+        "composerDraftGuard": false,
+        "feedbackOrdinal": null,
+        "focusedOrdinal": 1,
+        "inputText": null,
+        "keysMissOptions": false,
+        "notesText": null
+      },
+      "kind": "grokQuestion",
+      "note": null,
+      "options": [
+        {
+          "detail": "Leave the three-step plan in the todos and change no files.",
+          "input": null,
+          "isChecked": null,
+          "isFocused": true,
+          "label": "Keep it as a todo (Recommended)",
+          "number": 1,
+          "ordinal": 1,
+          "role": "answer",
+          "shortcut": "1"
+        },
+        {
+          "detail": "Start the rename with the three steps in the todos.",
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Rename it now",
+          "number": 2,
+          "ordinal": 2,
+          "role": "answer",
+          "shortcut": "2"
+        },
+        {
+          "detail": null,
+          "input": {
+            "placeholder": "Type your answer here"
+          },
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Type your answer here",
+          "number": null,
+          "ordinal": 3,
+          "role": "otherText",
+          "shortcut": "z"
+        }
+      ],
+      "positionLabel": null,
+      "progress": null,
+      "rows": {
+        "lowerBound": 34,
+        "upperBound": 44
+      },
+      "sourceSuffix": null,
+      "subject": {
+        "command": null,
+        "commandDescription": null,
+        "destinations": [],
+        "environment": null,
+        "filePath": null,
+        "host": null,
+        "notes": [],
+        "planFilePath": null,
+        "prompt": null,
+        "question": "How should we handle the README rename plan?",
+        "questionHeaders": [],
+        "reason": null,
+        "reviewAnswers": [],
+        "toolName": null,
+        "url": null,
+        "workspacePath": null
+      },
+      "title": "How should we handle the README rename plan?"
+    }
+  },
+  "plans": [
+    {
+      "action": {
+        "choose": {
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "1"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Grok Build's questions. Write your own answer in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 1,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Grok Build's questions. Write your own answer in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "2"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Grok Build's questions. Write your own answer in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 2,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Grok Build's questions. Write your own answer in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Grok Build's questions. Write your own answer in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Grok Build's questions. Write your own answer in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 3,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Grok Build's questions. Write your own answer in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "error": {
+          "noSuchOption": 4
+        }
+      }
+    },
+    {
+      "action": {
+        "approvePlan": {
+          "note": "Keep it small"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "The question has no such action."
+        }
+      }
+    },
+    {
+      "action": {
+        "submitSelection": []
+      },
+      "result": {
+        "error": {
+          "unsupported": "The question has no such action."
+        }
+      }
+    },
+    {
+      "action": "dismiss",
+      "result": {
+        "error": {
+          "unsupported": "The question has no such action."
+        }
+      }
+    },
+    {
+      "action": "expandQuestions",
+      "result": {
+        "error": {
+          "unsupported": "The question has no such action."
+        }
+      }
+    },
+    {
+      "action": "skipQuestion",
+      "result": {
+        "error": {
+          "unsupported": "Skip Grok Build's question in the terminal."
+        }
+      }
+    }
+  ],
+  "program": "grok"
+}

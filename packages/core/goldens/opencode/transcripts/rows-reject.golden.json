@@ -1,0 +1,384 @@
+{
+  "fixture": "rows-reject.jsonl",
+  "lineOffsets": [
+    89,
+    89,
+    78,
+    79
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Read the .env file again and tell me the value of GREETING.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "sourceOffset": 78
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll read `GREETING` from `.env` again."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20Scuncha9YdE95b:0",
+          "sourceOffset": 79
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_1R5pluWKMv6B36AKTrwzPeKB",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read",
+              "note": null,
+              "output": {
+                "length": 931,
+                "offset": 79,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/.env"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20Scuncha9YdE95b:1",
+          "sourceOffset": 79
+        }
+      ],
+      "latestPromptOffset": 78,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "offset": 78,
+          "pastedImagePaths": null,
+          "text": "Read the .env file again and tell me the value of GREETING."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:05:42.454Z",
+          "ending": "interrupted",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "startedAt": "2027-01-15T08:05:26.404Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Read the .env file again and tell me the value of GREETING.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "sourceOffset": 78
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll read `GREETING` from `.env` again."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20Scuncha9YdE95b:0",
+          "sourceOffset": 79
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_1R5pluWKMv6B36AKTrwzPeKB",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read",
+              "note": null,
+              "output": {
+                "length": 931,
+                "offset": 79,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/.env"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20Scuncha9YdE95b:1",
+          "sourceOffset": 79
+        }
+      ],
+      "latestPromptOffset": 78,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "offset": 78,
+          "pastedImagePaths": null,
+          "text": "Read the .env file again and tell me the value of GREETING."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:05:42.454Z",
+          "ending": "interrupted",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "startedAt": "2027-01-15T08:05:26.404Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Read the .env file again and tell me the value of GREETING.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "sourceOffset": 78
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll read `GREETING` from `.env` again."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20Scuncha9YdE95b:0",
+          "sourceOffset": 79
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_1R5pluWKMv6B36AKTrwzPeKB",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read",
+              "note": null,
+              "output": {
+                "length": 931,
+                "offset": 79,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/.env"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20Scuncha9YdE95b:1",
+          "sourceOffset": 79
+        }
+      ],
+      "latestPromptOffset": 78,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "offset": 78,
+          "pastedImagePaths": null,
+          "text": "Read the .env file again and tell me the value of GREETING."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:05:42.454Z",
+          "ending": "interrupted",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "startedAt": "2027-01-15T08:05:26.404Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Read the .env file again and tell me the value of GREETING.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "sourceOffset": 78
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll read `GREETING` from `.env` again."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20Scuncha9YdE95b:0",
+          "sourceOffset": 79
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_1R5pluWKMv6B36AKTrwzPeKB",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read",
+              "note": null,
+              "output": {
+                "length": 931,
+                "offset": 79,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/.env"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20Scuncha9YdE95b:1",
+          "sourceOffset": 79
+        }
+      ],
+      "latestPromptOffset": 78,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "offset": 78,
+          "pastedImagePaths": null,
+          "text": "Read the .env file again and tell me the value of GREETING."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:05:42.454Z",
+          "ending": "interrupted",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10MCdcIjqFvnW8tw",
+          "startedAt": "2027-01-15T08:05:26.404Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

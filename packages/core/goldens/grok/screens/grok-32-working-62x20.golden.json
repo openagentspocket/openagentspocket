@@ -1,0 +1,6 @@
+{
+  "fixture": "grok-32-working-62x20.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "grok"
+}

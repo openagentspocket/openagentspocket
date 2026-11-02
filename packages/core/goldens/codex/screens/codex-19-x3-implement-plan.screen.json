@@ -1,0 +1,38 @@
+{
+  "columns": 86,
+  "rows": [
+    {"index":0,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":1,"runs":[[0,2,1,"• "],[2,50,0,"Model changed to gpt-6.1-sol medium for Plan mode."]],"text":"• Model changed to gpt-6.1-sol medium for Plan mode.","width":52},
+    {"index":2,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":3,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":4,"runs":[[0,2,2,"› "],[2,66,0,"Propose a two-step plan to create hello.txt. Do not ask questions."]],"text":"› Propose a two-step plan to create hello.txt. Do not ask questions.","width":68},
+    {"index":5,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":6,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":7,"runs":[[0,2,1,"• "],[2,13,0,"Proposed Plan"]],"text":"• Proposed Plan","width":15},
+    {"index":8,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":9,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":10,"runs":[[0,46,0,"  1. 创建 hello.txt，写入 hello 并以换行结尾。"]],"text":"  1. 创建 hello.txt，写入 hello 并以换行结尾。","width":46},
+    {"index":11,"runs":[[0,29,0,"  2. 读取文件，确认内容正确。"]],"text":"  2. 读取文件，确认内容正确。","width":29},
+    {"index":12,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":13,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":14,"runs":[[0,25,1,"  Worked for 4s • 7:35 AM"]],"text":"  Worked for 4s • 7:35 AM","width":25},
+    {"index":15,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":16,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":17,"runs":[[0,2,0,"  "],[2,20,3,"Implement this plan?"]],"text":"  Implement this plan?","width":22},
+    {"index":18,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":19,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":20,"runs":[[0,39,4,"› 1. Yes, implement this plan          "],[39,34,5,"Switch to Default and start coding"]],"text":"› 1. Yes, implement this plan          Switch to Default and start coding","width":73},
+    {"index":21,"runs":[[0,39,0,"  2. Yes, clear context and implement  "],[39,47,1,"Start a fresh thread (current context: 4% used)"]],"text":"  2. Yes, clear context and implement  Start a fresh thread (current context: 4% used)","width":86},
+    {"index":22,"runs":[[0,39,0,"  3. No, stay in Plan mode             "],[39,32,1,"Continue planning with the model"]],"text":"  3. No, stay in Plan mode             Continue planning with the model","width":71},
+    {"index":23,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":24,"runs":[[0,2,0,"  "],[2,23,1,"enter select · esc back"]],"text":"  enter select · esc back","width":25}
+  ],
+  "styles": [
+    {"background":null,"foreground":null,"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":null,"isBold":false,"isDim":true,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":null,"isBold":true,"isDim":true,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":null,"isBold":true,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":null,"isBold":true,"isDim":false,"isItalic":false,"isReverse":true},
+    {"background":null,"foreground":null,"isBold":false,"isDim":false,"isItalic":false,"isReverse":true}
+  ]
+}

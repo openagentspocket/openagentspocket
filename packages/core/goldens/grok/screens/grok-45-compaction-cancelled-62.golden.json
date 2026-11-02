@@ -1,0 +1,6 @@
+{
+  "fixture": "grok-45-compaction-cancelled-62.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "grok"
+}

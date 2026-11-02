@@ -1,0 +1,1476 @@
+{
+  "fixture": "background-tasks.jsonl",
+  "lineOffsets": [
+    0,
+    406,
+    1305,
+    2393,
+    3073,
+    4366,
+    4863,
+    5215,
+    5584,
+    6459,
+    7516,
+    8193,
+    9897,
+    10434,
+    10787,
+    11194,
+    12146,
+    12810,
+    13775,
+    14870,
+    15400,
+    15752,
+    16848,
+    17320,
+    17853,
+    18227,
+    18793,
+    19902,
+    20284,
+    21193,
+    21981,
+    22968,
+    23699,
+    24228,
+    24580
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Start the dev server in the background, then say started.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000003e-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Stopped in the background",
+              "output": {
+                "length": 1108,
+                "offset": 18793,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "ready on http://localhost:3000"
+              },
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Start the dev server",
+              "title": "npm run dev"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000003e-0",
+          "sourceOffset": 406
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "started"
+            }
+          },
+          "id": "grok:4366",
+          "sourceOffset": 4366
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the test suite.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:5215",
+          "sourceOffset": 5215
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000040-1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Finished in the background",
+              "output": {
+                "length": 1095,
+                "offset": 15752,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Running 42 tests\n42 passed"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Run the test suite",
+              "title": "make test"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000040-1",
+          "sourceOffset": 5584
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The tests are still running in the background."
+            }
+          },
+          "id": "grok:9897",
+          "sourceOffset": 9897
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Have a subagent audit the dependencies in the background.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:10787",
+          "sourceOffset": 10787
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000042-2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "spawn_subagent",
+              "note": "3 tool calls · 2 turns · 37s",
+              "output": {
+                "length": 565,
+                "offset": 18227,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "No dependency is outdated."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "explore",
+              "title": "Audit dependencies"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000042-2",
+          "sourceOffset": 11194
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The audit is running in the background."
+            }
+          },
+          "id": "grok:14870",
+          "sourceOffset": 14870
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "make test · Exit code 0",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background command finished"
+            }
+          },
+          "id": "grok:15752:notice",
+          "sourceOffset": 15752
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "All 42 tests passed."
+            }
+          },
+          "id": "grok:17320",
+          "sourceOffset": 17320
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "npm run dev · Killed",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background command finished"
+            }
+          },
+          "id": "grok:18793:notice",
+          "sourceOffset": 18793
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Tell me when the build finishes.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:19902",
+          "sourceOffset": 19902
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000051-3",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "other",
+              "name": "monitor",
+              "note": "Finished in the background",
+              "output": {
+                "length": 1204,
+                "offset": 24580,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "BUILD SUCCEEDED"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Start monitor: Wait for the build to finish"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000051-3",
+          "sourceOffset": 20284
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll tell you when the build finishes."
+            }
+          },
+          "id": "grok:23699",
+          "sourceOffset": 23699
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "[monitor] Wait for the build to finish · Exit code 0",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background task finished"
+            }
+          },
+          "id": "grok:24580:notice",
+          "sourceOffset": 24580
+        }
+      ],
+      "latestPromptOffset": 19902,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Start the dev server in the background, then say started."
+        },
+        {
+          "entryID": "grok:5215",
+          "offset": 5215,
+          "pastedImagePaths": null,
+          "text": "Run the test suite."
+        },
+        {
+          "entryID": "grok:10787",
+          "offset": 10787,
+          "pastedImagePaths": null,
+          "text": "Have a subagent audit the dependencies in the background."
+        },
+        {
+          "entryID": "grok:19902",
+          "offset": 19902,
+          "pastedImagePaths": null,
+          "text": "Tell me when the build finishes."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T20:00:13.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T20:00:10.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:00:52.260Z",
+          "ending": "completed",
+          "firstEntryID": "grok:5215",
+          "startedAt": "2026-10-19T20:00:20.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:01:03.150Z",
+          "ending": "completed",
+          "firstEntryID": "grok:10787",
+          "startedAt": "2026-10-19T20:01:00.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:01:22.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:17320",
+          "startedAt": "2026-10-19T20:01:20.500Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:02:13.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:19902",
+          "startedAt": "2026-10-19T20:02:10.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Start the dev server in the background, then say started.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000003e-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Stopped in the background",
+              "output": {
+                "length": 1108,
+                "offset": 18793,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "ready on http://localhost:3000"
+              },
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Start the dev server",
+              "title": "npm run dev"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000003e-0",
+          "sourceOffset": 406
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "started"
+            }
+          },
+          "id": "grok:4366",
+          "sourceOffset": 4366
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the test suite.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:5215",
+          "sourceOffset": 5215
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000040-1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Finished in the background",
+              "output": {
+                "length": 1095,
+                "offset": 15752,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Running 42 tests\n42 passed"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Run the test suite",
+              "title": "make test"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000040-1",
+          "sourceOffset": 5584
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The tests are still running in the background."
+            }
+          },
+          "id": "grok:9897",
+          "sourceOffset": 9897
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Have a subagent audit the dependencies in the background.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:10787",
+          "sourceOffset": 10787
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000042-2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "spawn_subagent",
+              "note": "3 tool calls · 2 turns · 37s",
+              "output": {
+                "length": 565,
+                "offset": 18227,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "No dependency is outdated."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "explore",
+              "title": "Audit dependencies"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000042-2",
+          "sourceOffset": 11194
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The audit is running in the background."
+            }
+          },
+          "id": "grok:14870",
+          "sourceOffset": 14870
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "make test · Exit code 0",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background command finished"
+            }
+          },
+          "id": "grok:15752:notice",
+          "sourceOffset": 15752
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "All 42 tests passed."
+            }
+          },
+          "id": "grok:17320",
+          "sourceOffset": 17320
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "npm run dev · Killed",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background command finished"
+            }
+          },
+          "id": "grok:18793:notice",
+          "sourceOffset": 18793
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Tell me when the build finishes.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:19902",
+          "sourceOffset": 19902
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000051-3",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "other",
+              "name": "monitor",
+              "note": "Finished in the background",
+              "output": {
+                "length": 1204,
+                "offset": 24580,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "BUILD SUCCEEDED"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Start monitor: Wait for the build to finish"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000051-3",
+          "sourceOffset": 20284
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll tell you when the build finishes."
+            }
+          },
+          "id": "grok:23699",
+          "sourceOffset": 23699
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "[monitor] Wait for the build to finish · Exit code 0",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background task finished"
+            }
+          },
+          "id": "grok:24580:notice",
+          "sourceOffset": 24580
+        }
+      ],
+      "latestPromptOffset": 19902,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Start the dev server in the background, then say started."
+        },
+        {
+          "entryID": "grok:5215",
+          "offset": 5215,
+          "pastedImagePaths": null,
+          "text": "Run the test suite."
+        },
+        {
+          "entryID": "grok:10787",
+          "offset": 10787,
+          "pastedImagePaths": null,
+          "text": "Have a subagent audit the dependencies in the background."
+        },
+        {
+          "entryID": "grok:19902",
+          "offset": 19902,
+          "pastedImagePaths": null,
+          "text": "Tell me when the build finishes."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T20:00:13.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T20:00:10.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:00:52.260Z",
+          "ending": "completed",
+          "firstEntryID": "grok:5215",
+          "startedAt": "2026-10-19T20:00:20.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:01:03.150Z",
+          "ending": "completed",
+          "firstEntryID": "grok:10787",
+          "startedAt": "2026-10-19T20:01:00.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:01:22.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:17320",
+          "startedAt": "2026-10-19T20:01:20.500Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:02:13.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:19902",
+          "startedAt": "2026-10-19T20:02:10.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Start the dev server in the background, then say started.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000003e-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Stopped in the background",
+              "output": {
+                "length": 1108,
+                "offset": 18793,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "ready on http://localhost:3000"
+              },
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Start the dev server",
+              "title": "npm run dev"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000003e-0",
+          "sourceOffset": 406
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "started"
+            }
+          },
+          "id": "grok:4366",
+          "sourceOffset": 4366
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the test suite.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:5215",
+          "sourceOffset": 5215
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000040-1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Finished in the background",
+              "output": {
+                "length": 1095,
+                "offset": 15752,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Running 42 tests\n42 passed"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Run the test suite",
+              "title": "make test"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000040-1",
+          "sourceOffset": 5584
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The tests are still running in the background."
+            }
+          },
+          "id": "grok:9897",
+          "sourceOffset": 9897
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Have a subagent audit the dependencies in the background.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:10787",
+          "sourceOffset": 10787
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000042-2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "spawn_subagent",
+              "note": "3 tool calls · 2 turns · 37s",
+              "output": {
+                "length": 565,
+                "offset": 18227,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "No dependency is outdated."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "explore",
+              "title": "Audit dependencies"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000042-2",
+          "sourceOffset": 11194
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The audit is running in the background."
+            }
+          },
+          "id": "grok:14870",
+          "sourceOffset": 14870
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "make test · Exit code 0",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background command finished"
+            }
+          },
+          "id": "grok:15752:notice",
+          "sourceOffset": 15752
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "All 42 tests passed."
+            }
+          },
+          "id": "grok:17320",
+          "sourceOffset": 17320
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "npm run dev · Killed",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background command finished"
+            }
+          },
+          "id": "grok:18793:notice",
+          "sourceOffset": 18793
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Tell me when the build finishes.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:19902",
+          "sourceOffset": 19902
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000051-3",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "other",
+              "name": "monitor",
+              "note": "Finished in the background",
+              "output": {
+                "length": 1204,
+                "offset": 24580,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "BUILD SUCCEEDED"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Start monitor: Wait for the build to finish"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000051-3",
+          "sourceOffset": 20284
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll tell you when the build finishes."
+            }
+          },
+          "id": "grok:23699",
+          "sourceOffset": 23699
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "[monitor] Wait for the build to finish · Exit code 0",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background task finished"
+            }
+          },
+          "id": "grok:24580:notice",
+          "sourceOffset": 24580
+        }
+      ],
+      "latestPromptOffset": 19902,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Start the dev server in the background, then say started."
+        },
+        {
+          "entryID": "grok:5215",
+          "offset": 5215,
+          "pastedImagePaths": null,
+          "text": "Run the test suite."
+        },
+        {
+          "entryID": "grok:10787",
+          "offset": 10787,
+          "pastedImagePaths": null,
+          "text": "Have a subagent audit the dependencies in the background."
+        },
+        {
+          "entryID": "grok:19902",
+          "offset": 19902,
+          "pastedImagePaths": null,
+          "text": "Tell me when the build finishes."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T20:00:13.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T20:00:10.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:00:52.260Z",
+          "ending": "completed",
+          "firstEntryID": "grok:5215",
+          "startedAt": "2026-10-19T20:00:20.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:01:03.150Z",
+          "ending": "completed",
+          "firstEntryID": "grok:10787",
+          "startedAt": "2026-10-19T20:01:00.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:01:22.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:17320",
+          "startedAt": "2026-10-19T20:01:20.500Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:02:13.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:19902",
+          "startedAt": "2026-10-19T20:02:10.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Start the dev server in the background, then say started.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000003e-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Stopped in the background",
+              "output": {
+                "length": 1108,
+                "offset": 18793,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "ready on http://localhost:3000"
+              },
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Start the dev server",
+              "title": "npm run dev"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000003e-0",
+          "sourceOffset": 406
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "started"
+            }
+          },
+          "id": "grok:4366",
+          "sourceOffset": 4366
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the test suite.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:5215",
+          "sourceOffset": 5215
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000040-1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Finished in the background",
+              "output": {
+                "length": 1095,
+                "offset": 15752,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Running 42 tests\n42 passed"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Run the test suite",
+              "title": "make test"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000040-1",
+          "sourceOffset": 5584
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The tests are still running in the background."
+            }
+          },
+          "id": "grok:9897",
+          "sourceOffset": 9897
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Have a subagent audit the dependencies in the background.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:10787",
+          "sourceOffset": 10787
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000042-2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "spawn_subagent",
+              "note": "3 tool calls · 2 turns · 37s",
+              "output": {
+                "length": 565,
+                "offset": 18227,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "No dependency is outdated."
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "explore",
+              "title": "Audit dependencies"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000042-2",
+          "sourceOffset": 11194
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The audit is running in the background."
+            }
+          },
+          "id": "grok:14870",
+          "sourceOffset": 14870
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "make test · Exit code 0",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background command finished"
+            }
+          },
+          "id": "grok:15752:notice",
+          "sourceOffset": 15752
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "All 42 tests passed."
+            }
+          },
+          "id": "grok:17320",
+          "sourceOffset": 17320
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "npm run dev · Killed",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background command finished"
+            }
+          },
+          "id": "grok:18793:notice",
+          "sourceOffset": 18793
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Tell me when the build finishes.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:19902",
+          "sourceOffset": 19902
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000051-3",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": 0,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "other",
+              "name": "monitor",
+              "note": "Finished in the background",
+              "output": {
+                "length": 1204,
+                "offset": 24580,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "BUILD SUCCEEDED"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "Start monitor: Wait for the build to finish"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000051-3",
+          "sourceOffset": 20284
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll tell you when the build finishes."
+            }
+          },
+          "id": "grok:23699",
+          "sourceOffset": 23699
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "[monitor] Wait for the build to finish · Exit code 0",
+              "kind": "taskNotification",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Background task finished"
+            }
+          },
+          "id": "grok:24580:notice",
+          "sourceOffset": 24580
+        }
+      ],
+      "latestPromptOffset": 19902,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Start the dev server in the background, then say started."
+        },
+        {
+          "entryID": "grok:5215",
+          "offset": 5215,
+          "pastedImagePaths": null,
+          "text": "Run the test suite."
+        },
+        {
+          "entryID": "grok:10787",
+          "offset": 10787,
+          "pastedImagePaths": null,
+          "text": "Have a subagent audit the dependencies in the background."
+        },
+        {
+          "entryID": "grok:19902",
+          "offset": 19902,
+          "pastedImagePaths": null,
+          "text": "Tell me when the build finishes."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T20:00:13.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T20:00:10.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:00:52.260Z",
+          "ending": "completed",
+          "firstEntryID": "grok:5215",
+          "startedAt": "2026-10-19T20:00:20.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:01:03.150Z",
+          "ending": "completed",
+          "firstEntryID": "grok:10787",
+          "startedAt": "2026-10-19T20:01:00.000Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:01:22.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:17320",
+          "startedAt": "2026-10-19T20:01:20.500Z"
+        },
+        {
+          "endedAt": "2026-10-19T20:02:13.090Z",
+          "ending": "completed",
+          "firstEntryID": "grok:19902",
+          "startedAt": "2026-10-19T20:02:10.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

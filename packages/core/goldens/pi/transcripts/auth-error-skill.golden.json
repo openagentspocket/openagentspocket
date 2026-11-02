@@ -1,0 +1,444 @@
+{
+  "fixture": "auth-error-skill.jsonl",
+  "lineOffsets": [
+    0,
+    155,
+    288,
+    421,
+    642,
+    1173,
+    1675
+  ],
+  "program": "pi",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "In one short sentence, what is 2+2?",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:7fc194d7",
+          "sourceOffset": 421
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "OAuth refresh failed for xai: xAI OAuth token refresh failed (HTTP 400): invalid_grant: Invalid or unknown refresh token",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Agent error"
+            }
+          },
+          "id": "pi:93910566:end",
+          "sourceOffset": 642
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": {
+                "arguments": "world args",
+                "name": "probe-hello"
+              },
+              "imageCount": 0,
+              "text": "/probe-hello world args",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:d3d6363a",
+          "sourceOffset": 1173
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "OAuth refresh failed for xai: xAI OAuth token refresh failed (HTTP 400): invalid_grant: Invalid or unknown refresh token",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Agent error"
+            }
+          },
+          "id": "pi:4fd05559:end",
+          "sourceOffset": 1675
+        }
+      ],
+      "latestPromptOffset": 1173,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:7fc194d7",
+          "offset": 421,
+          "pastedImagePaths": null,
+          "text": "In one short sentence, what is 2+2?"
+        },
+        {
+          "entryID": "pi:d3d6363a",
+          "offset": 1173,
+          "pastedImagePaths": null,
+          "text": "/skill:probe-hello world args"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-15T15:56:11.615Z",
+          "ending": "failed",
+          "firstEntryID": "pi:7fc194d7",
+          "startedAt": "2026-10-15T15:56:11.017Z"
+        },
+        {
+          "endedAt": "2026-10-15T15:57:56.428Z",
+          "ending": "failed",
+          "firstEntryID": "pi:d3d6363a",
+          "startedAt": "2026-10-15T15:57:55.721Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "In one short sentence, what is 2+2?",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:7fc194d7",
+          "sourceOffset": 421
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "OAuth refresh failed for xai: xAI OAuth token refresh failed (HTTP 400): invalid_grant: Invalid or unknown refresh token",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Agent error"
+            }
+          },
+          "id": "pi:93910566:end",
+          "sourceOffset": 642
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": {
+                "arguments": "world args",
+                "name": "probe-hello"
+              },
+              "imageCount": 0,
+              "text": "/probe-hello world args",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:d3d6363a",
+          "sourceOffset": 1173
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "OAuth refresh failed for xai: xAI OAuth token refresh failed (HTTP 400): invalid_grant: Invalid or unknown refresh token",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Agent error"
+            }
+          },
+          "id": "pi:4fd05559:end",
+          "sourceOffset": 1675
+        }
+      ],
+      "latestPromptOffset": 1173,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:7fc194d7",
+          "offset": 421,
+          "pastedImagePaths": null,
+          "text": "In one short sentence, what is 2+2?"
+        },
+        {
+          "entryID": "pi:d3d6363a",
+          "offset": 1173,
+          "pastedImagePaths": null,
+          "text": "/skill:probe-hello world args"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-15T15:56:11.615Z",
+          "ending": "failed",
+          "firstEntryID": "pi:7fc194d7",
+          "startedAt": "2026-10-15T15:56:11.017Z"
+        },
+        {
+          "endedAt": "2026-10-15T15:57:56.428Z",
+          "ending": "failed",
+          "firstEntryID": "pi:d3d6363a",
+          "startedAt": "2026-10-15T15:57:55.721Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "In one short sentence, what is 2+2?",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:7fc194d7",
+          "sourceOffset": 421
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "OAuth refresh failed for xai: xAI OAuth token refresh failed (HTTP 400): invalid_grant: Invalid or unknown refresh token",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Agent error"
+            }
+          },
+          "id": "pi:93910566:end",
+          "sourceOffset": 642
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": {
+                "arguments": "world args",
+                "name": "probe-hello"
+              },
+              "imageCount": 0,
+              "text": "/probe-hello world args",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:d3d6363a",
+          "sourceOffset": 1173
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "OAuth refresh failed for xai: xAI OAuth token refresh failed (HTTP 400): invalid_grant: Invalid or unknown refresh token",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Agent error"
+            }
+          },
+          "id": "pi:4fd05559:end",
+          "sourceOffset": 1675
+        }
+      ],
+      "latestPromptOffset": 1173,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:7fc194d7",
+          "offset": 421,
+          "pastedImagePaths": null,
+          "text": "In one short sentence, what is 2+2?"
+        },
+        {
+          "entryID": "pi:d3d6363a",
+          "offset": 1173,
+          "pastedImagePaths": null,
+          "text": "/skill:probe-hello world args"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-15T15:56:11.615Z",
+          "ending": "failed",
+          "firstEntryID": "pi:7fc194d7",
+          "startedAt": "2026-10-15T15:56:11.017Z"
+        },
+        {
+          "endedAt": "2026-10-15T15:57:56.428Z",
+          "ending": "failed",
+          "firstEntryID": "pi:d3d6363a",
+          "startedAt": "2026-10-15T15:57:55.721Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "In one short sentence, what is 2+2?",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:7fc194d7",
+          "sourceOffset": 421
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "OAuth refresh failed for xai: xAI OAuth token refresh failed (HTTP 400): invalid_grant: Invalid or unknown refresh token",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Agent error"
+            }
+          },
+          "id": "pi:93910566:end",
+          "sourceOffset": 642
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": {
+                "arguments": "world args",
+                "name": "probe-hello"
+              },
+              "imageCount": 0,
+              "text": "/probe-hello world args",
+              "wasQueued": false
+            }
+          },
+          "id": "pi:d3d6363a",
+          "sourceOffset": 1173
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "OAuth refresh failed for xai: xAI OAuth token refresh failed (HTTP 400): invalid_grant: Invalid or unknown refresh token",
+              "kind": "error",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Agent error"
+            }
+          },
+          "id": "pi:4fd05559:end",
+          "sourceOffset": 1675
+        }
+      ],
+      "latestPromptOffset": 1173,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "pi:7fc194d7",
+          "offset": 421,
+          "pastedImagePaths": null,
+          "text": "In one short sentence, what is 2+2?"
+        },
+        {
+          "entryID": "pi:d3d6363a",
+          "offset": 1173,
+          "pastedImagePaths": null,
+          "text": "/skill:probe-hello world args"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-15T15:56:11.615Z",
+          "ending": "failed",
+          "firstEntryID": "pi:7fc194d7",
+          "startedAt": "2026-10-15T15:56:11.017Z"
+        },
+        {
+          "endedAt": null,
+          "ending": null,
+          "firstEntryID": "pi:d3d6363a",
+          "startedAt": "2026-10-15T15:57:55.721Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "program": "pi",
+    "type": "PiTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

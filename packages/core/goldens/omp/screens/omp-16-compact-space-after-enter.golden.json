@@ -1,0 +1,6 @@
+{
+  "fixture": "omp-16-compact-space-after-enter.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "omp"
+}

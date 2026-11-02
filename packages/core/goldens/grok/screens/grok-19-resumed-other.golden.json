@@ -1,0 +1,6 @@
+{
+  "fixture": "grok-19-resumed-other.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "grok"
+}

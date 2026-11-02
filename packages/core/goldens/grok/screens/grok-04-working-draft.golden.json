@@ -1,0 +1,6 @@
+{
+  "fixture": "grok-04-working-draft.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "grok"
+}

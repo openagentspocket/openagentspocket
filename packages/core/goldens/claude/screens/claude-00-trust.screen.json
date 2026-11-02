@@ -1,0 +1,32 @@
+{
+  "columns": 119,
+  "rows": [
+    {"index":0,"runs":[[0,119,0,"developer@probe-host-placeholder-01 probe-claude % HOME=/Users/developer /Users/developer/.local/bin/claude --permissio"]],"text":"developer@probe-host-placeholder-01 probe-claude % HOME=/Users/developer /Users/developer/.local/bin/claude --permissio","width":119},
+    {"index":1,"runs":[[0,29,0,"n-mode default --model sonnet"]],"text":"n-mode default --model sonnet","width":29},
+    {"index":2,"runs":[],"text":"","width":0},
+    {"index":3,"runs":[[0,119,1,"───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────"]],"text":"───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────","width":119},
+    {"index":4,"runs":[[0,1,0," "],[1,20,2,"Accessing workspace:"]],"text":" Accessing workspace:","width":21},
+    {"index":5,"runs":[],"text":"","width":0},
+    {"index":6,"runs":[[0,1,0," "],[1,42,3,"/private/tmp/heeler-tmp-chat2/probe-claude"]],"text":" /private/tmp/heeler-tmp-chat2/probe-claude","width":43},
+    {"index":7,"runs":[],"text":"","width":0},
+    {"index":8,"runs":[[0,114,0," Quick safety check: Is this a project you created or one you trust? (Like your own code, a well-known open source"]],"text":" Quick safety check: Is this a project you created or one you trust? (Like your own code, a well-known open source","width":114},
+    {"index":9,"runs":[[0,95,0," project, or work from your team). If not, take a moment to review what's in this folder first."]],"text":" project, or work from your team). If not, take a moment to review what's in this folder first.","width":95},
+    {"index":10,"runs":[],"text":"","width":0},
+    {"index":11,"runs":[[0,62,0," Claude Code'll be able to read, edit, and execute files here."]],"text":" Claude Code'll be able to read, edit, and execute files here.","width":62},
+    {"index":12,"runs":[],"text":"","width":0},
+    {"index":13,"runs":[[0,1,0," "],[1,14,4,"Security guide"]],"text":" Security guide","width":15},
+    {"index":14,"runs":[],"text":"","width":0},
+    {"index":15,"runs":[[0,1,0," "],[1,10,5,"❯ No, exit"]],"text":" ❯ No, exit","width":11},
+    {"index":16,"runs":[[0,27,0,"   Yes, I trust this folder"]],"text":"   Yes, I trust this folder","width":27},
+    {"index":17,"runs":[],"text":"","width":0},
+    {"index":18,"runs":[[0,1,0," "],[1,32,4,"Enter to confirm · Esc to cancel"]],"text":" Enter to confirm · Esc to cancel","width":33}
+  ],
+  "styles": [
+    {"background":null,"foreground":null,"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[255,193,7]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[255,193,7]},"isBold":true,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":null,"isBold":true,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[153,153,153]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[177,185,249]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false}
+  ]
+}

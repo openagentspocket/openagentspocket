@@ -1,0 +1,6 @@
+{
+  "fixture": "grok-22-rewind-picker.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "grok"
+}

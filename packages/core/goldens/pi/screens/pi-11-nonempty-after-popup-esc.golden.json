@@ -1,0 +1,6 @@
+{
+  "fixture": "pi-11-nonempty-after-popup-esc.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "pi"
+}

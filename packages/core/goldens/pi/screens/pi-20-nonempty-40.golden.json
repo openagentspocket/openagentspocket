@@ -1,0 +1,6 @@
+{
+  "fixture": "pi-20-nonempty-40.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "pi"
+}

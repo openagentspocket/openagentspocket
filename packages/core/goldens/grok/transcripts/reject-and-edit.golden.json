@@ -1,0 +1,1261 @@
+{
+  "fixture": "reject-and-edit.jsonl",
+  "lineOffsets": [
+    0,
+    417,
+    940,
+    1887,
+    3164,
+    3933,
+    4870,
+    5276,
+    5833,
+    6739,
+    7996,
+    9467,
+    10034,
+    10834,
+    11222,
+    11765,
+    12661,
+    13932,
+    15385,
+    15977
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command chmod 600 README.md and tell me the result.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Running chmod 600 on README.md."
+            }
+          },
+          "id": "grok:417",
+          "sourceOffset": 417
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002d-8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Rejecting ended the turn",
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Set README.md to mode 600 and show result",
+              "title": "chmod 600 README.md; echo \"EXIT_CODE:$?\"; ls -l README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002d-8",
+          "sourceOffset": 940
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Create notes.txt with three lines: alpha, beta, gamma.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4870",
+          "sourceOffset": 4870
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我来创建 `notes.txt`，写入 alpha、beta、gamma 三行。"
+            }
+          },
+          "id": "grok:5276",
+          "sourceOffset": 5276
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002e-9",
+              "cardAnswer": null,
+              "diff": {
+                "added": 3,
+                "files": 1,
+                "removed": 0
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/home/dev/proj",
+                "files": [
+                  {
+                    "added": 3,
+                    "hunks": [
+                      {
+                        "lines": [
+                          "+alpha",
+                          "+beta",
+                          "+gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 0,
+                        "oldStart": 0
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "created",
+                    "lineCount": 3,
+                    "path": "/Users/developer/scratch/cap-grok-a/proj/notes.txt",
+                    "removed": 0
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 1470,
+                "offset": 7996,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/notes.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002e-9",
+          "sourceOffset": 5833
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已创建 `notes.txt`，内容为三行：\n\n```\nalpha\nbeta\ngamma\n```"
+            }
+          },
+          "id": "grok:9467",
+          "sourceOffset": 9467
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "In notes.txt replace beta with BETA.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:10834",
+          "sourceOffset": 10834
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will replace \"beta\" with \"BETA\" in notes.txt."
+            }
+          },
+          "id": "grok:11222",
+          "sourceOffset": 11222
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002f-10",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/home/dev/proj",
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          "-beta",
+                          "+BETA",
+                          " gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "/Users/developer/scratch/cap-grok-a/proj/notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 1452,
+                "offset": 13932,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/notes.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002f-10",
+          "sourceOffset": 11765
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已把 `notes.txt` 里的 `beta` 换成 `BETA`。文件现在是：\n\n```\nalpha\nBETA\ngamma\n```"
+            }
+          },
+          "id": "grok:15385",
+          "sourceOffset": 15385
+        }
+      ],
+      "latestPromptOffset": 10834,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Run the shell command chmod 600 README.md and tell me the result."
+        },
+        {
+          "entryID": "grok:4870",
+          "offset": 4870,
+          "pastedImagePaths": null,
+          "text": "Create notes.txt with three lines: alpha, beta, gamma."
+        },
+        {
+          "entryID": "grok:10834",
+          "offset": 10834,
+          "pastedImagePaths": null,
+          "text": "In notes.txt replace beta with BETA."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:07:44.207Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:07:32.681Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:08:24.271Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4870",
+          "startedAt": "2026-10-19T15:08:04.118Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:08:38.465Z",
+          "ending": "completed",
+          "firstEntryID": "grok:10834",
+          "startedAt": "2026-10-19T15:08:28.243Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command chmod 600 README.md and tell me the result.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Running chmod 600 on README.md."
+            }
+          },
+          "id": "grok:417",
+          "sourceOffset": 417
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002d-8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Rejecting ended the turn",
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Set README.md to mode 600 and show result",
+              "title": "chmod 600 README.md; echo \"EXIT_CODE:$?\"; ls -l README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002d-8",
+          "sourceOffset": 940
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Create notes.txt with three lines: alpha, beta, gamma.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4870",
+          "sourceOffset": 4870
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我来创建 `notes.txt`，写入 alpha、beta、gamma 三行。"
+            }
+          },
+          "id": "grok:5276",
+          "sourceOffset": 5276
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002e-9",
+              "cardAnswer": null,
+              "diff": {
+                "added": 3,
+                "files": 1,
+                "removed": 0
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/home/dev/proj",
+                "files": [
+                  {
+                    "added": 3,
+                    "hunks": [
+                      {
+                        "lines": [
+                          "+alpha",
+                          "+beta",
+                          "+gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 0,
+                        "oldStart": 0
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "created",
+                    "lineCount": 3,
+                    "path": "/Users/developer/scratch/cap-grok-a/proj/notes.txt",
+                    "removed": 0
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 1470,
+                "offset": 7996,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/notes.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002e-9",
+          "sourceOffset": 5833
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已创建 `notes.txt`，内容为三行：\n\n```\nalpha\nbeta\ngamma\n```"
+            }
+          },
+          "id": "grok:9467",
+          "sourceOffset": 9467
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "In notes.txt replace beta with BETA.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:10834",
+          "sourceOffset": 10834
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will replace \"beta\" with \"BETA\" in notes.txt."
+            }
+          },
+          "id": "grok:11222",
+          "sourceOffset": 11222
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002f-10",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/home/dev/proj",
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          "-beta",
+                          "+BETA",
+                          " gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "/Users/developer/scratch/cap-grok-a/proj/notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 1452,
+                "offset": 13932,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/notes.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002f-10",
+          "sourceOffset": 11765
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已把 `notes.txt` 里的 `beta` 换成 `BETA`。文件现在是：\n\n```\nalpha\nBETA\ngamma\n```"
+            }
+          },
+          "id": "grok:15385",
+          "sourceOffset": 15385
+        }
+      ],
+      "latestPromptOffset": 10834,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Run the shell command chmod 600 README.md and tell me the result."
+        },
+        {
+          "entryID": "grok:4870",
+          "offset": 4870,
+          "pastedImagePaths": null,
+          "text": "Create notes.txt with three lines: alpha, beta, gamma."
+        },
+        {
+          "entryID": "grok:10834",
+          "offset": 10834,
+          "pastedImagePaths": null,
+          "text": "In notes.txt replace beta with BETA."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:07:44.207Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:07:32.681Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:08:24.271Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4870",
+          "startedAt": "2026-10-19T15:08:04.118Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:08:38.465Z",
+          "ending": "completed",
+          "firstEntryID": "grok:10834",
+          "startedAt": "2026-10-19T15:08:28.243Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command chmod 600 README.md and tell me the result.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Running chmod 600 on README.md."
+            }
+          },
+          "id": "grok:417",
+          "sourceOffset": 417
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002d-8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Rejecting ended the turn",
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Set README.md to mode 600 and show result",
+              "title": "chmod 600 README.md; echo \"EXIT_CODE:$?\"; ls -l README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002d-8",
+          "sourceOffset": 940
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Create notes.txt with three lines: alpha, beta, gamma.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4870",
+          "sourceOffset": 4870
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我来创建 `notes.txt`，写入 alpha、beta、gamma 三行。"
+            }
+          },
+          "id": "grok:5276",
+          "sourceOffset": 5276
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002e-9",
+              "cardAnswer": null,
+              "diff": {
+                "added": 3,
+                "files": 1,
+                "removed": 0
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/home/dev/proj",
+                "files": [
+                  {
+                    "added": 3,
+                    "hunks": [
+                      {
+                        "lines": [
+                          "+alpha",
+                          "+beta",
+                          "+gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 0,
+                        "oldStart": 0
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "created",
+                    "lineCount": 3,
+                    "path": "/Users/developer/scratch/cap-grok-a/proj/notes.txt",
+                    "removed": 0
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 1470,
+                "offset": 7996,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/notes.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002e-9",
+          "sourceOffset": 5833
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已创建 `notes.txt`，内容为三行：\n\n```\nalpha\nbeta\ngamma\n```"
+            }
+          },
+          "id": "grok:9467",
+          "sourceOffset": 9467
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "In notes.txt replace beta with BETA.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:10834",
+          "sourceOffset": 10834
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will replace \"beta\" with \"BETA\" in notes.txt."
+            }
+          },
+          "id": "grok:11222",
+          "sourceOffset": 11222
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002f-10",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/home/dev/proj",
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          "-beta",
+                          "+BETA",
+                          " gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "/Users/developer/scratch/cap-grok-a/proj/notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 1452,
+                "offset": 13932,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/notes.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002f-10",
+          "sourceOffset": 11765
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已把 `notes.txt` 里的 `beta` 换成 `BETA`。文件现在是：\n\n```\nalpha\nBETA\ngamma\n```"
+            }
+          },
+          "id": "grok:15385",
+          "sourceOffset": 15385
+        }
+      ],
+      "latestPromptOffset": 10834,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Run the shell command chmod 600 README.md and tell me the result."
+        },
+        {
+          "entryID": "grok:4870",
+          "offset": 4870,
+          "pastedImagePaths": null,
+          "text": "Create notes.txt with three lines: alpha, beta, gamma."
+        },
+        {
+          "entryID": "grok:10834",
+          "offset": 10834,
+          "pastedImagePaths": null,
+          "text": "In notes.txt replace beta with BETA."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:07:44.207Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:07:32.681Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:08:24.271Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4870",
+          "startedAt": "2026-10-19T15:08:04.118Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:08:38.465Z",
+          "ending": "completed",
+          "firstEntryID": "grok:10834",
+          "startedAt": "2026-10-19T15:08:28.243Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command chmod 600 README.md and tell me the result.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "Running chmod 600 on README.md."
+            }
+          },
+          "id": "grok:417",
+          "sourceOffset": 417
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002d-8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "run_terminal_command",
+              "note": "Rejecting ended the turn",
+              "output": null,
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "declined",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "Set README.md to mode 600 and show result",
+              "title": "chmod 600 README.md; echo \"EXIT_CODE:$?\"; ls -l README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002d-8",
+          "sourceOffset": 940
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Create notes.txt with three lines: alpha, beta, gamma.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4870",
+          "sourceOffset": 4870
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "我来创建 `notes.txt`，写入 alpha、beta、gamma 三行。"
+            }
+          },
+          "id": "grok:5276",
+          "sourceOffset": 5276
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002e-9",
+              "cardAnswer": null,
+              "diff": {
+                "added": 3,
+                "files": 1,
+                "removed": 0
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/home/dev/proj",
+                "files": [
+                  {
+                    "added": 3,
+                    "hunks": [
+                      {
+                        "lines": [
+                          "+alpha",
+                          "+beta",
+                          "+gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 0,
+                        "oldStart": 0
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "created",
+                    "lineCount": 3,
+                    "path": "/Users/developer/scratch/cap-grok-a/proj/notes.txt",
+                    "removed": 0
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 1470,
+                "offset": 7996,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/notes.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002e-9",
+          "sourceOffset": 5833
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已创建 `notes.txt`，内容为三行：\n\n```\nalpha\nbeta\ngamma\n```"
+            }
+          },
+          "id": "grok:9467",
+          "sourceOffset": 9467
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "In notes.txt replace beta with BETA.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:10834",
+          "sourceOffset": 10834
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "I will replace \"beta\" with \"BETA\" in notes.txt."
+            }
+          },
+          "id": "grok:11222",
+          "sourceOffset": 11222
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000002f-10",
+              "cardAnswer": null,
+              "diff": {
+                "added": 1,
+                "files": 1,
+                "removed": 1
+              },
+              "exitCode": null,
+              "fileChanges": {
+                "directory": "/home/dev/proj",
+                "files": [
+                  {
+                    "added": 1,
+                    "hunks": [
+                      {
+                        "lines": [
+                          " alpha",
+                          "-beta",
+                          "+BETA",
+                          " gamma"
+                        ],
+                        "newLines": 3,
+                        "newStart": 1,
+                        "oldLines": 3,
+                        "oldStart": 1
+                      }
+                    ],
+                    "isLineCut": false,
+                    "kind": "updated",
+                    "lineCount": 4,
+                    "path": "/Users/developer/scratch/cap-grok-a/proj/notes.txt",
+                    "removed": 1
+                  }
+                ],
+                "isShared": false,
+                "isSkipped": false,
+                "isUnavailable": false,
+                "moreFiles": 0,
+                "movesWorkingTree": false
+              },
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 1452,
+                "offset": 13932,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/notes.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000002f-10",
+          "sourceOffset": 11765
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "已把 `notes.txt` 里的 `beta` 换成 `BETA`。文件现在是：\n\n```\nalpha\nBETA\ngamma\n```"
+            }
+          },
+          "id": "grok:15385",
+          "sourceOffset": 15385
+        }
+      ],
+      "latestPromptOffset": 10834,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Run the shell command chmod 600 README.md and tell me the result."
+        },
+        {
+          "entryID": "grok:4870",
+          "offset": 4870,
+          "pastedImagePaths": null,
+          "text": "Create notes.txt with three lines: alpha, beta, gamma."
+        },
+        {
+          "entryID": "grok:10834",
+          "offset": 10834,
+          "pastedImagePaths": null,
+          "text": "In notes.txt replace beta with BETA."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:07:44.207Z",
+          "ending": "interrupted",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:07:32.681Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:08:24.271Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4870",
+          "startedAt": "2026-10-19T15:08:04.118Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:08:38.465Z",
+          "ending": "completed",
+          "firstEntryID": "grok:10834",
+          "startedAt": "2026-10-19T15:08:28.243Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

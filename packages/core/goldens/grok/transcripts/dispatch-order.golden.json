@@ -1,0 +1,261 @@
+{
+  "fixture": "dispatch-order.jsonl",
+  "lineOffsets": [
+    0,
+    376,
+    769,
+    1264
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word pear.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "grok:769",
+          "sourceOffset": 769
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Reply with the word pear."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:16:11.776Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:16:07.404Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word pear.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "grok:769",
+          "sourceOffset": 769
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Reply with the word pear."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:16:11.776Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:16:07.404Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word pear.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "grok:769",
+          "sourceOffset": 769
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Reply with the word pear."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:16:11.776Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:16:07.404Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word pear.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "pear"
+            }
+          },
+          "id": "grok:769",
+          "sourceOffset": 769
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Reply with the word pear."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:16:11.776Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:16:07.404Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

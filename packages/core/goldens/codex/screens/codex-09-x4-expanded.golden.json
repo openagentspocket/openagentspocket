@@ -1,0 +1,288 @@
+{
+  "fixture": "codex-09-x4-expanded.ansi",
+  "parse": {
+    "dialog": {
+      "body": [],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "ec13bc091b3cff0f40175101cec288eb879660bc62d87acb72a535a98ae37f49"
+      },
+      "focus": {
+        "checked": [],
+        "composerDraftGuard": false,
+        "feedbackOrdinal": null,
+        "focusedOrdinal": 1,
+        "inputText": null,
+        "keysMissOptions": false,
+        "notesText": null
+      },
+      "kind": "codexAsyncQuestion",
+      "note": null,
+      "options": [
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": true,
+          "label": "Apple",
+          "number": 1,
+          "ordinal": 1,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Banana",
+          "number": 2,
+          "ordinal": 2,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Other",
+          "number": 3,
+          "ordinal": 3,
+          "role": "otherText",
+          "shortcut": null
+        }
+      ],
+      "positionLabel": "1 of 2",
+      "progress": "Pick a fruit",
+      "rows": {
+        "lowerBound": 31,
+        "upperBound": 39
+      },
+      "sourceSuffix": null,
+      "subject": {
+        "command": null,
+        "commandDescription": null,
+        "destinations": [],
+        "environment": null,
+        "filePath": null,
+        "host": null,
+        "notes": [],
+        "planFilePath": null,
+        "prompt": null,
+        "question": "Pick a fruit",
+        "questionHeaders": [],
+        "reason": null,
+        "reviewAnswers": [],
+        "toolName": null,
+        "url": null,
+        "workspacePath": null
+      },
+      "title": "Pick a fruit"
+    }
+  },
+  "plans": [
+    {
+      "action": {
+        "choose": {
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": {
+            "queuedNotice": "Pick a fruit"
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "1"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 1,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": {
+            "queuedNotice": "Pick a fruit"
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "2"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 2,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico does not answer with Codex's Other yet."
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 3,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "error": {
+          "noSuchOption": 4
+        }
+      }
+    },
+    {
+      "action": {
+        "approvePlan": {
+          "note": "Keep it small"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": {
+        "submitSelection": []
+      },
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": "dismiss",
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": "expandQuestions",
+      "result": {
+        "error": {
+          "unsupported": "Codex offers only an answer or a skip here."
+        }
+      }
+    },
+    {
+      "action": "skipQuestion",
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "ctrl+]"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "program": "codex"
+}

@@ -1,0 +1,6 @@
+{
+  "fixture": "grok-27-compacting.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "grok"
+}

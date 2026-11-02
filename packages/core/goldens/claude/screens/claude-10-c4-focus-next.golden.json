@@ -1,0 +1,582 @@
+{
+  "fixture": "claude-10-c4-focus-next.ansi",
+  "parse": {
+    "dialog": {
+      "body": [],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "60a591149bb0135139831b9612cf99bbc8840771db6321bd1377cd03a01d0494"
+      },
+      "focus": {
+        "checked": [
+          1,
+          3
+        ],
+        "composerDraftGuard": false,
+        "feedbackOrdinal": null,
+        "focusedOrdinal": 5,
+        "inputText": null,
+        "keysMissOptions": false,
+        "notesText": null
+      },
+      "kind": "claudeQuestion",
+      "note": null,
+      "options": [
+        {
+          "detail": "Red",
+          "input": null,
+          "isChecked": true,
+          "isFocused": false,
+          "label": "Red",
+          "number": 1,
+          "ordinal": 1,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": "Green",
+          "input": null,
+          "isChecked": false,
+          "isFocused": false,
+          "label": "Green",
+          "number": 2,
+          "ordinal": 2,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": "Blue",
+          "input": null,
+          "isChecked": true,
+          "isFocused": false,
+          "label": "Blue",
+          "number": 3,
+          "ordinal": 3,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": null,
+          "input": {
+            "placeholder": "Type something"
+          },
+          "isChecked": false,
+          "isFocused": false,
+          "label": "Type something",
+          "number": 4,
+          "ordinal": 4,
+          "role": "otherText",
+          "shortcut": null
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": true,
+          "label": "Next",
+          "number": null,
+          "ordinal": 5,
+          "role": "next",
+          "shortcut": null
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Chat about this",
+          "number": 5,
+          "ordinal": 6,
+          "role": "chat",
+          "shortcut": null
+        }
+      ],
+      "positionLabel": null,
+      "progress": "Colors",
+      "rows": {
+        "lowerBound": 23,
+        "upperBound": 40
+      },
+      "sourceSuffix": null,
+      "subject": {
+        "command": null,
+        "commandDescription": null,
+        "destinations": [],
+        "environment": null,
+        "filePath": null,
+        "host": null,
+        "notes": [],
+        "planFilePath": null,
+        "prompt": null,
+        "question": "Which colors?",
+        "questionHeaders": [
+          "Colors",
+          "Size"
+        ],
+        "reason": null,
+        "reviewAnswers": [],
+        "toolName": null,
+        "url": null,
+        "workspacePath": null
+      },
+      "title": "Which colors?"
+    }
+  },
+  "plans": [
+    {
+      "action": {
+        "choose": {
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "A multi-select question takes its answers as a set."
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 1,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Option 1 is not a text field."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "A multi-select question takes its answers as a set."
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 2,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Option 2 is not a text field."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "A multi-select question takes its answers as a set."
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 3,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Option 3 is not a text field."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "error": "needsText"
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 4,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico does not type into a multi-select question's Other row."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 5
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "enter"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Size"
+              }
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "enter"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Size"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 5
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 5,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Option 5 is not a text field."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 6
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "5"
+              ]
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "5"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 6
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Only Claude's Bash and file dialogs take a note with the answer."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 6,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Option 6 is not a text field."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 7
+        }
+      },
+      "result": {
+        "error": {
+          "noSuchOption": 7
+        }
+      }
+    },
+    {
+      "action": {
+        "approvePlan": {
+          "note": "Keep it small"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "This dialog does not offer approving with feedback."
+        }
+      }
+    },
+    {
+      "action": {
+        "submitSelection": []
+      },
+      "result": {
+        "error": "emptySelection"
+      }
+    },
+    {
+      "action": {
+        "submitSelection": [
+          1
+        ]
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "3"
+              ]
+            },
+            {
+              "expect": {
+                "checked": [
+                  1
+                ]
+              }
+            },
+            {
+              "keys": [
+                "enter"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Size"
+              }
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "3"
+              ]
+            },
+            {
+              "expect": {
+                "checked": [
+                  1
+                ]
+              }
+            },
+            {
+              "keys": [
+                "enter"
+              ]
+            },
+            {
+              "expect": {
+                "page": "Size"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "submitSelection": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "result": {
+        "error": {
+          "unsupported": "Option 4 is not an answer Agentico can check."
+        }
+      }
+    },
+    {
+      "action": "dismiss",
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChange",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "esc"
+              ]
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "esc"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": "expandQuestions",
+      "result": {
+        "error": {
+          "unsupported": "Only Codex queues questions."
+        }
+      }
+    },
+    {
+      "action": "skipQuestion",
+      "result": {
+        "error": {
+          "unsupported": "Only Codex queues questions."
+        }
+      }
+    }
+  ],
+  "program": "claude"
+}

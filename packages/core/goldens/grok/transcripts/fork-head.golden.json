@@ -1,0 +1,303 @@
+{
+  "fixture": "fork-head.jsonl",
+  "lineOffsets": [
+    0,
+    392,
+    767,
+    1297,
+    1791,
+    2585
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: two. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:392",
+          "sourceOffset": 392
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "The user wants exactly the word \"two.\""
+            }
+          },
+          "id": "grok:767",
+          "sourceOffset": 767
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "two."
+            }
+          },
+          "id": "grok:1297",
+          "sourceOffset": 1297
+        }
+      ],
+      "latestPromptOffset": 392,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:392",
+          "offset": 392,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: two. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:58:23.142Z",
+          "ending": "completed",
+          "firstEntryID": "grok:392",
+          "startedAt": "2026-10-19T14:58:19.634Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: two. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:392",
+          "sourceOffset": 392
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "The user wants exactly the word \"two.\""
+            }
+          },
+          "id": "grok:767",
+          "sourceOffset": 767
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "two."
+            }
+          },
+          "id": "grok:1297",
+          "sourceOffset": 1297
+        }
+      ],
+      "latestPromptOffset": 392,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:392",
+          "offset": 392,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: two. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:58:23.142Z",
+          "ending": "completed",
+          "firstEntryID": "grok:392",
+          "startedAt": "2026-10-19T14:58:19.634Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: two. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:392",
+          "sourceOffset": 392
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "The user wants exactly the word \"two.\""
+            }
+          },
+          "id": "grok:767",
+          "sourceOffset": 767
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "two."
+            }
+          },
+          "id": "grok:1297",
+          "sourceOffset": 1297
+        }
+      ],
+      "latestPromptOffset": 392,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:392",
+          "offset": 392,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: two. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:58:23.142Z",
+          "ending": "completed",
+          "firstEntryID": "grok:392",
+          "startedAt": "2026-10-19T14:58:19.634Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: two. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:392",
+          "sourceOffset": 392
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "The user wants exactly the word \"two.\""
+            }
+          },
+          "id": "grok:767",
+          "sourceOffset": 767
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "two."
+            }
+          },
+          "id": "grok:1297",
+          "sourceOffset": 1297
+        }
+      ],
+      "latestPromptOffset": 392,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:392",
+          "offset": 392,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: two. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:58:23.142Z",
+          "ending": "completed",
+          "firstEntryID": "grok:392",
+          "startedAt": "2026-10-19T14:58:19.634Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

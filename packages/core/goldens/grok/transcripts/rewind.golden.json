@@ -1,0 +1,404 @@
+{
+  "fixture": "rewind.jsonl",
+  "lineOffsets": [
+    0,
+    391,
+    765,
+    1259,
+    2060,
+    2437,
+    2933,
+    3725,
+    4054,
+    4456,
+    4953
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: one. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one"
+            }
+          },
+          "id": "grok:765",
+          "sourceOffset": 765
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: three.Reply with exactly: five. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4054",
+          "sourceOffset": 4054
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "five"
+            }
+          },
+          "id": "grok:4456",
+          "sourceOffset": 4456
+        }
+      ],
+      "latestPromptOffset": 4054,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: one. "
+        },
+        {
+          "entryID": "grok:4054",
+          "offset": 4054,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: three.Reply with exactly: five. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:56:43.262Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T14:56:30.477Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:02:00.410Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4054",
+          "startedAt": "2026-10-19T15:01:49.277Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: one. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one"
+            }
+          },
+          "id": "grok:765",
+          "sourceOffset": 765
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: three.Reply with exactly: five. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4054",
+          "sourceOffset": 4054
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "five"
+            }
+          },
+          "id": "grok:4456",
+          "sourceOffset": 4456
+        }
+      ],
+      "latestPromptOffset": 4054,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: one. "
+        },
+        {
+          "entryID": "grok:4054",
+          "offset": 4054,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: three.Reply with exactly: five. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:56:43.262Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T14:56:30.477Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:02:00.410Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4054",
+          "startedAt": "2026-10-19T15:01:49.277Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: one. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one"
+            }
+          },
+          "id": "grok:765",
+          "sourceOffset": 765
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: three.Reply with exactly: five. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4054",
+          "sourceOffset": 4054
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "five"
+            }
+          },
+          "id": "grok:4456",
+          "sourceOffset": 4456
+        }
+      ],
+      "latestPromptOffset": 4054,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: one. "
+        },
+        {
+          "entryID": "grok:4054",
+          "offset": 4054,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: three.Reply with exactly: five. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:56:43.262Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T14:56:30.477Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:02:00.410Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4054",
+          "startedAt": "2026-10-19T15:01:49.277Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: one. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:391",
+          "sourceOffset": 391
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one"
+            }
+          },
+          "id": "grok:765",
+          "sourceOffset": 765
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: three.Reply with exactly: five. ",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:4054",
+          "sourceOffset": 4054
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "five"
+            }
+          },
+          "id": "grok:4456",
+          "sourceOffset": 4456
+        }
+      ],
+      "latestPromptOffset": 4054,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:391",
+          "offset": 391,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: one. "
+        },
+        {
+          "entryID": "grok:4054",
+          "offset": 4054,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: three.Reply with exactly: five. "
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T14:56:43.262Z",
+          "ending": "completed",
+          "firstEntryID": "grok:391",
+          "startedAt": "2026-10-19T14:56:30.477Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:02:00.410Z",
+          "ending": "completed",
+          "firstEntryID": "grok:4054",
+          "startedAt": "2026-10-19T15:01:49.277Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

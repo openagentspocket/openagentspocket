@@ -1,0 +1,360 @@
+{
+  "fixture": "probe2-subagent.jsonl",
+  "lineOffsets": [
+    0,
+    685,
+    991,
+    1288,
+    1579,
+    1878,
+    2176,
+    2477,
+    2767,
+    3067,
+    3368,
+    3675,
+    5232,
+    6061,
+    6362,
+    6668,
+    6973,
+    7281,
+    7588
+  ],
+  "program": "claude",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Your only task: use the Bash tool to run `touch sub.txt` in the current working directory (/private/tmp/heeler-tmp-chat2/probe-claude). Do nothing else. Report whether it succeeded.",
+              "wasQueued": false
+            }
+          },
+          "id": "user:8f6936f5-8d74-4614-9d04-817d15c9aa6c",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "toolu_01NU1YhGEUWFr6hC9FPxWXwB",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "Bash",
+              "note": null,
+              "output": {
+                "length": 828,
+                "offset": 5232,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "ok"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "touch sub.txt && echo ok",
+              "title": "Create empty file sub.txt"
+            }
+          },
+          "id": "tool:toolu_01NU1YhGEUWFr6hC9FPxWXwB",
+          "sourceOffset": 3675
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "成功了。`touch sub.txt` 在 /private/tmp/heeler-tmp-chat2/probe-claude 下执行完毕,没有报错,输出了 \"ok\"。"
+            }
+          },
+          "id": "text:82723790-3667-4f64-ae54-79504aea2337",
+          "sourceOffset": 7588
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [],
+      "title": null,
+      "turns": [],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Your only task: use the Bash tool to run `touch sub.txt` in the current working directory (/private/tmp/heeler-tmp-chat2/probe-claude). Do nothing else. Report whether it succeeded.",
+              "wasQueued": false
+            }
+          },
+          "id": "user:8f6936f5-8d74-4614-9d04-817d15c9aa6c",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "toolu_01NU1YhGEUWFr6hC9FPxWXwB",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "Bash",
+              "note": null,
+              "output": {
+                "length": 828,
+                "offset": 5232,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "ok"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "touch sub.txt && echo ok",
+              "title": "Create empty file sub.txt"
+            }
+          },
+          "id": "tool:toolu_01NU1YhGEUWFr6hC9FPxWXwB",
+          "sourceOffset": 3675
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "成功了。`touch sub.txt` 在 /private/tmp/heeler-tmp-chat2/probe-claude 下执行完毕,没有报错,输出了 \"ok\"。"
+            }
+          },
+          "id": "text:82723790-3667-4f64-ae54-79504aea2337",
+          "sourceOffset": 7588
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [],
+      "title": null,
+      "turns": [],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Your only task: use the Bash tool to run `touch sub.txt` in the current working directory (/private/tmp/heeler-tmp-chat2/probe-claude). Do nothing else. Report whether it succeeded.",
+              "wasQueued": false
+            }
+          },
+          "id": "user:8f6936f5-8d74-4614-9d04-817d15c9aa6c",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "toolu_01NU1YhGEUWFr6hC9FPxWXwB",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "Bash",
+              "note": null,
+              "output": {
+                "length": 828,
+                "offset": 5232,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "ok"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "touch sub.txt && echo ok",
+              "title": "Create empty file sub.txt"
+            }
+          },
+          "id": "tool:toolu_01NU1YhGEUWFr6hC9FPxWXwB",
+          "sourceOffset": 3675
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "成功了。`touch sub.txt` 在 /private/tmp/heeler-tmp-chat2/probe-claude 下执行完毕,没有报错,输出了 \"ok\"。"
+            }
+          },
+          "id": "text:82723790-3667-4f64-ae54-79504aea2337",
+          "sourceOffset": 7588
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [],
+      "title": null,
+      "turns": [],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Your only task: use the Bash tool to run `touch sub.txt` in the current working directory (/private/tmp/heeler-tmp-chat2/probe-claude). Do nothing else. Report whether it succeeded.",
+              "wasQueued": false
+            }
+          },
+          "id": "user:8f6936f5-8d74-4614-9d04-817d15c9aa6c",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "toolu_01NU1YhGEUWFr6hC9FPxWXwB",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "Bash",
+              "note": null,
+              "output": {
+                "length": 828,
+                "offset": 5232,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "ok"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "touch sub.txt && echo ok",
+              "title": "Create empty file sub.txt"
+            }
+          },
+          "id": "tool:toolu_01NU1YhGEUWFr6hC9FPxWXwB",
+          "sourceOffset": 3675
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "成功了。`touch sub.txt` 在 /private/tmp/heeler-tmp-chat2/probe-claude 下执行完毕,没有报错,输出了 \"ok\"。"
+            }
+          },
+          "id": "text:82723790-3667-4f64-ae54-79504aea2337",
+          "sourceOffset": 7588
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [],
+      "title": null,
+      "turns": [],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "role": "subagent",
+    "type": "ClaudeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

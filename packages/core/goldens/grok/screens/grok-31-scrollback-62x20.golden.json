@@ -1,0 +1,6 @@
+{
+  "fixture": "grok-31-scrollback-62x20.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "grok"
+}

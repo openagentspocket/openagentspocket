@@ -1,0 +1,525 @@
+{
+  "fixture": "compaction.jsonl",
+  "lineOffsets": [
+    0,
+    390,
+    935,
+    1432,
+    2229,
+    2734,
+    3067,
+    3444,
+    3805,
+    4310,
+    4662,
+    5158
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "After that, reply with the word three.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "The user wants a reply containing the word \"three\"."
+            }
+          },
+          "id": "grok:390",
+          "sourceOffset": 390
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "three"
+            }
+          },
+          "id": "grok:935",
+          "sourceOffset": 935
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": null,
+              "kind": "compaction"
+            }
+          },
+          "id": "grok:2229:compaction",
+          "sourceOffset": 2229
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word four.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3067",
+          "sourceOffset": 3067
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": null,
+              "kind": "compaction"
+            }
+          },
+          "id": "grok:3805:compaction",
+          "sourceOffset": 3805
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "four"
+            }
+          },
+          "id": "grok:4662",
+          "sourceOffset": 4662
+        }
+      ],
+      "latestPromptOffset": 3067,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "After that, reply with the word three."
+        },
+        {
+          "entryID": "grok:3067",
+          "offset": 3067,
+          "pastedImagePaths": null,
+          "text": "Reply with the word four."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:11:18.366Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:11:16.202Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:12:51.150Z",
+          "ending": "completed",
+          "firstEntryID": "grok:3067",
+          "startedAt": "2026-10-19T15:12:40.250Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "After that, reply with the word three.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "The user wants a reply containing the word \"three\"."
+            }
+          },
+          "id": "grok:390",
+          "sourceOffset": 390
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "three"
+            }
+          },
+          "id": "grok:935",
+          "sourceOffset": 935
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": null,
+              "kind": "compaction"
+            }
+          },
+          "id": "grok:2229:compaction",
+          "sourceOffset": 2229
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word four.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3067",
+          "sourceOffset": 3067
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": null,
+              "kind": "compaction"
+            }
+          },
+          "id": "grok:3805:compaction",
+          "sourceOffset": 3805
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "four"
+            }
+          },
+          "id": "grok:4662",
+          "sourceOffset": 4662
+        }
+      ],
+      "latestPromptOffset": 3067,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "After that, reply with the word three."
+        },
+        {
+          "entryID": "grok:3067",
+          "offset": 3067,
+          "pastedImagePaths": null,
+          "text": "Reply with the word four."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:11:18.366Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:11:16.202Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:12:51.150Z",
+          "ending": "completed",
+          "firstEntryID": "grok:3067",
+          "startedAt": "2026-10-19T15:12:40.250Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "After that, reply with the word three.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "The user wants a reply containing the word \"three\"."
+            }
+          },
+          "id": "grok:390",
+          "sourceOffset": 390
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "three"
+            }
+          },
+          "id": "grok:935",
+          "sourceOffset": 935
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": null,
+              "kind": "compaction"
+            }
+          },
+          "id": "grok:2229:compaction",
+          "sourceOffset": 2229
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word four.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3067",
+          "sourceOffset": 3067
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": null,
+              "kind": "compaction"
+            }
+          },
+          "id": "grok:3805:compaction",
+          "sourceOffset": 3805
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "four"
+            }
+          },
+          "id": "grok:4662",
+          "sourceOffset": 4662
+        }
+      ],
+      "latestPromptOffset": 3067,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "After that, reply with the word three."
+        },
+        {
+          "entryID": "grok:3067",
+          "offset": 3067,
+          "pastedImagePaths": null,
+          "text": "Reply with the word four."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:11:18.366Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:11:16.202Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:12:51.150Z",
+          "ending": "completed",
+          "firstEntryID": "grok:3067",
+          "startedAt": "2026-10-19T15:12:40.250Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "After that, reply with the word three.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "reasoning": {
+              "durationMilliseconds": null,
+              "text": "The user wants a reply containing the word \"three\"."
+            }
+          },
+          "id": "grok:390",
+          "sourceOffset": 390
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "three"
+            }
+          },
+          "id": "grok:935",
+          "sourceOffset": 935
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": null,
+              "kind": "compaction"
+            }
+          },
+          "id": "grok:2229:compaction",
+          "sourceOffset": 2229
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with the word four.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:3067",
+          "sourceOffset": 3067
+        },
+        {
+          "content": {
+            "divider": {
+              "detail": null,
+              "kind": "compaction"
+            }
+          },
+          "id": "grok:3805:compaction",
+          "sourceOffset": 3805
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "four"
+            }
+          },
+          "id": "grok:4662",
+          "sourceOffset": 4662
+        }
+      ],
+      "latestPromptOffset": 3067,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "After that, reply with the word three."
+        },
+        {
+          "entryID": "grok:3067",
+          "offset": 3067,
+          "pastedImagePaths": null,
+          "text": "Reply with the word four."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T15:11:18.366Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T15:11:16.202Z"
+        },
+        {
+          "endedAt": "2026-10-19T15:12:51.150Z",
+          "ending": "completed",
+          "firstEntryID": "grok:3067",
+          "startedAt": "2026-10-19T15:12:40.250Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

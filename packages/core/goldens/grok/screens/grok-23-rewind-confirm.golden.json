@@ -1,0 +1,899 @@
+{
+  "fixture": "grok-23-rewind-confirm.ansi",
+  "parse": {
+    "unrecognized": {
+      "displayLines": [
+        "",
+        "Rewind conversation to “Reply with the word plum.”?",
+        "y   (●) Yes",
+        "a   (○) Yes, and don't ask again",
+        "n   (○) No",
+        ""
+      ],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "4984d7b57b55ce891a02cf4aec8abf6e07980ecee635181001f730f886d7bf40"
+      },
+      "numbered": {},
+      "reason": "Agentico doesn't know this Grok Build card. Answer it with these keys or in the terminal.",
+      "rows": [
+        {
+          "index": 38,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "┃",
+              "width": 1
+            },
+            {
+              "column": 3,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                                                                                 ",
+              "width": 177
+            },
+            {
+              "column": 180,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            }
+          ],
+          "text": "  ┃                                                                                                                                                                                   ",
+          "width": 182
+        },
+        {
+          "index": 39,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "┃",
+              "width": 1
+            },
+            {
+              "column": 3,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 5,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Rewind conversation to “Reply with the word plum.”?",
+              "width": 51
+            },
+            {
+              "column": 56,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                            ",
+              "width": 124
+            },
+            {
+              "column": 180,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            }
+          ],
+          "text": "  ┃  Rewind conversation to “Reply with the word plum.”?                                                                                                                              ",
+          "width": 182
+        },
+        {
+          "index": 40,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "┃",
+              "width": 1
+            },
+            {
+              "column": 3,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 4,
+              "style": {
+                "background": {
+                  "rgb": [
+                    54,
+                    54,
+                    54
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 5,
+              "style": {
+                "background": {
+                  "rgb": [
+                    54,
+                    54,
+                    54
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "y   (●) ",
+              "width": 8
+            },
+            {
+              "column": 13,
+              "style": {
+                "background": {
+                  "rgb": [
+                    54,
+                    54,
+                    54
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    225,
+                    225,
+                    225
+                  ]
+                },
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Yes",
+              "width": 3
+            },
+            {
+              "column": 16,
+              "style": {
+                "background": {
+                  "rgb": [
+                    54,
+                    54,
+                    54
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                                                                   ",
+              "width": 163
+            },
+            {
+              "column": 179,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 180,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            }
+          ],
+          "text": "  ┃  y   (●) Yes                                                                                                                                                                      ",
+          "width": 182
+        },
+        {
+          "index": 41,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "┃",
+              "width": 1
+            },
+            {
+              "column": 3,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 5,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "a   ",
+              "width": 4
+            },
+            {
+              "column": 9,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    108,
+                    108,
+                    108
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "(○) ",
+              "width": 4
+            },
+            {
+              "column": 13,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    225,
+                    225,
+                    225
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Yes, and don't ask again",
+              "width": 24
+            },
+            {
+              "column": 37,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                                               ",
+              "width": 143
+            },
+            {
+              "column": 180,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            }
+          ],
+          "text": "  ┃  a   (○) Yes, and don't ask again                                                                                                                                                 ",
+          "width": 182
+        },
+        {
+          "index": 42,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "┃",
+              "width": 1
+            },
+            {
+              "column": 3,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 5,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "n   ",
+              "width": 4
+            },
+            {
+              "column": 9,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    108,
+                    108,
+                    108
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "(○) ",
+              "width": 4
+            },
+            {
+              "column": 13,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    225,
+                    225,
+                    225
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "No",
+              "width": 2
+            },
+            {
+              "column": 15,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                                                                     ",
+              "width": 165
+            },
+            {
+              "column": 180,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            }
+          ],
+          "text": "  ┃  n   (○) No                                                                                                                                                                       ",
+          "width": 182
+        },
+        {
+          "index": 43,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": {
+                  "rgb": [
+                    200,
+                    200,
+                    200
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "┃",
+              "width": 1
+            },
+            {
+              "column": 3,
+              "style": {
+                "background": {
+                  "rgb": [
+                    36,
+                    36,
+                    36
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                                                                                                                                                 ",
+              "width": 177
+            },
+            {
+              "column": 180,
+              "style": {
+                "background": {
+                  "rgb": [
+                    20,
+                    20,
+                    20
+                  ]
+                },
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            }
+          ],
+          "text": "  ┃                                                                                                                                                                                   ",
+          "width": 182
+        }
+      ]
+    }
+  },
+  "plans": [],
+  "program": "grok"
+}

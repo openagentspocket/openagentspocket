@@ -1,0 +1,6 @@
+{
+  "fixture": "grok-18-session-fork.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "grok"
+}

@@ -1,0 +1,402 @@
+{
+  "fixture": "rows-subagent.jsonl",
+  "lineOffsets": [
+    31,
+    31,
+    16,
+    17,
+    24,
+    29
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the subagent tool with the general agent to answer: what is 2+2? Then reply with just its answer.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_FFJQn6skBI2mS3nnkgg72OOH",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "subagent",
+              "note": null,
+              "output": {
+                "length": 933,
+                "offset": 17,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "4"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general",
+              "title": "Calculate two plus two"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20DkC4QCbpt2HZQx:0",
+          "sourceOffset": 17
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "4"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e60Qnw2YPPIcreHrh:0",
+          "sourceOffset": 24
+        }
+      ],
+      "latestPromptOffset": 16,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "offset": 16,
+          "pastedImagePaths": null,
+          "text": "Use the subagent tool with the general agent to answer: what is 2+2? Then reply with just its answer."
+        }
+      ],
+      "title": "Fresh",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:15:56.576Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "startedAt": "2027-01-15T08:15:50.292Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the subagent tool with the general agent to answer: what is 2+2? Then reply with just its answer.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_FFJQn6skBI2mS3nnkgg72OOH",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "subagent",
+              "note": null,
+              "output": {
+                "length": 933,
+                "offset": 17,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "4"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general",
+              "title": "Calculate two plus two"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20DkC4QCbpt2HZQx:0",
+          "sourceOffset": 17
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "4"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e60Qnw2YPPIcreHrh:0",
+          "sourceOffset": 24
+        }
+      ],
+      "latestPromptOffset": 16,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "offset": 16,
+          "pastedImagePaths": null,
+          "text": "Use the subagent tool with the general agent to answer: what is 2+2? Then reply with just its answer."
+        }
+      ],
+      "title": "Fresh",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:15:56.576Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "startedAt": "2027-01-15T08:15:50.292Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the subagent tool with the general agent to answer: what is 2+2? Then reply with just its answer.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_FFJQn6skBI2mS3nnkgg72OOH",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "subagent",
+              "note": null,
+              "output": {
+                "length": 933,
+                "offset": 17,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "4"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general",
+              "title": "Calculate two plus two"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20DkC4QCbpt2HZQx:0",
+          "sourceOffset": 17
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "4"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e60Qnw2YPPIcreHrh:0",
+          "sourceOffset": 24
+        }
+      ],
+      "latestPromptOffset": 16,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "offset": 16,
+          "pastedImagePaths": null,
+          "text": "Use the subagent tool with the general agent to answer: what is 2+2? Then reply with just its answer."
+        }
+      ],
+      "title": "Fresh",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:15:56.576Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "startedAt": "2027-01-15T08:15:50.292Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Use the subagent tool with the general agent to answer: what is 2+2? Then reply with just its answer.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_FFJQn6skBI2mS3nnkgg72OOH",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "agent",
+              "name": "subagent",
+              "note": null,
+              "output": {
+                "length": 933,
+                "offset": 17,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "4"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": "general",
+              "title": "Calculate two plus two"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20DkC4QCbpt2HZQx:0",
+          "sourceOffset": 17
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "4"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e60Qnw2YPPIcreHrh:0",
+          "sourceOffset": 24
+        }
+      ],
+      "latestPromptOffset": 16,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "offset": 16,
+          "pastedImagePaths": null,
+          "text": "Use the subagent tool with the general agent to answer: what is 2+2? Then reply with just its answer."
+        }
+      ],
+      "title": "Fresh",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:15:56.576Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10YF6snQ3Wcsuhip",
+          "startedAt": "2027-01-15T08:15:50.292Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

@@ -1,0 +1,438 @@
+{
+  "fixture": "rows-approve.jsonl",
+  "lineOffsets": [
+    76,
+    76,
+    60,
+    61,
+    70,
+    75
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Read the .env file in this project and tell me the value of GREETING.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "sourceOffset": 60
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll check the project's `.env` file and read `GREETING`."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20LQ9RnPoeyjJJmb:0",
+          "sourceOffset": 61
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_0VAXHql8yFlIn5m43w3Efn46",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read",
+              "note": null,
+              "output": {
+                "length": 956,
+                "offset": 61,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Read file /Users/developer/work/heeler-tmp-chat/opencode-a/project/.env, lines 1-1\n1: GREETING=hello"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/.env"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20LQ9RnPoeyjJJmb:1",
+          "sourceOffset": 61
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The value of `GREETING` is `hello`."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30DudQDbc9bu9V2f:0",
+          "sourceOffset": 70
+        }
+      ],
+      "latestPromptOffset": 60,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "offset": 60,
+          "pastedImagePaths": null,
+          "text": "Read the .env file in this project and tell me the value of GREETING."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:04:58.805Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "startedAt": "2027-01-15T08:04:07.653Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Read the .env file in this project and tell me the value of GREETING.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "sourceOffset": 60
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll check the project's `.env` file and read `GREETING`."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20LQ9RnPoeyjJJmb:0",
+          "sourceOffset": 61
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_0VAXHql8yFlIn5m43w3Efn46",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read",
+              "note": null,
+              "output": {
+                "length": 956,
+                "offset": 61,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Read file /Users/developer/work/heeler-tmp-chat/opencode-a/project/.env, lines 1-1\n1: GREETING=hello"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/.env"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20LQ9RnPoeyjJJmb:1",
+          "sourceOffset": 61
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The value of `GREETING` is `hello`."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30DudQDbc9bu9V2f:0",
+          "sourceOffset": 70
+        }
+      ],
+      "latestPromptOffset": 60,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "offset": 60,
+          "pastedImagePaths": null,
+          "text": "Read the .env file in this project and tell me the value of GREETING."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:04:58.805Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "startedAt": "2027-01-15T08:04:07.653Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Read the .env file in this project and tell me the value of GREETING.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "sourceOffset": 60
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll check the project's `.env` file and read `GREETING`."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20LQ9RnPoeyjJJmb:0",
+          "sourceOffset": 61
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_0VAXHql8yFlIn5m43w3Efn46",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read",
+              "note": null,
+              "output": {
+                "length": 956,
+                "offset": 61,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Read file /Users/developer/work/heeler-tmp-chat/opencode-a/project/.env, lines 1-1\n1: GREETING=hello"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/.env"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20LQ9RnPoeyjJJmb:1",
+          "sourceOffset": 61
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The value of `GREETING` is `hello`."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30DudQDbc9bu9V2f:0",
+          "sourceOffset": 70
+        }
+      ],
+      "latestPromptOffset": 60,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "offset": 60,
+          "pastedImagePaths": null,
+          "text": "Read the .env file in this project and tell me the value of GREETING."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:04:58.805Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "startedAt": "2027-01-15T08:04:07.653Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Read the .env file in this project and tell me the value of GREETING.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "sourceOffset": 60
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll check the project's `.env` file and read `GREETING`."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20LQ9RnPoeyjJJmb:0",
+          "sourceOffset": 61
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_0VAXHql8yFlIn5m43w3Efn46",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read",
+              "note": null,
+              "output": {
+                "length": 956,
+                "offset": 61,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Read file /Users/developer/work/heeler-tmp-chat/opencode-a/project/.env, lines 1-1\n1: GREETING=hello"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/work/heeler-tmp-chat/opencode-a/project/.env"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20LQ9RnPoeyjJJmb:1",
+          "sourceOffset": 61
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "The value of `GREETING` is `hello`."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30DudQDbc9bu9V2f:0",
+          "sourceOffset": 70
+        }
+      ],
+      "latestPromptOffset": 60,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "offset": 60,
+          "pastedImagePaths": null,
+          "text": "Read the .env file in this project and tell me the value of GREETING."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:04:58.805Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10IVxm7fSYK8mHN5",
+          "startedAt": "2027-01-15T08:04:07.653Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

@@ -1,0 +1,515 @@
+{
+  "fixture": "rows-steer.jsonl",
+  "lineOffsets": [
+    195,
+    195,
+    176,
+    177,
+    187,
+    188,
+    193
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 15; echo one",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "sourceOffset": 176
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll run that command and wait about 15 seconds."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20NVcJRLTUWz3eOd:0",
+          "sourceOffset": 177
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_mE2fay54sIgwcZKmCAP2cCLM",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 842,
+                "offset": 177,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "one\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "sleep 15; echo one"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20NVcJRLTUWz3eOd:1",
+          "sourceOffset": 177
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "After that, reply with two.",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30c6n5ci7hO7j2rp",
+          "sourceOffset": 187
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "two"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40CyCgt7ZzrFc9ru:0",
+          "sourceOffset": 188
+        }
+      ],
+      "latestPromptOffset": 187,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "offset": 176,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 15; echo one"
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e30c6n5ci7hO7j2rp",
+          "offset": 187,
+          "pastedImagePaths": null,
+          "text": "After that, reply with two."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:11:32.097Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "startedAt": "2027-01-15T08:11:10.268Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 15; echo one",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "sourceOffset": 176
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll run that command and wait about 15 seconds."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20NVcJRLTUWz3eOd:0",
+          "sourceOffset": 177
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_mE2fay54sIgwcZKmCAP2cCLM",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 842,
+                "offset": 177,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "one\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "sleep 15; echo one"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20NVcJRLTUWz3eOd:1",
+          "sourceOffset": 177
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "After that, reply with two.",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30c6n5ci7hO7j2rp",
+          "sourceOffset": 187
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "two"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40CyCgt7ZzrFc9ru:0",
+          "sourceOffset": 188
+        }
+      ],
+      "latestPromptOffset": 187,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "offset": 176,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 15; echo one"
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e30c6n5ci7hO7j2rp",
+          "offset": 187,
+          "pastedImagePaths": null,
+          "text": "After that, reply with two."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:11:32.097Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "startedAt": "2027-01-15T08:11:10.268Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 15; echo one",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "sourceOffset": 176
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll run that command and wait about 15 seconds."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20NVcJRLTUWz3eOd:0",
+          "sourceOffset": 177
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_mE2fay54sIgwcZKmCAP2cCLM",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 842,
+                "offset": 177,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "one\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "sleep 15; echo one"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20NVcJRLTUWz3eOd:1",
+          "sourceOffset": 177
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "After that, reply with two.",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30c6n5ci7hO7j2rp",
+          "sourceOffset": 187
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "two"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40CyCgt7ZzrFc9ru:0",
+          "sourceOffset": 188
+        }
+      ],
+      "latestPromptOffset": 187,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "offset": 176,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 15; echo one"
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e30c6n5ci7hO7j2rp",
+          "offset": 187,
+          "pastedImagePaths": null,
+          "text": "After that, reply with two."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:11:32.097Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "startedAt": "2027-01-15T08:11:10.268Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 15; echo one",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "sourceOffset": 176
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll run that command and wait about 15 seconds."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20NVcJRLTUWz3eOd:0",
+          "sourceOffset": 177
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_mE2fay54sIgwcZKmCAP2cCLM",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 842,
+                "offset": 177,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "one\n"
+              },
+              "questions": [],
+              "status": "succeeded",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "sleep 15; echo one"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20NVcJRLTUWz3eOd:1",
+          "sourceOffset": 177
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "After that, reply with two.",
+              "wasQueued": true
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30c6n5ci7hO7j2rp",
+          "sourceOffset": 187
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "two"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40CyCgt7ZzrFc9ru:0",
+          "sourceOffset": 188
+        }
+      ],
+      "latestPromptOffset": 187,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "offset": 176,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 15; echo one"
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e30c6n5ci7hO7j2rp",
+          "offset": 187,
+          "pastedImagePaths": null,
+          "text": "After that, reply with two."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:11:32.097Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10bMU8QeC6LKaTL1",
+          "startedAt": "2027-01-15T08:11:10.268Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

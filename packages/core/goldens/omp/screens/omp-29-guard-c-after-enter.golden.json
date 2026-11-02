@@ -1,0 +1,361 @@
+{
+  "fixture": "omp-29-guard-c-after-enter.ansi",
+  "parse": {
+    "dialog": {
+      "body": [
+        "Pick a color"
+      ],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "a6f24710bdb9bb81b826e192e67ba0375f09a847815dba02aafdefa608be34bb"
+      },
+      "focus": {
+        "checked": [],
+        "composerDraftGuard": false,
+        "feedbackOrdinal": null,
+        "focusedOrdinal": 1,
+        "inputText": null,
+        "keysMissOptions": false,
+        "notesText": null
+      },
+      "kind": "ompQuestion",
+      "note": null,
+      "options": [
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": true,
+          "label": "red",
+          "number": null,
+          "ordinal": 1,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "blue",
+          "number": null,
+          "ordinal": 2,
+          "role": "answer",
+          "shortcut": null
+        },
+        {
+          "detail": null,
+          "input": null,
+          "isChecked": null,
+          "isFocused": false,
+          "label": "Other (type your own)",
+          "number": null,
+          "ordinal": 3,
+          "role": "otherText",
+          "shortcut": null
+        }
+      ],
+      "positionLabel": null,
+      "progress": null,
+      "rows": {
+        "lowerBound": 26,
+        "upperBound": 38
+      },
+      "sourceSuffix": null,
+      "subject": {
+        "command": null,
+        "commandDescription": null,
+        "destinations": [],
+        "environment": null,
+        "filePath": null,
+        "host": null,
+        "notes": [],
+        "planFilePath": null,
+        "prompt": null,
+        "question": "Pick a color",
+        "questionHeaders": [],
+        "reason": null,
+        "reviewAnswers": [],
+        "toolName": null,
+        "url": null,
+        "workspacePath": null
+      },
+      "title": "Pick a color"
+    }
+  },
+  "plans": [
+    {
+      "action": {
+        "choose": {
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "enter"
+              ]
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "enter"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 1
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Oh My Pi's questions. Write your own answer or a note in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 1,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Oh My Pi's questions. Write your own answer or a note in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "down"
+              ]
+            },
+            {
+              "expect": {
+                "focus": {
+                  "ordinal": 2
+                }
+              }
+            },
+            {
+              "keys": [
+                "enter"
+              ]
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "down"
+              ]
+            },
+            {
+              "expect": {
+                "focus": {
+                  "ordinal": 2
+                }
+              }
+            },
+            {
+              "keys": [
+                "enter"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 2
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Oh My Pi's questions. Write your own answer or a note in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 2,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Oh My Pi's questions. Write your own answer or a note in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Oh My Pi's questions. Write your own answer or a note in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "amend": {
+          "note": "Use a dry run first",
+          "ordinal": 3
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Oh My Pi's questions. Write your own answer or a note in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "respond": {
+          "ordinal": 3,
+          "text": "Golden answer"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "Agentico doesn't type into Oh My Pi's questions. Write your own answer or a note in the terminal."
+        }
+      }
+    },
+    {
+      "action": {
+        "choose": {
+          "ordinal": 4
+        }
+      },
+      "result": {
+        "error": {
+          "noSuchOption": 4
+        }
+      }
+    },
+    {
+      "action": {
+        "approvePlan": {
+          "note": "Keep it small"
+        }
+      },
+      "result": {
+        "error": {
+          "unsupported": "The question has no such action."
+        }
+      }
+    },
+    {
+      "action": {
+        "submitSelection": []
+      },
+      "result": {
+        "error": {
+          "unsupported": "The question has no such action."
+        }
+      }
+    },
+    {
+      "action": "dismiss",
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "esc"
+              ]
+            }
+          ]
+        }
+      },
+      "resultWithToolUseID": {
+        "plan": {
+          "confirmation": {
+            "toolResult": {
+              "id": "toolu_golden"
+            }
+          },
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "esc"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "action": "expandQuestions",
+      "result": {
+        "error": {
+          "unsupported": "The question has no such action."
+        }
+      }
+    },
+    {
+      "action": "skipQuestion",
+      "result": {
+        "error": {
+          "unsupported": "The question has no such action."
+        }
+      }
+    }
+  ],
+  "program": "omp"
+}

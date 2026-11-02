@@ -1,0 +1,232 @@
+{
+  "fixture": "c12-image-path-paste.jsonl",
+  "lineOffsets": [
+    0,
+    769,
+    1407
+  ],
+  "program": "claude",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 1,
+              "text": "[Image #1]",
+              "wasQueued": false
+            }
+          },
+          "id": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "sourceOffset": 0
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "offset": 0,
+          "pastedImagePaths": [
+            "/var/folders/rm/2k0dww5x7w145cb1qctpswr80000gn/T//heeler.TZcsLg5a/stage-5387316b-c580-43bc-afee-b0838609854d/image.jpg"
+          ],
+          "text": "/var/folders/rm/2k0dww5x7w145cb1qctpswr80000gn/T//heeler.TZcsLg5a/stage-5387316b-c580-43bc-afee-b0838609854d/image.jpg"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": null,
+          "ending": null,
+          "firstEntryID": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "startedAt": "2026-10-16T20:54:27.375Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 1,
+              "text": "[Image #1]",
+              "wasQueued": false
+            }
+          },
+          "id": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "sourceOffset": 0
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "offset": 0,
+          "pastedImagePaths": [
+            "/var/folders/rm/2k0dww5x7w145cb1qctpswr80000gn/T//heeler.TZcsLg5a/stage-5387316b-c580-43bc-afee-b0838609854d/image.jpg"
+          ],
+          "text": "/var/folders/rm/2k0dww5x7w145cb1qctpswr80000gn/T//heeler.TZcsLg5a/stage-5387316b-c580-43bc-afee-b0838609854d/image.jpg"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": null,
+          "ending": null,
+          "firstEntryID": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "startedAt": "2026-10-16T20:54:27.375Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 1,
+              "text": "[Image #1]",
+              "wasQueued": false
+            }
+          },
+          "id": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "sourceOffset": 0
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "offset": 0,
+          "pastedImagePaths": [
+            "/var/folders/rm/2k0dww5x7w145cb1qctpswr80000gn/T//heeler.TZcsLg5a/stage-5387316b-c580-43bc-afee-b0838609854d/image.jpg"
+          ],
+          "text": "/var/folders/rm/2k0dww5x7w145cb1qctpswr80000gn/T//heeler.TZcsLg5a/stage-5387316b-c580-43bc-afee-b0838609854d/image.jpg"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": null,
+          "ending": null,
+          "firstEntryID": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "startedAt": "2026-10-16T20:54:27.375Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 1,
+              "text": "[Image #1]",
+              "wasQueued": false
+            }
+          },
+          "id": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "sourceOffset": 0
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "offset": 0,
+          "pastedImagePaths": [
+            "/var/folders/rm/2k0dww5x7w145cb1qctpswr80000gn/T//heeler.TZcsLg5a/stage-5387316b-c580-43bc-afee-b0838609854d/image.jpg"
+          ],
+          "text": "/var/folders/rm/2k0dww5x7w145cb1qctpswr80000gn/T//heeler.TZcsLg5a/stage-5387316b-c580-43bc-afee-b0838609854d/image.jpg"
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": null,
+          "ending": null,
+          "firstEntryID": "user:af095210-9c12-4ed4-914e-85ba8cf6a22a",
+          "startedAt": "2026-10-16T20:54:27.375Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "role": "main",
+    "type": "ClaudeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

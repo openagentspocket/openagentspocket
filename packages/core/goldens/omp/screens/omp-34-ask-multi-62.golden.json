@@ -1,0 +1,911 @@
+{
+  "fixture": "omp-34-ask-multi-62.ansi",
+  "parse": {
+    "unrecognized": {
+      "displayLines": [
+        "Ask",
+        " colors    Submit",
+        "请选择颜色（可多选）",
+        "───",
+        "❯ ☐ red",
+        "  ☐ green",
+        "  ☐ blue",
+        "  ☐ Other (type your own)",
+        "───",
+        "toggle · submit · ↑/↓ move · /←/→ question · cance…"
+      ],
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "038f64a1e20da36752fdc2c5f4fa044f4553a1f6a2a30989a11ec37bcc059fcc"
+      },
+      "numbered": {},
+      "reason": "Agentico answers only Oh My Pi's single-select questions. Answer this one in the terminal.",
+      "rows": [
+        {
+          "index": 7,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "╭─",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " Ask ",
+              "width": 5
+            },
+            {
+              "column": 7,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "──────────────────────────────────────────────────────╮",
+              "width": 55
+            }
+          ],
+          "text": "╭─ Ask ──────────────────────────────────────────────────────╮",
+          "width": 62
+        },
+        {
+          "index": 8,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": {
+                  "rgb": [
+                    0,
+                    130,
+                    179
+                  ]
+                },
+                "foreground": null,
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " colors ",
+              "width": 8
+            },
+            {
+              "column": 10,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 12,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    156,
+                    163,
+                    176
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " Submit ",
+              "width": 8
+            },
+            {
+              "column": 20,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                         ",
+              "width": 41
+            },
+            {
+              "column": 61,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│  colors    Submit                                          │",
+          "width": 62
+        },
+        {
+          "index": 9,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " 请选择颜色（可多选）                                       ",
+              "width": 60
+            },
+            {
+              "column": 61,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│ 请选择颜色（可多选）                                       │",
+          "width": 62
+        },
+        {
+          "index": 10,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "├────────────────────────────────────────────────────────────┤",
+              "width": 62
+            }
+          ],
+          "text": "├────────────────────────────────────────────────────────────┤",
+          "width": 62
+        },
+        {
+          "index": 11,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 2
+            },
+            {
+              "column": 4,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    107,
+                    114,
+                    128
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "",
+              "width": 1
+            },
+            {
+              "column": 5,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 6,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    0,
+                    180,
+                    255
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "red",
+              "width": 3
+            },
+            {
+              "column": 9,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                    ",
+              "width": 52
+            },
+            {
+              "column": 61,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│   red                                                    │",
+          "width": 62
+        },
+        {
+          "index": 12,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "   ",
+              "width": 3
+            },
+            {
+              "column": 4,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    107,
+                    114,
+                    128
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "",
+              "width": 1
+            },
+            {
+              "column": 5,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " green                                                  ",
+              "width": 56
+            },
+            {
+              "column": 61,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│    green                                                  │",
+          "width": 62
+        },
+        {
+          "index": 13,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "   ",
+              "width": 3
+            },
+            {
+              "column": 4,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    107,
+                    114,
+                    128
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "",
+              "width": 1
+            },
+            {
+              "column": 5,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " blue                                                   ",
+              "width": 56
+            },
+            {
+              "column": 61,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│    blue                                                   │",
+          "width": 62
+        },
+        {
+          "index": 14,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "   ",
+              "width": 3
+            },
+            {
+              "column": 4,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    107,
+                    114,
+                    128
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "",
+              "width": 1
+            },
+            {
+              "column": 5,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " Other (type your own)                                  ",
+              "width": 56
+            },
+            {
+              "column": 61,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│    Other (type your own)                                  │",
+          "width": 62
+        },
+        {
+          "index": 15,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                                                            ",
+              "width": 60
+            },
+            {
+              "column": 61,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│                                                            │",
+          "width": 62
+        },
+        {
+          "index": 16,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "├────────────────────────────────────────────────────────────┤",
+              "width": 62
+            }
+          ],
+          "text": "├────────────────────────────────────────────────────────────┤",
+          "width": 62
+        },
+        {
+          "index": 17,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            },
+            {
+              "column": 1,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    107,
+                    114,
+                    128
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "󱁐 toggle · 󰌑 submit · ↑/↓ move · 󰌒/←/→ question · 󱊷 cance",
+              "width": 57
+            },
+            {
+              "column": 59,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "… ",
+              "width": 2
+            },
+            {
+              "column": 61,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "│",
+              "width": 1
+            }
+          ],
+          "text": "│ 󱁐 toggle · 󰌑 submit · ↑/↓ move · 󰌒/←/→ question · 󱊷 cance… │",
+          "width": 62
+        },
+        {
+          "index": 18,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": {
+                  "rgb": [
+                    42,
+                    48,
+                    56
+                  ]
+                },
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "╰────────────────────────────────────────────────────────────╯",
+              "width": 62
+            }
+          ],
+          "text": "╰────────────────────────────────────────────────────────────╯",
+          "width": 62
+        }
+      ]
+    }
+  },
+  "plans": [],
+  "program": "omp"
+}

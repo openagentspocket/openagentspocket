@@ -1,0 +1,437 @@
+{
+  "fixture": "rows-esc-stop.jsonl",
+  "lineOffsets": [
+    160,
+    160,
+    149,
+    150,
+    159
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 30; echo done and report the output.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "sourceOffset": 149
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll run that command, wait about 30 seconds, then report the output."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20awLQfDefANJJGp:0",
+          "sourceOffset": 150
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_zQUDtV7zl1ihqLFJa2mQFAax",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 958,
+                "offset": 150,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "sleep 30; echo done"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20awLQfDefANJJGp:1",
+          "sourceOffset": 150
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "interrupted",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Interrupted"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30m2eiCL86VTGcGZ",
+          "sourceOffset": 159
+        }
+      ],
+      "latestPromptOffset": 149,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "offset": 149,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 30; echo done and report the output."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:09:18.362Z",
+          "ending": "interrupted",
+          "firstEntryID": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "startedAt": "2027-01-15T08:09:06.979Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 30; echo done and report the output.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "sourceOffset": 149
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll run that command, wait about 30 seconds, then report the output."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20awLQfDefANJJGp:0",
+          "sourceOffset": 150
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_zQUDtV7zl1ihqLFJa2mQFAax",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 958,
+                "offset": 150,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "sleep 30; echo done"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20awLQfDefANJJGp:1",
+          "sourceOffset": 150
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "interrupted",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Interrupted"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30m2eiCL86VTGcGZ",
+          "sourceOffset": 159
+        }
+      ],
+      "latestPromptOffset": 149,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "offset": 149,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 30; echo done and report the output."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:09:18.362Z",
+          "ending": "interrupted",
+          "firstEntryID": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "startedAt": "2027-01-15T08:09:06.979Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 30; echo done and report the output.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "sourceOffset": 149
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll run that command, wait about 30 seconds, then report the output."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20awLQfDefANJJGp:0",
+          "sourceOffset": 150
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_zQUDtV7zl1ihqLFJa2mQFAax",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 958,
+                "offset": 150,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "sleep 30; echo done"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20awLQfDefANJJGp:1",
+          "sourceOffset": 150
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "interrupted",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Interrupted"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30m2eiCL86VTGcGZ",
+          "sourceOffset": 159
+        }
+      ],
+      "latestPromptOffset": 149,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "offset": 149,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 30; echo done and report the output."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:09:18.362Z",
+          "ending": "interrupted",
+          "firstEntryID": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "startedAt": "2027-01-15T08:09:06.979Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Run the shell command sleep 30; echo done and report the output.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "sourceOffset": 149
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "I'll run that command, wait about 30 seconds, then report the output."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20awLQfDefANJJGp:0",
+          "sourceOffset": 150
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call_zQUDtV7zl1ihqLFJa2mQFAax",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "command",
+              "name": "shell",
+              "note": null,
+              "output": {
+                "length": 958,
+                "offset": 150,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": null,
+              "questions": [],
+              "status": "interrupted",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "sleep 30; echo done"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20awLQfDefANJJGp:1",
+          "sourceOffset": 150
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": null,
+              "kind": "interrupted",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Interrupted"
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e30m2eiCL86VTGcGZ",
+          "sourceOffset": 159
+        }
+      ],
+      "latestPromptOffset": 149,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "offset": 149,
+          "pastedImagePaths": null,
+          "text": "Run the shell command sleep 30; echo done and report the output."
+        }
+      ],
+      "title": "Pong",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:09:18.362Z",
+          "ending": "interrupted",
+          "firstEntryID": "oc:msg_0a1b2c3d4e103AuzWner4Xsgr9",
+          "startedAt": "2027-01-15T08:09:06.979Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

@@ -1,0 +1,224 @@
+{
+  "fixture": "codex-19-x3-implement-plan.ansi",
+  "parse": {
+    "unrecognized": {
+      "displayLines": null,
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "98e0cb3a29c9c4d1a3cfe9a7c37c369a1f26320b7bc3e35c278208c8711228b9"
+      },
+      "numbered": {
+        "1": "Yes, implement this plan",
+        "2": "Yes, clear context and implement",
+        "3": "No, stay in Plan mode"
+      },
+      "reason": "Agentico does not know this list.",
+      "rows": [
+        {
+          "index": 20,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": true
+              },
+              "text": "› 1. Yes, implement this plan          ",
+              "width": 39
+            },
+            {
+              "column": 39,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": true
+              },
+              "text": "Switch to Default and start coding",
+              "width": 34
+            }
+          ],
+          "text": "› 1. Yes, implement this plan          Switch to Default and start coding",
+          "width": 73
+        },
+        {
+          "index": 21,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  2. Yes, clear context and implement  ",
+              "width": 39
+            },
+            {
+              "column": 39,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Start a fresh thread (current context: 4% used)",
+              "width": 47
+            }
+          ],
+          "text": "  2. Yes, clear context and implement  Start a fresh thread (current context: 4% used)",
+          "width": 86
+        },
+        {
+          "index": 22,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  3. No, stay in Plan mode             ",
+              "width": 39
+            },
+            {
+              "column": 39,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Continue planning with the model",
+              "width": 32
+            }
+          ],
+          "text": "  3. No, stay in Plan mode             Continue planning with the model",
+          "width": 71
+        },
+        {
+          "index": 23,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            }
+          ],
+          "text": " ",
+          "width": 1
+        },
+        {
+          "index": 24,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "enter select · esc back",
+              "width": 23
+            }
+          ],
+          "text": "  enter select · esc back",
+          "width": 25
+        }
+      ]
+    }
+  },
+  "plans": [
+    {
+      "number": 1,
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "1"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "number": 2,
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "2"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "number": 3,
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "3"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "program": "codex"
+}

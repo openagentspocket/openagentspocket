@@ -1,0 +1,40 @@
+{
+  "columns": 41,
+  "rows": [
+    {"index":0,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":1,"runs":[[0,2,1,"• "],[2,7,2,"Calling"],[9,1,0," "],[10,16,3,"probe.probe_echo"]],"text":"• Calling probe.probe_echo","width":26},
+    {"index":2,"runs":[[0,41,4,"    + Show details                       "]],"text":"    + Show details                       ","width":41},
+    {"index":3,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":4,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":5,"runs":[[0,2,0,"  "],[2,9,4,"Field 1/1"]],"text":"  Field 1/1","width":11},
+    {"index":6,"runs":[[0,35,0,"  Allow the probe MCP server to run"]],"text":"  Allow the probe MCP server to run","width":35},
+    {"index":7,"runs":[[0,20,0,"  tool \"probe_echo\"?"]],"text":"  tool \"probe_echo\"?","width":20},
+    {"index":8,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":9,"runs":[[0,10,0,"  text: hi"]],"text":"  text: hi","width":10},
+    {"index":10,"runs":[[0,1,0," "]],"text":" ","width":1},
+    {"index":11,"runs":[[0,2,0,"  "],[2,25,5,"› 1. Allow               "],[27,12,6,"Run the tool"]],"text":"  › 1. Allow               Run the tool","width":39},
+    {"index":12,"runs":[[0,2,0,"  "],[2,25,5,"                         "],[27,12,6,"and continue"]],"text":"                           and continue","width":39},
+    {"index":13,"runs":[[0,27,0,"    2. Allow for this      "],[27,12,4,"Run the tool"]],"text":"    2. Allow for this      Run the tool","width":39},
+    {"index":14,"runs":[[0,27,0,"       session             "],[27,12,4,"and remember"]],"text":"       session             and remember","width":39},
+    {"index":15,"runs":[[0,27,0,"                           "],[27,11,4,"this choice"]],"text":"                           this choice","width":38},
+    {"index":16,"runs":[[0,27,0,"                           "],[27,8,4,"for this"]],"text":"                           for this","width":35},
+    {"index":17,"runs":[[0,27,0,"                           "],[27,7,4,"session"]],"text":"                           session","width":34},
+    {"index":18,"runs":[[0,27,0,"    3. Always allow        "],[27,12,4,"Run the tool"]],"text":"    3. Always allow        Run the tool","width":39},
+    {"index":19,"runs":[[0,27,0,"                           "],[27,12,4,"and remember"]],"text":"                           and remember","width":39},
+    {"index":20,"runs":[[0,27,0,"                           "],[27,11,4,"this choice"]],"text":"                           this choice","width":38},
+    {"index":21,"runs":[[0,27,0,"                           "],[27,10,4,"for future"]],"text":"                           for future","width":37},
+    {"index":22,"runs":[[0,27,0,"                           "],[27,10,4,"tool calls"]],"text":"                           tool calls","width":37},
+    {"index":23,"runs":[[0,27,0,"    4. Cancel              "],[27,11,4,"Cancel this"]],"text":"    4. Cancel              Cancel this","width":38},
+    {"index":24,"runs":[[0,27,0,"                           "],[27,9,4,"tool call"]],"text":"                           tool call","width":36},
+    {"index":25,"runs":[[0,2,0,"  "],[2,5,2,"enter"],[7,10,0," to submit"],[17,3,4," | "],[20,3,2,"esc"],[23,10,0," to cancel"]],"text":"  enter to submit | esc to cancel","width":33}
+  ],
+  "styles": [
+    {"background":null,"foreground":null,"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[128,128,128]},"isBold":true,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":null,"isBold":true,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[99,168,248]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":null,"isBold":false,"isDim":true,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":null,"isBold":true,"isDim":false,"isItalic":false,"isReverse":true},
+    {"background":null,"foreground":null,"isBold":false,"isDim":false,"isItalic":false,"isReverse":true}
+  ]
+}

@@ -1,0 +1,456 @@
+{
+  "fixture": "rows-undo-staged.jsonl",
+  "lineOffsets": [
+    41,
+    41,
+    4,
+    7,
+    12,
+    15,
+    16,
+    23,
+    27,
+    28,
+    33,
+    38
+  ],
+  "program": "opencode",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: one.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20p5xbehYANs7699:0",
+          "sourceOffset": 7
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "/new",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "sourceOffset": 15
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Sure, let's start a new topic."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e501nQ3DdIbolthRf:1",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The next message removes these messages; /redo brings them back.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Undone in the terminal"
+            }
+          },
+          "id": "oc:revert:msg_0a1b2c3d4e70LMbLuB1pGKgZbA",
+          "sourceOffset": 27
+        }
+      ],
+      "latestPromptOffset": 15,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: one."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "offset": 15,
+          "pastedImagePaths": null,
+          "text": "/new "
+        }
+      ],
+      "title": "Exact one-word reply request",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:05.599Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "startedAt": "2027-01-15T08:00:00.013Z"
+        },
+        {
+          "endedAt": "2027-01-15T08:02:20.562Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "startedAt": "2027-01-15T08:02:15.582Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: one.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20p5xbehYANs7699:0",
+          "sourceOffset": 7
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "/new",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "sourceOffset": 15
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Sure, let's start a new topic."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e501nQ3DdIbolthRf:1",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The next message removes these messages; /redo brings them back.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Undone in the terminal"
+            }
+          },
+          "id": "oc:revert:msg_0a1b2c3d4e70LMbLuB1pGKgZbA",
+          "sourceOffset": 27
+        }
+      ],
+      "latestPromptOffset": 15,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: one."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "offset": 15,
+          "pastedImagePaths": null,
+          "text": "/new "
+        }
+      ],
+      "title": "Exact one-word reply request",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:05.599Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "startedAt": "2027-01-15T08:00:00.013Z"
+        },
+        {
+          "endedAt": "2027-01-15T08:02:20.562Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "startedAt": "2027-01-15T08:02:15.582Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: one.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20p5xbehYANs7699:0",
+          "sourceOffset": 7
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "/new",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "sourceOffset": 15
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Sure, let's start a new topic."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e501nQ3DdIbolthRf:1",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The next message removes these messages; /redo brings them back.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Undone in the terminal"
+            }
+          },
+          "id": "oc:revert:msg_0a1b2c3d4e70LMbLuB1pGKgZbA",
+          "sourceOffset": 27
+        }
+      ],
+      "latestPromptOffset": 15,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: one."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "offset": 15,
+          "pastedImagePaths": null,
+          "text": "/new "
+        }
+      ],
+      "title": "Exact one-word reply request",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:05.599Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "startedAt": "2027-01-15T08:00:00.013Z"
+        },
+        {
+          "endedAt": "2027-01-15T08:02:20.562Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "startedAt": "2027-01-15T08:02:15.582Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Reply with exactly: one.",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "sourceOffset": 4
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "one."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e20p5xbehYANs7699:0",
+          "sourceOffset": 7
+        },
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "/new",
+              "wasQueued": false
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "sourceOffset": 15
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "Sure, let's start a new topic."
+            }
+          },
+          "id": "oc:msg_0a1b2c3d4e501nQ3DdIbolthRf:1",
+          "sourceOffset": 16
+        },
+        {
+          "content": {
+            "notice": {
+              "detail": "The next message removes these messages; /redo brings them back.",
+              "kind": "system",
+              "questions": [],
+              "rawDetail": null,
+              "title": "Undone in the terminal"
+            }
+          },
+          "id": "oc:revert:msg_0a1b2c3d4e70LMbLuB1pGKgZbA",
+          "sourceOffset": 27
+        }
+      ],
+      "latestPromptOffset": 15,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "offset": 4,
+          "pastedImagePaths": null,
+          "text": "Reply with exactly: one."
+        },
+        {
+          "entryID": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "offset": 15,
+          "pastedImagePaths": null,
+          "text": "/new "
+        }
+      ],
+      "title": "Exact one-word reply request",
+      "turns": [
+        {
+          "endedAt": "2027-01-15T08:00:05.599Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e10o4v5vvo06tWSNU",
+          "startedAt": "2027-01-15T08:00:00.013Z"
+        },
+        {
+          "endedAt": "2027-01-15T08:02:20.562Z",
+          "ending": "completed",
+          "firstEntryID": "oc:msg_0a1b2c3d4e40bnybbDUaT4t4KD",
+          "startedAt": "2027-01-15T08:02:15.582Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "type": "OpenCodeTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}

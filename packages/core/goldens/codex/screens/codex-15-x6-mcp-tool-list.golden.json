@@ -1,0 +1,795 @@
+{
+  "fixture": "codex-15-x6-mcp-tool-list.ansi",
+  "parse": {
+    "unrecognized": {
+      "displayLines": null,
+      "fingerprint": {
+        "requestLines": null,
+        "ruleLines": null,
+        "value": "92d1a6aeaf6d79619af778edd224097c983f4ac7279e3f8a014c1abfd1be3978"
+      },
+      "numbered": {
+        "1": "Allow",
+        "2": "Allow for this session",
+        "3": "Always allow",
+        "4": "Cancel"
+      },
+      "reason": "Agentico does not know this list.",
+      "rows": [
+        {
+          "index": 5,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Field 1/1",
+              "width": 9
+            }
+          ],
+          "text": "  Field 1/1",
+          "width": 11
+        },
+        {
+          "index": 6,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  Allow the probe MCP server to run",
+              "width": 35
+            }
+          ],
+          "text": "  Allow the probe MCP server to run",
+          "width": 35
+        },
+        {
+          "index": 7,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  tool \"probe_echo\"?",
+              "width": 20
+            }
+          ],
+          "text": "  tool \"probe_echo\"?",
+          "width": 20
+        },
+        {
+          "index": 8,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            }
+          ],
+          "text": " ",
+          "width": 1
+        },
+        {
+          "index": 9,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  text: hi",
+              "width": 10
+            }
+          ],
+          "text": "  text: hi",
+          "width": 10
+        },
+        {
+          "index": 10,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " ",
+              "width": 1
+            }
+          ],
+          "text": " ",
+          "width": 1
+        },
+        {
+          "index": 11,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": true
+              },
+              "text": "› 1. Allow               ",
+              "width": 25
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": true
+              },
+              "text": "Run the tool",
+              "width": 12
+            }
+          ],
+          "text": "  › 1. Allow               Run the tool",
+          "width": 39
+        },
+        {
+          "index": 12,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": true
+              },
+              "text": "                         ",
+              "width": 25
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": true
+              },
+              "text": "and continue",
+              "width": 12
+            }
+          ],
+          "text": "                           and continue",
+          "width": 39
+        },
+        {
+          "index": 13,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "    2. Allow for this      ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Run the tool",
+              "width": 12
+            }
+          ],
+          "text": "    2. Allow for this      Run the tool",
+          "width": 39
+        },
+        {
+          "index": 14,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "       session             ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "and remember",
+              "width": 12
+            }
+          ],
+          "text": "       session             and remember",
+          "width": 39
+        },
+        {
+          "index": 15,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                           ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "this choice",
+              "width": 11
+            }
+          ],
+          "text": "                           this choice",
+          "width": 38
+        },
+        {
+          "index": 16,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                           ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "for this",
+              "width": 8
+            }
+          ],
+          "text": "                           for this",
+          "width": 35
+        },
+        {
+          "index": 17,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                           ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "session",
+              "width": 7
+            }
+          ],
+          "text": "                           session",
+          "width": 34
+        },
+        {
+          "index": 18,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "    3. Always allow        ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Run the tool",
+              "width": 12
+            }
+          ],
+          "text": "    3. Always allow        Run the tool",
+          "width": 39
+        },
+        {
+          "index": 19,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                           ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "and remember",
+              "width": 12
+            }
+          ],
+          "text": "                           and remember",
+          "width": 39
+        },
+        {
+          "index": 20,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                           ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "this choice",
+              "width": 11
+            }
+          ],
+          "text": "                           this choice",
+          "width": 38
+        },
+        {
+          "index": 21,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                           ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "for future",
+              "width": 10
+            }
+          ],
+          "text": "                           for future",
+          "width": 37
+        },
+        {
+          "index": 22,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                           ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "tool calls",
+              "width": 10
+            }
+          ],
+          "text": "                           tool calls",
+          "width": 37
+        },
+        {
+          "index": 23,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "    4. Cancel              ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "Cancel this",
+              "width": 11
+            }
+          ],
+          "text": "    4. Cancel              Cancel this",
+          "width": 38
+        },
+        {
+          "index": 24,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "                           ",
+              "width": 27
+            },
+            {
+              "column": 27,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "tool call",
+              "width": 9
+            }
+          ],
+          "text": "                           tool call",
+          "width": 36
+        },
+        {
+          "index": 25,
+          "runs": [
+            {
+              "column": 0,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "  ",
+              "width": 2
+            },
+            {
+              "column": 2,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "enter",
+              "width": 5
+            },
+            {
+              "column": 7,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " to submit",
+              "width": 10
+            },
+            {
+              "column": 17,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": true,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " | ",
+              "width": 3
+            },
+            {
+              "column": 20,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": true,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": "esc",
+              "width": 3
+            },
+            {
+              "column": 23,
+              "style": {
+                "background": null,
+                "foreground": null,
+                "isBold": false,
+                "isDim": false,
+                "isItalic": false,
+                "isReverse": false
+              },
+              "text": " to cancel",
+              "width": 10
+            }
+          ],
+          "text": "  enter to submit | esc to cancel",
+          "width": 33
+        }
+      ]
+    }
+  },
+  "plans": [
+    {
+      "number": 1,
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "1"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "number": 2,
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "2"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "number": 3,
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "3"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "number": 4,
+      "result": {
+        "plan": {
+          "confirmation": "fingerprintChangeOrUnblocked",
+          "focusesComposer": false,
+          "steps": [
+            {
+              "keys": [
+                "4"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "program": "codex"
+}

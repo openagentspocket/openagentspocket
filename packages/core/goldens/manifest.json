@@ -1,0 +1,23 @@
+{
+  "activities": [
+    "unknown",
+    "idle",
+    "working",
+    "blocked"
+  ],
+  "counts": {
+    "decodedScreens": 217,
+    "screens": 217,
+    "transcripts": 40
+  },
+  "generator": "Tests/AgenticoTests/GoldenExportTests.swift",
+  "planInputs": {
+    "answer": "Golden answer",
+    "note": "Use a dry run first",
+    "planNote": "Keep it small",
+    "toolUseID": "toolu_golden"
+  },
+  "preferredLanguages": [
+    "en"
+  ]
+}

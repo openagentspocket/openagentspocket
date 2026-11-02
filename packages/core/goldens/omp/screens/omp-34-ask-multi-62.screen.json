@@ -1,0 +1,41 @@
+{
+  "columns": 62,
+  "rows": [
+    {"index":0,"runs":[[0,1,0,"│"],[1,2,1,"  "],[3,20,2,"请选择颜色（可多选）"],[23,38,1,"                                      "],[61,1,0,"│"]],"text":"│  请选择颜色（可多选）                                      │","width":62},
+    {"index":1,"runs":[[0,1,0,"│"],[1,2,1,"  "],[3,1,3,""],[4,1,1," "],[5,3,4,"red"],[8,53,1,"                                                     "],[61,1,0,"│"]],"text":"│   red                                                     │","width":62},
+    {"index":2,"runs":[[0,1,0,"│"],[1,2,1,"  "],[3,1,3,""],[4,1,1," "],[5,5,4,"green"],[10,51,1,"                                                   "],[61,1,0,"│"]],"text":"│   green                                                   │","width":62},
+    {"index":3,"runs":[[0,1,0,"│"],[1,2,1,"  "],[3,1,3,""],[4,1,1," "],[5,4,4,"blue"],[9,52,1,"                                                    "],[61,1,0,"│"]],"text":"│   blue                                                    │","width":62},
+    {"index":4,"runs":[[0,62,0,"╰────────────────────────────────────────────────────────────╯"]],"text":"╰────────────────────────────────────────────────────────────╯","width":62},
+    {"index":5,"runs":[],"text":"","width":0},
+    {"index":6,"runs":[[0,1,5," "],[1,2,6," 󱊷"],[3,1,5," "],[4,4,7,"Aski"],[8,2,8,"ng"],[10,20,9," for multiple colors"],[30,32,5,"                                "]],"text":"  󱊷 Asking for multiple colors                                ","width":62},
+    {"index":7,"runs":[[0,2,10,"╭─"],[2,5,11," Ask "],[7,55,10,"──────────────────────────────────────────────────────╮"]],"text":"╭─ Ask ──────────────────────────────────────────────────────╮","width":62},
+    {"index":8,"runs":[[0,1,10,"│"],[1,1,5," "],[2,8,12," colors "],[10,2,5,"  "],[12,8,13," Submit "],[20,41,5,"                                         "],[61,1,10,"│"]],"text":"│  colors    Submit                                          │","width":62},
+    {"index":9,"runs":[[0,1,10,"│"],[1,60,5," 请选择颜色（可多选）                                       "],[61,1,10,"│"]],"text":"│ 请选择颜色（可多选）                                       │","width":62},
+    {"index":10,"runs":[[0,62,10,"├────────────────────────────────────────────────────────────┤"]],"text":"├────────────────────────────────────────────────────────────┤","width":62},
+    {"index":11,"runs":[[0,1,10,"│"],[1,1,5," "],[2,2,14," "],[4,1,9,""],[5,1,5," "],[6,3,14,"red"],[9,52,5,"                                                    "],[61,1,10,"│"]],"text":"│   red                                                    │","width":62},
+    {"index":12,"runs":[[0,1,10,"│"],[1,3,5,"   "],[4,1,9,""],[5,56,5," green                                                  "],[61,1,10,"│"]],"text":"│    green                                                  │","width":62},
+    {"index":13,"runs":[[0,1,10,"│"],[1,3,5,"   "],[4,1,9,""],[5,56,5," blue                                                   "],[61,1,10,"│"]],"text":"│    blue                                                   │","width":62},
+    {"index":14,"runs":[[0,1,10,"│"],[1,3,5,"   "],[4,1,9,""],[5,56,5," Other (type your own)                                  "],[61,1,10,"│"]],"text":"│    Other (type your own)                                  │","width":62},
+    {"index":15,"runs":[[0,1,10,"│"],[1,60,5,"                                                            "],[61,1,10,"│"]],"text":"│                                                            │","width":62},
+    {"index":16,"runs":[[0,62,10,"├────────────────────────────────────────────────────────────┤"]],"text":"├────────────────────────────────────────────────────────────┤","width":62},
+    {"index":17,"runs":[[0,1,10,"│"],[1,1,5," "],[2,57,9,"󱁐 toggle · 󰌑 submit · ↑/↓ move · 󰌒/←/→ question · 󱊷 cance"],[59,2,5,"… "],[61,1,10,"│"]],"text":"│ 󱁐 toggle · 󰌑 submit · ↑/↓ move · 󰌒/←/→ question · 󱊷 cance… │","width":62},
+    {"index":18,"runs":[[0,62,10,"╰────────────────────────────────────────────────────────────╯"]],"text":"╰────────────────────────────────────────────────────────────╯","width":62}
+  ],
+  "styles": [
+    {"background":{"rgb":[15,18,22]},"foreground":{"rgb":[31,37,45]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":{"rgb":[15,18,22]},"foreground":null,"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":{"rgb":[15,18,22]},"foreground":{"rgb":[0,180,255]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":{"rgb":[15,18,22]},"foreground":{"rgb":[107,114,128]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":{"rgb":[15,18,22]},"foreground":{"rgb":[156,163,176]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":null,"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[131,113,165]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[158,107,254]},"isBold":true,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[158,107,254]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[107,114,128]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[42,48,56]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[0,180,255]},"isBold":true,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":{"rgb":[0,130,179]},"foreground":null,"isBold":true,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[156,163,176]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false},
+    {"background":null,"foreground":{"rgb":[0,180,255]},"isBold":false,"isDim":false,"isItalic":false,"isReverse":false}
+  ]
+}

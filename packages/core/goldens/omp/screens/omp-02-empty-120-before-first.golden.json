@@ -1,0 +1,6 @@
+{
+  "fixture": "omp-02-empty-120-before-first.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "omp"
+}

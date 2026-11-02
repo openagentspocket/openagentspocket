@@ -1,0 +1,6 @@
+{
+  "fixture": "omp-21-after-exit-shell.ansi",
+  "parse": "none",
+  "plans": [],
+  "program": "omp"
+}

@@ -1,0 +1,1538 @@
+{
+  "fixture": "failed-tools.jsonl",
+  "lineOffsets": [
+    0,
+    403,
+    1199,
+    2018,
+    2860,
+    3720,
+    4566,
+    5269,
+    6118,
+    6845,
+    7690,
+    8404,
+    9297,
+    10196,
+    11089,
+    11803,
+    12698,
+    13400,
+    14238,
+    14976,
+    15496
+  ],
+  "program": "grok",
+  "projections": {
+    "blocked": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Look around the project and fix the typo in README.md.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000047-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "search",
+              "name": "grep",
+              "note": null,
+              "output": {
+                "length": 818,
+                "offset": 1199,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "regex parse error: unclosed group"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "fn main("
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000047-0",
+          "sourceOffset": 403
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000048-1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read_file",
+              "note": null,
+              "output": {
+                "length": 859,
+                "offset": 2860,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "File not found: /Users/developer/scratch/cap-grok-a/proj/missing.txt"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/missing.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000048-1",
+          "sourceOffset": 2018
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000049-2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read_file",
+              "note": null,
+              "output": {
+                "length": 702,
+                "offset": 4566,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "File too large"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/data/dump.json"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000049-2",
+          "sourceOffset": 3720
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004a-3",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "listing",
+              "name": "list_dir",
+              "note": null,
+              "output": {
+                "length": 726,
+                "offset": 6118,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Not a directory"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004a-3",
+          "sourceOffset": 5269
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004b-4",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "listing",
+              "name": "list_dir",
+              "note": null,
+              "output": {
+                "length": 713,
+                "offset": 7690,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "NotFound"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/build"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004b-4",
+          "sourceOffset": 6845
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004c-5",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 898,
+                "offset": 9297,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "No matches found for old_string in README.md."
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004c-5",
+          "sourceOffset": 8404
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004d-6",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 713,
+                "offset": 11089,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Multiple matches"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004d-6",
+          "sourceOffset": 10196
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004e-7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 701,
+                "offset": 12698,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Invalid input"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004e-7",
+          "sourceOffset": 11803
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004f-8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "mcp",
+              "name": "use_tool",
+              "note": null,
+              "output": {
+                "length": 737,
+                "offset": 14238,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Issue 7 not found."
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "github.get_issue"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004f-8",
+          "sourceOffset": 13400
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "README.md has no typo to fix."
+            }
+          },
+          "id": "grok:14976",
+          "sourceOffset": 14976
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Look around the project and fix the typo in README.md."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T20:16:50.350Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T20:16:40.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "idle": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Look around the project and fix the typo in README.md.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000047-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "search",
+              "name": "grep",
+              "note": null,
+              "output": {
+                "length": 818,
+                "offset": 1199,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "regex parse error: unclosed group"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "fn main("
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000047-0",
+          "sourceOffset": 403
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000048-1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read_file",
+              "note": null,
+              "output": {
+                "length": 859,
+                "offset": 2860,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "File not found: /Users/developer/scratch/cap-grok-a/proj/missing.txt"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/missing.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000048-1",
+          "sourceOffset": 2018
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000049-2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read_file",
+              "note": null,
+              "output": {
+                "length": 702,
+                "offset": 4566,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "File too large"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/data/dump.json"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000049-2",
+          "sourceOffset": 3720
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004a-3",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "listing",
+              "name": "list_dir",
+              "note": null,
+              "output": {
+                "length": 726,
+                "offset": 6118,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Not a directory"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004a-3",
+          "sourceOffset": 5269
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004b-4",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "listing",
+              "name": "list_dir",
+              "note": null,
+              "output": {
+                "length": 713,
+                "offset": 7690,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "NotFound"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/build"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004b-4",
+          "sourceOffset": 6845
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004c-5",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 898,
+                "offset": 9297,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "No matches found for old_string in README.md."
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004c-5",
+          "sourceOffset": 8404
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004d-6",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 713,
+                "offset": 11089,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Multiple matches"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004d-6",
+          "sourceOffset": 10196
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004e-7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 701,
+                "offset": 12698,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Invalid input"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004e-7",
+          "sourceOffset": 11803
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004f-8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "mcp",
+              "name": "use_tool",
+              "note": null,
+              "output": {
+                "length": 737,
+                "offset": 14238,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Issue 7 not found."
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "github.get_issue"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004f-8",
+          "sourceOffset": 13400
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "README.md has no typo to fix."
+            }
+          },
+          "id": "grok:14976",
+          "sourceOffset": 14976
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Look around the project and fix the typo in README.md."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T20:16:50.350Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T20:16:40.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "unknown": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Look around the project and fix the typo in README.md.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000047-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "search",
+              "name": "grep",
+              "note": null,
+              "output": {
+                "length": 818,
+                "offset": 1199,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "regex parse error: unclosed group"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "fn main("
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000047-0",
+          "sourceOffset": 403
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000048-1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read_file",
+              "note": null,
+              "output": {
+                "length": 859,
+                "offset": 2860,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "File not found: /Users/developer/scratch/cap-grok-a/proj/missing.txt"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/missing.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000048-1",
+          "sourceOffset": 2018
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000049-2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read_file",
+              "note": null,
+              "output": {
+                "length": 702,
+                "offset": 4566,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "File too large"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/data/dump.json"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000049-2",
+          "sourceOffset": 3720
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004a-3",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "listing",
+              "name": "list_dir",
+              "note": null,
+              "output": {
+                "length": 726,
+                "offset": 6118,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Not a directory"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004a-3",
+          "sourceOffset": 5269
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004b-4",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "listing",
+              "name": "list_dir",
+              "note": null,
+              "output": {
+                "length": 713,
+                "offset": 7690,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "NotFound"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/build"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004b-4",
+          "sourceOffset": 6845
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004c-5",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 898,
+                "offset": 9297,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "No matches found for old_string in README.md."
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004c-5",
+          "sourceOffset": 8404
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004d-6",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 713,
+                "offset": 11089,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Multiple matches"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004d-6",
+          "sourceOffset": 10196
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004e-7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 701,
+                "offset": 12698,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Invalid input"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004e-7",
+          "sourceOffset": 11803
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004f-8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "mcp",
+              "name": "use_tool",
+              "note": null,
+              "output": {
+                "length": 737,
+                "offset": 14238,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Issue 7 not found."
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "github.get_issue"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004f-8",
+          "sourceOffset": 13400
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "README.md has no typo to fix."
+            }
+          },
+          "id": "grok:14976",
+          "sourceOffset": 14976
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Look around the project and fix the typo in README.md."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T20:16:50.350Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T20:16:40.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    },
+    "working": {
+      "backgroundWork": [],
+      "backgroundWorkEnds": {},
+      "backgroundWorkStop": null,
+      "contextUsage": null,
+      "diagnostics": {
+        "invalidLines": 0,
+        "oversizedLines": 0,
+        "unknownRecordTypes": []
+      },
+      "entries": [
+        {
+          "content": {
+            "user": {
+              "attachmentLabels": [],
+              "command": null,
+              "imageCount": 0,
+              "text": "Look around the project and fix the typo in README.md.",
+              "wasQueued": false
+            }
+          },
+          "id": "grok:0",
+          "sourceOffset": 0
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000047-0",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "search",
+              "name": "grep",
+              "note": null,
+              "output": {
+                "length": 818,
+                "offset": 1199,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "regex parse error: unclosed group"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "fn main("
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000047-0",
+          "sourceOffset": 403
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000048-1",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read_file",
+              "note": null,
+              "output": {
+                "length": 859,
+                "offset": 2860,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "File not found: /Users/developer/scratch/cap-grok-a/proj/missing.txt"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/missing.txt"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000048-1",
+          "sourceOffset": 2018
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-000000000049-2",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileRead",
+              "name": "read_file",
+              "note": null,
+              "output": {
+                "length": 702,
+                "offset": 4566,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "File too large"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/data/dump.json"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-000000000049-2",
+          "sourceOffset": 3720
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004a-3",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "listing",
+              "name": "list_dir",
+              "note": null,
+              "output": {
+                "length": 726,
+                "offset": 6118,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Not a directory"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004a-3",
+          "sourceOffset": 5269
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004b-4",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "listing",
+              "name": "list_dir",
+              "note": null,
+              "output": {
+                "length": 713,
+                "offset": 7690,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "NotFound"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/build"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004b-4",
+          "sourceOffset": 6845
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004c-5",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 898,
+                "offset": 9297,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "No matches found for old_string in README.md."
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004c-5",
+          "sourceOffset": 8404
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004d-6",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 713,
+                "offset": 11089,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Multiple matches"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004d-6",
+          "sourceOffset": 10196
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004e-7",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "fileEdit",
+              "name": "search_replace",
+              "note": null,
+              "output": {
+                "length": 701,
+                "offset": 12698,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Invalid input"
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "/Users/developer/scratch/cap-grok-a/proj/README.md"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004e-7",
+          "sourceOffset": 11803
+        },
+        {
+          "content": {
+            "tool": {
+              "callID": "call-01900000-0000-7000-8000-00000000004f-8",
+              "cardAnswer": null,
+              "diff": null,
+              "exitCode": null,
+              "fileChanges": null,
+              "imagePath": null,
+              "isNotUpdating": false,
+              "kind": "mcp",
+              "name": "use_tool",
+              "note": null,
+              "output": {
+                "length": 737,
+                "offset": 14238,
+                "path": null
+              },
+              "outputRead": null,
+              "preview": {
+                "imageCount": 0,
+                "isTruncated": false,
+                "text": "Issue 7 not found."
+              },
+              "questions": [],
+              "status": "failed",
+              "subagentActivity": null,
+              "subagentAgentID": null,
+              "subtitle": null,
+              "title": "github.get_issue"
+            }
+          },
+          "id": "grok:tool:call-01900000-0000-7000-8000-00000000004f-8",
+          "sourceOffset": 13400
+        },
+        {
+          "content": {
+            "assistant": {
+              "text": "README.md has no typo to fix."
+            }
+          },
+          "id": "grok:14976",
+          "sourceOffset": 14976
+        }
+      ],
+      "latestPromptOffset": 0,
+      "links": {
+        "continuedInSessionID": null,
+        "relocatedCwd": null
+      },
+      "needsOlderHistory": false,
+      "pendingRequests": [],
+      "precedingTurnEnd": null,
+      "recordedPrompts": [
+        {
+          "entryID": "grok:0",
+          "offset": 0,
+          "pastedImagePaths": null,
+          "text": "Look around the project and fix the typo in README.md."
+        }
+      ],
+      "title": null,
+      "turns": [
+        {
+          "endedAt": "2026-10-19T20:16:50.350Z",
+          "ending": "completed",
+          "firstEntryID": "grok:0",
+          "startedAt": "2026-10-19T20:16:40.000Z"
+        }
+      ],
+      "unrecordedEntryIDs": []
+    }
+  },
+  "reducer": {
+    "transcriptPath": "/home/dev/.grok/sessions/%2Fhome%2Fdev%2Fproj/01900000-0000-7000-8000-000000000004/updates.jsonl",
+    "type": "GrokTranscriptReducer"
+  },
+  "unsupportedFormat": null
+}
