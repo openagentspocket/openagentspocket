@@ -5,6 +5,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import type { ReactNode } from 'react';
 import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
+import { bindDemoModeStorage } from '@/connections/mode';
 import { statusBarStyle } from '@/navigation/screenOptions';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
 import { InAppBanner } from '@/notifications/InAppBanner';
@@ -16,6 +17,7 @@ import { useResolvedThemeId } from '@/settings/useSettingsContext';
 import { useWidgetSync } from '@/widgets/useWidgetSync';
 
 const settingsStore = new SettingsStore(deviceStorage);
+bindDemoModeStorage(deviceStorage);
 
 /** The theme in force comes from Settings (chosen, or the Dark/Light pair for the system). */
 function SettingsTheme({ children }: { children: ReactNode }) {

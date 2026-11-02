@@ -47,7 +47,12 @@ export type SettingsRow =
   /** A bespoke block (theme cards, cache size, licenses) the renderer looks up by name. */
   | (RowBase & { kind: 'custom'; component: CustomComponent });
 
-export type CustomComponent = 'themeCards' | 'chatSample' | 'chatCache' | 'acknowledgements';
+export type CustomComponent =
+  | 'themeCards'
+  | 'chatSample'
+  | 'chatCache'
+  | 'acknowledgements'
+  | 'demoMode';
 
 export interface SettingsSection {
   id: string;

@@ -10,7 +10,10 @@ import {
   type Status,
   StatusDot,
 } from '@openagentspocket/ui';
+import { useRouter } from 'expo-router';
 import { Pressable, View } from 'react-native';
+import { useEntryMenus } from '../navigation/entryMenus';
+import { hrefs } from '../navigation/hrefs';
 import type { BoardEntry } from './boardModel';
 
 function statusDot(status: string): Status {
@@ -37,12 +40,15 @@ interface BoardCardProps {
 /** One Agent on the board: status, name, Host and workspace, and the controls for its priority. */
 export function BoardCard({ entry, onTogglePin, onMove }: BoardCardProps) {
   const styles = useStyles();
+  const router = useRouter();
+  const entries = useEntryMenus();
   const { row, rank, canMoveUp, canMoveDown } = entry;
   const pinned = rank !== undefined;
   const pane = row.agent.pane_id;
   const where = [row.hostName, row.workspaceLabel].filter(Boolean).join(' · ');
   const summary = row.lastOutputSnippet ?? inboxTitle(row);
   const menu: ActionMenuItem[] = [
+    ...entries.agent(row),
     { key: 'pin', title: pinned ? t('Unpin') : t('Pin'), icon: 'pin', onPress: onTogglePin },
   ];
   if (canMoveUp) {
@@ -75,6 +81,7 @@ export function BoardCard({ entry, onTogglePin, onMove }: BoardCardProps) {
         subtitle={[where, summary].filter(Boolean).join('\n')}
         leading={<StatusDot status={statusDot(row.agent.agent_status)} />}
         menu={menu}
+        onPress={() => router.push(hrefs.agent(row.hostId, pane))}
         trailing={
           pinned ? (
             <View style={styles.actions}>

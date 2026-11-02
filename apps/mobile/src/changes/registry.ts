@@ -31,8 +31,8 @@ const demoFactory: ChangesStoreFactory = () =>
 let factory: ChangesStoreFactory = demoFactory;
 const stores = new Map<string, ChangesStore>();
 
-export function setChangesStoreFactory(next: ChangesStoreFactory): void {
-  factory = next;
+export function setChangesStoreFactory(next: ChangesStoreFactory | undefined): void {
+  factory = next ?? demoFactory;
   stores.clear();
 }
 

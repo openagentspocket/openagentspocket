@@ -8,8 +8,13 @@ import {
   type KnownHostsStore,
   type ReconnectPolicy,
 } from '@openagentspocket/core';
-import { connectTransport, type SshTransport } from '@openagentspocket/transport';
-import type { SshModule } from 'agentico-ssh';
+import {
+  connectTransport,
+  type HostPlatform,
+  hostPlatform,
+  type SshTransport,
+} from '@openagentspocket/transport';
+import type { SshModule, SshSession } from 'agentico-ssh';
 import type { ConsoleStore } from '@/console/store';
 import type { HostConnection } from '@/features/hosts/HostsModel';
 import { transportSettingsFor } from './transportSettings';
@@ -73,6 +78,7 @@ export class ConnectionManager {
   private unsubscribe: (() => void) | undefined;
   private unsubscribeStore: (() => void) | undefined;
   private readonly lastState = new Map<string, HostConnection>();
+  private readonly platforms = new Map<string, HostPlatform>();
 
   constructor(private readonly options: ConnectionManagerOptions) {
     this.active = options.initiallyActive ?? true;
@@ -107,6 +113,35 @@ export class ConnectionManager {
     this.active = active;
     const work = [...this.entries.values()].map((entry) => this.applyActive(entry, active));
     await Promise.all(work);
+  }
+
+  /**
+   * Runs `operation` on the Host's live transport (waiting for a replacement while it
+   * reconnects). Rejects when the Host is not in the catalog.
+   */
+  withTransport<V>(hostId: string, operation: (transport: SshTransport) => Promise<V>): Promise<V> {
+    const entry = this.entries.get(hostId);
+    if (!entry) return Promise.reject(new Error('The Host is not listed.'));
+    return entry.session.withTransport(operation);
+  }
+
+  /**
+   * The operating system family the Host last answered as; undefined before the first
+   * connection. Entry points that need a POSIX shell hide for `nativeWindows`.
+   */
+  platformOf(hostId: string): HostPlatform | undefined {
+    return this.platforms.get(hostId);
+  }
+
+  /**
+   * A second SSH session to the Host for a surface that must not share the Console's (the
+   * Ports preview). It trusts only keys already pinned: it never prompts.
+   */
+  async connectDedicated(hostId: string): Promise<SshSession> {
+    const entry = this.entries.get(hostId);
+    if (!entry) throw new Error('The Host is not listed.');
+    const transport = await this.dial(entry.host, async () => false);
+    return transport.session;
   }
 
   /** A user-requested retry, for example after trusting a changed key. */
@@ -161,12 +196,16 @@ export class ConnectionManager {
   private drop(id: string): void {
     this.entries.delete(id);
     this.lastState.delete(id);
+    this.platforms.delete(id);
     // Ends the projection, which ends its session.
     this.options.store.removeHost(id);
     this.options.onConnection?.(id, 'notConnected');
   }
 
-  private async dial(host: Host): Promise<SshTransport> {
+  private async dial(
+    host: Host,
+    confirmFirstConnect: HostKeyPolicy['confirmFirstConnect'] = this.options.confirmFirstConnect,
+  ): Promise<SshTransport> {
     const { options } = this;
     await options.ensureDeviceKey();
     const settings = transportSettingsFor(host, {
@@ -174,10 +213,12 @@ export class ConnectionManager {
       clock: options.clock,
       policy: {
         knownHosts: options.knownHosts,
-        confirmFirstConnect: options.confirmFirstConnect,
+        confirmFirstConnect,
       },
     });
-    return (options.connect ?? connectTransport)(options.ssh, settings);
+    const transport = await (options.connect ?? connectTransport)(options.ssh, settings);
+    this.platforms.set(host.id, hostPlatform(transport));
+    return transport;
   }
 
   private reportConnections(): void {

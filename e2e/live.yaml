@@ -41,3 +41,26 @@ env:
       text: "WORKING.*|NEEDS YOU.*|DONE.*"
     timeout: 20000
 - takeScreenshot: live-home
+# Home -> Agents -> agent detail, through the toolbar menu.
+- tapOn:
+    id: toolbar-menu
+- tapOn: "Agents"
+- extendedWaitUntil:
+    visible:
+      id: "agent-row-.*"
+    timeout: 20000
+- takeScreenshot: live-agents
+- tapOn:
+    id: "agent-row-.*"
+- extendedWaitUntil:
+    visible:
+      id: agent-header
+    timeout: 20000
+- assertVisible:
+    id: agent-detail
+- takeScreenshot: live-agent-detail
+# The Agent's header menu reaches Changes.
+- tapOn:
+    id: agent-more-menu
+- assertVisible: "Changes"
+- assertVisible: "Ports"

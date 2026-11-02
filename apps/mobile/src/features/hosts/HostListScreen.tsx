@@ -3,6 +3,7 @@ import { t } from '@openagentspocket/i18n';
 import { Button, EmptyState, ListRow, Screen, Section, StatusDot } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { View } from 'react-native';
+import { useEntryMenus } from '../../navigation/entryMenus';
 import { extra } from './extraText';
 import type { HostConnection } from './HostsModel';
 import { connectionLine, groupHosts, groupStatus, groupTitle } from './hostRows';
@@ -26,6 +27,7 @@ export function HostListScreen({
   onDuplicate,
 }: HostListScreenProps) {
   const snapshot = useHosts();
+  const entries = useEntryMenus();
   const [collapsed, setCollapsed] = useState<ReadonlySet<HostConnection>>(new Set());
   const toggle = (group: HostConnection) =>
     setCollapsed((current) => {
@@ -93,6 +95,7 @@ export function HostListScreen({
               chevron
               onPress={() => onOpen(host)}
               menu={[
+                ...entries.host({ id: host.id, name: hostDisplayName(host) }),
                 { key: 'edit', title: t('Edit'), icon: 'edit', onPress: () => onEdit(host) },
                 {
                   key: 'duplicate',

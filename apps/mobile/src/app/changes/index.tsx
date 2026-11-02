@@ -2,7 +2,7 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { ChangesScreen } from '@/changes/ChangesScreen';
 import { say } from '@/changes/say';
 
-/** `/changes?agent=<id>`: the Changes list of an Agent's Checkout. */
+/** `/changes?agent=<target id>`: the Changes list of an Agent's (or a directory's) Checkout. */
 export default function ChangesRoute() {
   const { agent } = useLocalSearchParams<{ agent?: string }>();
   const router = useRouter();

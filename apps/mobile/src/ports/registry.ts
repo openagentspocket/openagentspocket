@@ -13,8 +13,8 @@ let factory: PortsStoreFactory = demoPortsFactory;
 const stores = new Map<string, PortsStore>();
 
 /** Swap the demo Host for the real one at the composition root (`sshPortsFactory`). */
-export function setPortsStoreFactory(next: PortsStoreFactory): void {
-  factory = next;
+export function setPortsStoreFactory(next: PortsStoreFactory | undefined): void {
+  factory = next ?? demoPortsFactory;
   stores.clear();
 }
 
