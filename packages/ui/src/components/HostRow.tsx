@@ -61,6 +61,8 @@ export function HostRow({
   return (
     <ListRow
       title={host.name}
+      titleSemibold
+      subtitleVariant="subheadline"
       subtitle={host.subtitle}
       subtitleLines={1}
       leading={

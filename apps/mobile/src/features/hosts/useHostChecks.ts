@@ -1,4 +1,9 @@
-import { type Host, hostTrustKey, type PreflightReport } from '@openagentspocket/core';
+import {
+  type Host,
+  hostTrustKey,
+  type PluginStatus,
+  type PreflightReport,
+} from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { confirm } from '@openagentspocket/ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -11,9 +16,17 @@ export interface ChecksState {
   readonly report: PreflightReport | null;
   readonly routeInUse: string | null;
   readonly changedKey: ProbeOutcome['changedKey'];
+  /** What herdr says about the Agentico plugin once the checks passed. */
+  readonly plugin: PluginStatus;
 }
 
-const IDLE: ChecksState = { running: false, report: null, routeInUse: null, changedKey: null };
+const IDLE: ChecksState = {
+  running: false,
+  report: null,
+  routeInUse: null,
+  changedKey: null,
+  plugin: { kind: 'checking' },
+};
 
 /** Runs and tracks the preflight of one Host, with the TOFU and changed-key prompts. */
 export function useHostChecks(host: Host | null) {
@@ -35,7 +48,14 @@ export function useHostChecks(host: Host | null) {
     const outcome = await probe.run(current, policy);
     if (mine !== generation.current) return;
     model.setConnection(current.id, outcome.report.failure ? 'cantConnect' : 'connected');
-    setState({ running: false, ...outcome });
+    model.setLatency(current.id, outcome.report.failure ? null : (outcome.latencyMs ?? null));
+    setState({
+      running: false,
+      report: outcome.report,
+      routeInUse: outcome.routeInUse,
+      changedKey: outcome.changedKey,
+      plugin: outcome.plugin ?? { kind: 'unavailable' },
+    });
     if (!outcome.report.failure) void hostsRuntime().reconnect?.(current.id);
   }, [hostId]);
 

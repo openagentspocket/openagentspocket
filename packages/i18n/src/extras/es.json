@@ -1,14 +1,19 @@
 {
+  "A finished turn's steps fold behind one line above its answer; a turn stays open while it runs or while its background work does.": "Los pasos de un turno terminado se pliegan en una línea sobre su respuesta; un turno queda abierto mientras corre o mientras su trabajo en segundo plano sigue.",
+  "Add another way to reach this Host, such as its LAN address at home and an overlay network or Jump Host elsewhere.": "Agregá otra forma de llegar a este Host, como su dirección de LAN en casa y una red overlay o un Jump Host en otro lado.",
   "Agent view": "Vista del Agent",
   "Board": "Tablero",
   "Chat arrives with the conversation engine.": "El Chat llega con el motor de conversaciones.",
+  "Ctrl, the keyboard key and More always show. A key you hide stays one menu away, in More › Commands.": "Ctrl, la tecla de teclado y Más siempre se muestran. Una tecla que ocultás queda a un menú de distancia, en Más › Comandos.",
   "Demo Mode": "Modo demo",
   "Demo mode is set by the EXPO_PUBLIC_DEMO build flag.": "El modo demo lo fija el flag de compilación EXPO_PUBLIC_DEMO.",
   "Drag to reorder": "Arrastrar para reordenar",
   "New Agent Here": "Nuevo Agent acá",
   "Open Chat": "Abrir chat",
+  "On": "Activado",
   "Show scripted sample data instead of connecting to your Hosts.": "Mostrar datos de ejemplo en lugar de conectarse a tus Hosts.",
   "Switch Agent": "Cambiar de Agent",
+  "Tap Ctrl to apply it to the next key. Touch and hold it to keep it on until you tap it again.": "Tocá Ctrl para aplicarlo a la próxima tecla. Mantenelo apretado para dejarlo activo hasta que lo toques de nuevo.",
   "Teammate @%@": "Compañero @{0}",
   "Terminal attach is not available yet.": "Adjuntar la terminal todavía no está disponible."
 }

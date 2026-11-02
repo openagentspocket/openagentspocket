@@ -5,7 +5,10 @@ import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
 import { type SwipeAction, SwipeRow } from './SwipeRow';
-import { Text } from './Text';
+import { Text, type TextTone } from './Text';
+
+/** Width of the leading symbol slot of a settings-style row (Swift: 22 pt glyph in a 28 pt slot). */
+export const ICON_SLOT = 28;
 
 const useStyles = makeStyles((t) => ({
   row: {
@@ -16,11 +19,14 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.spacing.md,
     paddingVertical: airy.rowInset,
   },
+  iconSlot: { width: ICON_SLOT, alignItems: 'center' },
   pressed: { backgroundColor: t.colors.surfaceRaised },
   selected: { backgroundColor: t.colors.control },
   disabled: { opacity: 0.4 },
   text: { flex: 1, gap: 2 },
   trailing: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexShrink: 0 },
+  // A long value truncates before it can squeeze the title.
+  value: { flexShrink: 1, maxWidth: 120 },
 }));
 
 export interface ListRowProps {
@@ -30,12 +36,22 @@ export interface ListRowProps {
   leading?: ReactNode;
   /** A settings-style leading symbol: 22 pt, tinted secondary. */
   icon?: IconName;
+  /** Sets the title in the monospaced face (addresses). */
+  titleMono?: boolean;
   /** Sets the subtitle in monospaced caption (dates, sizes, paths). */
   subtitleMono?: boolean;
+  /** Sets the title in semibold (Host names). */
+  titleSemibold?: boolean;
+  /** The subtitle's size: footnote by default, subheadline for a larger address line. */
+  subtitleVariant?: 'footnote' | 'subheadline';
   /** Lines the subtitle may take before it truncates (2 by default). */
   subtitleLines?: number;
   /** A short value in secondary text before the trailing slot ("Índigo", "3 hosts"). */
   value?: string;
+  /** Drawn just before the value (the palette dots of the Theme row). */
+  valueLeading?: ReactNode;
+  /** Ink of the value; accent for a value that opens a menu (pickers). */
+  valueTone?: TextTone;
   /** A badge, a switch, a copy button. */
   trailing?: ReactNode;
   /** Shows a disclosure chevron: the row pushes a screen. */
@@ -67,10 +83,15 @@ export function ListRow({
   title,
   subtitle,
   subtitleMono = false,
+  titleMono = false,
+  titleSemibold = false,
+  subtitleVariant = 'footnote',
   subtitleLines = 2,
   leading,
   icon,
   value,
+  valueLeading,
+  valueTone = 'secondary',
   trailing,
   chevron = false,
   onPress,
@@ -115,12 +136,20 @@ export function ListRow({
       ]}
       testID={testID}
     >
-      {icon ? <Icon name={icon} size={22} color="textSecondary" /> : leading}
+      {icon ? (
+        <View style={styles.iconSlot}>
+          <Icon name={icon} size={22} color="textSecondary" />
+        </View>
+      ) : (
+        leading
+      )}
       <View style={styles.text}>
-        <Text numberOfLines={1}>{title}</Text>
+        <Text numberOfLines={1} monospaced={titleMono} semibold={titleSemibold}>
+          {title}
+        </Text>
         {subtitle ? (
           <Text
-            variant={subtitleMono ? 'caption' : 'footnote'}
+            variant={subtitleMono ? 'caption' : subtitleVariant}
             monospaced={subtitleMono}
             tone="secondary"
             numberOfLines={subtitleLines}
@@ -130,8 +159,9 @@ export function ListRow({
         ) : null}
       </View>
       <View style={styles.trailing}>
+        {valueLeading}
         {value ? (
-          <Text variant="callout" tone="secondary" numberOfLines={1}>
+          <Text variant="callout" tone={valueTone} numberOfLines={1} style={styles.value}>
             {value}
           </Text>
         ) : null}

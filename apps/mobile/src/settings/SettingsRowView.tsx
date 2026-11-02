@@ -1,9 +1,9 @@
 import {
-  Button,
   confirm,
   Icon,
   ListRow,
   NavRow,
+  PaletteDots,
   PickerRow,
   StepperRow,
   ToggleRow,
@@ -19,8 +19,6 @@ interface Props {
   ctx: SettingsContext;
 }
 
-const icon = (name: SettingsRow['icon']) => (name ? <Icon name={name} /> : undefined);
-
 /** One schema row as a primitive: the only place a row kind turns into UI. */
 export function SettingsRowView({ row, ctx }: Props) {
   const router = useRouter();
@@ -35,8 +33,11 @@ export function SettingsRowView({ row, ctx }: Props) {
         <NavRow
           title={title}
           subtitle={subtitle}
-          leading={icon(row.icon)}
+          icon={row.icon}
           value={row.value?.(ctx)}
+          valueLeading={
+            row.accessory === 'themeDots' ? <PaletteDots themeId={ctx.themeId} /> : undefined
+          }
           onPress={() => router.push({ pathname: '/settings/[page]', params: { page: row.page } })}
           testID={row.id}
         />
@@ -48,7 +49,8 @@ export function SettingsRowView({ row, ctx }: Props) {
         <NavRow
           title={title}
           subtitle={subtitle}
-          leading={icon(row.icon)}
+          icon={row.icon}
+          value={row.value?.(ctx)}
           onPress={() => router.push(row.route as never)}
           testID={row.id}
         />
@@ -57,16 +59,14 @@ export function SettingsRowView({ row, ctx }: Props) {
       return (
         <ListRow
           title={title}
-          leading={icon(row.icon ?? 'info')}
+          icon={row.icon ?? 'info'}
           trailing={<Icon name="arrowUp" size={13} color="textTertiary" />}
           onPress={() => WebBrowser.openBrowserAsync(row.url)}
           testID={row.id}
         />
       );
     case 'info':
-      return (
-        <ListRow title={title} leading={icon(row.icon)} value={row.value(ctx)} testID={row.id} />
-      );
+      return <ListRow title={title} icon={row.icon} value={row.value(ctx)} testID={row.id} />;
     case 'toggle':
       return (
         <ToggleRow
@@ -109,12 +109,13 @@ export function SettingsRowView({ row, ctx }: Props) {
       );
     case 'reset':
       return (
-        <Button
-          kind="text"
+        <ListRow
           title={title}
-          onPress={async () => {
-            if (await confirm({ title, destructive: true, confirmLabel: title }))
-              store.reset(row.keys);
+          onPress={() => {
+            // Not async: the press handler must return at once while the dialog is open.
+            void confirm({ title, destructive: true, confirmLabel: title }).then((ok) => {
+              if (ok) store.reset(row.keys);
+            });
           }}
           testID={row.id}
         />

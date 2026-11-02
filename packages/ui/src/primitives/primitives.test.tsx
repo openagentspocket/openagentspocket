@@ -9,6 +9,7 @@ import {
   CopyableValueRow,
   CopyButton,
   Icon,
+  Screen,
   SectionHeader,
   StatusDot,
   StatusPill,
@@ -211,5 +212,17 @@ describe('useTheme', () => {
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
     await expect(render(<Text>x</Text>)).rejects.toThrow('ThemeProvider');
     spy.mockRestore();
+  });
+});
+
+describe('Screen keyboard avoidance', () => {
+  it('wraps the content in a keyboard-avoiding view and still renders it', async () => {
+    const view = await renderThemed(
+      <Screen keyboardAvoiding testID="form">
+        <Text>b</Text>
+      </Screen>,
+    );
+    expect(view.getByTestId('form-keyboard')).toBeTruthy();
+    expect(view.getByText('b')).toBeTruthy();
   });
 });

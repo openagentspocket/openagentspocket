@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { AccessibilityActionEvent } from 'react-native';
 import { Pressable, View } from 'react-native';
 import type { ActionMenuItem } from '../overlay/ActionMenu';
+import { loadSwiftUi, NativePreviewMenu, supportsNativePreview } from '../overlay/NativeActionMenu';
 import { Card } from '../primitives/Card';
 import { type SwipeAction, SwipeRow } from '../primitives/SwipeRow';
 import { airy } from '../theme/metrics';
@@ -43,6 +44,11 @@ export interface AgentCardProps {
   onPress?: () => void;
   /** Long press lifts the card above these (see `agentRowActions`). */
   menu?: readonly ActionMenuItem[];
+  /**
+   * lifted (default): the JS popover with the card lifted above it. native: the system context menu
+   * with the card as its preview where @expo/ui provides it (iOS), else the lifted popover.
+   */
+  menuPresentation?: 'lifted' | 'native';
   /** Swipe right (Pin); a full swipe runs the first. */
   leadingSwipeActions?: readonly SwipeAction[];
   /** Swipe left (Close); a full swipe runs the first. */
@@ -63,6 +69,7 @@ export function AgentCard({
   selected = false,
   onPress,
   menu,
+  menuPresentation = 'lifted',
   leadingSwipeActions,
   swipeActions,
   showProgramName,
@@ -90,7 +97,9 @@ export function AgentCard({
     onAccessibilityAction: (event: AccessibilityActionEvent) =>
       actions.find((action) => action.key === event.nativeEvent.actionName)?.onPress(),
   };
-  const open = menu?.length ? () => setMenuOpen(true) : undefined;
+  const nativeUi = menuPresentation === 'native' && menu?.length ? loadSwiftUi() : null;
+  const native = supportsNativePreview(nativeUi) ? nativeUi : null;
+  const open = menu?.length && !native ? () => setMenuOpen(true) : undefined;
   const front =
     presentation === 'card' ? (
       <View>
@@ -124,7 +133,8 @@ export function AgentCard({
       </Pressable>
     );
   const swipeable = swipeActions?.length || leadingSwipeActions?.length;
-  const slot = swipeable ? (
+  const lifted = <Card>{body}</Card>;
+  const swiped = swipeable ? (
     <SwipeRow
       actions={swipeActions}
       leadingActions={leadingSwipeActions}
@@ -135,15 +145,23 @@ export function AgentCard({
   ) : (
     front
   );
+  const slot =
+    native && menu ? (
+      <NativePreviewMenu ui={native} items={menu} preview={lifted}>
+        {swiped}
+      </NativePreviewMenu>
+    ) : (
+      swiped
+    );
   return (
     <View style={presentation === 'card' ? styles.cardSlot : undefined}>
       {slot}
       {presentation === 'row' ? (
         <View style={styles.separator} pointerEvents="none" testID={`separator-${testID}`} />
       ) : null}
-      {menu?.length ? (
+      {menu?.length && !native ? (
         <AgentRowMenu
-          preview={<Card>{body}</Card>}
+          preview={lifted}
           items={menu}
           visible={menuOpen}
           onClose={() => setMenuOpen(false)}

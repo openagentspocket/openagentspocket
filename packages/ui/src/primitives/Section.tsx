@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import type { Status } from '../theme/status';
 import { makeStyles } from '../theme/theme';
 import { Card, type CardLevel } from './Card';
+import { ICON_SLOT } from './ListRow';
 import { SectionHeader, type SectionHeaderAction } from './SectionHeader';
 import { Text } from './Text';
 
@@ -14,6 +15,7 @@ const useStyles = makeStyles((t) => ({
     marginLeft: t.spacing.md,
   },
   footer: { paddingHorizontal: t.spacing.xxs },
+  iconSeparator: { marginLeft: t.spacing.md + ICON_SLOT + t.spacing.sm },
 }));
 
 interface SectionProps {
@@ -25,6 +27,8 @@ interface SectionProps {
   footer?: string;
   /** Rows inside one card with hairlines between them (settings, hosts); false lays children out loose. */
   grouped?: boolean;
+  /** Hairlines start past a leading symbol slot (settings rows with icons). */
+  iconInset?: boolean;
   level?: CardLevel;
   /** Collapsible: hides the children while false. */
   expanded?: boolean;
@@ -41,6 +45,7 @@ export function Section({
   action,
   footer,
   grouped = true,
+  iconInset = false,
   level,
   expanded,
   onToggle,
@@ -67,7 +72,12 @@ export function Section({
           <Card padded={false} level={level}>
             {rows.map((row, index) => (
               <Fragment key={row.key ?? index}>
-                {index > 0 ? <View style={styles.separator} testID="row-separator" /> : null}
+                {index > 0 ? (
+                  <View
+                    style={[styles.separator, iconInset && styles.iconSeparator]}
+                    testID="row-separator"
+                  />
+                ) : null}
                 {row}
               </Fragment>
             ))}

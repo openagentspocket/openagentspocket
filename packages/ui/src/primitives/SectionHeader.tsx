@@ -17,6 +17,7 @@ export interface SectionHeaderAction {
   onPress: () => void;
   /** What screen readers hear, as one whole sentence ("See all Sessions"). */
   accessibilityLabel?: string;
+  testID?: string;
 }
 
 interface SectionHeaderProps {
@@ -84,6 +85,7 @@ export function SectionHeader({
           accessibilityRole="button"
           accessibilityLabel={action.accessibilityLabel ?? action.title}
           hitSlop={10}
+          testID={action.testID}
         >
           <Text variant="footnote" semibold tone="accent">
             {action.title}

@@ -18,7 +18,7 @@ import {
   VolatileChatTranscriptCache,
 } from '@openagentspocket/core';
 import type { SshTransport } from '@openagentspocket/transport';
-import { pluginConfigFiles } from '@openagentspocket/transport';
+import { pluginConfigFiles, runPluginStep } from '@openagentspocket/transport';
 import { type AppGroupStore, unavailableAppGroup } from 'agentico-app-group';
 import { unavailableLiveActivities } from 'agentico-live-activity';
 import type { SshModule } from 'agentico-ssh';
@@ -118,6 +118,13 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
     trustTimeoutMs: deps.trustTimeoutMs ?? TRUST_TIMEOUT_MS,
     confirmFirstConnect,
     reconnect: (hostId) => manager.reconnect(hostId),
+    replaceDeviceKey: async () => {
+      await deps.deviceKey.replace(deps.keyAlias);
+    },
+    runPluginSteps: (hostId, steps) =>
+      manager.withTransport(hostId, async (transport) => {
+        for (const step of steps) await runPluginStep(transport, step);
+      }),
     createScanStore: () =>
       new PairingScanStore({
         connector,

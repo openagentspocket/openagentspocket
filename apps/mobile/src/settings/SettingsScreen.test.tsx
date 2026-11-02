@@ -87,6 +87,18 @@ describe('SettingsScreen', () => {
     expect(screen.queryByTestId('settings-section-security')).toBeNull();
   });
 
+  it('opens the root as a sheet (Done capsule, large title) and pushed pages without them', async () => {
+    await setup('root');
+    expect(screen.getByTestId('settings-done')).toBeTruthy();
+    expect(screen.getByTestId('settings-header')).toBeTruthy();
+  });
+
+  it('keeps pushed pages free of the sheet header', async () => {
+    await setup('toolbar');
+    expect(screen.queryByTestId('settings-done')).toBeNull();
+    expect(screen.getByTestId('settings.toolbar.preview', { hidden: true })).toBeTruthy();
+  });
+
   it('shows the security rows when the device can authenticate, grace only with the lock on', async () => {
     const store = await setup('root', { authenticator: fakeAuthenticator('Face ID') });
     expect(await screen.findByTestId('settings.security.requireToOpen')).toBeTruthy();

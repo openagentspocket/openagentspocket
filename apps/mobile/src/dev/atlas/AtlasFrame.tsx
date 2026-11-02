@@ -11,7 +11,8 @@ import { createDemoConsoleStore } from '@/console/demo';
 import { ConsoleStoreProvider } from '@/console/hooks';
 import { ConsoleStore } from '@/console/store';
 import { systemClock } from '@/console/systemClock';
-import { createDemoRuntime, setHostsRuntime } from '@/features/hosts/hostsRuntime';
+import type { DemoHostProbe } from '@/features/hosts/HostProbe';
+import { createDemoRuntime, policyFor, setHostsRuntime } from '@/features/hosts/hostsRuntime';
 import { freezeAtlasClock } from './atlasClock';
 
 export interface AtlasData {
@@ -20,9 +21,15 @@ export interface AtlasData {
   hosts?: 'demo' | 'empty';
   /** The Agents list grouping, for the list ids. Default flat. */
   presentation?: ListPresentation;
+  /** `false`: the Hosts never connected, so the first preflight asks to trust the key. */
+  trusted?: boolean;
+  /** The plugin version every Host reports (an old one raises the plugin notice). */
+  pluginVersion?: string;
+  /** `unavailable`: this device's key cannot be loaded, so the form offers Replace Device Key. */
+  deviceKey?: 'unavailable';
 }
 
-const DEMO_HOSTS: readonly Host[] = [
+export const DEMO_HOSTS: readonly Host[] = [
   {
     id: 'demo',
     name: 'Demo Host',
@@ -68,18 +75,40 @@ export function AtlasFrame({ data, children }: { data: AtlasData; children: Reac
   }, [data.console, data.presentation]);
   useEffect(() => {
     let live = true;
-    const runtime = createDemoRuntime();
+    const runtime = createDemoRuntime(
+      data.deviceKey === 'unavailable'
+        ? {
+            loadDeviceKey: async () => ({ ok: false, reason: 'unavailable' }),
+            replaceDeviceKey: async () => undefined,
+          }
+        : {},
+    );
     setHostsRuntime(runtime);
     const seed = data.hosts === 'empty' ? [] : DEMO_HOSTS;
-    void Promise.all(seed.map((host) => runtime.model.add(host, null))).then(() => {
-      for (const host of seed) runtime.model.setConnection(host.id, 'connected');
-      if (live) setReady(true);
-    });
+    if (data.pluginVersion) {
+      for (const host of seed)
+        (runtime.probe as DemoHostProbe).setPluginVersion(host.id, data.pluginVersion);
+    }
+    const policy = policyFor(runtime.model, async () => true);
+    void Promise.all(seed.map((host) => runtime.model.add(host, null)))
+      // A trusted Host has its key pinned: its page opens straight to a passing preflight.
+      .then(() =>
+        data.trusted === false
+          ? []
+          : Promise.all(seed.map((host) => runtime.probe.run(host, policy))),
+      )
+      .then(() => {
+        for (const host of seed) {
+          runtime.model.setConnection(host.id, 'connected');
+          runtime.model.setLatency(host.id, 0);
+        }
+        if (live) setReady(true);
+      });
     return () => {
       live = false;
       setHostsRuntime(null);
     };
-  }, [data.hosts]);
+  }, [data.hosts, data.trusted, data.pluginVersion, data.deviceKey]);
   if (!ready) return null;
   return <ConsoleStoreProvider store={store}>{children}</ConsoleStoreProvider>;
 }
