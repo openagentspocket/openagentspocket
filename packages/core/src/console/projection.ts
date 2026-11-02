@@ -169,6 +169,11 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
     return value;
   }
 
+  /** Runs a read or a keypress on the Host's transport without re-snapshotting afterwards. */
+  withTransport<V>(operation: (transport: T) => Promise<V>): Promise<V> {
+    return this.session.withTransport(operation);
+  }
+
   /** Asks for a fresh snapshot and resolves once no resync is left in flight. */
   async refresh(): Promise<void> {
     this.scheduleResync();

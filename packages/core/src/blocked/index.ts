@@ -1,4 +1,16 @@
 export { decodeAnsiScreen } from './ansi-decoder';
+export type { BlockedCardOptions } from './card-base';
+export { BlockedCardStore } from './card-store';
+export {
+  type BlockedCardState,
+  type BlockedScreenIO,
+  CARD_WORDS,
+  type CardContent,
+  type CardProgress,
+  type CardTiming,
+  DEFAULT_TIMING,
+  planErrorText,
+} from './card-support';
 export { parseClaudeDialog } from './claude-parser';
 export { codexPlanPromptShows, codexQueuedNoticeShows, locateCodexComposer } from './codex-extras';
 export { parseCodexDialog } from './codex-parser';

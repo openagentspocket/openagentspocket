@@ -133,6 +133,11 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     return this.projection(hostId).mutate(operation);
   }
 
+  /** Runs a call on a Host's transport with no re-snapshot (a pane read, a keypress). */
+  withTransport<V>(hostId: string, operation: (transport: T) => Promise<V>): Promise<V> {
+    return this.projection(hostId).withTransport(operation);
+  }
+
   /** Marks a Done Agent seen on its Host. */
   focusAgent(
     hostId: string,
