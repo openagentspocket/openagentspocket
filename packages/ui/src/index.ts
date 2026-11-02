@@ -2,9 +2,11 @@ export * from './components/agentBar';
 export * from './components/agentRows';
 export * from './components/blockedTerminal';
 export * from './components/chatRows';
+export * from './components/composerExtras';
 export * from './components/homeShell';
 export * from './components/hostsSettingsFiles';
 export * from './components/navSheets';
+export * from './components/settingsPickers';
 export * from './components/usage';
 export {
   Composer,

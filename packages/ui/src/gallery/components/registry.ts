@@ -2,9 +2,11 @@ import { agentBarEntries } from './agentBar';
 import { agentRowsEntries } from './agentRows';
 import { blockedTerminalEntries } from './blockedTerminal';
 import { chatRowsEntries } from './chatRows';
+import { composerExtrasEntries } from './composerExtras';
 import { homeShellEntries } from './homeShell';
 import { hostsSettingsFilesEntries } from './hostsSettingsFiles';
 import { navSheetsEntries } from './navSheets';
+import { settingsPickersEntries } from './settingsPickers';
 import type { CatalogEntry } from './types';
 import { usageEntries } from './usage';
 
@@ -21,6 +23,8 @@ export const componentCatalog: readonly CatalogEntry[] = [
   ...blockedTerminalEntries,
   ...usageEntries,
   ...hostsSettingsFilesEntries,
+  ...settingsPickersEntries,
+  ...composerExtrasEntries,
 ];
 
 export function findCatalogEntry(name: string | undefined): CatalogEntry | undefined {

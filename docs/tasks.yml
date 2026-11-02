@@ -768,7 +768,7 @@
   acceptance:
     - docs/ux/components/README.md lists every component with Swift sources, atlas screens, variants, RN target, props and an acceptance checklist; crops in docs/ux/components/ref regenerate with scripts/ux-crop.py
     - /__gallery?section=components and /__gallery/components/<name> render catalog entries in Indigo and Papel; scripts/ux-components.mjs captures them and atlas-compare.py --components builds Swift | RN sheets
-    - eight UX3 tasks with disjoint files; the UX1 family tasks are assembly tasks that depend on them
+    - ten UX3 tasks with disjoint files; the UX1 family tasks are assembly tasks that depend on them
 
 - id: UX3-agent-rows
   phase: 9
@@ -849,10 +849,12 @@
       packages/ui/src/components/agentBar.test.tsx,
       packages/ui/src/components/agentBar.ts,
       packages/ui/src/gallery/components/agentBar.tsx,
+      packages/ui/src/composer/**,
     ]
   acceptance:
     - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
-    - component tests pin the interactions listed in the catalog; no screen files touched
+    - component tests pin the interactions listed in the catalog; no screen files touched (apps/mobile/**)
+    - owns packages/ui/src/composer/** (wrap or replace Composer.tsx under ComposerCard); UX1-agent-detail only consumes it
 
 - id: UX3-chat-rows
   phase: 9
@@ -936,6 +938,45 @@
   acceptance:
     - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared
     - component tests pin the interactions listed in the catalog; no screen files touched
+- id: UX3-settings-pickers
+  phase: 9
+  kind: js
+  title: "Clone TerminalThemePicker, TerminalThemePreview, AgentListFieldsEditor, AgentListFieldsPreview, OverlayPeerPicker, OverlayPeerViews, PortPreview (Terminal palette, agent list fields, overlay peer picker and port preview) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/TerminalThemePicker.tsx,
+      packages/ui/src/components/TerminalThemePreview.tsx,
+      packages/ui/src/components/AgentListFieldsEditor.tsx,
+      packages/ui/src/components/AgentListFieldsPreview.tsx,
+      packages/ui/src/components/OverlayPeerPicker.tsx,
+      packages/ui/src/components/OverlayPeerViews.tsx,
+      packages/ui/src/components/PortPreview.tsx,
+      packages/ui/src/components/settingsPickers.test.tsx,
+      packages/ui/src/components/settingsPickers.ts,
+      packages/ui/src/gallery/components/settingsPickers.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared (components without a crop are judged against their Swift file)
+    - component tests pin the interactions listed in the catalog; no screen files touched
+- id: UX3-composer-extras
+  phase: 9
+  kind: js
+  title: "Clone SkillsKeyboardPane, SkillContentSheet, ComposerStagingStatusBar, ClaudeSubagentTranscript (Skills pane and content sheet, attachment staging bar, subagent transcript) into packages/ui/src/components, with gallery entries and component tests"
+  deps: [UX2-component-catalog]
+  files:
+    [
+      packages/ui/src/components/SkillsKeyboardPane.tsx,
+      packages/ui/src/components/SkillContentSheet.tsx,
+      packages/ui/src/components/ComposerStagingStatusBar.tsx,
+      packages/ui/src/components/ClaudeSubagentTranscript.tsx,
+      packages/ui/src/components/composerExtras.test.tsx,
+      packages/ui/src/components/composerExtras.ts,
+      packages/ui/src/gallery/components/composerExtras.tsx,
+    ]
+  acceptance:
+    - each component implemented per docs/ux/components/README.md (props, variants, checklist), shown in /__gallery?section=components in Indigo and Papel, side-by-side sheet against ref/<Name>.png compared (components without a crop are judged against their Swift file)
+    - component tests pin the interactions listed in the catalog; no screen files touched
 - id: UX1-design-system
   phase: 9
   kind: js
@@ -985,13 +1026,21 @@
   phase: 9
   kind: js
   title: "assemble Agent detail (header, switcher, composer, blocked card, chat, terminal, session drawer) from the cloned components and compare whole screens (briefs/agent-detail.md, components in docs/ux/components/README.md)"
-  deps: [UX1-design-system, UX1-agents-list, UX3-agent-bar, UX3-chat-rows, UX3-blocked-terminal]
-  files: [apps/mobile/src/agent-detail/**, apps/mobile/src/blocked/**, packages/ui/src/composer/**]
+  deps:
+    [
+      UX1-design-system,
+      UX1-agents-list,
+      UX3-agent-bar,
+      UX3-chat-rows,
+      UX3-blocked-terminal,
+      UX3-composer-extras,
+    ]
+  files: [apps/mobile/src/agent-detail/**, apps/mobile/src/blocked/**]
 - id: UX1-hosts
   phase: 9
   kind: js
   title: "assemble Hosts sheet, detail, pairing scanner and form from the cloned components and compare whole screens (briefs/hosts-pairing.md, components in docs/ux/components/README.md)"
-  deps: [UX1-design-system, UX3-hosts-settings-files, UX3-nav-sheets]
+  deps: [UX1-design-system, UX3-hosts-settings-files, UX3-nav-sheets, UX3-settings-pickers]
   files: [apps/mobile/src/app/hosts/**, apps/mobile/src/features/hosts/**]
 - id: UX1-usage
   phase: 9
@@ -1003,13 +1052,20 @@
   phase: 9
   kind: js
   title: "assemble Settings sheet and sub pages from the cloned components and compare whole screens (briefs/settings.md, components in docs/ux/components/README.md)"
-  deps: [UX1-design-system, UX3-hosts-settings-files, UX3-nav-sheets]
+  deps: [UX1-design-system, UX3-hosts-settings-files, UX3-nav-sheets, UX3-settings-pickers]
   files: [apps/mobile/src/settings/**, apps/mobile/src/app/settings/**]
 - id: UX1-files-changes-ports
   phase: 9
   kind: js
   title: "assemble Files, Changes and Ports screens from the cloned components and compare whole screens (briefs/files-changes-ports.md, components in docs/ux/components/README.md)"
-  deps: [UX1-design-system, UX3-hosts-settings-files, UX3-agent-bar, UX3-chat-rows]
+  deps:
+    [
+      UX1-design-system,
+      UX3-hosts-settings-files,
+      UX3-agent-bar,
+      UX3-chat-rows,
+      UX3-settings-pickers,
+    ]
   files: [apps/mobile/src/files/**, apps/mobile/src/changes/**, apps/mobile/src/ports/**]
 - id: UX1-new-agent
   phase: 9

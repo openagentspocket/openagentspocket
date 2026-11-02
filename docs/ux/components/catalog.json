@@ -40,6 +40,16 @@
       "task": "UX3-hosts-settings-files",
       "gallery": "hostsSettingsFiles",
       "title": "Host, settings, theme, file and port rows"
+    },
+    "settings-pickers": {
+      "task": "UX3-settings-pickers",
+      "gallery": "settingsPickers",
+      "title": "Terminal palette, agent list fields, overlay peer picker and port preview"
+    },
+    "composer-extras": {
+      "task": "UX3-composer-extras",
+      "gallery": "composerExtras",
+      "title": "Skills pane and content sheet, attachment staging bar, subagent transcript"
     }
   },
   "components": [
@@ -1141,6 +1151,211 @@
         "port in mono headline, process caption secondary",
         "judge against PortsView.swift because there is no crop"
       ]
+    },
+    {
+      "name": "TerminalThemePicker",
+      "group": "settings-pickers",
+      "swift": [
+        "Settings/TerminalThemePickerView.swift:1-87",
+        "Settings/TerminalThemeSettings.swift:1-120"
+      ],
+      "screens": ["settings.terminal-theme-picker"],
+      "variants": [
+        "default|Preview card on top, footnote, then the grouped list: swatch thumbnail, name, subtitle, accent checkmark on the selected row"
+      ],
+      "interactions": "tap a row selects the palette and applies it instantly to the preview and to current Attach terminals; no confirm",
+      "rnToday": ["apps/mobile/src/settings/ (palette list inline, no preview)"],
+      "props": "{ themes: { id, name, subtitle, swatch }[], selectedId, onSelect, preview: ReactNode }",
+      "composes": ["SettingsGroup", "CardRow", "Text"],
+      "accept": [
+        "preview card sits above the footnote \"Changes apply instantly...\"",
+        "rows: 40pt swatch, name headline, subtitle caption secondary, checkmark trailing in accent",
+        "hairline separators inset past the swatch"
+      ]
+    },
+    {
+      "name": "TerminalThemePreview",
+      "group": "settings-pickers",
+      "swift": ["Settings/TerminalThemePreview.swift:1-83"],
+      "screens": ["settings.terminal-theme-picker"],
+      "variants": [
+        "default|Mono sample (prompt, connected status dot, cwd, command, Ready for input) on the selected palette background, radius 16 card"
+      ],
+      "interactions": "static; re-renders when the palette or font size changes",
+      "rnToday": ["none"],
+      "props": "{ theme: TerminalPalette, fontSize }",
+      "composes": ["Card", "Text"],
+      "accept": [
+        "uses the selected palette colors for background and text, not app tokens",
+        "mono 11pt sample lines, fixed height ~170"
+      ]
+    },
+    {
+      "name": "AgentListFieldsEditor",
+      "group": "settings-pickers",
+      "swift": [
+        "Settings/AgentListFieldsEditor.swift:1-248",
+        "Settings/AgentListFieldsSettingsView.swift:1-200",
+        "Settings/AgentListFieldsAddFieldSheet.swift:1-150"
+      ],
+      "screens": [
+        "settings.agent-list-fields",
+        "settings.agent-list-fields-host",
+        "settings.agent-list-fields-add-field",
+        "settings.agent-list-fields-reset-confirm",
+        "settings.agent-list-fields-sync-confirm"
+      ],
+      "variants": [
+        "default|Host page: large title, \"Following herdr plugin\" subtitle, console preview card, Row 1..3 with field chips and a + button, explanation footnote, Sync from plugin accent action"
+      ],
+      "interactions": "tap a chip opens style/move/remove; + opens the add field sheet; Sync from plugin and Reset confirm with an alert; changes save immediately",
+      "rnToday": ["none"],
+      "props": "{ host, rows: { fields: string[] }[], preview, onEdit, onAdd, onSync, onReset }",
+      "composes": ["Card", "CardRow", "MetaChip", "Button", "Text"],
+      "accept": [
+        "preview card on top with a CONSOLE PREVIEW caption",
+        "each row: title, mono field chips, accent + button",
+        "Sync from plugin is a leading-icon accent button at the card bottom"
+      ]
+    },
+    {
+      "name": "AgentListFieldsPreview",
+      "group": "settings-pickers",
+      "swift": ["Settings/AgentListFieldsPreview.swift:1-61"],
+      "screens": ["settings.agent-list-fields-host"],
+      "variants": [
+        "default|One sample Agent card (Idle capsule, subtitle, Host, path, +12 -7) reflecting the layout being edited"
+      ],
+      "interactions": "static; updates live while fields change",
+      "rnToday": ["none"],
+      "props": "{ layout, hostName }",
+      "composes": ["AgentCard"],
+      "accept": [
+        "renders the real AgentCard with a sample agent, not a copy of its markup",
+        "sits inside the editor card above the first hairline"
+      ]
+    },
+    {
+      "name": "OverlayPeerPicker",
+      "group": "settings-pickers",
+      "swift": ["Hosts/OverlayPeerPickerView.swift:1-229", "Hosts/OverlayPeerChoice.swift:1-80"],
+      "screens": ["hosts.peer-picker", "settings.overlay-network-detail"],
+      "variants": [
+        "default|Sheet: Cancel capsule + network name title, IP Address / Machine Name segmented, helper footnote, \"Choose the Host\" header, peer rows card, bottom search field"
+      ],
+      "interactions": "tap an online peer picks it; offline rows are dimmed and disabled; segmented switches address vs name; search filters; failure view with retry",
+      "rnToday": ["none"],
+      "props": "{ peers: OverlayPeer[], mode: \"ip\" | \"name\", onPick, onCancel, failure? }",
+      "composes": ["Segmented", "Sheet", "OverlayPeerViews", "Text"],
+      "accept": [
+        "rows share OverlayPeerViews",
+        "offline row dimmed, no selection",
+        "search pill pinned to the bottom"
+      ]
+    },
+    {
+      "name": "OverlayPeerViews",
+      "group": "settings-pickers",
+      "swift": ["Settings/OverlayPeerViews.swift:1-71"],
+      "screens": ["settings.overlay-network-detail", "hosts.peer-picker"],
+      "variants": [
+        "default|Peer summary row: online dot, name, mono address with reachability (Relayed, Direct, Offline) and latency, optional network name"
+      ],
+      "interactions": "none by itself; the caller adds trailing controls",
+      "rnToday": ["none"],
+      "props": "{ name, online?, offline, address?, reachability, network? }",
+      "composes": ["StatusDot", "Text"],
+      "accept": [
+        "online dot green, idle dot grey, none when unknown",
+        "address in mono caption secondary joined by middle dots",
+        "offline name dimmed"
+      ]
+    },
+    {
+      "name": "PortPreview",
+      "group": "settings-pickers",
+      "swift": ["Browser/PortPreviewView.swift:1-171", "Browser/PortPreviewStore.swift:1-200"],
+      "screens": ["(no atlas image for the port preview)"],
+      "variants": [
+        "default|Full screen web preview through the SSH tunnel: toolbar with title/host, reload and close, progress, error state with Try Again (no crop: read PortPreviewView.swift)"
+      ],
+      "interactions": "reload re-opens the tunnel; close dismisses; failed load shows the page error with retry",
+      "rnToday": [
+        "apps/mobile/src/ports/PortPreviewScreen.tsx",
+        "apps/mobile/src/ports/PreviewToolbar.tsx",
+        "apps/mobile/src/ports/PreviewStates.tsx"
+      ],
+      "props": "{ title, host, state: \"loading\" | \"ready\" | \"error\", onReload, onClose, children }",
+      "composes": ["GlassCapsule", "Banner", "Button", "Text"],
+      "accept": [
+        "judge against PortPreviewView.swift because there is no crop",
+        "toolbar and error state use the shared primitives"
+      ]
+    },
+    {
+      "name": "SkillsKeyboardPane",
+      "group": "composer-extras",
+      "swift": ["Skills/SkillsKeyboardPane.swift:1-193", "Skills/SkillsPickerView.swift:1-200"],
+      "screens": ["agent-detail.skills-pane", "agent-detail.skills-picker"],
+      "variants": [
+        "default|Keyboard-height pane under the composer: skill list with search, empty state \"No skills found for this agent.\", Refresh accent row, bottom pane switcher"
+      ],
+      "interactions": "tap a skill inserts /skill into the composer; Refresh re-probes; long press opens the content sheet",
+      "rnToday": ["none"],
+      "props": "{ skills, query, onPick, onRefresh, onOpen }",
+      "composes": ["CardRow", "EmptyState", "Text"],
+      "accept": [
+        "same height as the system keyboard",
+        "Refresh row sits above the pane switcher with a hairline"
+      ]
+    },
+    {
+      "name": "SkillContentSheet",
+      "group": "composer-extras",
+      "swift": ["Skills/SkillContentSheet.swift:1-93"],
+      "screens": ["(no atlas image for the skill content sheet)"],
+      "variants": [
+        "default|Sheet with the skill name title, rendered markdown body, loading and error messages (no crop: read SkillContentSheet.swift)"
+      ],
+      "interactions": "opens from a skill row; Done closes; load failure shows a message",
+      "rnToday": ["none"],
+      "props": "{ name, content?, state, onClose }",
+      "composes": ["Sheet", "Text"],
+      "accept": ["judge against SkillContentSheet.swift because there is no crop"]
+    },
+    {
+      "name": "ComposerStagingStatusBar",
+      "group": "composer-extras",
+      "swift": [
+        "Attachments/ComposerStagingStatusBar.swift:1-75",
+        "Attachments/ComposerStagingStore.swift:1-200"
+      ],
+      "screens": ["(no atlas image for staging chips)"],
+      "variants": [
+        "default|Capsule status strip above the composer while attachments stage: progress text, command buttons (Cancel, Retry) (no crop: read ComposerStagingStatusBar.swift)"
+      ],
+      "interactions": "Cancel stops staging; Retry re-sends the failed attachment",
+      "rnToday": ["none"],
+      "props": "{ state: \"staging\" | \"failed\", label, commands }",
+      "composes": ["MetaChip", "Button", "Text"],
+      "accept": ["judge against ComposerStagingStatusBar.swift because there is no crop"]
+    },
+    {
+      "name": "ClaudeSubagentTranscript",
+      "group": "composer-extras",
+      "swift": [
+        "Chat/Subagent/ClaudeSubagentTranscriptView.swift:1-196",
+        "Chat/Subagent/ClaudeSubagentRoute.swift:1-80"
+      ],
+      "screens": ["agent-detail.subagent-transcript"],
+      "variants": [
+        "default|Read-only transcript page: back button, task title, \"Read-only · Explore\" caption with eye icon, user bubble, assistant text, collapsed \"Ran 2 searches\" tool row, final answer with bold"
+      ],
+      "interactions": "back returns to the parent chat; tool rows expand; no composer",
+      "rnToday": ["none"],
+      "props": "{ title, kind, rows: ChatRow[] }",
+      "composes": ["ChatUserBubble", "ChatToolRow", "Text"],
+      "accept": ["no composer or status line", "rows reuse the Chat* components"]
     }
   ]
 }

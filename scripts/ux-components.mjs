@@ -77,7 +77,9 @@ try {
         'eval',
         `(function(){var e=document.querySelector('[data-testid="capture-${key}"]');if(!e)return 'null';var r=e.getBoundingClientRect();return JSON.stringify({x:r.x,y:r.y,width:r.width,height:r.height});})()`,
       ).trim();
-      const parsed = rect.match(/\{.*\}/)?.[0];
+      // agent-browser prints the eval result as a JSON string, so the rect arrives escaped: unwrap it.
+      const unwrapped = rect.startsWith('"') ? JSON.parse(rect) : rect;
+      const parsed = unwrapped.match(/\{.*\}/)?.[0];
       if (
         !parsed ||
         browser('eval', 'document.body.innerText.includes("No catalog component")').includes('true')

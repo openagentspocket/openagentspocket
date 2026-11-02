@@ -29,6 +29,8 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | UX3-blocked-terminal | `gallery/components/blockedTerminal.tsx` | BlockedCard, BackgroundWorkStrip, NoticeBanner, JumpControl, TerminalToolbar, KeyPad |
 | UX3-usage | `gallery/components/usage.tsx` | UsageLimitChip, UsageTotals, UsageChart, UsageHeatMap, UsageBreakdownRow |
 | UX3-hosts-settings-files | `gallery/components/hostsSettingsFiles.tsx` | HostRow, HostStatusCard, SettingsGroup, ThemeChoiceCard, FileRow, PortRow |
+| UX3-settings-pickers | `gallery/components/settingsPickers.tsx` | TerminalThemePicker, TerminalThemePreview, AgentListFieldsEditor, AgentListFieldsPreview, OverlayPeerPicker, OverlayPeerViews, PortPreview |
+| UX3-composer-extras | `gallery/components/composerExtras.tsx` | SkillsKeyboardPane, SkillContentSheet, ComposerStagingStatusBar, ClaudeSubagentTranscript |
 
 ## Catalog
 
@@ -81,6 +83,17 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [ThemeChoiceCard](#themechoicecard) | UX3-hosts-settings-files | `settings.theme`<br>`settings.theme--papel`<br>`settings.theme--nord`<br>`settings.appearance` | selected: [ref](ref/ThemeChoiceCard.selected.png) · [light](ref/ThemeChoiceCard.selected.light.png)<br>unselected: [ref](ref/ThemeChoiceCard.unselected.png) · [light](ref/ThemeChoiceCard.unselected.light.png)<br>preview: [ref](ref/ThemeChoiceCard.preview.png) · [light](ref/ThemeChoiceCard.preview.light.png) | `apps/mobile/src/settings/ThemeCards.tsx` | `Settings/ThemeSettingsView.swift:8-209`<br>`Settings/SettingsSections+Row.swift:78-122`<br>`Settings/TerminalAppearancePane.swift:111-180` |
 | [FileRow](#filerow) | UX3-hosts-settings-files | `files.browser`<br>`console.directory-browser` | default: [ref](ref/FileRow.png) · [light](ref/FileRow.light.png)<br>file: [ref](ref/FileRow.file.png) · [light](ref/FileRow.file.light.png) | `apps/mobile/src/files/FileRow.tsx` | `Files/FileBrowserView.swift:207-336`<br>`Files/FileBrowserItem.swift:1-131` |
 | [PortRow](#portrow) | UX3-hosts-settings-files | `(no atlas image for Ports)` | default: none | `apps/mobile/src/ports/PortRow.tsx` | `Browser/PortsView.swift:160-238`<br>`Browser/ListeningPort.swift:1-115` |
+| [TerminalThemePicker](#terminalthemepicker) | UX3-settings-pickers | `settings.terminal-theme-picker` | default: [ref](ref/TerminalThemePicker.png) · [light](ref/TerminalThemePicker.light.png) | apps/mobile/src/settings/ (palette list inline, no preview) | `Settings/TerminalThemePickerView.swift:1-87`<br>`Settings/TerminalThemeSettings.swift:1-120` |
+| [TerminalThemePreview](#terminalthemepreview) | UX3-settings-pickers | `settings.terminal-theme-picker` | default: [ref](ref/TerminalThemePreview.png) · [light](ref/TerminalThemePreview.light.png) | none | `Settings/TerminalThemePreview.swift:1-83` |
+| [AgentListFieldsEditor](#agentlistfieldseditor) | UX3-settings-pickers | `settings.agent-list-fields`<br>`settings.agent-list-fields-host`<br>`settings.agent-list-fields-add-field`<br>`settings.agent-list-fields-reset-confirm`<br>`settings.agent-list-fields-sync-confirm` | default: [ref](ref/AgentListFieldsEditor.png) · [light](ref/AgentListFieldsEditor.light.png) | none | `Settings/AgentListFieldsEditor.swift:1-248`<br>`Settings/AgentListFieldsSettingsView.swift:1-200`<br>`Settings/AgentListFieldsAddFieldSheet.swift:1-150` |
+| [AgentListFieldsPreview](#agentlistfieldspreview) | UX3-settings-pickers | `settings.agent-list-fields-host` | default: [ref](ref/AgentListFieldsPreview.png) · [light](ref/AgentListFieldsPreview.light.png) | none | `Settings/AgentListFieldsPreview.swift:1-61` |
+| [OverlayPeerPicker](#overlaypeerpicker) | UX3-settings-pickers | `hosts.peer-picker`<br>`settings.overlay-network-detail` | default: [ref](ref/OverlayPeerPicker.png) · [light](ref/OverlayPeerPicker.light.png) | none | `Hosts/OverlayPeerPickerView.swift:1-229`<br>`Hosts/OverlayPeerChoice.swift:1-80` |
+| [OverlayPeerViews](#overlaypeerviews) | UX3-settings-pickers | `settings.overlay-network-detail`<br>`hosts.peer-picker` | default: [ref](ref/OverlayPeerViews.png) · [light](ref/OverlayPeerViews.light.png) | none | `Settings/OverlayPeerViews.swift:1-71` |
+| [PortPreview](#portpreview) | UX3-settings-pickers | `(no atlas image for the port preview)` | default: none | `apps/mobile/src/ports/PortPreviewScreen.tsx`<br>`apps/mobile/src/ports/PreviewToolbar.tsx`<br>`apps/mobile/src/ports/PreviewStates.tsx` | `Browser/PortPreviewView.swift:1-171`<br>`Browser/PortPreviewStore.swift:1-200` |
+| [SkillsKeyboardPane](#skillskeyboardpane) | UX3-composer-extras | `agent-detail.skills-pane`<br>`agent-detail.skills-picker` | default: [ref](ref/SkillsKeyboardPane.png) · [light](ref/SkillsKeyboardPane.light.png) | none | `Skills/SkillsKeyboardPane.swift:1-193`<br>`Skills/SkillsPickerView.swift:1-200` |
+| [SkillContentSheet](#skillcontentsheet) | UX3-composer-extras | `(no atlas image for the skill content sheet)` | default: none | none | `Skills/SkillContentSheet.swift:1-93` |
+| [ComposerStagingStatusBar](#composerstagingstatusbar) | UX3-composer-extras | `(no atlas image for staging chips)` | default: none | none | `Attachments/ComposerStagingStatusBar.swift:1-75`<br>`Attachments/ComposerStagingStore.swift:1-200` |
+| [ClaudeSubagentTranscript](#claudesubagenttranscript) | UX3-composer-extras | `agent-detail.subagent-transcript` | default: [ref](ref/ClaudeSubagentTranscript.png) · [light](ref/ClaudeSubagentTranscript.light.png) | none | `Chat/Subagent/ClaudeSubagentTranscriptView.swift:1-196`<br>`Chat/Subagent/ClaudeSubagentRoute.swift:1-80` |
 
 ## AgentCard
 
@@ -961,3 +974,192 @@ Acceptance (the judge ticks each on the side-by-side):
 - [ ] follows the FileRow card and hairline spec
 - [ ] port in mono headline, process caption secondary
 - [ ] judge against PortsView.swift because there is no crop
+
+## TerminalThemePicker
+
+Task UX3-settings-pickers · target `packages/ui/src/components/TerminalThemePicker.tsx` · composes SettingsGroup, CardRow, Text
+
+Props sketch: `{ themes: { id, name, subtitle, swatch }[], selectedId, onSelect, preview: ReactNode }`
+
+Interactions: tap a row selects the palette and applies it instantly to the preview and to current Attach terminals; no confirm
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Preview card on top, footnote, then the grouped list: swatch thumbnail, name, subtitle, accent checkmark on the selected row · crop [ref](ref/TerminalThemePicker.png) · [light](ref/TerminalThemePicker.light.png)
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] preview card sits above the footnote "Changes apply instantly..."
+- [ ] rows: 40pt swatch, name headline, subtitle caption secondary, checkmark trailing in accent
+- [ ] hairline separators inset past the swatch
+
+## TerminalThemePreview
+
+Task UX3-settings-pickers · target `packages/ui/src/components/TerminalThemePreview.tsx` · composes Card, Text
+
+Props sketch: `{ theme: TerminalPalette, fontSize }`
+
+Interactions: static; re-renders when the palette or font size changes
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Mono sample (prompt, connected status dot, cwd, command, Ready for input) on the selected palette background, radius 16 card · crop [ref](ref/TerminalThemePreview.png) · [light](ref/TerminalThemePreview.light.png)
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] uses the selected palette colors for background and text, not app tokens
+- [ ] mono 11pt sample lines, fixed height ~170
+
+## AgentListFieldsEditor
+
+Task UX3-settings-pickers · target `packages/ui/src/components/AgentListFieldsEditor.tsx` · composes Card, CardRow, MetaChip, Button, Text
+
+Props sketch: `{ host, rows: { fields: string[] }[], preview, onEdit, onAdd, onSync, onReset }`
+
+Interactions: tap a chip opens style/move/remove; + opens the add field sheet; Sync from plugin and Reset confirm with an alert; changes save immediately
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Host page: large title, "Following herdr plugin" subtitle, console preview card, Row 1..3 with field chips and a + button, explanation footnote, Sync from plugin accent action · crop [ref](ref/AgentListFieldsEditor.png) · [light](ref/AgentListFieldsEditor.light.png)
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] preview card on top with a CONSOLE PREVIEW caption
+- [ ] each row: title, mono field chips, accent + button
+- [ ] Sync from plugin is a leading-icon accent button at the card bottom
+
+## AgentListFieldsPreview
+
+Task UX3-settings-pickers · target `packages/ui/src/components/AgentListFieldsPreview.tsx` · composes AgentCard
+
+Props sketch: `{ layout, hostName }`
+
+Interactions: static; updates live while fields change
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: One sample Agent card (Idle capsule, subtitle, Host, path, +12 -7) reflecting the layout being edited · crop [ref](ref/AgentListFieldsPreview.png) · [light](ref/AgentListFieldsPreview.light.png)
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] renders the real AgentCard with a sample agent, not a copy of its markup
+- [ ] sits inside the editor card above the first hairline
+
+## OverlayPeerPicker
+
+Task UX3-settings-pickers · target `packages/ui/src/components/OverlayPeerPicker.tsx` · composes Segmented, Sheet, OverlayPeerViews, Text
+
+Props sketch: `{ peers: OverlayPeer[], mode: "ip" | "name", onPick, onCancel, failure? }`
+
+Interactions: tap an online peer picks it; offline rows are dimmed and disabled; segmented switches address vs name; search filters; failure view with retry
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Sheet: Cancel capsule + network name title, IP Address / Machine Name segmented, helper footnote, "Choose the Host" header, peer rows card, bottom search field · crop [ref](ref/OverlayPeerPicker.png) · [light](ref/OverlayPeerPicker.light.png)
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] rows share OverlayPeerViews
+- [ ] offline row dimmed, no selection
+- [ ] search pill pinned to the bottom
+
+## OverlayPeerViews
+
+Task UX3-settings-pickers · target `packages/ui/src/components/OverlayPeerViews.tsx` · composes StatusDot, Text
+
+Props sketch: `{ name, online?, offline, address?, reachability, network? }`
+
+Interactions: none by itself; the caller adds trailing controls
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Peer summary row: online dot, name, mono address with reachability (Relayed, Direct, Offline) and latency, optional network name · crop [ref](ref/OverlayPeerViews.png) · [light](ref/OverlayPeerViews.light.png)
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] online dot green, idle dot grey, none when unknown
+- [ ] address in mono caption secondary joined by middle dots
+- [ ] offline name dimmed
+
+## PortPreview
+
+Task UX3-settings-pickers · target `packages/ui/src/components/PortPreview.tsx` · composes GlassCapsule, Banner, Button, Text
+
+Props sketch: `{ title, host, state: "loading" | "ready" | "error", onReload, onClose, children }`
+
+Interactions: reload re-opens the tunnel; close dismisses; failed load shows the page error with retry
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Full screen web preview through the SSH tunnel: toolbar with title/host, reload and close, progress, error state with Try Again (no crop: read PortPreviewView.swift) · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] judge against PortPreviewView.swift because there is no crop
+- [ ] toolbar and error state use the shared primitives
+
+## SkillsKeyboardPane
+
+Task UX3-composer-extras · target `packages/ui/src/components/SkillsKeyboardPane.tsx` · composes CardRow, EmptyState, Text
+
+Props sketch: `{ skills, query, onPick, onRefresh, onOpen }`
+
+Interactions: tap a skill inserts /skill into the composer; Refresh re-probes; long press opens the content sheet
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Keyboard-height pane under the composer: skill list with search, empty state "No skills found for this agent.", Refresh accent row, bottom pane switcher · crop [ref](ref/SkillsKeyboardPane.png) · [light](ref/SkillsKeyboardPane.light.png)
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] same height as the system keyboard
+- [ ] Refresh row sits above the pane switcher with a hairline
+
+## SkillContentSheet
+
+Task UX3-composer-extras · target `packages/ui/src/components/SkillContentSheet.tsx` · composes Sheet, Text
+
+Props sketch: `{ name, content?, state, onClose }`
+
+Interactions: opens from a skill row; Done closes; load failure shows a message
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Sheet with the skill name title, rendered markdown body, loading and error messages (no crop: read SkillContentSheet.swift) · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] judge against SkillContentSheet.swift because there is no crop
+
+## ComposerStagingStatusBar
+
+Task UX3-composer-extras · target `packages/ui/src/components/ComposerStagingStatusBar.tsx` · composes MetaChip, Button, Text
+
+Props sketch: `{ state: "staging" | "failed", label, commands }`
+
+Interactions: Cancel stops staging; Retry re-sends the failed attachment
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Capsule status strip above the composer while attachments stage: progress text, command buttons (Cancel, Retry) (no crop: read ComposerStagingStatusBar.swift) · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] judge against ComposerStagingStatusBar.swift because there is no crop
+
+## ClaudeSubagentTranscript
+
+Task UX3-composer-extras · target `packages/ui/src/components/ClaudeSubagentTranscript.tsx` · composes ChatUserBubble, ChatToolRow, Text
+
+Props sketch: `{ title, kind, rows: ChatRow[] }`
+
+Interactions: back returns to the parent chat; tool rows expand; no composer
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Read-only transcript page: back button, task title, "Read-only · Explore" caption with eye icon, user bubble, assistant text, collapsed "Ran 2 searches" tool row, final answer with bold · crop [ref](ref/ClaudeSubagentTranscript.png) · [light](ref/ClaudeSubagentTranscript.light.png)
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] no composer or status line
+- [ ] rows reuse the Chat* components
