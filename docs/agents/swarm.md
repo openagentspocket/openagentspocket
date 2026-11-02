@@ -80,3 +80,31 @@ acceptance: <each criterion: met / not met + evidence>
 left: <what remains, as new task suggestions>
 notes: <decisions, surprises, anything the next agent needs>
 ```
+
+## UX loop (Swift next to RN, no simulator needed)
+
+The screen atlas renders any RN screen in a fixed state under `/__atlas/<swift screen id>` (clock pinned
+to 2026-11-01 12:00 UTC, demo Console and Hosts, theme from `?theme=indigo|papel|noche`). The mapping
+lives in `apps/mobile/src/dev/atlas/atlasMap.json` (ids) and `entries.tsx` (what renders); a test keeps
+them equal. To cover a new screen add the entry and the map row. Swift ids with no entry are listed in
+`design/atlas/compare/unmapped.txt`. All outputs go under `design/atlas/` (gitignored).
+
+```
+# 1. RN on Expo web (402x874 @3x, iPhone 17 Pro). Starts and stops its own web server.
+node scripts/atlas-web.mjs --port 8123 [--theme papel] [id ...]       # design/atlas/rn-web/<id>[.papel].png
+#    several workers: give each its own --port; --no-server reuses a running server.
+# 2. Swift | RN sheets + index.html (needs Pillow: python3 -m venv V && V/bin/pip install pillow)
+V/bin/python3 scripts/atlas-compare.py [--theme light] [--rn ios]     # design/atlas/compare/<id>.png, index.html
+# 3. Integrator only, on the simulator (hold the native slot, shut the simulator down after):
+node scripts/atlas-ios.mjs --udid <sim udid> [--theme papel] [id ...] # design/atlas/rn-ios/<id>.png
+```
+
+- Swift shots are looked up in `build/ui-review/{atlas,lead-qa,uiqa}`, then `design/screens/current`, then the
+  iPad atlas (the sheet header says which). Dark = ScreenAtlasTests, light = ScreenAtlasPapelTests.
+- Web is for iterating on layout, spacing, hierarchy and color. It is not pixel truth: PlainTerminal replaces the
+  native terminal, `expo-file-system` and `expo-sqlite/kv-store` are in-memory stubs (`apps/mobile/src/dev/web`,
+  wired in `apps/mobile/metro.config.js`, web only), glass/blur and native menus differ. The iOS pass is the truth.
+- `atlas-ios.mjs` needs a Debug build whose native modules match the current deps (a stale build dies with
+  "Cannot find native module"). It starts Metro on 8081 with `EXPO_PUBLIC_DEMO=1`, launches the app and deep-links
+  `openagentspocket://__atlas/<id>`.
+- What RN lacks versus Swift, per screen family, worst first: [docs/ux/rn-gap.md](../ux/rn-gap.md).
