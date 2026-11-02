@@ -1,5 +1,5 @@
 import type { ConsoleRow } from '@openagentspocket/core';
-import { buildBoard } from './boardModel';
+import { buildBoard, dragTarget } from './boardModel';
 
 const row = (pane: string): ConsoleRow =>
   ({ hostId: 'h', hostName: 'H', agent: { pane_id: pane } }) as unknown as ConsoleRow;
@@ -13,5 +13,19 @@ describe('buildBoard', () => {
     ]);
     expect(board.others.map((e) => e.row.agent.pane_id)).toEqual(['c']);
     expect(board.others[0]?.rank).toBeUndefined();
+  });
+});
+
+describe('dragTarget', () => {
+  it('moves by whole rows and rounds to the nearest', () => {
+    expect(dragTarget(1, 100, 50, 5)).toBe(3);
+    expect(dragTarget(3, -60, 50, 5)).toBe(2);
+    expect(dragTarget(2, 20, 50, 5)).toBe(2);
+  });
+
+  it('clamps to the pinned list and ignores unmeasured rows', () => {
+    expect(dragTarget(1, 900, 50, 3)).toBe(2);
+    expect(dragTarget(1, -900, 50, 3)).toBe(0);
+    expect(dragTarget(1, 100, 0, 3)).toBe(1);
   });
 });

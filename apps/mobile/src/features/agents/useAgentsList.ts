@@ -14,19 +14,33 @@ import { useConsoleState, useConsoleStore } from '../../console/hooks';
 export function useAgentsList() {
   const store = useConsoleStore();
   const { rows, hosts, revision } = useConsoleState();
-  const [presentation, setPresentation] = useState<ListPresentation>('flat');
-  const [hostId, setHostId] = useState<string | undefined>();
+  const prefs = store.listPrefs;
+  const [presentation, setPresentationState] = useState<ListPresentation>(prefs.presentation);
+  const [hostId, setHostIdState] = useState<string | undefined>(prefs.hostId);
   const [query, setQuery] = useState('');
-  // Idle starts folded in By Status, as in the Status Inbox.
-  const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(() => new Set(['idle']));
+  const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(prefs.collapsed);
 
-  const toggle = useCallback((id: string) => {
-    setCollapsed((current) => {
-      const next = new Set(current);
-      if (!next.delete(id)) next.add(id);
-      return next;
-    });
-  }, []);
+  const setPresentation = useCallback(
+    (next: ListPresentation) => {
+      prefs.setPresentation(next);
+      setPresentationState(next);
+    },
+    [prefs],
+  );
+  const setHostId = useCallback(
+    (next: string | undefined) => {
+      prefs.setHostId(next);
+      setHostIdState(next);
+    },
+    [prefs],
+  );
+  const toggle = useCallback(
+    (id: string) => {
+      prefs.toggleCollapsed(id);
+      setCollapsed(prefs.collapsed);
+    },
+    [prefs],
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: revision signals pin and clock changes
   const groups: readonly ListGroup[] = useMemo(() => {

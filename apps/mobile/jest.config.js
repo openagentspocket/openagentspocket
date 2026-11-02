@@ -6,7 +6,10 @@ const ESM_LIBS = ['@shopify/flash-list', 'marked'];
 module.exports = {
   preset: 'jest-expo',
   testMatch: ['<rootDir>/src/**/*.test.{ts,tsx}'],
-  setupFilesAfterEnv: [require.resolve('@openagentspocket/ui/jest.setup.js')],
+  setupFilesAfterEnv: [
+    'react-native-gesture-handler/jestSetup',
+    require.resolve('@openagentspocket/ui/jest.setup.js'),
+  ],
   transformIgnorePatterns: transformIgnorePatterns.map((pattern) =>
     pattern.startsWith('/node_modules/(?!(')
       ? pattern.replace('(?!(', `(?!(${ESM_LIBS.join('|')}|`)

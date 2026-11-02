@@ -9,6 +9,7 @@ import {
   type EventsSessionStatus,
   HostConsoleProjection,
   type HostIdentity,
+  ListPreferences,
   type PinnedAgents,
   type SyncError,
   selectConsole,
@@ -35,6 +36,8 @@ export interface ConsoleState {
 
 export interface ConsoleStoreOptions {
   readonly pins: PinnedAgents;
+  /** Persisted Agents list choices; memory-backed when omitted. */
+  readonly listPrefs?: ListPreferences;
   readonly clocks: AgentStatusClocks;
   readonly clock: Clock;
   readonly snapshotRetryMs?: number;
@@ -59,7 +62,12 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     revision: 0,
   };
 
-  constructor(private readonly options: ConsoleStoreOptions) {}
+  /** The Agents list presentation, Host filter and folds, persisted with the device storage. */
+  readonly listPrefs: ListPreferences;
+
+  constructor(private readonly options: ConsoleStoreOptions) {
+    this.listPrefs = options.listPrefs ?? new ListPreferences();
+  }
 
   readonly getState = (): ConsoleState => this.state;
 
@@ -115,6 +123,11 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
       listed.has(`${host}\u0000${pane}`),
     );
     if (moved) this.recompute();
+  }
+
+  /** Drops a pinned Agent onto the place another pinned Agent holds (the board's drag). */
+  movePinTo(hostId: string, paneId: string, target: { hostId: string; paneId: string }): void {
+    if (this.options.pins.movePinTo(hostId, paneId, target)) this.recompute();
   }
 
   /** Clears an Agent from the Status Inbox. */

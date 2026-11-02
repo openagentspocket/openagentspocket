@@ -42,6 +42,7 @@ const ICONS = {
   attach: { ios: 'paperclip', android: 'attach_file' },
   keyboard: { ios: 'keyboard', android: 'keyboard' },
   arrowUp: { ios: 'arrow.up', android: 'arrow_upward' },
+  grip: { ios: 'line.3.horizontal', android: 'drag_handle' },
   arrowDown: { ios: 'arrow.down', android: 'arrow_downward' },
   arrowLeft: { ios: 'arrow.left', android: 'arrow_back' },
   arrowRight: { ios: 'arrow.right', android: 'arrow_forward' },

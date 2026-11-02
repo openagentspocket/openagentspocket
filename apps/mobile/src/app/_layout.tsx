@@ -4,6 +4,7 @@ import { OverlayHost, ThemeProvider, useTheme } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import type { ReactNode } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
 import { statusBarStyle } from '@/navigation/screenOptions';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
@@ -61,17 +62,19 @@ function AppStack() {
 export default function RootLayout() {
   useWidgetSync();
   return (
-    <SettingsProvider store={settingsStore} authenticator={deviceAuthenticator}>
-      <SettingsTheme>
-        <ThemedStatusBar />
-        <ConnectionsProvider>
-          <InAppBanner>
-            <AppStack />
-          </InAppBanner>
-        </ConnectionsProvider>
-        <AppLockCover />
-        <OverlayHost />
-      </SettingsTheme>
-    </SettingsProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SettingsProvider store={settingsStore} authenticator={deviceAuthenticator}>
+        <SettingsTheme>
+          <ThemedStatusBar />
+          <ConnectionsProvider>
+            <InAppBanner>
+              <AppStack />
+            </InAppBanner>
+          </ConnectionsProvider>
+          <AppLockCover />
+          <OverlayHost />
+        </SettingsTheme>
+      </SettingsProvider>
+    </GestureHandlerRootView>
   );
 }
