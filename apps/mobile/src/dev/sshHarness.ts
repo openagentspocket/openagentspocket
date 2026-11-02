@@ -30,6 +30,15 @@ export interface StepResult {
 const MIN_PROTOCOL = 17;
 const MiB = 1_048_576;
 
+/**
+ * A fingerprint from a URL: `simctl openurl` and friends turn a literal `+` into a space, so
+ * accept that, and the base64url alphabet (`-` and `_`), and restore standard base64.
+ */
+export function normalizePin(pin: string | undefined): string | undefined {
+  const fixed = pin?.trim().replace(/[ -]/g, '+').replace(/_/g, '/');
+  return fixed || undefined;
+}
+
 /** Reads the route's query; null when a required value is missing. */
 export function harnessParams(query: Record<string, string | undefined>): HarnessParams | null {
   const { host, user, sock, fsock } = query;
@@ -43,7 +52,7 @@ export function harnessParams(query: Record<string, string | undefined>): Harnes
     herdrSocket: sock,
     fixtureSocket: fsock,
     fixturePort,
-    pin: query.pin || undefined,
+    pin: normalizePin(query.pin),
     alias: query.alias || 'harness',
   };
 }

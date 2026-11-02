@@ -14,6 +14,7 @@ import { SkeletonRows } from '../primitives/Skeleton';
 import { Text } from '../primitives/Text';
 import type { Tone } from '../theme/status';
 import { compactNumber, sampleMonth, sampleWeek } from './galleryData';
+import { useGalleryDemos } from './galleryDemo';
 import { Specimen, Stack, Wrap } from './galleryKit';
 
 const TONES: Tone[] = ['info', 'success', 'warning', 'danger', 'accent'];
@@ -107,6 +108,7 @@ export function Feedback() {
 }
 
 export function Overlays() {
+  const { showBanner } = useGalleryDemos();
   const [detent, setDetent] = useState<SheetDetent | null>(null);
   const answered = (answer: unknown) =>
     toast({ title: `Answer: ${String(answer)}`, tone: 'info', durationMs: 1500 });
@@ -214,6 +216,15 @@ export function Overlays() {
               }
             />
           ))}
+          {showBanner ? (
+            <Button
+              kind="secondary"
+              size="small"
+              title="InAppBanner (3 s hold)"
+              onPress={showBanner}
+              testID="gallery-in-app-banner"
+            />
+          ) : null}
           <Button
             kind="secondary"
             size="small"

@@ -11,10 +11,12 @@ import {
   toast,
 } from '../index';
 import { renderThemed } from '../test-utils';
+import { themes } from '../theme/tokens.generated';
 import { NativeActionMenu } from './NativeActionMenu';
 
-const calls: Record<string, Record<string, unknown>[]> = { Menu: [], Button: [] };
+const calls: Record<string, Record<string, unknown>[]> = { Host: [], Menu: [], Button: [] };
 function FakeHost(props: Record<string, unknown>) {
+  calls.Host?.push(props);
   return <>{props.children as React.ReactNode}</>;
 }
 function FakeMenu(props: Record<string, unknown>) {
@@ -251,6 +253,7 @@ describe('ActionMenu', () => {
   });
 
   it('maps items onto SwiftUI Menu and Button props', async () => {
+    calls.Host = [];
     calls.Menu = [];
     calls.Button = [];
     const onPin = jest.fn();
@@ -268,6 +271,7 @@ describe('ActionMenu', () => {
         ]}
       />,
     );
+    expect(calls.Host?.[0]?.seedColor).toBe(themes.indigo.colors.accent);
     expect(calls.Menu).toHaveLength(1);
     expect(calls.Menu?.[0]?.label).toBe('More');
     const [pin, del, off] = calls.Button ?? [];

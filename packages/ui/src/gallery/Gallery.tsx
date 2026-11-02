@@ -8,6 +8,7 @@ import { ThemeProvider } from '../theme/theme';
 import { type ThemeId, themeIds, themes } from '../theme/tokens.generated';
 import { BadgesAndMarks, Buttons, TypeAndColor } from './galleryBasics';
 import { Content, Lists } from './galleryContent';
+import { GalleryDemoContext, type GalleryDemos } from './galleryDemo';
 import { Feedback, Overlays } from './galleryFeedback';
 import { CardsAndRows, Forms } from './galleryRows';
 import { Scanner } from './galleryScanner';
@@ -40,6 +41,8 @@ interface GalleryProps {
   initialTheme?: string;
   /** A section id from the route (`?section=overlays`); defaults to all. */
   initialSection?: string;
+  /** App-level demo triggers (the in-app banner). */
+  demos?: GalleryDemos;
 }
 
 /**
@@ -48,7 +51,7 @@ interface GalleryProps {
  * of a native rebuild. Mounts its own OverlayHost so alerts and toasts draw in
  * the chosen theme.
  */
-export function Gallery({ initialTheme, initialSection }: GalleryProps) {
+export function Gallery({ initialTheme, initialSection, demos }: GalleryProps) {
   const [themeId, setThemeId] = useState<ThemeId>(
     isThemeId(initialTheme) ? initialTheme : 'indigo',
   );
@@ -93,9 +96,11 @@ export function Gallery({ initialTheme, initialSection }: GalleryProps) {
             />
           ))}
         </ChipRow>
-        {shown.map(({ id, title, Body }) => (
-          <GalleryBlock key={id} id={id} title={title} Body={Body} />
-        ))}
+        <GalleryDemoContext.Provider value={demos ?? {}}>
+          {shown.map(({ id, title, Body }) => (
+            <GalleryBlock key={id} id={id} title={title} Body={Body} />
+          ))}
+        </GalleryDemoContext.Provider>
       </Screen>
       <OverlayHost />
     </ThemeProvider>

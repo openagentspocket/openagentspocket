@@ -25,6 +25,24 @@ export function useBannerFeed(): (agents: readonly BannerAgent[]) => void {
   return (agents) => store?.agentsDidChange(agents);
 }
 
+const DEMO_HOST = 'banner-demo';
+const demoAgent = (status: string): BannerAgent => ({
+  hostId: DEMO_HOST,
+  paneId: 'demo',
+  status,
+  kind: 'claude',
+  workspaceLabel: 'Demo',
+});
+
+/** Plays a working -> blocked transition for a demo Host (gallery trigger); no-op outside the provider. */
+export function useBannerDemo(): () => void {
+  const store = useContext(BannerContext);
+  return () => {
+    store?.agentsDidChange([demoAgent('working')]);
+    store?.agentsDidChange([demoAgent('blocked')]);
+  };
+}
+
 interface InAppBannerProps {
   /** The Agent on screen, read when a held transition fires. */
   presentedAgent?: () => AgentBannerTarget | undefined;
@@ -48,7 +66,7 @@ export function InAppBanner(props: InAppBannerProps) {
     () =>
       new AgentBannerStore(clock ?? systemClock, {
         presentedAgent: () => presentedAgent?.(),
-        triggers: (host) => triggers?.(host),
+        triggers: (host) => (host === DEMO_HOST ? { blocked: true, done: true } : triggers?.(host)),
         playSound: () => {},
         isScreenReaderOn: () => screenReader?.() ?? false,
         announce: (text) => AccessibilityInfo.announceForAccessibility(text),

@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { iconSymbol } from '../primitives/Icon';
+import { useTheme } from '../theme/theme';
 import type { ActionMenuItem } from './ActionMenu';
 
 interface SwiftUiMenu {
@@ -50,8 +51,9 @@ export function NativeActionMenu({
   testID,
 }: NativeActionMenuProps) {
   const { Host, Menu, Button } = ui;
+  const theme = useTheme();
   return (
-    <Host matchContents testID={testID}>
+    <Host matchContents seedColor={theme.colors.accent} testID={testID}>
       <Menu label={title ?? accessibilityLabel} systemImage={iconSymbol(icon)}>
         {items.map((item) => (
           <Button

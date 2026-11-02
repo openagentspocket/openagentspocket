@@ -83,6 +83,15 @@ describe('hosts.form', () => {
     expect(runtime.model.getSnapshot().hosts[0]?.routes[0]?.address).toBe('workshop.example');
   });
 
+  it('dismisses the keyboard on drag and keeps taps working while it is up', async () => {
+    setup();
+    await renderApp(<Form onSaved={jest.fn()} />);
+    await screen.findByTestId('host-save');
+    const scroll = screen.getByTestId('host-form-scroll');
+    expect(scroll.props.keyboardDismissMode).toBe('on-drag');
+    expect(scroll.props.keyboardShouldPersistTaps).toBe('handled');
+  });
+
   it('flags an invalid port and blocks Save', async () => {
     setup();
     await renderApp(<Form onSaved={jest.fn()} />);
