@@ -4,18 +4,21 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
-State (2026-11-02 ~07:00): **wave 4 merged on main** (P1.10 live wiring: ConnectionManager over packages/transport,
-persisted Hosts; P1.8 host services; P0-shell-polish: themed status bar and headers, OpenAgentsPocket in catalog
-copy; P2.2 Home, P2.3 Agents list, P2.5 agent detail, P2.4 New Agent, P2.13 Board; P2.6a timeline projection,
-cache store, workflow journal; P2.6b Codex reducer; P3.1 attach pipeline; P4.1b usage live store; P6.1b Live
-Activities module + coordinator; P5.4 iOS NSE target). Full test green: core 2253, mobile 165, ui 138, transport
-127, i18n 94, ssh 26, live-activity 7, plugin 833, relay 138. Native check of wave-3 main: both platforms build,
-SSH harness 18/18 incl. "herdr live" (transport connect, snapshot, event) on iOS and Android.
-**Running:** wave 5 (`scratchpad/rn/wave5.js`): P1.11 app integration + entry points, P2.6a engine (Claude +
-Codex), notices i18n, P2.9b blocked card, P2.8 composer, P3.2 terminal wiring + keys, P4.6 deep links, P4.1c
-usage ring, P3.5 shells, P3.3 selection/links, P3.4 snippets/skills/attachments, board drag + list prefs, P6.1c
-live activity + keychain wiring, verify fixes; native: verify main end to end (e2e/live.yaml against the isolated
-backend, widget, Live Activity, simctl push) → P1.12 SSH auth (bootstrap key, password, RSA) → P4.3b ports config.
+State (2026-11-02 ~12:00): **wave 5 JS merged on main** (P1.11 app integration and entry points, P2.6a chat
+engine Claude + Codex, notices i18n, P2.9b blocked card, P2.8 composer, P3.2 terminal wiring + keys, P3.3
+selection/links, P3.4 snippets/skills/attachments, P3.5 shells, P4.6 deep links, P4.1c usage ring, board drag +
+list prefs, P6.1c live activity + keychain wiring, wave-3 verify fixes); full test green (core 2583, mobile 265,
+ui 145, transport 138, i18n 94, ssh 26, live-activity 7, plugin 833, relay 138). End to end verified on iOS:
+add the isolated herdr Host, trust, its agent shows live on Home. Still running from wave 5: P1.12 SSH auth
+(native), then P4.3b ports config. The verifier blocked 4 h on a computer-use permission prompt: native agents
+must never request computer-use (simctl/adb/Maestro only).
+**UX parity program (Enzo, 2026-11-02):** the RN screens are functional skeletons without the Swift app's UX.
+Goal: Swift structure, hierarchy, spacing, navigation and interactions with the Índigo skin. Phase A running
+(`scratchpad/rn/ux-a.js`): UX0-screen-atlas (/__atlas route, web stubs, atlas-web/ios/compare scripts, side by
+side with the Swift atlas at ../Agentico/build/ui-review/atlas, docs/ux/rn-gap.md) and UX0-briefs
+(docs/ux/design-system.md, docs/ux/briefs/*, UX1-* tasks). Then UX1-design-system, then one task per screen family,
+judged on side-by-side images. Functional leftovers (watch, intents, ACP, on-device model) wait until UX is done.
+
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
 favor of the console store; ChatProgram lives in chat/model only; RN-only strings live in
