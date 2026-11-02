@@ -61,6 +61,8 @@ const useStyles = makeStyles((th) => ({
   root: { flex: 1, flexDirection: 'row' },
   column: {
     width: HOST_COLUMN,
+    flexGrow: 0,
+    flexShrink: 0,
     borderRightWidth: th.metrics.hairlineWidth,
     borderRightColor: th.hairline,
   },
