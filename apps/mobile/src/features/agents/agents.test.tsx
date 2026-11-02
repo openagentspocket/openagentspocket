@@ -1,5 +1,5 @@
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore, DemoConsoleTransport } from '../../console/demo';
 import { ConsoleStoreProvider } from '../../console/hooks';
 import { AgentsScreen } from './AgentsScreen';
@@ -59,6 +59,12 @@ describe('AgentsScreen', () => {
     expect(order()).toEqual(['p1', 'p4', 'p2', 'p3']);
   });
 
+  it('shows the checkout totals and the low-context pill on the rows that have them', async () => {
+    await open();
+    expect(screen.getAllByTestId('agent-card-diff')).toHaveLength(4);
+    expect(screen.getAllByTestId('agent-card-context')).toHaveLength(1);
+  });
+
   it('opens the agent detail route for the tapped Agent', async () => {
     await open();
     await fireEvent.press(screen.getByTestId('agent-row-p2'));
@@ -72,6 +78,10 @@ describe('AgentsScreen', () => {
 
   it('searches by text and shows the empty result', async () => {
     await open();
+    expect(screen.queryByTestId('agents-search')).toBeNull();
+    await act(async () => {
+      screen.getByTestId('agents-screen-scroll').props.refreshControl.props.onRefresh();
+    });
     await fireEvent.changeText(screen.getByTestId('agents-search'), 'install');
     expect(order()).toEqual(['p3']);
     await fireEvent.changeText(screen.getByTestId('agents-search'), 'zzz');

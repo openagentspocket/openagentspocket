@@ -37,12 +37,14 @@ interface AgentsToolbarProps {
   presentation: ListPresentation;
   onPresentation: (presentation: ListPresentation) => void;
   query: string;
+  /** The search drawer starts tucked (as in Swift); a pull on the list reveals it. */
+  searchOpen: boolean;
   onQuery: (query: string) => void;
   onHome: () => void;
   onNew: () => void;
 }
 
-/** Home and the Host filter, presentation and New capsule, the large title, then the search field. */
+/** Home and the Host filter, presentation and New capsule, the large title, then the search field once pulled down. */
 export function AgentsToolbar(props: AgentsToolbarProps) {
   const styles = useStyles();
   const hostItems: ActionMenuItem[] =
@@ -90,16 +92,18 @@ export function AgentsToolbar(props: AgentsToolbarProps) {
         <Text variant="title" accessibilityRole="header">
           {t('Agents')}
         </Text>
-        <SearchField
-          label={t('Search Agents')}
-          value={props.query}
-          onChangeText={props.onQuery}
-          clearLabel={t('Clear Filter')}
-          autoCapitalize="none"
-          autoCorrect={false}
-          returnKeyType="search"
-          testID="agents-search"
-        />
+        {props.searchOpen || props.query !== '' ? (
+          <SearchField
+            label={t('Search Agents')}
+            value={props.query}
+            onChangeText={props.onQuery}
+            clearLabel={t('Clear Filter')}
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="search"
+            testID="agents-search"
+          />
+        ) : null}
       </View>
     </>
   );

@@ -25,6 +25,8 @@ interface AgentRowProps {
   /** Inside a workspace card: no workspace, Host or path lines. */
   nested?: boolean;
   labels: AgentRowLabels;
+  /** Name the Agent after the workspace title (two Agents share it). */
+  qualify?: boolean;
   onTogglePin: (row: ConsoleRow) => void;
   onRename: (row: ConsoleRow) => void;
   onClose: (row: ConsoleRow) => void;
@@ -39,6 +41,7 @@ export function AgentRow({
   presentation = 'row',
   nested = false,
   labels,
+  qualify = false,
   onTogglePin,
   onRename,
   onClose,
@@ -64,7 +67,7 @@ export function AgentRow({
   return (
     <AgentCard
       testID={`agent-row-${row.agent.pane_id}`}
-      agent={{ ...agentCardModel(row, showHost, nested), pinned }}
+      agent={{ ...agentCardModel(row, showHost, nested, qualify), pinned }}
       presentation={presentation}
       labels={labels}
       menu={menu}

@@ -5,7 +5,9 @@ changed: apps/mobile/src/features/agents/{AgentsScreen,AgentGroup,AgentRow,Agent
 tests: pnpm verify-fast -> all green (agents, board and atlas suites pass, testIDs and accessibility actions unchanged)
 acceptance:
 - Four presentations from one menu with a checkmark, Host filter hidden with a single Host: met (ListToolbar + presentation menu; atlas by-status, by-workspace, by-host, flat).
-- Row card (mark, title, status pill, blocked prompt, subtitle, Host, path): met with AgentCard. Diff totals and the context-low pill are not met: the Console row carries neither.
+- Row card (mark, title, status pill, blocked prompt, subtitle, Host, path, diff totals, context-low pill): met. ConsoleRow has `changeTotals`/`contextUsage`, the store decorates rows (`setRowExtras`), demo data seeds them; a side with zero lines is left out as in Swift; nested workspace rows carry the totals under the title. Live feeds (Changes read, transcript usage) are still to wire.
+- Flat rows name the Agent after the workspace (`iOS App · Codex`) when two visible Agents share the workspace label. Search drawer starts tucked on iPhone like Swift (pull down to reveal).
+- Third round: compare sheets regenerated (dark and light, iPhone references); chevron checked vertically centred on every row.
 - Swipe Pin / Close with confirmation, long-press lifted menu: met (agentRowActions + AgentCard); rename kept in the menu.
 - Pinned rows lead and carry a pin glyph: met.
 - Section headers with count capsule, fold chevron: met (FoldHeader status/host, WorkspaceCard; a workspace with one Agent is a plain card as in Swift).
@@ -16,7 +18,8 @@ acceptance:
 left:
 - Terminals list (console.terminals-list): RN has no shell-pane inventory in the Console store, so TerminalRow/TerminalGroup have no screen yet. Needs a core inventory first.
 - Worktrees nested under the repository card, worktree details and remove confirmation (console.worktree-*): RepositoryCheckout is on the row but no grouping by repository exists in core.
-- Diff totals and context-left: tracked in docs/ux/rn-gap.md section 10 (need ConsoleRow data).
+- Live sources for diff totals and context usage (rn-gap section 10).
+- The list behind the quick detail sheet is not scrolled (Swift's reference for that id is the Home screen).
 - Board still uses ListRow; move it to AgentCard presentation card in a compact mode.
 - Also tracked in rn-gap.md section 10: SearchField gallery entry, quick detail age seed. Atlas ids rename-sheet, close-confirmation, row-context-menu, search have no entry (sheets over the list need a way to open them).
 notes:

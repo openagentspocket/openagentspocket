@@ -8,6 +8,7 @@ import {
   MemoryStorage,
   PinnedAgents,
   ScriptedEventsTransport,
+  STATUS_CLOCKS_STORAGE_KEY,
   type TerminalAttachSession,
 } from '@openagentspocket/core';
 import { DemoTerminalSession } from './demoTerminal';
@@ -174,7 +175,7 @@ export function createDemoConsoleStore(
 ): ConsoleStore {
   const store = new ConsoleStore({
     pins: new PinnedAgents(new MemoryStorage()),
-    clocks: new AgentStatusClocks(new MemoryStorage()),
+    clocks: new AgentStatusClocks(demoStampStorage()),
     clock,
   });
   const sessionFor = (host: DemoConsoleTransport) =>
@@ -186,9 +187,48 @@ export function createDemoConsoleStore(
     });
   if (!rich) {
     store.addHost(DEMO_HOST, sessionFor(transport));
+    seedDemoExtras(store);
     return store;
   }
   store.addHost(DEMO_HOST, sessionFor(new DemoConsoleTransport([...AGENTS, ...EXTRA_AGENTS])));
   store.addHost(LAB_HOST, sessionFor(new DemoConsoleTransport(LAB_AGENTS)));
+  seedDemoExtras(store);
   return store;
+}
+
+/** Checkout totals and context usage the demo Agents report, as the Swift atlas shows them. */
+function seedDemoExtras(store: ConsoleStore): void {
+  const window = 200_000;
+  store.setRowExtras('demo', 'p1', { changeTotals: { added: 12, removed: 7 } });
+  store.setRowExtras('demo', 'p2', { changeTotals: { added: 2, removed: 2 } });
+  store.setRowExtras('demo', 'p3', { changeTotals: { added: 5, removed: 1 } });
+  store.setRowExtras('demo', 'p4', {
+    changeTotals: { added: 1, removed: 1 },
+    contextUsage: { usedTokens: 168_000, windowTokens: window },
+  });
+  store.setRowExtras('demo', 'p5', { changeTotals: { added: 2, removed: 2 } });
+  store.setRowExtras('lab', 'p1', { changeTotals: { added: 8, removed: 0 } });
+}
+
+/** How long each demo Agent has been in its status (minutes), so ages read "7m", not "now". */
+const DEMO_AGE_MINUTES: Record<string, number> = { p1: 4, p2: 7, p3: 18, p4: 42, p5: 26 };
+
+function demoStampStorage(): MemoryStorage {
+  const storage = new MemoryStorage();
+  const now = Date.now();
+  const all = [...AGENTS, ...EXTRA_AGENTS].map((agent) => ({ hostId: 'demo', agent }));
+  const entries = all.map(({ hostId, agent }) => ({
+    hostId,
+    paneId: agent.pane,
+    stamp: {
+      status: agent.status,
+      since: now - (DEMO_AGE_MINUTES[agent.pane] ?? 5) * 60_000,
+      isApproximate: false,
+      terminalId: `term_${agent.pane}`,
+      stateChangeSeq: agent.seq,
+      dismissed: false,
+    },
+  }));
+  storage.set(STATUS_CLOCKS_STORAGE_KEY, JSON.stringify({ version: 1, entries }));
+  return storage;
 }

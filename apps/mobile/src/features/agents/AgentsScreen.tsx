@@ -1,4 +1,4 @@
-import type { ConsoleRow } from '@openagentspocket/core';
+import type { ConsoleRow, ListGroup } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { confirm, EmptyState, makeStyles, Screen } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
@@ -14,6 +14,18 @@ import { QuickDetailSheet } from './QuickDetailSheet';
 import { RenameSheet } from './RenameSheet';
 import { useAgentsList } from './useAgentsList';
 
+/** Workspace labels shared by several visible Agents: those rows name their Agent after the title. */
+function duplicateWorkspaces(groups: readonly ListGroup[]): ReadonlySet<string> {
+  const seen = new Set<string>();
+  const dupes = new Set<string>();
+  for (const row of groups.flatMap((group) => group.rows)) {
+    const label = row.workspaceLabel;
+    if (label === undefined) continue;
+    (seen.has(label) ? dupes : seen).add(label);
+  }
+  return dupes;
+}
+
 const useStyles = makeStyles((theme) => ({
   groups: { gap: theme.spacing.xs },
 }));
@@ -26,6 +38,7 @@ export function AgentsScreen({ openDetail }: { openDetail?: string }) {
   const labels = useMemo(agentRowLabels, []);
   const actions = useMemo(() => agentActions(list.store), [list.store]);
   const [renaming, setRenaming] = useState<ConsoleRow | undefined>();
+  const [searchOpen, setSearchOpen] = useState(false);
   const [detailId, setDetailId] = useState(openDetail);
   const detail = list.groups
     .flatMap((group) => group.rows)
@@ -46,10 +59,15 @@ export function AgentsScreen({ openDetail }: { openDetail?: string }) {
     actions.rename(row, name).catch(() => undefined);
   };
   const isPinned = (row: ConsoleRow) => list.store.isPinned(row.hostId, row.agent.pane_id);
+  const qualified = useMemo(() => duplicateWorkspaces(list.groups), [list.groups]);
   const empty = list.groups.every((group) => group.rows.length === 0);
 
   return (
-    <Screen edges={['right', 'bottom', 'left']} testID="agents-screen">
+    <Screen
+      edges={['right', 'bottom', 'left']}
+      testID="agents-screen"
+      onRefresh={() => setSearchOpen(true)}
+    >
       <AgentsToolbar
         hosts={list.hosts}
         hostId={list.hostId}
@@ -57,6 +75,7 @@ export function AgentsScreen({ openDetail }: { openDetail?: string }) {
         presentation={list.presentation}
         onPresentation={list.setPresentation}
         query={list.query}
+        searchOpen={searchOpen}
         onQuery={list.setQuery}
         onHome={() => router.back()}
         onNew={() => router.push(hrefs.newAgent())}
@@ -70,6 +89,7 @@ export function AgentsScreen({ openDetail }: { openDetail?: string }) {
             collapsed={list.collapsed}
             query={list.query}
             labels={labels}
+            qualified={qualified}
             isPinned={isPinned}
             onToggle={list.toggle}
             onTogglePin={actions.togglePin}

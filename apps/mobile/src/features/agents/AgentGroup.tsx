@@ -46,6 +46,8 @@ export interface AgentGroupProps {
   collapsed: ReadonlySet<string>;
   query: string;
   labels: AgentRowLabels;
+  /** Workspace labels that need the Agent's name after them. */
+  qualified: ReadonlySet<string>;
   isPinned: (row: ConsoleRow) => boolean;
   onToggle: (id: string) => void;
   onTogglePin: (row: ConsoleRow) => void;
@@ -69,6 +71,7 @@ export function AgentGroup(props: AgentGroupProps) {
         presentation={presentation}
         nested={presentation === 'plain'}
         labels={labels}
+        qualify={row.workspaceLabel !== undefined && props.qualified.has(row.workspaceLabel)}
         onTogglePin={props.onTogglePin}
         onRename={props.onRename}
         onClose={props.onClose}
