@@ -140,7 +140,7 @@ export function ChangeRow({
         ) : null}
         {summary.lastCommit ? (
           <View style={[styles.line, styles.commitLine]}>
-            <Icon name="info" size={14} />
+            <Icon name="commit" size={14} />
             <Text variant="subheadline" numberOfLines={1} style={styles.title}>
               {summary.lastCommit.subject}
             </Text>

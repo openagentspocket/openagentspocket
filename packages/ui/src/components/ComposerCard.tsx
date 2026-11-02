@@ -48,7 +48,16 @@ const useStyles = makeStyles((t) => ({
     minHeight: CIRCLE,
     textAlignVertical: 'center',
   },
-  inputOneLine: { height: CIRCLE, paddingVertical: 0, lineHeight: 22, width: 0, flexBasis: 0 },
+  // 9 + 22 + 9 = CIRCLE: with explicit padding the multiline native field (UITextView / EditText)
+  // lands the text and placeholder on the same centre line as the single-line web field.
+  inputOneLine: {
+    height: CIRCLE,
+    paddingVertical: 9,
+    lineHeight: 22,
+    textAlignVertical: 'center',
+    width: 0,
+    flexBasis: 0,
+  },
   inputStack: { paddingHorizontal: t.spacing.xs },
   skills: { paddingHorizontal: t.spacing.sm, paddingTop: t.spacing.sm },
   skillsHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

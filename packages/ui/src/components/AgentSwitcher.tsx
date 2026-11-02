@@ -1,17 +1,18 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, type ScrollViewInstance, View } from 'react-native';
 import { impact } from '../haptics';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { Text } from '../primitives/Text';
-import { airy } from '../theme/metrics';
+import { airy, spacing } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 
-/** How much of the previous Agent stays visible left of the current pill. */
-const NEIGHBOUR_PEEK = 34;
+/** Gap between chips, also the content inset used when aligning the scroll origin. */
+const CHIP_GAP = spacing.xxs;
+const COMPACT_CHIP = 40;
 
 const useStyles = makeStyles((t) => ({
   capsule: { marginHorizontal: t.spacing.sm, height: 52, overflow: 'hidden' },
@@ -25,6 +26,8 @@ const useStyles = makeStyles((t) => ({
     flexShrink: 0,
   },
   neighbour: { opacity: 0.7, flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
+  /** Mark-only chip: a full circle, used when the neighbour's label cannot fit beside the pill. */
+  neighbourCompact: { width: COMPACT_CHIP, paddingHorizontal: 0, alignItems: 'center' },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -77,15 +80,41 @@ export function AgentSwitcher({
   const scroll = useRef<ScrollViewInstance>(null);
   const viewport = useRef(0);
   const currentBox = useRef<{ x: number; width: number } | null>(null);
-  /** Centres the current pill once both its box and the viewport are measured. */
-  const centre = () => {
+  const previousBox = useRef<{ x: number; width: number } | null>(null);
+  /** Width of the previous chip with its label, captured while it is still shown in full. */
+  const previousFull = useRef(0);
+  const [compact, setCompact] = useState(false);
+  const currentIndex = agents.findIndex((agent) => agent.id === currentId);
+  /** Whole previous chip when it fits beside the pill, else a mark-only chip; never a clipped label. */
+  const decide = () => {
+    const box = currentBox.current;
+    if (!box || viewport.current === 0 || previousFull.current === 0) return;
+    setCompact(previousFull.current + CHIP_GAP + box.width > viewport.current);
+  };
+  /** Scrolls so the previous chip starts at the left edge, once boxes and viewport are measured. */
+  const align = () => {
     const box = currentBox.current;
     if (!box || viewport.current === 0) return;
+    // A change of width fires onLayout, a mere move does not: once the chips are mark-only the
+    // positions follow from their fixed size rather than from a stale measure.
+    const boxX = compact ? CHIP_GAP + currentIndex * (COMPACT_CHIP + CHIP_GAP) : box.x;
+    const previousX = compact ? boxX - COMPACT_CHIP - CHIP_GAP : previousBox.current?.x;
+    const start = previousX === undefined ? boxX : previousX - CHIP_GAP;
     scroll.current?.scrollTo({
-      x: Math.max(0, box.x - NEIGHBOUR_PEEK, box.x + box.width - viewport.current),
+      x: Math.max(0, start, boxX + box.width - viewport.current),
       animated: false,
     });
   };
+  const centre = () => {
+    align();
+    decide();
+  };
+  // Switching to mark-only chips moves the pill; align again once that layout has landed.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: align reads refs only
+  useEffect(() => {
+    const frame = requestAnimationFrame(align);
+    return () => cancelAnimationFrame(frame);
+  }, [compact]);
   return (
     <GlassCapsule style={styles.capsule} testID={testID}>
       <ScrollView
@@ -100,15 +129,20 @@ export function AgentSwitcher({
         }}
         accessibilityLabel={labels.switcher}
       >
-        {agents.map((agent) => {
+        {agents.map((agent, index) => {
           const current = agent.id === currentId;
+          const shrink = compact && !current;
           return (
             <Pressable
               key={agent.id}
               onLayout={(event) => {
-                if (!current) return;
-                currentBox.current = event.nativeEvent.layout;
-                centre();
+                const layout = event.nativeEvent.layout;
+                if (index === currentIndex - 1) {
+                  previousBox.current = layout;
+                  if (!compact) previousFull.current = layout.width;
+                }
+                if (current) currentBox.current = layout;
+                if (current || index === currentIndex - 1) centre();
               }}
               onPress={() => {
                 if (current) return;
@@ -119,7 +153,11 @@ export function AgentSwitcher({
               accessibilityState={{ selected: current }}
               accessibilityLabel={current ? agent.title : `${labels.switchTo} ${agent.title}`}
               testID={`${testID}-${agent.id}`}
-              style={current ? styles.pill : [styles.chip, styles.neighbour]}
+              style={
+                current
+                  ? styles.pill
+                  : [styles.chip, styles.neighbour, shrink && styles.neighbourCompact]
+              }
             >
               <ProgramMark
                 program={agent.program}
@@ -127,14 +165,16 @@ export function AgentSwitcher({
                 size={26}
                 surface={current ? 'control' : 'surfaceRaised'}
               />
-              <Text
-                variant="body"
-                semibold={current}
-                numberOfLines={1}
-                tone={current ? 'primary' : 'secondary'}
-              >
-                {agent.title}
-              </Text>
+              {shrink ? null : (
+                <Text
+                  variant="body"
+                  semibold={current}
+                  numberOfLines={1}
+                  tone={current ? 'primary' : 'secondary'}
+                >
+                  {agent.title}
+                </Text>
+              )}
             </Pressable>
           );
         })}

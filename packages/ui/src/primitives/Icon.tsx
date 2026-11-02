@@ -85,6 +85,7 @@ const ICONS = {
   windows: { ios: 'rectangle.on.rectangle', android: 'flip_to_front' },
   // Agent bar.
   branch: { ios: 'arrow.triangle.branch', android: 'call_split' },
+  commit: { ios: 'target', android: 'my_location' },
   keysDock: { ios: 'creditcard.fill', android: 'credit_card' },
   tools: { ios: 'hammer.fill', android: 'construction' },
   people: { ios: 'person.2', android: 'group' },

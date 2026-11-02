@@ -21,8 +21,10 @@ const useStyles = makeStyles((t) => ({
   },
   group: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
   branch: { flexShrink: 1, minWidth: 0 },
+  /** Floor so the branch never collapses to a lone glyph beside the counters. */
+  branchGroup: { minWidth: 84 },
   fixed: { flexShrink: 0 },
-  spacer: { flex: 1, minWidth: 4 },
+  spacer: { flex: 1, minWidth: 0 },
   sep: { width: StyleSheet.hairlineWidth * 2, height: 16, backgroundColor: t.colors.separator },
   pillRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   pill: { borderRadius: 999, paddingHorizontal: airy.stack, paddingVertical: 2, flexShrink: 0 },
@@ -116,7 +118,7 @@ export function StatusLine({
       ) : null}
       {status && branch ? <View style={styles.sep} /> : null}
       {branch ? (
-        <View style={[styles.group, styles.branch]}>
+        <View style={[styles.group, styles.branch, styles.branchGroup]}>
           <Icon name="branch" size={15} tint={theme.colors.info} />
           <Text
             variant="footnote"
@@ -131,7 +133,7 @@ export function StatusLine({
       ) : null}
       {hasCounts ? (
         <Text
-          variant="caption"
+          variant="footnote"
           monospaced
           semibold
           tone="secondary"
