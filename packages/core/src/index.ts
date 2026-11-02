@@ -1,4 +1,5 @@
 export * from './agents';
+export * from './changes';
 export * from './errors';
 export * from './events';
 export * from './fake-transport';
