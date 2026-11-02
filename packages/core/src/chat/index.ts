@@ -15,3 +15,4 @@ export * from './model/paths';
 export * from './model/preview';
 export type { ChatToolOutput, ChatTranscriptReducer } from './model/reducer';
 export * from './model/types';
+export * from './timeline';
