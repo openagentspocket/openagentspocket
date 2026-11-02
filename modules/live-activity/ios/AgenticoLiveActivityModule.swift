@@ -27,14 +27,23 @@ public final class AgenticoLiveActivityModule: Module {
         /// the app suspends. Returns the activity id.
         AsyncFunction("request") { (hostId: String, contentJson: String) -> String in
             let state = try Self.decode(contentJson)
+            let attributes = AgentActivityAttributes(hostID: hostId)
+            let content = ActivityContent(state: state, staleDate: nil)
             do {
-                let activity = try Activity.request(
-                    attributes: AgentActivityAttributes(hostID: hostId),
-                    content: ActivityContent(state: state, staleDate: nil),
-                    pushType: .token)
-                return activity.id
+                return try Activity.request(
+                    attributes: attributes, content: content, pushType: .token
+                ).id
             } catch {
-                throw LiveActivityRequestException(String(describing: error))
+                // A build without the aps-environment entitlement (the simulator, an unsigned dev
+                // build) cannot ask for a push token: start local-only so the UI is still usable.
+                // Such an activity gets no push token and cannot be updated by the plugin.
+                do {
+                    return try Activity.request(
+                        attributes: attributes, content: content, pushType: nil
+                    ).id
+                } catch {
+                    throw LiveActivityRequestException(String(describing: error))
+                }
             }
         }
 
