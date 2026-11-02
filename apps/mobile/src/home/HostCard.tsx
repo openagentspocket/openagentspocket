@@ -54,7 +54,7 @@ export function HostCard({ host, agentCount, onOpen, menu }: HostCardProps) {
           <Text variant="headline" numberOfLines={1}>
             {host.name}
           </Text>
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             {summary}
           </Text>
         </View>

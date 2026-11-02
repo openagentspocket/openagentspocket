@@ -109,7 +109,7 @@ export function PortsScreen({ store, onOpenPreview }: PortsScreenProps) {
       onRefresh={refresh}
       testID="ports-screen"
     >
-      <Text variant="caption" tone="secondary" numberOfLines={1}>
+      <Text variant="footnote" tone="secondary" numberOfLines={1}>
         {t('Host %@', store.hostName)}
       </Text>
       {body}

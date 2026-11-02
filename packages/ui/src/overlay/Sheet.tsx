@@ -10,12 +10,13 @@ import {
   View,
 } from 'react-native';
 import { Button } from '../primitives/Button';
+import { ScreenBackground } from '../primitives/ScreenBackground';
 import { SurfaceFillProvider } from '../primitives/surfaceFill';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles } from '../theme/theme';
 import { OverlayHost } from './OverlayHost';
-import { DETENT_SHARE, type SheetDetent, useSheetDrag } from './sheetDetents';
+import { DETENT_SHARE, detentShare, type SheetDetent, useSheetDrag } from './sheetDetents';
 
 export type { SheetDetent };
 
@@ -24,6 +25,7 @@ const useStyles = makeStyles((t) => ({
   backdrop: { flex: 1, backgroundColor: t.backdrop },
   panel: {
     backgroundColor: t.colors.surfaceOverlay,
+    overflow: 'hidden',
     borderTopLeftRadius: t.metrics.sheetRadius,
     borderTopRightRadius: t.metrics.sheetRadius,
     borderWidth: t.metrics.hairlineWidth,
@@ -51,8 +53,21 @@ const useStyles = makeStyles((t) => ({
     minHeight: t.metrics.minTapSize,
   },
   title: { flex: 1 },
+  barTitle: { flex: 1, textAlign: 'center' },
+  barSlot: { minWidth: t.metrics.minTapSize * 1.5, flexDirection: 'row' },
+  barEnd: { justifyContent: 'flex-end' },
+  largeHeader: { paddingHorizontal: t.metrics.screenInset, gap: t.spacing.xs },
+  largeTitle: { paddingBottom: t.spacing.xs },
   body: { paddingHorizontal: t.metrics.screenInset, paddingTop: t.spacing.xs, gap: t.spacing.md },
 }));
+
+/** A labeled action in the sheet's bar: `Cancel` / `Done` leading, `Start` / `Save` trailing. */
+export interface SheetBarAction {
+  label: string;
+  onPress: () => void;
+  disabled?: boolean;
+  loading?: boolean;
+}
 
 interface SheetProps {
   visible: boolean;
@@ -62,6 +77,14 @@ interface SheetProps {
   detent?: SheetDetent;
   /** Screen-reader label of the close button. Default "Close". */
   closeLabel?: string;
+  /** Leading bar action (Cancel, Done). Replaces the trailing close button. */
+  leading?: SheetBarAction;
+  /** Trailing bar action (Start, Save): the confirm of a form sheet. */
+  trailing?: SheetBarAction;
+  /** Title drawn large under the bar (Settings, Hosts) instead of inline. */
+  largeTitle?: boolean;
+  /** Hide the grabber (large form sheets). Default shown. */
+  grabber?: boolean;
   /** Pinned under the scrolling body (a primary action). */
   footer?: ReactNode;
   children: ReactNode;
@@ -74,6 +97,10 @@ export function Sheet({
   onClose,
   title,
   detent = 'medium',
+  leading,
+  trailing,
+  largeTitle = false,
+  grabber = true,
   closeLabel = 'Close',
   footer,
   children,
@@ -84,10 +111,11 @@ export function Sheet({
   const { height } = useWindowDimensions();
   const drag = useSheetDrag(detent, onClose, visible);
   const live = drag.detent;
-  const share = DETENT_SHARE[live];
+  const share = detentShare(live);
   const limit = height * DETENT_SHARE.large;
   const grown = Math.min(limit, Math.max(height * 0.2, height * share + drag.offset));
   const size = live === 'fit' ? { maxHeight: height * share } : { height: grown };
+  const bar = leading !== undefined || trailing !== undefined;
   return (
     <Modal
       visible={visible}
@@ -112,21 +140,63 @@ export function Sheet({
           accessibilityViewIsModal
           testID={testID}
         >
-          <View style={styles.dragArea} {...drag.handlers} testID={`${testID}-grabber`}>
-            <View style={styles.grabber} />
-          </View>
-          <View style={styles.header}>
-            <Text variant="headline" accessibilityRole="header" style={styles.title}>
-              {title ?? ''}
-            </Text>
-            <Button
-              kind="text"
-              icon="close"
-              accessibilityLabel={closeLabel}
-              onPress={onClose}
-              testID={`${testID}-close`}
-            />
-          </View>
+          <ScreenBackground testID={`${testID}-background`} />
+          {grabber ? (
+            <View style={styles.dragArea} {...drag.handlers} testID={`${testID}-grabber`}>
+              <View style={styles.grabber} />
+            </View>
+          ) : null}
+          {bar ? (
+            <>
+              <View style={styles.header} testID={`${testID}-bar`}>
+                <View style={styles.barSlot}>
+                  {leading ? <BarButton action={leading} testID={`${testID}-leading`} /> : null}
+                </View>
+                {largeTitle ? (
+                  <View style={styles.title} />
+                ) : (
+                  <Text
+                    variant="headline"
+                    accessibilityRole="header"
+                    style={styles.barTitle}
+                    numberOfLines={1}
+                  >
+                    {title ?? ''}
+                  </Text>
+                )}
+                <View style={[styles.barSlot, styles.barEnd]}>
+                  {trailing ? (
+                    <BarButton action={trailing} emphasized testID={`${testID}-trailing`} />
+                  ) : null}
+                </View>
+              </View>
+              {largeTitle ? (
+                <View style={styles.largeHeader}>
+                  <Text
+                    variant="title"
+                    accessibilityRole="header"
+                    style={styles.largeTitle}
+                    numberOfLines={2}
+                  >
+                    {title ?? ''}
+                  </Text>
+                </View>
+              ) : null}
+            </>
+          ) : (
+            <View style={styles.header}>
+              <Text variant="headline" accessibilityRole="header" style={styles.title}>
+                {title ?? ''}
+              </Text>
+              <Button
+                kind="text"
+                icon="close"
+                accessibilityLabel={closeLabel}
+                onPress={onClose}
+                testID={`${testID}-close`}
+              />
+            </View>
+          )}
           <ScrollView
             contentContainerStyle={styles.body}
             keyboardShouldPersistTaps="handled"
@@ -146,5 +216,27 @@ export function Sheet({
         <OverlayHost />
       </View>
     </Modal>
+  );
+}
+
+function BarButton({
+  action,
+  emphasized = false,
+  testID,
+}: {
+  action: SheetBarAction;
+  emphasized?: boolean;
+  testID: string;
+}) {
+  return (
+    <Button
+      kind={emphasized ? 'primary' : 'capsule'}
+      size="small"
+      title={action.label}
+      onPress={action.onPress}
+      disabled={action.disabled}
+      loading={action.loading}
+      testID={testID}
+    />
   );
 }

@@ -77,7 +77,7 @@ export function Section({
         )
       ) : null}
       {open && footer ? (
-        <Text variant="caption" tone="secondary" style={styles.footer}>
+        <Text variant="footnote" tone="secondary" style={styles.footer}>
           {footer}
         </Text>
       ) : null}

@@ -97,14 +97,14 @@ function DiffContent({ diff, width: given }: { diff: FileDiffStore; width?: numb
       )}
       {state.truncation === 'canLoadMore' ? (
         <>
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             {say('Showing the first part of this diff.')}
           </Text>
           <Button kind="secondary" title={say('Load More')} onPress={() => void diff.loadMore()} />
         </>
       ) : null}
       {state.truncation === 'tooLarge' ? (
-        <Text variant="caption" tone="secondary" testID="diff-too-large">
+        <Text variant="footnote" tone="secondary" testID="diff-too-large">
           {say('This file is too large to display in full.')}
           {state.file.lineCounts ? ` ${lineCountsSummary(state.file.lineCounts, say)}` : ''}
         </Text>

@@ -129,7 +129,7 @@ export function DirectoryBrowserSheet({
       ) : null}
       {currentPath !== undefined ? (
         <>
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             {t('You can select this folder for the new Workspace.')}
           </Text>
           <TextField

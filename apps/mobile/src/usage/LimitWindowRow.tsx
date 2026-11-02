@@ -55,11 +55,11 @@ export function LimitWindowRow({ window, now }: Props) {
         />
       )}
       <View style={styles.line}>
-        <Text variant="caption" tone="secondary">
+        <Text variant="footnote" tone="secondary">
           {window.resetsAt ? renderMessage(resetText(window.resetsAt, now, localeTag())) : ' '}
         </Text>
         {window.pace ? (
-          <Text variant="caption" tone="secondary" testID={`pace-${window.id}`}>
+          <Text variant="footnote" tone="secondary" testID={`pace-${window.id}`}>
             {renderMessage(paceTitle(window.pace))}
           </Text>
         ) : null}

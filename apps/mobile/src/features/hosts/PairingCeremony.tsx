@@ -58,7 +58,7 @@ export function PairingCeremony({ state, onPair, onRetry, onRescan }: PairingCer
           );
         })}
       </Card>
-      <Text variant="caption" tone="secondary">
+      <Text variant="footnote" tone="secondary">
         {t('Host key pinned from the Pairing Code — no fingerprint prompt.')}
       </Text>
       {waiting ? (

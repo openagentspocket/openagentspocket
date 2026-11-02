@@ -124,7 +124,7 @@ function Known({
           />
         ))}
         {dialog.options.some((option) => !isTappable(option)) ? (
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             {t('Type your own answer in the terminal.')}
           </Text>
         ) : null}
@@ -200,7 +200,7 @@ export function BlockedCard(props: BlockedCardProps) {
             </>
           ) : null}
           {state.notice ? (
-            <Text variant="caption" tone="warning" testID="blocked-notice">
+            <Text variant="footnote" tone="warning" testID="blocked-notice">
               {cardText(state.notice)}
             </Text>
           ) : null}

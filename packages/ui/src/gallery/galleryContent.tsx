@@ -57,7 +57,7 @@ export function Content() {
       </Specimen>
       <Specimen name="KeyboardDock">
         <Stack>
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             Last key: {lastKey}
           </Text>
           <KeyboardDock

@@ -72,15 +72,15 @@ export function Feedback() {
       </Specimen>
       <Specimen name="Meter">
         <Stack>
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             32% · pace 50%
           </Text>
           <Meter value={0.32} pace={0.5} accessibilityLabel="Session limit" />
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             86% (warning)
           </Text>
           <Meter value={0.86} pace={0.6} accessibilityLabel="Weekly limit" />
-          <Text variant="caption" tone="secondary">
+          <Text variant="footnote" tone="secondary">
             97% (danger)
           </Text>
           <Meter value={0.97} accessibilityLabel="Opus limit" />

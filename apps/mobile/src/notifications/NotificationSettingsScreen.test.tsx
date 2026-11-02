@@ -98,7 +98,7 @@ describe('NotificationSettingsScreen', () => {
     await renderWith(<NotificationSettingsScreen />, createDemoNotificationServices());
     const spanish = translate('es', 'app', 'Agent Notifications');
     expect(spanish).not.toBe(translate('en', 'app', 'Agent Notifications'));
-    await waitFor(() => expect(screen.getByText(spanish.toUpperCase())).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(spanish)).toBeTruthy());
   });
 });
 

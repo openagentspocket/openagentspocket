@@ -129,7 +129,7 @@ export function BarChart({
         {data.map((datum, index) => (
           <Text
             key={datum.key}
-            variant="caption"
+            variant="footnote"
             tone="tertiary"
             style={styles.label}
             numberOfLines={1}

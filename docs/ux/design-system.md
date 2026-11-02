@@ -270,19 +270,22 @@ Rule: no animation longer than 350 ms; every one gated by `useReducedMotion()`. 
 (`SwipeRow`) and plain state flips elsewhere; standardize on Reanimated `useReducedMotion` + two helpers
 (`motion.snappy`, `motion.quick`) in `packages/ui/src/motion.ts`.
 
-## 8. Gaps summary (feeds UX1-design-system)
+## 8. Gaps summary (UX1-design-system status)
 
-1. `ScreenBackground` glow in `Screen` and `Sheet`.
-2. Text styles to the iOS scale, SF Mono, sentence-case section headers.
-3. `CardRow`/`CardList` primitive; `MetaChip`; `Badge wash`; `StatusOrb`; status dot size 8 and corner cut-out audit.
-4. `SwipeRow` leading edge, full swipe, haptic at threshold.
-5. `Sheet`: fractional detents, bar actions (leading Cancel/Done, trailing confirm), large-title variant, glow.
-6. `ActionMenu` sections/dividers and lifted preview.
-7. `GlassCapsule` for the Agent detail header and Home toolbar.
-8. `haptics.ts` + `motion.ts`.
-9. Tint audit (Switch, RefreshControl, selection handles) from tokens.
-10. Gallery: a screen-parity section in `/__gallery` showing each primitive in Índigo, Papel, Noche, at default and
-    accessibility sizes (the acceptance image for the primitive task).
+Closed in `packages/ui` (shown in `/__gallery?section=parity` in Índigo, Papel and at 1.8x text):
+
+1. `ScreenBackground` glow, used by `Screen` and `Sheet`. Closed.
+2. Text styles to the iOS scale (`largeTitle` .. `caption2`, `monospaced`, `semibold`, `tabularNums`; `label`, `mono` kept as aliases; old 13 pt `caption` callers moved to `footnote`), SF Mono via `uiMonoFamily`, sentence-case section headers. Closed.
+3. `CardRow`, `MetaChip`, `Badge wash` (+ tertiary, quaternary), `StatusOrb`, `Segmented`; status dot 8 pt. Closed. The corner cut-out audit and Working pulse go to **UX1-tint-audit**.
+4. `SwipeRow` leading edge, full swipe (55% line), light haptic at the line; `ListRow`/`CardRow` take `leadingSwipeActions` and `fullSwipe`. Closed.
+5. `Sheet`: `{ fraction }` detents, `leading`/`trailing` bar actions, `largeTitle`, glow, optional grabber. Closed. Pushes inside Settings/Hosts sheets go to **UX1-sheet-routes**.
+6. `ActionMenu` sections, destructive divider and subtitles (JS menu and native `Section`). The lifted preview goes to **UX1-menu-preview**.
+7. `GlassCapsule` (expo-glass-effect on iOS 26, hairline fallback elsewhere). Closed.
+8. `haptics.ts` (expo-haptics, needs a native rebuild by the integrator) and `motion.ts` (timings, spring, `useReducedMotion`). Closed; call sites wire in the family tasks.
+9. Tint audit. Split: **UX1-tint-audit**.
+10. Gallery parity section. Closed. `FontScaleOverride` previews accessibility sizes on web.
+
+Also: `airy` (x1.3 literals) and `metrics.rowMinHeight` 56, `glowSize`, `glowOpacity` in `theme/metrics.ts`; `headerLargeTitle` wiring goes to **UX1-sheet-routes**.
 
 ## 9. Papel and Noche
 

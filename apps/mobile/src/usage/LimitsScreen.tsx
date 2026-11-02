@@ -75,13 +75,13 @@ export function LimitsScreen({ source }: Props) {
         />
       ) : null}
       {hostCount > 1 ? (
-        <Text variant="caption" tone="tertiary">
+        <Text variant="footnote" tone="tertiary">
           {t(
             'Usage Limits are shown per Host. Two Hosts signed in to the same account show the same windows.',
           )}
         </Text>
       ) : null}
-      <Text variant="caption" tone="tertiary">
+      <Text variant="footnote" tone="tertiary">
         {t('Codex shows only its default limit group.')}
       </Text>
     </Screen>

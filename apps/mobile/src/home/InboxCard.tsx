@@ -64,7 +64,7 @@ export function InboxCard({ item, now, onOpen }: InboxCardProps) {
           {title}
         </Text>
         {age ? (
-          <Text variant="caption" tone="secondary" testID={`age-${item.row.agent.pane_id}`}>
+          <Text variant="footnote" tone="secondary" testID={`age-${item.row.agent.pane_id}`}>
             {ageText(age)}
           </Text>
         ) : null}

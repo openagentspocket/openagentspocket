@@ -1,8 +1,9 @@
 import { type ReactNode, useState } from 'react';
 import { type AccessibilityActionEvent, Pressable, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
-import { Icon } from './Icon';
+import { Icon, type IconName } from './Icon';
 import { type SwipeAction, SwipeRow } from './SwipeRow';
 import { Text } from './Text';
 
@@ -11,9 +12,9 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.sm,
-    minHeight: t.metrics.minTapSize + 8,
+    minHeight: t.metrics.rowMinHeight,
     paddingHorizontal: t.spacing.md,
-    paddingVertical: t.spacing.xs,
+    paddingVertical: airy.rowInset,
   },
   pressed: { backgroundColor: t.colors.surfaceRaised },
   disabled: { opacity: 0.4 },
@@ -26,6 +27,8 @@ export interface ListRowProps {
   subtitle?: string;
   /** An icon, a ProgramMark, a StatusDot. */
   leading?: ReactNode;
+  /** A settings-style leading symbol: 22 pt, tinted secondary. */
+  icon?: IconName;
   /** A short value in secondary text before the trailing slot ("Índigo", "3 hosts"). */
   value?: string;
   /** A badge, a switch, a copy button. */
@@ -38,6 +41,10 @@ export interface ListRowProps {
   menuTitle?: string;
   /** Trailing swipe actions (also reachable as accessibility actions). */
   swipeActions?: readonly SwipeAction[];
+  /** Leading swipe actions (swipe right), such as Pin. */
+  leadingSwipeActions?: readonly SwipeAction[];
+  /** Full swipe runs the first action of the edge. */
+  fullSwipe?: { leading?: boolean; trailing?: boolean };
   disabled?: boolean;
   /** Overrides the spoken label (title, subtitle and value by default). */
   accessibilityLabel?: string;
@@ -53,6 +60,7 @@ export function ListRow({
   title,
   subtitle,
   leading,
+  icon,
   value,
   trailing,
   chevron = false,
@@ -60,6 +68,8 @@ export function ListRow({
   menu,
   menuTitle,
   swipeActions,
+  leadingSwipeActions,
+  fullSwipe,
   disabled = false,
   accessibilityLabel,
   accessibilityHint,
@@ -68,7 +78,7 @@ export function ListRow({
   const styles = useStyles();
   const [menuOpen, setMenuOpen] = useState(false);
   // Swipe and menu actions, once each by key, as screen-reader actions.
-  const extra = [...(swipeActions ?? []), ...(menu ?? [])].filter(
+  const extra = [...(swipeActions ?? []), ...(leadingSwipeActions ?? []), ...(menu ?? [])].filter(
     (action, index, all) => all.findIndex((other) => other.key === action.key) === index,
   );
   const onAccessibilityAction = (event: AccessibilityActionEvent) =>
@@ -94,11 +104,11 @@ export function ListRow({
       ]}
       testID={testID}
     >
-      {leading}
+      {icon ? <Icon name={icon} size={22} color="textSecondary" /> : leading}
       <View style={styles.text}>
         <Text numberOfLines={1}>{title}</Text>
         {subtitle ? (
-          <Text variant="caption" tone="secondary" numberOfLines={2}>
+          <Text variant="footnote" tone="secondary" numberOfLines={2}>
             {subtitle}
           </Text>
         ) : null}
@@ -117,7 +127,13 @@ export function ListRow({
 
   return (
     <>
-      {swipeActions?.length ? <SwipeRow actions={swipeActions}>{body}</SwipeRow> : body}
+      {swipeActions?.length || leadingSwipeActions?.length ? (
+        <SwipeRow actions={swipeActions} leadingActions={leadingSwipeActions} fullSwipe={fullSwipe}>
+          {body}
+        </SwipeRow>
+      ) : (
+        body
+      )}
       {menu?.length ? (
         <ActionMenu
           items={menu}

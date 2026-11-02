@@ -59,7 +59,7 @@ describe('HomeScreen', () => {
     for (const key of ['Needs you', 'Working', 'Done']) {
       const spanish = translate('es', 'app', key);
       expect(spanish).not.toBe(translate('en', 'app', key));
-      expect(screen.getByText(spanish.toUpperCase())).toBeTruthy();
+      expect(screen.getByText(spanish)).toBeTruthy();
     }
   });
 

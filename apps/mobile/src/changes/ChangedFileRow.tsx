@@ -62,7 +62,7 @@ export function ChangedFileRow({
           <Icon name={expanded ? 'chevronDown' : 'chevronRight'} size={12} />
         ) : counts && file.kind !== 'untracked' ? (
           <View style={styles.delta}>
-            <Text variant="caption" tone="secondary">
+            <Text variant="footnote" tone="secondary">
               {lineCountsSummary(counts, say)}
             </Text>
           </View>

@@ -55,7 +55,7 @@ export function AgentSwitcher({ rows, currentKey, onSelect }: Props) {
               status={statusDot(row.agent.agent_status)}
               size={18}
             />
-            <Text variant="caption" tone={current ? 'accent' : 'secondary'} numberOfLines={1}>
+            <Text variant="footnote" tone={current ? 'accent' : 'secondary'} numberOfLines={1}>
               {agentDisplayName(row.agent)}
             </Text>
           </Pressable>

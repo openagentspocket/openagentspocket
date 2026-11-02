@@ -91,7 +91,7 @@ export function CopyableValueRow({
   const styles = useStyles();
   return (
     <View style={styles.row}>
-      <Text variant="caption" tone="secondary">
+      <Text variant="footnote" tone="secondary">
         {label}
       </Text>
       <Text variant="mono" selectable style={styles.value}>

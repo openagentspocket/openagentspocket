@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import {
+  type AccessibilityActionEvent,
+  type AccessibilityActionInfo,
+  Pressable,
+  View,
+} from 'react-native';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
@@ -38,6 +43,8 @@ interface CardProps {
   onLongPress?: () => void;
   accessibilityLabel?: string;
   accessibilityHint?: string;
+  accessibilityActions?: readonly AccessibilityActionInfo[];
+  onAccessibilityAction?: (event: AccessibilityActionEvent) => void;
   testID?: string;
 }
 
@@ -51,6 +58,8 @@ export function Card({
   onLongPress,
   accessibilityLabel,
   accessibilityHint,
+  accessibilityActions,
+  onAccessibilityAction,
   testID,
 }: CardProps) {
   const styles = useStyles();
@@ -76,6 +85,8 @@ export function Card({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
+      accessibilityActions={accessibilityActions}
+      onAccessibilityAction={onAccessibilityAction}
       testID={testID}
       onPress={onPress}
       onLongPress={onLongPress}

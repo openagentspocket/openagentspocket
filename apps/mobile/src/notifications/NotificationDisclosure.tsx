@@ -71,7 +71,7 @@ export function NotificationDisclosure() {
           ),
         ]}
       />
-      <Text variant="caption" tone="secondary">
+      <Text variant="footnote" tone="secondary">
         {t(
           "A custom relay must use APNs credentials authorized for this app's bundle ID, or Apple rejects every notification it forwards.",
         )}

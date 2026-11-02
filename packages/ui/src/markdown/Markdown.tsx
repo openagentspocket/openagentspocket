@@ -41,7 +41,7 @@ interface Context {
   onLinkPress: (href: string) => void;
 }
 
-const HEADING: Record<number, TextVariant> = { 1: 'title', 2: 'headline', 3: 'headline' };
+const HEADING: Record<number, TextVariant> = { 1: 'title2', 2: 'headline', 3: 'headline' };
 
 /** Inline tokens (bold, italics, code, links) as nested Text. */
 function inline(tokens: readonly Token[] | undefined, ctx: Context): ReactNode {

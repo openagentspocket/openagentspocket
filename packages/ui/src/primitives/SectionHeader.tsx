@@ -35,7 +35,7 @@ interface SectionHeaderProps {
 export function DisclosureChevron({ expanded }: { expanded: boolean }) {
   return (
     <View style={{ transform: [{ rotate: expanded ? '90deg' : '0deg' }] }} testID="disclosure">
-      <Icon name="chevronRight" size={12} />
+      <Icon name="chevronRight" size={12} color="textSecondary" />
     </View>
   );
 }
@@ -55,8 +55,8 @@ export function SectionHeader({
     <>
       {onToggle ? <DisclosureChevron expanded={expanded ?? false} /> : null}
       {status ? <StatusDot status={status} /> : null}
-      <Text variant="label" tone="secondary" numberOfLines={1}>
-        {title.toUpperCase()}
+      <Text variant="footnote" semibold tone="secondary" numberOfLines={1}>
+        {title}
       </Text>
       {count !== undefined ? <Badge label={String(count)} kind="control" /> : null}
     </>
@@ -85,7 +85,7 @@ export function SectionHeader({
           accessibilityLabel={action.accessibilityLabel ?? action.title}
           hitSlop={10}
         >
-          <Text variant="caption" tone="accent">
+          <Text variant="footnote" semibold tone="accent">
             {action.title}
           </Text>
         </Pressable>

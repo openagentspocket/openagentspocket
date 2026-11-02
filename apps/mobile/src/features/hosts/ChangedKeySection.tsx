@@ -32,7 +32,7 @@ export function ChangedKeySection({ presented, onTrust }: ChangedKeySectionProps
       testID="changed-key-section"
     >
       <View>
-        <Text variant="caption" tone="secondary">
+        <Text variant="footnote" tone="secondary">
           {t('New key')}
         </Text>
         <Text variant="mono" selectable>
@@ -40,7 +40,7 @@ export function ChangedKeySection({ presented, onTrust }: ChangedKeySectionProps
         </Text>
       </View>
       <View>
-        <Text variant="caption" tone="secondary">
+        <Text variant="footnote" tone="secondary">
           {t('On the Host, run')}
         </Text>
         <Text variant="mono" selectable>

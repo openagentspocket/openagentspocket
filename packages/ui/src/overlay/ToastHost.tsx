@@ -134,7 +134,7 @@ function ToastCard({ request }: { request: ToastRequest }) {
             {request.title}
           </Text>
           {request.message ? (
-            <Text variant="caption" tone="secondary" numberOfLines={2}>
+            <Text variant="footnote" tone="secondary" numberOfLines={2}>
               {request.message}
             </Text>
           ) : null}
