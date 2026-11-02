@@ -48,6 +48,7 @@ const checks = [
   run('file length', 'node', ['scripts/check-file-length.mjs']),
   run('theme literals', 'node', ['scripts/check-theme-literals.mjs']),
   run('progress current', 'node', ['scripts/progress.mjs', '--check']),
+  run('ux catalog', 'node', ['scripts/ux-catalog.mjs', '--check']),
 ];
 
 // Test files are excluded from `tsc -b` in core and i18n; their tsconfig.tests.json covers them.

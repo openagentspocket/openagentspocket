@@ -6,6 +6,7 @@ import { SectionHeader } from '../primitives/SectionHeader';
 import { Text } from '../primitives/Text';
 import { ThemeProvider } from '../theme/theme';
 import { type ThemeId, themeIds, themes } from '../theme/tokens.generated';
+import { ComponentsSection } from './ComponentsSection';
 import { BadgesAndMarks, Buttons, TypeAndColor } from './galleryBasics';
 import { Content, Lists } from './galleryContent';
 import { GalleryDemoContext, type GalleryDemos } from './galleryDemo';
@@ -33,6 +34,7 @@ export const gallerySections: readonly GallerySection[] = [
   { id: 'lists', title: 'Lists', Body: Lists },
   { id: 'scanner', title: 'Scanner', Body: Scanner },
   { id: 'parity', title: 'Parity', Body: Parity },
+  { id: 'components', title: 'Components', Body: ComponentsSection },
 ];
 
 const isThemeId = (value: string | undefined): value is ThemeId =>
