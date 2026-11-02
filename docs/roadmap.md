@@ -4,18 +4,19 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
-State (2026-11-02 ~02:30): **wave 2 merged on main** (P2.1 console + open-union enums, P4.1 usage, P4.5
-settings, P4.4 changes, P5.2 registration, T-typecheck-tests, P0-qr-scanner, P0-brand-marks; full `pnpm test`
-green: core 1240, ui 118, mobile 50, i18n 89, ssh 24, plugin 833, relay 138). Display name "Agents Pocket"
-(ADR 0022) so the home-screen label fits. verify-fast now regenerates Expo Router typed routes
-(`scripts/typed-routes.mjs`). Backlog gained the live wiring: P1.7 ssh-transport (new `packages/transport`),
-P1.8 host services, P1.9 secure stores, P2.1b console store (P2.2/P2.3 now wait on it).
-**Running:** wave 3 (`scratchpad/rn/wave3.js`): JS (6 at a time) P1.7, P1.9, P1.5 hosts screens, P2.1b, P2.6a
-chat Claude, P2.9a blocked parsers, P4.3 ports, P0-native-menus, P5.1 banner + the P4.2-files merge fix (its
-branch `worktree-wf_40a85a5f-46a-6` predates the stricter gates); native chain: verify main (new native deps,
-label check, SSH harness, screenshots to `rn/evidence/main-wave2/`) → P3.0 terminal spike (continues the dead
-worker's worktree `wf_40a85a5f-46a-23`) → P6.1 widgets via apple-targets (simulator only).
-Enzo asleep (2026-11-02 ~02:00): the lead decides and keeps going wave after wave; decisions logged below.
+State (2026-11-02 ~05:30): **wave 3 merged on main** (P1.7 transport in `packages/transport`, P1.9 secure
+stores, P1.5 hosts screens, P2.1b console store, P2.6a chat Claude, P2.9a blocked parsers, P4.3 ports, P4.2 files,
+P0-native-menus, P5.1 banner, P3.0 terminal spike: libghostty chosen (ADR 0023), P6.1 widgets target; full test
+green: core 1823, transport 59, ui 134, mobile 83, ssh 26, i18n 89, plugin 833, relay 138). Native check of
+wave 2 main: both platforms build, SSH harness 17/17, Maestro home passes, "Agents Pocket" fits on iOS, Android
+drawer shows "Agents Pock…"; visual issues filed as P0-shell-polish.
+**Running:** wave 4 (`scratchpad/rn/wave4.js`): P1.10 live wiring, P1.8 host services, P0-shell-polish, P2.2
+Home, P2.3 agents list, P2.5 agent detail, P2.4 new agent, P2.13 board, P2.6a timeline projection / cache store /
+workflow journal, P2.6b Codex, P3.1 attach, P4.1b usage live; native chain: verify main (widget, libghostty,
+herdr live step) → P6.1b Live Activities → P5.4 iOS NSE (simulator only).
+Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
+checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
+favor of the console store; ChatProgram lives in chat/model only.
 
 Lead's integration loop per wave: merge each ship branch with `scratchpad/rn/merge-branch.sh <branch>` (resolves
 PROGRESS.md, index.ts export unions, package.json unions and the lockfile; stops on real conflicts), `pnpm test`,
