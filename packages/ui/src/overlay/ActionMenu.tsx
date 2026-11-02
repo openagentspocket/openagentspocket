@@ -1,17 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import {
-  Modal,
-  Platform,
-  Pressable,
-  useWindowDimensions,
-  View,
-  type ViewInstance,
-} from 'react-native';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { Modal, Pressable, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
+import { MENU_DISMISS_MS } from './dismiss';
+import { LiftedMenu } from './LiftedMenu';
 import { groupMenuItems } from './menuGroups';
 import { loadSwiftUi, NativeActionMenu } from './NativeActionMenu';
 
@@ -43,8 +38,8 @@ export interface MenuAnchor {
   height: number;
 }
 
-/** iOS cannot present an alert while a menu's modal is still closing: run the action after it. */
-export const MENU_DISMISS_MS = Platform.OS === 'ios' ? 300 : 0;
+export { MENU_DISMISS_MS };
+
 const MENU_WIDTH = 250;
 
 const useStyles = makeStyles((t) => ({
@@ -85,6 +80,10 @@ interface ActionMenuProps {
   onClose: () => void;
   title?: string;
   anchor?: MenuAnchor;
+  /** The pressed card, lifted at its own width above the menu (the popover fallback of a native preview). */
+  preview?: ReactNode;
+  /** With a preview: draw in place instead of a Modal (the gallery and tests). */
+  inline?: boolean;
   testID?: string;
 }
 
@@ -95,6 +94,8 @@ export function ActionMenu({
   onClose,
   title,
   anchor,
+  preview,
+  inline,
   testID = 'action-menu',
 }: ActionMenuProps) {
   const styles = useStyles();
@@ -127,6 +128,18 @@ export function ActionMenu({
       : { left, bottom: window.height - anchor.y + 4 }
     : { left, bottom: insets.bottom + theme.spacing.lg };
 
+  if (preview) {
+    return (
+      <LiftedMenu
+        preview={preview}
+        items={items}
+        visible={visible}
+        onClose={onClose}
+        inline={inline}
+        testID={testID}
+      />
+    );
+  }
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable

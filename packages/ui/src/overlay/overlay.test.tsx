@@ -12,7 +12,7 @@ import {
 } from '../index';
 import { renderThemed } from '../test-utils';
 import { themes } from '../theme/tokens.generated';
-import { NativeActionMenu } from './NativeActionMenu';
+import { NativeActionMenu, NativePreviewMenu } from './NativeActionMenu';
 
 const calls: Record<string, Record<string, unknown>[]> = { Host: [], Menu: [], Button: [] };
 function FakeHost(props: Record<string, unknown>) {
@@ -37,6 +37,17 @@ async function ask<T>(run: () => Promise<T>): Promise<{ answer: Promise<T> }> {
   if (!box.answer) throw new Error('confirm() was not called');
   return { answer: box.answer };
 }
+
+const slotLog: string[] = [];
+function makeSlot(name: string) {
+  return ({ children }: { children: React.ReactNode }) => {
+    slotLog.push(name);
+    return <>{children}</>;
+  };
+}
+const TriggerSlot = makeSlot('trigger');
+const PreviewSlot = makeSlot('preview');
+const ItemsSlot = makeSlot('items');
 
 describe('confirm()', () => {
   it('resolves true when confirmed and false when cancelled', async () => {
@@ -283,5 +294,50 @@ describe('ActionMenu', () => {
     const press = pin?.onPress as (() => void) | undefined;
     press?.();
     expect(onPin).toHaveBeenCalled();
+  });
+});
+
+describe('ActionMenu preview', () => {
+  const items = [
+    { key: 'pin', title: 'Pin', icon: 'pin' as const, onPress: jest.fn() },
+    { key: 'close', title: 'Close', destructive: true, onPress: jest.fn() },
+  ];
+
+  it('lifts the preview above the items and runs an item after closing', async () => {
+    jest.useFakeTimers();
+    const onClose = jest.fn();
+    await renderThemed(
+      <ActionMenu visible inline preview={<Text>card</Text>} items={items} onClose={onClose} />,
+    );
+    expect(screen.getByTestId('action-menu-preview', { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.getByText('card', { includeHiddenElements: true })).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('action-menu-pin'));
+    expect(onClose).toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
+  it('keeps the plain popover without a preview', async () => {
+    await renderThemed(<ActionMenu visible items={items} onClose={jest.fn()} />);
+    expect(screen.queryByTestId('action-menu-preview')).toBeNull();
+  });
+
+  it('NativePreviewMenu puts the card in the context menu preview slot', async () => {
+    slotLog.length = 0;
+    const slots = slotLog;
+    const ContextMenu = Object.assign(FakeMenu, {
+      Trigger: TriggerSlot,
+      Preview: PreviewSlot,
+      Items: ItemsSlot,
+    });
+    await renderThemed(
+      <NativePreviewMenu
+        ui={{ Host: FakeHost, Menu: FakeMenu, Button: FakeButton, ContextMenu }}
+        items={items}
+        preview={<Text>card</Text>}
+      >
+        <Text>trigger</Text>
+      </NativePreviewMenu>,
+    );
+    expect(slots).toEqual(['trigger', 'preview', 'items']);
   });
 });
