@@ -16,6 +16,7 @@ import {
   ProgramMark,
   type Status,
 } from '@openagentspocket/ui';
+import * as Clipboard from 'expo-clipboard';
 import { useState, useSyncExternalStore } from 'react';
 import { Pressable, View } from 'react-native';
 import { renderMessage } from '@/usage/usageText';
@@ -141,6 +142,26 @@ export function AgentComposerBar({
         onSkill={(command) => {
           if (trigger) store.replaceTrailingToken(trigger.token, `${command} `);
         }}
+        expanded={surface === 'terminal' ? true : undefined}
+        moreMenu={[
+          {
+            key: 'paste',
+            title: t('Paste'),
+            icon: 'copy',
+            onPress: () =>
+              void Clipboard.getStringAsync().then((text) => {
+                if (!text) return;
+                const draft = snapshot.draft + text;
+                store.applyEditorDraft(draft, { start: draft.length, end: draft.length });
+              }),
+          },
+          {
+            key: 'clear',
+            title: t('Clear'),
+            icon: 'trash',
+            onPress: () => store.applyEditorDraft('', { start: 0, end: 0 }),
+          },
+        ]}
         leading={
           <Pressable
             onPress={onToggleSurface}

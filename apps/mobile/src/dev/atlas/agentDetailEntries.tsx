@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import { deviceStorage } from '@/settings/deviceStorage';
+import { AtlasBlocked } from './atlasBlocked';
 import { AtlasChat } from './atlasChat';
 import type { AtlasEntry } from './entries';
 
@@ -11,19 +12,32 @@ function detail(
   pane: 'p1' | 'p2',
   surface: 'chat' | 'terminal',
   press?: readonly string[],
+  blocked = false,
 ): AtlasEntry {
   return {
     script: press ? { press } : undefined,
     render: () => (
       <AtlasChat>
         <Stack.Screen options={{ headerShown: false }} />
-        <AgentDetailScreen
-          hostId="demo"
-          paneId={pane}
-          storage={deviceStorage}
-          surface={surface}
-          onSwitch={noop}
-        />
+        {blocked ? (
+          <AtlasBlocked>
+            <AgentDetailScreen
+              hostId="demo"
+              paneId={pane}
+              storage={deviceStorage}
+              surface={surface}
+              onSwitch={noop}
+            />
+          </AtlasBlocked>
+        ) : (
+          <AgentDetailScreen
+            hostId="demo"
+            paneId={pane}
+            storage={deviceStorage}
+            surface={surface}
+            onSwitch={noop}
+          />
+        )}
       </AtlasChat>
     ),
   };
@@ -59,7 +73,7 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.header-more-menu': detail('p2', 'chat', ['agent-header-more']),
   'agent-detail.session-drawer': detail('p2', 'chat', ['agent-header-sidebar']),
   'agent-detail.session-drawer--agents': detail('p2', 'chat', ['agent-header-sidebar']),
-  'agent-detail.chat-blocked-card': detail('p1', 'chat'),
+  'agent-detail.chat-blocked-card': detail('p1', 'chat', undefined, true),
   'agent-detail.direct-input': terminal,
   'agent-detail.direct-input-more-menu': detail('p2', 'terminal', ['toolbar-more']),
   'agent-detail.terminal-toolbar': terminal,

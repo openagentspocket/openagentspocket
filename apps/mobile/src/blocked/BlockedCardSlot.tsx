@@ -1,10 +1,15 @@
 import type { ConsoleRow } from '@openagentspocket/core';
+import { createContext, useContext } from 'react';
 import { BlockedCard } from './BlockedCard';
-import { useBlockedCard } from './useBlockedCard';
+import { type BlockedCardHandle, useBlockedCard } from './useBlockedCard';
+
+/** Previews and the atlas hand the slot a scripted card instead of one read from a pane. */
+export const BlockedCardOverride = createContext<BlockedCardHandle | null>(null);
 
 /** The Blocked card of one Agent, wired to its store; renders nothing while nothing is asked. */
 export function BlockedCardSlot({ row }: { row: ConsoleRow }) {
-  const card = useBlockedCard(row);
+  const live = useBlockedCard(row);
+  const card = useContext(BlockedCardOverride) ?? live;
   if (!card) return null;
   const { store, state } = card;
   return (

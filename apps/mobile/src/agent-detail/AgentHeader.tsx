@@ -10,12 +10,21 @@ interface Props {
   onSidebar: () => void;
   /** Changes, Files, Ports and the rest, from the route. */
   menu?: readonly ActionMenuItem[];
+  /** Chat is full-bleed with circles only, as in Swift; the terminal shows the title block. */
+  showTitle?: boolean;
 }
 
 const tail = (path: string | undefined) => path?.split('/').filter(Boolean).at(-1);
 
 /** The floating header: Sessions circle, the Agent's title block, one ... menu with Chat/Terminal. */
-export function AgentHeader({ row, surface, onSurface, onSidebar, menu = [] }: Props) {
+export function AgentHeader({
+  row,
+  surface,
+  onSurface,
+  onSidebar,
+  menu = [],
+  showTitle = true,
+}: Props) {
   const items: ActionMenuItem[] = [
     {
       key: 'surface-chat',
@@ -38,9 +47,13 @@ export function AgentHeader({ row, surface, onSurface, onSidebar, menu = [] }: P
       surface={surface}
       onSidebar={onSidebar}
       menu={items}
-      eyebrow={[row.hostName, row.agent.agent].filter(Boolean).join(' · ')}
-      title={agentDisplayName(row.agent)}
-      subtitle={[row.workspaceLabel, tail(rowDirectory(row))].filter(Boolean).join(' · ')}
+      eyebrow={showTitle ? [row.hostName, row.agent.agent].filter(Boolean).join(' · ') : undefined}
+      title={showTitle ? agentDisplayName(row.agent) : undefined}
+      subtitle={
+        showTitle
+          ? [row.workspaceLabel, tail(rowDirectory(row))].filter(Boolean).join(' · ')
+          : undefined
+      }
       labels={{ sidebar: t('Sessions'), more: t('More') }}
       testID="agent-header"
     />

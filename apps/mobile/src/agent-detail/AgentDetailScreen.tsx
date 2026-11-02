@@ -7,6 +7,7 @@ import {
 import { t } from '@openagentspocket/i18n';
 import {
   type ActionMenuItem,
+  EdgeFade,
   EmptyState,
   makeStyles,
   Screen,
@@ -16,6 +17,7 @@ import { useState } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
 import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
+import { activityOf } from '../blocked/useBlockedCard';
 import { useAgent, useConsole, useConsoleState } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
 import { AgentSessionDrawer } from './AgentSessionDrawer';
@@ -82,7 +84,7 @@ export function AgentDetailScreen({
           <ChatTimeline
             hostId={hostId}
             paneId={paneId}
-            activity={row.agent.agent_status === 'working' ? 'working' : 'idle'}
+            activity={activityOf(row)}
             topInset={headerHeight}
             bottomInset={0}
             onShowTerminal={() => setSurface('terminal')}
@@ -92,6 +94,7 @@ export function AgentDetailScreen({
             <TerminalSurface hostId={hostId} paneId={paneId} />
           </View>
         )}
+        {surface === 'chat' && headerHeight > 0 ? <EdgeFade height={headerHeight + 24} /> : null}
         <View
           style={styles.header}
           pointerEvents="box-none"
@@ -103,6 +106,7 @@ export function AgentDetailScreen({
             onSurface={setSurface}
             onSidebar={() => setDrawer(true)}
             menu={menu}
+            showTitle={surface === 'terminal'}
           />
         </View>
       </View>
