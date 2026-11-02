@@ -1,5 +1,6 @@
 export * from './agents';
 export * from './changes';
+export * from './chat';
 export * from './console';
 export * from './errors';
 export * from './events';

@@ -195,7 +195,7 @@ function unaliased(path: string): string {
 }
 
 /** The path relative to the call's directory, when it sits under it. */
-export function displayPath(path: string, directory: string | null): string {
+export function relativeToDirectory(path: string, directory: string | null): string {
   if (!directory) return path;
   return relativeTo(path, directory) ?? relativeTo(unaliased(path), unaliased(directory)) ?? path;
 }

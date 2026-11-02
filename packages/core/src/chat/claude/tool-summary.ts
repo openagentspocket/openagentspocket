@@ -1,7 +1,7 @@
 // One tool call as a chat row (Swift ClaudeToolSummary / ClaudeToolOutcome).
 
 import { isAbsoluteHostPath } from '../model/paths';
-import { capPreview, displayPath } from '../model/preview';
+import { capPreview, relativeToDirectory } from '../model/preview';
 import type {
   ChatFileChanges,
   ChatToolActivity,
@@ -36,7 +36,7 @@ export function summarizeTool(
     title: string,
     subtitle: string | null = null,
   ): ClaudeToolSummary => ({ kind, title, subtitle });
-  const file = input.filePath === null ? use.name : displayPath(input.filePath, directory);
+  const file = input.filePath === null ? use.name : relativeToDirectory(input.filePath, directory);
   switch (use.name) {
     case 'Bash':
     case 'PowerShell': {
