@@ -62,6 +62,11 @@ const ICONS = {
   paused: { ios: 'pause.circle', android: 'pause_circle' },
   share: { ios: 'square.and.arrow.up', android: 'share' },
   usage: { ios: 'chart.bar.xaxis', android: 'bar_chart' },
+  // Chat timeline rows.
+  brain: { ios: 'brain', android: 'psychology' },
+  hand: { ios: 'hand.raised', android: 'pan_tool' },
+  errorCircle: { ios: 'xmark.circle', android: 'cancel' },
+  bot: { ios: 'cpu', android: 'smart_toy' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
