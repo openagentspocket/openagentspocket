@@ -3,7 +3,6 @@ export * from './changes';
 export * from './console';
 export * from './errors';
 export * from './events';
-export * from './fake-transport';
 export * from './hosts';
 export * from './notifications';
 export * from './pairing';
