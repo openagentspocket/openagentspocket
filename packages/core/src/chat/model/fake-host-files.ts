@@ -69,14 +69,14 @@ export class FakeHostFiles implements ChatHostFiles {
     for (const path of [...this.directories, ...this.files.keys()]) {
       if (!path.startsWith(prefix) || path === request.directory) continue;
       const name = path.slice(prefix.length).split('/')[0] as string;
-      const isDirectory = this.directories.has(prefix + name);
-      if (
-        isDirectory &&
-        request.kinds.includes('directory') &&
-        name.startsWith(request.namePrefix ?? '')
-      ) {
-        names.add(name);
-      }
+      const full = prefix + name;
+      const kind = this.directories.has(full) ? 'directory' : 'regular';
+      if (!request.kinds.includes(kind)) continue;
+      if (!name.startsWith(request.namePrefix ?? '')) continue;
+      if (request.nameSuffixes && !request.nameSuffixes.some((suffix) => name.endsWith(suffix)))
+        continue;
+      if (request.nameContains && !name.includes(request.nameContains)) continue;
+      names.add(name);
     }
     const sorted = [...names].sort();
     return {

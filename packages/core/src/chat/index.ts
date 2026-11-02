@@ -7,6 +7,7 @@ export * from './claude/locator';
 export { CLAUDE_REVISION, ClaudeTranscriptReducer } from './claude/reducer';
 export * from './claude/subagent';
 export * from './claude/workflow-journal';
+export * from './codex';
 export * from './model/agent-directory';
 export * from './model/cache';
 export * from './model/cache-files';
