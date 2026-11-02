@@ -667,6 +667,66 @@
   acceptance:
     - "U with FakeSsh: a connection manager owns one transport per enabled Host (connect with the device key alias, host-key decisions through the trust alert, EventsSession resume on foreground and suspend on background, backoff), exposes ConsoleTransport to the console store; hosts screens use the persisted catalog (createDeviceStores), the real preflight probe and the SSH pairing connector; demo data only behind an explicit demo mode"
     - "M: the integrator runs it against the isolated herdr backend: add Host, trust, see its agents on Home"
+- id: P1.11-app-integration
+  phase: 1
+  kind: js
+  title: "Composition root and entry points: every live factory wired (new agent, ports, usage, files, changes), demo-mode toggle in Settings, navigation entries from Home, Host and Agent menus"
+  deps: [P1.10-live-wiring, P1.8-host-services, P2.4-new-agent, P4.3-ports, P4.1b-usage-live]
+- id: P1.12-ssh-auth
+  phase: 1
+  kind: native
+  title: "modules/ssh auth: bootstrap-key (seed) auth for pairing codes, password and RSA keys, both platforms"
+  deps: [P1.1a-ssh-ios, P1.1b-ssh-android]
+- id: P1.7b-jump-host
+  phase: 1
+  kind: native
+  title: "Jump Host routes: connectThrough in modules/ssh and the transport route"
+  deps: [P1.7-ssh-transport]
+- id: P1.7c-windows-bridge
+  phase: 1
+  kind: native
+  title: "Windows Hosts: streaming exec in modules/ssh for the bridge"
+  deps: [P1.7-ssh-transport]
+- id: P1.8b-skills
+  phase: 1
+  kind: js
+  title: "Skills probe and source catalog (listSkills, readSkillFile) over the transport"
+  deps: [P1.8-host-services]
+- id: P1.8c-sftp-append-write
+  phase: 1
+  kind: native
+  title: "Streaming SFTP write handle and permission bits in modules/ssh; staging progress and mode readback"
+  deps: [P1.8-host-services]
+- id: T-verify-fixes-w3
+  phase: 0
+  kind: js
+  title: "Fixes from the wave-3 native check: __ssh pin param, hosts Maestro flow, Add Host keyboard dismiss, in-app banner wiring, Files header and accent"
+  deps: [P1.5-app-hosts]
+- id: P2.13b-board-drag
+  phase: 2
+  kind: js
+  title: "Board drag-to-reorder and persisted list preferences (presentation, host filter, folds)"
+  deps: [P2.13-board, P2.3-app-agents-list]
+- id: P2.3b-workspace-repo-cards
+  phase: 2
+  kind: js
+  title: "By Workspace: linked worktrees nested under their repository card; swipe actions; quick-detail sheet"
+  deps: [P2.3-app-agents-list]
+- id: P2.6b-codex-tests-tools
+  phase: 2
+  kind: js
+  title: "Codex: remaining Swift cases without goldens (tool summary, message display, incremental, pending echo)"
+  deps: [P2.6b-chat-codex]
+- id: P3.1c-attach-encoded-fast-path
+  phase: 3
+  kind: js
+  title: "Attach: forward encoded data to writeEncoded after the gate when profiling shows decode cost"
+  deps: [P3.1-attach]
+- id: P4.3d-forward-preferred-port
+  phase: 4
+  kind: js
+  title: "Ports: optional preferred local port on forwardLocal"
+  deps: [P4.3-ports]
 - id: T-typecheck-tests
   phase: 0
   kind: js
