@@ -11,10 +11,12 @@ ssh 33, i18n 94, live-activity 7, plugin 833, relay 138). The complete Swift iPh
 ../Agentico/design/screens/current (138 dark, light/ 131, ipad/ 200).
 **UX approach (Enzo, 2026-11-02): component first.** Clone each Swift visual component once (reference crops from the
 atlas, side by side in the gallery), reuse it everywhere, then assemble screens and compare whole screens.
-**Running:** UX phase C (`scratchpad/rn/ux-c.js`): UX2-component-catalog (inventory, crops, gallery compare
-harness, UX3-* component groups, UX1 family tasks turned into assembly), T-atlas-redbox (update-depth loop when
-screens open in sequence), N-rebuild-notifications (expo-notifications + haptics rebuild, push, Maestro, Android
-deep link). Next: UX3 groups in parallel, then UX1 assembly per family.
+UX phase C merged: UX2-component-catalog (58 components in 10 groups, ~160 reference crops in
+docs/ux/components/ref, gallery compare harness), T-atlas-redbox (modal presentation set after push remounted
+the scene: now static in AppStack), expo-notifications config plugin. The native retry was blocked by a full disk.
+**Running:** UX phase D (`scratchpad/rn/ux-d.js`): the 10 UX3 component groups (6 at a time, judged on Swift | RN
+compare sheets) + N-rebuild-notifications retry. Next: UX1 assembly per family (screens adopt the components,
+whole-screen compare).
 
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
