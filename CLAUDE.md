@@ -10,7 +10,7 @@ TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/r
 - `packages/core` pure TS (no React Native imports): protocol types, reducers, parsers. Tested with Vitest.
 - `packages/ui` tokens + primitives. Tested with jest-expo + React Native Testing Library.
 - `packages/plugin`, `packages/relay` Node, Apache-2.0 (Heeler). `node --test`.
-- `modules/ssh` SSH Expo Module: TS interface, client and fake; iOS native wraps libssh2 (Android pending). See its README.
+- `modules/ssh` SSH Expo Module: TS interface, client and fake; iOS native wraps libssh2, Android uses JSch. See its README.
 - `ios/` and `android/` are generated (CNG) and gitignored. Never edit or commit them.
 
 ## The gates
