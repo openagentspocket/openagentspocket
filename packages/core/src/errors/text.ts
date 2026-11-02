@@ -30,7 +30,7 @@ export function message(key: string, ...args: Text[]): Message {
 /** The catalog's source language: the key itself with its placeholders filled in order. */
 export const sourceText: Translate = (key, args) => {
   let next = 0;
-  return key.replace(/%@/g, () => args[next++] ?? '');
+  return key.replace(/%(?:@|lld)/g, () => args[next++] ?? '');
 };
 
 export function renderText(text: Text, translate: Translate = sourceText): string {

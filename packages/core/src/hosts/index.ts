@@ -6,6 +6,7 @@ export * from './host';
 export * from './host-catalog';
 export * from './host-draft';
 export * from './host-key-policy';
+export * from './host-path';
 export * from './known-hosts';
 export * from './plugin-installation';
 export * from './plugin-notice';
