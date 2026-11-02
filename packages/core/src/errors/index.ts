@@ -19,9 +19,9 @@ export {
   asTransportError,
   isHostKeySecurityFailure,
   isRetryable,
-  isRouteHostKeySecurityFailure,
-  type RouteFailure,
+  isTransportRouteHostKeySecurityFailure,
   type TransportError,
   type TransportErrorKind,
   TransportFailure,
+  type TransportRouteFailure,
 } from './transport-error';

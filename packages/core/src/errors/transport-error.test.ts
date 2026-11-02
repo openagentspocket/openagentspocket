@@ -4,9 +4,9 @@ import {
   asTransportError,
   isHostKeySecurityFailure,
   isRetryable,
-  type RouteFailure,
   type TransportError,
   TransportFailure,
+  type TransportRouteFailure,
 } from './transport-error';
 
 // The retry table and the host-key security rule, ported from the Swift TransportError,
@@ -53,7 +53,7 @@ const route = (
   name: string,
   mayNameAnotherMachine: boolean,
   error: TransportError,
-): RouteFailure => ({ route: name, mayNameAnotherMachine, error });
+): TransportRouteFailure => ({ route: name, mayNameAnotherMachine, error });
 
 describe('isRetryable', () => {
   it.each(TABLE)('%o -> %s', (error, retryable) => {

@@ -1,7 +1,7 @@
 import { HerdrApiError } from './herdr-api-error';
 import { type Message, message as m, renderText, type Text, type Translate } from './text';
 import {
-  isRouteHostKeySecurityFailure,
+  isTransportRouteHostKeySecurityFailure,
   type TransportError,
   TransportFailure,
 } from './transport-error';
@@ -243,7 +243,7 @@ function noRouteReachedPresentation(
     })),
     separator: '; ',
   };
-  const changed = failures.find(isRouteHostKeySecurityFailure);
+  const changed = failures.find(isTransportRouteHostKeySecurityFailure);
   if (changed) {
     const shown = presentation(changed.error);
     return p(shown.summary, detail, shown.recovery);

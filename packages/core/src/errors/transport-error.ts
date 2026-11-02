@@ -1,3 +1,4 @@
+import { isRouteHostKeySecurityFailure, type RouteFailure } from '../hosts/ssh-route';
 import { HerdrApiError } from './herdr-api-error';
 import type { Text } from './text';
 
@@ -15,7 +16,7 @@ export type TransportError =
   /** The Jump Host in front of the Host failed; carries that first hop's own failure. */
   | { readonly kind: 'jumpHostFailed'; readonly underlying: TransportError }
   /** Every one of the Host's routes failed, each with its own failure. */
-  | { readonly kind: 'noRouteReached'; readonly failures: readonly RouteFailure[] }
+  | { readonly kind: 'noRouteReached'; readonly failures: readonly TransportRouteFailure[] }
   /** The Jump Host's policy prohibits the direct-tcpip channel needed to reach the Host. */
   | { readonly kind: 'tcpForwardingUnavailable' }
   | { readonly kind: 'authenticationFailed' }
@@ -74,16 +75,8 @@ export type TransportError =
 
 export type TransportErrorKind = TransportError['kind'];
 
-/** One route's failure in a `noRouteReached`. */
-export interface RouteFailure {
-  /** The route as its label names it. */
-  readonly route: string;
-  /** Whether the route's address may name another machine on the device's current network. */
-  readonly mayNameAnotherMachine: boolean;
-  readonly error: TransportError;
-  /** The catalog route that failed, when known. */
-  readonly routeId?: string;
-}
+/** One route's failure in a `noRouteReached`: the hosts module's route failure over a `TransportError`. */
+export type TransportRouteFailure = RouteFailure<TransportError>;
 
 /** The thrown carrier of a `TransportError`. */
 export class TransportFailure extends Error {
@@ -145,7 +138,7 @@ export function isRetryable(error: TransportError): boolean {
     // cannot name another machine stops it, as it stops a single route.
     case 'noRouteReached':
       return (
-        !error.failures.some(isRouteHostKeySecurityFailure) &&
+        !error.failures.some(isTransportRouteHostKeySecurityFailure) &&
         error.failures.some((failure) => isRetryable(failure.error))
       );
     default:
@@ -168,7 +161,7 @@ export function isHostKeySecurityFailure(error: TransportError): boolean {
       return (
         (error.failures.length > 0 &&
           error.failures.every((failure) => isHostKeySecurityFailure(failure.error))) ||
-        error.failures.some(isRouteHostKeySecurityFailure)
+        error.failures.some(isTransportRouteHostKeySecurityFailure)
       );
     default:
       return false;
@@ -176,8 +169,8 @@ export function isHostKeySecurityFailure(error: TransportError): boolean {
 }
 
 /** A changed key on a route whose address names the same machine wherever the device is. */
-export function isRouteHostKeySecurityFailure(failure: RouteFailure): boolean {
-  return !failure.mayNameAnotherMachine && isHostKeySecurityFailure(failure.error);
+export function isTransportRouteHostKeySecurityFailure(failure: TransportRouteFailure): boolean {
+  return isRouteHostKeySecurityFailure(failure, isHostKeySecurityFailure);
 }
 
 /**
