@@ -143,6 +143,13 @@ describe('resolveLink', () => {
 });
 
 describe('redirectLink', () => {
+  it('keeps dev route paths', () => {
+    expect(redirectLink('openagentspocket://__atlas/home?theme=papel')).toBe(
+      '/__atlas/home?theme=papel',
+    );
+    expect(redirectLink('agentico:///__ssh?auto=1')).toBe('/__ssh?auto=1');
+  });
+
   it('routes the agent link of either scheme to the detail route', () => {
     const route = `/agent/${HOST_ID}/w1%3Ap1`;
     expect(redirectLink(`openagentspocket://agent/${HOST_ID}/w1:p1`)).toBe(route);
