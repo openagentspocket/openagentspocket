@@ -1,11 +1,20 @@
 import { useEffect, useRef } from 'react';
-import { AccessibilityInfo, Animated, Pressable, StyleSheet, View } from 'react-native';
+import {
+  AccessibilityInfo,
+  Animated,
+  PanResponder,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
 import { useActiveHost, useQueue } from './store';
 import { TOAST_DEFAULT_MS, type ToastRequest, toastQueue } from './toast';
+
+const TOAST_SWIPE_DISMISS = 40;
 
 const useStyles = makeStyles((t) => ({
   layer: { ...StyleSheet.absoluteFill, alignItems: 'center' },
@@ -68,6 +77,25 @@ function ToastCard({ request }: { request: ToastRequest }) {
   }, [request, duration, appear]);
 
   const dismiss = () => toastQueue.remove(request);
+  const swipe = useRef(new Animated.Value(0)).current;
+  const dismissRef = useRef(dismiss);
+  dismissRef.current = dismiss;
+  // Swipe up to dismiss; a short drag springs back and a tap still reaches the Pressable.
+  const pan = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_e, g) => g.dy < -6 && Math.abs(g.dy) > Math.abs(g.dx),
+      onPanResponderMove: (_e, g) => swipe.setValue(Math.min(0, g.dy)),
+      onPanResponderRelease: (_e, g) => {
+        if (g.dy < -TOAST_SWIPE_DISMISS || g.vy < -0.5) {
+          Animated.timing(swipe, { toValue: -160, duration: 120, useNativeDriver: true }).start(
+            () => dismissRef.current(),
+          );
+        } else {
+          Animated.spring(swipe, { toValue: 0, useNativeDriver: true }).start();
+        }
+      },
+    }),
+  ).current;
   const onPress = () => {
     dismiss();
     request.onPress?.();
@@ -75,12 +103,14 @@ function ToastCard({ request }: { request: ToastRequest }) {
   const ink = theme.tone(request.tone ?? 'accent');
   return (
     <Animated.View
+      {...pan.panHandlers}
       style={[
         styles.toast,
         {
           opacity: appear,
           transform: [
             { translateY: appear.interpolate({ inputRange: [0, 1], outputRange: [-12, 0] }) },
+            { translateY: swipe },
           ],
         },
       ]}
