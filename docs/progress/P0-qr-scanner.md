@@ -11,7 +11,7 @@ acceptance:
 - unavailable state (no camera / expo-camera missing from the build): met in tests; camera module is loaded lazily so an older dev client still starts.
 - camera permission copy in app.json via config plugin, mirroring Swift NSCameraUsageDescription + Spanish: met (en via plugin, es via `locales`); the iOS Info.plist after prebuild contains the English text. Spanish localization file not inspected on device.
 - gallery entry: met (`/__gallery?section=scanner`).
-- prebuild --clean + iOS on simulator: met (renders, torch, denied state). Android: see notes.
+- prebuild --clean + iOS on simulator + Android on Pixel_3a: met. iOS: renders, torch, denied state. Android: system permission prompt shown, "Don't allow" leaves the Allow Camera notice and paste field (android-2.png). Evidence: scratchpad rn/evidence/qr/ (ios-2, ios-3, android-1, android-2). Simulators shut down.
 left:
 - Torch labels, allow-camera and "Use Code" have no catalog keys (catalogs are generated from Swift): the pairing screen should pass `labels` with t() for the existing keys (Camera Access Needed, Open Settings, Scanning Unavailable, ...) and add the four new strings to the catalog source.
 - The simulator has no camera: an actual scan was not exercised (unit-tested only); do one on a device.
