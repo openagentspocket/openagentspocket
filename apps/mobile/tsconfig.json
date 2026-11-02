@@ -3,15 +3,28 @@
   "compilerOptions": {
     "strict": true,
     "types": ["jest"],
-    "paths": { "@/*": ["./src/*"] },
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "outDir": "dist",
     "noEmit": false
   },
   "include": ["src", ".expo/types/**/*.ts", "expo-env.d.ts"],
   "references": [
-    { "path": "../../packages/core" },
-    { "path": "../../packages/i18n" },
-    { "path": "../../packages/ui" },
-    { "path": "../../modules/ssh" }
+    {
+      "path": "../../packages/core"
+    },
+    {
+      "path": "../../packages/i18n"
+    },
+    {
+      "path": "../../packages/ui"
+    },
+    {
+      "path": "../../modules/ssh"
+    },
+    {
+      "path": "../../modules/app-group"
+    }
   ]
 }

@@ -9,7 +9,13 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.openagentspocket.app",
-      "deploymentTarget": "18.0"
+      "deploymentTarget": "18.0",
+      "entitlements": {
+        "com.apple.security.application-groups": ["group.com.openagentspocket.app"]
+      },
+      "infoPlist": {
+        "NSSupportsLiveActivities": true
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -37,7 +43,9 @@
       "expo-sqlite",
       [
         "expo-local-authentication",
-        { "faceIDPermission": "Unlock OpenAgentsPocket with Face ID." }
+        {
+          "faceIDPermission": "Unlock OpenAgentsPocket with Face ID."
+        }
       ],
       [
         "expo-camera",
@@ -46,7 +54,8 @@
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
-      ]
+      ],
+      "@bacons/apple-targets"
     ],
     "locales": {
       "es": "./locales/es.json"
