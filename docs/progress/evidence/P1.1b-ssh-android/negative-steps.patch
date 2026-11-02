@@ -1,0 +1,69 @@
+diff --git a/apps/mobile/src/dev/sshHarness.ts b/apps/mobile/src/dev/sshHarness.ts
+index d62fe09..c4ae751 100644
+--- a/apps/mobile/src/dev/sshHarness.ts
++++ b/apps/mobile/src/dev/sshHarness.ts
+@@ -257,6 +257,64 @@ export async function runSshHarness(
+     return `127.0.0.1:${forward.localPort} -> Host:${params.fixturePort} ${response.status}`;
+   });
+ 
++  // TEMP-NEGATIVE (not committed): refusal and edge mappings.
++  const codeOf = (p: Promise<unknown>) => p.then(() => 'ok', (e) => toSshError(e).code);
++  await step('neg: streamlocal to a missing socket', async () => {
++    const code = await codeOf(live().openStreamLocal('/tmp/agp11b/missing.sock'));
++    check(code === 'streamLocalOpenFailed', code);
++    const one = await codeOf(live().exchangeStreamLocal('/tmp/agp11b/missing.sock', utf8Encode('x\n')));
++    check(one === 'streamLocalOpenFailed', one);
++    return `${code}, ${one}`;
++  });
++  await step('neg: direct-tcpip to a closed port', async () => {
++    const code = await codeOf(live().openTcp('127.0.0.1', 1));
++    check(code === 'targetUnreachable', code);
++    return code;
++  });
++  await step('neg: public address refused before any channel', async () => {
++    const code = await codeOf(live().openTcp('8.8.8.8', 53));
++    const host = await codeOf(live().openTcp('localhost', 22));
++    check(code === 'invalidArgument' && host === 'invalidArgument', `${code} ${host}`);
++    return `${code}, ${host}`;
++  });
++  await step('neg: exec with input, stderr, exit code', async () => {
++    const r = await live().exec('cat; echo err >&2; exit 7', { input: utf8Encode('in-put') });
++    check(r.stdout === 'in-put' && r.stderr === 'err\n' && r.exitCode === 7, JSON.stringify(r));
++    return JSON.stringify(r);
++  });
++  await step('neg: sftp missing paths, readRange past end, rename no-overwrite', async () => {
++    const home = (await live().exec('printf %s "$HOME"')).stdout;
++    const sftp = await live().sftp();
++    check((await sftp.stat(`${home}/nope-x`)) === null, 'stat');
++    check((await sftp.read(`${home}/nope-x`)) === null, 'read');
++    check((await sftp.list(`${home}/nope-x`)) === null, 'list');
++    const gone = await sftp.readRange(`${home}/nope-x`, 0, 10);
++    check(gone.length === null && gone.data.length === 0, 'range gone');
++    const dir = `${home}/agentico-neg-${Date.now()}`;
++    await sftp.mkdir(dir);
++    await sftp.write(`${dir}/a`, utf8Encode('abc'));
++    await sftp.write(`${dir}/b`, utf8Encode('b'));
++    const past = await sftp.readRange(`${dir}/a`, 10, 5);
++    check(past.data.length === 0 && past.length === 3, 'range past end');
++    const clash = await codeOf(sftp.rename(`${dir}/a`, `${dir}/b`));
++    check(clash === 'sftpFailure', `rename clash ${clash}`);
++    await sftp.rename(`${dir}/a`, `${dir}/b`, { overwrite: true });
++    check(utf8Decode((await sftp.read(`${dir}/b`)) ?? new Uint8Array()) === 'abc', 'overwrite');
++    const notEmpty = await codeOf(sftp.rmdir(dir));
++    check(notEmpty === 'sftpFailure', `rmdir ${notEmpty}`);
++    await sftp.unlink(`${dir}/b`);
++    await sftp.rmdir(dir);
++    await sftp.close();
++    return 'nulls, range ok, rename clash sftpFailure, overwrite ok';
++  });
++  await step('neg: stream close + write after close', async () => {
++    const pty = await live().openPty({ command: '/bin/sh', cols: 80, rows: 24 });
++    await pty.close();
++    const code = await codeOf(pty.write(utf8Encode('x')));
++    check(code === 'closed', code);
++    return code;
++  });
++
+   await step('disconnect', async () => {
+     await live().disconnect();
+     check(!(await live().isConnected()), 'still connected');
