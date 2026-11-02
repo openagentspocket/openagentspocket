@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { FakeClock } from '../hosts/cancellation';
+import { containsOnlySafeScalars } from '../terminal/text-safety';
 import { refusalEndsWhenStatusBecomes } from './policy';
 import { ComposerStopStore, primaryControl, terminalStopAvailable } from './stop';
 import { detectSkillTrigger, matchingSkills } from './suggestions';
-import { containsOnlySafeScalars } from './text-safety';
 
 const sent = async () => ({ kind: 'sent' as const });
 

@@ -1,11 +1,15 @@
-import { MemoryStorage } from '@openagentspocket/core';
+import { MemoryStorage, SettingsStore } from '@openagentspocket/core';
 import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore } from '../console/demo';
 import { ConsoleStoreProvider } from '../console/hooks';
+import { fakeAuthenticator } from '../settings/authenticator';
+import { SettingsProvider } from '../settings/SettingsProvider';
 import { AgentDetailScreen } from './AgentDetailScreen';
 import { parseSurface, readSurface } from './surface';
 
+jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn() }) }));
+jest.mock('expo-clipboard', () => ({ getStringAsync: async () => '' }));
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: require('react-native').View,
 }));
@@ -17,7 +21,12 @@ function renderDetail(
   const onSwitch = props.onSwitch ?? jest.fn();
   render(
     <ThemeProvider themeId="indigo">
-      <AgentDetailScreen hostId="demo" storage={storage} onSwitch={onSwitch} {...props} />
+      <SettingsProvider
+        store={new SettingsStore(new MemoryStorage())}
+        authenticator={fakeAuthenticator(null)}
+      >
+        <AgentDetailScreen hostId="demo" storage={storage} onSwitch={onSwitch} {...props} />
+      </SettingsProvider>
     </ThemeProvider>,
   );
   return { storage, onSwitch };

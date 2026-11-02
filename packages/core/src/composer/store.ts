@@ -1,4 +1,5 @@
 import type { Clock } from '../hosts/cancellation';
+import { containsOnlySafeScalars } from '../terminal/text-safety';
 import { deliveryFailureText, isApiCode, refusalFailureText } from './failure';
 import {
   type ComposerDeliveryPolicy,
@@ -16,7 +17,6 @@ import {
   type Tracking,
 } from './progress';
 import { ComposerStopStore } from './stop';
-import { containsOnlySafeScalars } from './text-safety';
 
 /** How Send finished. `deliveredViaAttach` is the view's cue to present the tools keyboard. */
 export type ComposerSendResult =

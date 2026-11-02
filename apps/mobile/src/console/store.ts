@@ -1,6 +1,7 @@
 import {
   type AgentPanelSort,
   type AgentStatusClocks,
+  type CancelSignal,
   type Clock,
   type ConsoleRow,
   type ConsoleSession,
@@ -12,6 +13,7 @@ import {
   type PinnedAgents,
   type SyncError,
   selectConsole,
+  TransportFailure,
 } from '@openagentspocket/core';
 
 /** One Host as the lists and banners see it. */
@@ -136,6 +138,29 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
   /** Runs a call on a Host's transport with no re-snapshot (a pane read, a keypress). */
   withTransport<V>(hostId: string, operation: (transport: T) => Promise<V>): Promise<V> {
     return this.projection(hostId).withTransport(operation);
+  }
+
+  /**
+   * One terminal lifetime on the Host's Transport, admitted per `target`. Rejects with a
+   * `TransportFailure` when the Host cannot carry a terminal.
+   */
+  withTerminalTransport<V>(
+    hostId: string,
+    operation: (transport: T, transportGeneration: number) => Promise<V>,
+    options: { target?: string | null; signal?: CancelSignal } = {},
+  ): Promise<V> {
+    const { session } = this.projection(hostId);
+    if (!session.withTerminalTransport) {
+      return Promise.reject(
+        new TransportFailure({ kind: 'sshUnreachable', detail: 'No terminal channel.' }),
+      );
+    }
+    return session.withTerminalTransport(operation, options);
+  }
+
+  /** The newest ping-proven Transport generation the Host reported; 0 before the first. */
+  transportGeneration(hostId: string): number {
+    return this.projections.get(hostId)?.transportGeneration ?? 0;
   }
 
   /** Marks a Done Agent seen on its Host. */

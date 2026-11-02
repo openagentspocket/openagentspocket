@@ -1,6 +1,6 @@
 import { asTransportError } from '../errors/transport-error';
 import type { EventsSessionUpdate } from '../events/types';
-import type { Clock } from '../hosts/cancellation';
+import type { CancelSignal, Clock } from '../hosts/cancellation';
 import type * as herdr from '../protocol/herdr-types.generated';
 import { type EventSubscription, isJsonObject, type JsonValue } from '../wire';
 import type { HostIdentity } from './snapshot-rows';
@@ -24,6 +24,11 @@ export interface ConsoleSession<T extends ConsoleTransport> {
   readonly currentLatency: number | undefined;
   readonly currentRouteId: string | undefined;
   withTransport<V>(operation: (transport: T) => Promise<V>): Promise<V>;
+  /** One terminal lifetime on the ping-proven Transport (the real session; fakes may omit it). */
+  withTerminalTransport?<V>(
+    operation: (transport: T, transportGeneration: number) => Promise<V>,
+    options?: { target?: string | null; signal?: CancelSignal },
+  ): Promise<V>;
   updateSubscriptions(subscriptions: readonly EventSubscription[]): Promise<void>;
   resume(): Promise<void>;
   suspend(): Promise<void>;
