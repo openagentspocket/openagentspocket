@@ -1,4 +1,4 @@
-import { type Host, hostConnectionSummary } from '@openagentspocket/core';
+import { type Host, hostConnectionSummary, primaryRoute } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import type { Status } from '@openagentspocket/ui';
 import type { HostConnection, HostsSnapshot } from './HostsModel';
@@ -48,4 +48,13 @@ export function connectionLine(host: Host): string {
   return summary.kind === 'address'
     ? summary.text
     : `${summary.username} · ${t('Routes')} ${summary.count}`;
+}
+
+/**
+ * The row title: the Host's name, else its address (the subtitle already carries
+ * `user@address`, so the title must not repeat it).
+ */
+export function hostTitle(host: Host): string {
+  const name = host.name.trim();
+  return name === '' ? primaryRoute(host).address : name;
 }

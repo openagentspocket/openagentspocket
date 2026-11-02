@@ -64,7 +64,7 @@ export function HomeScreen({ onOpenAgent, onOpenHost, onAddHost, onSeeAll }: Hom
     <Screen testID="home">
       {content.offlineHosts.map((host) => (
         <Text key={host.id} variant="callout" tone="secondary" testID={`offline-${host.id}`}>
-          {`${host.name}: ${t('Offline')}`}
+          {host.name === '' ? t('Offline') : `${host.name}: ${t('Offline')}`}
         </Text>
       ))}
       {content.isLoading && content.isQuiet ? (

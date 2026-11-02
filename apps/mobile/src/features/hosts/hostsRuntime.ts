@@ -22,6 +22,8 @@ export interface HostsRuntime {
   readonly loadDeviceKey: () => Promise<PairingDeviceKeyLoad>;
   /** Milliseconds the Trust this Host? prompt waits before it counts as declined. */
   readonly trustTimeoutMs: number;
+  /** The Trust this Host? prompt shared with the live connections; absent in demo mode. */
+  readonly confirmFirstConnect?: HostKeyPolicy['confirmFirstConnect'];
   /** Tells the live connections a Host passed its checks (or trusted a new key): redial it. */
   readonly reconnect?: (hostId: string) => Promise<void>;
   /** A fresh scan store per pairing screen. */
@@ -46,6 +48,7 @@ export function createDemoRuntime(overrides: Partial<HostsRuntime> = {}): HostsR
     connector,
     loadDeviceKey,
     reconnect: overrides.reconnect,
+    confirmFirstConnect: overrides.confirmFirstConnect,
     trustTimeoutMs: overrides.trustTimeoutMs ?? 60_000,
     createScanStore: () =>
       new PairingScanStore({
