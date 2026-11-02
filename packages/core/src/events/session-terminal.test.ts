@@ -163,7 +163,7 @@ describe('EventsSession.withTerminalTransport', () => {
 
   it('hands the real failure to a terminal after the session stopped on it', async () => {
     const transport = scripted('only');
-    const failure = { kind: 'socketNotFound', path: '/remote/herdr.sock' };
+    const failure: TransportError = { kind: 'socketNotFound', path: '/remote/herdr.sock' };
     transport.failPing(1, failure);
     const { session, next } = harness(async () => transport);
     await session.resume();

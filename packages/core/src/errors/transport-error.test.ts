@@ -53,7 +53,7 @@ const route = (
   name: string,
   mayNameAnotherMachine: boolean,
   error: TransportError,
-): TransportRouteFailure => ({ route: name, mayNameAnotherMachine, error });
+): TransportRouteFailure => ({ route: name, mayNameAnotherMachine, routeId: null, error });
 
 describe('isRetryable', () => {
   it.each(TABLE)('%o -> %s', (error, retryable) => {
