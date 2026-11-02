@@ -1,5 +1,6 @@
 import {
   AgentStatusClocks,
+  type ChatTranscriptCache,
   type Clock,
   type DeviceKeyStore,
   type HostCatalog,
@@ -9,10 +10,13 @@ import {
   type PairingDeviceKeyLoad,
   PairingScanStore,
   PinnedAgents,
+  VolatileChatTranscriptCache,
 } from '@openagentspocket/core';
 import type { SshTransport } from '@openagentspocket/transport';
 import type { SshModule } from 'agentico-ssh';
 import { ConsoleStore } from '@/console/store';
+import { ConversationRegistry } from '@/conversations/ConversationRegistry';
+import { TransportChatFiles } from '@/conversations/chatFiles';
 import { HostsModel } from '@/features/hosts/HostsModel';
 import type { HostsRuntime } from '@/features/hosts/hostsRuntime';
 import { ModelPairingCatalog } from '@/features/hosts/pairingAdapters';
@@ -35,12 +39,15 @@ export interface LiveDeps {
   readonly confirmFirstConnect?: (candidate: HostKeyCandidate) => Promise<boolean>;
   readonly initiallyActive?: boolean;
   readonly trustTimeoutMs?: number;
+  /** Where Chat keeps conversations between visits; in memory when absent (tests). */
+  readonly chatCache?: ChatTranscriptCache;
 }
 
 export interface LiveServices {
   readonly runtime: HostsRuntime;
   readonly store: ConsoleStore<SshTransport>;
   readonly manager: ConnectionManager;
+  readonly conversations: ConversationRegistry;
 }
 
 /** Wires the persisted catalog, the SSH transport and the Console store into one app. */
@@ -94,5 +101,15 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
         loadDeviceKey,
       }),
   };
-  return { runtime, store, manager };
+  const conversations = new ConversationRegistry({
+    console: store,
+    hosts: () => model.getSnapshot().hosts,
+    createFiles: (hostId) =>
+      new TransportChatFiles((operation) => manager.withTransport(hostId, operation)),
+    cache: deps.chatCache ?? new VolatileChatTranscriptCache(),
+    clock: deps.clock,
+  });
+  // A removed Host takes its Chat stores and cached transcripts with it.
+  model.subscribe(() => void conversations.retainHosts());
+  return { runtime, store, manager, conversations };
 }

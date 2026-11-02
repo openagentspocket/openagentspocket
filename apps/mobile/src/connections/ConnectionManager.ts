@@ -109,6 +109,16 @@ export class ConnectionManager {
     await Promise.all(work);
   }
 
+  /**
+   * Runs an operation on a Host's current transport without touching the Console (no re-snapshot),
+   * for reads such as Chat's transcript files. Fails when the Host is not listed.
+   */
+  withTransport<V>(hostId: string, operation: (transport: SshTransport) => Promise<V>): Promise<V> {
+    const entry = this.entries.get(hostId);
+    if (!entry) return Promise.reject(new Error('The Host is not listed.'));
+    return entry.session.withTransport(operation);
+  }
+
   /** A user-requested retry, for example after trusting a changed key. */
   async reconnect(hostId: string): Promise<void> {
     const entry = this.entries.get(hostId);

@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useMemo } from 'react';
 import { AppState } from 'react-native';
 import { ConsoleStoreProvider } from '@/console/hooks';
+import { ConversationsProvider } from '@/conversations/useConversation';
 import { deviceServices } from './deviceServices';
 import { isDemoMode } from './mode';
 
@@ -16,9 +17,14 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
     void services.manager.setActive(AppState.currentState === 'active');
     const subscription = AppState.addEventListener('change', (state) => {
       void services.manager.setActive(state === 'active');
+      services.conversations.setActive(state === 'active');
     });
     return () => subscription.remove();
   }, [services]);
   if (!services) return <>{children}</>;
-  return <ConsoleStoreProvider store={services.store}>{children}</ConsoleStoreProvider>;
+  return (
+    <ConsoleStoreProvider store={services.store}>
+      <ConversationsProvider registry={services.conversations}>{children}</ConversationsProvider>
+    </ConsoleStoreProvider>
+  );
 }
