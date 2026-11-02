@@ -24,3 +24,10 @@ INPI) and the .app/.dev registrations still need a manual check before launch.
   emits, the `herdr-plugin` id) are renamed in one mechanical task after wave 1 is merged; protocol
   identifiers shared with the plugin change only together with it.
 - The bundle id is set when the Apple Developer account is active.
+
+## Icon (Enzo, 2026-11-01)
+
+Style "solid indigo" (gradient #9C8CFF to #8270F5, mark #0B0820, light #F6F6FC) with mark C: three cards
+(agents) peeking out of a pocket, which also reads as a little face. Refined for 29-60 px and exported as Expo
+assets (iOS icon, Android adaptive foreground/background/monochrome, splash) before the rename task wires them.
+
