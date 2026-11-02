@@ -1,11 +1,12 @@
 import { agentKey, type ConsoleRow, type KeyValueStorage } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, makeStyles, Screen, TerminalView, Text } from '@openagentspocket/ui';
+import { EmptyState, makeStyles, Screen, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { useAgent, useConsole } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
 import { AgentSwitcher } from './AgentSwitcher';
 import { type Surface, useSurface } from './surface';
+import { TerminalSurface } from './terminal/TerminalSurface';
 import { useFocusDone } from './useFocusDone';
 
 const useStyles = makeStyles(() => ({
@@ -52,11 +53,7 @@ export function AgentDetailScreen({
             {t('Chat arrives with the conversation engine.')}
           </Text>
         ) : (
-          <TerminalView
-            renderer="plain"
-            accessibilityLabel={t('Terminal')}
-            testID="terminal-slot"
-          />
+          <TerminalSurface hostId={hostId} paneId={paneId} />
         )}
       </View>
     </Screen>

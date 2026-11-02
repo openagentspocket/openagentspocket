@@ -1,6 +1,6 @@
 import type { AttachSnapshot, AttachTerminalStore } from '@openagentspocket/core';
 import { utf8Encode } from 'agentico-ssh';
-import { useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
+import { type RefObject, useCallback, useEffect, useRef, useSyncExternalStore } from 'react';
 import { AppState } from 'react-native';
 import type { TerminalHandle, TerminalViewProps } from './terminalTypes';
 
@@ -8,6 +8,8 @@ export interface AttachedTerminal {
   readonly snapshot: AttachSnapshot;
   /** Spread onto `<TerminalView {...terminal.viewProps} key={terminal.snapshot.surfaceId} />`. */
   readonly viewProps: Pick<TerminalViewProps, 'ref' | 'onInput' | 'onResize'>;
+  /** The view's handle once mounted (focus the system keyboard, clear). */
+  readonly handle: RefObject<TerminalHandle | null>;
 }
 
 /**
@@ -43,5 +45,5 @@ export function useAttachedTerminal(store: AttachTerminalStore): AttachedTermina
     [store],
   );
 
-  return { snapshot, viewProps: { ref: handle, onInput, onResize } };
+  return { snapshot, viewProps: { ref: handle, onInput, onResize }, handle };
 }

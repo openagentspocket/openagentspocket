@@ -8,7 +8,9 @@ import {
   MemoryStorage,
   PinnedAgents,
   ScriptedEventsTransport,
+  type TerminalAttachSession,
 } from '@openagentspocket/core';
+import { DemoTerminalSession } from './demoTerminal';
 import { ConsoleStore } from './store';
 import { systemClock } from './systemClock';
 
@@ -97,6 +99,11 @@ export class DemoConsoleTransport extends ScriptedEventsTransport implements Con
 
   async readPane(): Promise<{ text: string }> {
     return { text: 'Run the migration on the staging database?\n1. Yes\n2. No' };
+  }
+
+  /** The demo terminal echoes keystrokes; the live Transport opens a PTY attach. */
+  async attachTerminal(): Promise<TerminalAttachSession> {
+    return new DemoTerminalSession();
   }
 
   /** The demo has no panes to close; the live Transport sends `pane.close`. */
