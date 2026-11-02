@@ -11,6 +11,7 @@
   "references": [
     { "path": "../../packages/core" },
     { "path": "../../packages/i18n" },
+    { "path": "../../packages/transport" },
     { "path": "../../packages/ui" },
     { "path": "../../modules/ssh" }
   ]
