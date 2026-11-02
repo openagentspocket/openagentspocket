@@ -9,6 +9,7 @@ export { connectTransport } from './connect';
 export { withDeadline } from './deadline';
 export { invalidatesConnection, mapConnectError, mapOperationError } from './error-mapping';
 export { HerdrApi } from './herdr-api';
+export * from './host';
 export { checkPresentedHostKey, fingerprintFromHostKey, hostKeyFailureError } from './host-key';
 export {
   type AgentLaunch,
