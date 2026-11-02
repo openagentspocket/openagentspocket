@@ -4,20 +4,28 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
-State (2026-11-01 ~23:30): **wave 1 complete on main** (10/10 tasks; 9 of 55 done: ui primitives is partial,
-its leftovers filed as tasks). Native check of main (`fed475e`): iOS and Android build, the SSH harness passes
-17/17 on both (herdr ping protocol 22, snapshot, >1 MiB, PTY + resize, SFTP, direct-tcpip), Maestro home passes on
-iOS. Goldens from the Swift reference landed in `packages/core/goldens` (Swift branch `goldens` merges with run 13).
-P0-rename done (scope `@openagentspocket/*`, ids `com.openagentspocket.app`, icon + splash; both platforms build;
-display name "Agents Pocket" so the home-screen label fits: check it in the wave-2 native verify). **Running:** wave 2 (workflow `wf_40a85a5f-46a`,
-base `a0c86f2`): 7 JS (P2.1 console + open-union enums, P4.1 usage, P4.5 settings, P4.4 changes, P4.2 files,
-P5.2 registration, T-typecheck-tests) + native chain (P0-qr-scanner → P0-brand-marks → P3.0 terminal spike).
-If the session dies: resume with `Workflow({scriptPath: scratchpad/rn/wave2.js, resumeFromRunId: "wf_40a85a5f-46a"})`. Evidence: scratchpad `rn/evidence/main-wave1/`.
+State (2026-11-02 ~02:30): **wave 2 merged on main** (P2.1 console + open-union enums, P4.1 usage, P4.5
+settings, P4.4 changes, P5.2 registration, T-typecheck-tests, P0-qr-scanner, P0-brand-marks; full `pnpm test`
+green: core 1240, ui 118, mobile 50, i18n 89, ssh 24, plugin 833, relay 138). Display name "Agents Pocket"
+(ADR 0022) so the home-screen label fits. verify-fast now regenerates Expo Router typed routes
+(`scripts/typed-routes.mjs`). Backlog gained the live wiring: P1.7 ssh-transport (new `packages/transport`),
+P1.8 host services, P1.9 secure stores, P2.1b console store (P2.2/P2.3 now wait on it).
+**Running:** wave 3 (`scratchpad/rn/wave3.js`): JS (6 at a time) P1.7, P1.9, P1.5 hosts screens, P2.1b, P2.6a
+chat Claude, P2.9a blocked parsers, P4.3 ports, P0-native-menus, P5.1 banner + the P4.2-files merge fix (its
+branch `worktree-wf_40a85a5f-46a-6` predates the stricter gates); native chain: verify main (new native deps,
+label check, SSH harness, screenshots to `rn/evidence/main-wave2/`) → P3.0 terminal spike (continues the dead
+worker's worktree `wf_40a85a5f-46a-23`) → P6.1 widgets via apple-targets (simulator only).
+Enzo asleep (2026-11-02 ~02:00): the lead decides and keeps going wave after wave; decisions logged below.
 
 Lead's integration loop per wave: merge each ship branch with `scratchpad/rn/merge-branch.sh <branch>` (resolves
 PROGRESS.md, index.ts export unions, package.json unions and the lockfile; stops on real conflicts), `pnpm test`,
 a native-verify agent (`prebuild --clean`, both platforms, SSH harness, Maestro), remove merged worktrees, update
 this section, plan the next wave from PROGRESS.md's ready tasks.
+
+Integration lessons (wave 2): Expo writes typed routes only when Metro starts, so main had stale routes and
+fresh worktrees had none: verify-fast regenerates them; a branch built before T-typecheck-tests landed failed
+the new test-type gate at merge (rebase old branches on main first); app.json plugin lists conflict on every
+native task: resolve by union; core must never import modules/ssh (rootDir): ports in core, adapters outside.
 
 Integration lessons (wave 1): a stale generated `ios/` (old deployment target) silently skipped the SSH module:
 `prebuild --clean` after native config changes; parallel tasks redefined shared types (RouteFailure, Clock, herdr event types) →
