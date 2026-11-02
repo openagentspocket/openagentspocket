@@ -7,5 +7,6 @@
   "New Agent Here": "New Agent Here",
   "Show scripted sample data instead of connecting to your Hosts.": "Show scripted sample data instead of connecting to your Hosts.",
   "Switch Agent": "Switch Agent",
+  "Teammate @%@": "Teammate @{0}",
   "Terminal attach is not available yet.": "Terminal attach is not available yet."
 }

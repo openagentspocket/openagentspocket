@@ -7,5 +7,6 @@
   "New Agent Here": "Nuevo Agent acá",
   "Show scripted sample data instead of connecting to your Hosts.": "Mostrar datos de ejemplo en lugar de conectarse a tus Hosts.",
   "Switch Agent": "Cambiar de Agent",
+  "Teammate @%@": "Compañero @{0}",
   "Terminal attach is not available yet.": "Adjuntar la terminal todavía no está disponible."
 }

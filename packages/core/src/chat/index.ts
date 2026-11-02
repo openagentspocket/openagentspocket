@@ -27,3 +27,4 @@ export type { ChatToolOutput, ChatTranscriptReducer } from './model/reducer';
 export * from './model/types';
 export * from './model/workflow-progress';
 export * from './timeline';
+export * from './titles';
