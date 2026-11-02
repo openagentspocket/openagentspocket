@@ -1,3 +1,6 @@
+export { type AgentBannerTarget, bannerBody, bannerTargetKey, bannerTitle } from './banner-copy';
+export { AgentBannerStore, BANNER_DISMISS_MS, BANNER_HOLD_MS } from './banner-store';
+export type { AgentBanner, BannerAgent, BannerStoreOptions } from './banner-types';
 export {
   hostNotificationSession,
   NotificationRegistrationCeremony,
