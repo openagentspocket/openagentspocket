@@ -212,6 +212,8 @@ interface ActionMenuButtonProps {
   accessibilityLabel: string;
   title?: string;
   icon?: IconName;
+  /** Glyph size of the JS button; the iOS system menu draws its own symbol. */
+  iconSize?: number;
   /** Use the system menu where available (iOS). Default true; false forces the JS menu. */
   native?: boolean;
   testID?: string;
@@ -223,6 +225,7 @@ export function ActionMenuButton({
   accessibilityLabel,
   title,
   icon = 'more',
+  iconSize,
   native = true,
   testID = 'menu-button',
 }: ActionMenuButtonProps) {
@@ -257,6 +260,7 @@ export function ActionMenuButton({
       <Button
         kind="text"
         icon={icon}
+        iconSize={iconSize}
         accessibilityLabel={accessibilityLabel}
         onPress={open}
         testID={testID}

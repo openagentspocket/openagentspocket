@@ -77,6 +77,12 @@ const ICONS = {
   skills: { ios: 'sparkle', android: 'auto_awesome' },
   snippets: { ios: 'text.alignleft', android: 'notes' },
   appearance: { ios: 'paintpalette', android: 'palette' },
+  // Toolbars and the iPad sidebar.
+  home: { ios: 'house', android: 'home' },
+  filter: { ios: 'line.3.horizontal.decrease.circle', android: 'filter_list' },
+  list: { ios: 'list.bullet', android: 'list' },
+  sidebar: { ios: 'sidebar.left', android: 'view_sidebar' },
+  windows: { ios: 'rectangle.on.rectangle', android: 'flip_to_front' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;

@@ -17,6 +17,7 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: airy.rowInset,
   },
   pressed: { backgroundColor: t.colors.surfaceRaised },
+  selected: { backgroundColor: t.colors.control },
   disabled: { opacity: 0.4 },
   text: { flex: 1, gap: 2 },
   trailing: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexShrink: 0 },
@@ -45,6 +46,8 @@ export interface ListRowProps {
   leadingSwipeActions?: readonly SwipeAction[];
   /** Full swipe runs the first action of the edge. */
   fullSwipe?: { leading?: boolean; trailing?: boolean };
+  /** The row shown in the detail column: filled with the control surface. */
+  selected?: boolean;
   disabled?: boolean;
   /** Overrides the spoken label (title, subtitle and value by default). */
   accessibilityLabel?: string;
@@ -70,6 +73,7 @@ export function ListRow({
   swipeActions,
   leadingSwipeActions,
   fullSwipe,
+  selected = false,
   disabled = false,
   accessibilityLabel,
   accessibilityHint,
@@ -94,11 +98,12 @@ export function ListRow({
       accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={spoken}
       accessibilityHint={accessibilityHint}
-      accessibilityState={{ disabled }}
+      accessibilityState={{ disabled, selected }}
       accessibilityActions={extra.map((action) => ({ name: action.key, label: action.title }))}
       onAccessibilityAction={onAccessibilityAction}
       style={({ pressed }) => [
         styles.row,
+        selected && styles.selected,
         pressed && (onPress || menu?.length) ? styles.pressed : null,
         disabled && styles.disabled,
       ]}
