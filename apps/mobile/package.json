@@ -59,7 +59,8 @@
     "start": "expo start",
     "ios": "expo run:ios",
     "android": "expo run:android",
-    "test": "jest"
+    "test": "jest",
+    "test:nse": "native-tests/notification-service/run.sh"
   },
   "private": true
 }

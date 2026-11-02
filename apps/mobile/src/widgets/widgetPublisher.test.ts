@@ -15,6 +15,11 @@ function fakeNative() {
     reloadWidgets: async (kinds) => {
       reloads.push(kinds);
     },
+    requestNotificationAuthorization: async () => true,
+    keychainSave: () => true,
+    keychainRead: () => null,
+    keychainReadAll: () => ({}),
+    keychainRemove: () => true,
   };
   return { native, files, reloads };
 }
