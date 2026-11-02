@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { failures, failWith, type TransportFailure, TransportFailureError } from './failure';
-import { FakeClock } from './fake-clock';
+import { type TransportError, TransportFailure } from '../errors/transport-error';
+import { FakeClock } from '../hosts/cancellation';
+import { failures, failWith } from './failure';
 import { CallGate, ScriptedEventsTransport, SequencedConnector } from './scripted-transport';
 import { EventsSession } from './session';
 import type { EventsSessionOptions, EventsTransport } from './session-options';
@@ -38,11 +39,11 @@ const scripted = (version: string) => new ScriptedEventsTransport({ version, pro
 const version = (transport: ScriptedEventsTransport) =>
   transport.ping().then((info) => info.version);
 
-async function failureOf(promise: Promise<unknown>): Promise<TransportFailure | undefined> {
+async function failureOf(promise: Promise<unknown>): Promise<TransportError | undefined> {
   try {
     await promise;
   } catch (error) {
-    if (error instanceof TransportFailureError) return error.failure;
+    if (error instanceof TransportFailure) return error.error;
     throw error;
   }
   return undefined;
@@ -59,7 +60,7 @@ function gatedRedial(transports: ScriptedEventsTransport[], gate: CallGate) {
 }
 
 describe('EventsSession.withTransport', () => {
-  it.each<TransportFailure>([
+  it.each<TransportError>([
     { kind: 'gitTimedOut' },
     { kind: 'hostFileTimedOut' },
     { kind: 'hostFileUnreadable', status: 3 },

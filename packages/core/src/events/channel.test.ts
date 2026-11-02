@@ -1,16 +1,11 @@
 import { describe, expect, it } from 'vitest';
+import { TransportFailure } from '../errors/transport-error';
+import { FakeClock } from '../hosts/cancellation';
+import { EVENTS_DROPPED_EVENT, type HerdrEvent, type HerdrEventStream } from '../wire';
 import { CHANNEL_CLOSE_TIMEOUT_MS, type EventsDuplex, openEventsChannel } from './channel';
-import { TransportFailureError } from './failure';
-import { FakeClock } from './fake-clock';
 import { EventsSession } from './session';
 import type { EventsTransport } from './session-options';
-import {
-  EVENTS_DROPPED,
-  globalSubscription,
-  type HerdrEvent,
-  type HerdrEventStream,
-  paneSubscription,
-} from './types';
+import { globalSubscription, paneSubscription } from './types';
 import { decodeUtf8, encodeUtf8 } from './utf8';
 
 const settle = () => new Promise<void>((resolve) => setImmediate(resolve));
@@ -83,7 +78,7 @@ async function failureOf(promise: Promise<unknown>) {
   try {
     await promise;
   } catch (error) {
-    return error instanceof TransportFailureError ? error.failure : error;
+    return error instanceof TransportFailure ? error.error : error;
   }
   return undefined;
 }
@@ -262,7 +257,7 @@ describe('openEventsChannel', () => {
     for (const n of [1, 2, 3, 4, 5]) duplex.send(event('pane_focused', { n }));
     expect(await drain(stream, 2)).toEqual([
       { kind: 'pane.focused', data: { n: 5 } },
-      EVENTS_DROPPED,
+      EVENTS_DROPPED_EVENT,
     ]);
   });
 

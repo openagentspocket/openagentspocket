@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { TransportFailure } from '../errors/transport-error';
+import { FakeClock } from '../hosts/cancellation';
+import { eventKindFromWire } from '../wire';
 import { BoundedQueue } from './bounded-queue';
-import { failures, TransportFailureError } from './failure';
-import { FakeClock } from './fake-clock';
+import { failures } from './failure';
 import { batchPerFrame } from './frame-batcher';
 import { DEFAULT_RECONNECT_POLICY, reconnectDelay } from './policies';
 import {
@@ -9,7 +11,6 @@ import {
   MINIMUM_PROTOCOL_VERSION,
   serverInfoFromPing,
 } from './protocol';
-import { canonicalEventKind } from './types';
 import { decodeUtf8, encodeUtf8 } from './utf8';
 
 const settle = () => new Promise<void>((resolve) => setImmediate(resolve));
@@ -45,10 +46,8 @@ describe('serverInfoFromPing (protocol floor)', () => {
     } catch (error) {
       thrown = error;
     }
-    expect(thrown).toBeInstanceOf(TransportFailureError);
-    expect((thrown as TransportFailureError).failure).toEqual(
-      failures.protocolVersionMismatch(16, 17),
-    );
+    expect(thrown).toBeInstanceOf(TransportFailure);
+    expect((thrown as TransportFailure).error).toEqual(failures.protocolVersionMismatch(16, 17));
   });
 
   it('flags a newer-than-generated protocol as advisory only', () => {
@@ -61,16 +60,16 @@ describe('serverInfoFromPing (protocol floor)', () => {
   });
 });
 
-describe('canonicalEventKind', () => {
+describe('eventKindFromWire', () => {
   it('maps snake_case event lines and dotted names onto one kind', () => {
-    expect(canonicalEventKind('pane_agent_status_changed')).toBe('pane.agent_status_changed');
-    expect(canonicalEventKind('workspace_metadata_updated')).toBe('workspace.metadata_updated');
-    expect(canonicalEventKind('pane.created')).toBe('pane.created');
-    expect(canonicalEventKind('pane_output_matched')).toBe('pane.output_matched');
+    expect(eventKindFromWire('pane_agent_status_changed')).toBe('pane.agent_status_changed');
+    expect(eventKindFromWire('workspace_metadata_updated')).toBe('workspace.metadata_updated');
+    expect(eventKindFromWire('pane.created')).toBe('pane.created');
+    expect(eventKindFromWire('pane_output_matched')).toBe('pane.output_matched');
   });
 
   it('passes unknown kinds through untouched', () => {
-    expect(canonicalEventKind('future_thing_happened')).toBe('future_thing_happened');
+    expect(eventKindFromWire('future_thing_happened')).toBe('future_thing_happened');
   });
 });
 
@@ -132,16 +131,15 @@ describe('FakeClock', () => {
   it('fires timers in time order, including ones scheduled inside the window', async () => {
     const clock = new FakeClock(settle);
     const fired: string[] = [];
-    clock.setTimer(20, () => fired.push('b'));
-    clock.setTimer(10, () => {
+    clock.setTimeout(() => fired.push('b'), 20);
+    clock.setTimeout(() => {
       fired.push('a');
-      clock.setTimer(5, () => fired.push('a+5'));
-    });
-    const cancel = clock.setTimer(12, () => fired.push('cancelled'));
-    cancel();
+      clock.setTimeout(() => fired.push('a+5'), 5);
+    }, 10);
+    clock.clearTimeout(clock.setTimeout(() => fired.push('cancelled'), 12));
     await clock.advance(19);
     expect(fired).toEqual(['a', 'a+5']);
-    expect(clock.now()).toBe(19);
+    expect(clock.monotonicMs()).toBe(19);
     await clock.advance(1);
     expect(fired).toEqual(['a', 'a+5', 'b']);
     expect(clock.pendingTimers).toBe(0);

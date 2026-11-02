@@ -1,10 +1,12 @@
-import type { CancelSignal } from './clock';
+import { asTransportError } from '../errors/transport-error';
+import type { CancelSignal } from '../hosts/cancellation';
+import type { EventSubscription } from '../wire';
 import { failures, failWith, isLinkFailure } from './failure';
 import { EventsSessionCore, noop } from './session-core';
 import type { EventsTransport } from './session-options';
 import type { TerminalTarget } from './terminal-permits';
 import type { TerminalTransportReady } from './transport-waiters';
-import { type EventSubscription, sameSubscriptions, statusUpdate } from './types';
+import { sameSubscriptions, statusUpdate } from './types';
 
 export type { EventsSessionOptions, EventsTransport } from './session-options';
 
@@ -85,7 +87,7 @@ export class EventsSession<T extends EventsTransport> extends EventsSessionCore<
       if (!this.publishLatencyOn(latency, stream)) return;
       this.noteActivity();
     } catch (error) {
-      const failure = this.model.from(error);
+      const failure = asTransportError(error);
       if (failure.kind !== 'cancelled') await this.keepaliveDidFail(failure, stream);
     }
   }
@@ -150,7 +152,7 @@ export class EventsSession<T extends EventsTransport> extends EventsSessionCore<
       return value;
     } catch (error) {
       this.permits.release(target);
-      if (acquired && isLinkFailure(this.model.from(error))) await this.distrust(acquired);
+      if (acquired && isLinkFailure(asTransportError(error))) await this.distrust(acquired);
       throw error;
     }
   }
@@ -216,7 +218,7 @@ export class EventsSession<T extends EventsTransport> extends EventsSessionCore<
       return value;
     } catch (error) {
       // Server answers and cancellation are never retried.
-      if (!isLinkFailure(this.model.from(error))) throw error;
+      if (!isLinkFailure(asTransportError(error))) throw error;
       await this.distrust(transport);
       if (!retryingLinkFailure) throw error;
       // One retry on whatever is current; a replacement that times out too
@@ -227,7 +229,7 @@ export class EventsSession<T extends EventsTransport> extends EventsSessionCore<
         this.noteActivity();
         return value;
       } catch (retryError) {
-        if (this.model.from(retryError).kind === 'timedOut') throw error;
+        if (asTransportError(retryError).kind === 'timedOut') throw error;
         throw retryError;
       }
     }

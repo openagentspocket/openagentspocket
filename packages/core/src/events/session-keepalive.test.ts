@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { FakeClock } from '../hosts/cancellation';
 import { failures } from './failure';
-import { FakeClock } from './fake-clock';
 import { CallGate, ScriptedEventsTransport, SequencedConnector } from './scripted-transport';
 import { EventsSession } from './session';
 import type { EventsSessionOptions, EventsTransport } from './session-options';

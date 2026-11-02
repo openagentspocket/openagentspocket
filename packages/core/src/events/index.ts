@@ -2,7 +2,6 @@ export * from './bounded-queue';
 export * from './channel';
 export * from './clock';
 export * from './failure';
-export * from './fake-clock';
 export * from './frame-batcher';
 export * from './policies';
 export * from './protocol';

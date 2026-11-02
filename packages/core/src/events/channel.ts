@@ -1,15 +1,18 @@
-import { BoundedQueue } from './bounded-queue';
-import { type Clock, sleep } from './clock';
-import { failures, failWith } from './failure';
-import { EVENTS_BUFFER_LIMIT } from './policies';
+import type { Clock } from '../hosts/cancellation';
 import {
-  EVENTS_DROPPED,
+  decodeEvent,
+  EVENTS_DROPPED_EVENT,
   type EventSubscription,
   type HerdrEvent,
   type HerdrEventStream,
-} from './types';
+  subscribeRequestLine,
+} from '../wire';
+import { BoundedQueue } from './bounded-queue';
+import { sleep } from './clock';
+import { failures, failWith } from './failure';
+import { EVENTS_BUFFER_LIMIT } from './policies';
 import { decodeUtf8, encodeUtf8 } from './utf8';
-import { checkSubscribeAck, decodeEventLine, subscribeRequestLine } from './wire';
+import { checkSubscribeAck } from './wire';
 
 /**
  * A byte duplex to herdr's socket (a direct-streamlocal channel, or the
@@ -114,8 +117,8 @@ export async function openEventsChannel(
       settleAck?.resolve();
       return;
     }
-    const event = decodeEventLine(text);
-    if (event && events.push(event) === 'dropped') events.push(EVENTS_DROPPED);
+    const event = decodeEvent(text);
+    if (event && events.push(event) === 'dropped') events.push(EVENTS_DROPPED_EVENT);
   };
 
   detach.push(
@@ -141,9 +144,9 @@ export async function openEventsChannel(
     }),
   );
 
-  const clearDeadline = options.clock.setTimer(
-    options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
+  const deadline = options.clock.setTimeout(
     () => shutDown(failWith(failures.timedOut())),
+    options.requestTimeoutMs ?? DEFAULT_REQUEST_TIMEOUT_MS,
   );
   // Not awaited on its own: the deadline above bounds it through `ack`.
   const writeRequest = async () =>
@@ -152,7 +155,7 @@ export async function openEventsChannel(
   try {
     await ack;
   } finally {
-    clearDeadline();
+    options.clock.clearTimeout(deadline);
   }
 
   let ended: Promise<void> | undefined;

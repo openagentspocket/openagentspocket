@@ -1,15 +1,14 @@
 import { describe, expect, it } from 'vitest';
+import { FakeClock } from '../hosts/cancellation';
+import { EVENTS_DROPPED_EVENT, type HerdrEvent } from '../wire';
 import { failures } from './failure';
-import { FakeClock } from './fake-clock';
 import { ScriptedEventsTransport, SequencedConnector } from './scripted-transport';
 import { EventsSession } from './session';
 import type { EventsSessionOptions, EventsTransport } from './session-options';
 import {
-  EVENTS_DROPPED,
   type EventsSessionUpdate,
   eventUpdate,
   globalSubscription,
-  type HerdrEvent,
   paneSubscription,
   statusUpdate,
 } from './types';
@@ -172,7 +171,7 @@ describe('EventsSession buffering', () => {
       const update = (await session.updates.next()).value;
       if (update) delivered.push(update);
     }
-    expect(delivered).toContainEqual(eventUpdate(EVENTS_DROPPED));
+    expect(delivered).toContainEqual(eventUpdate(EVENTS_DROPPED_EVENT));
     expect(delivered).toContainEqual(eventUpdate(working(10)));
     // The shed `connected` is gone for good; the marker stands in for it.
     expect(delivered).not.toContainEqual(connected);
@@ -201,7 +200,7 @@ describe('EventsSession buffering', () => {
     expect(session.droppedUpdateCount).toBeGreaterThan(0);
     await session.suspend();
     expect(await next()).toEqual(statusUpdate({ kind: 'suspended' }));
-    expect(await next()).toEqual(eventUpdate(EVENTS_DROPPED));
+    expect(await next()).toEqual(eventUpdate(EVENTS_DROPPED_EVENT));
     await session.end();
   });
 

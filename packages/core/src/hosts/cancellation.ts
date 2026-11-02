@@ -52,18 +52,28 @@ export function createCancellation(): Cancellation {
 export interface Clock {
   setTimeout(callback: () => void, ms: number): unknown;
   clearTimeout(handle: unknown): void;
+  /** Monotonic milliseconds, for elapsed-time checks (keepalive, round trips). */
+  monotonicMs(): number;
 }
 
 /**
  * A manual clock: time moves only on `advance`, which fires due timers in
- * order (ties by scheduling order) and lets their promise reactions settle.
+ * order (ties by scheduling order) and lets their promise reactions settle
+ * (through `settle`, which tests may replace with a deeper drain such as
+ * `() => new Promise((resolve) => setImmediate(resolve))`).
  */
 export class FakeClock implements Clock {
   private current = 0;
   private nextHandle = 1;
   private readonly timers = new Map<number, { at: number; callback: () => void }>();
 
+  constructor(private readonly settle: () => Promise<void> = () => flushMicrotasks()) {}
+
   get now(): number {
+    return this.current;
+  }
+
+  monotonicMs(): number {
     return this.current;
   }
 
@@ -84,7 +94,7 @@ export class FakeClock implements Clock {
   async advance(ms: number): Promise<void> {
     const target = this.current + ms;
     for (;;) {
-      await flushMicrotasks();
+      await this.settle();
       let due: [number, { at: number; callback: () => void }] | undefined;
       for (const entry of this.timers) {
         if (entry[1].at <= target && (!due || entry[1].at < due[1].at)) due = entry;
@@ -95,7 +105,12 @@ export class FakeClock implements Clock {
       due[1].callback();
     }
     this.current = target;
-    await flushMicrotasks();
+    await this.settle();
+  }
+
+  /** Lets pending promise work run without moving time. */
+  flush(): Promise<void> {
+    return this.settle();
   }
 }
 

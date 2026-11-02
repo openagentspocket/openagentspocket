@@ -1,8 +1,9 @@
+import type { TransportError } from '../errors/transport-error';
+import type { EventSubscription, HerdrEvent, HerdrEventStream } from '../wire';
 import { BoundedQueue } from './bounded-queue';
-import { failures, failWith, type TransportFailure } from './failure';
+import { failures, failWith } from './failure';
 import type { PingInfo } from './protocol';
 import type { EventsTransport } from './session-options';
-import type { EventSubscription, HerdrEvent, HerdrEventStream } from './types';
 
 /**
  * A one-shot gate for tests: records each entry, then holds the caller until
@@ -46,10 +47,10 @@ export class ScriptedEventsTransport implements EventsTransport {
   isClosed = false;
   readonly capturedSubscriptions: EventSubscription[][] = [];
   private alive = true;
-  private readonly pingFailures = new Map<number, TransportFailure>();
+  private readonly pingFailures = new Map<number, TransportError>();
   private pingGate: CallGate | undefined;
   private subscriptionGate: CallGate | undefined;
-  private subscriptionFailure: TransportFailure | undefined;
+  private subscriptionFailure: TransportError | undefined;
   private closeGate: CallGate | undefined;
   private missingPanes = new Set<string>();
   private live: { id: number; events: BoundedQueue<HerdrEvent> } | undefined;
@@ -61,7 +62,7 @@ export class ScriptedEventsTransport implements EventsTransport {
   ) {}
 
   /** Makes the `ordinal`-th ping (1-based) throw `failure`. */
-  failPing(ordinal: number, failure: TransportFailure): void {
+  failPing(ordinal: number, failure: TransportError): void {
     this.pingFailures.set(ordinal, failure);
   }
 
@@ -75,7 +76,7 @@ export class ScriptedEventsTransport implements EventsTransport {
   }
 
   /** Makes the next subscribe throw `failure` after recording its set. */
-  failNextSubscription(failure: TransportFailure): void {
+  failNextSubscription(failure: TransportError): void {
     this.subscriptionFailure = failure;
   }
 
@@ -101,7 +102,7 @@ export class ScriptedEventsTransport implements EventsTransport {
   }
 
   /** Kills the live stream as a remotely dropped channel would. */
-  failEventStream(failure: TransportFailure): void {
+  failEventStream(failure: TransportError): void {
     this.live?.events.finish(failWith(failure));
     this.live = undefined;
   }
@@ -135,9 +136,9 @@ export class ScriptedEventsTransport implements EventsTransport {
     await gate?.waitUntilOpen();
     if (failure) throw failWith(failure);
     const missing = subscriptions.find(
-      (entry) => entry.scope === 'pane' && this.missingPanes.has(entry.paneId),
+      (entry) => entry.paneId !== undefined && this.missingPanes.has(entry.paneId),
     );
-    if (missing?.scope === 'pane') {
+    if (missing?.paneId !== undefined) {
       throw failWith(failures.apiRejected('pane_not_found', `pane ${missing.paneId} not found`));
     }
     this.nextStreamId += 1;

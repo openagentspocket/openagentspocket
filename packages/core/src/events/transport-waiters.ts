@@ -1,5 +1,7 @@
-import { type CancelSignal, onAbort } from './clock';
-import { failures, failWith, type TransportFailure } from './failure';
+import type { TransportError } from '../errors/transport-error';
+import type { CancelSignal } from '../hosts/cancellation';
+import { onAbort } from './clock';
+import { failures, failWith } from './failure';
 
 /** A ping-proven Transport handed to a terminal, pinned to its activation. */
 export interface TerminalTransportReady<T> {
@@ -70,7 +72,7 @@ export class TransportWaiters<T> {
     }
   }
 
-  failRpc(failure: TransportFailure): void {
+  failRpc(failure: TransportError): void {
     for (const waiter of this.rpc.splice(0)) {
       waiter.detach();
       waiter.reject(failWith(failure));
@@ -81,7 +83,7 @@ export class TransportWaiters<T> {
    * Fails terminal waiters; with `forActivation`, those pinned to another
    * activation are kept.
    */
-  failTerminal(failure: TransportFailure, forActivation?: number): void {
+  failTerminal(failure: TransportError, forActivation?: number): void {
     const kept: TerminalWaiter<T>[] = [];
     for (const waiter of this.terminal.splice(0)) {
       const pinned = waiter.activationGeneration;

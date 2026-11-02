@@ -1,4 +1,5 @@
-import { type CancelSignal, onAbort } from './clock';
+import type { CancelSignal } from '../hosts/cancellation';
+import { onAbort } from './clock';
 import { failures, failWith } from './failure';
 import { TERMINAL_LIMIT } from './policies';
 

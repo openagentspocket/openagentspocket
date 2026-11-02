@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import type { TransportError } from '../errors/transport-error';
+import { FakeClock } from '../hosts/cancellation';
 import { failures, failWith } from './failure';
-import { FakeClock } from './fake-clock';
 import { CallGate, ScriptedEventsTransport, SequencedConnector } from './scripted-transport';
 import { EventsSession } from './session';
 import type { EventsSessionOptions, EventsTransport } from './session-options';
@@ -137,7 +138,7 @@ describe('EventsSession reconnect backoff', () => {
     let dials = 0;
     const { clock, session, next } = harness(async (): Promise<ScriptedEventsTransport> => {
       dials += 1;
-      throw failWith({ kind });
+      throw failWith({ kind } as TransportError);
     });
     await session.resume();
     expect(await next()).toEqual(connecting);

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { failures, TransportFailureError } from './failure';
+import { TransportFailure } from '../errors/transport-error';
+import { failures } from './failure';
 import { TerminalPermits } from './terminal-permits';
 import { TransportWaiters } from './transport-waiters';
 
@@ -10,7 +11,7 @@ async function outcome(promise: Promise<unknown>): Promise<string> {
     await promise;
     return 'resolved';
   } catch (error) {
-    return error instanceof TransportFailureError ? error.failure.kind : 'other';
+    return error instanceof TransportFailure ? error.error.kind : 'other';
   }
 }
 

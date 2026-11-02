@@ -1,13 +1,9 @@
+import { asTransportError, isRetryable, type TransportError } from '../errors/transport-error';
+import type { Clock } from '../hosts/cancellation';
+import { EVENTS_DROPPED_EVENT, type EventSubscription, type HerdrEventStream } from '../wire';
 import { BoundedQueue } from './bounded-queue';
-import { type Clock, type Sleep, sleep } from './clock';
-import {
-  basicFailureModel,
-  type FailureModel,
-  failures,
-  failWith,
-  namesMissingPane,
-  type TransportFailure,
-} from './failure';
+import { type Sleep, sleep } from './clock';
+import { failures, failWith, namesMissingPane } from './failure';
 import {
   DEFAULT_KEEPALIVE_POLICY,
   DEFAULT_RECONNECT_POLICY,
@@ -22,11 +18,8 @@ import { TerminalPermits } from './terminal-permits';
 import { TransportWaiters } from './transport-waiters';
 import {
   baselineSubscriptions,
-  EVENTS_DROPPED,
-  type EventSubscription,
   type EventsSessionUpdate,
   eventUpdate,
-  type HerdrEventStream,
   statusUpdate,
 } from './types';
 
@@ -52,7 +45,6 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
   protected latency: number | undefined;
   protected routeId: string | undefined;
   protected subscriptions: EventSubscription[];
-  protected readonly model: FailureModel;
   protected readonly onTerminalWaiterRegistered: () => void;
   private readonly connect: () => Promise<T>;
   private readonly clock: Clock;
@@ -69,12 +61,12 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
   protected activationGeneration = 0;
   protected runTask: Promise<void> | undefined;
   /** An action-required failure, sticky until the next activation. */
-  protected terminalTransportFailure: TransportFailure | undefined;
+  protected terminalTransportFailure: TransportError | undefined;
   protected isWindingDown = false;
   protected readonly permits = new TerminalPermits();
   protected readonly waiters = new TransportWaiters<T>();
   private hasEstablishedTransport = false;
-  private pendingKeepaliveFailure: TransportFailure | undefined;
+  private pendingKeepaliveFailure: TransportError | undefined;
   /** Last proof of life: a connect ping, an RPC, an event, a keepalive answer. */
   private lastActivity: number | undefined;
   private keepaliveStop: (() => void) | undefined;
@@ -93,7 +85,6 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
     this.reconnectPolicy = options.reconnect ?? DEFAULT_RECONNECT_POLICY;
     this.keepalivePolicy =
       options.keepalive === undefined ? DEFAULT_KEEPALIVE_POLICY : options.keepalive;
-    this.model = options.failureModel ?? basicFailureModel;
     this.onTerminalWaiterRegistered = options.onTerminalWaiterRegistered ?? noop;
     this.updates = new BoundedQueue(options.updatesBufferLimit ?? EVENTS_BUFFER_LIMIT);
   }
@@ -110,7 +101,8 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
     }
     if (this.updates.push(update) !== 'dropped') return;
     this.droppedUpdateCount += 1;
-    if (this.updates.push(eventUpdate(EVENTS_DROPPED)) === 'dropped') this.droppedUpdateCount += 1;
+    if (this.updates.push(eventUpdate(EVENTS_DROPPED_EVENT)) === 'dropped')
+      this.droppedUpdateCount += 1;
   }
 
   protected startRun(generation: number): void {
@@ -122,7 +114,7 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
   }
 
   protected noteActivity(): void {
-    this.lastActivity = this.clock.now();
+    this.lastActivity = this.clock.monotonicMs();
   }
 
   /**
@@ -140,12 +132,12 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
         stream = await transport.subscribeToEvents(this.subscriptions);
       } catch (error) {
         if (!this.isCurrent(generation)) break;
-        const failure = this.model.from(error);
+        const failure = asTransportError(error);
         // A swallowed request: do not trust the connection for the retry.
         if (failure.kind === 'timedOut') this.transportSuspect = true;
         // A pane that exited since the snapshot is a race, not a failure.
         if (namesMissingPane(failure) && this.dropSnapshotSubscriptions()) continue;
-        if (!this.model.isRetryable(failure)) return this.stopOn(failure, generation);
+        if (!isRetryable(failure)) return this.stopOn(failure, generation);
         attempt += 1;
         await this.reconnectAfter(failure, attempt);
         continue;
@@ -165,7 +157,7 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
       this.yieldUpdate(statusUpdate({ kind: 'connected' }));
       this.startKeepalive(stream);
 
-      let streamFailure: TransportFailure | undefined;
+      let streamFailure: TransportError | undefined;
       try {
         for await (const event of stream.events) {
           // Late buffered events after teardown would land behind the
@@ -175,7 +167,7 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
           this.yieldUpdate(eventUpdate(event));
         }
       } catch (error) {
-        streamFailure = this.model.from(error);
+        streamFailure = asTransportError(error);
       }
       if (this.liveStream === stream) {
         this.stopKeepalive();
@@ -191,20 +183,20 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
         streamFailure ??
         failures.channelFailed('events stream ended unexpectedly');
       this.pendingKeepaliveFailure = undefined;
-      if (!this.model.isRetryable(failure)) return this.stopOn(failure, generation);
+      if (!isRetryable(failure)) return this.stopOn(failure, generation);
       attempt += 1;
       await this.reconnectAfter(failure, attempt);
     }
   }
 
-  private stopOn(failure: TransportFailure, generation: number): void {
+  private stopOn(failure: TransportError, generation: number): void {
     if (!this.currentTransport) this.terminalTransportFailure = failure;
     this.waiters.failTerminal(failure, generation);
     this.waiters.failRpc(failure);
     this.yieldUpdate(statusUpdate({ kind: 'failed', failure }));
   }
 
-  private async reconnectAfter(failure: TransportFailure, attempt: number): Promise<void> {
+  private async reconnectAfter(failure: TransportError, attempt: number): Promise<void> {
     this.waiters.failRpc(failure);
     this.dropSnapshotSubscriptions();
     const delayMs = reconnectDelay(this.reconnectPolicy, attempt);
@@ -340,7 +332,7 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
           if (!this.publishLatencyOn(latency, stream)) break;
           this.noteActivity();
         } catch (error) {
-          const failure = this.model.from(error);
+          const failure = asTransportError(error);
           if (failure.kind !== 'cancelled') await this.keepaliveDidFail(failure, stream);
           break;
         }
@@ -355,12 +347,14 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
   }
 
   private isIdle(intervalMs: number): boolean {
-    return this.lastActivity === undefined || this.clock.now() - this.lastActivity >= intervalMs;
+    return (
+      this.lastActivity === undefined || this.clock.monotonicMs() - this.lastActivity >= intervalMs
+    );
   }
 
   /** A failed liveness ping: distrust the connection and end the channel. */
   protected async keepaliveDidFail(
-    failure: TransportFailure,
+    failure: TransportError,
     stream: HerdrEventStream,
   ): Promise<void> {
     if (this.phase !== 'active' || this.liveStream !== stream) return;
@@ -371,9 +365,9 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
 
   /** Times only herdr's `ping` (not SSH setup) and applies the protocol floor. */
   protected async measureLatency(transport: T): Promise<number> {
-    const started = this.clock.now();
+    const started = this.clock.monotonicMs();
     serverInfoFromPing(await transport.ping());
-    return this.clock.now() - started;
+    return this.clock.monotonicMs() - started;
   }
 
   /** Publishes a sample taken on `stream` unless that channel is gone. */
