@@ -12,6 +12,7 @@ import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
+import { loadSwiftUi, NativeActionMenu } from './NativeActionMenu';
 
 export interface ActionMenuItem {
   key: string;
@@ -172,6 +173,8 @@ interface ActionMenuButtonProps {
   accessibilityLabel: string;
   title?: string;
   icon?: IconName;
+  /** Use the system menu where available (iOS). Default true; false forces the JS menu. */
+  native?: boolean;
   testID?: string;
 }
 
@@ -181,8 +184,10 @@ export function ActionMenuButton({
   accessibilityLabel,
   title,
   icon = 'more',
+  native = true,
   testID = 'menu-button',
 }: ActionMenuButtonProps) {
+  const ui = native ? loadSwiftUi() : null;
   const ref = useRef<ViewInstance>(null);
   const [menu, setMenu] = useState<{ anchor?: MenuAnchor } | null>(null);
   const open = () => {
@@ -196,6 +201,18 @@ export function ActionMenuButton({
     // Unmeasurable (tests, a detached view): open centered instead of never.
     setTimeout(() => show(), MEASURE_TIMEOUT_MS);
   };
+  if (ui) {
+    return (
+      <NativeActionMenu
+        ui={ui}
+        items={items}
+        title={title}
+        accessibilityLabel={accessibilityLabel}
+        icon={icon}
+        testID={testID}
+      />
+    );
+  }
   return (
     <View ref={ref} collapsable={false}>
       <Button

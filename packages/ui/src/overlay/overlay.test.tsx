@@ -210,10 +210,22 @@ describe('ActionMenu', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
+  it('presents the system menu on iOS instead of the JS button', async () => {
+    await renderThemed(
+      <ActionMenuButton
+        accessibilityLabel="More"
+        items={[{ key: 'pin', title: 'Pin', onPress: () => {} }]}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: 'More' })).toBeNull();
+    expect(screen.getByTestId('menu-button')).toBeTruthy();
+  });
+
   it('opens from a header button and runs the chosen item', async () => {
     const onPin = jest.fn();
     await renderThemed(
       <ActionMenuButton
+        native={false}
         accessibilityLabel="More"
         items={[{ key: 'pin', title: 'Pin', onPress: onPin }]}
       />,

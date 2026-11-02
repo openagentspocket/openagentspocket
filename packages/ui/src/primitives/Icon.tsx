@@ -57,6 +57,8 @@ const ICONS = {
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
+/** The SF Symbol behind an icon, for native iOS surfaces (menus) that take a symbol name. */
+export const iconSymbol = (name: IconName): string => ICONS[name].ios;
 export const iconNames = Object.keys(ICONS) as IconName[];
 
 interface IconProps {
