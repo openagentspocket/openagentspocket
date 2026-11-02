@@ -2,7 +2,8 @@
 // Renders docs/PROGRESS.md (what is done, what is left) from the backlog in
 // docs/tasks.yml and the worker reports in docs/progress/<task-id>.md. A
 // task's status is its merged report's `status:` line; without a report it is
-// "ready" when every dependency is done, else "waiting". Nothing is edited by
+// "ready" when every dependency is done (or partial, its leftovers filed as
+// tasks), else "waiting". Nothing is edited by
 // hand: run `pnpm progress` after each merge. `--check` fails when the file
 // is stale.
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -23,7 +24,10 @@ for (const task of tasks) {
 
 const statusOf = (task) =>
   reported.get(task.id) ??
-  ((task.deps ?? []).every((dep) => reported.get(dep) === 'done') ? 'ready' : 'waiting');
+  // A partial dependency counts: its leftovers are filed as their own tasks.
+  ((task.deps ?? []).every((dep) => ['done', 'partial'].includes(reported.get(dep)))
+    ? 'ready'
+    : 'waiting');
 
 const phases = [...new Set(tasks.map((task) => task.phase))].sort((a, b) => a - b);
 const count = (list, status) => list.filter((task) => statusOf(task) === status).length;

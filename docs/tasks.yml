@@ -88,7 +88,7 @@
   phase: 1
   kind: js
   title: Hosts screens (list, form, detail, trust alert, pairing scanner) on FakeTransport
-  deps: [P1.3-core-hosts, P1.4-core-pairing, P0-ui-primitives]
+  deps: [P1.3-core-hosts, P1.4-core-pairing, P0-ui-primitives, P0-qr-scanner]
   files: [apps/mobile/app/hosts/**, apps/mobile/src/features/hosts/**]
   acceptance:
     - "M: add a Host manually, trust alert, saved; paste a HERDR-PAIR code, ceremony steps shown; S: elements and copy of hosts.list, hosts.form, hosts.detail from the spec"
@@ -419,3 +419,32 @@
   kind: js
   title: "On-device triage, reply suggestions, diff summaries, voice commands"
   deps: [P8.0-on-device-model-spike]
+
+# ── Follow-ups split out of wave 1 (2026-11-01) ─────────────────────────────
+- id: P0-rename
+  phase: 0
+  kind: native
+  title: "Rename to OpenAgentsPocket (ADR 0022): workspace scope, app name/slug/scheme/ids, icon + splash from design/icon"
+  deps: []
+  acceptance:
+    - "user-facing name OpenAgentsPocket everywhere; internal scope renamed in every package and import; app.json icon/adaptive icon/splash wired from design/icon; deep-link scheme renamed only together with the plugin's emitter and its tests; full pnpm test green; one native build per platform shows the new icon and name"
+- id: P0-qr-scanner
+  phase: 0
+  kind: native
+  title: "QRScanner primitive in packages/ui on expo-camera (camera permission copy), used by pairing"
+  deps: [P0-rename]
+- id: P0-brand-marks
+  phase: 0
+  kind: native
+  title: "ProgramMark brand logos (Lobe icons, MIT) with react-native-svg and a brands token file"
+  deps: [P0-rename]
+- id: P0-native-menus
+  phase: 0
+  kind: js
+  title: "ActionMenu on @expo/ui native menus (same props); Sheet drag-to-resize detents"
+  deps: [P0-rename]
+- id: T-typecheck-tests
+  phase: 0
+  kind: js
+  title: "Type-check test files in verify-fast (tsc -b excludes them today) and fix what it finds"
+  deps: [P0-rename]
