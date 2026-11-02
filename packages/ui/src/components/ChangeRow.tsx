@@ -4,29 +4,32 @@ import { Badge } from '../primitives/Badge';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 
 const useStyles = makeStyles((t) => ({
   line: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
+  nameLine: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs, minWidth: 0 },
   grow: { flex: 1 },
-  dir: { flexShrink: 4 },
+  dir: { flexShrink: 1, minWidth: 0 },
+  fileName: { flexShrink: 0, maxWidth: '100%' },
   fixed: { flexShrink: 0 },
-  totals: { flexDirection: 'row', gap: t.spacing.xs },
+  totals: { flexDirection: 'row', gap: t.spacing.xxs },
   indent: { paddingLeft: t.spacing.xxs },
   file: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: t.spacing.xs,
+    gap: t.spacing.xxs,
     minHeight: t.metrics.rowMinHeight,
-    paddingHorizontal: t.spacing.md,
+    paddingHorizontal: airy.stack,
   },
   name: { flexShrink: 1 },
-  kind: { width: 18, textAlign: 'center' },
+  kind: { width: 14, textAlign: 'center' },
   rule: {
     height: t.metrics.hairlineWidth,
     backgroundColor: t.colors.separator,
-    marginLeft: t.spacing.md,
+    marginLeft: t.spacing.xs,
   },
   head: {
     flexDirection: 'row',
@@ -167,12 +170,12 @@ export function ChangeRow({
       accessibilityLabel={`${file.name}, ${file.dir ?? ''}, +${file.added} −${file.removed}, ${file.kind}`}
       testID={testID}
     >
-      <View style={[styles.line, styles.grow]}>
-        <Text variant="body" numberOfLines={1} style={styles.name}>
+      <View style={[styles.nameLine, styles.grow]}>
+        <Text variant="body" numberOfLines={1} style={styles.fileName}>
           {file.name}
         </Text>
         {file.dir ? (
-          <Text variant="footnote" tone="secondary" numberOfLines={1} style={styles.dir}>
+          <Text variant="caption" tone="secondary" numberOfLines={1} style={styles.dir}>
             {file.dir}
           </Text>
         ) : null}

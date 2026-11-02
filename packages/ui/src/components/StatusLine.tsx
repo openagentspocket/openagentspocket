@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { StatusDot } from '../primitives/StatusDot';
@@ -7,17 +8,19 @@ import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 
+/** Under this width the latency is dropped so the branch name keeps fitting. */
+const COMPACT_WIDTH = 340;
+
 const useStyles = makeStyles((t) => ({
   line: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: airy.stack,
+    gap: t.spacing.xxs,
     marginHorizontal: t.spacing.sm,
-    paddingHorizontal: t.spacing.xxs,
     minHeight: 28,
   },
   group: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
-  branch: { flexShrink: 1 },
+  branch: { flexShrink: 1, minWidth: 0 },
   fixed: { flexShrink: 0 },
   spacer: { flex: 1 },
   pill: { borderRadius: 999, paddingHorizontal: airy.stack, paddingVertical: 2 },
@@ -55,6 +58,7 @@ export function StatusLine({
 }: StatusLineProps) {
   const styles = useStyles();
   const theme = useTheme();
+  const [width, setWidth] = useState(Number.POSITIVE_INFINITY);
   const hasCounts = Boolean(counts && (counts.behind || counts.ahead || counts.changed));
   if (
     !status &&
@@ -67,7 +71,11 @@ export function StatusLine({
     return null;
   const lowContext = contextLeft !== undefined && contextLeft < 20;
   const latency =
-    latencyMs === undefined ? null : latencyMs < 1 ? '< 1 ms' : `${Math.round(latencyMs)} ms`;
+    latencyMs === undefined || width < COMPACT_WIDTH
+      ? null
+      : latencyMs < 1
+        ? '< 1 ms'
+        : `${Math.round(latencyMs)} ms`;
   const summary = [
     status ? statusWord(status, labels) : null,
     branch,
@@ -85,6 +93,7 @@ export function StatusLine({
   return (
     <Pressable
       style={styles.line}
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       onPress={onOpenChanges}
       disabled={!onOpenChanges}
       accessibilityRole={onOpenChanges ? 'button' : 'text'}
@@ -104,7 +113,7 @@ export function StatusLine({
         <View style={[styles.group, styles.branch]}>
           <Icon name="branch" size={12} tint={theme.colors.info} />
           <Text
-            variant="caption"
+            variant="caption2"
             monospaced
             semibold
             numberOfLines={1}
@@ -116,7 +125,7 @@ export function StatusLine({
       ) : null}
       {hasCounts ? (
         <Text
-          variant="caption"
+          variant="caption2"
           monospaced
           tone="secondary"
           tabularNums
@@ -136,17 +145,17 @@ export function StatusLine({
       ) : null}
       {diff ? (
         <View style={styles.group}>
-          <Text variant="caption" monospaced tone="success" tabularNums>
+          <Text variant="caption2" monospaced tone="success" tabularNums>
             {`+${diff.added}`}
           </Text>
-          <Text variant="caption" monospaced tone="danger" tabularNums>
+          <Text variant="caption2" monospaced tone="danger" tabularNums>
             {`−${diff.removed}`}
           </Text>
         </View>
       ) : null}
       {latency ? (
         <Text
-          variant="caption"
+          variant="caption2"
           monospaced
           tone="secondary"
           tabularNums
