@@ -1,0 +1,107 @@
+import { Pressable, ScrollView, View } from 'react-native';
+import { Card } from '../primitives/Card';
+import { Icon } from '../primitives/Icon';
+import { ProgramMark } from '../primitives/ProgramMark';
+import { SectionHeader } from '../primitives/SectionHeader';
+import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
+import type { Status } from '../theme/status';
+import { makeStyles } from '../theme/theme';
+
+export interface StripSession {
+  id: string;
+  kind: 'agent' | 'shell';
+  /** The program ("claude") or shell name ("landing $"). */
+  name: string;
+  title: string;
+  host: string;
+  status?: Status;
+}
+
+export const TILE_WIDTH = 140;
+const TILE_GAP = 13;
+
+const useStyles = makeStyles((t) => ({
+  root: { gap: t.spacing.xs },
+  header: { paddingHorizontal: t.metrics.screenInset },
+  strip: { paddingHorizontal: t.metrics.screenInset, gap: TILE_GAP },
+  item: { width: TILE_WIDTH, gap: t.spacing.xxs },
+  tile: { height: 96, justifyContent: 'space-between', padding: airy.tile },
+  caption: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
+  captionTitle: { flex: 1 },
+}));
+
+interface SessionsStripProps {
+  sessions: readonly StripSession[];
+  /** "Sessions" and "See all", already localized. */
+  title: string;
+  seeAllLabel: string;
+  onOpen: (id: string) => void;
+  onSeeAll: () => void;
+}
+
+/** Swift's Home Sessions strip: tiles that bleed to the edge and snap, captions below each. */
+export function SessionsStrip({
+  sessions,
+  title,
+  seeAllLabel,
+  onOpen,
+  onSeeAll,
+}: SessionsStripProps) {
+  const styles = useStyles();
+  return (
+    <View style={styles.root} testID="sessions-strip">
+      <View style={styles.header}>
+        <SectionHeader
+          title={title}
+          count={sessions.length}
+          action={{
+            title: seeAllLabel,
+            onPress: onSeeAll,
+            accessibilityLabel: `${seeAllLabel} ${title}`,
+          }}
+        />
+      </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        snapToInterval={TILE_WIDTH + TILE_GAP}
+        decelerationRate="fast"
+        contentContainerStyle={styles.strip}
+      >
+        {sessions.map((s) => (
+          <Pressable
+            key={s.id}
+            style={styles.item}
+            onPress={() => onOpen(s.id)}
+            accessibilityRole="button"
+            accessibilityLabel={[s.title, s.name, s.host].join(', ')}
+            testID={`session-${s.id}`}
+          >
+            <Card padded={false}>
+              <View style={styles.tile}>
+                <Icon name={s.kind === 'agent' ? 'sparkles' : 'terminal'} size={14} />
+                <Text variant="footnote" monospaced numberOfLines={1}>
+                  {s.name}
+                </Text>
+              </View>
+            </Card>
+            <View style={styles.caption}>
+              {s.kind === 'agent' ? (
+                <ProgramMark program={s.name} status={s.status} size={18} surface="canvas" />
+              ) : (
+                <Icon name="terminal" size={16} color="textPrimary" />
+              )}
+              <Text variant="footnote" semibold numberOfLines={1} style={styles.captionTitle}>
+                {s.title}
+              </Text>
+            </View>
+            <Text variant="caption2" monospaced tone="tertiary" numberOfLines={1}>
+              {s.host}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  );
+}
