@@ -1,0 +1,4 @@
+module CAgenticoSSHSupport {
+    header "CAgenticoSSHSupport.h"
+    export *
+}

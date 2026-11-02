@@ -9,6 +9,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "bundleIdentifier": "com.example.agentico",
+      "deploymentTarget": "18.0",
       "icon": "./assets/expo.icon"
     },
     "android": {

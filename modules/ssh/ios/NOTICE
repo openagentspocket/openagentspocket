@@ -1,0 +1,18 @@
+Agentico SSH module, iOS
+Copyright 2026 Agentico contributors
+
+The Swift and C sources under AgenticoSSH/ and CAgenticoSSHSupport/, and the
+native artifacts under Artifacts/, are copied from the AgenticoSSH package of
+the Agentico iOS app, a modified version of Heeler
+(https://github.com/ZingerLittleBee/Heeler) licensed under the Apache License
+2.0 (LICENSE in this directory).
+
+Modifications: renamed one dispatch queue label; added the C module map in
+CAgenticoSSHSupport/include so the sources build inside one CocoaPods target.
+Module/ is new code (the Expo bridge), also under the Apache License 2.0.
+
+Third-party components keep their own licenses: libssh2 (BSD-3-Clause, with
+MIT and BSD-2-Clause parts) and OpenSSL (Apache-2.0), see Artifacts/Notices/.
+Artifacts/PROVENANCE.md and Artifacts/Sources.lock record the exact upstream
+sources; Artifacts/SHA256SUMS the file checksums (`shasum -a 256 -c
+Artifacts/SHA256SUMS` from this directory).

@@ -7,6 +7,7 @@
     "@agentico/i18n": "workspace:*",
     "@agentico/ui": "workspace:*",
     "@expo/ui": "~58.0.26",
+    "agentico-ssh": "workspace:*",
     "expo": "~58.0.22",
     "expo-clipboard": "~58.0.4",
     "expo-constants": "~58.0.14",
