@@ -31,3 +31,9 @@ Style "solid indigo" (gradient #9C8CFF to #8270F5, mark #0B0820, light #F6F6FC) 
 (agents) peeking out of a pocket, which also reads as a little face. Refined for 29-60 px and exported as Expo
 assets (iOS icon, Android adaptive foreground/background/monochrome, splash) before the rename task wires them.
 
+
+## Home-screen label (Enzo, 2026-11-01)
+
+"OpenAgentsPocket" truncates under the icon on both platforms ("OpenAgentsPo…" on iOS, "OpenAgents…" on
+Android), so the app's display name (`expo.name`: CFBundleDisplayName and the Android label) is "Agents Pocket".
+The store listings, README and in-app title keep the full name OpenAgentsPocket.
