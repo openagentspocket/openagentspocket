@@ -58,7 +58,8 @@
         }
       ],
       "expo-secure-store",
-      "@bacons/apple-targets"
+      "@bacons/apple-targets",
+      "./plugins/withLocalPreview"
     ],
     "locales": {
       "es": "./locales/es.json"
