@@ -1,0 +1,73 @@
+{
+  "renderer": "xterm",
+  "grid-and-stty": {
+    "grid": {
+      "cols": 48,
+      "rows": 50
+    },
+    "sttyMatchesGrid": true,
+    "ms": 2,
+    "totalMs": 10
+  },
+  "colors-unicode": {
+    "ms": 13,
+    "totalMs": 2555
+  },
+  "alt-screen": {
+    "ms": 1260,
+    "note": "primary screen must be back with PRIMARY-MARK",
+    "totalMs": 6050
+  },
+  "tui-vim": {
+    "ms": 1,
+    "totalMs": 4105
+  },
+  "tui-top": {
+    "ms": 2,
+    "totalMs": 5081
+  },
+  "resize-round-trip": {
+    "before": {
+      "cols": 48,
+      "rows": 50
+    },
+    "after": {
+      "cols": 48,
+      "rows": 35
+    },
+    "back": {
+      "cols": 48,
+      "rows": 50
+    },
+    "shrinkOk": true,
+    "backOk": true,
+    "shrinkMs": 65,
+    "backMs": 73,
+    "totalMs": 1666
+  },
+  "typing-window": {
+    "events": 29,
+    "chars": 92,
+    "tail": "b-adbadbdbb 12122345455\r\nbash: ecchoo: command not found\r\n$ ",
+    "totalMs": 12042
+  },
+  "flood-yes-60s": {
+    "seconds": 63.758,
+    "megabytes": 175.31,
+    "mbPerSec": 2.92,
+    "cadence": {
+      "frames": 1899,
+      "over33": 926,
+      "over100": 0,
+      "maxGapMs": 57,
+      "timerMaxMs": 40
+    },
+    "cumulativeBytesEvery5s": [
+      14093733, 28347813, 42569125, 56790437, 75402661, 89722277, 103943589, 118197669, 132451749,
+      146673061, 160992677, 175312293
+    ],
+    "parsedByRenderer": 175017381,
+    "interruptToPromptMs": 1795,
+    "totalMs": 65299
+  }
+}

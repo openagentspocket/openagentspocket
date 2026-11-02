@@ -69,6 +69,12 @@ export interface Stream {
   readonly id: string;
   write(data: Uint8Array): Promise<void>;
   onData(listener: (data: Uint8Array) => void): Unsubscribe;
+  /**
+   * The same chunks as base64 text, undecoded, for a consumer that forwards them (a terminal
+   * renderer). Absent on fakes. Starts reading like `onData`; with only this listener nothing is
+   * decoded in JavaScript.
+   */
+  onEncodedData?(listener: (base64: string) => void): Unsubscribe;
   onClose(listener: (reason?: string) => void): Unsubscribe;
   close(): Promise<void>;
 }

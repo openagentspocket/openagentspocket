@@ -1,0 +1,72 @@
+{
+  "renderer": "xterm",
+  "grid-and-stty": {
+    "grid": {
+      "cols": 49,
+      "rows": 46
+    },
+    "sttyMatchesGrid": true,
+    "ms": 0,
+    "totalMs": 8
+  },
+  "colors-unicode": {
+    "ms": 15,
+    "totalMs": 2522
+  },
+  "alt-screen": {
+    "ms": 1310,
+    "note": "primary screen must be back with PRIMARY-MARK",
+    "totalMs": 6019
+  },
+  "tui-vim": {
+    "error": "timed out waiting for D44; tail: >4;m\u001b[23;2t\u001b[23;1t\u001b[46;1H\u001b[K\u001b[46;1H\u001b[?1004l\u001b[?2004l\u001b[?1l\u001b>\u001b[?1049l\u001b[?25h\u001b[>4;m$ "
+  },
+  "tui-top": {
+    "ms": 9,
+    "totalMs": 5025
+  },
+  "resize-round-trip": {
+    "before": {
+      "cols": 49,
+      "rows": 46
+    },
+    "after": {
+      "cols": 49,
+      "rows": 33
+    },
+    "back": {
+      "cols": 49,
+      "rows": 46
+    },
+    "shrinkOk": true,
+    "backOk": true,
+    "shrinkMs": 56,
+    "backMs": 26,
+    "totalMs": 1586
+  },
+  "typing-window": {
+    "events": 19,
+    "chars": 49,
+    "tail": "D$((40+7))\r\n46 49\r\nD47\r\n$ clear\r\n\u001b[3J\u001b[H\u001b[2J$ echo typed-by-",
+    "totalMs": 12008
+  },
+  "flood-yes-60s": {
+    "seconds": 62.359,
+    "megabytes": 173.63,
+    "mbPerSec": 2.89,
+    "cadence": {
+      "frames": 3883,
+      "over33": 0,
+      "over100": 0,
+      "maxGapMs": 30,
+      "timerMaxMs": 21
+    },
+    "cumulativeBytesEvery5s": [
+      14114801, 28229983, 42418240, 56576085, 74902248, 89090677, 103100019, 117234808, 131310002,
+      145511531, 159553041, 173630898
+    ],
+    "parsedByRenderer": 172951299,
+    "interruptToPromptMs": 676,
+    "totalMs": 65390
+  }
+}

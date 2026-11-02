@@ -1,0 +1,50 @@
+2026-11-02T06:39:00.199Z [xterm] grid 48x50
+2026-11-02T06:39:00.478Z [xterm] attached 48x50
+2026-11-02T06:39:02.022Z [xterm] RESULT grid-and-stty {"grid":{"cols":48,"rows":50},"sttyMatchesGrid":true,"ms":2,"totalMs":10}
+2026-11-02T06:39:02.041Z [xterm] SHOW colors
+2026-11-02T06:39:04.578Z [xterm] RESULT colors-unicode {"ms":13,"totalMs":2555}
+2026-11-02T06:39:05.811Z [xterm] SHOW altscreen
+2026-11-02T06:39:08.604Z [xterm] SHOW after-altscreen
+2026-11-02T06:39:10.630Z [xterm] RESULT alt-screen {"ms":1260,"note":"primary screen must be back with PRIMARY-MARK","totalMs":6050}
+2026-11-02T06:39:10.696Z [xterm] input "\u001b[2;1R"
+2026-11-02T06:39:10.696Z [xterm] input "\u001b[>0;276;0c"
+2026-11-02T06:39:10.696Z [xterm] input "\u001b[3;1R"
+2026-11-02T06:39:10.695Z [xterm] input "\u001b[O"
+2026-11-02T06:39:10.715Z [xterm] input "\u001b[?12;2$y"
+2026-11-02T06:39:12.193Z [xterm] SHOW vim
+2026-11-02T06:39:14.737Z [xterm] RESULT tui-vim {"ms":1,"totalMs":4105}
+2026-11-02T06:39:17.276Z [xterm] SHOW top
+2026-11-02T06:39:19.819Z [xterm] RESULT tui-top {"ms":2,"totalMs":5081}
+2026-11-02T06:39:19.866Z [xterm] grid 48x35
+2026-11-02T06:39:19.890Z [xterm] SHOW shrunk
+2026-11-02T06:39:21.464Z [xterm] grid 48x50
+2026-11-02T06:39:21.486Z [xterm] RESULT resize-round-trip {"before":{"cols":48,"rows":50},"after":{"cols":48,"rows":35},"back":{"cols":48,"rows":50},"shrinkOk":true,"backOk":true,"shrinkMs":65,"backMs":73,"totalMs":1666}
+2026-11-02T06:39:21.495Z [xterm] SHOW typing
+2026-11-02T06:39:23.919Z [xterm] input "c"
+2026-11-02T06:39:23.916Z [xterm] input "ec"
+2026-11-02T06:39:23.931Z [xterm] input "o"
+2026-11-02T06:39:23.931Z [xterm] input "ho"
+2026-11-02T06:39:23.965Z [xterm] input " "
+2026-11-02T06:39:24.001Z [xterm] input "ed-"
+2026-11-02T06:39:24.001Z [xterm] input "ped-"
+2026-11-02T06:39:24.001Z [xterm] input "d-"
+2026-11-02T06:39:24.001Z [xterm] input "yped-"
+2026-11-02T06:39:24.000Z [xterm] input "typed-"
+2026-11-02T06:39:24.001Z [xterm] input "-"
+2026-11-02T06:39:24.016Z [xterm] input "b"
+2026-11-02T06:39:24.035Z [xterm] input "y-adb"
+2026-11-02T06:39:24.036Z [xterm] input "adb"
+2026-11-02T06:39:24.036Z [xterm] input "-adb"
+2026-11-02T06:39:24.036Z [xterm] input "b"
+2026-11-02T06:39:24.036Z [xterm] input "db"
+2026-11-02T06:39:24.087Z [xterm] input "12"
+2026-11-02T06:39:24.087Z [xterm] input "2"
+2026-11-02T06:39:24.085Z [xterm] input " 12"
+2026-11-02T06:39:24.096Z [xterm] input "345"
+2026-11-02T06:39:24.097Z [xterm] input "45"
+2026-11-02T06:39:24.097Z [xterm] input "5"
+2026-11-02T06:39:24.136Z [xterm] input "\r"
+2026-11-02T06:39:33.528Z [xterm] RESULT typing-window {"events":29,"chars":92,"tail":"b-adbadbdbb 12122345455\r\nbash: ecchoo: command not found\r\n$ ","totalMs":12042}
+2026-11-02T06:39:55.215Z [xterm] SHOW flood
+2026-11-02T06:40:38.853Z [xterm] DONE
+2026-11-02T06:40:38.829Z [xterm] RESULT flood-yes-60s {"seconds":63.758,"megabytes":175.31,"mbPerSec":2.92,"cadence":{"frames":1899,"over33":926,"over100":0,"maxGapMs":57,"timerMaxMs":40},"cumulativeBytesEvery5s":[14093733,28347813,42569125,56790437,75402661,89722277,103943589,118197669,132451749,146673061,160992677,175312293],"parsedByRenderer":175017381,"interruptToPromptMs":1795,"totalMs":65299}

@@ -6,15 +6,23 @@ import Foundation
 /// begins before the key was accepted.
 final class SSHBridge: Sendable {
     let registry = BridgeRegistry()
-    private let sink = Locked<(@Sendable (BridgeEvent) -> Void)?>(nil)
+    /// The event callback in a class box. Stored bare in `Locked<Value>`, every `withLock` access
+    /// reabstracts the closure and writes it back wrapped in two more thunks, so the chain grows with
+    /// each event and a flood overflowed the stack (about 5,000 nested thunks).
+    private final class Sink: Sendable {
+        let call: @Sendable (BridgeEvent) -> Void
+        init(_ call: @escaping @Sendable (BridgeEvent) -> Void) { self.call = call }
+    }
+    private let sink = Locked<Sink?>(nil)
     private let keys = DeviceKeyStore()
 
     func setSink(_ sink: @escaping @Sendable (BridgeEvent) -> Void) {
-        self.sink.withLock { $0 = sink }
+        let box = Sink(sink)
+        self.sink.withLock { $0 = box }
     }
 
     func emit(_ event: BridgeEvent) {
-        sink.withLock { $0 }?(event)
+        sink.withLock { $0 }?.call(event)
     }
 
     // MARK: Device keys
