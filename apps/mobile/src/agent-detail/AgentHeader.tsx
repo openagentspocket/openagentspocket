@@ -1,57 +1,48 @@
-import { agentDisplayName, type ConsoleRow } from '@openagentspocket/core';
+import { agentDisplayName, type ConsoleRow, rowDirectory } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Chip, ChipRow, makeStyles, ProgramMark, Text } from '@openagentspocket/ui';
-import { View } from 'react-native';
-import { statusDot } from '@/console/agentStatus';
+import { type ActionMenuItem, AgentHeader as FloatingHeader } from '@openagentspocket/ui';
 import type { Surface } from './surface';
-
-const useStyles = makeStyles((th) => ({
-  row: { flexDirection: 'row', alignItems: 'center', gap: th.spacing.xs },
-  text: { flex: 1 },
-}));
 
 interface Props {
   row: ConsoleRow;
   surface: Surface;
   onSurface: (surface: Surface) => void;
+  onSidebar: () => void;
+  /** Changes, Files, Ports and the rest, from the route. */
+  menu?: readonly ActionMenuItem[];
 }
 
-/** Program mark with status, the Agent's name and place, and the Chat/Terminal toggle. */
-export function AgentHeader({ row, surface, onSurface }: Props) {
-  const styles = useStyles();
-  const status = statusDot(row.agent.agent_status);
-  const place = [row.hostName, row.workspaceLabel].filter(Boolean).join(' · ');
+const tail = (path: string | undefined) => path?.split('/').filter(Boolean).at(-1);
+
+/** The floating header: Sessions circle, the Agent's title block, one ... menu with Chat/Terminal. */
+export function AgentHeader({ row, surface, onSurface, onSidebar, menu = [] }: Props) {
+  const items: ActionMenuItem[] = [
+    {
+      key: 'surface-chat',
+      title: t('Show Chat'),
+      icon: 'chat',
+      checked: surface === 'chat',
+      onPress: () => onSurface('chat'),
+    },
+    {
+      key: 'surface-terminal',
+      title: t('Show Terminal'),
+      icon: 'terminal',
+      checked: surface === 'terminal',
+      onPress: () => onSurface('terminal'),
+    },
+    ...menu,
+  ];
   return (
-    <View testID="agent-header">
-      <View style={styles.row}>
-        <ProgramMark program={row.agent.agent ?? 'unknown'} status={status} size={28} />
-        <View style={styles.text}>
-          <Text variant="headline" numberOfLines={1}>
-            {agentDisplayName(row.agent)}
-          </Text>
-          <Text variant="footnote" tone="secondary" numberOfLines={1}>
-            {place}
-          </Text>
-        </View>
-      </View>
-      <View accessibilityLabel={t('Agent view')}>
-        <ChipRow>
-          <Chip
-            label={t('Chat')}
-            mono={false}
-            selected={surface === 'chat'}
-            onPress={() => onSurface('chat')}
-            testID="surface-chat"
-          />
-          <Chip
-            label={t('Terminal')}
-            mono={false}
-            selected={surface === 'terminal'}
-            onPress={() => onSurface('terminal')}
-            testID="surface-terminal"
-          />
-        </ChipRow>
-      </View>
-    </View>
+    <FloatingHeader
+      surface={surface}
+      onSidebar={onSidebar}
+      menu={items}
+      eyebrow={[row.hostName, row.agent.agent].filter(Boolean).join(' · ')}
+      title={agentDisplayName(row.agent)}
+      subtitle={[row.workspaceLabel, tail(rowDirectory(row))].filter(Boolean).join(' · ')}
+      labels={{ sidebar: t('Sessions'), more: t('More') }}
+      testID="agent-header"
+    />
   );
 }
