@@ -39,7 +39,7 @@ export function comparePluginVersions(a: PluginVersion, b: PluginVersion): numbe
  * `packages/plugin/test-vectors/plugin-version-v1.json` pins it: a plugin
  * release bumps both. A Host with a newer plugin counts as current.
  */
-export const BUNDLED_PLUGIN_VERSION: PluginVersion = { major: 0, minor: 11, patch: 0 };
+export const BUNDLED_PLUGIN_VERSION: PluginVersion = { major: 0, minor: 12, patch: 0 };
 
 /**
  * App features that need a recent enough plugin. 0.3.0 gained the Live
