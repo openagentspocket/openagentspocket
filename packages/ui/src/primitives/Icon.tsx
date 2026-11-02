@@ -83,6 +83,13 @@ const ICONS = {
   skills: { ios: 'sparkle', android: 'auto_awesome' },
   snippets: { ios: 'text.alignleft', android: 'notes' },
   appearance: { ios: 'paintpalette', android: 'palette' },
+  // Settings rows and the app lock.
+  lock: { ios: 'lock', android: 'lock' },
+  faceId: { ios: 'faceid', android: 'face' },
+  fontSize: { ios: 'textformat.size', android: 'text_fields' },
+  chat: { ios: 'bubble.left', android: 'chat_bubble' },
+  agentRows: { ios: 'list.bullet.rectangle', android: 'view_list' },
+  network: { ios: 'point.3.connected.trianglepath.dotted', android: 'hub' },
   // Toolbars and the iPad sidebar.
   home: { ios: 'house', android: 'home' },
   filter: { ios: 'line.3.horizontal.decrease.circle', android: 'filter_list' },
