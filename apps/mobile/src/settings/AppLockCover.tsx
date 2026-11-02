@@ -19,7 +19,7 @@ const useStyles = makeStyles((th) => ({
 /** Covers the app while it is in the switcher or locked, and offers the unlock prompt. */
 export function AppLockCover() {
   const styles = useStyles();
-  const { covered, locked, unlock } = useAppLock();
+  const { covered, locked, message, unlock } = useAppLock();
   const authenticator = useAuthenticator();
   const [kind, setKind] = useState<string | null>(null);
 
@@ -37,6 +37,7 @@ export function AppLockCover() {
     <View style={styles.cover} testID="app-lock-cover" accessibilityViewIsModal>
       <Icon name="settings" size={32} />
       <Text variant="headline">{t('Agentico Is Locked')}</Text>
+      {locked && message ? <Text testID="app-lock-message">{message}</Text> : null}
       {locked ? (
         <Button
           title={t('Unlock with %@', kind ?? t('Passcode'))}

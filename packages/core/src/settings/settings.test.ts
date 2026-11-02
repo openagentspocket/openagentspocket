@@ -110,6 +110,21 @@ describe('app lock', () => {
     expect(gate.locked).toBe(true);
   });
 
+  it('covers on inactive without starting the grace clock', () => {
+    const gate = new AppLockGate(true, 'immediately');
+    gate.unlock();
+    gate.cover();
+    expect(gate.covered).toBe(true);
+    expect(gate.away).toBe(false);
+    gate.activate(1_000);
+    expect(gate.covered).toBe(false);
+    expect(gate.locked).toBe(false);
+    gate.deactivate(2_000);
+    expect(gate.away).toBe(true);
+    gate.activate(2_000);
+    expect(gate.locked).toBe(true);
+  });
+
   it('does nothing while off', () => {
     const gate = new AppLockGate(false, 'immediately');
     gate.deactivate(0);

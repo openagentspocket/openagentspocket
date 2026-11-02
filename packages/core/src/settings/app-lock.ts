@@ -40,7 +40,20 @@ export class AppLockGate {
     }
   }
 
-  /** The app left the foreground (inactive or background). */
+  /** True once the app really went to the background and has not come back. */
+  get away(): boolean {
+    return this.leftAt !== null;
+  }
+
+  /**
+   * The app went inactive (OS sheet, app switcher peek): hide the content but do not start the
+   * grace clock, as Swift records `leftAt` only on didEnterBackground.
+   */
+  cover(): void {
+    if (this.enabled) this.covered = true;
+  }
+
+  /** The app entered the background; the grace period counts from here. */
   deactivate(nowMs: number): void {
     if (!this.enabled) return;
     this.covered = true;

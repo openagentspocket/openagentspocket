@@ -75,7 +75,11 @@ export function SettingsRowView({ row, ctx }: Props) {
           value={ctx.values[row.key]}
           onValueChange={async (next) => {
             // Turning the lock on or off asks the owner first, as the Swift app does.
-            if (row.requireAuth && !(await authenticator.authenticate(title))) return;
+            if (row.requireAuth) {
+              const result = await authenticator.authenticate(title);
+              // A device with no auth set up cannot prompt; never leave the owner unable to change it.
+              if (result !== 'success' && result !== 'unavailable') return;
+            }
             store.set(row.key, next);
           }}
           testID={row.id}

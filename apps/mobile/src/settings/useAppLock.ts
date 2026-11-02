@@ -9,6 +9,8 @@ export interface AppLockView {
   covered: boolean;
   /** Ask the owner to unlock. */
   locked: boolean;
+  /** Why the last unlock attempt did not unlock, when worth telling the owner. */
+  message: string | null;
   unlock: () => Promise<void>;
 }
 
@@ -21,6 +23,7 @@ export function useAppLock(now: () => number = Date.now): AppLockView {
   const authenticator = useAuthenticator();
   const gate = useRef<AppLockGate | null>(null);
   gate.current ??= new AppLockGate(appLockEnabled, appLockGrace);
+  const [message, setMessage] = useState<string | null>(null);
   const [, setVersion] = useState(0);
   const refresh = useCallback(() => setVersion((v) => v + 1), []);
 
@@ -31,22 +34,47 @@ export function useAppLock(now: () => number = Date.now): AppLockView {
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') gate.current?.activate(now());
-      else gate.current?.deactivate(now());
+      const g = gate.current;
+      if (!g) return;
+      // The app's own prompt makes the app go inactive and active; that is not leaving it.
+      // A real trip to the background during the prompt is still honored.
+      if (authenticator.isPrompting() && state !== 'background' && !g.away) return;
+      if (state === 'active') {
+        g.activate(now());
+        // The device may have lost its passcode while the app was locked; never lock the owner out.
+        if (g.locked) {
+          authenticator.kind().then((kind) => {
+            if (kind === null && gate.current?.locked) {
+              gate.current.unlock();
+              refresh();
+            }
+          });
+        }
+      } else if (state === 'background') g.deactivate(now());
+      else g.cover();
       refresh();
     });
     return () => subscription.remove();
-  }, [now, refresh]);
+  }, [authenticator, now, refresh]);
 
   const unlock = useCallback(async () => {
     const kind = await authenticator.kind();
     // A device that lost its biometrics and passcode cannot prompt; never lock the owner out.
-    if (kind === null || (await authenticator.authenticate(t('Agentico Is Locked')))) {
+    const result =
+      kind === null ? 'unavailable' : await authenticator.authenticate(t('Agentico Is Locked'));
+    if (result === 'success' || result === 'unavailable') {
+      setMessage(null);
       gate.current?.unlock();
-      refresh();
+    } else {
+      setMessage(
+        result === 'denied'
+          ? t("%@ did not confirm it's you. Try again.", kind ?? t('Passcode'))
+          : null,
+      );
     }
+    refresh();
   }, [authenticator, refresh]);
 
   const current = gate.current;
-  return { covered: current.covered || current.locked, locked: current.locked, unlock };
+  return { covered: current.covered || current.locked, locked: current.locked, message, unlock };
 }
