@@ -25,5 +25,8 @@ export function redirectLink(path: string): string {
     : /^\/(agent|usage)(\/|\?|$)/.test(path);
   if (!ours) return path;
   const link = parseAppLink(path);
-  return link ? routeForLink(link) : '/';
+  if (link) return routeForLink(link);
+  // Dev-only routes (__atlas, __ssh, ...) opened by scheme link keep their path.
+  const dev = /^[a-z][a-z0-9+.-]*:\/\/\/?(__[^#]*)/i.exec(path)?.[1];
+  return dev ? `/${dev}` : '/';
 }
