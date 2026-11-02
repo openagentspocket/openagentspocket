@@ -3,6 +3,7 @@ import { t } from '@openagentspocket/i18n';
 import { type ActionMenuItem, Icon, ListRow, ProgramMark } from '@openagentspocket/ui';
 import { type Href, useRouter } from 'expo-router';
 import { statusDot } from '../../console/agentStatus';
+import { useEntryMenus } from '../../navigation/entryMenus';
 
 /** The agent detail route (built by the detail task). */
 export function agentHref(row: Pick<ConsoleRow, 'hostId' | 'agent'>): Href {
@@ -22,12 +23,14 @@ interface AgentRowProps {
 
 export function AgentRow({ row, pinned, showHost, onTogglePin, onRename, onClose }: AgentRowProps) {
   const router = useRouter();
+  const entries = useEntryMenus();
   const subtitle = [
     row.lastOutputSnippet,
     showHost ? row.hostName : undefined,
     row.workspaceLabel,
   ].filter((part) => part !== undefined && part !== '');
   const menu: ActionMenuItem[] = [
+    ...entries.agent(row),
     {
       key: 'pin',
       title: pinned ? t('Unpin') : t('Pin'),

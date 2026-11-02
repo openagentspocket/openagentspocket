@@ -1,5 +1,13 @@
 import { t } from '@openagentspocket/i18n';
-import { Card, Icon, makeStyles, StatusDot, Text } from '@openagentspocket/ui';
+import {
+  ActionMenuButton,
+  type ActionMenuItem,
+  Card,
+  Icon,
+  makeStyles,
+  StatusDot,
+  Text,
+} from '@openagentspocket/ui';
 import { View } from 'react-native';
 import type { HostSummary } from '@/console/store';
 import { hostState } from './homeModel';
@@ -25,10 +33,12 @@ interface HostCardProps {
   host: HostSummary;
   agentCount: number;
   onOpen: (hostId: string) => void;
+  /** The Host's entry points (New Agent, Files, Ports). */
+  menu?: readonly ActionMenuItem[];
 }
 
 /** One Host: its name, a connection dot and an Agent count; opens the Host. */
-export function HostCard({ host, agentCount, onOpen }: HostCardProps) {
+export function HostCard({ host, agentCount, onOpen, menu }: HostCardProps) {
   const styles = useStyles();
   const state = hostState(host);
   const summary = hostSummaryText(host, agentCount);
@@ -49,6 +59,14 @@ export function HostCard({ host, agentCount, onOpen }: HostCardProps) {
           </Text>
         </View>
         <StatusDot status={state === 'live' ? 'done' : state === 'offline' ? 'blocked' : 'idle'} />
+        {menu && menu.length > 0 ? (
+          <ActionMenuButton
+            items={menu}
+            title={host.name}
+            accessibilityLabel={t('More')}
+            testID={`host-menu-`}
+          />
+        ) : null}
       </View>
     </Card>
   );

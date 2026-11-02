@@ -1,6 +1,11 @@
 {
   "Agent view": "Agent view",
+  "Board": "Board",
   "Chat arrives with the conversation engine.": "Chat arrives with the conversation engine.",
+  "Demo Mode": "Demo Mode",
+  "Demo mode is set by the EXPO_PUBLIC_DEMO build flag.": "Demo mode is set by the EXPO_PUBLIC_DEMO build flag.",
+  "New Agent Here": "New Agent Here",
+  "Show scripted sample data instead of connecting to your Hosts.": "Show scripted sample data instead of connecting to your Hosts.",
   "Switch Agent": "Switch Agent",
   "Terminal attach is not available yet.": "Terminal attach is not available yet."
 }

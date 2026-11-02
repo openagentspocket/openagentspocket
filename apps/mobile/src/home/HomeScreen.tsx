@@ -11,6 +11,7 @@ import {
 } from '@openagentspocket/ui';
 import { Fragment, useMemo } from 'react';
 import { useConsoleState, useStatusInbox } from '../console/hooks';
+import { useEntryMenus } from '../navigation/entryMenus';
 import { HostCard } from './HostCard';
 import { type HomeInboxSection, homeContent } from './homeModel';
 import { InboxCard } from './InboxCard';
@@ -37,6 +38,7 @@ export function HomeScreen({ onOpenAgent, onOpenHost, onAddHost, onSeeAll }: Hom
   const inbox = useStatusInbox();
   const content = useMemo(() => homeContent(inbox, hosts), [inbox, hosts]);
   const now = Date.now();
+  const menus = useEntryMenus();
 
   if (hosts.length === 0) {
     return (
@@ -102,6 +104,7 @@ export function HomeScreen({ onOpenAgent, onOpenHost, onAddHost, onSeeAll }: Hom
           host={host}
           agentCount={rows.filter((row) => row.hostId === host.id).length}
           onOpen={(id) => onOpenHost?.(id)}
+          menu={menus.host(host)}
         />
       ))}
     </Screen>

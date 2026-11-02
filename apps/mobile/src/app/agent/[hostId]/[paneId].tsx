@@ -1,24 +1,46 @@
+import { agentKey } from '@openagentspocket/core';
+import { t } from '@openagentspocket/i18n';
+import { ActionMenuButton } from '@openagentspocket/ui';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import { parseSurface } from '@/agent-detail/surface';
+import { useAgent } from '@/console/hooks';
+import { useEntryMenus } from '@/navigation/entryMenus';
 import { deviceStorage } from '@/settings/deviceStorage';
 
 export default function AgentRoute() {
   const router = useRouter();
   const params = useLocalSearchParams<{ hostId: string; paneId: string; surface?: string }>();
+  const row = useAgent(agentKey(params.hostId, params.paneId));
+  const entries = useEntryMenus();
+  // The header "more" menu: Changes, Ports and New Agent here (Open is where the user already is).
+  const items = row ? entries.agent(row).filter((item) => item.key !== 'open') : [];
   return (
     <>
-      <Stack.Screen options={{ headerShown: true, title: '' }} />
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          title: '',
+          headerRight: () =>
+            items.length > 0 ? (
+              <ActionMenuButton
+                items={items}
+                accessibilityLabel={t('More')}
+                testID="agent-more-menu"
+              />
+            ) : null,
+        }}
+      />
       <AgentDetailScreen
         key={`${params.hostId}/${params.paneId}`}
         hostId={params.hostId}
         paneId={params.paneId}
         storage={deviceStorage}
         surface={parseSurface(params.surface)}
-        onSwitch={(row) =>
+        onSwitch={(next) =>
           router.replace({
             pathname: '/agent/[hostId]/[paneId]',
-            params: { hostId: row.hostId, paneId: row.agent.pane_id },
+            params: { hostId: next.hostId, paneId: next.agent.pane_id },
           })
         }
       />

@@ -9,11 +9,11 @@ export const REPOSITORY_URL = 'https://github.com/openagentspocket/openagentspoc
 
 /** Routes of screens other tasks own; set a route here when that screen lands. */
 export const SETTINGS_ROUTES = {
-  notifications: null,
+  notifications: '/settings/notifications',
   agentRows: null,
   snippets: null,
-  hosts: null,
-  usage: null,
+  hosts: '/hosts',
+  usage: '/usage',
   setupGuide: null,
 } as const satisfies Record<string, string | null>;
 
@@ -150,7 +150,15 @@ export const root: SettingsPage = {
     {
       id: 'general',
       title: () => t('General'),
-      rows: [route('usage', () => t('Usage'), 'clock')],
+      rows: [
+        route('usage', () => t('Usage'), 'clock'),
+        {
+          kind: 'custom',
+          id: 'settings.general.demoMode',
+          title: () => t('Demo Mode'),
+          component: 'demoMode',
+        },
+      ],
     },
     {
       id: 'help',

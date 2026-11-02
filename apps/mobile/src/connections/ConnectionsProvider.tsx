@@ -1,24 +1,35 @@
-import { type ReactNode, useEffect, useMemo } from 'react';
+import { type ReactNode, useEffect, useSyncExternalStore } from 'react';
 import { AppState } from 'react-native';
+import { CompositionProvider } from '@/composition/CompositionProvider';
+import { deviceComposition } from '@/composition/deviceComposition';
 import { ConsoleStoreProvider } from '@/console/hooks';
 import { deviceServices } from './deviceServices';
-import { isDemoMode } from './mode';
+import { isDemoMode, subscribeDemoMode } from './mode';
 
 /**
  * Starts the live connections and hands the Console its store, unless demo mode is on (then
  * the Console keeps its scripted data). Foreground resumes the Hosts, background suspends them.
+ * Flipping demo mode at runtime suspends the Hosts or resumes them.
  */
 export function ConnectionsProvider({ children }: { children: ReactNode }) {
-  const services = useMemo(() => (isDemoMode() ? null : deviceServices()), []);
+  const demo = useSyncExternalStore(subscribeDemoMode, isDemoMode);
   useEffect(() => {
-    if (!services) return;
-    services.manager.start();
-    void services.manager.setActive(AppState.currentState === 'active');
+    if (demo) return;
+    const { manager } = deviceServices();
+    manager.start();
+    void manager.setActive(AppState.currentState === 'active');
     const subscription = AppState.addEventListener('change', (state) => {
-      void services.manager.setActive(state === 'active');
+      void manager.setActive(state === 'active');
     });
-    return () => subscription.remove();
-  }, [services]);
-  if (!services) return <>{children}</>;
-  return <ConsoleStoreProvider store={services.store}>{children}</ConsoleStoreProvider>;
+    return () => {
+      subscription.remove();
+      void manager.setActive(false);
+    };
+  }, [demo]);
+  if (demo) return <>{children}</>;
+  return (
+    <ConsoleStoreProvider store={deviceServices().store}>
+      <CompositionProvider composition={deviceComposition()}>{children}</CompositionProvider>
+    </ConsoleStoreProvider>
+  );
 }
