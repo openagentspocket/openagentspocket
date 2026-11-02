@@ -4,7 +4,7 @@ import { useNotificationServices } from './services';
 
 /** The settings screen's state: push permission/token, per-Host states, and the actions. */
 export function useNotificationSettings() {
-  const { store, relay, pushToken, pluginVersionOf } = useNotificationServices();
+  const { store, relay, pushToken, pluginVersionOf, liveActivity } = useNotificationServices();
   const states = useSyncExternalStore(store.subscribe, () => store.states);
   const relayText = useSyncExternalStore(relay.subscribe, () => relay.rawValue);
   const [push, setPush] = useState<PushRegistrationState>({ kind: 'unknown' });
@@ -29,5 +29,5 @@ export function useNotificationSettings() {
   }, [pushToken]);
 
   const refresh = useCallback(() => store.refresh(), [store]);
-  return { store, relay, relayText, states, push, enable, refresh, pluginVersionOf };
+  return { store, relay, relayText, states, push, enable, refresh, pluginVersionOf, liveActivity };
 }

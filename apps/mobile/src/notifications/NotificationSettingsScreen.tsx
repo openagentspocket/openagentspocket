@@ -15,7 +15,7 @@ import { useNotificationSettings } from './useNotificationSettings';
  */
 export function NotificationSettingsScreen() {
   const router = useRouter();
-  const { store, relay, relayText, states, push, enable, refresh, pluginVersionOf } =
+  const { store, relay, relayText, states, push, enable, refresh, pluginVersionOf, liveActivity } =
     useNotificationSettings();
   const [explaining, setExplaining] = useState(false);
 
@@ -31,6 +31,7 @@ export function NotificationSettingsScreen() {
               store={store}
               plugin={pluginVersionOf(host.id)}
               onRetry={refresh}
+              liveActivity={liveActivity}
             />
           ))
         : null}

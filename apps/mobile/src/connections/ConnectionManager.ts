@@ -7,6 +7,7 @@ import {
   type HostKeyPolicy,
   type KnownHostsStore,
   type ReconnectPolicy,
+  TransportFailure,
 } from '@openagentspocket/core';
 import { connectTransport, type SshTransport } from '@openagentspocket/transport';
 import type { SshModule } from 'agentico-ssh';
@@ -107,6 +108,20 @@ export class ConnectionManager {
     this.active = active;
     const work = [...this.entries.values()].map((entry) => this.applyActive(entry, active));
     await Promise.all(work);
+  }
+
+  /**
+   * Runs an operation on a Host's current Transport (waiting out a reconnect); a Host that is not
+   * managed is unreachable.
+   */
+  withTransport<V>(hostId: string, operation: (transport: SshTransport) => Promise<V>): Promise<V> {
+    const entry = this.entries.get(hostId);
+    if (!entry) {
+      return Promise.reject(
+        new TransportFailure({ kind: 'sshUnreachable', detail: 'The Host is not connected.' }),
+      );
+    }
+    return entry.session.withTransport(operation);
   }
 
   /** A user-requested retry, for example after trusting a changed key. */

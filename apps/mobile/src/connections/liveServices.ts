@@ -6,16 +6,25 @@ import {
   type HostKeyCandidate,
   type KeyValueStorage,
   type KnownHostsStore,
+  type LiveActivityController,
+  type NotificationTransportProvider,
   type PairingDeviceKeyLoad,
   PairingScanStore,
   PinnedAgents,
+  type RandomBytes,
 } from '@openagentspocket/core';
 import type { SshTransport } from '@openagentspocket/transport';
+import { pluginConfigFiles } from '@openagentspocket/transport';
+import { type AppGroupStore, unavailableAppGroup } from 'agentico-app-group';
+import { unavailableLiveActivities } from 'agentico-live-activity';
 import type { SshModule } from 'agentico-ssh';
 import { ConsoleStore } from '@/console/store';
 import { HostsModel } from '@/features/hosts/HostsModel';
 import type { HostsRuntime } from '@/features/hosts/hostsRuntime';
 import { ModelPairingCatalog } from '@/features/hosts/pairingAdapters';
+import { LiveActivityRuntime } from '@/live-activity/runtime';
+import { createLiveNotificationParts } from '@/notifications/liveServices';
+import type { NotificationServices } from '@/notifications/services';
 import { ConnectionManager } from './ConnectionManager';
 import { SshHostProbe } from './SshHostProbe';
 import { createModuleConnector, pairingDeviceKey } from './sshPairing';
@@ -35,12 +44,19 @@ export interface LiveDeps {
   readonly confirmFirstConnect?: (candidate: HostKeyCandidate) => Promise<boolean>;
   readonly initiallyActive?: boolean;
   readonly trustTimeoutMs?: number;
+  /** The App Group and shared Keychain; unavailable off Apple platforms and in tests. */
+  readonly appGroup?: AppGroupStore;
+  readonly liveActivities?: LiveActivityController;
+  /** Secure bytes for Notification Keys and nonces. */
+  readonly randomBytes: RandomBytes;
 }
 
 export interface LiveServices {
   readonly runtime: HostsRuntime;
   readonly store: ConsoleStore<SshTransport>;
   readonly manager: ConnectionManager;
+  readonly notifications: NotificationServices;
+  readonly liveActivity: LiveActivityRuntime;
 }
 
 /** Wires the persisted catalog, the SSH transport and the Console store into one app. */
@@ -94,5 +110,39 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
         loadDeviceKey,
       }),
   };
-  return { runtime, store, manager };
+  const transports: NotificationTransportProvider = {
+    withTransport: (host, operation) =>
+      manager.withTransport(host.id, (transport) => operation(pluginConfigFiles(transport))),
+  };
+  const parts = createLiveNotificationParts({
+    hosts: model,
+    transports,
+    appGroup: deps.appGroup ?? unavailableAppGroup,
+    storage: deps.storage,
+    clock: deps.clock,
+    randomBytes: deps.randomBytes,
+  });
+  const liveActivity = new LiveActivityRuntime({
+    store,
+    hosts: model,
+    controller: deps.liveActivities ?? unavailableLiveActivities,
+    storage: deps.storage,
+    transports,
+    keys: parts.keys,
+    ceremony: parts.ceremony,
+    clock: deps.clock,
+    randomBytes: deps.randomBytes,
+    deviceToken: parts.deviceToken,
+  });
+  const notifications: NotificationServices = {
+    ...parts.services,
+    liveActivity: {
+      get activitiesEnabled() {
+        return liveActivity.activitiesEnabled;
+      },
+      isEnabled: (hostId) => liveActivity.isEnabled(hostId),
+      setEnabled: (enabled, hostId) => liveActivity.setEnabled(enabled, hostId),
+    },
+  };
+  return { runtime, store, manager, notifications, liveActivity };
 }

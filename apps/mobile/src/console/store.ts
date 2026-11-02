@@ -103,6 +103,11 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     return this.options.pins.isPinned(hostId, paneId);
   }
 
+  /** A Host's pinned panes, most recently pinned first. */
+  pinnedPaneIds(hostId: string): string[] {
+    return this.options.pins.pinnedPaneIds(hostId);
+  }
+
   togglePin(hostId: string, paneId: string): void {
     this.options.pins.togglePin(hostId, paneId);
     this.recompute();

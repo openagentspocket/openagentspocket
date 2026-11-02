@@ -10,8 +10,10 @@ import {
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Button, Section, Text, ToggleRow } from '@openagentspocket/ui';
+import { useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { renderMessage } from './renderText';
+import type { LiveActivityToggles } from './services';
 
 interface Props {
   host: Host;
@@ -19,6 +21,7 @@ interface Props {
   store: NotificationPreferencesStore;
   plugin: PluginVersion | null;
   onRetry: () => void;
+  liveActivity?: LiveActivityToggles;
 }
 
 /** What the section shows for a state that has confirmed settings, or null. */
@@ -42,7 +45,15 @@ function approvalsNote(plugin: PluginVersion | null): string | null {
 }
 
 /** One Host's notification preferences: the confirmed truth, never an optimistic flip. */
-export function HostNotificationSection({ host, state, store, plugin, onRetry }: Props) {
+export function HostNotificationSection({
+  host,
+  state,
+  store,
+  plugin,
+  onRetry,
+  liveActivity,
+}: Props) {
+  const [liveOn, setLiveOn] = useState(() => liveActivity?.isEnabled(host.id) ?? false);
   const settings = settingsOf(state);
   const busy = state?.kind === 'updating';
   const testID = `notifications-host-${host.id}`;
@@ -55,6 +66,13 @@ export function HostNotificationSection({ host, state, store, plugin, onRetry }:
       ),
     );
     if (note) footer.push(note);
+  }
+  if (settings?.isRegistered && liveActivity && liveOn && !liveActivity.activitiesEnabled) {
+    footer.push(
+      t(
+        'Live Activities are turned off for Agentico. Enable them in Settings to show this Host on the Lock Screen.',
+      ),
+    );
   }
   if (state?.kind === 'failed') footer.push(renderMessage(state.message));
 
@@ -97,6 +115,17 @@ export function HostNotificationSection({ host, state, store, plugin, onRetry }:
           disabled={busy || (!settings.notify.approve && note !== null)}
           testID={`${testID}-approve`}
           onValueChange={(on) => void store.setApprovalsEnabled(on, host)}
+        />
+      ) : null}
+      {settings?.isRegistered && liveActivity ? (
+        <ToggleRow
+          title={t('Live Activity')}
+          value={liveOn}
+          testID={`${testID}-live-activity`}
+          onValueChange={(on) => {
+            setLiveOn(on);
+            liveActivity.setEnabled(on, host.id);
+          }}
         />
       ) : null}
     </Section>
