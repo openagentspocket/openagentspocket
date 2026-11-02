@@ -7,12 +7,25 @@ import {
   type PairingConnector,
   type PairingDeviceKeyLoad,
   PairingScanStore,
+  type PluginStep,
 } from '@openagentspocket/core';
+import type { OverlayPeer } from '@openagentspocket/ui';
 import { isDemoMode } from '@/connections/mode';
 import { newUuid } from '@/connections/uuid';
 import { DemoHostProbe, type HostProbe } from './HostProbe';
 import { HostsModel } from './HostsModel';
 import { DemoPairingConnector, demoDeviceKey, ModelPairingCatalog } from './pairingAdapters';
+
+/** The overlay network a route can pick its address from (Swift's Tailnet / Network chooser). */
+export interface PeerSource {
+  /** The sheet title: the network's name. */
+  readonly networkName: string;
+  /** Whether machines have names besides their IP (a tailnet). */
+  readonly offersMachineNames: boolean;
+  /** Words the chooser row: "Choose from Tailnet…" or "Choose from Network…". */
+  readonly kind: 'tailnet' | 'network';
+  load(): Promise<readonly OverlayPeer[]>;
+}
 
 /** Everything the Hosts screens talk to; tests and the live transport swap the parts. */
 export interface HostsRuntime {
@@ -26,9 +39,39 @@ export interface HostsRuntime {
   readonly confirmFirstConnect?: HostKeyPolicy['confirmFirstConnect'];
   /** Tells the live connections a Host passed its checks (or trusted a new key): redial it. */
   readonly reconnect?: (hostId: string) => Promise<void>;
+  /** Overlay networks to pick a route address from; absent until overlay sign-in exists. */
+  readonly peers?: PeerSource;
+  /** Replaces this device's SSH key (a user-approved recovery); absent in the demo build. */
+  readonly replaceDeviceKey?: () => Promise<void>;
+  /** Runs the plugin notice's steps on a Host; absent when the build cannot reach it. */
+  readonly runPluginSteps?: (hostId: string, steps: readonly PluginStep[]) => Promise<void>;
   /** A fresh scan store per pairing screen. */
   createScanStore(): PairingScanStore;
 }
+
+/** The offline build's scripted tailnet. */
+export const demoPeerSource: PeerSource = {
+  networkName: 'Tailnet',
+  offersMachineNames: true,
+  kind: 'tailnet',
+  load: async () => [
+    {
+      id: 'build-server',
+      name: 'build-server',
+      ip: '100.101.102.12',
+      machineName: 'build-server.tailnet.ts.net',
+      reachability: 'Direct',
+    },
+    {
+      id: 'media-nas',
+      name: 'media-nas',
+      ip: '100.101.102.13',
+      machineName: 'media-nas.tailnet.ts.net',
+      offline: true,
+      reachability: 'Offline',
+    },
+  ],
+};
 
 export function createDemoRuntime(overrides: Partial<HostsRuntime> = {}): HostsRuntime {
   const model =
@@ -48,6 +91,9 @@ export function createDemoRuntime(overrides: Partial<HostsRuntime> = {}): HostsR
     connector,
     loadDeviceKey,
     reconnect: overrides.reconnect,
+    peers: overrides.peers ?? demoPeerSource,
+    replaceDeviceKey: overrides.replaceDeviceKey,
+    runPluginSteps: overrides.runPluginSteps,
     confirmFirstConnect: overrides.confirmFirstConnect,
     trustTimeoutMs: overrides.trustTimeoutMs ?? 60_000,
     createScanStore: () =>

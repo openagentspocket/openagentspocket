@@ -16,6 +16,12 @@ const useStyles = makeStyles((t) => ({
     color: t.colors.textPrimary,
     fontSize: 15,
   },
+  inline: {
+    minHeight: t.metrics.rowMinHeight,
+    paddingHorizontal: t.spacing.md,
+    color: t.colors.textPrimary,
+    fontSize: 17,
+  },
   multiline: { minHeight: 88, textAlignVertical: 'top' },
   mono: { fontFamily: monoFamily, fontSize: 14 },
   invalid: { borderColor: t.colors.danger },
@@ -30,6 +36,8 @@ export interface TextFieldProps
   hint?: string;
   /** Monospaced input, for hosts, paths, keys. */
   mono?: boolean;
+  /** A bare row for a grouped card (Swift form rows): no label above, no box; the label is the placeholder. */
+  inline?: boolean;
   ref?: Ref<TextInputInstance>;
 }
 
@@ -39,6 +47,7 @@ export function TextField({
   error,
   hint,
   mono = false,
+  inline = false,
   multiline,
   testID,
   ref,
@@ -48,9 +57,11 @@ export function TextField({
   const theme = useTheme();
   return (
     <View style={styles.field}>
-      <Text variant="footnote" tone="secondary">
-        {label}
-      </Text>
+      {inline ? null : (
+        <Text variant="footnote" tone="secondary">
+          {label}
+        </Text>
+      )}
       <TextInput
         ref={ref}
         {...input}
@@ -58,11 +69,12 @@ export function TextField({
         accessibilityLabel={input.accessibilityLabel ?? label}
         accessibilityHint={error ?? hint}
         aria-invalid={error !== undefined}
+        placeholder={inline ? (input.placeholder ?? label) : input.placeholder}
         placeholderTextColor={theme.colors.textTertiary}
         selectionColor={theme.colors.accent}
         keyboardAppearance={theme.appearance}
         style={[
-          styles.input,
+          inline ? styles.inline : styles.input,
           multiline && styles.multiline,
           mono && styles.mono,
           error !== undefined && styles.invalid,

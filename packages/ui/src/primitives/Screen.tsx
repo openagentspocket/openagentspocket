@@ -28,6 +28,8 @@ interface ScreenProps {
    * text went to the previously focused field).
    */
   keyboardAvoiding?: boolean;
+  /** Pinned above the scrolling body (a sheet bar); it never scrolls. */
+  header?: ReactNode;
   testID?: string;
 }
 
@@ -39,6 +41,7 @@ export function Screen({
   onRefresh,
   edges = ALL_EDGES,
   keyboardAvoiding = false,
+  header,
   testID = 'screen',
 }: ScreenProps) {
   const styles = useStyles();
@@ -55,6 +58,7 @@ export function Screen({
   return (
     <SafeAreaView style={styles.root} edges={edges} testID={testID}>
       <ScreenBackground />
+      {header}
       <KeyboardAvoidingView
         style={styles.fill}
         enabled={keyboardAvoiding}

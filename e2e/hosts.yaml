@@ -10,10 +10,13 @@ appId: com.openagentspocket.app
 - openLink: openagentspocket:///hosts
 - assertVisible: "No Hosts"
 - tapOn:
-    id: hosts-add
+    id: hosts-empty-add
 - tapOn:
     id: host-user
 - inputText: demo
+# The route lives on its own page: open it, type the address, and come back.
+- tapOn:
+    id: route-0
 - tapOn:
     id: route-0-address
 - inputText: workshop.example
@@ -21,6 +24,8 @@ appId: com.openagentspocket.app
     id: route-0-port
 - eraseText: 5
 - inputText: "22"
+- tapOn:
+    id: route-back
 # hideKeyboard fails on iOS 26.5: tap a static label, then scroll to the button.
 - tapOn: "Routes"
 - scrollUntilVisible:

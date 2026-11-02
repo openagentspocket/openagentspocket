@@ -6,6 +6,12 @@ export * from './components/composerExtras';
 export * from './components/homeShell';
 export * from './components/hostsSettingsFiles';
 export * from './components/navSheets';
+export {
+  type OverlayPeer,
+  type OverlayPeerMode,
+  OverlayPeerPicker,
+} from './components/OverlayPeerPicker';
+export { SheetBar, type SheetBarItem } from './components/SheetBar';
 export * from './components/settingsPickers';
 export * from './components/usage';
 export {

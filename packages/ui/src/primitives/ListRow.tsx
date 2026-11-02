@@ -36,8 +36,14 @@ export interface ListRowProps {
   leading?: ReactNode;
   /** A settings-style leading symbol: 22 pt, tinted secondary. */
   icon?: IconName;
+  /** Sets the title in the monospaced face (addresses). */
+  titleMono?: boolean;
   /** Sets the subtitle in monospaced caption (dates, sizes, paths). */
   subtitleMono?: boolean;
+  /** Sets the title in semibold (Host names). */
+  titleSemibold?: boolean;
+  /** The subtitle's size: footnote by default, subheadline for a larger address line. */
+  subtitleVariant?: 'footnote' | 'subheadline';
   /** Lines the subtitle may take before it truncates (2 by default). */
   subtitleLines?: number;
   /** A short value in secondary text before the trailing slot ("Índigo", "3 hosts"). */
@@ -77,6 +83,9 @@ export function ListRow({
   title,
   subtitle,
   subtitleMono = false,
+  titleMono = false,
+  titleSemibold = false,
+  subtitleVariant = 'footnote',
   subtitleLines = 2,
   leading,
   icon,
@@ -135,10 +144,12 @@ export function ListRow({
         leading
       )}
       <View style={styles.text}>
-        <Text numberOfLines={1}>{title}</Text>
+        <Text numberOfLines={1} monospaced={titleMono} semibold={titleSemibold}>
+          {title}
+        </Text>
         {subtitle ? (
           <Text
-            variant={subtitleMono ? 'caption' : 'footnote'}
+            variant={subtitleMono ? 'caption' : subtitleVariant}
             monospaced={subtitleMono}
             tone="secondary"
             numberOfLines={subtitleLines}
