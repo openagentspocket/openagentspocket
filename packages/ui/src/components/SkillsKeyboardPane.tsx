@@ -46,6 +46,7 @@ const useStyles = makeStyles((t) => ({
   pane: { backgroundColor: t.colors.canvas },
   body: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: t.spacing.sm },
+  empty: { flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: t.spacing.xxs },
   message: { textAlign: 'center', paddingHorizontal: t.spacing.lg },
   sectionTitle: {
     textTransform: 'uppercase',
@@ -66,9 +67,11 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     gap: t.spacing.xs,
     paddingHorizontal: t.metrics.screenInset,
-    paddingVertical: t.spacing.md,
+    paddingVertical: t.spacing.sm,
     borderTopWidth: t.metrics.hairlineWidth,
     borderTopColor: t.hairline,
+    borderBottomWidth: t.metrics.hairlineWidth,
+    borderBottomColor: t.hairline,
   },
   switcher: {
     flexDirection: 'row',
@@ -165,7 +168,7 @@ export function SkillsKeyboardPane({
       );
     if (shown.length === 0)
       return (
-        <View style={styles.center} testID="skills-pane-empty">
+        <View style={styles.empty} testID="skills-pane-empty">
           <Text variant="caption" tone="secondary" style={styles.message}>
             {text.empty}
           </Text>
@@ -223,8 +226,8 @@ export function SkillsKeyboardPane({
         testID="skills-pane-refresh"
         style={styles.refreshRow}
       >
-        <Icon name="refresh" size={17} color="accent" />
-        <Text variant="subheadline" tone="accent">
+        <Icon name="refresh" size={22} color="accent" weight="semibold" />
+        <Text variant="body" tone="accent">
           {text.refresh}
         </Text>
         {refreshing && skills.length > 0 ? (

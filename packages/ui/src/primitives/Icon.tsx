@@ -66,7 +66,7 @@ const ICONS = {
   // Composer extras: read-only hint, keyboard pane switcher, skill document.
   eye: { ios: 'eye', android: 'visibility' },
   grid: { ios: 'square.grid.3x3', android: 'apps' },
-  quote: { ios: 'quote.bubble', android: 'format_quote' },
+  quote: { ios: 'quote.bubble', android: 'chat_bubble' },
   palette: { ios: 'paintpalette', android: 'palette' },
   document: { ios: 'doc.text', android: 'article' },
   // Chat timeline rows.
@@ -103,6 +103,8 @@ interface IconProps {
   color?: ColorKey;
   /** A resolved color, for ink computed from a status or tone. Wins over `color`. */
   tint?: string;
+  /** SF Symbol weight (iOS and web fallback ignore it elsewhere). */
+  weight?: 'regular' | 'semibold' | 'bold';
   /** Set only for an icon that carries meaning alone; otherwise it is hidden from screen readers. */
   accessibilityLabel?: string;
   testID?: string;
@@ -113,6 +115,7 @@ export function Icon({
   size = 17,
   color = 'textSecondary',
   tint,
+  weight,
   accessibilityLabel,
   testID,
 }: IconProps) {
@@ -123,6 +126,7 @@ export function Icon({
     <SymbolView
       name={{ ios: glyph.ios, android: glyph.android, web: glyph.android }}
       size={size}
+      weight={weight}
       tintColor={tint ?? theme.colors[color]}
       testID={testID ?? `icon-${name}`}
       accessible={!decorative}

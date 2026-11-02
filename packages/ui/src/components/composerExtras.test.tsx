@@ -155,9 +155,9 @@ describe('ClaudeSubagentTranscript', () => {
     expect(screen.queryByTestId('composer')).toBeNull();
     await fireEvent.press(screen.getByRole('button', { name: 'Back' }));
     expect(onBack).toHaveBeenCalled();
-    expect(screen.queryByTestId('subagent-tool-detail-t')).toBeNull();
-    await fireEvent.press(screen.getByTestId('subagent-tool-t'));
-    expect(screen.getByTestId('subagent-tool-detail-t')).toBeTruthy();
+    expect(screen.queryByText('grep x')).toBeNull();
+    await fireEvent.press(screen.getByText('Ran 2 searches'));
+    expect(screen.getByText('grep x')).toBeTruthy();
   });
 
   it('shows the empty, missing and failed phases', async () => {

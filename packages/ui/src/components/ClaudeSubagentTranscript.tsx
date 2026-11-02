@@ -3,10 +3,11 @@ import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { Markdown } from '../markdown/Markdown';
 import { Button } from '../primitives/Button';
 import { EmptyState } from '../primitives/EmptyState';
-import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
+import { ChatToolRow } from './ChatToolRow';
+import { ChatUserBubble } from './ChatUserBubble';
 
 /** One row of a subagent's transcript. */
 export type SubagentRow =
@@ -43,89 +44,56 @@ export const defaultSubagentLabels: SubagentTranscriptLabels = {
   retry: 'Try Again',
 };
 
+const BACK_SIZE = 36;
+
 const useStyles = makeStyles((t) => ({
   root: { flex: 1, minHeight: 640, backgroundColor: t.colors.canvas },
+  header: { backgroundColor: t.colors.surface, paddingBottom: t.spacing.xxs },
   bar: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: t.metrics.screenInset,
-    paddingVertical: t.spacing.xxs,
+    paddingTop: t.spacing.xxs,
   },
-  back: { width: t.metrics.minTapSize, justifyContent: 'center' },
+  back: {
+    width: BACK_SIZE,
+    height: BACK_SIZE,
+    borderRadius: BACK_SIZE / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: t.colors.surfaceRaised,
+    borderWidth: t.metrics.hairlineWidth,
+    borderColor: t.hairline,
+  },
   title: { flex: 1, textAlign: 'center' },
-  spacer: { width: t.metrics.minTapSize },
+  spacer: { width: BACK_SIZE },
   hint: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.xs,
     paddingHorizontal: t.metrics.screenInset,
-    paddingVertical: t.spacing.xs,
-    backgroundColor: t.colors.surface,
+    paddingTop: t.spacing.xxs,
   },
   timeline: {
     flexGrow: 1,
     justifyContent: 'flex-end',
     paddingHorizontal: t.metrics.screenInset,
-    paddingVertical: t.spacing.md,
-    gap: t.spacing.md,
-  },
-  userBubble: {
-    alignSelf: 'flex-end',
-    maxWidth: '85%',
-    backgroundColor: t.colors.control,
-    borderRadius: 20,
-    paddingHorizontal: t.spacing.sm,
-    paddingVertical: t.spacing.xs,
-  },
-  tool: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    paddingVertical: t.spacing.sm,
     gap: t.spacing.xs,
-    backgroundColor: t.colors.surface,
-    borderRadius: t.metrics.cardRadius,
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-    paddingHorizontal: t.spacing.sm,
-    paddingVertical: t.spacing.xs,
   },
-  toolLabel: { flex: 1 },
-  toolDetail: { paddingHorizontal: t.spacing.sm, paddingTop: t.spacing.xxs },
+  bleed: { marginHorizontal: -t.spacing.md },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: t.spacing.sm },
 }));
 
-function ToolRow({ row }: { row: Extract<SubagentRow, { kind: 'tool' }> }) {
-  const styles = useStyles();
+function SubagentTool({ row }: { row: Extract<SubagentRow, { kind: 'tool' }> }) {
   const [open, setOpen] = useState(false);
-  const expandable = row.detail !== undefined;
   return (
-    <View>
-      <Pressable
-        onPress={expandable ? () => setOpen((value) => !value) : undefined}
-        accessibilityRole="button"
-        accessibilityLabel={row.summary}
-        accessibilityState={{ expanded: expandable ? open : undefined }}
-        testID={`subagent-tool-${row.id}`}
-        style={styles.tool}
-      >
-        <Icon name={row.icon ?? 'search'} size={17} />
-        <Text variant="subheadline" numberOfLines={1} style={styles.toolLabel}>
-          {row.summary}
-        </Text>
-        <Icon name={open ? 'chevronDown' : 'chevronRight'} size={13} color="textTertiary" />
-      </Pressable>
-      {open ? (
-        <Text
-          variant="caption"
-          tone="secondary"
-          monospaced
-          selectable
-          style={styles.toolDetail}
-          testID={`subagent-tool-detail-${row.id}`}
-        >
-          {row.detail}
-        </Text>
-      ) : null}
-    </View>
+    <ChatToolRow
+      testID={`subagent-tool-${row.id}`}
+      tool={{ icon: row.icon ?? 'search', title: row.summary, status: 'done', output: row.detail }}
+      expanded={open}
+      onToggle={row.detail !== undefined ? () => setOpen((value) => !value) : undefined}
+    />
   );
 }
 
@@ -215,12 +183,16 @@ export function ClaudeSubagentTranscript({
             {rows.map((row) => {
               if (row.kind === 'user')
                 return (
-                  <View key={row.id} style={styles.userBubble}>
-                    <Text variant="subheadline">{row.text}</Text>
+                  <View key={row.id} style={styles.bleed}>
+                    <ChatUserBubble text={row.text} testID={`subagent-user-${row.id}`} />
                   </View>
                 );
               if (row.kind === 'assistant') return <Markdown key={row.id} text={row.text} />;
-              return <ToolRow key={row.id} row={row} />;
+              return (
+                <View key={row.id} style={styles.bleed}>
+                  <SubagentTool row={row} />
+                </View>
+              );
             })}
           </ScrollView>
         );
@@ -229,27 +201,33 @@ export function ClaudeSubagentTranscript({
 
   return (
     <View style={styles.root} testID={testID}>
-      <View style={styles.bar}>
-        <View style={styles.back}>
-          <GlassCapsule>
-            <Button
-              kind="text"
-              icon="chevronLeft"
-              accessibilityLabel={text.back}
-              onPress={onBack}
-            />
-          </GlassCapsule>
+      <View style={styles.header}>
+        <View style={styles.bar}>
+          <Pressable
+            onPress={onBack}
+            accessibilityRole="button"
+            accessibilityLabel={text.back}
+            testID="subagent-back"
+            style={styles.back}
+          >
+            <Icon name="chevronLeft" size={22} color="textPrimary" weight="bold" />
+          </Pressable>
+          <Text
+            variant="headline"
+            numberOfLines={1}
+            accessibilityRole="header"
+            style={styles.title}
+          >
+            {title}
+          </Text>
+          <View style={styles.spacer} />
         </View>
-        <Text variant="headline" numberOfLines={1} accessibilityRole="header" style={styles.title}>
-          {title}
-        </Text>
-        <View style={styles.spacer} />
-      </View>
-      <View style={styles.hint} accessible testID="subagent-read-only">
-        <Icon name="eye" size={15} />
-        <Text variant="footnote" tone="secondary">
-          {hint}
-        </Text>
+        <View style={styles.hint} accessible testID="subagent-read-only">
+          <Icon name="eye" size={15} />
+          <Text variant="footnote" tone="secondary">
+            {hint}
+          </Text>
+        </View>
       </View>
       {content()}
     </View>
