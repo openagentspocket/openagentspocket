@@ -9,6 +9,7 @@ export * from './live-source';
 export * from './probe';
 export * from './quick-sheet';
 export * from './report';
+export * from './ring';
 export * from './scope';
 export * from './widget-publisher';
 export * from './widget-snapshot';

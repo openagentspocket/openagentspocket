@@ -59,6 +59,7 @@ const ICONS = {
   container: { ios: 'shippingbox', android: 'inventory_2' },
   paused: { ios: 'pause.circle', android: 'pause_circle' },
   share: { ios: 'square.and.arrow.up', android: 'share' },
+  usage: { ios: 'chart.bar.xaxis', android: 'bar_chart' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
