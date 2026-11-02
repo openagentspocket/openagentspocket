@@ -1,6 +1,6 @@
 {
   "%lld more on iPhone": "{0, number} más en el iPhone",
-  "Agentico": "Agentico",
+  "Agentico": "OpenAgentsPocket",
   "All quiet": "Todo tranquilo",
   "Blocked": "Bloqueado",
   "Done": "Listo",
@@ -10,8 +10,8 @@
   "Needs you": "Te necesita",
   "No Usage Limits yet. Open Usage on your iPhone to read them.": "Todavía no hay límites de uso. Abrí Usage en el iPhone para leerlos.",
   "Offline: %@": "Sin conexión: {0}",
-  "Open Agentico on your iPhone": "Abrir Agentico en el iPhone",
-  "Open Agentico on your iPhone to answer. Handoff offers this Agent there.": "Abrí Agentico en el iPhone para responder. Handoff ofrece este Agent ahí.",
+  "Open Agentico on your iPhone": "Abrir OpenAgentsPocket en el iPhone",
+  "Open Agentico on your iPhone to answer. Handoff offers this Agent there.": "Abrí OpenAgentsPocket en el iPhone para responder. Handoff ofrece este Agent ahí.",
   "Program": "Programa",
   "Reset": "Restablecido",
   "Some Hosts are still connecting": "Algunos Hosts todavía se están conectando",

@@ -8,7 +8,7 @@ import {
   type UsageSource,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, ListRow, Screen, Section, Skeleton, Text } from '@openagentspocket/ui';
+import { EmptyState, ListRow, Screen, Section, Skeleton } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { AccountsSheet } from './AccountsSheet';
@@ -45,7 +45,6 @@ export function UsageScreen({ source, files = demoFiles }: Props) {
   const withAccounts = scope.included.find((h) => claudeProgram(h.report)?.accounts != null);
   return (
     <Screen refreshing={refreshing} onRefresh={refresh} testID="usage-screen">
-      <Text variant="title">{t('Usage')}</Text>
       {readings === null ? <Skeleton /> : null}
       {readings?.length === 0 ? (
         <EmptyState title={t('No Hosts')} message={t('Add a Host to read its Usage.')} />

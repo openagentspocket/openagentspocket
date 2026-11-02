@@ -97,11 +97,11 @@ describe('UsageScreen', () => {
     expect(JSON.parse((await files.read('demo')) ?? '{}').claude.accounts).toHaveLength(3);
   });
 
-  it('titles the screen from the catalog of the current locale', async () => {
+  it('labels its rows from the catalog of the current locale', async () => {
     setLocale('es');
     await wrap(<UsageScreen source={source} files={new MemoryAccountFileStore()} />);
     await waitFor(() => expect(screen.getByTestId('usage-total')).toBeTruthy());
-    expect(screen.getByText(translate('es', 'app', 'Usage'))).toBeTruthy();
+    expect(screen.getByText(translate('es', 'app', 'Usage Limits'))).toBeTruthy();
   });
 });
 

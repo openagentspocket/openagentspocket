@@ -37,7 +37,6 @@ export function LimitsScreen({ source }: Props) {
   const hostCount = buildUsageScope(shown).included.length;
   return (
     <Screen refreshing={refreshing} onRefresh={refresh} testID="limits-screen">
-      <Text variant="title">{t('Usage Limits')}</Text>
       <ToggleRow
         title={t('Claude Code limits')}
         subtitle={t(

@@ -37,6 +37,9 @@ export interface ConvertedCatalog {
   skipped: string[];
 }
 
+export const BRAND: string;
+/** Swift value text with the Swift app's name replaced by this app's. */
+export function brand(text: string): string;
 export function specifiersOf(text: string): Specifier[];
 export function convertEntry(key: string, entry: CatalogEntry, where?: string): ConvertedEntry;
 export function convertCatalog(catalog: Catalog, name?: string): ConvertedCatalog;

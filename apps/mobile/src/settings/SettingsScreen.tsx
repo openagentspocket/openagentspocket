@@ -13,7 +13,7 @@ export function SettingsScreen({ page: pageId = 'root' }: { page?: string }) {
   if (!page) return null;
   return (
     <Screen edges={['bottom', 'left', 'right']} testID={`settings-${page.id}`}>
-      <Stack.Screen options={{ title: page.title(ctx), headerShown: true }} />
+      <Stack.Screen options={{ title: page.title(ctx) }} />
       {page.sections.map((section) => {
         const rows = section.rows.filter((row) => shown(row, ctx));
         // A section whose rows are all hidden (routes not built yet, no lock hardware) disappears.
