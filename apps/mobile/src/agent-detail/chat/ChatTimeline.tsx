@@ -65,7 +65,10 @@ export function ChatTimeline({
         onScrollEndDrag={settle}
         onMomentumScrollEnd={settle}
         onContentSizeChange={() => {
-          if (nearEnd.current) list.current?.scrollToEnd({ animated: false });
+          if (!nearEnd.current) return;
+          list.current?.scrollToEnd({ animated: false });
+          // Rows below the window are measured as they render: land on the real end.
+          setTimeout(() => nearEnd.current && list.current?.scrollToEnd({ animated: false }), 150);
         }}
         ListHeaderComponent={
           <View style={[styles.banners, { paddingTop: topInset }]}>
