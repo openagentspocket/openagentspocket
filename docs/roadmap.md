@@ -4,14 +4,15 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
-State (2026-11-01 ~22:45): **wave 1 complete on main** (10/10 tasks; 9 of 55 done: ui primitives is partial,
+State (2026-11-01 ~23:30): **wave 1 complete on main** (10/10 tasks; 9 of 55 done: ui primitives is partial,
 its leftovers filed as tasks). Native check of main (`fed475e`): iOS and Android build, the SSH harness passes
 17/17 on both (herdr ping protocol 22, snapshot, >1 MiB, PTY + resize, SFTP, direct-tcpip), Maestro home passes on
 iOS. Goldens from the Swift reference landed in `packages/core/goldens` (Swift branch `goldens` merges with run 13).
-**Running:** P0-rename (agent `rename`, alone on main). **Next:** wave 2 from the lead session's
-`scratchpad/rn/wave2.js` with `args.base` = main HEAD after the rename: 7 JS (P2.1 console + open-union enums,
-P4.1 usage, P4.5 settings, P4.4 changes, P4.2 files, P5.2 registration, T-typecheck-tests) + native chain
-(P0-qr-scanner → P0-brand-marks → P3.0 terminal spike). Evidence: scratchpad `rn/evidence/main-wave1/`.
+P0-rename done (scope `@openagentspocket/*`, ids `com.openagentspocket.app`, icon + splash; both platforms build;
+the home-screen label truncates: short display name pending Enzo). **Running:** wave 2 (workflow `wf_40a85a5f-46a`,
+base `a0c86f2`): 7 JS (P2.1 console + open-union enums, P4.1 usage, P4.5 settings, P4.4 changes, P4.2 files,
+P5.2 registration, T-typecheck-tests) + native chain (P0-qr-scanner → P0-brand-marks → P3.0 terminal spike).
+If the session dies: resume with `Workflow({scriptPath: scratchpad/rn/wave2.js, resumeFromRunId: "wf_40a85a5f-46a"})`. Evidence: scratchpad `rn/evidence/main-wave1/`.
 
 Lead's integration loop per wave: merge each ship branch with `scratchpad/rn/merge-branch.sh <branch>` (resolves
 PROGRESS.md, index.ts export unions, package.json unions and the lockfile; stops on real conflicts), `pnpm test`,
