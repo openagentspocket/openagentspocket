@@ -813,3 +813,21 @@
   deps:
     [UX1-home, UX1-agents-list, UX1-agent-detail, UX1-hosts, UX1-usage, UX1-settings, UX1-new-agent]
   files: [apps/mobile/src/app/_layout.tsx, apps/mobile/src/navigation/**, packages/ui/src/**]
+- id: UX0-screen-atlas
+  phase: 9
+  kind: native
+  title: "Screen atlas: /__atlas route, Expo web capture, iOS capture, Swift|RN compare sheets, docs/ux/rn-gap.md"
+  deps: []
+  files:
+    [
+      apps/mobile/src/dev/atlas/**,
+      apps/mobile/src/app/__atlas/**,
+      apps/mobile/src/dev/web/**,
+      apps/mobile/metro.config.js,
+      scripts/atlas-*,
+      docs/ux/rn-gap.md,
+    ]
+  acceptance:
+    - "/__atlas/<swift screen id> renders each mapped RN screen with fixed clock and demo data; Swift ids with no RN screen are listed"
+    - "node scripts/atlas-web.mjs captures every mapped id on Expo web (402x874 @3x); atlas-ios.mjs does the same on the simulator; atlas-compare.py builds Swift | RN sheets and index.html"
+    - "docs/ux/rn-gap.md lists per screen family what RN lacks versus Swift, worst first"
