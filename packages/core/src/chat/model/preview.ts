@@ -21,11 +21,30 @@ export const FILE_CHANGES_EXPANDED_LIMITS: PreviewLimits = { lines: 2000, bytes:
 export const MAXIMUM_FILE_CHANGES = 20;
 export const MAXIMUM_FETCH_BYTES = 1024 * 1024;
 
+/** The limits a cap uses when its caller names none: the row's, or an expanded row's inside `withExpandedLimits`. */
+const active = { preview: PREVIEW_ROW_LIMITS, changes: FILE_CHANGES_ROW_LIMITS };
+
+/**
+ * Runs `read` (synchronously) with the expanded-row limits as the defaults, the way an expanded
+ * tool row decodes its output again (Swift task-local `ChatToolPreview.expandedLimits`).
+ */
+export function withExpandedLimits<T>(read: () => T): T {
+  const saved = { ...active };
+  active.preview = PREVIEW_EXPANDED_LIMITS;
+  active.changes = FILE_CHANGES_EXPANDED_LIMITS;
+  try {
+    return read();
+  } finally {
+    active.preview = saved.preview;
+    active.changes = saved.changes;
+  }
+}
+
 /** The output's start within `limits`; breaks only between characters. */
 export function capPreview(
   output: string,
   imageCount = 0,
-  limits: PreviewLimits = PREVIEW_ROW_LIMITS,
+  limits: PreviewLimits = active.preview,
 ): ChatToolPreview {
   // Characters are code points, with "\r\n" joined like a Swift Character.
   const chars: string[] = [];
@@ -128,7 +147,7 @@ export function fileChangeFromHunks(
   path: string,
   kind: FileChangeKind,
   recorded: ChatDiffHunk[],
-  limits: PreviewLimits = FILE_CHANGES_ROW_LIMITS,
+  limits: PreviewLimits = active.changes,
 ): ChatFileChange {
   let added = 0;
   let removed = 0;
@@ -157,7 +176,7 @@ export function allAddedChange(
   path: string,
   content: string,
   kind: FileChangeKind,
-  limits: PreviewLimits = FILE_CHANGES_ROW_LIMITS,
+  limits: PreviewLimits = active.changes,
 ): ChatFileChange {
   const count = countLines(content);
   const lines = content
