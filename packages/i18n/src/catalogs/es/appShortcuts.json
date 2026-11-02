@@ -1,0 +1,8 @@
+{
+  "Which Agents need me in ${applicationName}": "¿Qué Agents me necesitan en {applicationName}?",
+  "What needs me in ${applicationName}": "¿Qué me necesita en {applicationName}?",
+  "Open ${agent} in ${applicationName}": "Abrí {agent} en {applicationName}",
+  "Open Agent ${agent} in ${applicationName}": "Abrí el Agent {agent} en {applicationName}",
+  "Open Host ${host} in ${applicationName}": "Abrí el Host {host} en {applicationName}",
+  "Open the inbox in ${applicationName}": "Abrí la bandeja en {applicationName}"
+}

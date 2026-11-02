@@ -8,5 +8,9 @@
     "noEmit": false
   },
   "include": ["src", ".expo/types/**/*.ts", "expo-env.d.ts"],
-  "references": [{ "path": "../../packages/core" }, { "path": "../../packages/ui" }]
+  "references": [
+    { "path": "../../packages/core" },
+    { "path": "../../packages/i18n" },
+    { "path": "../../packages/ui" }
+  ]
 }

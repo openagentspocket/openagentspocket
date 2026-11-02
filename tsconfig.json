@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "packages/core" },
+    { "path": "packages/i18n" },
     { "path": "packages/ui" },
     { "path": "modules/ssh" },
     { "path": "apps/mobile" }

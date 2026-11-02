@@ -4,6 +4,7 @@
   "main": "expo-router/entry",
   "dependencies": {
     "@agentico/core": "workspace:*",
+    "@agentico/i18n": "workspace:*",
     "@agentico/ui": "workspace:*",
     "@expo/ui": "~58.0.26",
     "expo": "~58.0.22",
