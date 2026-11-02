@@ -9,6 +9,9 @@ import { ChatBanners } from './ChatBanners';
 import { ChatRowView } from './ChatRowView';
 import { useChatRows } from './useChatRows';
 
+/** How far from the end still counts as reading the newest row, in points. */
+const NEAR_END = 120;
+
 const useStyles = makeStyles((th) => ({
   list: { flex: 1 },
   content: {
@@ -44,13 +47,24 @@ export function ChatTimeline({
   const hostStatus = useConsoleState().hosts.find((host) => host.id === hostId)?.status;
   const { rows, toggle } = useChatRows(conversation.state, activity);
   const list = useRef<FlatList<ChatRow>>(null);
+  /** Follows new rows only while the reader is at the end. */
+  const nearEnd = useRef(true);
   return (
     <View style={styles.list} testID="chat-timeline">
       <FlatList
         ref={list}
         data={rows}
         keyExtractor={(row) => row.id}
-        onContentSizeChange={() => list.current?.scrollToEnd({ animated: false })}
+        initialNumToRender={40}
+        scrollEventThrottle={100}
+        onScroll={(event) => {
+          const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+          nearEnd.current =
+            contentSize.height - contentOffset.y - layoutMeasurement.height < NEAR_END;
+        }}
+        onContentSizeChange={() => {
+          if (nearEnd.current) list.current?.scrollToEnd({ animated: false });
+        }}
         ListHeaderComponent={
           <View style={[styles.banners, { paddingTop: topInset }]}>
             <ChatBanners
