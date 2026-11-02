@@ -1,3 +1,5 @@
+import { sortConsole } from './console/ordering';
+
 export type AgentStatus = 'blocked' | 'done' | 'working' | 'idle' | 'unknown';
 
 /** One Agent row joined with the Host it lives on (mirrors the Swift Console row). */
@@ -13,34 +15,9 @@ export interface ConsoleAgent {
   stateChangeSeq?: number;
 }
 
-const BUCKET: Record<AgentStatus, number> = {
-  blocked: 0,
-  done: 1,
-  working: 2,
-  idle: 3,
-  unknown: 4,
-};
-
-/** Blocked leads: it is the only status the user can act on. */
-export function sortBucket(status: AgentStatus): number {
-  return BUCKET[status];
-}
-
-function compareText(a: string, b: string): number {
-  return a < b ? -1 : a > b ? 1 : 0;
-}
-
-/** Console order: status bucket, Host, newest state change, workspace, pane. */
+/** Console order for the flat demo/Home Agent; see `sortConsole` for the full comparator. */
 export function consoleSorted(agents: readonly ConsoleAgent[]): ConsoleAgent[] {
-  return [...agents].sort(
-    (a, b) =>
-      sortBucket(a.status) - sortBucket(b.status) ||
-      compareText(a.hostName, b.hostName) ||
-      compareText(a.hostId, b.hostId) ||
-      (b.stateChangeSeq ?? 0) - (a.stateChangeSeq ?? 0) ||
-      compareText(a.workspaceLabel ?? '', b.workspaceLabel ?? '') ||
-      compareText(a.paneId, b.paneId),
-  );
+  return sortConsole(agents, (agent) => agent);
 }
 
 export type HomeSection = 'needsYou' | 'working' | 'done';

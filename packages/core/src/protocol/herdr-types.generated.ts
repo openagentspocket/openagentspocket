@@ -133,22 +133,22 @@ type: "layout_updated"
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "AgentStatus".
  */
-export type AgentStatus = ("idle" | "working" | "blocked" | "done" | "unknown")
+export type AgentStatus = ("idle" | "working" | "blocked" | "done" | "unknown" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "AgentSessionRefKind".
  */
-export type AgentSessionRefKind = ("id" | "path")
+export type AgentSessionRefKind = ("id" | "path" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "SplitDirection".
  */
-export type SplitDirection = ("right" | "down")
+export type SplitDirection = ("right" | "down" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "EventKind".
  */
-export type EventKind = ("workspace_created" | "workspace_updated" | "workspace_metadata_updated" | "workspace_closed" | "workspace_renamed" | "workspace_moved" | "workspace_reordered" | "workspace_focused" | "worktree_created" | "worktree_opened" | "worktree_removed" | "tab_created" | "tab_closed" | "tab_renamed" | "tab_moved" | "tab_focused" | "pane_created" | "pane_closed" | "pane_updated" | "pane_focused" | "pane_moved" | "pane_output_changed" | "pane_exited" | "pane_agent_detected" | "pane_agent_status_changed" | "layout_updated")
+export type EventKind = ("workspace_created" | "workspace_updated" | "workspace_metadata_updated" | "workspace_closed" | "workspace_renamed" | "workspace_moved" | "workspace_reordered" | "workspace_focused" | "worktree_created" | "worktree_opened" | "worktree_removed" | "tab_created" | "tab_closed" | "tab_renamed" | "tab_moved" | "tab_focused" | "pane_created" | "pane_closed" | "pane_updated" | "pane_focused" | "pane_moved" | "pane_output_changed" | "pane_exited" | "pane_agent_detected" | "pane_agent_status_changed" | "layout_updated" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "Request".
@@ -465,17 +465,17 @@ params: PluginPaneCloseParams
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "ToastHerdrPosition".
  */
-export type ToastHerdrPosition = ("top-left" | "top-right" | "bottom-left" | "bottom-right")
+export type ToastHerdrPosition = ("top-left" | "top-right" | "bottom-left" | "bottom-right" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "NotificationShowSound".
  */
-export type NotificationShowSound = ("none" | "done" | "request")
+export type NotificationShowSound = ("none" | "done" | "request" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "ReadSource".
  */
-export type ReadSource = ("visible" | "recent" | "recent_unwrapped" | "detection")
+export type ReadSource = ("visible" | "recent" | "recent_unwrapped" | "detection" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "AgentViewFilter".
@@ -512,7 +512,7 @@ token: string
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "AgentViewBuiltinField".
  */
-export type AgentViewBuiltinField = ("status" | "workspace_id" | "tab_id" | "pane_id" | "agent" | "seen" | "state_change_seq")
+export type AgentViewBuiltinField = ("status" | "workspace_id" | "tab_id" | "pane_id" | "agent" | "seen" | "state_change_seq" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "AgentViewValue".
@@ -524,7 +524,7 @@ context: AgentViewContext
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "AgentViewContext".
  */
-export type AgentViewContext = ("current_workspace_id" | "current_tab_id")
+export type AgentViewContext = ("current_workspace_id" | "current_tab_id" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "AgentViewSortField".
@@ -536,12 +536,12 @@ token: string
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "AgentViewBuiltinSortField".
  */
-export type AgentViewBuiltinSortField = ("workspace_order" | "tab_order" | "pane_order" | "attention" | "status" | "agent" | "seen" | "state_change_seq")
+export type AgentViewBuiltinSortField = ("workspace_order" | "tab_order" | "pane_order" | "attention" | "status" | "agent" | "seen" | "state_change_seq" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneDirection".
  */
-export type PaneDirection = ("left" | "right" | "up" | "down")
+export type PaneDirection = ("left" | "right" | "up" | "down" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneMoveDestination".
@@ -585,22 +585,22 @@ type: "split"
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneCopyMotion".
  */
-export type PaneCopyMotion = ("line_end" | "first_non_blank" | "next_word_start" | "previous_word_start" | "next_word_end" | "next_big_word_start" | "previous_big_word_start" | "next_big_word_end" | "previous_paragraph" | "next_paragraph")
+export type PaneCopyMotion = ("line_end" | "first_non_blank" | "next_word_start" | "previous_word_start" | "next_word_end" | "next_big_word_start" | "previous_big_word_start" | "next_big_word_end" | "previous_paragraph" | "next_paragraph" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneCopySearchDirection".
  */
-export type PaneCopySearchDirection = ("forward" | "backward")
+export type PaneCopySearchDirection = ("forward" | "backward" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneRightClickTarget".
  */
-export type PaneRightClickTarget = ("herdr" | "pane")
+export type PaneRightClickTarget = ("herdr" | "pane" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneAgentState".
  */
-export type PaneAgentState = ("idle" | "working" | "blocked" | "unknown")
+export type PaneAgentState = ("idle" | "working" | "blocked" | "unknown" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "Subscription".
@@ -752,7 +752,7 @@ pane_id: string
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "IntegrationTarget".
  */
-export type IntegrationTarget = ("pi" | "omp" | "claude" | "codex" | "copilot" | "devin" | "droid" | "kimi" | "opencode" | "kilo" | "hermes" | "qodercli" | "qwen" | "cursor" | "mastracode" | "antigravity_cli" | "grok")
+export type IntegrationTarget = ("pi" | "omp" | "claude" | "codex" | "copilot" | "devin" | "droid" | "kimi" | "opencode" | "kilo" | "hermes" | "qodercli" | "qwen" | "cursor" | "mastracode" | "antigravity_cli" | "grok" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PopupSize".
@@ -762,7 +762,7 @@ export type PopupSize = (number | string)
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PluginPanePlacement".
  */
-export type PluginPanePlacement = ("overlay" | "popup" | "split" | "tab" | "zoomed")
+export type PluginPanePlacement = ("overlay" | "popup" | "split" | "tab" | "zoomed" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "SubscriptionEventData".
@@ -772,12 +772,12 @@ export type SubscriptionEventData = (PaneOutputMatchedEvent | PaneAgentStatusCha
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "ReadFormat".
  */
-export type ReadFormat = ("text" | "ansi")
+export type ReadFormat = ("text" | "ansi" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "SubscriptionEventKind".
  */
-export type SubscriptionEventKind = ("pane.output_matched" | "pane.agent_status_changed" | "pane.scroll_changed")
+export type SubscriptionEventKind = ("pane.output_matched" | "pane.agent_status_changed" | "pane.scroll_changed" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "ResponseResult".
@@ -1015,17 +1015,17 @@ type: "ok"
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneSwapReason".
  */
-export type PaneSwapReason = ("no_neighbor" | "same_pane" | "not_found" | "cross_tab")
+export type PaneSwapReason = ("no_neighbor" | "same_pane" | "not_found" | "cross_tab" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneMoveReason".
  */
-export type PaneMoveReason = ("same_tab" | "zoomed_tab")
+export type PaneMoveReason = ("same_tab" | "zoomed_tab" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneZoomReason".
  */
-export type PaneZoomReason = ("single_pane" | "already_zoomed" | "already_unzoomed")
+export type PaneZoomReason = ("single_pane" | "already_zoomed" | "already_unzoomed" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneFocusDirectionReason".
@@ -1040,52 +1040,52 @@ export type PaneResizeReason = "unchanged"
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "NotificationShowReason".
  */
-export type NotificationShowReason = ("shown" | "disabled" | "rate_limited" | "no_foreground_client" | "busy")
+export type NotificationShowReason = ("shown" | "disabled" | "rate_limited" | "no_foreground_client" | "busy" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "ClientWindowTitleReason".
  */
-export type ClientWindowTitleReason = ("set" | "cleared" | "no_foreground_client")
+export type ClientWindowTitleReason = ("set" | "cleared" | "no_foreground_client" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "IntegrationState".
  */
-export type IntegrationState = ("not_installed" | "current" | "outdated")
+export type IntegrationState = ("not_installed" | "current" | "outdated" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PluginActionContext".
  */
-export type PluginActionContext = ("global" | "workspace" | "tab" | "pane" | "selection")
+export type PluginActionContext = ("global" | "workspace" | "tab" | "pane" | "selection" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PluginPlatform".
  */
-export type PluginPlatform = ("linux" | "macos" | "windows")
+export type PluginPlatform = ("linux" | "macos" | "windows" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PluginCommandStatus".
  */
-export type PluginCommandStatus = ("running" | "succeeded" | "failed")
+export type PluginCommandStatus = ("running" | "succeeded" | "failed" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "ConfigReloadStatus".
  */
-export type ConfigReloadStatus = ("applied" | "partial" | "failed")
+export type ConfigReloadStatus = ("applied" | "partial" | "failed" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "AgentViewSortOrder".
  */
-export type AgentViewSortOrder = ("asc" | "desc")
+export type AgentViewSortOrder = ("asc" | "desc" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PaneZoomMode".
  */
-export type PaneZoomMode = ("toggle" | "on" | "off")
+export type PaneZoomMode = ("toggle" | "on" | "off" | (string & {}))
 /**
  * This interface was referenced by `HerdrProtocol`'s JSON-Schema
  * via the `definition` "PluginSourceKind".
  */
-export type PluginSourceKind = ("local" | "github")
+export type PluginSourceKind = ("local" | "github" | (string & {}))
 
 export interface HerdrProtocol {
 ErrorResponse?: ErrorResponse

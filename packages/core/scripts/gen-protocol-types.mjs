@@ -76,7 +76,11 @@ const body = await compile(combined, 'HerdrProtocol', {
   format: false,
   unreachableDefinitions: true,
 });
-const output = body.replace(/[ \t]+$/gm, '');
+// herdr's API has no stability guarantee: a newer server may send an enum value this build has
+// never seen. Every pure string enum becomes an open union, so callers must keep a default arm
+// (`string & {}` keeps editor autocomplete for the known values).
+const OPEN_ENUM = /^(export type \w+ = \()("[^"\n]*"(?: \| "[^"\n]*")*)\)$/gm;
+const output = body.replace(/[ \t]+$/gm, '').replace(OPEN_ENUM, '$1$2 | (string & {}))');
 
 if (process.argv.includes('--check')) {
   const current = existsSync(outputPath) ? readFileSync(outputPath, 'utf8') : '';
