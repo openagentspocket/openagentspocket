@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, type ViewProps } from 'react-native';
 
 /** medium: half the screen; large: nearly all of it; fit: as tall as its content. */
@@ -30,11 +30,18 @@ export function settleDetent(from: SheetDetent, dy: number, velocity: number): D
 export function useSheetDrag(
   initial: SheetDetent,
   onClose: () => void,
+  visible = true,
 ): { detent: SheetDetent; offset: number; handlers: ViewProps } {
   const [current, setCurrent] = useState<SheetDetent>(initial);
   const [offset, setOffset] = useState(0);
   const latest = useRef({ current, onClose });
   latest.current = { current, onClose };
+  // A Sheet stays mounted while hidden: every reopen (or changed `detent` prop) starts from `initial`.
+  useEffect(() => {
+    if (!visible) return;
+    setCurrent(initial);
+    setOffset(0);
+  }, [visible, initial]);
   const responder = useMemo(
     () =>
       PanResponder.create({

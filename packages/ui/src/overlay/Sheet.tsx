@@ -82,7 +82,7 @@ export function Sheet({
   const styles = useStyles();
   const insets = useInsets();
   const { height } = useWindowDimensions();
-  const drag = useSheetDrag(detent, onClose);
+  const drag = useSheetDrag(detent, onClose, visible);
   const live = drag.detent;
   const share = DETENT_SHARE[live];
   const limit = height * DETENT_SHARE.large;

@@ -11,6 +11,20 @@ import {
   toast,
 } from '../index';
 import { renderThemed } from '../test-utils';
+import { NativeActionMenu } from './NativeActionMenu';
+
+const calls: Record<string, Record<string, unknown>[]> = { Menu: [], Button: [] };
+function FakeHost(props: Record<string, unknown>) {
+  return <>{props.children as React.ReactNode}</>;
+}
+function FakeMenu(props: Record<string, unknown>) {
+  calls.Menu?.push(props);
+  return <>{props.children as React.ReactNode}</>;
+}
+function FakeButton(props: Record<string, unknown>) {
+  calls.Button?.push(props);
+  return null;
+}
 
 /** Calls confirm() inside act, since it updates the mounted host; boxed so awaiting does not wait for the answer. */
 async function ask<T>(run: () => Promise<T>): Promise<{ answer: Promise<T> }> {
@@ -234,5 +248,36 @@ describe('ActionMenu', () => {
     await fireEvent.press(await screen.findByRole('menuitem', { name: 'Pin' }));
     await waitFor(() => expect(onPin).toHaveBeenCalledTimes(1));
     expect(screen.queryByRole('menuitem', { name: 'Pin' })).toBeNull();
+  });
+
+  it('maps items onto SwiftUI Menu and Button props', async () => {
+    calls.Menu = [];
+    calls.Button = [];
+    const onPin = jest.fn();
+    const onOff = jest.fn();
+    await renderThemed(
+      <NativeActionMenu
+        ui={{ Host: FakeHost, Menu: FakeMenu, Button: FakeButton }}
+        accessibilityLabel="More"
+        icon="more"
+        testID="nm"
+        items={[
+          { key: 'pin', title: 'Pin', checked: true, onPress: onPin },
+          { key: 'del', title: 'Delete', destructive: true, onPress: () => {} },
+          { key: 'off', title: 'Off', disabled: true, onPress: onOff },
+        ]}
+      />,
+    );
+    expect(calls.Menu).toHaveLength(1);
+    expect(calls.Menu?.[0]?.label).toBe('More');
+    const [pin, del, off] = calls.Button ?? [];
+    expect(pin?.systemImage).toBe('checkmark');
+    expect(pin?.role).toBeUndefined();
+    expect(del?.role).toBe('destructive');
+    expect(off?.disabled).toBe(true);
+    expect(off?.onPress).toBeUndefined();
+    const press = pin?.onPress as (() => void) | undefined;
+    press?.();
+    expect(onPin).toHaveBeenCalled();
   });
 });

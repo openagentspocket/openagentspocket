@@ -6,7 +6,6 @@ interface SwiftUiMenu {
   Host: React.ComponentType<Record<string, unknown>>;
   Menu: React.ComponentType<Record<string, unknown>>;
   Button: React.ComponentType<Record<string, unknown>>;
-  Section: React.ComponentType<Record<string, unknown>>;
 }
 
 let cached: SwiftUiMenu | null | undefined;
@@ -60,6 +59,7 @@ export function NativeActionMenu({
             label={item.title}
             systemImage={item.checked ? 'checkmark' : item.icon ? iconSymbol(item.icon) : undefined}
             role={item.destructive ? 'destructive' : undefined}
+            disabled={item.disabled}
             onPress={item.disabled ? undefined : item.onPress}
           />
         ))}
