@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
 import { bindDemoModeStorage } from '@/connections/mode';
+import { useIncomingLinks } from '@/links/useIncomingLinks';
 import { useOpenAgent } from '@/links/useOpenAgent';
 import { statusBarStyle } from '@/navigation/screenOptions';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
@@ -65,6 +66,7 @@ function AppStack() {
 
 export default function RootLayout() {
   useWidgetSync();
+  useIncomingLinks();
   const openAgent = useOpenAgent();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
