@@ -62,8 +62,9 @@ Scaffold facts:
 
 ## Open issues
 
-- Name (2026-11-01, ADR 0022): the app is **OpenAgentsPocket**. Enzo registers the domain(s) and creates the
-  GitHub org himself; the internal rename (`@agentico/*`, scheme, ids) is one task after wave 1 merges; new icon
+- Name (2026-11-01, ADR 0022): the app is **OpenAgentsPocket**. Domain `openagentspocket.com` registered by Enzo
+  (2026-11-01); planned: DNS on Cloudflare, landing + `/privacy` on Cloudflare Pages, relay on
+  `relay.openagentspocket.com`. Enzo creates the GitHub org himself; the internal rename (`@agentico/*`, scheme, ids) is one task after wave 1 merges; new icon
   in the chosen solid-indigo style with a new mark.
 
 - Stores (2026-11-01): Apple Developer Program (Individual) paid by Enzo, enrollment processing (up to 2 business
