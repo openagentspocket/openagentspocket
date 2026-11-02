@@ -33,4 +33,11 @@ describe('inboxAge', () => {
     expect(ageSpoken(ago(180), 'doneRecent')).not.toBe(exact);
     expect(ageSpoken(ago(5), 'needsYou')).not.toBe(ageSpoken(ago(5), 'doneRecent'));
   });
+
+  it('keeps the singular for a count of 1', () => {
+    expect(ageSpoken(ago(60), 'needsYou')).toBe('Waiting 1 minute');
+    expect(ageSpoken(ago(3600), 'working')).toBe('Working for 1 hour');
+    expect(ageSpoken(ago(86_400), 'doneRecent')).toBe('1 day ago');
+    expect(ageSpoken(ago(120), 'needsYou')).toBe('Waiting 2 minutes');
+  });
 });

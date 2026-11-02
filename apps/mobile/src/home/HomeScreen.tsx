@@ -79,8 +79,8 @@ export function HomeScreen({ onOpenAgent, onOpenHost, onAddHost, onSeeAll }: Hom
               status={TITLES[section].status}
               count={total}
               action={
-                total > items.length
-                  ? { title: t('See all'), onPress: () => onSeeAll?.() }
+                total > items.length && onSeeAll
+                  ? { title: t('See all'), onPress: onSeeAll }
                   : undefined
               }
             />
