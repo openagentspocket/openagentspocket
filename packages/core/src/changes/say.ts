@@ -62,6 +62,35 @@ export const CHANGES_KEYS = [
   'Reading Changes Timed Out',
   'The Host took too long to read Changes. Pull to try again.',
   'This Agent has no working directory.',
+  'Some Changes details were truncated.',
+  'Reading Changes…',
+  'Refreshing Changes',
+  'No uncommitted changes',
+  'Changes',
+  'Worktree',
+  'Reading Diff…',
+  'Refreshing Diff…',
+  "Couldn't Read Diff",
+  'Try Again',
+  'No changes in this file.',
+  'This file changed since this diff was read.',
+  'This file is no longer in Changes.',
+  'Showing the first part of this diff.',
+  'Load More',
+  'Reload',
+  'Unified',
+  'Side by Side',
+  'Diff Layout',
+  'Binary file.',
+  'Copy Path',
+  '%lld unchanged lines',
+  'Loading…',
+  'Removed',
+  'Unchanged',
+  'Added, line %@',
+  'Removed, line %@',
+  'Unchanged, line %@',
+  'Copied',
 ] as const;
 
 export type ChangesKey = (typeof CHANGES_KEYS)[number];
@@ -71,8 +100,8 @@ export type SayArg = string | number;
 /** Looks up a catalog key and fills its placeholders in order. */
 export type Say = (key: ChangesKey, ...args: readonly SayArg[]) => string;
 
-/** The catalog's source language: the key with its `%@` placeholders filled in order. */
+/** The catalog's source language: the key with its placeholders filled in order. */
 export const sourceSay: Say = (key, ...args) => {
   let next = 0;
-  return key.replace(/%@/g, () => String(args[next++] ?? ''));
+  return key.replace(/%(?:@|lld|d)/g, () => String(args[next++] ?? ''));
 };
