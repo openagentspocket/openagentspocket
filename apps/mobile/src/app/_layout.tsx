@@ -4,6 +4,7 @@ import { OverlayHost, ThemeProvider, useTheme } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import type { ReactNode } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
 import { bindDemoModeStorage } from '@/connections/mode';
 import { useOpenAgent } from '@/links/useOpenAgent';
@@ -65,17 +66,19 @@ export default function RootLayout() {
   useWidgetSync();
   const openAgent = useOpenAgent();
   return (
-    <SettingsProvider store={settingsStore} authenticator={deviceAuthenticator}>
-      <SettingsTheme>
-        <ThemedStatusBar />
-        <ConnectionsProvider>
-          <InAppBanner openAgent={openAgent}>
-            <AppStack />
-          </InAppBanner>
-        </ConnectionsProvider>
-        <AppLockCover />
-        <OverlayHost />
-      </SettingsTheme>
-    </SettingsProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SettingsProvider store={settingsStore} authenticator={deviceAuthenticator}>
+        <SettingsTheme>
+          <ThemedStatusBar />
+          <ConnectionsProvider>
+            <InAppBanner openAgent={openAgent}>
+              <AppStack />
+            </InAppBanner>
+          </ConnectionsProvider>
+          <AppLockCover />
+          <OverlayHost />
+        </SettingsTheme>
+      </SettingsProvider>
+    </GestureHandlerRootView>
   );
 }

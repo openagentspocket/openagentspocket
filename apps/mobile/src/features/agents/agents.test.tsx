@@ -24,9 +24,12 @@ class RecordingTransport extends DemoConsoleTransport {
   }
 }
 
-async function open(): Promise<{ transport: RecordingTransport }> {
+async function open(
+  prepare?: (store: ReturnType<typeof createDemoConsoleStore>) => void,
+): Promise<{ transport: RecordingTransport }> {
   const transport = new RecordingTransport();
   const store = createDemoConsoleStore(undefined, transport);
+  prepare?.(store);
   await render(
     <ThemeProvider themeId="indigo">
       <ConsoleStoreProvider store={store}>
@@ -60,6 +63,11 @@ describe('AgentsScreen', () => {
     await open();
     await fireEvent.press(screen.getByTestId('agent-row-p2'));
     expect(mockPush).toHaveBeenCalledWith('/agent/demo/p2');
+  });
+
+  it('starts from the persisted Host filter', async () => {
+    await open((store) => store.listPrefs.setHostId('demo'));
+    expect(order()).toHaveLength(4);
   });
 
   it('searches by text and shows the empty result', async () => {

@@ -7,6 +7,7 @@ import {
   type HostKeyCandidate,
   type KeyValueStorage,
   type KnownHostsStore,
+  ListPreferences,
   type PairingDeviceKeyLoad,
   PairingScanStore,
   PinnedAgents,
@@ -55,6 +56,7 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
   const model = new HostsModel(deps.hostCatalog, deps.knownHosts, newUuid);
   const store = new ConsoleStore<SshTransport>({
     pins: new PinnedAgents(deps.storage),
+    listPrefs: new ListPreferences(deps.storage),
     clocks: new AgentStatusClocks(deps.storage),
     clock: deps.clock,
   });

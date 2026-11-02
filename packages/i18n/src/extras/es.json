@@ -4,6 +4,7 @@
   "Chat arrives with the conversation engine.": "El Chat llega con el motor de conversaciones.",
   "Demo Mode": "Modo demo",
   "Demo mode is set by the EXPO_PUBLIC_DEMO build flag.": "El modo demo lo fija el flag de compilación EXPO_PUBLIC_DEMO.",
+  "Drag to reorder": "Arrastrar para reordenar",
   "New Agent Here": "Nuevo Agent acá",
   "Show scripted sample data instead of connecting to your Hosts.": "Mostrar datos de ejemplo en lugar de conectarse a tus Hosts.",
   "Switch Agent": "Cambiar de Agent",

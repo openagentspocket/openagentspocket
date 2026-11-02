@@ -101,6 +101,27 @@ export class PinnedAgents {
     return false;
   }
 
+  /**
+   * Moves a pin to the place another pin holds (a drag drop), shifting the pins in between.
+   * False when either is not pinned or both are the same.
+   */
+  movePinTo(
+    hostId: string,
+    paneId: string,
+    target: { readonly hostId: string; readonly paneId: string },
+  ): boolean {
+    const from = this.pinRank(hostId, paneId);
+    const to = this.pinRank(target.hostId, target.paneId);
+    if (from === undefined || to === undefined || from === to) return false;
+    const next = [...this.entries];
+    const [moved] = next.splice(from, 1);
+    if (!moved) return false;
+    next.splice(to, 0, moved);
+    this.entries = next;
+    this.commit();
+    return true;
+  }
+
   private drop(hostId: string, paneId: string): void {
     this.entries = this.entries.filter(
       (entry) => !(entry.hostId === hostId && entry.paneId === paneId),

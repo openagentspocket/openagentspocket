@@ -47,3 +47,15 @@ export function buildBoard(
     );
   return { pinned, others };
 }
+
+/** The pinned index a card dropped after a vertical drag lands on, clamped to the pinned list. */
+export function dragTarget(
+  index: number,
+  translationY: number,
+  rowHeight: number,
+  count: number,
+): number {
+  if (rowHeight <= 0 || count <= 0) return index;
+  const target = index + Math.round(translationY / rowHeight);
+  return Math.min(Math.max(target, 0), count - 1);
+}

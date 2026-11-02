@@ -105,6 +105,18 @@ describe('PinnedAgents', () => {
       expect(pins.revision).toBe(before);
     });
 
+    it('movePinTo drops a pin on another pin and persists', () => {
+      const { pins, storage } = pinned('a', 'b', 'c', 'd');
+      expect(pins.movePinTo('h', 'a', { hostId: 'h', paneId: 'c' })).toBe(true);
+      expect(pins.pinnedPaneIds('h')).toEqual(['b', 'c', 'a', 'd']);
+      expect(pins.movePinTo('h', 'd', { hostId: 'h', paneId: 'b' })).toBe(true);
+      expect(new PinnedAgents(storage).pinnedPaneIds('h')).toEqual(['d', 'b', 'c', 'a']);
+      const before = pins.revision;
+      expect(pins.movePinTo('h', 'a', { hostId: 'h', paneId: 'a' })).toBe(false);
+      expect(pins.movePinTo('h', 'zz', { hostId: 'h', paneId: 'a' })).toBe(false);
+      expect(pins.revision).toBe(before);
+    });
+
     it('skips pins of panes that are no longer listed', () => {
       const { pins } = pinned('a', 'gone', 'c');
       const listed = (_host: string, pane: string) => pane !== 'gone';
