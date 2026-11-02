@@ -4,6 +4,7 @@ import { CompositionProvider } from '@/composition/CompositionProvider';
 import { deviceComposition } from '@/composition/deviceComposition';
 import { ConsoleStoreProvider } from '@/console/hooks';
 import { ConversationsProvider } from '@/conversations/useConversation';
+import { NotificationServicesProvider } from '@/notifications/services';
 import { deviceServices } from './deviceServices';
 import { isDemoMode, subscribeDemoMode } from './mode';
 
@@ -16,17 +17,20 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
   const demo = useSyncExternalStore(subscribeDemoMode, isDemoMode);
   useEffect(() => {
     if (demo) return;
-    const { manager } = deviceServices();
+    const { manager, liveActivity } = deviceServices();
     manager.start();
+    liveActivity.start();
     void manager.setActive(AppState.currentState === 'active');
     const subscription = AppState.addEventListener('change', (state) => {
       void manager.setActive(state === 'active');
       deviceServices().conversations.setActive(state === 'active');
+      if (state === 'active') void liveActivity.foreground();
     });
     return () => {
       subscription.remove();
       void manager.setActive(false);
       deviceServices().conversations.setActive(false);
+      void liveActivity.stop();
     };
   }, [demo]);
   if (demo) return <>{children}</>;
@@ -34,7 +38,9 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
   return (
     <ConsoleStoreProvider store={services.store}>
       <ConversationsProvider registry={services.conversations}>
-        <CompositionProvider composition={deviceComposition()}>{children}</CompositionProvider>
+        <NotificationServicesProvider services={services.notifications}>
+          <CompositionProvider composition={deviceComposition()}>{children}</CompositionProvider>
+        </NotificationServicesProvider>
       </ConversationsProvider>
     </ConsoleStoreProvider>
   );

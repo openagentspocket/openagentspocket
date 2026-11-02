@@ -16,6 +16,12 @@ export {
 } from './errors';
 export { FakeNotificationTransport, makeHost } from './fake-notification-transport';
 export {
+  KEY_MIRROR_FILE_NAME,
+  type KeyMirrorSink,
+  keyMirrorText,
+  MirroredNotificationKeyStore,
+} from './key-mirror';
+export {
   generateNotificationKey,
   MemoryNotificationKeyStore,
   NOTIFICATION_KEY_BYTES,

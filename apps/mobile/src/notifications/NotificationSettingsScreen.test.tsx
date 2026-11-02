@@ -108,4 +108,30 @@ describe('NotificationPrivacyScreen', () => {
     expect(screen.getByTestId('notification-disclosure')).toBeTruthy();
     expect(screen.getByText(translate('en', 'app', 'What it cannot see'))).toBeTruthy();
   });
+
+  it('drives the per-Host Live Activity opt-in once the Host is registered', async () => {
+    const enabled = new Set<string>();
+    const services: NotificationServices = {
+      ...createDemoNotificationServices(),
+      liveActivity: {
+        activitiesEnabled: true,
+        isEnabled: (hostId) => enabled.has(hostId),
+        setEnabled: (on, hostId) => {
+          if (on) enabled.add(hostId);
+          else enabled.delete(hostId);
+        },
+      },
+    };
+    await renderWith(<NotificationSettingsScreen />, services);
+    await enablePush();
+    expect(screen.queryByTestId('notifications-host-demo-live-activity')).toBeNull();
+    await act(async () => {
+      fireEvent(screen.getByTestId('notifications-host-demo-enabled'), 'valueChange', true);
+    });
+    const toggle = await screen.findByTestId('notifications-host-demo-live-activity');
+    await act(async () => {
+      fireEvent(toggle, 'valueChange', true);
+    });
+    expect(enabled.has('demo')).toBe(true);
+  });
 });

@@ -1,8 +1,11 @@
 import { DEFAULT_DEVICE_KEY_ALIAS } from '@openagentspocket/core';
+import { appGroup } from 'agentico-app-group';
+import { liveActivityController } from 'agentico-live-activity';
 import { nativeSsh } from 'agentico-ssh';
 import { AppState } from 'react-native';
 import { systemClock } from '@/console/systemClock';
 import { registerLiveRuntime } from '@/features/hosts/hostsRuntime';
+import { secureRandomBytes } from '@/lib/secureRandom';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { createDeviceStores } from '@/stores';
 import { createChatTranscriptCache } from '@/stores/expoCacheFileStore';
@@ -24,6 +27,9 @@ export function deviceServices(): LiveServices {
       clock: systemClock,
       keyAlias: DEFAULT_DEVICE_KEY_ALIAS,
       initiallyActive: AppState.currentState === 'active',
+      appGroup: appGroup(),
+      liveActivities: liveActivityController(),
+      randomBytes: secureRandomBytes,
     });
   }
   return services;

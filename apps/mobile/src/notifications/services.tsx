@@ -23,6 +23,16 @@ export interface NotificationServices {
   readonly pushToken: DevicePushTokenSource;
   /** The Agentico plugin version a Host reported, null while unknown. */
   readonly pluginVersionOf: (hostId: string) => PluginVersion | null;
+  /** The per-Host Live Activity opt-in; absent where Live Activities do not run (demo, tests). */
+  readonly liveActivity?: LiveActivityToggles;
+}
+
+/** What the Settings toggle needs from the Live Activity runtime. */
+export interface LiveActivityToggles {
+  /** False when the OS has Live Activities turned off for the app. */
+  readonly activitiesEnabled: boolean;
+  isEnabled(hostId: string): boolean;
+  setEnabled(enabled: boolean, hostId: string): void;
 }
 
 const systemClock: Clock = {

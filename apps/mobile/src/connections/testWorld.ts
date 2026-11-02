@@ -106,6 +106,7 @@ export async function createWorld(hostKey: HostKey = HOST_KEY): Promise<World> {
     storage,
     clock,
     keyAlias: KEY_ALIAS,
+    randomBytes: (length) => new Uint8Array(length).fill(7),
     confirmFirstConnect: async () => {
       prompts.count += 1;
       return prompts.answer;
