@@ -1,4 +1,4 @@
-import { checkHostKey, DEFAULT_MAX_RESPONSE_BYTES } from './client';
+import { checkHostKey, DEFAULT_MAX_RESPONSE_BYTES, resolveCredential } from './client';
 import { SshError } from './errors';
 import { fakeSftp } from './fakeSftp';
 import type {
@@ -9,6 +9,7 @@ import type {
   PtyOptions,
   PtyStream,
   Sftp,
+  SshCredential,
   SshModule,
   SshSession,
   Stream,
@@ -75,12 +76,24 @@ export interface FakeSshOptions {
   hostKey?: HostKey;
   /** Users whose key is authorized; default: any. */
   authorizedUsers?: string[];
+  /** Accepted passwords by user; without this map any password is accepted. */
+  passwords?: Record<string, string>;
+  /** Accepted Bootstrap Key seeds; without this list any 32-byte seed is accepted. */
+  bootstrapSeeds?: Uint8Array[];
+  /** Accepted RSA private keys (PEM text); without this list any readable key is accepted. */
+  rsaKeys?: string[];
+}
+
+function sameBytes(a: Uint8Array, b: Uint8Array): boolean {
+  return a.length === b.length && a.every((byte, index) => byte === b[index]);
 }
 
 /** An in-memory `SshModule` for tests and Demo mode, with the native module's semantics. */
 export class FakeSsh implements SshModule {
   readonly keys = new Map<string, string>();
   readonly sessions: FakeSession[] = [];
+  /** Every credential a connect offered after the Host Key was accepted, in order. */
+  readonly credentials: SshCredential[] = [];
 
   constructor(private readonly options: FakeSshOptions = {}) {}
 
@@ -104,12 +117,43 @@ export class FakeSsh implements SshModule {
       fingerprint: 'SHA256:fake',
     };
     await checkHostKey(options, hostKey);
-    if (!this.keys.has(options.keyAlias)) throw new SshError('keyNotFound');
-    const users = this.options.authorizedUsers;
-    if (users && !users.includes(options.username)) throw new SshError('authenticationFailed');
+    const credential = await resolveCredential(options);
+    this.credentials.push(credential);
+    this.authenticate(options.username, credential);
     const session = new FakeSession(`fake-${this.sessions.length + 1}`, hostKey, this.options);
     this.sessions.push(session);
     return session;
+  }
+
+  private authenticate(username: string, credential: SshCredential) {
+    const { options } = this;
+    const refuse = () => new SshError('authenticationFailed');
+    switch (credential.kind) {
+      case 'deviceKey': {
+        if (!this.keys.has(credential.alias)) throw new SshError('keyNotFound');
+        const users = options.authorizedUsers;
+        if (users && !users.includes(username)) throw refuse();
+        return;
+      }
+      case 'password': {
+        const expected = options.passwords?.[username];
+        if (options.passwords && expected !== credential.password) throw refuse();
+        return;
+      }
+      case 'bootstrapSeed': {
+        if (credential.seed.length !== 32) throw new SshError('invalidArgument', 'seed');
+        const seeds = options.bootstrapSeeds;
+        if (seeds && !seeds.some((seed) => sameBytes(seed, credential.seed))) throw refuse();
+        return;
+      }
+      case 'rsaKey': {
+        const pem = credential.privateKey;
+        if (!/-----BEGIN [A-Z ]*PRIVATE KEY-----/.test(pem)) throw new SshError('keyInvalid');
+        if (/ENCRYPTED/.test(pem)) throw new SshError('keyEncrypted');
+        if (options.rsaKeys && !options.rsaKeys.includes(pem)) throw refuse();
+        return;
+      }
+    }
   }
 }
 

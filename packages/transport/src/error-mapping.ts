@@ -21,6 +21,9 @@ function sharedClassification(code: SshErrorCode): TransportError | null {
     case 'keyNotFound':
     case 'keyCorrupt':
       return { kind: 'deviceKeyCorrupt' };
+    case 'keyInvalid':
+    case 'keyEncrypted':
+      return { kind: 'rsaKeyCorrupt' };
     case 'keychainFailed':
       return { kind: 'keyAccessNotConfirmed' };
     default:

@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 
 /// The operations behind the module's functions. Bytes cross to JavaScript as
@@ -72,6 +73,38 @@ final class SSHBridge: Sendable {
             publicKey: DeviceKeyFormat.publicKeyBlob(key),
             signer: { data in try key.signature(for: data) },
             timeout: timeout)
+    }
+
+    /// Authentication with a credential that is not a stored key: a password, a Bootstrap Key
+    /// seed (base64 of the raw Ed25519 seed) or an RSA private key in PEM text. The secret lives
+    /// only for this call.
+    func authenticate(
+        sessionId: String, username: String, kind: String, secret: String, timeout: Duration
+    ) async throws {
+        let connection = try await registry.connection(sessionId)
+        switch kind {
+        case "password":
+            try await connection.authenticate(username: username, password: secret, timeout: timeout)
+        case "seed":
+            guard
+                let raw = Data(base64Encoded: secret), raw.count == 32,
+                let key = try? Curve25519.Signing.PrivateKey(rawRepresentation: raw)
+            else { throw BridgeError.invalidArgument("seed") }
+            try await connection.authenticate(
+                username: username,
+                publicKey: DeviceKeyFormat.publicKeyBlob(key),
+                signer: { data in try key.signature(for: data) },
+                timeout: timeout)
+        case "privateKey":
+            let key = try RSAPrivateKey(pem: secret)
+            try await connection.authenticate(
+                username: username,
+                publicKey: key.publicKeyBlob,
+                signer: { data in try key.signature(for: data) },
+                timeout: timeout)
+        default:
+            throw BridgeError.invalidArgument("credential kind")
+        }
     }
 
     /// Closes the connection and everything opened on it. Idempotent.

@@ -17,7 +17,7 @@ import {
 import type { SshModule, SshSession } from 'agentico-ssh';
 import type { ConsoleStore } from '@/console/store';
 import type { HostConnection } from '@/features/hosts/HostsModel';
-import { transportSettingsFor } from './transportSettings';
+import { type HostSecrets, transportSettingsFor } from './transportSettings';
 
 /** The saved Hosts as the manager reads them; `HostsModel` satisfies it. */
 export interface HostSource {
@@ -32,6 +32,8 @@ export interface ConnectionManagerOptions {
   /** Alias of the device key; created on first use through `ensureDeviceKey`. */
   readonly keyAlias: string;
   readonly ensureDeviceKey: () => Promise<unknown>;
+  /** Saved passwords and RSA keys, for Hosts that do not use the device key. */
+  readonly secrets?: HostSecrets;
   readonly knownHosts: KnownHostsStore;
   /** The Trust this Host? alert. */
   readonly confirmFirstConnect: HostKeyPolicy['confirmFirstConnect'];
@@ -211,6 +213,7 @@ export class ConnectionManager {
     const settings = transportSettingsFor(host, {
       keyAlias: options.keyAlias,
       clock: options.clock,
+      secrets: options.secrets,
       policy: {
         knownHosts: options.knownHosts,
         confirmFirstConnect,

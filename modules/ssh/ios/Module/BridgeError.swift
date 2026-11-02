@@ -24,6 +24,11 @@ enum BridgeErrorCode {
             case .storedKeyCorrupt: return "keyCorrupt"
             case .keychain: return "keychainFailed"
             }
+        case let error as RSAPrivateKey.Failure:
+            switch error {
+            case .invalid: return "keyInvalid"
+            case .encrypted: return "keyEncrypted"
+            }
         case let error as BridgeError:
             switch error {
             case .closed: return "closed"

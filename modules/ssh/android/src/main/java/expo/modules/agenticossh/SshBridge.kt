@@ -2,6 +2,7 @@ package expo.modules.agenticossh
 
 import android.util.Base64
 import com.jcraft.jsch.Channel
+import org.bouncycastle.crypto.params.Ed25519PrivateKeyParameters
 import java.io.File
 
 /**
@@ -57,7 +58,33 @@ internal class SshBridge(keyDirectory: File, private val events: BridgeEvents) {
   fun authenticate(sessionId: String, username: String, keyAlias: String, timeoutMs: Long) {
     val connection = registry.connection(sessionId)
     val key = keys.load(checkAlias(keyAlias)) ?: throw SshFailure("keyNotFound")
-    connection.authenticate(username, key, timeoutMs)
+    connection.authenticate(username, DeviceKeyIdentity(key), null, timeoutMs)
+  }
+
+  /**
+   * Authentication with a credential that is not a stored key: a password, a Bootstrap Key seed
+   * (base64 of the raw Ed25519 seed) or an RSA private key in PEM text. The secret lives only
+   * for this call.
+   */
+  fun authenticateWith(sessionId: String, username: String, kind: String, secret: String, timeoutMs: Long) {
+    val connection = registry.connection(sessionId)
+    when (kind) {
+      "password" -> connection.authenticate(username, null, secret, timeoutMs)
+      "seed" -> {
+        val seed =
+          try {
+            Base64.decode(secret, Base64.DEFAULT)
+          } catch (error: IllegalArgumentException) {
+            null
+          }
+        if (seed == null || seed.size != 32) throw SshFailure.invalidArgument("seed")
+        val key = DeviceKey(Ed25519PrivateKeyParameters(seed, 0))
+        seed.fill(0)
+        connection.authenticate(username, DeviceKeyIdentity(key), null, timeoutMs)
+      }
+      "privateKey" -> connection.authenticate(username, RsaKeyIdentity.parse(secret), null, timeoutMs)
+      else -> throw SshFailure.invalidArgument("credential kind")
+    }
   }
 
   /** Closes the connection and everything opened on it. Idempotent. */

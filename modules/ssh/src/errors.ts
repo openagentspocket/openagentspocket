@@ -23,6 +23,9 @@ export const SSH_ERROR_CODES = [
   'keyNotFound',
   'keyCorrupt',
   'keychainFailed',
+  // A supplied private key the native layer cannot use.
+  'keyInvalid',
+  'keyEncrypted',
   // The bridge: an id native no longer knows, a bad argument, a local listener.
   'closed',
   'invalidArgument',

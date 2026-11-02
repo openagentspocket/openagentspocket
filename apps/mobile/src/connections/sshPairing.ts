@@ -14,6 +14,7 @@ import {
 import {
   fromBase64,
   type HostKey,
+  type SshCredential,
   SshError,
   type SshModule,
   type SshSession,
@@ -48,8 +49,8 @@ function firstLine(text: string): string | null {
 /**
  * One ceremony connection over the SSH module. The module authenticates inside `connect`, right
  * after the host key decision, so the dial stops there: the key is reported, and the answer
- * (`authenticate` with the device key proceeds, `close` declines) releases the handshake.
- * A Bootstrap Key (raw seed) cannot be offered by the module yet: that identity fails as `other`.
+ * (`authenticate` offers the identity as the connect's credential and proceeds, `close`
+ * declines) releases the handshake. The Bootstrap Key's seed is offered as such.
  */
 class ModuleConnection implements PairingSSHConnection {
   private authenticated = false;
@@ -58,6 +59,8 @@ class ModuleConnection implements PairingSSHConnection {
     readonly hostKeyFingerprint: string,
     readonly serverIdentification: string | null,
     private readonly decide: (accept: boolean) => void,
+    private readonly offer: (credential: SshCredential) => void,
+    private readonly keyAlias: string,
     private readonly connecting: Promise<SshSession>,
   ) {}
 
@@ -66,10 +69,12 @@ class ModuleConnection implements PairingSSHConnection {
     identity: PairingIdentity,
     _timeoutMs: number,
   ): Promise<void> {
-    if (identity.kind === 'bootstrap') {
-      throw new PairingSSHError('other', 'Bootstrap Key authentication is not available.');
-    }
     this.authenticated = true;
+    this.offer(
+      identity.kind === 'bootstrap'
+        ? { kind: 'bootstrapSeed', seed: identity.seed }
+        : { kind: 'deviceKey', alias: this.keyAlias },
+    );
     this.decide(true);
     try {
       await this.connecting;
@@ -122,6 +127,10 @@ export function createModuleDial(options: PairingDialOptions): PairingDial {
     const decision = new Promise<boolean>((resolve) => {
       decide = resolve;
     });
+    let offer!: (credential: SshCredential) => void;
+    const credential = new Promise<SshCredential>((resolve) => {
+      offer = resolve;
+    });
     let presented!: (key: HostKey) => void;
     let failed!: (error: unknown) => void;
     const keyArrived = new Promise<HostKey>((resolve, reject) => {
@@ -132,7 +141,7 @@ export function createModuleDial(options: PairingDialOptions): PairingDial {
       host: endpoint.host,
       port: endpoint.port,
       username: options.username(),
-      keyAlias: options.keyAlias,
+      credential: () => credential,
       timeoutMs,
       confirmHostKey: (key) => {
         presented(key);
@@ -143,7 +152,7 @@ export function createModuleDial(options: PairingDialOptions): PairingDial {
     const key = await keyArrived.catch((error: unknown) => {
       throw asPairingError(error);
     });
-    return new ModuleConnection(key.fingerprint, null, decide, connecting);
+    return new ModuleConnection(key.fingerprint, null, decide, offer, options.keyAlias, connecting);
   };
 }
 

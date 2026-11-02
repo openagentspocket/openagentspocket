@@ -7,6 +7,7 @@ import type {
   HostKeyTrust,
   SSHRoute,
 } from '@openagentspocket/core';
+import type { SshCredentialSource } from 'agentico-ssh';
 
 export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
 export const DEFAULT_CONNECT_TIMEOUT_MS = 15_000;
@@ -28,7 +29,12 @@ export interface TransportSettings {
   readonly routes: readonly SSHRoute[];
   readonly username: string;
   /** Alias of the device key kept natively; the same alias for every Host. */
-  readonly keyAlias: string;
+  readonly keyAlias?: string;
+  /**
+   * What authenticates instead of the device key (password, RSA key). A function is resolved
+   * only once the Host Key was accepted, so secrets are read for a trusted Host only.
+   */
+  readonly credential?: SshCredentialSource;
   readonly hostKeyPolicy: HostKeyPolicy;
   /** Where the Host's key is trusted; defaults to the endpoint dialled. */
   readonly hostKeyTrust?: HostKeyTrust;

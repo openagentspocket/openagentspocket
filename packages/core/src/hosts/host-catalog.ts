@@ -47,6 +47,11 @@ export function passwordAccount(hostId: string): string {
   return `host-password-${hostId}`;
 }
 
+/** The secure-storage key of a Host's RSA private key (PEM text). */
+export function rsaKeyAccount(hostId: string): string {
+  return `host-rsa-key-${hostId}`;
+}
+
 /** A stored entry: a Host this build reads, or one it keeps verbatim. */
 type Entry = { readonly host: Host } | { readonly raw: unknown };
 
@@ -132,6 +137,7 @@ export class HostCatalog {
     this.ensureWritable();
     this.indexOf(id);
     await this.secrets.deleteItem(passwordAccount(id));
+    await this.secrets.deleteItem(rsaKeyAccount(id));
     this.entries = this.entries.filter((entry) => !('host' in entry) || entry.host.id !== id);
     this.persist();
   }
@@ -157,6 +163,18 @@ export class HostCatalog {
   /** The stored password, or null when none was saved. */
   password(host: Host): Promise<string | null> {
     return this.secrets.getItem(passwordAccount(host.id));
+  }
+
+  /** The stored RSA private key (PEM), or null when none was saved. */
+  rsaKey(host: Host): Promise<string | null> {
+    return this.secrets.getItem(rsaKeyAccount(host.id));
+  }
+
+  /** Stores the Host's RSA private key in the secret store; null removes it. */
+  async setRsaKey(host: Host, privateKey: string | null): Promise<void> {
+    this.indexOf(host.id);
+    if (privateKey === null) await this.secrets.deleteItem(rsaKeyAccount(host.id));
+    else await this.secrets.setItem(rsaKeyAccount(host.id), privateKey);
   }
 
   private indexOf(id: string): number {

@@ -6,6 +6,7 @@ import {
   HostCatalogError,
   MemorySecretStore,
   passwordAccount,
+  rsaKeyAccount,
 } from './host-catalog';
 import { duplicateHostDraft, hostFromDraft } from './host-draft';
 import { MemoryStorage } from './known-hosts';
@@ -114,6 +115,17 @@ describe('host catalog', () => {
     await catalog.remove('a');
     expect(catalog.hosts).toEqual([]);
     expect(secrets.values.has(passwordAccount('a'))).toBe(false);
+  });
+
+  it('keeps an RSA key in secure storage, away from the Host record, and removes it with the Host', async () => {
+    const { storage, secrets, catalog } = setup();
+    const subject = host('a', { authMethod: 'rsaKey' });
+    await catalog.add(subject);
+    await catalog.setRsaKey(subject, 'PEM-TEXT');
+    expect(await catalog.rsaKey(subject)).toBe('PEM-TEXT');
+    expect(storage.getString(HOSTS_STORAGE_KEY)).not.toContain('PEM-TEXT');
+    await catalog.remove('a');
+    expect(secrets.values.has(rsaKeyAccount('a'))).toBe(false);
   });
 
   it('keeps passwords out of the Host record and round-trips them through secure storage', async () => {

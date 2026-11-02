@@ -3,7 +3,7 @@ import { fromBase64, toBase64 } from './bytes';
 import { SshError, toSshError } from './errors';
 import { bridgeSftp } from './sftp';
 import { StreamRouter } from './streams';
-import type { ConnectOptions, HostKey, SshModule, SshSession } from './types';
+import type { ConnectOptions, HostKey, SshCredential, SshModule, SshSession } from './types';
 
 export const DEFAULT_TIMEOUTS = {
   connectMs: 15_000,
@@ -48,9 +48,58 @@ export async function checkHostKey(options: ConnectOptions, presented: HostKey):
   }
 }
 
+/** The credential a connect asked for, resolved once the Host Key was accepted. */
+export async function resolveCredential(options: ConnectOptions): Promise<SshCredential> {
+  const source =
+    options.credential ??
+    (options.keyAlias === undefined
+      ? undefined
+      : ({ kind: 'deviceKey', alias: options.keyAlias } as const));
+  if (source === undefined) throw new SshError('invalidArgument', 'no credential');
+  return typeof source === 'function' ? source() : source;
+}
+
 /** Builds the public `SshModule` over the raw native bridge. */
 export function createSshClient(bridge: NativeSshBridge): SshModule {
   const router = new StreamRouter(bridge);
+
+  function authenticate(
+    sessionId: string,
+    username: string,
+    credential: SshCredential,
+    timeoutMs: number,
+  ): Promise<void> {
+    switch (credential.kind) {
+      case 'deviceKey':
+        return bridge.authenticate(sessionId, username, credential.alias, timeoutMs);
+      case 'password':
+        return bridge.authenticateWith(
+          sessionId,
+          username,
+          'password',
+          credential.password,
+          timeoutMs,
+        );
+      case 'bootstrapSeed':
+        return bridge.authenticateWith(
+          sessionId,
+          username,
+          'seed',
+          toBase64(credential.seed),
+          timeoutMs,
+        );
+      case 'rsaKey':
+        return bridge.authenticateWith(
+          sessionId,
+          username,
+          'privateKey',
+          credential.privateKey,
+          timeoutMs,
+        );
+      default:
+        return Promise.reject(new SshError('invalidArgument', 'credential'));
+    }
+  }
 
   async function openSession(options: ConnectOptions): Promise<SshSession> {
     const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUTS.connectMs;
@@ -62,9 +111,8 @@ export function createSshClient(bridge: NativeSshBridge): SshModule {
     };
     try {
       await checkHostKey(options, hostKey);
-      await call(() =>
-        bridge.authenticate(sessionId, options.username, options.keyAlias, timeoutMs),
-      );
+      const credential = await resolveCredential(options);
+      await call(() => authenticate(sessionId, options.username, credential, timeoutMs));
     } catch (error) {
       await bridge.disconnect(sessionId).catch(() => {});
       throw toSshError(error);

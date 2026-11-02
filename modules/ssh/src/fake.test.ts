@@ -90,3 +90,42 @@ describe('FakeSsh', () => {
     expect(await sftp.list('/h/d')).toBeNull();
   });
 });
+
+describe('FakeSsh credentials', () => {
+  const base = { host: 'h', port: 22, username: 'u' };
+  const pem = '-----BEGIN RSA PRIVATE KEY-----\nAAAA\n-----END RSA PRIVATE KEY-----';
+
+  it('checks a password against the configured accounts', async () => {
+    const ssh = new FakeSsh({ passwords: { u: 'secret' } });
+    const attempt = (password: string) =>
+      code(ssh.connect({ ...base, credential: { kind: 'password', password } }));
+    expect(await attempt('wrong')).toBe('authenticationFailed');
+    expect(await attempt('secret')).toBe('resolved');
+  });
+
+  it('accepts only the paired Bootstrap Key seed, and only 32 bytes of it', async () => {
+    const good = new Uint8Array(32).fill(1);
+    const ssh = new FakeSsh({ bootstrapSeeds: [good] });
+    const attempt = (seed: Uint8Array) =>
+      code(ssh.connect({ ...base, credential: { kind: 'bootstrapSeed', seed } }));
+    expect(await attempt(new Uint8Array(32).fill(2))).toBe('authenticationFailed');
+    expect(await attempt(new Uint8Array(5))).toBe('invalidArgument');
+    expect(await attempt(good)).toBe('resolved');
+  });
+
+  it('tells an unreadable RSA key from an encrypted one and checks the authorized key', async () => {
+    const ssh = new FakeSsh({ rsaKeys: [pem] });
+    const attempt = (privateKey: string) =>
+      code(ssh.connect({ ...base, credential: { kind: 'rsaKey', privateKey } }));
+    expect(await attempt('not a key')).toBe('keyInvalid');
+    expect(await attempt(pem.replace('RSA PRIVATE', 'ENCRYPTED PRIVATE'))).toBe('keyEncrypted');
+    expect(await attempt(pem.replace('AAAA', 'BBBB'))).toBe('authenticationFailed');
+    expect(await attempt(pem)).toBe('resolved');
+  });
+
+  it('records every credential a connect offered, resolving a lazy one', async () => {
+    const ssh = new FakeSsh();
+    await ssh.connect({ ...base, credential: async () => ({ kind: 'password', password: 'p' }) });
+    expect(ssh.credentials.map((credential) => credential.kind)).toEqual(['password']);
+  });
+});
