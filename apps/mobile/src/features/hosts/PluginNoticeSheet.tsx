@@ -1,9 +1,8 @@
 import type { PluginNotice, PluginStep } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, Card, Icon, Sheet, Text, useTheme } from '@openagentspocket/ui';
+import { Button, Card, CommandBlock, Icon, Sheet, Text, useTheme } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { View } from 'react-native';
-import { CommandBlock } from './CommandBlock';
 import { pluginActionTitle, pluginMessageText, pluginNoteText } from './pluginText';
 
 interface PluginNoticeSheetProps {
@@ -67,7 +66,12 @@ export function PluginNoticeSheet({
             </Text>
           </View>
           {notice.commands.map((command) => (
-            <CommandBlock key={command} command={command} />
+            <CommandBlock
+              key={command}
+              lines={[command]}
+              copyLabel={t('Copy')}
+              copiedLabel={t('Copied')}
+            />
           ))}
         </Card>
         {notes.length > 0 ? (

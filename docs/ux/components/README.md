@@ -28,7 +28,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | UX3-chat-rows | `gallery/components/chatRows.tsx` | ChatUserBubble, ChatDivider, ChatThoughtRow, ChatToolRow, ChatNoticeRow, DiffRow |
 | UX3-blocked-terminal | `gallery/components/blockedTerminal.tsx` | BlockedCard, BackgroundWorkStrip, NoticeBanner, JumpControl, TerminalToolbar, KeyPad |
 | UX3-usage | `gallery/components/usage.tsx` | UsageLimitChip, ProviderUsageCard, LimitWindowRow, UsageTotals, UsageChart, UsageHeatMap, UsageBreakdownRow |
-| UX3-hosts-settings-files | `gallery/components/hostsSettingsFiles.tsx` | HostRow, HostStatusCard, SettingsGroup, ThemeChoiceCard, FileRow, PortRow |
+| UX3-hosts-settings-files | `gallery/components/hostsSettingsFiles.tsx` | HostRow, HostStatusCard, SettingsGroup, ThemeChoiceCard, FileRow, PortRow, ChoiceSheet, CommandBlock |
 | UX3-settings-pickers | `gallery/components/settingsPickers.tsx` | TerminalThemePicker, TerminalThemePreview, AgentListFieldsEditor, AgentListFieldsPreview, OverlayPeerPicker, OverlayPeerViews, PortPreview |
 | UX3-composer-extras | `gallery/components/composerExtras.tsx` | SkillsKeyboardPane, SkillContentSheet, ComposerStagingStatusBar, ClaudeSubagentTranscript |
 
@@ -99,6 +99,8 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [SkillContentSheet](#skillcontentsheet) | UX3-composer-extras | `(no atlas image for the skill content sheet)` | default: none | none | `Skills/SkillContentSheet.swift:1-93` |
 | [ComposerStagingStatusBar](#composerstagingstatusbar) | UX3-composer-extras | `(no atlas image for staging chips)` | default: none | none | `Attachments/ComposerStagingStatusBar.swift:1-75`<br>`Attachments/ComposerStagingStore.swift:1-200` |
 | [ClaudeSubagentTranscript](#claudesubagenttranscript) | UX3-composer-extras | `agent-detail.subagent-transcript` | default: [ref](ref/ClaudeSubagentTranscript.png) · [light](ref/ClaudeSubagentTranscript.light.png) | none | `Chat/Subagent/ClaudeSubagentTranscriptView.swift:1-196`<br>`Chat/Subagent/ClaudeSubagentRoute.swift:1-80` |
+| [ChoiceSheet](#choicesheet) | UX3-hosts-settings-files | `hosts.add-choice` | default: none<br>open: none | `packages/ui/src/components/ChoiceSheet.tsx` |  |
+| [CommandBlock](#commandblock) | UX3-hosts-settings-files | `hosts.pairing-scanner` | default: none<br>single: none | `packages/ui/src/components/CommandBlock.tsx` |  |
 
 ## AgentCard
 
@@ -1255,3 +1257,39 @@ Acceptance (the judge ticks each on the side-by-side):
 
 - [ ] no composer or status line
 - [ ] rows reuse the Chat* components
+
+## ChoiceSheet
+
+Task UX3-hosts-settings-files · target `packages/ui/src/components/ChoiceSheet.tsx` · composes Sheet, Card, Icon, Text
+
+Props sketch: `{ visible, title, options: { id, icon, eyebrow?, title, description, meta?, highlighted?, onPress }[], onClose, testID? }`
+
+Interactions: Tapping a card fires its onPress; a backdrop tap or the close button dismisses
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: The opener button; the sheet opens over it · crop none
+- `open`: Add Host: a highlighted Easy Pair card (eyebrow, icon, title, sentence, meta) above a plain Add Manually card · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] the highlighted card is outlined in the accent
+- [ ] every card is one tap target with a joined accessibility label
+
+## CommandBlock
+
+Task UX3-hosts-settings-files · target `packages/ui/src/components/CommandBlock.tsx` · composes CopyButton, Text
+
+Props sketch: `{ lines, prompt?, copyLabel?, copiedLabel?, testID? }`
+
+Interactions: Copy puts every line on the pasteboard, joined by newlines, and flips to Copied for a moment
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Two command lines with a prompt glyph each and one Copy capsule · crop none
+- `single`: One command line · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] lines are selectable mono text
+- [ ] the prompt glyph is hidden from screen readers

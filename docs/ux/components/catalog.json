@@ -1449,6 +1449,39 @@
       "props": "{ title, kind, rows: ChatRow[] }",
       "composes": ["ChatUserBubble", "ChatToolRow", "Text"],
       "accept": ["no composer or status line", "rows reuse the Chat* components"]
+    },
+    {
+      "name": "ChoiceSheet",
+      "group": "hosts-settings-files",
+      "swift": [],
+      "screens": ["hosts.add-choice"],
+      "variants": [
+        "default|The opener button; the sheet opens over it",
+        "open|Add Host: a highlighted Easy Pair card (eyebrow, icon, title, sentence, meta) above a plain Add Manually card"
+      ],
+      "interactions": "Tapping a card fires its onPress; a backdrop tap or the close button dismisses",
+      "rnToday": ["packages/ui/src/components/ChoiceSheet.tsx"],
+      "props": "{ visible, title, options: { id, icon, eyebrow?, title, description, meta?, highlighted?, onPress }[], onClose, testID? }",
+      "composes": ["Sheet", "Card", "Icon", "Text"],
+      "accept": [
+        "the highlighted card is outlined in the accent",
+        "every card is one tap target with a joined accessibility label"
+      ]
+    },
+    {
+      "name": "CommandBlock",
+      "group": "hosts-settings-files",
+      "swift": [],
+      "screens": ["hosts.pairing-scanner"],
+      "variants": [
+        "default|Two command lines with a prompt glyph each and one Copy capsule",
+        "single|One command line"
+      ],
+      "interactions": "Copy puts every line on the pasteboard, joined by newlines, and flips to Copied for a moment",
+      "rnToday": ["packages/ui/src/components/CommandBlock.tsx"],
+      "props": "{ lines, prompt?, copyLabel?, copiedLabel?, testID? }",
+      "composes": ["CopyButton", "Text"],
+      "accept": ["lines are selectable mono text", "the prompt glyph is hidden from screen readers"]
     }
   ]
 }

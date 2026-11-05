@@ -1,6 +1,6 @@
-import { Text, useTheme } from '@openagentspocket/ui';
+import { t } from '@openagentspocket/i18n';
+import { CommandBlock, Text, useTheme } from '@openagentspocket/ui';
 import { Linking, Pressable, View } from 'react-native';
-import { CommandBlock } from './CommandBlock';
 import type { GuideStep } from './setupGuideSteps';
 
 interface SetupStepProps {
@@ -65,9 +65,9 @@ export function SetupStep({ number, step, divider }: SetupStepProps) {
               </Text>
             </Pressable>
           ) : null}
-          {step.commands?.map((command) => (
-            <CommandBlock key={command} command={command} />
-          ))}
+          {step.commands ? (
+            <CommandBlock lines={step.commands} copyLabel={t('Copy')} copiedLabel={t('Copied')} />
+          ) : null}
         </View>
       </View>
     </>

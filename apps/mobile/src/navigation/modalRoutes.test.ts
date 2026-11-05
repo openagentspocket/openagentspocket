@@ -41,6 +41,7 @@ describe('modal routes', () => {
     ]) {
       expect(layout).toMatch(new RegExp(`name="${name}"[^>]*\\.\\.\\.(list|form)`, 's'));
     }
-    expect(layout).not.toMatch(/presentation\s*:/);
+    // Only add-host stays outside sheetOptions: a transparent route that draws its own ChoiceSheet.
+    expect(layout.match(/presentation\s*:\s*'\w+'/g)).toEqual(["presentation: 'transparentModal'"]);
   });
 });

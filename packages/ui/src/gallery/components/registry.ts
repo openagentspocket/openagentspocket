@@ -2,6 +2,7 @@ import { agentBarEntries } from './agentBar';
 import { agentRowsEntries } from './agentRows';
 import { blockedTerminalEntries } from './blockedTerminal';
 import { chatRowsEntries } from './chatRows';
+import { choiceCommandEntries } from './choiceCommand';
 import { composerExtrasEntries } from './composerExtras';
 import { homeShellEntries } from './homeShell';
 import { hostsSettingsFilesEntries } from './hostsSettingsFiles';
@@ -25,6 +26,7 @@ export const componentCatalog: readonly CatalogEntry[] = [
   ...hostsSettingsFilesEntries,
   ...settingsPickersEntries,
   ...composerExtrasEntries,
+  ...choiceCommandEntries,
 ];
 
 export function findCatalogEntry(name: string | undefined): CatalogEntry | undefined {

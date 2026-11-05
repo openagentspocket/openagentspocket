@@ -58,6 +58,15 @@ function AppStack() {
       <Stack.Screen name="index" options={{ ...bare, title: t('Home') }} />
       <Stack.Screen name="changes" options={{ ...bare, title: t('Changes') }} />
       <Stack.Screen name="hosts" options={{ ...bare, ...list, title: t('Hosts') }} />
+      <Stack.Screen
+        name="add-host"
+        options={{
+          ...bare,
+          title: t('Add Host'),
+          presentation: 'transparentModal',
+          animation: 'none',
+        }}
+      />
       <Stack.Screen name="ports" options={{ ...bare, ...list, title: t('Ports') }} />
       <Stack.Screen name="usage" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-breakdown" options={{ title: t('Usage') }} />
