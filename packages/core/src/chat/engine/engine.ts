@@ -24,6 +24,7 @@ import {
   emptyTranscript,
 } from '../model/types';
 import type { ChatWorkflowProgress } from '../model/workflow-progress';
+import { programDefinition } from '../programs/registry';
 import { readsByQuery } from './adapter';
 import { ChatEngineBase, type ChatExpandedOutput, isCancelled } from './engine-base';
 import type { ChatConversationSnapshot, ChatToolOutputFailure } from './snapshot';
@@ -123,7 +124,8 @@ export class ChatConversationEngine extends ChatEngineBase {
    */
   async relocate(context: ChatProjectionContext): Promise<ChatConversationSnapshot> {
     const current = this.source?.path;
-    if (this.reference.program !== 'codex' || current === undefined) return this.poll(context);
+    const { movesFileOnRewrite } = programDefinition(this.reference.program);
+    if (!movesFileOnRewrite || current === undefined) return this.poll(context);
     this.setContext(context);
     try {
       const location = await this.locate();

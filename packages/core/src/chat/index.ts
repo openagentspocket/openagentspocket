@@ -31,6 +31,7 @@ export * from './model/types';
 export * from './model/workflow-progress';
 export * from './opencode';
 export * from './pi';
+export * from './programs';
 export * from './send';
 export * from './timeline';
 export * from './titles';

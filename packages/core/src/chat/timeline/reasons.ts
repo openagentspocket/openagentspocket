@@ -3,6 +3,8 @@
 // Defined here until the conversation engine task lands its own; the shapes match Swift's cases.
 
 import type { ChatProgram } from '../model/types';
+import { programDefinition } from '../programs/registry';
+import { sendPolicyFor } from '../send/registry';
 
 export type ChatSessionStoreProblem =
   /** No database where Chat reads it, the path shown with `~` for home. */
@@ -64,7 +66,7 @@ export const hidesConversation = (reason: ChatUnavailableReason): boolean =>
 
 /** Whether a new conversation's file comes only with the first reply (Pi, Oh My Pi), not the first message. */
 export const writesNewConversationWithFirstReply = (program: ChatProgram): boolean =>
-  program === 'pi' || program === 'omp';
+  sendPolicyFor(program).writesNewConversationWithFirstReply;
 
 /** Why Chat may not show the conversation open in the terminal, read from how its program was launched. */
 export type ChatLaunchNotice = 'codexSharedServer';
@@ -73,19 +75,4 @@ export type ChatLaunchNotice = 'codexSharedServer';
 export const UNBROKEN_NO_DAEMON = '‑‑no‑daemon';
 
 /** The program's name in what Chat says about its conversation. */
-export function chatName(program: ChatProgram): string {
-  switch (program) {
-    case 'claude':
-      return 'Claude Code';
-    case 'codex':
-      return 'Codex';
-    case 'pi':
-      return 'Pi';
-    case 'omp':
-      return 'Oh My Pi';
-    case 'grok':
-      return 'Grok Build';
-    case 'opencode':
-      return 'OpenCode';
-  }
-}
+export const chatName = (program: ChatProgram): string => programDefinition(program).chatName;

@@ -6,14 +6,12 @@ import { echoKey as claudeEchoKey } from '../claude/user-text';
 import { parseRolloutFileName } from '../codex/locator';
 import { codexEchoKey } from '../codex/pending-echo';
 import { CODEX_REVISION, CodexRolloutReducer } from '../codex/reducer';
-import { grokAdapter } from '../grok/adapter';
 import type { FollowerLimits, HeadIdentity } from '../model/follower';
 import type { ChatLine } from '../model/lines';
 import type { ChatTranscriptReducer } from '../model/reducer';
 import type { ChatTranscriptSource } from '../model/source';
 import type { ChatProgram } from '../model/types';
-import { openCodeAdapter } from '../opencode/adapter';
-import { piAdapter } from '../pi/adapter';
+import { programDefinition } from '../programs/registry';
 
 /** What a reducer is built from: the file it reads and, when its records depend on it, the file's first line. */
 export interface ChatReducerSeed {
@@ -70,7 +68,7 @@ function basename(path: string): string {
   return path.slice(path.lastIndexOf('/') + 1);
 }
 
-const claudeAdapter: ChatTranscriptAdapter = {
+export const claudeAdapter: ChatTranscriptAdapter = {
   program: 'claude',
   revision: CLAUDE_REVISION,
   limits: {},
@@ -84,7 +82,7 @@ const claudeAdapter: ChatTranscriptAdapter = {
   supplyBase: NO_SUPPLY,
 };
 
-const codexAdapter: ChatTranscriptAdapter = {
+export const codexAdapter: ChatTranscriptAdapter = {
   program: 'codex',
   revision: CODEX_REVISION,
   limits: {},
@@ -113,17 +111,5 @@ const codexAdapter: ChatTranscriptAdapter = {
 
 /** The adapter Chat reads `program` with; null for a program it cannot read yet. */
 export function standardAdapter(program: ChatProgram): ChatTranscriptAdapter | null {
-  switch (program) {
-    case 'claude':
-      return claudeAdapter;
-    case 'codex':
-      return codexAdapter;
-    case 'pi':
-    case 'omp':
-      return piAdapter(program);
-    case 'grok':
-      return grokAdapter();
-    case 'opencode':
-      return openCodeAdapter();
-  }
+  return programDefinition(program).adapter();
 }

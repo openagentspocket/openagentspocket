@@ -45,9 +45,8 @@ Build the generic piece once and extend it, so a similar feature tomorrow is qui
 changes it everywhere. Judges reject duplication.
 
 - Find the extension point first and plug into it; if none exists and a second use is plausible, create it first and
-  ship the feature as its first implementation. Existing ones: chat programs implement `ChatTranscriptAdapter`
-  (`packages/core/src/chat/engine/adapter.ts`) and register (Pi/OMP/Grok/OpenCode are new adapters, no UI branches);
-  Blocked dialogs are parser + planner per program in `packages/core/src/blocked`; Host data comes from probe
+  ship the feature as its first implementation. Existing ones: a Chat program is one name in `CHAT_PROGRAMS` and one `ProgramDefinition`
+  (`packages/core/src/chat/programs`: adapter, send policy, session naming, Blocked support), no UI branches; Host data comes from probe
   scripts over `packages/transport/src/host` (a new data source, such as git status for the status line, is a new
   probe with its parser and refresh policy, not ad hoc exec calls); screens compose `packages/ui/src/components`;
   layout differences (iPad, wide) go through one layout-mode hook and layout components, never per-screen forks;

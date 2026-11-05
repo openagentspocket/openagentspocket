@@ -1,12 +1,6 @@
 import type { ChatProgram } from '../chat/model/types';
+import { programDefinition } from '../chat/programs/registry';
 import { message } from '../errors/text';
-import { parseClaudeDialog } from './claude-parser';
-import { planClaudeAction } from './claude-planner';
-import { parseCodexDialog } from './codex-parser';
-import { planCodexAction } from './codex-planner';
-import { grokSupport } from './grok-support';
-import { ompSupport } from './omp-support';
-import { openCodeSupport } from './opencode-support';
 import {
   attemptPlan,
   type ConfirmationRule,
@@ -27,8 +21,7 @@ import {
 
 /**
  * What a program contributes to the Blocked card: its dialog parser and its action planner.
- * Claude and Codex are built in; P2.10 registers Pi/OMP, Grok and OpenCode with
- * `registerBlockedProgram`. A planner throws through `refuse` (see plan-types) and never plans a
+ * Each program's definition names its own. A planner throws through `refuse` (see plan-types) and never plans a
  * resend: a card sends its keys once.
  */
 export interface BlockedProgramSupport {
@@ -48,52 +41,24 @@ export interface BlockedProgramSupport {
   readonly readsScreenWhenIdleWithOpenQuestion?: boolean;
 }
 
-const registry = new Map<ChatProgram, BlockedProgramSupport>([
-  [
-    'claude',
-    {
-      parse: parseClaudeDialog,
-      plan: planClaudeAction,
-      genericOptions: {
-        refusesWhileCursorInField: true,
-        confirmation: { kind: 'fingerprintChange' },
-      },
-      readsScreenWhenIdleWithOpenQuestion: true,
-    },
-  ],
-  [
-    'codex',
-    {
-      parse: parseCodexDialog,
-      plan: (dialog, action) => planCodexAction(dialog, action),
-      genericOptions: { confirmation: { kind: 'fingerprintChangeOrUnblocked' } },
-    },
-  ],
-]);
+/** Programs registered at run time, over their definition (tests). */
+const registered = new Map<ChatProgram, BlockedProgramSupport>();
 
-for (const [program, support] of [
-  ['omp', ompSupport],
-  ['grok', grokSupport],
-  ['opencode', openCodeSupport],
-] as const) {
-  if (support) registry.set(program, support);
-}
-
-/** Adds or replaces a program's parser and planner (the hook for P2.10). */
+/** Adds or replaces a program's parser and planner. */
 export function registerBlockedProgram(program: ChatProgram, support: BlockedProgramSupport): void {
-  registry.set(program, support);
+  registered.set(program, support);
 }
 
 const terminalOnly = () => message('Answer this dialog in the Agent terminal.');
 
 /** What a program contributes to the Blocked card, or undefined for one with nothing. */
 export function blockedSupportFor(program: ChatProgram): BlockedProgramSupport | undefined {
-  return registry.get(program);
+  return registered.get(program) ?? programDefinition(program).blocked?.() ?? undefined;
 }
 
 /** The parser for an Agent's program; programs without one show no dialog (Pi has none). */
 export function parseBlockedDialog(screen: AnsiScreen, program: ChatProgram): DialogParseResult {
-  return registry.get(program)?.parse(screen) ?? NO_DIALOG;
+  return blockedSupportFor(program)?.parse(screen) ?? NO_DIALOG;
 }
 
 /**
@@ -108,7 +73,7 @@ export function planDialogAction(
   toolUseID: string | null = null,
 ): PlanResult {
   return attemptPlan(() => {
-    const support = registry.get(dialog.program);
+    const support = blockedSupportFor(dialog.program);
     if (!support) return refuse({ kind: 'unsupported', reason: terminalOnly() });
     return support.plan(dialog, action, toolUseID);
   });
@@ -121,7 +86,7 @@ export function planGenericOption(
   program: ChatProgram,
 ): PlanResult {
   return attemptPlan(() => {
-    const options = registry.get(program)?.genericOptions;
+    const options = blockedSupportFor(program)?.genericOptions;
     if (!options) return refuse({ kind: 'unsupported', reason: terminalOnly() });
     if (!excerpt.numbered.has(number)) return refuse({ kind: 'noSuchOption', ordinal: number });
     const digit = digitKey(number);

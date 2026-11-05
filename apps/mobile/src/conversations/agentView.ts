@@ -1,12 +1,10 @@
-import type {
-  ChatAgentActivity,
-  ChatAgentView,
-  ChatProgram,
-  ConsoleRow,
-  herdr,
+import {
+  CHAT_PROGRAMS,
+  type ChatAgentActivity,
+  type ChatAgentView,
+  type ConsoleRow,
+  type herdr,
 } from '@openagentspocket/core';
-
-const PROGRAMS: readonly ChatProgram[] = ['claude', 'codex', 'pi', 'omp', 'grok', 'opencode'];
 
 function activityOf(status: string): ChatAgentActivity {
   switch (status) {
@@ -31,7 +29,8 @@ export function chatAgentViewOf(agent: herdr.AgentInfo): ChatAgentView {
   const named = agent.agent ?? null;
   const reported = agent.agent_session ?? null;
   const program =
-    PROGRAMS.find((candidate) => candidate === named || candidate === reported?.agent) ?? 'claude';
+    CHAT_PROGRAMS.find((candidate) => candidate === named || candidate === reported?.agent) ??
+    'claude';
   return {
     program,
     activity: activityOf(agent.agent_status),

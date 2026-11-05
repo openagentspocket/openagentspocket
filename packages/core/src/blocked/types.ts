@@ -34,12 +34,19 @@ export type BlockedDialogKind =
   | 'openCodePermission'
   | 'openCodeQuestion';
 
+/** A kind starts with its program's name; a kind of a new program fails here, not as another's. */
+const KIND_PREFIXES = [
+  ['claude', 'claude'],
+  ['codex', 'codex'],
+  ['omp', 'omp'],
+  ['grok', 'grok'],
+  ['openCode', 'opencode'],
+] as const satisfies readonly (readonly [string, ChatProgram])[];
+
 export function programOfKind(kind: BlockedDialogKind): ChatProgram {
-  if (kind.startsWith('claude')) return 'claude';
-  if (kind.startsWith('codex')) return 'codex';
-  if (kind.startsWith('omp')) return 'omp';
-  if (kind.startsWith('grok')) return 'grok';
-  return 'opencode';
+  const match = KIND_PREFIXES.find(([prefix]) => kind.startsWith(prefix));
+  if (!match) throw new Error(`No program for the dialog kind ${kind}`);
+  return match[1];
 }
 
 /** What choosing an option does, which sets its button style. */

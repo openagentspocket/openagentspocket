@@ -3,37 +3,32 @@
 // program.
 
 import { programIdentity } from '../../programs';
-import { claudeSendPolicy } from '../claude/send-policy';
-import { codexSendPolicy } from '../codex/send-policy';
-import { grokSendPolicy } from '../grok/send-policy';
 import type { ChatProgram } from '../model/types';
-import { openCodeSendPolicy } from '../opencode/send-policy';
-import { piSendPolicy } from '../pi/send-policy';
+import { programDefinitions } from '../programs/registry';
 import type { ProgramSendPolicy } from './policy';
 
-const registry = new Map<ChatProgram, ProgramSendPolicy>([
-  ['claude', claudeSendPolicy],
-  ['codex', codexSendPolicy],
-  ['pi', piSendPolicy('pi')],
-  ['omp', piSendPolicy('omp')],
-  ['grok', grokSendPolicy()],
-  ['opencode', openCodeSendPolicy()],
-]);
+let policies: Map<ChatProgram, ProgramSendPolicy> | undefined;
+
+/** Built on first use: the definitions it reads load the engines that read this file. */
+function registry(): Map<ChatProgram, ProgramSendPolicy> {
+  policies ??= new Map(programDefinitions().map((d) => [d.program, d.sendPolicy()]));
+  return policies;
+}
 
 /** Adds or replaces a program's send policy (tests, and programs added later). */
 export function registerSendPolicy(policy: ProgramSendPolicy): void {
-  registry.set(policy.program, policy);
+  registry().set(policy.program, policy);
 }
 
 /** The send policy of a Chat program; every program has one. */
 export function sendPolicyFor(program: ChatProgram): ProgramSendPolicy {
-  return registry.get(program) as ProgramSendPolicy;
+  return registry().get(program) as ProgramSendPolicy;
 }
 
 /** The send policy for the program herdr names an Agent by; null for a program Chat does not know. */
 export function sendPolicyForAgent(reported: string): ProgramSendPolicy | null {
   const kind = programIdentity(reported).kind;
-  return kind ? (registry.get(kind as ChatProgram) ?? null) : null;
+  return kind ? (registry().get(kind as ChatProgram) ?? null) : null;
 }
 
 /** Whether the terminal Composer shows Stop for an Agent of `kind`: one Esc, or none where Esc does not interrupt (Grok Build). */

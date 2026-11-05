@@ -3,7 +3,8 @@
 // the Swift goldens, so a persisted entry round-trips through JSON unchanged. Dates are ISO 8601
 // strings with milliseconds.
 
-export type ChatProgram = 'claude' | 'codex' | 'pi' | 'omp' | 'grok' | 'opencode';
+export const CHAT_PROGRAMS = ['claude', 'codex', 'pi', 'omp', 'grok', 'opencode'] as const;
+export type ChatProgram = (typeof CHAT_PROGRAMS)[number];
 
 /** What herdr last reported the Agent doing; reducers need it to tell running tools from lost ones. */
 export type ChatAgentActivity = 'idle' | 'working' | 'blocked' | 'unknown';
