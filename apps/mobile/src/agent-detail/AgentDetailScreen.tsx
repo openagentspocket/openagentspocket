@@ -35,6 +35,8 @@ interface Props {
   /** Changes, Files and Ports, from the route; the header menu adds Chat/Terminal. */
   menu?: readonly ActionMenuItem[];
   onOpenChanges?: () => void;
+  /** Back to the Home screen; draws Home buttons in the header and the drawer. */
+  onHome?: () => void;
 }
 
 /** The detail: chat or terminal fills the screen; the header floats, the composer dock sits below. */
@@ -46,6 +48,7 @@ export function AgentDetailScreen({
   onSwitch,
   menu,
   onOpenChanges,
+  onHome,
 }: Props) {
   const styles = useStyles();
   const key = agentKey(hostId, paneId);
@@ -69,6 +72,7 @@ export function AgentDetailScreen({
         rows={rows}
         current={row}
         onSelect={onSwitch}
+        onHome={onHome}
       >
         <AppScreen scroll={false} bare keyboardAvoiding testID="agent-detail">
           <View style={styles.fill} testID={`slot-${surface}`}>
@@ -93,6 +97,7 @@ export function AgentDetailScreen({
                 surface={surface}
                 onSurface={setSurface}
                 onSidebar={() => setDrawer(true)}
+                onHome={onHome}
                 menu={menu}
                 showTitle={surface === 'terminal'}
               />

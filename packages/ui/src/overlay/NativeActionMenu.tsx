@@ -1,3 +1,4 @@
+import { useMemo, useRef } from 'react';
 import { Platform } from 'react-native';
 import { iconSymbol } from '../primitives/Icon';
 import { useTheme } from '../theme/theme';
@@ -54,6 +55,42 @@ export function resetNativeMenuCache() {
   cached = undefined;
 }
 
+/** What the system menu draws of the items: everything but the handlers. */
+const drawnKey = (items: readonly ActionMenuItem[]): string =>
+  JSON.stringify(
+    items.map(({ key, title, icon, checked, destructive, disabled, section, subtitle }) => [
+      key,
+      title,
+      icon,
+      checked,
+      destructive,
+      disabled,
+      section,
+      subtitle,
+    ]),
+  );
+
+/**
+ * Items for the native menu that keep their identity while what they draw is unchanged. Callers
+ * build their item lists inline on every render; handing the SwiftUI Host fresh children each time
+ * made it rebuild (and re-send) the whole menu on every parent render, so opening it lagged.
+ * Presses go to the latest handlers through a ref.
+ */
+function useStableItems(items: readonly ActionMenuItem[]): readonly ActionMenuItem[] {
+  const latest = useRef(items);
+  latest.current = items;
+  const key = drawnKey(items);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `key` stands for the drawn content of `items`
+  return useMemo(
+    () =>
+      items.map((item) => ({
+        ...item,
+        onPress: () => latest.current.find((candidate) => candidate.key === item.key)?.onPress(),
+      })),
+    [key],
+  );
+}
+
 function menuSections(ui: SwiftUiMenu, items: readonly ActionMenuItem[]) {
   const { Button, Section } = ui;
   return groupMenuItems(items).map((group) => {
@@ -103,13 +140,14 @@ export function NativePreviewMenu({
 }: NativePreviewMenuProps) {
   const { Host, ContextMenu } = ui;
   const theme = useTheme();
+  const stable = useStableItems(items);
   if (!ContextMenu) return <>{children}</>;
   return (
     <Host matchContents seedColor={theme.colors.accent} testID={testID}>
       <ContextMenu>
         <ContextMenu.Trigger>{children}</ContextMenu.Trigger>
         <ContextMenu.Preview>{preview}</ContextMenu.Preview>
-        <ContextMenu.Items>{menuSections(ui, items)}</ContextMenu.Items>
+        <ContextMenu.Items>{menuSections(ui, stable)}</ContextMenu.Items>
       </ContextMenu>
     </Host>
   );
@@ -140,17 +178,23 @@ export function NativeActionMenu({
 }: NativeActionMenuProps) {
   const { Host, Menu } = ui;
   const theme = useTheme();
-  return (
-    <Host matchContents seedColor={theme.colors.accent} testID={testID}>
-      <Menu
-        label={title ?? accessibilityLabel}
-        systemImage={iconSymbol(icon)}
-        // A SwiftUI Menu draws its label as text beside the symbol; the trigger is the icon alone (the
-        // label stays as the accessibility name), like every non-menu icon button.
-        modifiers={ui.modifiers ? iconOnly(ui.modifiers, accessibilityLabel) : undefined}
-      >
-        {menuSections(ui, items)}
-      </Menu>
-    </Host>
+  const stable = useStableItems(items);
+  const accent = theme.colors.accent;
+  // The whole element is memoized: a parent re-render with the same menu changes nothing natively.
+  return useMemo(
+    () => (
+      <Host matchContents seedColor={accent} testID={testID}>
+        <Menu
+          label={title ?? accessibilityLabel}
+          systemImage={iconSymbol(icon)}
+          // A SwiftUI Menu draws its label as text beside the symbol; the trigger is the icon alone (the
+          // label stays as the accessibility name), like every non-menu icon button.
+          modifiers={ui.modifiers ? iconOnly(ui.modifiers, accessibilityLabel) : undefined}
+        >
+          {menuSections(ui, stable)}
+        </Menu>
+      </Host>
+    ),
+    [Host, Menu, ui, accent, testID, title, accessibilityLabel, icon, stable],
   );
 }

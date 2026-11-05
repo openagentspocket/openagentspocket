@@ -22,12 +22,19 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  pair: {
+    flexDirection: 'row',
+    height: t.metrics.minTapSize,
+    alignItems: 'center',
+  },
   press: { width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' },
 }));
 
 export interface AgentHeaderProps {
   /** Opens the SessionDrawer. */
   onSidebar: () => void;
+  /** Back to Home; draws a Home button beside the Sessions one. */
+  onHome?: () => void;
   /** The header menu: Chat/Terminal toggle, Changes, Files, Ports, Rename, Close. */
   menu: readonly ActionMenuItem[];
   /** Which surface the Agent shows; only the menu's wording differs, so it is exposed for tests. */
@@ -36,7 +43,7 @@ export interface AgentHeaderProps {
   eyebrow?: string;
   title?: string;
   subtitle?: string;
-  labels?: Pick<AgentBarLabels, 'sidebar' | 'more'>;
+  labels?: Pick<AgentBarLabels, 'sidebar' | 'more' | 'home'>;
   testID?: string;
 }
 
@@ -46,6 +53,7 @@ export interface AgentHeaderProps {
  */
 export function AgentHeader({
   onSidebar,
+  onHome,
   menu,
   surface = 'chat',
   eyebrow,
@@ -57,9 +65,20 @@ export function AgentHeader({
   const styles = useStyles();
   return (
     <View style={styles.row} testID={testID} accessibilityLabel={surface} pointerEvents="box-none">
-      <GlassCapsule style={styles.circle} testID={`${testID}-left`}>
+      <GlassCapsule style={onHome ? styles.pair : styles.circle} testID={`${testID}-left`}>
+        {onHome ? (
+          <Pressable
+            style={styles.circle}
+            onPress={onHome}
+            accessibilityRole="button"
+            accessibilityLabel={labels.home}
+            testID={`${testID}-home`}
+          >
+            <Icon name="home" size={20} color="textPrimary" />
+          </Pressable>
+        ) : null}
         <Pressable
-          style={styles.press}
+          style={onHome ? styles.circle : styles.press}
           onPress={onSidebar}
           accessibilityRole="button"
           accessibilityLabel={labels.sidebar}

@@ -32,5 +32,6 @@ export function agentBarLabels(): AgentBarLabels {
     needsYou: t('Needs you'),
     shells: t('Shells'),
     toolbar: t('Toolbar'),
+    home: t('Home'),
   };
 }

@@ -12,6 +12,7 @@ import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
+import { ViewToggle } from './SessionDrawerToggle';
 import { AGENT_SECTIONS, type DrawerItem, type DrawerWorkspace } from './sessionDrawerModel';
 
 export type { DrawerItem, DrawerWorkspace } from './sessionDrawerModel';
@@ -52,19 +53,6 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.control,
   },
   input: { flex: 1, color: t.colors.textPrimary, fontSize: 14, padding: 0, minWidth: 0 },
-  toggles: {
-    flexDirection: 'row',
-    borderRadius: 999,
-    backgroundColor: t.colors.control,
-    padding: 3,
-  },
-  toggle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   host: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -133,6 +121,8 @@ export interface SessionDrawerProps {
   selectedId?: string;
   onSelect: (id: string) => void;
   onAdd?: () => void;
+  /** Back to Home; draws a Home button beside New. */
+  onHome?: () => void;
   /** Long-pressing an item opens this menu (the same actions the Agent lists offer); none draws no menu. */
   menuFor?: (id: string) => readonly ActionMenuItem[];
   /** Present: the drawer floats in a Modal over a dimmed detail; tapping the scrim closes it. */
@@ -152,6 +142,7 @@ export function SessionDrawer({
   selectedId,
   onSelect,
   onAdd,
+  onHome,
   menuFor,
   onClose,
   visible = true,
@@ -255,31 +246,12 @@ export function SessionDrawer({
             testID={`${testID}-search`}
           />
         </View>
-        <View style={styles.toggles}>
-          {(['tree', 'agents'] as const).map((mode) => {
-            const active = view === mode;
-            return (
-              <Pressable
-                key={mode}
-                style={[
-                  styles.toggle,
-                  active && { backgroundColor: withAlpha(theme.colors.accent, 0.25) },
-                ]}
-                onPress={() => setView(mode)}
-                accessibilityRole="button"
-                accessibilityState={{ selected: active }}
-                accessibilityLabel={mode === 'tree' ? labels.workspaces : labels.switcher}
-                testID={`${testID}-view-${mode}`}
-              >
-                <Icon
-                  name={mode === 'tree' ? 'list' : 'people'}
-                  size={18}
-                  tint={active ? theme.colors.accent : undefined}
-                />
-              </Pressable>
-            );
-          })}
-        </View>
+        <ViewToggle
+          view={view}
+          onChange={setView}
+          labels={{ tree: labels.workspaces, agents: labels.switcher }}
+          testID={testID}
+        />
       </View>
       <View style={styles.host}>
         {host.status ? <StatusDot status={host.status} /> : null}
@@ -291,6 +263,17 @@ export function SessionDrawer({
             {host.summary}
           </Text>
         </View>
+        {onHome ? (
+          <Pressable
+            style={styles.plus}
+            onPress={onHome}
+            accessibilityRole="button"
+            accessibilityLabel={labels.home}
+            testID={`${testID}-home`}
+          >
+            <Icon name="home" size={20} color="textPrimary" />
+          </Pressable>
+        ) : null}
         {onAdd ? (
           <Pressable
             style={styles.plus}
