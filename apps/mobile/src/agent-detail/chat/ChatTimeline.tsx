@@ -83,7 +83,11 @@ export function ChatTimeline({
         ListEmptyComponent={
           <NoticeBanner
             kind="locating"
-            message={t('Waiting for Conversation')}
+            message={
+              conversation.state.snapshot.phase.type === 'locating'
+                ? t('Looking for the conversation…')
+                : t('Waiting for Conversation')
+            }
             testID="chat-slot"
           />
         }
