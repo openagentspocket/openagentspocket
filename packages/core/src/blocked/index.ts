@@ -22,6 +22,8 @@ export {
   fingerprintsMatch,
   mergeFingerprints,
 } from './fingerprint';
+export { parseGrokDialog } from './grok-parser';
+export { planGrokAction } from './grok-planner';
 export {
   confirmationMet,
   type DialogObservation,
@@ -29,6 +31,10 @@ export {
   type ObservedActivity,
   observeDialog,
 } from './observation';
+export { parseOmpDialog } from './omp-parser';
+export { planOmpAction } from './omp-planner';
+export { parseOpenCodeDialog } from './opencode-parser';
+export { planOpenCodeAction } from './opencode-planner';
 export {
   attemptPlan,
   type ConfirmationRule,

@@ -14,6 +14,7 @@ import { sameConversationHeads, TranscriptFollower } from '../model/follower';
 import { type ChatHostFiles, readBytes, readFirstLine } from '../model/host-files';
 import { type ChatLine, frameLines } from '../model/lines';
 import type { ChatTranscriptReducer } from '../model/reducer';
+import { ChatSourceUnavailable, type ChatTranscriptSource } from '../model/source';
 import { carryBackgroundWork } from '../model/transcript';
 import {
   type ChatFileChanges,
@@ -71,7 +72,7 @@ export abstract class ChatEngineBase {
 
   protected directories: string[] = [];
   protected relocatedDirectory: string | null = null;
-  protected source: TranscriptFollower | null = null;
+  protected source: ChatTranscriptSource | null = null;
   protected reducer: ChatTranscriptReducer | null = null;
   /** The thread's rollout files (Codex), where history bases are found. */
   protected segments: CodexRolloutSegment[] = [];
@@ -127,14 +128,32 @@ export abstract class ChatEngineBase {
   }
 
   protected async follow(path: string): Promise<void> {
-    const follower = new TranscriptFollower(path, this.adapter.limits, this.adapter.identity);
-    const lines = await follower.open(this.files);
-    if (lines) await this.start(follower, lines);
+    await this.followSource(
+      new TranscriptFollower(path, this.adapter.limits, this.adapter.identity),
+    );
+  }
+
+  /** Follows a source the adapter makes (a store read by query), or stops with why there is none. */
+  protected async followQuery(): Promise<void> {
+    const source = this.adapter.makeRecordSource?.(this.reference.sessionID) ?? null;
+    if (source) await this.followSource(source);
+    else this.stop({ kind: 'unidentifiedSession', program: this.reference.program });
+  }
+
+  protected async followSource(source: ChatTranscriptSource): Promise<void> {
+    const lines = await source.open(this.files);
+    if (lines) await this.start(source, lines);
     else this.stop({ kind: 'notFound', searchedAll: true });
   }
 
+  /** Stops following for a reason a source named, or records any other failure. */
+  protected stopOrRecord(thrown: unknown): void {
+    if (thrown instanceof ChatSourceUnavailable) this.stop(thrown.reason);
+    else this.recordFailure(thrown);
+  }
+
   /** Starts over on a freshly opened source: a new reducer over its tail window. */
-  protected async start(source: TranscriptFollower, lines: ChatLine[]): Promise<void> {
+  protected async start(source: ChatTranscriptSource, lines: ChatLine[]): Promise<void> {
     const reducer = this.adapter.makeReducer({
       path: source.path,
       firstLine: await this.firstLine(source),
@@ -168,12 +187,12 @@ export abstract class ChatEngineBase {
     });
   }
 
-  protected sameConversation(document: ChatCacheDocument, source: TranscriptFollower): boolean {
+  protected sameConversation(document: ChatCacheDocument, source: ChatTranscriptSource): boolean {
     return sameConversationHeads(decodeBase64(document.head), source.head, this.adapter.identity);
   }
 
   /** A tail window that starts past the file's first line still needs it when the records depend on it. */
-  protected async firstLine(source: TranscriptFollower): Promise<ChatLine | null> {
+  protected async firstLine(source: ChatTranscriptSource): Promise<ChatLine | null> {
     if (!this.adapter.wantsFirstLine || source.windowStart === 0) return null;
     const first = await readFirstLine(this.files, source.path, 64 << 10, 1 << 20);
     if (first?.type !== 'line') return null;

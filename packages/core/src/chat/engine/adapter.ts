@@ -10,6 +10,7 @@ import { grokAdapter } from '../grok/adapter';
 import type { FollowerLimits, HeadIdentity } from '../model/follower';
 import type { ChatLine } from '../model/lines';
 import type { ChatTranscriptReducer } from '../model/reducer';
+import type { ChatTranscriptSource } from '../model/source';
 import type { ChatProgram } from '../model/types';
 import { openCodeAdapter } from '../opencode/adapter';
 import { piAdapter } from '../pi/adapter';
@@ -41,6 +42,12 @@ export interface ChatTranscriptAdapter {
   /** What a sent prompt and a recorded one are compared on. */
   echoKey(text: string): string;
   identity: HeadIdentity | null;
+  /**
+   * Makes the source of a program whose conversations are read from its store by query rather than
+   * from a transcript file (ADR 0025); it returns null for a session id the store cannot be asked
+   * about. Absent for a program whose transcript file the engine finds and follows.
+   */
+  makeRecordSource?(sessionID: string): ChatTranscriptSource | null;
   /** The older rollout the reducer still needs, for a program whose history spans files. */
   pendingBase(reducer: ChatTranscriptReducer): PendingHistoryBase | null;
   /** Hands the reducer the base's lines; empty lines mark the base unreadable. */
@@ -51,6 +58,10 @@ export interface ChatTranscriptAdapter {
     lines: readonly ChatLine[],
   ): void;
 }
+
+/** Whether the conversation is read by query, so there is no file to look for. */
+export const readsByQuery = (adapter: ChatTranscriptAdapter): boolean =>
+  adapter.makeRecordSource !== undefined;
 
 const NO_BASE = () => null;
 const NO_SUPPLY = () => undefined;

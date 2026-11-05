@@ -1,5 +1,10 @@
-// The Blocked card's parser and planner for OMP. Filled in by P2.10; null until then.
+// The Blocked card's parser and planner for Oh My Pi, registered by `blocked/programs.ts`.
 
+import { parseOmpDialog } from './omp-parser';
+import { planOmpAction } from './omp-planner';
 import type { BlockedProgramSupport } from './programs';
 
-export const ompSupport: BlockedProgramSupport | null = null;
+export const ompSupport: BlockedProgramSupport | null = {
+  parse: parseOmpDialog,
+  plan: planOmpAction,
+};

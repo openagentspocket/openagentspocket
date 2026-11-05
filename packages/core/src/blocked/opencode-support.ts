@@ -1,5 +1,10 @@
-// The Blocked card's parser and planner for OpenCode. Filled in by P2.10; null until then.
+// The Blocked card's parser and planner for OpenCode, registered through `programs.ts`.
 
+import { parseOpenCodeDialog } from './opencode-parser';
+import { planOpenCodeAction } from './opencode-planner';
 import type { BlockedProgramSupport } from './programs';
 
-export const openCodeSupport: BlockedProgramSupport | null = null;
+export const openCodeSupport: BlockedProgramSupport | null = {
+  parse: parseOpenCodeDialog,
+  plan: planOpenCodeAction,
+};
