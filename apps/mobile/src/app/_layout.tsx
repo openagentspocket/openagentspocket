@@ -9,7 +9,9 @@ import {
 } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import type { ReactNode } from 'react';
+import * as SystemUI from 'expo-system-ui';
+import { type ReactNode, useEffect } from 'react';
+import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
 import { bindDemoModeStorage } from '@/connections/mode';
@@ -42,6 +44,18 @@ function SettingsTheme({ children }: { children: ReactNode }) {
       </TerminalThemeProvider>
     </ThemeProvider>
   );
+}
+
+/**
+ * The root canvas: the window and the view under every stack are the theme's canvas, so a push or
+ * a sheet transition never shows the system's white behind the moving screens.
+ */
+function RootCanvas({ children }: { children: ReactNode }) {
+  const { colors } = useTheme();
+  useEffect(() => {
+    void SystemUI.setBackgroundColorAsync(colors.canvas);
+  }, [colors.canvas]);
+  return <View style={{ flex: 1, backgroundColor: colors.canvas }}>{children}</View>;
 }
 
 /** The status bar ink follows the app theme, not the system appearance. */
@@ -101,14 +115,16 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SettingsProvider store={settingsStore} authenticator={deviceAuthenticator}>
         <SettingsTheme>
-          <ThemedStatusBar />
-          <ConnectionsProvider>
-            <InAppBanner openAgent={openAgent}>
-              <AppStack />
-            </InAppBanner>
-          </ConnectionsProvider>
-          <AppLockCover />
-          <OverlayHost />
+          <RootCanvas>
+            <ThemedStatusBar />
+            <ConnectionsProvider>
+              <InAppBanner openAgent={openAgent}>
+                <AppStack />
+              </InAppBanner>
+            </ConnectionsProvider>
+            <AppLockCover />
+            <OverlayHost />
+          </RootCanvas>
         </SettingsTheme>
       </SettingsProvider>
     </GestureHandlerRootView>
