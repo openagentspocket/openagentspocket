@@ -28,6 +28,7 @@ export interface AgentBarLabels {
   needsYou: string;
   shells: string;
   toolbar: string;
+  home: string;
 }
 
 /** English defaults, the Swift app's wording. */
@@ -60,4 +61,5 @@ export const defaultAgentBarLabels: AgentBarLabels = {
   needsYou: 'Needs you',
   shells: 'Shells',
   toolbar: 'Toolbar',
+  home: 'Home',
 };

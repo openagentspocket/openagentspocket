@@ -19,6 +19,7 @@ interface Props {
   rows: readonly ConsoleRow[];
   current: ConsoleRow;
   onSelect: (row: ConsoleRow) => void;
+  onHome?: () => void;
   /** The screen the drawer slides over. */
   children: ReactNode;
 }
@@ -37,6 +38,7 @@ export function AgentSessionDrawer({
   rows,
   current,
   onSelect,
+  onHome,
   children,
 }: Props) {
   const theme = useTheme();
@@ -102,6 +104,14 @@ export function AgentSessionDrawer({
                 onClose: () => void closeAgent(row, actions),
               });
             }}
+            onHome={
+              onHome
+                ? () => {
+                    onClose();
+                    onHome();
+                  }
+                : undefined
+            }
             labels={agentBarLabels()}
           />
         )}

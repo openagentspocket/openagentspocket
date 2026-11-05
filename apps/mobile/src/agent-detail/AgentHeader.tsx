@@ -8,6 +8,7 @@ interface Props {
   surface: Surface;
   onSurface: (surface: Surface) => void;
   onSidebar: () => void;
+  onHome?: () => void;
   /** Changes, Files, Ports and the rest, from the route. */
   menu?: readonly ActionMenuItem[];
   /** Chat is full-bleed with circles only, as in Swift; the terminal shows the title block. */
@@ -22,6 +23,7 @@ export function AgentHeader({
   surface,
   onSurface,
   onSidebar,
+  onHome,
   menu = [],
   showTitle = true,
 }: Props) {
@@ -46,6 +48,7 @@ export function AgentHeader({
     <FloatingHeader
       surface={surface}
       onSidebar={onSidebar}
+      onHome={onHome}
       menu={items}
       eyebrow={showTitle ? [row.hostName, row.agent.agent].filter(Boolean).join(' · ') : undefined}
       title={showTitle ? agentDisplayName(row.agent) : undefined}
@@ -54,7 +57,7 @@ export function AgentHeader({
           ? [row.workspaceLabel, tail(rowDirectory(row))].filter(Boolean).join(' · ')
           : undefined
       }
-      labels={{ sidebar: t('Sessions'), more: t('More') }}
+      labels={{ sidebar: t('Sessions'), more: t('More'), home: t('Home') }}
       testID="agent-header"
     />
   );
