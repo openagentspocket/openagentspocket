@@ -30,7 +30,6 @@
 // unknown fields are ignored.
 
 import { spawn } from "node:child_process";
-import { createHash } from "node:crypto";
 import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -43,20 +42,12 @@ import {
   writeApprovalAsk,
 } from "./approval-ask-records.js";
 import { approvalEpisodeId, approvalScope, extractApprovalPreview } from "./approval-preview.js";
-import { encryptNotificationEnvelope, encryptWithApprovalFallback } from "./notification-envelope.js";
 import { readNotificationConfig } from "./notification-config.js";
-import { alertPushBody, pushTarget } from "./notify-platform.js";
+import { deliverToDevices, NOTIFY_FLAG_BY_STATUS, readEligibleDevices } from "./notify-delivery.js";
 import { refreshSidebarSnapshotForEvent } from "./sidebar-config.js";
 import { forDisplay, optionalText } from "./display-text.js";
-import { deliversToSession, hookSession, sessionStateDir } from "./session.js";
+import { hookSession, sessionStateDir } from "./session.js";
 
-// Statuses that notify (ADR 0008: Working/Idle transitions never do), keyed
-// by the registration file's per-device `notify` preference flag they gate on.
-const NOTIFY_FLAG_BY_STATUS = { blocked: "blocked", done: "done" };
-
-const SEND_ATTEMPTS = 3;
-const REQUEST_TIMEOUT_MS = 10_000;
-const KEY_BYTES = 32;
 // The screen read for the approval preview is a nicety: past this bound the
 // push goes without it rather than later.
 const SCREEN_READ_TIMEOUT_MS = 1_500;
@@ -85,60 +76,6 @@ function parseStatusEvent(raw) {
     workspaceId: optionalText(data.workspace_id),
     title: optionalText(data.title),
   };
-}
-
-/**
- * Read the Notification Registration file (`notifications.json`, contract in
- * README.md). Absent, corrupt, or foreign-version files mean "send nothing";
- * a malformed device entry is skipped, never fatal for its neighbors. Only
- * entries delivered to this hook's herdr session count (src/session.js).
- */
-function readEligibleDevices(configDir, status, session) {
-  const flag = NOTIFY_FLAG_BY_STATUS[status];
-  let file;
-  try {
-    file = JSON.parse(readFileSync(join(configDir, "notifications.json"), "utf8"));
-  } catch {
-    return [];
-  }
-  if (file?.v !== 1 || !Array.isArray(file.devices)) return [];
-  const devices = [];
-  for (const entry of file.devices) {
-    if (typeof entry?.token !== "string" || entry.token.length === 0) continue;
-    if (!deliversToSession(entry, session)) continue;
-    const target = pushTarget(entry); // APNs or FCM, per the optional `platform`
-    if (target === null) continue;
-    // Per the v1 contract a missing notify flag means do not send (fail closed).
-    if (entry.notify?.[flag] !== true) continue;
-    const key = typeof entry.key === "string" ? Buffer.from(entry.key, "base64url") : null;
-    if (key?.length !== KEY_BYTES) continue;
-    // Approval fields go only to devices that opted in, and only with
-    // Blocked; a missing flag means off, like every notify flag.
-    const approve = status === "blocked" && entry.notify?.approve === true;
-    devices.push({ token: entry.token, ...target, key, approve });
-  }
-  return devices;
-}
-
-/**
- * Drop pruned tokens from the registration file, preserving every field this
- * plugin does not understand (additive v1 metadata must survive the rewrite).
- * Atomic temp-file + rename, like every writer of this file; a concurrent
- * app-side rewrite is last-writer-wins, and the next 410 re-prunes.
- */
-function pruneTokens(configDir, tokens) {
-  const path = join(configDir, "notifications.json");
-  let file;
-  try {
-    file = JSON.parse(readFileSync(path, "utf8"));
-  } catch {
-    return;
-  }
-  if (file?.v !== 1 || !Array.isArray(file.devices)) return;
-  file.devices = file.devices.filter((entry) => !tokens.has(entry?.token));
-  const temp = `${path}.tmp-${process.pid}`;
-  writeFileSync(temp, JSON.stringify(file));
-  renameSync(temp, path);
 }
 
 // Per-pane dedupe state under HERDR_PLUGIN_STATE_DIR: the last status this
@@ -311,54 +248,6 @@ function recordApprovalAsk(stateDir, paneId, timestamp, approval) {
   }
 }
 
-/**
- * The `apns-collapse-id` passed through the relay so a newer status replaces
- * an older notification for the same pane. Keyed by the device's Notification
- * Key so it stays opaque: the relay can neither read nor dictionary-guess the
- * pane id behind it. 16 bytes -> 22 chars, well under APNs' 64-byte cap.
- */
-function collapseKeyFor(key, paneId) {
-  return createHash("sha256")
-    .update(key)
-    .update("HERDR-NOTIFY-COLLAPSE:")
-    .update(paneId, "utf8")
-    .digest()
-    .subarray(0, 16)
-    .toString("base64url");
-}
-
-/**
- * POST one push, retrying transient failures (network errors, 429, 5xx) up
- * to SEND_ATTEMPTS. The relay itself never retries by design (ADR 0008).
- * Returns "ok", "pruned" (410 Unregistered from APNs, or FCM's UNREGISTERED
- * as relayed: the token is dead), or a thrown Error for a conclusive failure.
- */
-async function postPush(relayUrl, device, envelope, collapse, retryDelayMs) {
-  const body = alertPushBody(device, envelope, collapse);
-  let lastFailure = "";
-  for (let attempt = 1; attempt <= SEND_ATTEMPTS; attempt += 1) {
-    if (attempt > 1) await sleep(retryDelayMs);
-    let response;
-    try {
-      response = await fetch(`${relayUrl}/push`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body,
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-      });
-    } catch (error) {
-      lastFailure = `relay unreachable: ${error.message}`;
-      continue;
-    }
-    if (response.ok) return "ok";
-    const detail = (await response.text().catch(() => "")).slice(0, 200);
-    if (response.status === 410) return "pruned";
-    lastFailure = `relay answered ${response.status}: ${detail}`;
-    if (response.status !== 429 && response.status < 500) break;
-  }
-  throw new Error(`push for token ${device.token.slice(0, 8)}… failed: ${lastFailure}`);
-}
-
 function requireEnv(name) {
   const value = process.env[name];
   if (typeof value !== "string" || value.length === 0) {
@@ -435,25 +324,13 @@ async function main() {
     ? await approvalFields(binPath, event.paneId, timestamp)
     : null;
   if (event.status === "blocked") recordApprovalAsk(stateDir, event.paneId, timestamp, approval);
-  const pruned = new Set();
-  const failures = [];
-  let delivered = false;
-  for (const device of devices) {
-    // One device's failure, encryption included, never stops the others.
-    try {
-      const envelope =
-        device.approve && approval !== null
-          ? encryptWithApprovalFallback(payload, approval, device.key)
-          : encryptNotificationEnvelope(payload, device.key);
-      const collapse = collapseKeyFor(device.key, event.paneId);
-      const outcome = await postPush(config.relayUrl, device, envelope, collapse, config.retryDelayMs);
-      if (outcome === "ok") delivered = true;
-      else pruned.add(device.token);
-    } catch (error) {
-      failures.push(error.message);
-    }
-  }
-  if (pruned.size > 0) pruneTokens(configDir, pruned);
+  const { delivered, failures } = await deliverToDevices({
+    configDir,
+    config,
+    devices,
+    payload,
+    approval,
+  });
   if (delivered) writeLastNotified(stateDir, event.paneId, event.status);
   if (failures.length > 0) throw new Error(failures.join("; "));
 }
