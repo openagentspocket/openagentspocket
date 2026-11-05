@@ -1,18 +1,10 @@
 import { RemoteHostPath, type StartAgentState, type StartAgentStore } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import {
-  Button,
-  Icon,
-  ListRow,
-  PickerRow,
-  Section,
-  Text,
-  TextField,
-  ToggleRow,
-} from '@openagentspocket/ui';
+import { ListRow, type PickerOption, PickerRow, Section, ToggleRow } from '@openagentspocket/ui';
 import { newAgentText } from './text';
+import { BranchFields, WorkspaceDraftFields } from './WorkspaceFields';
 
-interface SectionProps {
+export interface SectionProps {
   store: StartAgentStore;
   state: StartAgentState;
 }
@@ -20,10 +12,10 @@ interface SectionProps {
 const NEW_WORKSPACE = '\u0000new';
 const BROWSE = '\u0000browse';
 const NONE = '\u0000none';
+const RECENT = 'recent:';
 
-/** The Host the Agent starts on; absent when only one Host exists or the flow has an origin. */
+/** The Host the Agent starts on; the row reads "Select a Host" in the accent until one is picked. */
 export function HostSection({ store, state }: SectionProps) {
-  if (store.hosts.length <= 1) return null;
   return (
     <Section title={t('Host')}>
       <PickerRow
@@ -42,37 +34,31 @@ export function HostSection({ store, state }: SectionProps) {
   );
 }
 
-/** Directories of recent Agents on this Host; a tap starts a New Workspace draft there. */
-export function RecentSection({ store, state }: SectionProps) {
-  if (store.origin || state.recentDirectories.length === 0) return null;
-  return (
-    <Section
-      title={t('Recent')}
-      footer={t(
-        'Directories of your recent Agents on this Host. Tap one to start a new Workspace there.',
-      )}
-    >
-      {state.recentDirectories.map((directory) => (
-        <ListRow
-          key={directory.path}
-          title={directory.name}
-          subtitle={directory.displayPath}
-          leading={<Icon name="folder" color="textSecondary" />}
-          trailing={
-            state.launchTarget === 'newWorkspace' &&
-            state.newWorkspaceDirectory === directory.path ? (
-              <Icon name="check" color="accent" />
-            ) : undefined
-          }
-          onPress={() => store.applyBrowsedDirectory(directory.path)}
-          testID={`recent-directory-${directory.name}`}
-        />
-      ))}
-    </Section>
-  );
+/** The workspace menu: Workspaces, Recent directories, then Browse Directory… and New Workspace. */
+export function workspaceOptions(store: StartAgentStore, state: StartAgentState) {
+  const isNew = state.launchTarget === 'newWorkspace';
+  const directory = state.newWorkspaceDirectory;
+  const selected = isNew ? NEW_WORKSPACE : (store.selectedWorkspaceId ?? NONE);
+  const newLabel = directory === '' ? t('New Workspace') : RemoteHostPath.lastComponent(directory);
+  const recents: PickerOption<string>[] = state.recentDirectories.slice(0, 10).map((d, index) => ({
+    value: `${RECENT}${d.path}`,
+    label: d.name,
+    subtitle: d.displayPath,
+    section: index === 0 ? t('Recent') : undefined,
+  }));
+  const options: PickerOption<string>[] = [
+    ...(selected === NONE ? [{ value: NONE, label: t('None reported') }] : []),
+    ...store.workspaces.map((workspace) => ({ value: workspace.id, label: workspace.label })),
+    ...recents,
+    ...(state.selectedHostId === undefined
+      ? []
+      : [{ value: BROWSE, label: t('Browse Directory…'), icon: 'folder', section: '' } as const]),
+    { value: NEW_WORKSPACE, label: newLabel, icon: 'add' },
+  ];
+  return { options, selected, isNew };
 }
 
-/** Existing Workspace or a New Workspace at a browsed directory. */
+/** Existing Workspace, a Recent directory, a browsed directory or a typed New Workspace. */
 export function WorkspaceSection({
   store,
   state,
@@ -88,22 +74,11 @@ export function WorkspaceSection({
       </Section>
     );
   }
-  const isNew = state.launchTarget === 'newWorkspace';
-  const directory = state.newWorkspaceDirectory;
-  const selected = isNew ? NEW_WORKSPACE : (store.selectedWorkspaceId ?? NONE);
-  const options = [
-    ...(selected === NONE ? [{ value: NONE, label: t('None reported') }] : []),
-    ...store.workspaces.map((workspace) => ({ value: workspace.id, label: workspace.label })),
-    ...(directory !== ''
-      ? [{ value: NEW_WORKSPACE, label: RemoteHostPath.lastComponent(directory) }]
-      : isNew
-        ? [{ value: NEW_WORKSPACE, label: t('Home') }]
-        : []),
-    { value: BROWSE, label: t('New Workspace') },
-  ];
+  const { options, selected, isNew } = workspaceOptions(store, state);
   const change = (value: string) => {
     if (value === BROWSE) onBrowse();
     else if (value === NEW_WORKSPACE) store.selectNewWorkspace();
+    else if (value.startsWith(RECENT)) store.applyBrowsedDirectory(value.slice(RECENT.length));
     else if (value !== NONE) store.selectExistingWorkspace(value);
   };
   return (
@@ -120,35 +95,17 @@ export function WorkspaceSection({
         value={selected}
         options={options}
         onChange={change}
-        disabled={state.selectedHostId === undefined}
+        menuHeader={false}
+        menuWidth={state.selectedHostId === undefined ? 224 : undefined}
+        valueTone={selected === NONE ? 'tertiary' : 'accent'}
         testID="new-agent-workspace"
       />
-      {isNew ? (
-        <>
-          <TextField
-            label={t('Workspace name (optional)')}
-            value={state.newWorkspaceLabel}
-            onChangeText={(newWorkspaceLabel) => store.edit({ newWorkspaceLabel })}
-            autoCorrect={false}
-            testID="new-agent-workspace-label"
-          />
-          <Text variant="callout" tone="secondary" numberOfLines={2}>
-            {directory === '' ? t("Directory: the Host's home directory") : directory}
-          </Text>
-          <Button
-            kind="secondary"
-            icon="folder"
-            title={t('Browse Directory…')}
-            onPress={onBrowse}
-            testID="new-agent-browse"
-          />
-        </>
-      ) : null}
+      {isNew ? <WorkspaceDraftFields store={store} state={state} onBrowse={onBrowse} /> : null}
     </Section>
   );
 }
 
-/** Run the Agent in a clean checkout instead of the workspace itself. */
+/** Run the agent in a clean checkout instead of the workspace itself. */
 export function WorktreeSection({ store, state }: SectionProps) {
   if (!store.offersWorktree) return null;
   const error = store.worktreeBranchError;
@@ -172,29 +129,7 @@ export function WorktreeSection({ store, state }: SectionProps) {
         onValueChange={(startsInNewWorktree) => store.edit({ startsInNewWorktree })}
         testID="new-agent-worktree"
       />
-      {state.startsInNewWorktree ? (
-        <>
-          <TextField
-            label={t('Branch (optional)')}
-            value={state.worktreeBranch}
-            onChangeText={(worktreeBranch) => store.edit({ worktreeBranch })}
-            error={error ? newAgentText(error) : undefined}
-            autoCapitalize="none"
-            autoCorrect={false}
-            mono
-            testID="new-agent-branch"
-          />
-          <TextField
-            label={t('Base (optional)')}
-            value={state.worktreeBase}
-            onChangeText={(worktreeBase) => store.edit({ worktreeBase })}
-            autoCapitalize="none"
-            autoCorrect={false}
-            mono
-            testID="new-agent-base"
-          />
-        </>
-      ) : null}
+      {state.startsInNewWorktree ? <BranchFields store={store} state={state} /> : null}
     </Section>
   );
 }

@@ -8,6 +8,7 @@ import {
   MemoryStorage,
   PinnedAgents,
   ScriptedEventsTransport,
+  STATUS_CLOCKS_STORAGE_KEY,
   type TerminalAttachSession,
 } from '@openagentspocket/core';
 import { DemoTerminalSession } from './demoTerminal';
@@ -15,15 +16,22 @@ import { ConsoleStore } from './store';
 import { systemClock } from './systemClock';
 
 const DEMO_HOST = { id: 'demo', name: 'Demo Host', username: 'demo' };
+/** The second Host of the rich demo (the atlas): same pane ids as the first, as on real Hosts. */
+const LAB_HOST = { id: 'lab', name: 'Lab', username: 'ada' };
 
-const AGENTS: readonly {
+interface DemoAgent {
   pane: string;
   program: string;
   status: herdr.AgentStatus;
   workspace: string;
   title: string;
   seq: number;
-}[] = [
+  /** Agents with the same workspace id share one workspace (default: their own). */
+  workspaceId?: string;
+  session?: string;
+}
+
+const AGENTS: readonly DemoAgent[] = [
   {
     pane: 'p1',
     program: 'claude',
@@ -39,6 +47,7 @@ const AGENTS: readonly {
     workspace: 'mobile',
     title: 'Settings refactor',
     seq: 7,
+    session: '01a1108c-69c0-7a5e-8d2c-4f6b1e3a9c70',
   },
   {
     pane: 'p3',
@@ -66,19 +75,60 @@ const AGENTS: readonly {
   },
 ];
 
-function demoSnapshot(): herdr.SessionSnapshot {
+/** Rich demo: a second Agent in the mobile workspace, so it nests two rows. */
+const EXTRA_AGENTS: readonly DemoAgent[] = [
+  {
+    pane: 'p5',
+    program: 'claude',
+    status: 'idle',
+    workspace: 'mobile',
+    title: 'Dark mode pass',
+    seq: 1,
+    workspaceId: 'w1',
+  },
+];
+
+/** Rich demo: what runs on the Lab Host. */
+const LAB_AGENTS: readonly DemoAgent[] = [
+  {
+    pane: 'p1',
+    program: 'codex',
+    status: 'working',
+    workspace: 'render-farm',
+    title: 'Cache warmup',
+    seq: 5,
+  },
+  {
+    pane: 'p2',
+    program: 'claude',
+    status: 'done',
+    workspace: 'render-farm',
+    title: 'Queue review',
+    seq: 3,
+    workspaceId: 'w0',
+  },
+];
+
+function demoSnapshot(list: readonly DemoAgent[] = AGENTS): herdr.SessionSnapshot {
+  const wsOf = (a: DemoAgent, index: number) => a.workspaceId ?? `w${index}`;
+  const unique = list.filter(
+    (a, index) => list.findIndex((o, i) => wsOf(o, i) === wsOf(a, index)) === index,
+  );
   return {
-    agents: AGENTS.map((a, index) => ({
+    agents: list.map((a, index) => ({
       agent: a.program,
       agent_status: a.status,
       focused: false,
       pane_id: a.pane,
       revision: 1,
-      tab_id: `w${index}:t1`,
+      tab_id: `${wsOf(a, index)}:t${a.pane}`,
       terminal_id: `term_${a.pane}`,
-      workspace_id: `w${index}`,
+      workspace_id: wsOf(a, index),
       cwd: `/work/${a.workspace}`,
       terminal_title_stripped: a.title,
+      agent_session: a.session
+        ? { agent: a.program, kind: 'id', source: 'demo', value: a.session }
+        : null,
       state_change_seq: a.seq,
     })),
     layouts: [],
@@ -86,23 +136,27 @@ function demoSnapshot(): herdr.SessionSnapshot {
     protocol: 20,
     tabs: [],
     version: 'demo',
-    workspaces: AGENTS.map((a, index) => ({
-      active_tab_id: `w${index}:t1`,
+    workspaces: unique.map((a, index) => ({
+      active_tab_id: `${wsOf(a, index)}:t${a.pane}`,
       agent_status: a.status,
       focused: false,
       label: a.workspace,
       number: index + 1,
       pane_count: 1,
       tab_count: 1,
-      workspace_id: `w${index}`,
+      workspace_id: wsOf(a, list.indexOf(a)),
     })),
   };
 }
 
 /** Offline Transport: a fixed snapshot and a canned prompt for the Blocked Agent. */
 export class DemoConsoleTransport extends ScriptedEventsTransport implements ConsoleTransport {
+  constructor(private readonly agents: readonly DemoAgent[] = AGENTS) {
+    super();
+  }
+
   async sessionSnapshot(): Promise<herdr.SessionSnapshot> {
-    return demoSnapshot();
+    return demoSnapshot(this.agents);
   }
 
   async readPane(): Promise<{ text: string }> {
@@ -121,22 +175,68 @@ export class DemoConsoleTransport extends ScriptedEventsTransport implements Con
   async renameAgent(_params: { target: string; name: string | null }): Promise<void> {}
 }
 
-/** A Console store fed by one demo Host, until the live Transport lands. */
+/** A Console store fed by one demo Host (two with `rich`, for the atlas), until the live Transport lands. */
 export function createDemoConsoleStore(
   clock: Clock = systemClock,
   transport: DemoConsoleTransport = new DemoConsoleTransport(),
+  rich = false,
 ): ConsoleStore {
   const store = new ConsoleStore({
     pins: new PinnedAgents(new MemoryStorage()),
-    clocks: new AgentStatusClocks(new MemoryStorage()),
+    clocks: new AgentStatusClocks(demoStampStorage()),
     clock,
   });
-  const session = new EventsSession<DemoConsoleTransport>({
-    subscriptions: consoleSubscriptions([]),
-    connect: async () => transport,
-    clock,
-    keepalive: null,
-  });
-  store.addHost(DEMO_HOST, session);
+  const sessionFor = (host: DemoConsoleTransport) =>
+    new EventsSession<DemoConsoleTransport>({
+      subscriptions: consoleSubscriptions([]),
+      connect: async () => host,
+      clock,
+      keepalive: null,
+    });
+  if (!rich) {
+    store.addHost(DEMO_HOST, sessionFor(transport));
+    seedDemoExtras(store);
+    return store;
+  }
+  store.addHost(DEMO_HOST, sessionFor(new DemoConsoleTransport([...AGENTS, ...EXTRA_AGENTS])));
+  store.addHost(LAB_HOST, sessionFor(new DemoConsoleTransport(LAB_AGENTS)));
+  seedDemoExtras(store);
   return store;
+}
+
+/** Checkout totals and context usage the demo Agents report, as the Swift atlas shows them. */
+function seedDemoExtras(store: ConsoleStore): void {
+  const window = 200_000;
+  store.setRowExtras('demo', 'p1', { changeTotals: { added: 12, removed: 7 } });
+  store.setRowExtras('demo', 'p2', { changeTotals: { added: 2, removed: 2 } });
+  store.setRowExtras('demo', 'p3', { changeTotals: { added: 5, removed: 1 } });
+  store.setRowExtras('demo', 'p4', {
+    changeTotals: { added: 1, removed: 1 },
+    contextUsage: { usedTokens: 168_000, windowTokens: window },
+  });
+  store.setRowExtras('demo', 'p5', { changeTotals: { added: 2, removed: 2 } });
+  store.setRowExtras('lab', 'p1', { changeTotals: { added: 8, removed: 0 } });
+}
+
+/** How long each demo Agent has been in its status (minutes), so ages read "7m", not "now". */
+const DEMO_AGE_MINUTES: Record<string, number> = { p1: 4, p2: 7, p3: 18, p4: 42, p5: 26 };
+
+function demoStampStorage(): MemoryStorage {
+  const storage = new MemoryStorage();
+  const now = Date.now();
+  const all = [...AGENTS, ...EXTRA_AGENTS].map((agent) => ({ hostId: 'demo', agent }));
+  const entries = all.map(({ hostId, agent }) => ({
+    hostId,
+    paneId: agent.pane,
+    stamp: {
+      status: agent.status,
+      since: now - (DEMO_AGE_MINUTES[agent.pane] ?? 5) * 60_000,
+      isApproximate: false,
+      terminalId: `term_${agent.pane}`,
+      stateChangeSeq: agent.seq,
+      dismissed: false,
+    },
+  }));
+  storage.set(STATUS_CLOCKS_STORAGE_KEY, JSON.stringify({ version: 1, entries }));
+  return storage;
 }

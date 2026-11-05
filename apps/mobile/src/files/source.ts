@@ -18,6 +18,7 @@ export interface FileBrowserSource {
 }
 
 const bytes = utf8Encode;
+const at = (iso: string) => Date.parse(iso) / 1000;
 
 /** An in-memory Host for Demo mode, until the app has live Host sessions to browse. */
 export const demoFileSource: FileBrowserSource = {
@@ -32,7 +33,16 @@ export const demoFileSource: FileBrowserSource = {
         [`${home}/notes 2.txt`]: bytes('two'),
         [`${home}/notes 10.txt`]: bytes('ten'),
       },
-      directories: [`${home}/empty`],
+      directories: [`${home}/Downloads`, `${home}/workspace`, `${home}/empty`],
+      modified: {
+        [`${home}/Downloads`]: at('2026-10-21T13:00:00Z'),
+        [`${home}/workspace`]: at('2026-10-28T15:00:00Z'),
+        [`${home}/empty`]: at('2026-10-02T08:30:00Z'),
+        [`${home}/README.md`]: at('2026-10-17T09:00:00Z'),
+        [`${home}/.env`]: at('2026-09-22T09:00:00Z'),
+        [`${home}/notes 2.txt`]: at('2026-10-24T21:00:00Z'),
+        [`${home}/notes 10.txt`]: at('2026-10-25T10:15:00Z'),
+      },
       exec: {
         [HOME_COMMAND]: { exitCode: 0, stdout: `__AGENTICO_HOME__=${home}\n`, stderr: '' },
       },

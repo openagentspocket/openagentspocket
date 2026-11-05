@@ -1,7 +1,6 @@
 import { MemoryStorage, SettingsStore } from '@openagentspocket/core';
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import { Keyboard } from 'react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore } from '@/console/demo';
 import { ConsoleStoreProvider } from '@/console/hooks';
 import { fakeAuthenticator } from '@/settings/authenticator';
@@ -17,17 +16,7 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
 
-const keyboardListeners: [string, (event: unknown) => void][] = [];
-jest.spyOn(Keyboard, 'addListener').mockImplementation(((
-  event: string,
-  listener: (event: unknown) => void,
-) => {
-  keyboardListeners.push([event, listener]);
-  return { remove: () => {} };
-}) as never);
-
 async function mountLive() {
-  keyboardListeners.length = 0;
   const store = createDemoConsoleStore();
   const settings = new SettingsStore(new MemoryStorage());
   await render(
@@ -40,12 +29,6 @@ async function mountLive() {
       </SettingsProvider>
     </ThemeProvider>,
   );
-  // The key toolbar docks to the keyboard and shows only while it is up.
-  await act(async () => {
-    for (const [event, listener] of keyboardListeners) {
-      if (event === 'keyboardDidShow') listener({});
-    }
-  });
   const slot = await screen.findByTestId('terminal-slot');
   await fireEvent(slot, 'layout', { nativeEvent: { layout: { width: 400, height: 300 } } });
   await waitFor(() =>

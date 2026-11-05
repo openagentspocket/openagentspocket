@@ -27,16 +27,18 @@ interface Props {
   workspaceId?: string;
   /** The shell's directory; it must be absolute. */
   cwd?: string;
+  /** The tab's name; empty keeps herdr's numbered one. */
+  label?: string;
   /** The shell was closed on the Host, or the user left it. */
   onClose: () => void;
 }
 
 /** A shell on a Host in a directory: opens or reattaches its tab, retained across navigation. */
-export function ShellTerminalScreen({ hostId, workspaceId = '', cwd, onClose }: Props) {
+export function ShellTerminalScreen({ hostId, workspaceId = '', cwd, label, onClose }: Props) {
   const services = useShellTerminalServices();
   const request = useMemo<ShellTerminalCreationRequest | null>(
-    () => shellCreationRequest(workspaceId, cwd),
-    [workspaceId, cwd],
+    () => shellCreationRequest(workspaceId, cwd, label),
+    [workspaceId, cwd, label],
   );
   if (!request) {
     return (

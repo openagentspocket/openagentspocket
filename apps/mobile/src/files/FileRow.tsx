@@ -5,8 +5,11 @@ import {
   itemLooksSecret,
 } from '@openagentspocket/core';
 import { getLocaleTag, t } from '@openagentspocket/i18n';
-import { type ActionMenuItem, Badge, Icon, ListRow } from '@openagentspocket/ui';
-import { View } from 'react-native';
+import {
+  type ActionMenuItem,
+  FileRow as FileRowView,
+  type SwipeAction,
+} from '@openagentspocket/ui';
 
 /** "12 KB · Oct 30"; a folder shows only its date, a link says so. */
 export function rowDetail(item: FileBrowserItem): string | undefined {
@@ -14,7 +17,7 @@ export function rowDetail(item: FileBrowserItem): string | undefined {
   if (item.kind === 'file' && item.size !== null) parts.push(formatBytes(item.size));
   if (item.modifiedAt) {
     const date = new Date(item.modifiedAt * 1000);
-    parts.push(date.toLocaleDateString(getLocaleTag(), { month: 'short', day: 'numeric' }));
+    parts.push(date.toLocaleString(getLocaleTag(), { dateStyle: 'medium', timeStyle: 'short' }));
   }
   if (item.kind === 'symlink') parts.push(t('link'));
   return parts.length > 0 ? parts.join(' · ') : undefined;
@@ -27,26 +30,33 @@ interface FileRowProps {
   onOpen: () => void;
 }
 
+/** The trailing swipe: Rename and Delete, taken from the long-press menu so both stay in step. */
+function swipeFor(menu: readonly ActionMenuItem[]): SwipeAction[] {
+  return menu
+    .filter((entry) => (entry.key === 'rename' || entry.key === 'delete') && !entry.disabled)
+    .map((entry) => ({
+      key: entry.key,
+      title: entry.title.replace('…', ''),
+      icon: entry.icon,
+      tone: entry.destructive ? 'danger' : 'accent',
+      onPress: entry.onPress,
+    }));
+}
+
 /** One entry of the folder on screen: a tap opens or downloads it, a long press opens its actions. */
 export function FileRow({ item, dimmed, menu, onOpen }: FileRowProps) {
-  const folder = item.kind === 'directory';
   return (
-    <View style={{ opacity: dimmed ? 0.5 : 1 }}>
-      <ListRow
-        title={item.name}
-        subtitle={isNameUsable(item) ? rowDetail(item) : t('Name not supported')}
-        leading={<Icon name={folder ? 'folder' : 'file'} />}
-        trailing={
-          itemLooksSecret(item) ? (
-            <Badge label={t('May contain secrets')} kind="outline" />
-          ) : undefined
-        }
-        chevron={folder}
-        onPress={onOpen}
-        menu={menu}
-        menuTitle={item.name}
-        testID={`file-${item.name}`}
-      />
-    </View>
+    <FileRowView
+      item={{
+        name: item.name,
+        kind: item.kind === 'directory' || item.kind === 'symlink' ? item.kind : 'file',
+        detail: isNameUsable(item) ? rowDetail(item) : t('Name not supported'),
+      }}
+      dimmed={dimmed}
+      secretLabel={itemLooksSecret(item) ? t('May contain secrets') : undefined}
+      menu={menu}
+      swipeActions={swipeFor(menu)}
+      onPress={onOpen}
+    />
   );
 }

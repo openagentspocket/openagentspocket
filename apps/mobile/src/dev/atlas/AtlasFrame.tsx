@@ -2,6 +2,7 @@ import {
   AgentStatusClocks,
   type Host,
   hostRoute,
+  type ListPresentation,
   MemoryStorage,
   PinnedAgents,
 } from '@openagentspocket/core';
@@ -12,6 +13,8 @@ import { ConsoleStore } from '@/console/store';
 import { systemClock } from '@/console/systemClock';
 import type { DemoHostProbe } from '@/features/hosts/HostProbe';
 import { createDemoRuntime, policyFor, setHostsRuntime } from '@/features/hosts/hostsRuntime';
+import { createDemoServices } from '@/features/new-agent/demo';
+import { NewAgentServicesProvider } from '@/features/new-agent/services';
 import { freezeAtlasClock } from './atlasClock';
 import { offlineHostsStore } from './offlineHosts';
 
@@ -19,12 +22,16 @@ export interface AtlasData {
   /** `empty`: no Hosts at all (first run). Default `demo`: the scripted Hosts and Agents. */
   console?: 'demo' | 'empty' | 'offline';
   hosts?: 'demo' | 'empty';
+  /** The Agents list grouping, for the list ids. Default flat. */
+  presentation?: ListPresentation;
   /** `false`: the Hosts never connected, so the first preflight asks to trust the key. */
   trusted?: boolean;
   /** The plugin version every Host reports (an old one raises the plugin notice). */
   pluginVersion?: string;
   /** `unavailable`: this device's key cannot be loaded, so the form offers Replace Device Key. */
   deviceKey?: 'unavailable';
+  /** `hostless`: several Hosts and none picked, as Swift opens New Agent / New Terminal. */
+  newAgent?: 'hostless';
 }
 
 export const DEMO_HOSTS: readonly Host[] = [
@@ -63,15 +70,21 @@ function emptyConsoleStore(): ConsoleStore {
 export function AtlasFrame({ data, children }: { data: AtlasData; children: ReactNode }) {
   freezeAtlasClock();
   const [ready, setReady] = useState(false);
-  const store = useMemo(
-    () =>
+  const store = useMemo(() => {
+    const created =
       data.console === 'empty'
         ? emptyConsoleStore()
         : data.console === 'offline'
           ? offlineHostsStore()
-          : createDemoConsoleStore(),
-    [data.console],
-  );
+          : createDemoConsoleStore(undefined, undefined, true);
+    if (data.presentation) created.listPrefs.setPresentation(data.presentation);
+    return created;
+  }, [data.console, data.presentation]);
+  const hostless = useMemo(() => {
+    if (data.newAgent !== 'hostless') return undefined;
+    const demo = createDemoServices();
+    return { ...demo, hosts: [...demo.hosts, { id: 'lab', name: 'Lab' }] };
+  }, [data.newAgent]);
   useEffect(() => {
     let live = true;
     const runtime = createDemoRuntime(
@@ -109,5 +122,10 @@ export function AtlasFrame({ data, children }: { data: AtlasData; children: Reac
     };
   }, [data.hosts, data.trusted, data.pluginVersion, data.deviceKey]);
   if (!ready) return null;
-  return <ConsoleStoreProvider store={store}>{children}</ConsoleStoreProvider>;
+  const body = <ConsoleStoreProvider store={store}>{children}</ConsoleStoreProvider>;
+  return hostless ? (
+    <NewAgentServicesProvider services={hostless}>{body}</NewAgentServicesProvider>
+  ) : (
+    body
+  );
 }

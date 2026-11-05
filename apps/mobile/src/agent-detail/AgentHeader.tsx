@@ -1,58 +1,61 @@
+import { agentDisplayName, type ConsoleRow, rowDirectory } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import {
-  ActionMenuButton,
-  type ActionMenuItem,
-  GlassCapsule,
-  Icon,
-  makeStyles,
-} from '@openagentspocket/ui';
-import { Pressable, View } from 'react-native';
-
-const SIZE = 44;
-
-const useStyles = makeStyles((th) => ({
-  // Swift AgentDetailHeader: two 44 pt glass circles floating over the content, nothing between.
-  row: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: th.spacing.md,
-    paddingTop: th.spacing.xs,
-  },
-  circle: { width: SIZE, height: SIZE, justifyContent: 'center' },
-  tap: { width: SIZE, height: SIZE, alignItems: 'center', justifyContent: 'center' },
-}));
+import { type ActionMenuItem, AgentHeader as FloatingHeader } from '@openagentspocket/ui';
+import type { Surface } from './surface';
 
 interface Props {
-  onSessions: () => void;
-  /** The "..." menu (Changes, Ports, New Agent); hidden when empty. */
-  items?: readonly ActionMenuItem[];
+  row: ConsoleRow;
+  surface: Surface;
+  onSurface: (surface: Surface) => void;
+  onSidebar: () => void;
+  /** Changes, Files, Ports and the rest, from the route. */
+  menu?: readonly ActionMenuItem[];
+  /** Chat is full-bleed with circles only, as in Swift; the terminal shows the title block. */
+  showTitle?: boolean;
 }
 
-/** The floating header: the Sessions circle on the leading side, "..." on the trailing side. */
-export function AgentHeader({ onSessions, items = [] }: Props) {
-  const styles = useStyles();
+const tail = (path: string | undefined) => path?.split('/').filter(Boolean).at(-1);
+
+/** The floating header: Sessions circle, the Agent's title block, one ... menu with Chat/Terminal. */
+export function AgentHeader({
+  row,
+  surface,
+  onSurface,
+  onSidebar,
+  menu = [],
+  showTitle = true,
+}: Props) {
+  const items: ActionMenuItem[] = [
+    {
+      key: 'surface-chat',
+      title: t('Show Chat'),
+      icon: 'chat',
+      checked: surface === 'chat',
+      onPress: () => onSurface('chat'),
+    },
+    {
+      key: 'surface-terminal',
+      title: t('Show Terminal'),
+      icon: 'terminal',
+      checked: surface === 'terminal',
+      onPress: () => onSurface('terminal'),
+    },
+    ...menu,
+  ];
   return (
-    <View style={styles.row} pointerEvents="box-none" testID="agent-header">
-      <GlassCapsule style={styles.circle}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('Sessions')}
-          onPress={onSessions}
-          style={styles.tap}
-          testID="agent-sessions"
-        >
-          <Icon name="sidebar" color="textPrimary" size={18} />
-        </Pressable>
-      </GlassCapsule>
-      {items.length > 0 ? (
-        <GlassCapsule style={styles.circle}>
-          <ActionMenuButton items={items} accessibilityLabel={t('More')} testID="agent-more-menu" />
-        </GlassCapsule>
-      ) : null}
-    </View>
+    <FloatingHeader
+      surface={surface}
+      onSidebar={onSidebar}
+      menu={items}
+      eyebrow={showTitle ? [row.hostName, row.agent.agent].filter(Boolean).join(' · ') : undefined}
+      title={showTitle ? agentDisplayName(row.agent) : undefined}
+      subtitle={
+        showTitle
+          ? [row.workspaceLabel, tail(rowDirectory(row))].filter(Boolean).join(' · ')
+          : undefined
+      }
+      labels={{ sidebar: t('Sessions'), more: t('More') }}
+      testID="agent-header"
+    />
   );
 }

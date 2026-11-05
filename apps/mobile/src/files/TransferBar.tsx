@@ -21,7 +21,7 @@ export function TransferBar({
   const name = transfer.preparing ? t('Preparing…') : transfer.name;
   const moved = formatBytes(transfer.progress.transferredBytes);
   return (
-    <Card testID="transfer-bar">
+    <Card level="overlay" testID="transfer-bar">
       <View style={styles.row}>
         <Icon name={transfer.direction === 'download' ? 'arrowDown' : 'arrowUp'} />
         <View style={styles.name}>

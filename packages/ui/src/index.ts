@@ -36,6 +36,7 @@ export {
   toSideBySide,
 } from './diff/parseUnifiedDiff';
 export { NavRow, type PickerOption, PickerRow, StepperRow, ToggleRow } from './form/FormRows';
+export { SearchField, type SearchFieldProps } from './form/SearchField';
 export { TextField, type TextFieldProps } from './form/TextField';
 export { ComponentCapture } from './gallery/ComponentsSection';
 export { componentCatalog, findCatalogEntry } from './gallery/components/registry';
@@ -76,6 +77,8 @@ export {
   type ConfirmOptions,
   type ConfirmPresentation,
   confirm,
+  type PromptOptions,
+  prompt,
 } from './overlay/confirm';
 export { OverlayHost } from './overlay/OverlayHost';
 export { Sheet, type SheetBarAction, type SheetDetent } from './overlay/Sheet';
@@ -91,6 +94,7 @@ export { CardRow } from './primitives/CardRow';
 export { Chip, ChipRow } from './primitives/Chip';
 export { COPY_CONFIRMATION_MS, CopyableValueRow, CopyButton } from './primitives/CopyButton';
 export { copyToClipboard } from './primitives/clipboard';
+export { EdgeFade } from './primitives/EdgeFade';
 export { EmptyState, type EmptyStateLayout, ErrorState } from './primitives/EmptyState';
 export { GLASS_OPACITY, GlassCapsule } from './primitives/GlassCapsule';
 export { Icon, type IconName, iconNames } from './primitives/Icon';

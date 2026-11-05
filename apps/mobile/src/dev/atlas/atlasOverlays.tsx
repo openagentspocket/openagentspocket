@@ -46,7 +46,7 @@ export function TerminalStatusAtlas({ status }: { status: AttachStatus }) {
         storage={deviceStorage}
         surface="terminal"
         onSwitch={noop}
-        moreItems={[{ key: 'changes', title: t('Changes'), onPress: noop }]}
+        menu={[{ key: 'changes', title: t('Changes'), onPress: noop }]}
       />
       <StatusOverlay status={status} onRetry={noop} />
     </>

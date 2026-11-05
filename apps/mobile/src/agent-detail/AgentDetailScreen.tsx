@@ -5,21 +5,25 @@ import {
   terminalStopAvailable,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { type ActionMenuItem, EmptyState, makeStyles, Screen, Text } from '@openagentspocket/ui';
-import { View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
-import { useAgent, useConsole } from '../console/hooks';
 import {
-  ChatBanners,
-  type ChatStatusInput,
-  ChatWait,
-  useChatRetry,
-  useChatStatus,
-} from '../notifications/ChatBanners';
+  type ActionMenuItem,
+  EdgeFade,
+  EmptyState,
+  makeStyles,
+  Screen,
+  StatusLine,
+} from '@openagentspocket/ui';
+import { useState } from 'react';
+import { type LayoutChangeEvent, View } from 'react-native';
+import { statusDot } from '@/console/agentStatus';
+import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
+import { activityOf } from '../blocked/useBlockedCard';
+import { useAgent, useConsole, useConsoleState } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
-import { AgentStatusLine } from './AgentStatusLine';
+import { AgentSessionDrawer } from './AgentSessionDrawer';
 import { AgentSwitcher } from './AgentSwitcher';
+import { agentBarLabels } from './agentBarLabels';
+import { ChatTimeline } from './chat/ChatTimeline';
 import { AgentComposerBar } from './composer/AgentComposer';
 import { useAgentComposer } from './composer/composerContext';
 import { type Surface, useSurface } from './surface';
@@ -27,10 +31,9 @@ import { TerminalSurface } from './terminal/TerminalSurface';
 import { useFocusDone } from './useFocusDone';
 
 const useStyles = makeStyles((th) => ({
-  root: { flex: 1, backgroundColor: th.colors.canvas },
-  // Under the floating header circles: 44 pt plus its margins.
-  top: { height: 52 },
-  slot: { flex: 1 },
+  fill: { flex: 1 },
+  header: { position: 'absolute', top: 0, left: 0, right: 0 },
+  dock: { gap: th.spacing.xxs, paddingBottom: th.spacing.xxs },
 }));
 
 interface Props {
@@ -39,34 +42,30 @@ interface Props {
   storage: KeyValueStorage;
   /** A deep link's surface for this visit. */
   surface?: Surface;
-  /** Overrides the lines derived from the Host's status (atlas and tests pin a state). */
-  chatStatus?: ChatStatusInput;
   onSwitch: (row: ConsoleRow) => void;
-  /** The Sessions circle (leading). */
-  onSessions?: () => void;
-  /** The "..." menu (trailing). */
-  moreItems?: readonly ActionMenuItem[];
+  /** Changes, Files and Ports, from the route; the header menu adds Chat/Terminal. */
+  menu?: readonly ActionMenuItem[];
+  onOpenChanges?: () => void;
 }
 
-/** The detail shell: header, switcher and the Chat or Terminal slot. */
+/** The detail: chat or terminal fills the screen; the header floats, the composer dock sits below. */
 export function AgentDetailScreen({
   hostId,
   paneId,
   storage,
   surface: requested,
-  chatStatus: pinnedStatus,
   onSwitch,
-  onSessions,
-  moreItems,
+  menu,
+  onOpenChanges,
 }: Props) {
   const styles = useStyles();
   const key = agentKey(hostId, paneId);
   const row = useAgent(key);
   const rows = useConsole();
-  const derivedStatus = useChatStatus(hostId);
-  const chatStatus = pinnedStatus ?? derivedStatus;
-  const retry = useChatRetry(hostId);
+  const latency = useConsoleState().hosts.find((host) => host.id === hostId)?.latencyMs;
   const [surface, setSurface] = useSurface(storage, requested);
+  const [drawer, setDrawer] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
   useFocusDone(hostId, paneId, row?.agent.agent_status === 'done');
   const composer = useAgentComposer(hostId, paneId, row?.agent.agent_status ?? 'unknown', storage);
   if (!row) {
@@ -76,42 +75,72 @@ export function AgentDetailScreen({
       </Screen>
     );
   }
-  const locating = surface === 'chat' && chatStatus.locating;
+  const status = statusDot(row.agent.agent_status);
+  const toggle = () => setSurface(surface === 'chat' ? 'terminal' : 'chat');
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'bottom']} testID="agent-detail">
-      <View style={styles.top} />
-      {surface === 'chat' ? (
-        <ChatBanners
-          {...chatStatus}
-          onRetry={retry}
-          onShowTerminal={() => setSurface('terminal')}
-        />
-      ) : null}
-      {surface === 'chat' ? <BlockedCardSlot row={row} /> : null}
-      <View style={styles.slot} testID={`slot-${surface}`}>
+    <Screen scroll={false} bare keyboardAvoiding edges={['top', 'bottom']} testID="agent-detail">
+      <View style={styles.fill} testID={`slot-${surface}`}>
         {surface === 'chat' ? (
-          locating ? (
-            <ChatWait />
-          ) : (
-            <Text variant="body" tone="secondary" testID="chat-slot" style={{ padding: 21 }}>
-              {t('Chat arrives with the conversation engine.')}
-            </Text>
-          )
+          <ChatTimeline
+            hostId={hostId}
+            paneId={paneId}
+            activity={activityOf(row)}
+            topInset={headerHeight}
+            bottomInset={0}
+            onShowTerminal={() => setSurface('terminal')}
+          />
         ) : (
-          <TerminalSurface hostId={hostId} paneId={paneId} />
+          <View style={[styles.fill, { paddingTop: headerHeight }]}>
+            <TerminalSurface hostId={hostId} paneId={paneId} />
+          </View>
         )}
+        {surface === 'chat' && headerHeight > 0 ? <EdgeFade height={headerHeight + 24} /> : null}
+        <View
+          style={styles.header}
+          pointerEvents="box-none"
+          onLayout={(event: LayoutChangeEvent) => setHeaderHeight(event.nativeEvent.layout.height)}
+        >
+          <AgentHeader
+            row={row}
+            surface={surface}
+            onSurface={setSurface}
+            onSidebar={() => setDrawer(true)}
+            menu={menu}
+            showTitle={surface === 'terminal'}
+          />
+        </View>
       </View>
-      <AgentStatusLine row={row} />
-      <AgentComposerBar
-        composer={composer}
-        surface={surface}
-        program={row.agent.agent ?? 'unknown'}
-        onToggleSurface={() => setSurface(surface === 'chat' ? 'terminal' : 'chat')}
-        footer={<AgentSwitcher rows={rows} currentKey={key} onSelect={onSwitch} />}
-        canStop={terminalStopAvailable(row.agent.agent ?? '')}
-        moreItems={moreItems}
+      <View style={styles.dock}>
+        {surface === 'chat' ? <BlockedCardSlot row={row} /> : null}
+        <StatusLine
+          status={status}
+          latencyMs={latency}
+          onOpenChanges={onOpenChanges}
+          labels={agentBarLabels()}
+        />
+        <AgentComposerBar
+          composer={composer}
+          surface={surface}
+          program={row.agent.agent ?? 'unknown'}
+          status={status}
+          onToggleSurface={toggle}
+          canStop={terminalStopAvailable(row.agent.agent ?? '')}
+        />
+        <AgentSwitcher
+          rows={rows}
+          currentKey={key}
+          onSelect={onSwitch}
+          surface={surface}
+          onSurface={setSurface}
+        />
+      </View>
+      <AgentSessionDrawer
+        visible={drawer}
+        onClose={() => setDrawer(false)}
+        rows={rows}
+        current={row}
+        onSelect={onSwitch}
       />
-      <AgentHeader onSessions={onSessions ?? (() => {})} items={moreItems} />
-    </SafeAreaView>
+    </Screen>
   );
 }

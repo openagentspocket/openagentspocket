@@ -5,10 +5,11 @@ import {
   Button,
   EmptyState,
   ErrorState,
+  MetaChip,
   Screen,
   Section,
+  SheetBar,
   SkeletonRows,
-  Text,
 } from '@openagentspocket/ui';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useStoreState } from '@/changes/useStoreState';
@@ -21,10 +22,12 @@ interface PortsScreenProps {
   store: PortsStore;
   /** The Preview screen is pushed over the list once a preview is opening. */
   onOpenPreview: () => void;
+  /** Dismisses the sheet (Done). */
+  onDone?: () => void;
 }
 
 /** browser.ports: the TCP servers listening on one Host, one row per port; a row opens its preview. */
-export function PortsScreen({ store, onOpenPreview }: PortsScreenProps) {
+export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) {
   const state = useStoreState(store);
   const [enteringPort, setEnteringPort] = useState(false);
   useAppActivity(store);
@@ -102,24 +105,30 @@ export function PortsScreen({ store, onOpenPreview }: PortsScreenProps) {
       </>
     );
   }
+  const bar = (
+    <SheetBar
+      title={t('Ports')}
+      leading={{ label: t('Done'), onPress: onDone ?? (() => {}), testID: 'ports-done' }}
+      trailing={[
+        {
+          label: t('Open Port…'),
+          icon: 'hash',
+          onPress: () => setEnteringPort(true),
+          testID: 'ports-open-port',
+        },
+      ]}
+    />
+  );
   return (
     <Screen
+      header={bar}
       edges={['left', 'right', 'bottom']}
       refreshing={state.isRefreshing}
       onRefresh={refresh}
       testID="ports-screen"
     >
-      <Text variant="footnote" tone="secondary" numberOfLines={1}>
-        {t('Host %@', store.hostName)}
-      </Text>
+      <MetaChip label={t('Host %@', store.hostName)} icon="server" testID="ports-host" />
       {body}
-      <Button
-        kind="secondary"
-        icon="globe"
-        title={t('Open Port…')}
-        onPress={() => setEnteringPort(true)}
-        testID="ports-open-port"
-      />
       <OpenPortSheet
         visible={enteringPort}
         hostName={store.hostName}

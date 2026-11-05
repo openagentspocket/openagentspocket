@@ -12,10 +12,11 @@ import { ThemeProvider } from '@openagentspocket/ui';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { ChangesScreen } from './ChangesScreen';
 import { DEMO_READ } from './demo';
-import { diffLines, isEmptyPatch } from './diffLines';
+import { diffHunks, isEmptyPatch, wordSegments } from './diffLines';
 import { FileDiffScreen } from './FileDiffScreen';
 import { releaseChangesStore, setChangesStoreFactory } from './registry';
 import { buildSections } from './rows';
+import { say } from './say';
 
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: require('react-native').View,
@@ -102,9 +103,8 @@ describe('ChangesScreen', () => {
     install();
     await wrap(<ChangesScreen agentId="a1" onOpenFile={() => {}} />);
     await waitFor(() => expect(screen.getByTestId('changes-header')).toBeTruthy());
-    expect(screen.getAllByRole('header')).toHaveLength(4);
+    expect(screen.getAllByTestId('change-section')).toHaveLength(4);
     expect(screen.getByTestId('changes-file-src/cart/Cart.ts')).toBeTruthy();
-    expect(screen.getByTestId('changes-totals')).toBeTruthy();
   });
 
   it('opens a file in the diff and tells the route', async () => {
@@ -153,7 +153,7 @@ describe('ChangesScreen', () => {
     });
     await wrap(<ChangesScreen agentId="a1" onOpenFile={() => {}} />);
     await waitFor(() => expect(screen.getByTestId('changes-failure')).toBeTruthy());
-    fireEvent.press(screen.getByRole('button'));
+    fireEvent.press(screen.getByText(say('Try Again')));
     await waitFor(() => expect(screen.getByTestId('changes-header')).toBeTruthy());
     expect(attempts).toBe(2);
   });
@@ -171,9 +171,9 @@ describe('FileDiffScreen', () => {
   it('renders the patch as numbered lines', async () => {
     await open();
     await wrap(<FileDiffScreen agentId="a1" />);
-    await waitFor(() => expect(screen.getByTestId('diff-view')).toBeTruthy());
-    expect(screen.getAllByTestId('diff-line-add')).toHaveLength(1);
-    expect(screen.getAllByTestId('diff-line-del')).toHaveLength(1);
+    await waitFor(() => expect(screen.getByTestId('diff-row')).toBeTruthy());
+    expect(screen.getAllByTestId('diff-row-add')).toHaveLength(1);
+    expect(screen.getAllByTestId('diff-row-del')).toHaveLength(1);
   });
 
   it('a failed read offers Try Again', async () => {
@@ -187,14 +187,14 @@ describe('FileDiffScreen', () => {
     });
     await wrap(<FileDiffScreen agentId="a1" />);
     await waitFor(() => expect(screen.getByTestId('diff-failure')).toBeTruthy());
-    fireEvent.press(screen.getByRole('button'));
-    await waitFor(() => expect(screen.getByTestId('diff-view')).toBeTruthy());
+    fireEvent.press(screen.getByText(say('Try Again')));
+    await waitFor(() => expect(screen.getByTestId('diff-row')).toBeTruthy());
   });
 
   it('a truncated patch loads more at the extended cap', async () => {
     const { limits } = await open({ patch: async (limit) => patchOf(limit === 'initial') });
     await wrap(<FileDiffScreen agentId="a1" />);
-    await waitFor(() => expect(screen.getByTestId('diff-view')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('diff-row')).toBeTruthy());
     const more = screen.getAllByRole('button').at(-1);
     await act(async () => {
       if (more) fireEvent.press(more);
@@ -210,11 +210,11 @@ describe('FileDiffScreen', () => {
     async (width, shown) => {
       await open();
       await wrap(<FileDiffScreen agentId="a1" width={width} />);
-      await waitFor(() => expect(screen.getByTestId('diff-view')).toBeTruthy());
+      await waitFor(() => expect(screen.getByTestId('diff-row')).toBeTruthy());
       expect(screen.queryByTestId('layout-split') !== null).toBe(shown);
       if (shown) {
         await fireEvent.press(screen.getByTestId('layout-split'));
-        expect(screen.getAllByTestId('diff-split-row').length).toBeGreaterThan(0);
+        expect(screen.getAllByTestId('diff-row-split').length).toBeGreaterThan(0);
       }
     },
   );
@@ -232,15 +232,19 @@ describe('rows and diff lines', () => {
     expect(untracked.map((r) => r.kind)).toEqual(['file', 'file', 'note']);
   });
 
-  it('diffLines numbers the lines and marks skipped unchanged lines between hunks', () => {
+  it('diffHunks numbers the lines, washes changed words and counts skipped lines between hunks', () => {
     const files = parsePatchFiles(
-      'diff --git a/a b/a\n--- a/a\n+++ b/a\n@@ -1 +1 @@\n-a\n+b\n@@ -20 +20 @@\n-c\n+d\n',
+      'diff --git a/a b/a\n--- a/a\n+++ b/a\n@@ -1 +1 @@\n-var subtitle: String\n+var spokenTitle: String\n@@ -20 +20 @@\n-c\n+d\n',
       false,
     );
-    const lines = diffLines(files);
-    expect(lines.map((l) => l.kind)).toEqual(['hunk', 'del', 'add', 'meta', 'hunk', 'del', 'add']);
-    expect(lines[1]).toMatchObject({ oldNumber: 1 });
-    expect(lines[2]).toMatchObject({ newNumber: 1 });
+    const hunks = diffHunks(files[0] as (typeof files)[number]);
+    expect(hunks.map((h) => h.header)).toEqual(['@@ -1,1 +1,1 @@', '@@ -20,1 +20,1 @@']);
+    expect(hunks[0]?.gapLabel).toBeUndefined();
+    expect(hunks[1]?.gapLabel).toBe('18 unchanged lines');
+    expect(hunks[0]?.lines[0]).toMatchObject({ kind: 'del', oldNumber: 1 });
+    expect(hunks[0]?.lines[1]?.segments?.find((s) => s.changed)?.text).toBe('spokenTitle');
+    expect(hunks[1]?.lines[0]?.segments).toBeUndefined();
+    expect(wordSegments('same', 'same')).toBeNull();
     expect(isEmptyPatch(files)).toBe(false);
     expect(isEmptyPatch([])).toBe(true);
   });

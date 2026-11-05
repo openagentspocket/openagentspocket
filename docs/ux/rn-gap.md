@@ -125,3 +125,19 @@ shell.* (sidebar, switcher, app lock, banner, commands), files.* sheets, browser
 - Terminal and chat surfaces are the heart of Swift; RN has neither on web (PlainTerminal) and a placeholder for chat.
 - Atlas caveats: web has no glass, native menus or safe-area insets (RN headers look shorter than on iOS);
   changes.file-diff needs a selected file; usage.limits-page, browser.ports and rn.board have no Swift shot yet.
+
+## 10. Agents list follow-ups (UX1-agents-list, tracked)
+
+- Row diff totals and the context-low pill: DONE for the model. `ConsoleRow` carries `changeTotals` and `contextUsage`
+  (core `row.ts`, threshold 20 % as in Swift), `ConsoleStore.setRowExtras` decorates the rows, `agentCardModel` maps
+  them. The demo Hosts seed them. Live sources are not wired yet: the Changes read of each checkout and the transcript
+  context usage must call `setRowExtras` once the SSH transport lands.
+- Board still uses ListRow: move it to AgentCard (`presentation="card"`, compact) so it matches the list.
+- SearchField has no gallery entry (`/__gallery/components/SearchField`).
+- No atlas entries for rename-sheet, close-confirmation, row-context-menu or search: sheets over the list need a way
+  to open them from `AtlasData` (like `openDetail`).
+- Quick detail age: the demo status stamps are seeded in the past (7m). The list behind the sheet is not scrolled to the row: Swift's reference for this id is the Home screen, so there is no list to match.
+- Papel iPhone: the light iPhone shots exist (`design/screens/current/light`); `atlas-compare.py --theme light` uses them.
+- Search: Swift's iPhone list has a search drawer that starts tucked (`searchDrawerStartsTucked`). RN keeps the field, tucked until a pull down on the list (the refresh gesture) or a non-empty query.
+- The atlas now uses the rich demo (`createDemoConsoleStore(undefined, undefined, true)`: two Hosts, a workspace with
+  two Agents on each); the plain demo store stays one Host for tests.

@@ -1,9 +1,10 @@
 import { hostUrl, type PortsStore, parseUrl, tunnelUrl } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { confirm, makeStyles, Screen } from '@openagentspocket/ui';
+import { confirm, makeStyles, Screen, SheetBar } from '@openagentspocket/ui';
 import { useEffect, useRef, useState } from 'react';
 import { Linking, Share, View } from 'react-native';
 import { useStoreState } from '@/changes/useStoreState';
+import { askLeavePreview } from './leaveDialog';
 import { PreviewStates } from './PreviewStates';
 import { PreviewToolbar } from './PreviewToolbar';
 import {
@@ -22,7 +23,16 @@ const useStyles = makeStyles((th) => ({
  * stops the tunnel. Share hands on the page as the Host serves it (`http://localhost:<port>/…`):
  * the phone's loopback URL means nothing outside the preview.
  */
-export function PortPreviewScreen({ store }: { store: PortsStore }) {
+export function PortPreviewScreen({
+  store,
+  title,
+  onClose,
+}: {
+  store: PortsStore;
+  /** `host:port`, shown in the slim top bar. */
+  title?: string;
+  onClose?: () => void;
+}) {
   const styles = useStyles();
   const { preview } = useStoreState(store);
   const browser = useRef<PreviewBrowserHandle>(null);
@@ -49,13 +59,9 @@ export function PortPreviewScreen({ store }: { store: PortsStore }) {
   const open = phase?.kind === 'open' ? phase : null;
 
   const askExternal = async (url: string) => {
-    const host = parseUrl(url)?.host ?? url;
-    const leave = await confirm({
-      title: t('Leave the Preview?'),
-      message: t('This link goes to %@, outside %@.', host, store.hostName),
-      confirmLabel: t('Open in Safari'),
-    });
-    if (leave) void Linking.openURL(url);
+    if (await askLeavePreview(parseUrl(url)?.host ?? url, store.hostName)) {
+      void Linking.openURL(url);
+    }
   };
   const noDownloads = () =>
     void confirm({
@@ -64,6 +70,17 @@ export function PortPreviewScreen({ store }: { store: PortsStore }) {
       cancelLabel: null,
     });
 
+  const bar = (
+    <SheetBar
+      title={title ?? store.hostName}
+      leading={{
+        label: t('Close'),
+        icon: 'close',
+        onPress: onClose ?? (() => {}),
+        testID: 'preview-close',
+      }}
+    />
+  );
   // Nothing is open (the list was left, or the route was opened cold): the route is popping.
   if (!preview)
     return (
@@ -72,7 +89,7 @@ export function PortPreviewScreen({ store }: { store: PortsStore }) {
       </Screen>
     );
   return (
-    <Screen scroll={false} edges={['left', 'right', 'bottom']} testID="preview-screen">
+    <Screen scroll={false} header={bar} edges={['left', 'right', 'bottom']} testID="preview-screen">
       <View style={styles.body}>
         {open ? (
           <PreviewWebView

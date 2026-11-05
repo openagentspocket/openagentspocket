@@ -1,67 +1,47 @@
 import { agentDisplayName, type ConsoleRow, rowKey } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { makeStyles, ProgramMark, Text } from '@openagentspocket/ui';
-import { Pressable, ScrollView } from 'react-native';
+import { AgentSwitcher as Capsule, type SwitcherAgent } from '@openagentspocket/ui';
+import { View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
-
-const useStyles = makeStyles((th) => ({
-  // Swift TerminalAgentSwitcher: one 40 pt row of chips inside the composer card.
-  strip: { gap: th.spacing.xs, alignItems: 'center', paddingHorizontal: th.spacing.xxs },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: th.spacing.xxs,
-    height: 32,
-    paddingHorizontal: th.spacing.xs,
-    borderRadius: 16,
-  },
-  current: { backgroundColor: th.colors.control },
-}));
+import type { Surface } from './surface';
 
 interface Props {
   rows: readonly ConsoleRow[];
   currentKey: string;
   onSelect: (row: ConsoleRow) => void;
+  surface: Surface;
+  onSurface: (surface: Surface) => void;
 }
 
-/** The Console's Agents as compact chips, to hop between them without going back to the list. */
-export function AgentSwitcher({ rows, currentKey, onSelect }: Props) {
-  const styles = useStyles();
-  if (rows.length < 2) return null;
+/** The Console's Agents in the bottom capsule, with the Chat/Terminal switch pinned at its end. */
+export function AgentSwitcher({ rows, currentKey, onSelect, surface, onSurface }: Props) {
+  const agents: SwitcherAgent[] = rows.map((row) => ({
+    id: row.agent.pane_id,
+    title: agentDisplayName(row.agent),
+    program: row.agent.agent ?? 'unknown',
+    status: statusDot(row.agent.agent_status),
+  }));
+  const current = rows.find((row) => rowKey(row) === currentKey);
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.strip}
-      style={{ flexGrow: 0, height: 40 }}
-      accessibilityLabel={t('Switch Agent')}
-      testID="agent-switcher"
-    >
-      {rows.map((row) => {
-        const key = rowKey(row);
-        const current = key === currentKey;
-        return (
-          <Pressable
-            key={key}
-            accessibilityRole="button"
-            accessibilityState={{ selected: current }}
-            accessibilityLabel={agentDisplayName(row.agent)}
-            accessibilityHint={t('Switches to that Agent')}
-            onPress={() => onSelect(row)}
-            style={[styles.item, current && styles.current]}
-            testID={`switch-${row.agent.pane_id}`}
-          >
-            <ProgramMark
-              program={row.agent.agent ?? 'unknown'}
-              status={statusDot(row.agent.agent_status)}
-              size={18}
-            />
-            <Text variant="footnote" tone={current ? 'primary' : 'secondary'} numberOfLines={1}>
-              {agentDisplayName(row.agent)}
-            </Text>
-          </Pressable>
-        );
-      })}
-    </ScrollView>
+    <View testID="agent-switcher">
+      <Capsule
+        agents={agents}
+        currentId={current?.agent.pane_id ?? ''}
+        onSelect={(id) => {
+          const row = rows.find((candidate) => candidate.agent.pane_id === id);
+          if (row && rowKey(row) !== currentKey) onSelect(row);
+        }}
+        trailing={[
+          {
+            key: 'surface',
+            icon: surface === 'chat' ? 'terminal' : 'chat',
+            label: surface === 'chat' ? t('Show Terminal') : t('Show Chat'),
+            onPress: () => onSurface(surface === 'chat' ? 'terminal' : 'chat'),
+          },
+        ]}
+        labels={{ switcher: t('Agents'), switchTo: t('Switch to') }}
+        testID="switch"
+      />
+    </View>
   );
 }

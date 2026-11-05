@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
-import { Modal, Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import {
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { noFocusRing } from '../primitives/Button';
-import { Text } from '../primitives/Text';
+import { monoFamily, Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { spacing } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -58,6 +66,17 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.control,
   },
   pressed: { opacity: 0.7 },
+  input: {
+    minHeight: t.metrics.minTapSize,
+    paddingHorizontal: t.spacing.sm,
+    borderRadius: t.metrics.chipRadius,
+    borderWidth: t.metrics.hairlineWidth,
+    borderColor: t.hairline,
+    backgroundColor: t.colors.control,
+    color: t.colors.textPrimary,
+    fontSize: 15,
+    fontFamily: monoFamily,
+  },
 }));
 
 const PANEL_RADIUS = 28;
@@ -119,6 +138,8 @@ function AlertPanel({ request }: { request: AlertRequest }) {
   const styles = useStyles();
   const insets = useInsets();
   const window = useWindowDimensions();
+  const theme = useTheme();
+  const [text, setText] = useState(request.field?.initial ?? '');
   const isAlert = request.presentation === 'alert';
   const isPopover = request.presentation === 'popover';
   const [rect, setRect] = useState<AnchorRect | null>(null);
@@ -167,7 +188,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
       <AlertButton
         title={action.title}
         tone={action.destructive ? 'danger' : 'accent'}
-        onPress={() => answerAlert(request, action.key)}
+        onPress={() => answerAlert(request, action.key, text)}
         testID={`alert-action-${action.key}`}
       />
     </View>
@@ -180,6 +201,23 @@ function AlertPanel({ request }: { request: AlertRequest }) {
         </Text>
         {request.message ? <Text tone="secondary">{request.message}</Text> : null}
       </View>
+      {request.field ? (
+        <TextInput
+          style={styles.input}
+          value={text}
+          onChangeText={setText}
+          placeholder={request.field.placeholder}
+          placeholderTextColor={theme.colors.textTertiary}
+          selectionColor={theme.colors.accent}
+          autoFocus
+          selectTextOnFocus
+          autoCapitalize="none"
+          autoCorrect={false}
+          returnKeyType="done"
+          onSubmitEditing={() => answerAlert(request, 'confirm', text)}
+          testID={request.field.testID ?? 'alert-field'}
+        />
+      ) : null}
       {sideBySide ? (
         <View style={styles.row}>
           {cancel}

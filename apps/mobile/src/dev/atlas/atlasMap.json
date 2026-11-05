@@ -15,9 +15,49 @@
     "note": "demo console"
   },
   {
+    "id": "console.agents-list-by-status",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "demo console, By Status"
+  },
+  {
+    "id": "console.agents-list-by-workspace",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "demo console, By Workspace"
+  },
+  {
+    "id": "console.agents-list-by-host",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "demo console, By Host"
+  },
+  {
+    "id": "console.quick-detail-sheet",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "quick detail of p2 over the Agents list; Swift draws it over Home (a status inbox) and RN Home has no quick detail, so the backdrop is the by-status Agents list"
+  },
+  {
+    "id": "console.empty-states-agents",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "no Agents"
+  },
+  {
     "id": "console.start-agent",
     "rn": "app/new-agent.tsx (NewAgentScreen)",
+    "note": "demo services, one Host"
+  },
+  {
+    "id": "console.workspace-picker",
+    "rn": "app/new-agent.tsx (NewAgentScreen)",
+    "note": "Workspace menu open: Recent, Browse Directory, New Workspace"
+  },
+  {
+    "id": "console.new-terminal",
+    "rn": "app/new-terminal.tsx (NewTerminalScreen)",
     "note": "demo services"
+  },
+  {
+    "id": "console.directory-browser",
+    "rn": "DirectoryBrowserSheet",
+    "note": "sheet open on the demo home"
   },
   {
     "id": "hosts.list",
@@ -229,12 +269,12 @@
   {
     "id": "files.browser",
     "rn": "app/files.tsx (FilesScreen)",
-    "note": "demo host files"
+    "note": "demo host files, Done + up/+ capsule, path chip"
   },
   {
     "id": "browser.ports",
     "rn": "app/ports (PortsScreen)",
-    "note": "demo ports"
+    "note": "demo ports, Done + # capsule, host chip"
   },
   {
     "id": "changes.list",
@@ -244,17 +284,17 @@
   {
     "id": "changes.file-diff",
     "rn": "app/changes/diff.tsx (FileDiffScreen)",
-    "note": "KNOWN GAP: no file is selected in the atlas, so it shows the no-longer-in-Changes empty state"
+    "note": "first modified demo file opened"
   },
   {
     "id": "agent-detail.container",
     "rn": "AgentDetailScreen",
-    "note": "blocked agent p1, chat surface"
+    "note": "terminal surface, working Agent p2"
   },
   {
     "id": "agent-detail.terminal",
     "rn": "AgentDetailScreen",
-    "note": "blocked agent p1, terminal surface (PlainTerminal on web)"
+    "note": "terminal surface (PlainTerminal on web)"
   },
   {
     "id": "agent-detail.shell-terminal",
@@ -265,36 +305,6 @@
     "id": "rn.board",
     "rn": "app/board.tsx (BoardScreen)",
     "note": "RN-only screen, no Swift id"
-  },
-  {
-    "id": "agent-detail.chat-banners",
-    "rn": "AgentDetailScreen (ChatBanners)",
-    "note": "read failure line + locating wait"
-  },
-  {
-    "id": "shell.notification-banner",
-    "rn": "InAppBanner (NoticeBanner kind=inapp)",
-    "note": "blocked Agent with a captured question; no Swift shot exists for this id"
-  },
-  {
-    "id": "agent-detail.terminal-status-overlay",
-    "rn": "StatusOverlay",
-    "note": "Connecting state over an empty terminal canvas"
-  },
-  {
-    "id": "settings.notification-explainer",
-    "rn": "NotificationExplainerSheet",
-    "note": "open over Notifications settings"
-  },
-  {
-    "id": "agent-detail.shell-close-confirm",
-    "rn": "ShellTerminalScreen + confirm() Close Terminal",
-    "note": "dialog open over the demo shell"
-  },
-  {
-    "id": "agent-detail.close-confirm",
-    "rn": "agent-detail/AgentDetailScreen.tsx (terminal) + popover confirm",
-    "note": "Close Pane popover; RN has no Close Agent menu item yet"
   },
   {
     "id": "shell.home-new-menu",
@@ -315,5 +325,275 @@
     "id": "console.host-issue-rows",
     "rn": "app/index.tsx (HomeScreen)",
     "note": "demo plus a Host that never connects"
+  },
+  {
+    "id": "files.quick-look",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "tap a file: RN asks before downloading, the system Quick Look is native and not drawn"
+  },
+  {
+    "id": "files.share-sheet",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "row menu Share, then the download confirm; the system share sheet is native"
+  },
+  {
+    "id": "files.save-to-files",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "row menu Save to Files, then the download confirm; the document picker is native"
+  },
+  {
+    "id": "files.download-confirm",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "secret-looking name asks first (same dialog as the secret variant)"
+  },
+  {
+    "id": "files.download-confirm--secret",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "secret-looking name asks first"
+  },
+  {
+    "id": "files.upload-pickers",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "\"+\" menu: Upload File, Upload Photo, Refresh; the system pickers are native"
+  },
+  {
+    "id": "files.upload-collision",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "Keep Both / Replace dialog"
+  },
+  {
+    "id": "files.rename-alert",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "row menu Rename opens the rename sheet"
+  },
+  {
+    "id": "files.delete-confirm",
+    "rn": "app/files.tsx (FilesScreen)",
+    "note": "row menu Delete opens the confirm"
+  },
+  {
+    "id": "browser.open-port",
+    "rn": "app/ports (PortsScreen)",
+    "note": "Open Port sheet over the list"
+  },
+  {
+    "id": "browser.preview",
+    "rn": "app/ports/preview.tsx (PortPreviewScreen)",
+    "note": "dev server opened; web view is a stub on web"
+  },
+  {
+    "id": "browser.leave-confirm",
+    "rn": "app/ports/preview.tsx (PortPreviewScreen)",
+    "note": "external-link confirm over the preview"
+  },
+  {
+    "id": "agent-detail.chat",
+    "rn": "AgentDetailScreen",
+    "note": "chat surface, scripted conversation (atlasChat)"
+  },
+  {
+    "id": "agent-detail.chat-timeline",
+    "rn": "AgentDetailScreen",
+    "note": "chat surface"
+  },
+  {
+    "id": "agent-detail.chat-floating-controls",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.chat-background-strip",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.chat-background-sheet",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.chat-banners",
+    "rn": "AgentDetailScreen (chat/ChatBanners)",
+    "note": "read failure line + locating wait"
+  },
+  {
+    "id": "agent-detail.chat-command-suggestions",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.chat-tools-keyboard",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.subagent-transcript",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.select-text-sheet",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.header",
+    "rn": "AgentDetailScreen",
+    "note": "chat surface"
+  },
+  {
+    "id": "agent-detail.status-line",
+    "rn": "AgentDetailScreen",
+    "note": "chat surface"
+  },
+  {
+    "id": "agent-detail.agent-switcher",
+    "rn": "AgentDetailScreen",
+    "note": "chat surface"
+  },
+  {
+    "id": "agent-detail.composer",
+    "rn": "AgentDetailScreen",
+    "note": "chat surface"
+  },
+  {
+    "id": "agent-detail.composer-skill-suggestions",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.composer-more-menu",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.composer-add-menu",
+    "rn": "AgentDetailScreen",
+    "note": "+ menu pressed"
+  },
+  {
+    "id": "agent-detail.header-more-menu",
+    "rn": "AgentDetailScreen",
+    "note": "header ... menu pressed"
+  },
+  {
+    "id": "agent-detail.session-drawer",
+    "rn": "AgentDetailScreen",
+    "note": "Sessions drawer open"
+  },
+  {
+    "id": "agent-detail.session-drawer--agents",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.chat-blocked-card",
+    "rn": "AgentDetailScreen",
+    "note": "blocked Agent p1, Blocked card in the dock"
+  },
+  {
+    "id": "agent-detail.direct-input",
+    "rn": "AgentDetailScreen",
+    "note": "terminal surface"
+  },
+  {
+    "id": "agent-detail.direct-input-more-menu",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.terminal-toolbar",
+    "rn": "AgentDetailScreen",
+    "note": "terminal surface"
+  },
+  {
+    "id": "agent-detail.terminal-toolbar-dpad",
+    "rn": "AgentDetailScreen",
+    "note": "D-pad opened"
+  },
+  {
+    "id": "agent-detail.terminal-toolbar-more-menu",
+    "rn": "AgentDetailScreen",
+    "note": "toolbar More menu pressed"
+  },
+  {
+    "id": "agent-detail.tools-keyboard",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.control-keys",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.skills-pane",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.snippets-pane",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.terminal-appearance-pane",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.terminal-status-overlay",
+    "rn": "StatusOverlay",
+    "note": "Connecting state over an empty terminal canvas"
+  },
+  {
+    "id": "agent-detail.attach-links",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.close-confirm",
+    "rn": "AgentDetailScreen (terminal) + popover confirm",
+    "note": "Close Pane popover anchored to the composer \"...\"; RN has no Close Agent menu item yet"
+  },
+  {
+    "id": "agent-detail.open-terminal-chooser",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.skills-picker",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.snippets-manager",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.snippet-editor",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "agent-detail.shell-close-confirm",
+    "rn": "ShellTerminalScreen + confirm() Close Terminal",
+    "note": "popover anchored to the \"...\" capsule"
+  },
+  {
+    "id": "agent-detail.shell-keys-dock",
+    "rn": "AgentDetailScreen",
+    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "shell.notification-banner",
+    "rn": "InAppBanner (NoticeBanner kind=inapp)",
+    "note": "blocked Agent with a captured question; no Swift shot exists for this id"
+  },
+  {
+    "id": "settings.notification-explainer",
+    "rn": "NotificationExplainerSheet",
+    "note": "open over Notifications settings"
   }
 ]

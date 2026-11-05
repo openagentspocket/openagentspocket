@@ -34,7 +34,22 @@ export interface ChoiceOptions<K extends string> extends BaseOptions {
   actions: readonly ConfirmAction<K>[];
 }
 
+export interface PromptOptions {
+  title: string;
+  message?: string;
+  /** The text the field starts with. */
+  initial?: string;
+  placeholder?: string;
+  /** Default "OK". */
+  confirmLabel?: string;
+  /** Default "Cancel". */
+  cancelLabel?: string;
+  testID?: string;
+}
+
 export interface AlertRequest {
+  /** A one-line text field above the buttons (prompt). */
+  field?: { initial: string; placeholder?: string; testID?: string };
   title: string;
   message?: string;
   actions: readonly ConfirmAction[];
@@ -42,23 +57,48 @@ export interface AlertRequest {
   presentation: ConfirmPresentation;
   anchor?: 'center' | 'end';
   anchorKey?: string;
-  resolve: (key: string | null) => void;
+  resolve: (key: string | null, text?: string) => void;
 }
 
 export const alertQueue = createQueue<AlertRequest>();
 
 /** Answers the presented request: the chosen action's key, or null for cancel. */
-export function answerAlert(request: AlertRequest, key: string | null) {
+export function answerAlert(request: AlertRequest, key: string | null, text?: string) {
   alertQueue.remove(request);
-  request.resolve(key);
+  request.resolve(key, text);
 }
 
-function present(request: Omit<AlertRequest, 'resolve'>): Promise<string | null> {
+function presentWithText(
+  request: Omit<AlertRequest, 'resolve'>,
+): Promise<{ key: string | null; text?: string }> {
   if (!hasHost('alert')) {
     console.warn('confirm(): no <OverlayHost /> is mounted; answering cancel.');
-    return Promise.resolve(null);
+    return Promise.resolve({ key: null });
   }
-  return new Promise((resolve) => alertQueue.push({ ...request, resolve }));
+  return new Promise((resolve) =>
+    alertQueue.push({ ...request, resolve: (key, text) => resolve({ key, text }) }),
+  );
+}
+
+async function present(request: Omit<AlertRequest, 'resolve'>): Promise<string | null> {
+  return (await presentWithText(request)).key;
+}
+
+/** A centered alert with one text field: resolves the entered text, or null on cancel. */
+export async function prompt(options: PromptOptions): Promise<string | null> {
+  const { key, text } = await presentWithText({
+    title: options.title,
+    message: options.message,
+    field: {
+      initial: options.initial ?? '',
+      placeholder: options.placeholder,
+      testID: options.testID,
+    },
+    actions: [{ key: 'confirm', title: options.confirmLabel ?? 'OK' }],
+    cancelLabel: options.cancelLabel ?? 'Cancel',
+    presentation: 'alert',
+  });
+  return key === 'confirm' ? (text ?? '') : null;
 }
 
 /**
