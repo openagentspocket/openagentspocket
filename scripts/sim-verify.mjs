@@ -10,10 +10,12 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
+  closeSync,
   copyFileSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
+  openSync,
   readdirSync,
   readFileSync,
   rmSync,
@@ -102,14 +104,73 @@ function installed() {
   return simctl('get_app_container', udid, bundle).status === 0;
 }
 
-function build() {
-  log('building the Debug dev client (the native inputs changed)');
-  const result = spawnSync(
-    'npx',
-    ['expo', 'run:ios', '--device', udid, '--configuration', 'Debug', '--no-bundler'],
-    { cwd: mobileDir, stdio: 'inherit', env: { ...process.env, EXPO_PUBLIC_DEMO: '1' } },
+const BUILD_TIMEOUT_MS = 40 * 60 * 1000;
+
+/** A command with stdin closed (it can never prompt), output into `logPath`, and a hard timeout. */
+function runLogged(command, args, options, logPath, label) {
+  const out = openSync(logPath, 'w');
+  const result = spawnSync(command, args, {
+    ...options,
+    stdio: ['ignore', out, out],
+    timeout: BUILD_TIMEOUT_MS,
+    killSignal: 'SIGKILL',
+  });
+  closeSync(out);
+  if (result.error?.code === 'ETIMEDOUT') {
+    throw new Error(`${label} timed out after ${BUILD_TIMEOUT_MS / 60000} min (see ${logPath})`);
+  }
+  if (result.status !== 0) {
+    const tail = readFileSync(logPath, 'utf8').split('\n').slice(-15).join('\n');
+    throw new Error(`${label} failed (see ${logPath})\n${tail}`);
+  }
+}
+
+/**
+ * The Debug dev client: prebuild when ios/ is missing or the native inputs changed, then xcodebuild
+ * for the simulator and `simctl install`. `expo run:ios` is not used: it stays attached streaming
+ * logs after the install and never exits.
+ */
+function build(stale) {
+  const iosDir = join(mobileDir, 'ios');
+  log('building the Debug dev client (native inputs changed or none installed)');
+  if (!existsSync(iosDir) || stale) {
+    log('prebuild (ios/ is generated, never committed)');
+    runLogged(
+      'npx',
+      ['expo', 'prebuild', '--platform', 'ios', '--clean'],
+      { cwd: mobileDir, env: { ...process.env, CI: '1' } },
+      join(outDir, 'prebuild.log'),
+      'expo prebuild',
+    );
+  }
+  const workspace = readdirSync(iosDir).find((name) => name.endsWith('.xcworkspace'));
+  if (!workspace) throw new Error(`no .xcworkspace in ${iosDir}`);
+  const scheme = workspace.replace(/\.xcworkspace$/, '');
+  const derived = join(outDir, 'derived');
+  log(`xcodebuild ${scheme} (log: ${join(outDir, 'xcodebuild.log')})`);
+  runLogged(
+    'xcodebuild',
+    [
+      '-workspace',
+      join(iosDir, workspace),
+      '-scheme',
+      scheme,
+      '-configuration',
+      'Debug',
+      '-destination',
+      `id=${udid}`,
+      '-derivedDataPath',
+      derived,
+      'build',
+    ],
+    { cwd: iosDir, env: process.env },
+    join(outDir, 'xcodebuild.log'),
+    'xcodebuild',
   );
-  if (result.status !== 0) throw new Error('the native build failed (see the output above)');
+  const app = join(derived, 'Build/Products/Debug-iphonesimulator', `${scheme}.app`);
+  if (!existsSync(app)) throw new Error(`the build produced no ${app}`);
+  const install = simctl('install', udid, app);
+  if (install.status !== 0) throw new Error(`simctl install failed: ${install.stderr}`);
   writeFileSync(stampFile, nativeFingerprint());
 }
 
@@ -182,7 +243,7 @@ try {
   if (simctl('bootstatus', udid, '-b').status !== 0)
     throw new Error(`simulator ${udid} did not boot`);
   const stale = !existsSync(stampFile) || readFileSync(stampFile, 'utf8') !== nativeFingerprint();
-  if (options.build || !installed() || (stale && !options['no-build'])) build();
+  if (options.build || !installed() || (stale && !options['no-build'])) build(stale);
   else log('reusing the installed build');
   simctl(
     'status_bar',
