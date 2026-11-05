@@ -413,8 +413,8 @@
   },
   {
     "id": "agent-detail.chat-banners",
-    "rn": "AgentDetailScreen",
-    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+    "rn": "AgentDetailScreen (chat/ChatBanners)",
+    "note": "read failure line + locating wait"
   },
   {
     "id": "agent-detail.chat-command-suggestions",
@@ -543,8 +543,8 @@
   },
   {
     "id": "agent-detail.terminal-status-overlay",
-    "rn": "AgentDetailScreen",
-    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+    "rn": "StatusOverlay",
+    "note": "Connecting state over an empty terminal canvas"
   },
   {
     "id": "agent-detail.attach-links",
@@ -553,8 +553,8 @@
   },
   {
     "id": "agent-detail.close-confirm",
-    "rn": "AgentDetailScreen",
-    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+    "rn": "AgentDetailScreen (terminal) + popover confirm",
+    "note": "Close Pane popover anchored to the composer \"...\"; RN has no Close Agent menu item yet"
   },
   {
     "id": "agent-detail.open-terminal-chooser",
@@ -578,12 +578,22 @@
   },
   {
     "id": "agent-detail.shell-close-confirm",
-    "rn": "AgentDetailScreen",
-    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+    "rn": "ShellTerminalScreen + confirm() Close Terminal",
+    "note": "popover anchored to the \"...\" capsule"
   },
   {
     "id": "agent-detail.shell-keys-dock",
     "rn": "AgentDetailScreen",
     "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+  },
+  {
+    "id": "shell.notification-banner",
+    "rn": "InAppBanner (NoticeBanner kind=inapp)",
+    "note": "blocked Agent with a captured question; no Swift shot exists for this id"
+  },
+  {
+    "id": "settings.notification-explainer",
+    "rn": "NotificationExplainerSheet",
+    "note": "open over Notifications settings"
   }
 ]

@@ -29,6 +29,7 @@ import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
 import { agentDetailEntries } from './familyAgentDetail';
 import { filesEntries } from './familyFiles';
 import { newAgentEntries } from './familyNewAgent';
+import { notificationEntries } from './familyNotifications';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
@@ -54,6 +55,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   ...agentDetailEntries,
   ...filesEntries,
   ...newAgentEntries,
+  ...notificationEntries,
   'shell.home': { render: () => <Index /> },
   'shell.home-new-menu': { script: { press: ['fab'] }, render: () => <Index /> },
   'console.row-context-menu': { script: { longPress: 'inbox-p2' }, render: () => <Index /> },

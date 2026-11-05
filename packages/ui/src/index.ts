@@ -70,6 +70,7 @@ export {
   type MenuGroup,
 } from './overlay/ActionMenu';
 export { AlertHost } from './overlay/AlertHost';
+export { type AnchorRect, measureAnchor, useAnchor } from './overlay/anchors';
 export {
   type ChoiceOptions,
   type ConfirmAction,

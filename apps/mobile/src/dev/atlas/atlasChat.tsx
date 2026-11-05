@@ -132,19 +132,44 @@ const state: ConversationState = {
   version: 1,
 };
 
-const store = {
-  subscribe: () => () => undefined,
-  getState: () => state,
-  show: () => undefined,
-  hide: () => undefined,
-  loadOlder: () => undefined,
-  loadOutput: () => undefined,
-  retry: () => undefined,
-} as unknown as ConversationStore;
+/** Searching for the transcript with a failed read: the read-failure line over the centered wait. */
+const lookingState: ConversationState = {
+  ...state,
+  snapshot: {
+    ...initialSnapshot(),
+    phase: { type: 'locating' },
+    readFailure: { kind: 'timedOut' },
+  },
+};
 
-const registry = { get: () => store } as unknown as ConversationRegistry;
+const storeFor = (conversation: ConversationState) =>
+  ({
+    subscribe: () => () => undefined,
+    getState: () => conversation,
+    show: () => undefined,
+    hide: () => undefined,
+    loadOlder: () => undefined,
+    loadOutput: () => undefined,
+    retry: () => undefined,
+  }) as unknown as ConversationStore;
+
+const registryFor = (conversation: ConversationState) =>
+  ({ get: () => storeFor(conversation) }) as unknown as ConversationRegistry;
+const registry = registryFor(state);
+const lookingRegistry = registryFor(lookingState);
 
 /** Gives the atlas a scripted conversation, so Chat renders as it does mid-session. */
-export function AtlasChat({ children }: { children: ReactNode }) {
-  return <ConversationsProvider registry={registry}>{children}</ConversationsProvider>;
+export function AtlasChat({
+  children,
+  looking = false,
+}: {
+  children: ReactNode;
+  /** The conversation is still being located and the last read failed (chat-banners). */
+  looking?: boolean;
+}) {
+  return (
+    <ConversationsProvider registry={looking ? lookingRegistry : registry}>
+      {children}
+    </ConversationsProvider>
+  );
 }

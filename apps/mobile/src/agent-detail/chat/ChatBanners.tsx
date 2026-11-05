@@ -9,18 +9,25 @@ import {
   reasonOffersRetry,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { type IconName, NoticeBanner } from '@openagentspocket/ui';
+import { type IconName, makeStyles, NoticeBanner } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
 
 const ICONS: Record<ReturnType<typeof bannerIcon>, IconName> = {
-  conversation: 'chat',
+  conversation: 'note',
   notFound: 'search',
   alertBubble: 'note',
   wifi: 'wifi',
   wifiOff: 'wifiSlash',
   warning: 'warning',
 };
+
+const useStyles = makeStyles((th) => ({
+  stack: { gap: th.spacing.xs, paddingTop: th.spacing.xs, paddingHorizontal: th.spacing.md },
+}));
+
+/** Calm washes: connecting is info, everything else a warning; never danger (nothing is lost). */
+const toneOf = (line: ChatBannerLine) => (line.kind === 'connecting' ? 'info' : 'warning');
 
 interface Props {
   state: ConversationState;
@@ -31,6 +38,7 @@ interface Props {
 
 /** The lines over the conversation: connecting, not connected, couldn't read; each with its way out. */
 export function ChatBanners({ state, hostStatus, onRetry, onShowTerminal }: Props) {
+  const styles = useStyles();
   const { snapshot } = state;
   const phase = snapshot.phase;
   const lines = bannerLines({
@@ -49,24 +57,27 @@ export function ChatBanners({ state, hostStatus, onRetry, onShowTerminal }: Prop
     },
   });
   if (lines.length === 0) return null;
+  // Not connected has no button, as in Swift (it reconnects on its own).
   const action = (line: ChatBannerLine) => {
-    const retry =
+    if (
       line.kind === 'readFailure' ||
-      line.kind === 'notConnected' ||
-      (line.kind === 'unavailable' && reasonOffersRetry(line.reason));
-    return retry
-      ? { label: t('Retry'), onPress: onRetry }
-      : { label: t('Show Agent Terminal'), onPress: onShowTerminal };
+      (line.kind === 'unavailable' && reasonOffersRetry(line.reason))
+    ) {
+      return { label: t('Retry'), onPress: onRetry };
+    }
+    if (line.kind === 'notConnected' || line.kind === 'connecting') return undefined;
+    return { label: t('Show Agent Terminal'), onPress: onShowTerminal };
   };
   return (
-    <View testID="chat-banners">
+    <View style={styles.stack} testID="chat-banners">
       {lines.map((line) => (
         <NoticeBanner
           key={bannerId(line)}
-          tone="warning"
+          tone={toneOf(line)}
           icon={ICONS[bannerIcon(line)]}
           message={renderMessage(bannerText(line))}
           action={action(line)}
+          testID={`chat-banner-${bannerId(line)}`}
         />
       ))}
     </View>
