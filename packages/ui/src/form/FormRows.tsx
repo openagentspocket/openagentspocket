@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { type AccessibilityActionEvent, Switch, View } from 'react-native';
-import { ActionMenu } from '../overlay/ActionMenu';
+import { useRef, useState } from 'react';
+import { type AccessibilityActionEvent, Switch, View, type ViewInstance } from 'react-native';
+import { ActionMenu, type MenuAnchor } from '../overlay/ActionMenu';
 import { Button } from '../primitives/Button';
-import { Icon } from '../primitives/Icon';
+import { Icon, type IconName } from '../primitives/Icon';
 import { ListRow, type ListRowProps } from '../primitives/ListRow';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -68,6 +68,11 @@ export function ToggleRow({
 export interface PickerOption<V extends string> {
   value: V;
   label: string;
+  /** Starts a titled group in the menu ("Recent"). */
+  section?: string;
+  /** A second line under the label (a path). */
+  subtitle?: string;
+  icon?: IconName;
 }
 
 interface PickerRowProps<V extends string> {
@@ -76,6 +81,12 @@ interface PickerRowProps<V extends string> {
   value: V;
   onChange: (value: V) => void;
   disabled?: boolean;
+  /** Ink of the shown value; accent by default, secondary for "None reported". */
+  valueTone?: ListRowProps['valueTone'];
+  /** Drop the title header of the menu (Swift's popover has none). */
+  menuHeader?: boolean;
+  /** Width of the menu; narrower for a short list. */
+  menuWidth?: number;
   testID?: string;
 }
 
@@ -86,34 +97,62 @@ export function PickerRow<V extends string>({
   value,
   onChange,
   disabled,
+  valueTone = 'accent',
+  menuHeader = true,
+  menuWidth,
   testID,
 }: PickerRowProps<V>) {
   const [open, setOpen] = useState(false);
+  const [anchor, setAnchor] = useState<MenuAnchor | undefined>();
+  const ref = useRef<ViewInstance>(null);
   const current = options.find((option) => option.value === value);
+  // The menu opens next to its row (as a popover does); unmeasurable falls back to the bottom.
+  const show = () => {
+    let shown = false;
+    const go = (next?: MenuAnchor) => {
+      if (shown) return;
+      shown = true;
+      setAnchor(next);
+      setOpen(true);
+    };
+    ref.current?.measureInWindow?.((x, y, width, height) => go({ x, y, width, height }));
+    setTimeout(() => go(), 80);
+  };
   return (
-    <>
+    <View ref={ref} collapsable={false}>
       <ListRow
         title={title}
         value={current?.label}
-        valueTone="accent"
-        trailing={<Icon name="chevronUpDown" size={13} color="accent" />}
-        onPress={() => setOpen(true)}
+        valueTone={valueTone}
+        trailing={
+          <Icon
+            name="chevronUpDown"
+            size={13}
+            color={valueTone === 'accent' ? 'accent' : 'textTertiary'}
+          />
+        }
+        onPress={show}
         disabled={disabled}
         testID={testID}
       />
       <ActionMenu
-        title={title}
+        title={menuHeader ? title : undefined}
+        width={menuWidth}
         visible={open}
+        anchor={anchor}
         onClose={() => setOpen(false)}
         items={options.map((option) => ({
           key: option.value,
           title: option.label,
           checked: option.value === value,
+          section: option.section,
+          subtitle: option.subtitle,
+          icon: option.icon,
           onPress: () => onChange(option.value),
         }))}
         testID={testID ? `${testID}-menu` : undefined}
       />
-    </>
+    </View>
   );
 }
 

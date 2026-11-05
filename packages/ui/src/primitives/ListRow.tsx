@@ -40,6 +40,10 @@ export interface ListRowProps {
   titleMono?: boolean;
   /** Sets the subtitle in monospaced caption (dates, sizes, paths). */
   subtitleMono?: boolean;
+  /** Lines the title may take before it truncates (1 by default). */
+  titleLines?: number;
+  /** Ink of the title (secondary for a placeholder row). */
+  titleTone?: TextTone;
   /** Sets the title in semibold (Host names). */
   titleSemibold?: boolean;
   /** The subtitle's size: footnote by default, subheadline for a larger address line. */
@@ -85,6 +89,8 @@ export function ListRow({
   subtitleMono = false,
   titleMono = false,
   titleSemibold = false,
+  titleTone = 'primary',
+  titleLines = 1,
   subtitleVariant = 'footnote',
   subtitleLines = 2,
   leading,
@@ -144,7 +150,12 @@ export function ListRow({
         leading
       )}
       <View style={styles.text}>
-        <Text numberOfLines={1} monospaced={titleMono} semibold={titleSemibold}>
+        <Text
+          numberOfLines={titleLines}
+          monospaced={titleMono}
+          semibold={titleSemibold}
+          tone={titleTone}
+        >
           {title}
         </Text>
         {subtitle ? (

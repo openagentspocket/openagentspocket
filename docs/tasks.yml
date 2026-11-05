@@ -1073,6 +1073,18 @@
   title: "assemble New Agent and New Terminal form sheets from the cloned components and compare whole screens (briefs/new-agent.md, components in docs/ux/components/README.md)"
   deps: [UX1-design-system, UX1-home, UX3-nav-sheets, UX3-agent-rows]
   files: [apps/mobile/src/features/new-agent/**, apps/mobile/src/app/new-agent.tsx]
+- id: UX1-new-agent-ipad-sheet
+  phase: 9
+  kind: js
+  title: "present New Agent, New Terminal and the directory browser as a centered ~540 wide form sheet on iPad and wide layouts, and add the Agents list and sidebar-footer New Agent / New Terminal entries Swift shows there (shell.wide-iphone-footer); capture against the iPad atlas"
+  deps: [UX1-new-agent, UX1-wide]
+  files:
+    [
+      apps/mobile/src/app/_layout.tsx,
+      apps/mobile/src/features/new-agent/**,
+      apps/mobile/src/navigation/**,
+      packages/ui/src/overlay/Sheet.tsx,
+    ]
 - id: UX1-notifications
   phase: 9
   kind: js

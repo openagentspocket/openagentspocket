@@ -1,0 +1,22 @@
+# Smoke: Home + opens the New Terminal form, Open is disabled until a Host is picked.
+# Run with `maestro test e2e/new-terminal.yaml` (one booted simulator/emulator).
+appId: com.openagentspocket.app
+---
+- launchApp:
+    clearState: true
+- openLink: openagentspocket:///settings
+- scrollUntilVisible:
+    element:
+      id: settings.general.demoMode
+- tapOn:
+    id: settings.general.demoMode
+- openLink: openagentspocket:///
+- tapOn:
+    id: fab
+- tapOn: "New Terminal"
+- assertVisible: "New Terminal"
+- assertVisible: "Cancel"
+- assertVisible: "Open"
+- tapOn:
+    id: new-terminal-cancel
+- assertVisible: "NEEDS YOU.*"

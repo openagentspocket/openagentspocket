@@ -1,9 +1,9 @@
-import { Pressable, View } from 'react-native';
+import { ActivityIndicator, Pressable, View } from 'react-native';
 import { impact } from '../haptics';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
-import { makeStyles } from '../theme/theme';
+import { makeStyles, useTheme } from '../theme/theme';
 
 export interface SheetBarItem {
   label: string;
@@ -11,6 +11,8 @@ export interface SheetBarItem {
   /** A glyph instead of the label (the label is then the accessibility name). */
   icon?: IconName;
   disabled?: boolean;
+  /** A spinner in place of the label (a form that is launching); the action is inert meanwhile. */
+  loading?: boolean;
   testID?: string;
 }
 
@@ -51,22 +53,26 @@ interface SheetBarProps {
   testID?: string;
 }
 
-function BarAction({ action, testID }: { action: SheetBarItem; testID: string }) {
+/** One glass-capsule action of a sheet bar (also used by `Sheet`'s trailing confirm). */
+export function BarAction({ action, testID }: { action: SheetBarItem; testID: string }) {
   const styles = useStyles();
+  const theme = useTheme();
   return (
     <Pressable
-      style={[styles.action, action.disabled && styles.disabled]}
+      style={[styles.action, (action.disabled || action.loading) && styles.disabled]}
       accessibilityRole="button"
       accessibilityLabel={action.label}
-      accessibilityState={{ disabled: action.disabled }}
-      disabled={action.disabled}
+      accessibilityState={{ disabled: action.disabled || action.loading, busy: action.loading }}
+      disabled={action.disabled || action.loading}
       onPress={() => {
         impact('light');
         action.onPress();
       }}
       testID={action.testID ?? testID}
     >
-      {action.icon ? (
+      {action.loading ? (
+        <ActivityIndicator color={theme.colors.accent} />
+      ) : action.icon ? (
         <Icon name={action.icon} size={20} color="accent" />
       ) : (
         <Text variant="body" tone="accent">

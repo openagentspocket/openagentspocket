@@ -13,6 +13,8 @@ import { ConsoleStore } from '@/console/store';
 import { systemClock } from '@/console/systemClock';
 import type { DemoHostProbe } from '@/features/hosts/HostProbe';
 import { createDemoRuntime, policyFor, setHostsRuntime } from '@/features/hosts/hostsRuntime';
+import { createDemoServices } from '@/features/new-agent/demo';
+import { NewAgentServicesProvider } from '@/features/new-agent/services';
 import { freezeAtlasClock } from './atlasClock';
 import { offlineHostsStore } from './offlineHosts';
 
@@ -28,6 +30,8 @@ export interface AtlasData {
   pluginVersion?: string;
   /** `unavailable`: this device's key cannot be loaded, so the form offers Replace Device Key. */
   deviceKey?: 'unavailable';
+  /** `hostless`: several Hosts and none picked, as Swift opens New Agent / New Terminal. */
+  newAgent?: 'hostless';
 }
 
 export const DEMO_HOSTS: readonly Host[] = [
@@ -76,6 +80,11 @@ export function AtlasFrame({ data, children }: { data: AtlasData; children: Reac
     if (data.presentation) created.listPrefs.setPresentation(data.presentation);
     return created;
   }, [data.console, data.presentation]);
+  const hostless = useMemo(() => {
+    if (data.newAgent !== 'hostless') return undefined;
+    const demo = createDemoServices();
+    return { ...demo, hosts: [...demo.hosts, { id: 'lab', name: 'Lab' }] };
+  }, [data.newAgent]);
   useEffect(() => {
     let live = true;
     const runtime = createDemoRuntime(
@@ -113,5 +122,10 @@ export function AtlasFrame({ data, children }: { data: AtlasData; children: Reac
     };
   }, [data.hosts, data.trusted, data.pluginVersion, data.deviceKey]);
   if (!ready) return null;
-  return <ConsoleStoreProvider store={store}>{children}</ConsoleStoreProvider>;
+  const body = <ConsoleStoreProvider store={store}>{children}</ConsoleStoreProvider>;
+  return hostless ? (
+    <NewAgentServicesProvider services={hostless}>{body}</NewAgentServicesProvider>
+  ) : (
+    body
+  );
 }

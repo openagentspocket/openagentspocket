@@ -7,10 +7,11 @@ import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
  * Host and workspace menus link here; the shell's tab is remembered per workspace (or directory).
  */
 export default function TerminalRoute() {
-  const { host, cwd, workspace } = useLocalSearchParams<{
+  const { host, cwd, workspace, label } = useLocalSearchParams<{
     host?: string;
     cwd?: string;
     workspace?: string;
+    label?: string;
   }>();
   const router = useRouter();
   return (
@@ -21,6 +22,7 @@ export default function TerminalRoute() {
         hostId={host ?? ''}
         workspaceId={workspace}
         cwd={cwd}
+        label={label}
         onClose={() => router.back()}
       />
     </>

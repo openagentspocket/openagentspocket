@@ -42,7 +42,22 @@
   {
     "id": "console.start-agent",
     "rn": "app/new-agent.tsx (NewAgentScreen)",
+    "note": "demo services, one Host"
+  },
+  {
+    "id": "console.workspace-picker",
+    "rn": "app/new-agent.tsx (NewAgentScreen)",
+    "note": "Workspace menu open: Recent, Browse Directory, New Workspace"
+  },
+  {
+    "id": "console.new-terminal",
+    "rn": "app/new-terminal.tsx (NewTerminalScreen)",
     "note": "demo services"
+  },
+  {
+    "id": "console.directory-browser",
+    "rn": "DirectoryBrowserSheet",
+    "note": "sheet open on the demo home"
   },
   {
     "id": "hosts.list",

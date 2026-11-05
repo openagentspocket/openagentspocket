@@ -9,7 +9,9 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { BarAction } from '../components/SheetBar';
 import { Button } from '../primitives/Button';
+import { GlassCapsule } from '../primitives/GlassCapsule';
 import { ScreenBackground } from '../primitives/ScreenBackground';
 import { SurfaceFillProvider } from '../primitives/surfaceFill';
 import { Text } from '../primitives/Text';
@@ -57,6 +59,8 @@ const useStyles = makeStyles((t) => ({
     paddingRight: t.spacing.xs,
     minHeight: t.metrics.minTapSize,
   },
+  // A bar's capsules sit on the content gutter, not hugging the edge.
+  barHeader: { paddingRight: t.metrics.screenInset },
   title: { flex: 1 },
   barTitle: { flex: 1, textAlign: 'center' },
   barSlot: { minWidth: t.metrics.minTapSize * 1.5, flexDirection: 'row' },
@@ -72,6 +76,7 @@ export interface SheetBarAction {
   onPress: () => void;
   disabled?: boolean;
   loading?: boolean;
+  testID?: string;
 }
 
 interface SheetProps {
@@ -171,7 +176,7 @@ export function Sheet({
           ) : null}
           {headerless ? null : bar ? (
             <>
-              <View style={styles.header} testID={`${testID}-bar`}>
+              <View style={[styles.header, styles.barHeader]} testID={`${testID}-bar`}>
                 <View style={styles.barSlot}>
                   {leading ? <BarButton action={leading} testID={`${testID}-leading`} /> : null}
                 </View>
@@ -189,7 +194,9 @@ export function Sheet({
                 )}
                 <View style={[styles.barSlot, styles.barEnd]}>
                   {trailing ? (
-                    <BarButton action={trailing} emphasized testID={`${testID}-trailing`} />
+                    <GlassCapsule>
+                      <BarAction action={trailing} testID={`${testID}-trailing`} />
+                    </GlassCapsule>
                   ) : null}
                 </View>
               </View>
@@ -242,24 +249,16 @@ export function Sheet({
   );
 }
 
-function BarButton({
-  action,
-  emphasized = false,
-  testID,
-}: {
-  action: SheetBarAction;
-  emphasized?: boolean;
-  testID: string;
-}) {
+function BarButton({ action, testID }: { action: SheetBarAction; testID: string }) {
   return (
     <Button
-      kind={emphasized ? 'primary' : 'capsule'}
+      kind="capsule"
       size="small"
       title={action.label}
       onPress={action.onPress}
       disabled={action.disabled}
       loading={action.loading}
-      testID={testID}
+      testID={action.testID ?? testID}
     />
   );
 }

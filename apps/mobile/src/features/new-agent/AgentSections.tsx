@@ -28,7 +28,13 @@ export function AgentSection({ store, state }: SectionProps) {
   const detect = () => void store.discoverAgents();
   let body: ReactNode;
   if (discovery.kind === 'idle') {
-    body = <Text tone="secondary">{t('Select a Host to detect installed Agents.')}</Text>;
+    body = (
+      <ListRow
+        title={t('Select a Host to detect installed Agents.')}
+        titleTone="secondary"
+        titleLines={2}
+      />
+    );
   } else if (discovery.kind === 'loading') {
     body = <SkeletonRows accessibilityLabel={t('Detecting installed Agents…')} />;
   } else if (discovery.kind === 'failed') {
@@ -56,79 +62,85 @@ export function AgentSection({ store, state }: SectionProps) {
       </>
     );
   } else {
-    body = (
-      <>
-        {availableKinds.map((kind) => {
-          const info = infoFor(kind);
-          return (
-            <ListRow
-              key={kind}
-              title={info ? `${info.displayName} (${info.executable ?? info.kind})` : kind}
-              leading={<ProgramMark program={kind} size={24} />}
-              trailing={kind === selectedKind ? <Icon name="check" color="accent" /> : undefined}
-              onPress={() => store.edit({ selectedKind: kind })}
-              accessibilityHint={kind === selectedKind ? t('Selected') : undefined}
-              testID={`new-agent-kind-${kind}`}
-            />
-          );
-        })}
-        <Button kind="text" icon="refresh" title={t('Detect Again')} onPress={detect} />
-      </>
-    );
+    body = [
+      ...availableKinds.map((kind) => {
+        const info = infoFor(kind);
+        return (
+          <ListRow
+            key={kind}
+            title={info ? `${info.displayName} (${info.executable ?? info.kind})` : kind}
+            leading={<ProgramMark program={kind} size={24} />}
+            trailing={kind === selectedKind ? <Icon name="check" color="accent" /> : undefined}
+            onPress={() => store.edit({ selectedKind: kind })}
+            accessibilityHint={kind === selectedKind ? t('Selected') : undefined}
+            testID={`new-agent-kind-${kind}`}
+          />
+        );
+      }),
+      <Button key="detect" kind="text" icon="refresh" title={t('Detect Again')} onPress={detect} />,
+    ];
   }
   return (
     <Section
       title={t('Agent')}
       footer={t("Agents installed and launchable from this Host's PATH.")}
-      grouped={discovery.kind === 'loaded' && availableKinds.length > 0}
+      grouped={
+        discovery.kind === 'idle' || (discovery.kind === 'loaded' && availableKinds.length > 0)
+      }
     >
       {body}
     </Section>
   );
 }
 
-/** The name, tab label and arguments fields with their rule feedback. */
+/** The name, tab label and arguments fields: one grouped row each, a footer that teaches. */
 export function DetailsSections({ store, state }: SectionProps) {
   const nameError = store.nameError;
   const argumentError = store.argumentError;
   return (
     <>
-      <Section title={t('Agent Name')} grouped={false}>
+      <Section
+        title={t('Agent Name')}
+        footer={
+          store.defaultName
+            ? t('Empty names the agent %@.', store.defaultName)
+            : t('Empty names the agent after its kind.')
+        }
+      >
         <TextField
+          inline
           label={t('Agent name (optional)')}
           value={state.name}
           onChangeText={(name) => store.edit({ name })}
           error={nameError ? newAgentText(nameError) : undefined}
-          hint={
-            store.defaultName
-              ? t('Empty names the agent %@.', store.defaultName)
-              : t('Empty names the agent after its kind.')
-          }
           autoCapitalize="none"
           autoCorrect={false}
           testID="new-agent-name"
         />
       </Section>
-      <Section title={t('Tab Name')} grouped={false}>
+      <Section title={t('Tab Name')} footer={t('Empty lets herdr or a title plugin name the tab.')}>
         <TextField
+          inline
           label={t('Tab name (optional)')}
           value={state.tabLabel}
           onChangeText={(tabLabel) => store.edit({ tabLabel })}
-          hint={t('Empty lets herdr or a title plugin name the tab.')}
           autoCorrect={false}
           testID="new-agent-tab"
         />
       </Section>
-      <Section title={t('Arguments')} grouped={false}>
+      <Section
+        title={t('Arguments')}
+        footer={t(
+          'Quotes and backslash escapes are supported.\ne.g. %@',
+          '--model "gpt 5" --continue',
+        )}
+      >
         <TextField
+          inline
           label={t('Arguments (optional)')}
           value={state.arguments}
           onChangeText={(text) => store.edit({ arguments: text })}
           error={argumentError ? newAgentText(argumentError) : undefined}
-          hint={t(
-            'Quotes and backslash escapes are supported.\ne.g. %@',
-            '--model "gpt 5" --continue',
-          )}
           autoCapitalize="none"
           autoCorrect={false}
           smartInsertDelete={false}

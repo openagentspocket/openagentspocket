@@ -55,7 +55,14 @@ function AppStack() {
         name="settings"
         options={{ ...bare, title: t('Settings'), presentation: 'modal' }}
       />
-      <Stack.Screen name="new-agent" options={{ title: t('New Agent'), presentation: 'modal' }} />
+      <Stack.Screen
+        name="new-agent"
+        options={{ ...bare, title: t('New Agent'), presentation: 'modal' }}
+      />
+      <Stack.Screen
+        name="new-terminal"
+        options={{ ...bare, title: t('New Terminal'), presentation: 'modal' }}
+      />
       <Stack.Screen name="worktree" options={{ title: t('Worktree'), presentation: 'modal' }} />
       <Stack.Screen name="__gallery" options={bare} />
       <Stack.Screen name="__atlas" options={bare} />
