@@ -1,6 +1,12 @@
 import { SettingsStore } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { OverlayHost, TerminalThemeProvider, ThemeProvider, useTheme } from '@openagentspocket/ui';
+import {
+  OverlayHost,
+  TerminalThemeProvider,
+  ThemeProvider,
+  useTheme,
+  withAlpha,
+} from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import type { ReactNode } from 'react';
@@ -64,6 +70,8 @@ function AppStack() {
           title: t('Add Host'),
           presentation: 'transparentModal',
           animation: 'none',
+          // The stack's default content color is the opaque canvas: without this the route is a white wall.
+          contentStyle: { backgroundColor: withAlpha(theme.colors.canvas, 0) },
         }}
       />
       <Stack.Screen name="ports" options={{ ...bare, ...sheet, title: t('Ports') }} />

@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import {
+  Animated,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -10,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { BarAction } from '../components/SheetBar';
+import { quick, useReducedMotion } from '../motion';
 import { Button } from '../primitives/Button';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { ScreenBackground } from '../primitives/ScreenBackground';
@@ -147,11 +149,30 @@ export function Sheet({
       ? { maxHeight: height * share, minHeight: height * metrics.sheetMinShare }
       : { height: grown };
   const bar = leading !== undefined || trailing !== undefined;
+  // The Modal never animates itself (its slide would carry the scrim up with the panel): the scrim
+  // fades and only the panel rises, on one progress value, for every sheet.
+  const reduce = useReducedMotion();
+  const progress = useRef(new Animated.Value(0)).current;
+  const [mounted, setMounted] = useState(visible);
+  useEffect(() => {
+    if (visible && !mounted) {
+      progress.setValue(0);
+      setMounted(true);
+      return;
+    }
+    if (!mounted) return;
+    const animation = quick(progress, visible ? 1 : 0, reduce, visible ? 'overlay' : 'settle');
+    animation.start(({ finished }) => {
+      if (!visible && finished) setMounted(false);
+    });
+    return () => animation.stop();
+  }, [visible, mounted, reduce, progress]);
+  const rise = progress.interpolate({ inputRange: [0, 1], outputRange: [height, 0] });
   return (
     <Modal
-      visible={visible}
+      visible={mounted}
       transparent
-      animationType="slide"
+      animationType="none"
       statusBarTranslucent
       onRequestClose={onClose}
       onDismiss={onDismissed}
@@ -162,15 +183,23 @@ export function Sheet({
         style={[styles.root, { paddingTop: insets.top }]}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <Pressable
-          style={styles.backdrop}
-          onPress={onClose}
-          accessibilityElementsHidden
-          importantForAccessibility="no"
-          testID={`${testID}-backdrop`}
-        />
-        <View
-          style={[styles.panel, styles.full, size, styles.fits, { paddingBottom: insets.bottom }]}
+        <Animated.View style={[styles.backdrop, { opacity: progress }]}>
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={onClose}
+            accessibilityElementsHidden
+            importantForAccessibility="no"
+            testID={`${testID}-backdrop`}
+          />
+        </Animated.View>
+        <Animated.View
+          style={[
+            styles.panel,
+            styles.full,
+            size,
+            styles.fits,
+            { paddingBottom: insets.bottom, transform: [{ translateY: rise }] },
+          ]}
           accessibilityViewIsModal
           testID={testID}
         >
@@ -247,7 +276,7 @@ export function Sheet({
               <SurfaceFillProvider value="surfaceOverlay">{footer}</SurfaceFillProvider>
             </View>
           ) : null}
-        </View>
+        </Animated.View>
       </KeyboardAvoidingView>
       {/* iOS cannot present the app's alert over this modal; its own host takes over while open. */}
       <View style={StyleSheet.absoluteFill} pointerEvents="box-none" testID={`${testID}-host`}>

@@ -44,4 +44,10 @@ describe('modal routes', () => {
     // Only add-host stays outside sheetOptions: a transparent route that draws its own ChoiceSheet.
     expect(layout.match(/presentation\s*:\s*'\w+'/g)).toEqual(["presentation: 'transparentModal'"]);
   });
+
+  it('add-host is transparent in the content, not only in the presentation', () => {
+    expect(read('_layout.tsx')).toMatch(
+      /name="add-host"[^>]*contentStyle: \{ backgroundColor: withAlpha\(theme\.colors\.canvas, 0\) \}/s,
+    );
+  });
 });
