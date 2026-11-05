@@ -29,10 +29,13 @@ UX phase G: UX1-agents-list approved (round 4) and merged; the weekly usage limi
 reset 2026-11-05). Lighter waves since (Enzo, 2026-11-05): 2-3 standalone agents (feedback by SendMessage, no fresh
 fix agents), Enzo reviews the compare sheets himself, max 2 iterations per screen, one atlas file per family
 (apps/mobile/src/dev/atlas/family*.tsx), one-page brief docs/agents/ux-worker.md, haiku for mechanical steps.
-**Running:** ux-detail (UX1-agent-detail, worktree wf_7d8339f1-ab3-3), ux-files (UX1-files-changes-ports,
-wf_7d8339f1-ab3-4), ux-newagent (UX1-new-agent, wf_7d8339f1-ab3-5). UX1-notifications (wf_308cc08d-920-18) waits
-for Enzo's visual review. Next: Enzo reviews design/atlas/compare/index.html, one fix pass, merge; then tint audit,
-wide, iOS atlas + Maestro.
+Enzo reviewed the compare sheets himself (2026-11-05: "está todo perfecto, me encanta"): UX1-agent-detail,
+UX1-files-changes-ports and UX1-new-agent merged (ui 276, mobile 312, full test green).
+**Running (standalone agents, reused with SendMessage):** ux-detail ports the approved UX1-notifications branch
+(wf_308cc08d-920-18, built on the Nov 2 main) onto the assembled agent detail; ux-newagent builds the missing console
+screens (UX1-console, worktree ux-console); ux-files builds the missing settings pages (UX1-settings-pages, worktree
+ux-settings). Then: chat for Pi/OMP/Grok/OpenCode (P2.10), background work strip (P2.11), git data for the status
+line, iPad (UX1-wide), tint audit, iOS simulator pass + Maestro, watch/Siri last.
 
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
