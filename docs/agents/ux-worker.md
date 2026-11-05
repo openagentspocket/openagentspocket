@@ -51,3 +51,10 @@ runs it once per milestone), screens <=150 lines, files <=400, behavior and test
 `docs/progress/<task>.md` honest (done/partial and what is left), `pnpm progress`, commit on your branch (no
 attribution trailers, never touch main). Report: commits, the ids you captured with the sheet paths, what is
 left. The owner reviews the sheets himself; keep the report short.
+
+## Never wait blind
+
+Every long command (build, sim:verify, test run) runs with a hard timeout (`timeout 2400 <cmd>` or the script's own
+limit) and writes a log you check. Never end a turn "waiting for a notification" on a command that has no timeout:
+if it hangs, nobody wakes you. If a command passes its expected time, look at its log and process tree, kill it if
+it is stuck, and report what happened.
