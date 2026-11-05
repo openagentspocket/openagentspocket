@@ -31,7 +31,9 @@ export interface HomeScreenProps {
   onAddHost?: () => void;
   onSetupGuide?: () => void;
   /** Opens the full Agents list. */
-  onSeeAll?: () => void;
+  onOpenAgents?: () => void;
+  /** Opens the Sessions (terminals) list. */
+  onOpenSessions?: () => void;
   onOpenSettings?: () => void;
   onNewAgent?: () => void;
   onNewTerminal?: () => void;
@@ -39,7 +41,7 @@ export interface HomeScreenProps {
 
 /** The launcher Home: title capsule, Status Inbox, Sessions strip, Host cards and the + button. */
 export function HomeScreen(props: HomeScreenProps) {
-  const { onOpenAgent, onOpenHost, onAddHost, onSetupGuide, onSeeAll } = props;
+  const { onOpenAgent, onOpenHost, onAddHost, onSetupGuide } = props;
   const styles = useStyles();
   const { hosts, rows } = useConsoleState();
   const store = useConsoleStore();
@@ -66,7 +68,12 @@ export function HomeScreen(props: HomeScreenProps) {
     <AppScreen bare scroll={false} testID={empty ? 'home-empty' : 'home'}>
       {empty ? (
         <>
-          <HomeTitle usage={usage} onOpenSettings={props.onOpenSettings} />
+          <HomeTitle
+            usage={usage}
+            onOpenSettings={props.onOpenSettings}
+            onOpenAgents={props.onOpenAgents}
+            onOpenSessions={props.onOpenSessions}
+          />
           <NoHosts onAddHost={onAddHost} onSetupGuide={onSetupGuide} />
         </>
       ) : (
@@ -75,7 +82,12 @@ export function HomeScreen(props: HomeScreenProps) {
           testID="home-scroll"
           contentContainerStyle={[styles.content, { paddingBottom: reserved }]}
         >
-          <HomeTitle usage={usage} onOpenSettings={props.onOpenSettings} />
+          <HomeTitle
+            usage={usage}
+            onOpenSettings={props.onOpenSettings}
+            onOpenAgents={props.onOpenAgents}
+            onOpenSessions={props.onOpenSessions}
+          />
           <HostIssues />
           <View style={styles.body}>
             <HomeInbox
@@ -86,10 +98,9 @@ export function HomeScreen(props: HomeScreenProps) {
               onOpen={onOpenAgent ? (item) => onOpenAgent(item.row) : undefined}
               onPin={actions.pin}
               onClose={actions.close}
-              onSeeAll={onSeeAll}
             />
           </View>
-          <HomeSessions rows={rows} onOpen={(row) => onOpenAgent?.(row)} onSeeAll={onSeeAll} />
+          <HomeSessions rows={rows} onOpen={(row) => onOpenAgent?.(row)} />
           <View style={styles.body}>
             <HomeHosts
               hosts={hosts}

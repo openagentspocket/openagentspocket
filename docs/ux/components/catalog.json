@@ -248,7 +248,8 @@
       ],
       "screens": ["shell.home"],
       "variants": [
-        "default|header 'Sessions 5' + See all; horizontal strip of tiles (icon, mono name) with the title and Host captions below each tile"
+        "default|header 'Sessions 5' + See all; horizontal strip of tiles (icon, mono name) with the title and Host captions below each tile",
+        "snapshots|RN addition: each tile shows the last lines of its pane (PaneSnapshot) in the terminal theme; no See all"
       ],
       "interactions": "horizontal scroll with snap; tap opens the session; See all opens the Agents list",
       "rnToday": ["none (HomeScreen.tsx has no strip)"],
@@ -326,7 +327,8 @@
       "swift": ["Console/ConsoleView+Home.swift:1-188", "Console/ConsoleTabBarBridge.swift:1-169"],
       "screens": ["shell.home", "console.agents-list-flat", "hosts.list", "settings.root"],
       "variants": [
-        "default|34pt bold large title left, glass capsule on the right with the actions"
+        "default|34pt bold large title left, glass capsule on the right with the actions",
+        "leading|RN addition: no title, a capsule of All Agents and Sessions at the leading edge"
       ],
       "interactions": "title collapses into a small centered title on scroll; capsule buttons have haptics",
       "rnToday": ["apps/mobile/src/navigation/ (header options only, no capsule)"],

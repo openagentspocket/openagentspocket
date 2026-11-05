@@ -68,7 +68,6 @@ interface HomeInboxProps {
   onOpen?: (item: StatusInboxItem) => void;
   onPin: (item: StatusInboxItem) => void;
   onClose: (item: StatusInboxItem) => void;
-  onSeeAll?: () => void;
 }
 
 /** Needs you / Working / Done, the skeleton or quiet card, and the idle line with See all. */
@@ -80,7 +79,6 @@ export function HomeInbox({
   onOpen,
   onPin,
   onClose,
-  onSeeAll,
 }: HomeInboxProps) {
   const styles = useStyles();
   if (content.isQuiet) {
@@ -122,17 +120,6 @@ export function HomeInbox({
               <Text variant="footnote" tone="secondary" testID="home-idle">
                 {content.idleCount > 0 ? t('%lld idle', content.idleCount) : ''}
               </Text>
-              {onSeeAll ? (
-                <Text
-                  variant="footnote"
-                  semibold
-                  tone="accent"
-                  onPress={onSeeAll}
-                  testID="home-see-all"
-                >
-                  {t('See all')}
-                </Text>
-              ) : null}
             </View>
           ) : null}
         </View>

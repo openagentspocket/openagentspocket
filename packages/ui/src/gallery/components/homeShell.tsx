@@ -3,6 +3,7 @@ import { Fab } from '../../components/Fab';
 import { HomeHostCard } from '../../components/HomeHostCard';
 import { InboxCard } from '../../components/InboxCard';
 import { LargeTitleBar } from '../../components/LargeTitleBar';
+import { PaneSnapshot } from '../../components/PaneSnapshot';
 import { SessionsStrip, type StripSession } from '../../components/SessionsStrip';
 import { UsageRing } from '../../components/UsageRing';
 import { metrics } from '../../theme/metrics';
@@ -66,6 +67,21 @@ export const homeShellEntries: readonly CatalogEntry[] = [
             seeAllLabel="See all"
             onOpen={noop}
             onSeeAll={noop}
+          />
+        ),
+      },
+      {
+        id: 'snapshots',
+        render: () => (
+          <SessionsStrip
+            sessions={sessions}
+            title="Sessions"
+            onOpen={noop}
+            renderPreview={(session) => (
+              <PaneSnapshot
+                lines={['$ pnpm test', ` ✓ ${session.title}`, ' Tests  48 passed', '$']}
+              />
+            )}
           />
         ),
       },
@@ -136,6 +152,21 @@ export const homeShellEntries: readonly CatalogEntry[] = [
         render: () => (
           <LargeTitleBar
             title="Agentico"
+            actions={[
+              { node: <UsageRing percent={48} />, label: 'Usage', onPress: noop },
+              { icon: 'settings', label: 'Settings', onPress: noop },
+            ]}
+          />
+        ),
+      },
+      {
+        id: 'leading',
+        render: () => (
+          <LargeTitleBar
+            leadingActions={[
+              { icon: 'list', label: 'All Agents', onPress: noop },
+              { icon: 'terminal', label: 'Sessions', onPress: noop },
+            ]}
             actions={[
               { node: <UsageRing percent={48} />, label: 'Usage', onPress: noop },
               { icon: 'settings', label: 'Settings', onPress: noop },

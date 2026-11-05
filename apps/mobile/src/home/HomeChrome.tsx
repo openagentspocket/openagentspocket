@@ -12,8 +12,6 @@ import {
 import { View } from 'react-native';
 import type { useUsageRing } from './UsageRingSlot';
 
-const PRODUCT_NAME = 'OpenAgentsPocket';
-
 const useStyles = makeStyles((th) => ({
   strip: {
     height: FAB_SIZE + 2 * th.spacing.xs,
@@ -25,17 +23,24 @@ const useStyles = makeStyles((th) => ({
   empty: { flex: 1 },
 }));
 
-/** The large title with the Usage ring and the Settings gear in one glass capsule. */
+/** The Home header: All Agents and Sessions in a capsule at the leading edge, the Usage ring and the Settings gear in one at the trailing edge. */
 export function HomeTitle({
   usage,
   onOpenSettings,
+  onOpenAgents,
+  onOpenSessions,
 }: {
   usage: ReturnType<typeof useUsageRing>;
   onOpenSettings?: () => void;
+  onOpenAgents?: () => void;
+  onOpenSessions?: () => void;
 }) {
   return (
     <LargeTitleBar
-      title={PRODUCT_NAME}
+      leadingActions={[
+        { label: t('All Agents'), icon: 'list', onPress: () => onOpenAgents?.() },
+        { label: t('Sessions'), icon: 'terminal', onPress: () => onOpenSessions?.() },
+      ]}
       actions={[
         { label: t('Usage'), node: usage.ring, onPress: usage.open },
         { label: t('Settings'), icon: 'settings', onPress: () => onOpenSettings?.() },

@@ -1,6 +1,14 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 import { renderThemed } from '../test-utils';
-import { Fab, HomeHostCard, InboxCard, LargeTitleBar, SessionsStrip, UsageRing } from './homeShell';
+import {
+  Fab,
+  HomeHostCard,
+  InboxCard,
+  LargeTitleBar,
+  PaneSnapshot,
+  SessionsStrip,
+  UsageRing,
+} from './homeShell';
 
 const presentation = {
   program: 'claude',
@@ -134,5 +142,33 @@ describe('LargeTitleBar', () => {
     expect(screen.getByRole('header', { name: 'Agentico' })).toBeTruthy();
     await fireEvent.press(screen.getByRole('button', { name: 'Settings' }));
     expect(onSettings).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('Home header and snapshots', () => {
+  it('LargeTitleBar draws a leading capsule and no title when none is given', async () => {
+    const onPress = jest.fn();
+    await renderThemed(
+      <LargeTitleBar
+        leadingActions={[{ icon: 'list', label: 'All Agents', onPress }]}
+        actions={[{ icon: 'settings', label: 'Settings', onPress: jest.fn() }]}
+      />,
+    );
+    await fireEvent.press(screen.getByLabelText('All Agents'));
+    expect(onPress).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('header')).toBeNull();
+  });
+
+  it('SessionsStrip shows a preview in the tile and no See all without one', async () => {
+    await renderThemed(
+      <SessionsStrip
+        sessions={[{ id: 'a', kind: 'agent', name: 'claude', title: 'T', host: 'H' }]}
+        title="Sessions"
+        onOpen={jest.fn()}
+        renderPreview={() => <PaneSnapshot lines={['$ ls', 'done']} />}
+      />,
+    );
+    expect(screen.getByText('done', { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.queryByText('See all')).toBeNull();
   });
 });

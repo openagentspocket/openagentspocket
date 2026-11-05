@@ -43,11 +43,11 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [AgentRowMenu](#agentrowmenu) | UX3-agent-rows | `console.row-context-menu`<br>`console.presentation-menu`<br>`console.host-filter-menu` | default: [ref](ref/AgentRowMenu.png) · [light](ref/AgentRowMenu.light.png) | packages/ui/src/overlay/ActionMenu.tsx (no lifted preview, see UX1-menu-preview) | `Console/AgentActionMenuContent.swift:206-304`<br>`Console/ConsoleView+AgentRows.swift:1-311` |
 | [HostIssueRow](#hostissuerow) | UX3-agent-rows | `console.host-issue-rows`<br>`console.host-connection-sheet`<br>`console.agents-list-flat` | default: [ref](ref/HostIssueRow.png) · [light](ref/HostIssueRow.light.png) | none | `Console/ConsoleHostIssueRow.swift:7-294` |
 | [InboxCard](#inboxcard) | UX3-home-shell | `shell.home`<br>`console.empty-states-agents` | default: [ref](ref/InboxCard.png) · [light](ref/InboxCard.light.png)<br>working: [ref](ref/InboxCard.working.png) · [light](ref/InboxCard.working.light.png) | `apps/mobile/src/home/InboxCard.tsx` | `Console/StatusInbox/StatusInboxView.swift:144-235`<br>`Console/StatusInbox/StatusInboxCardPresentation.swift:1-109`<br>`Console/Home/ConsoleHomeView.swift:135-188` |
-| [SessionsStrip](#sessionsstrip) | UX3-home-shell | `shell.home` | default: [ref](ref/SessionsStrip.png) · [light](ref/SessionsStrip.light.png) | none (HomeScreen.tsx has no strip) | `Console/Home/ConsoleHomeView.swift:89-141`<br>`Console/Home/ConsoleHomeView.swift:189-260` |
+| [SessionsStrip](#sessionsstrip) | UX3-home-shell | `shell.home` | default: [ref](ref/SessionsStrip.png) · [light](ref/SessionsStrip.light.png)<br>snapshots: none | none (HomeScreen.tsx has no strip) | `Console/Home/ConsoleHomeView.swift:89-141`<br>`Console/Home/ConsoleHomeView.swift:189-260` |
 | [HomeHostCard](#homehostcard) | UX3-home-shell | `console.empty-states-agents`<br>`shell.home` | default: [ref](ref/HomeHostCard.png) | `apps/mobile/src/home/HostCard.tsx` | `Console/Home/ConsoleHomeView.swift:261-378`<br>`Console/ConsoleView+Hosts.swift:1-190` |
 | [UsageRing](#usagering) | UX3-home-shell | `usage.quick-sheet`<br>`shell.home` | default: [ref](ref/UsageRing.png) · [light](ref/UsageRing.light.png) | `apps/mobile/src/home/UsageRing.tsx` | `Console/Home/ConsoleHomeView.swift:380-448`<br>`Console/ConsoleView+Usage.swift:1-133`<br>`Console/AgentUsageStrip.swift:15-91` |
 | [Fab](#fab) | UX3-home-shell | `shell.home`<br>`console.empty-states-agents` | default: [ref](ref/Fab.png) · [light](ref/Fab.light.png) | none | `Console/Home/ConsoleHomeView.swift:340-378` |
-| [LargeTitleBar](#largetitlebar) | UX3-home-shell | `shell.home`<br>`console.agents-list-flat`<br>`hosts.list`<br>`settings.root` | default: [ref](ref/LargeTitleBar.png) · [light](ref/LargeTitleBar.light.png) | apps/mobile/src/navigation/ (header options only, no capsule) | `Console/ConsoleView+Home.swift:1-188`<br>`Console/ConsoleTabBarBridge.swift:1-169` |
+| [LargeTitleBar](#largetitlebar) | UX3-home-shell | `shell.home`<br>`console.agents-list-flat`<br>`hosts.list`<br>`settings.root` | default: [ref](ref/LargeTitleBar.png) · [light](ref/LargeTitleBar.light.png)<br>leading: none | apps/mobile/src/navigation/ (header options only, no capsule) | `Console/ConsoleView+Home.swift:1-188`<br>`Console/ConsoleTabBarBridge.swift:1-169` |
 | [ListToolbar](#listtoolbar) | UX3-nav-sheets | `console.agents-list-flat`<br>`console.agents-list-by-status`<br>`console.terminals-list`<br>`console.presentation-menu` | default: [ref](ref/ListToolbar.png) · [light](ref/ListToolbar.light.png) | `apps/mobile/src/features/agents/AgentsToolbar.tsx` | `Console/TerminalListPresentation.swift:1-120`<br>`Console/ConsoleSidebarChrome.swift:42-134`<br>`Console/ConsoleView+AgentList.swift:1-327` |
 | [SidebarColumn](#sidebarcolumn) | UX3-nav-sheets | `ipad/console.agents-list-flat`<br>`ipad/console.terminals-list`<br>`ipad/shell.hosts-settings-sheets` | default: [ref](ref/SidebarColumn.png) | none (UX1-wide) | `Console/ConsoleView+Sidebar.swift:1-370`<br>`Console/ConsoleSidebarChrome.swift:1-220`<br>`Console/SidebarSearchDrawer.swift:1-163`<br>`Console/ConsoleView+SplitView.swift:1-395` |
 | [EmptyDetail](#emptydetail) | UX3-nav-sheets | `ipad/console.agents-list-flat`<br>`console.no-hosts-empty`<br>`console.empty-states-agents` | default: [ref](ref/EmptyDetail.png) | packages/ui/src/primitives/EmptyState.tsx (no tinted capsule action) | `Console/ConsoleEmptyDetailPresentation.swift:1-114`<br>`DesignSystem/Components/EmptyState.swift:1-183` |
@@ -253,6 +253,7 @@ Interactions: horizontal scroll with snap; tap opens the session; See all opens 
 Variants (gallery variant id = the id before the colon):
 
 - `default`: header 'Sessions 5' + See all; horizontal strip of tiles (icon, mono name) with the title and Host captions below each tile · crop [ref](ref/SessionsStrip.png) · [light](ref/SessionsStrip.light.png)
+- `snapshots`: RN addition: each tile shows the last lines of its pane (PaneSnapshot) in the terminal theme; no See all · crop none
 
 Acceptance (the judge ticks each on the side-by-side):
 
@@ -326,6 +327,7 @@ Interactions: title collapses into a small centered title on scroll; capsule but
 Variants (gallery variant id = the id before the colon):
 
 - `default`: 34pt bold large title left, glass capsule on the right with the actions · crop [ref](ref/LargeTitleBar.png) · [light](ref/LargeTitleBar.light.png)
+- `leading`: RN addition: no title, a capsule of All Agents and Sessions at the leading edge · crop none
 
 Acceptance (the judge ticks each on the side-by-side):
 

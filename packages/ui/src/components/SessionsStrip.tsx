@@ -1,8 +1,10 @@
+import type { ReactNode } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { SectionHeader } from '../primitives/SectionHeader';
 import { Text } from '../primitives/Text';
+import { useTerminalColors } from '../terminal/TerminalThemeContext';
 import { withAlpha } from '../theme/color';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
@@ -41,11 +43,14 @@ const useStyles = makeStyles((t) => ({
 
 interface SessionsStripProps {
   sessions: readonly StripSession[];
-  /** "Sessions" and "See all", already localized. */
+  /** "Sessions", already localized. */
   title: string;
-  seeAllLabel: string;
+  /** With both, the header carries a "See all" action. */
+  seeAllLabel?: string;
+  onSeeAll?: () => void;
   onOpen: (id: string) => void;
-  onSeeAll: () => void;
+  /** What fills a tile in place of the program name (a PaneSnapshot); the name stays when it is absent. */
+  renderPreview?: (session: StripSession) => ReactNode;
 }
 
 /** Swift's Home Sessions strip: tiles that bleed to the edge and snap, captions below each. */
@@ -55,20 +60,26 @@ export function SessionsStrip({
   seeAllLabel,
   onOpen,
   onSeeAll,
+  renderPreview,
 }: SessionsStripProps) {
   const styles = useStyles();
   const theme = useTheme();
+  const terminal = useTerminalColors();
   return (
     <View style={styles.root} testID="sessions-strip">
       <View style={styles.header}>
         <SectionHeader
           title={title}
           count={sessions.length}
-          action={{
-            title: seeAllLabel,
-            onPress: onSeeAll,
-            accessibilityLabel: `${seeAllLabel} ${title}`,
-          }}
+          action={
+            seeAllLabel && onSeeAll
+              ? {
+                  title: seeAllLabel,
+                  onPress: onSeeAll,
+                  accessibilityLabel: `${seeAllLabel} ${title}`,
+                }
+              : undefined
+          }
         />
       </View>
       <ScrollView
@@ -87,20 +98,24 @@ export function SessionsStrip({
             accessibilityLabel={[s.title, s.name, s.host].join(', ')}
             testID={`session-${s.id}`}
           >
-            <View style={styles.tile}>
-              <Icon
-                name={s.kind === 'agent' ? 'sparkles' : 'terminal'}
-                size={14}
-                tint={withAlpha(theme.colors.terminalForeground, 0.7)}
-              />
-              <Text
-                variant="footnote"
-                monospaced
-                numberOfLines={1}
-                style={{ color: theme.colors.terminalForeground }}
-              >
-                {s.name}
-              </Text>
+            <View style={[styles.tile, { backgroundColor: terminal.background }]}>
+              {renderPreview?.(s) ?? (
+                <>
+                  <Icon
+                    name={s.kind === 'agent' ? 'sparkles' : 'terminal'}
+                    size={14}
+                    tint={withAlpha(theme.colors.terminalForeground, 0.7)}
+                  />
+                  <Text
+                    variant="footnote"
+                    monospaced
+                    numberOfLines={1}
+                    style={{ color: theme.colors.terminalForeground }}
+                  >
+                    {s.name}
+                  </Text>
+                </>
+              )}
             </View>
             <View style={styles.caption}>
               {s.kind === 'agent' ? (
