@@ -1,6 +1,6 @@
 import type { ConsoleRow } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, Sheet, TextField } from '@openagentspocket/ui';
+import { Sheet, Text, TextField } from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
 
 interface RenameSheetProps {
@@ -24,9 +24,12 @@ export function RenameSheet({ row, onClose, onSave }: RenameSheetProps) {
       onClose={onClose}
       title={t('Rename Agent')}
       detent="medium"
-      footer={
-        <Button title={t('Save')} testID="rename-save" onPress={() => row && onSave(row, name)} />
-      }
+      leading={{ label: t('Cancel'), onPress: onClose, testID: 'rename-cancel' }}
+      trailing={{
+        label: t('Save'),
+        onPress: () => row && onSave(row, name),
+        testID: 'rename-save',
+      }}
     >
       <TextField
         label={t('Name')}
@@ -37,6 +40,9 @@ export function RenameSheet({ row, onClose, onSave }: RenameSheetProps) {
         onSubmitEditing={() => row && onSave(row, name)}
         testID="rename-field"
       />
+      <Text variant="footnote" tone="secondary">
+        {t('Leave empty to fall back to the detected kind (%@).', row?.agent.agent ?? '')}
+      </Text>
     </Sheet>
   );
 }

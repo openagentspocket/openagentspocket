@@ -1022,6 +1022,17 @@
   title: "assemble Agents list presentations, Board and quick detail from the cloned components and compare whole screens (briefs/agents-board.md, components in docs/ux/components/README.md)"
   deps: [UX1-design-system, UX3-agent-rows, UX3-home-shell, UX3-nav-sheets]
   files: [apps/mobile/src/features/agents/**, apps/mobile/src/board/**]
+- id: UX1-console
+  phase: 9
+  kind: js
+  title: "console screens the Swift atlas has and RN lacked: search mode, toolbar menus, rename sheet, terminals list, worktree details, host connection sheet (briefs/agents-board.md)"
+  deps: [UX1-agents-list]
+  files:
+    [
+      apps/mobile/src/features/agents/**,
+      apps/mobile/src/features/terminals/TerminalsListScreen.tsx,
+      apps/mobile/src/features/hosts/HostConnectionSheet.tsx,
+    ]
 - id: UX1-agent-detail
   phase: 9
   kind: js

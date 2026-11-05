@@ -27,6 +27,7 @@ import type { AtlasData } from './AtlasFrame';
 import { noop, titled } from './atlasHelpers';
 import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
 import { agentDetailEntries } from './familyAgentDetail';
+import { consoleEntries } from './familyConsole';
 import { filesEntries } from './familyFiles';
 import { newAgentEntries } from './familyNewAgent';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
@@ -52,6 +53,7 @@ const settingsPage = (page: string): ReactNode => (
  */
 export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   ...agentDetailEntries,
+  ...consoleEntries,
   ...filesEntries,
   ...newAgentEntries,
   'shell.home': { render: () => <Index /> },
