@@ -1,8 +1,10 @@
+import { isFinishedStatus } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { BackgroundWorkList, BackgroundWorkStrip, makeStyles, Sheet } from '@openagentspocket/ui';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useBackgroundWork } from '@/conversations/useBackgroundWork';
+import { useDetailUi } from '../detailUi';
 import { detailItem, stripItem, summaryLine } from './workViewModel';
 
 const useStyles = makeStyles((th) => ({
@@ -23,7 +25,8 @@ interface Props {
  */
 export function AgentBackgroundWork({ hostId, paneId, condensed = false }: Props) {
   const styles = useStyles();
-  const { presentation } = useBackgroundWork(hostId, paneId);
+  const { presentation, subagentIdOf } = useBackgroundWork(hostId, paneId);
+  const { openSubagent } = useDetailUi();
   /** undefined: closed. null: open at no row. A string: open with that Workflow expanded. */
   const [open, setOpen] = useState<string | null | undefined>(undefined);
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
@@ -32,8 +35,22 @@ export function AgentBackgroundWork({ hostId, paneId, condensed = false }: Props
   useEffect(() => {
     if (empty) setOpen(undefined);
   }, [empty]);
-  const unfinished = useMemo(() => presentation.unfinished.map(detailItem), [presentation]);
-  const finished = useMemo(() => presentation.finished.map(detailItem), [presentation]);
+  const withOpen = (row: (typeof presentation.rows)[number]) => {
+    const item = detailItem(row);
+    const running = !isFinishedStatus(row.status);
+    const agentId = row.kind === 'subagent' && !running ? subagentIdOf(row.id) : null;
+    if (agentId === null) return item;
+    return {
+      ...item,
+      openLabel: t('Open Subagent Transcript'),
+      onOpen: () => {
+        setOpen(undefined);
+        openSubagent(agentId);
+      },
+    };
+  };
+  const unfinished = presentation.unfinished.map(withOpen);
+  const finished = presentation.finished.map(withOpen);
   if (empty) return null;
   const labels = {
     more: (count: number) => t('+%lld more', count),
@@ -59,6 +76,7 @@ export function AgentBackgroundWork({ hostId, paneId, condensed = false }: Props
         visible={open !== undefined}
         onClose={() => setOpen(undefined)}
         title={t('Background Work')}
+        leading={{ label: t('Done'), onPress: () => setOpen(undefined), testID: 'work-done' }}
         detent="large"
         testID="background-work-sheet"
       >

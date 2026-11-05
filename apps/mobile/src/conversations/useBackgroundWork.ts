@@ -7,7 +7,7 @@ import {
   presentBackgroundWork,
 } from '@openagentspocket/core';
 import { getLocaleTag } from '@openagentspocket/i18n';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useConsoleState } from '@/console/hooks';
 import { useConversation } from './useConversation';
 
@@ -16,6 +16,8 @@ export interface BackgroundWorkView {
   presentation: BackgroundWorkPresentation;
   /** A live read shows work running: the conversation keeps its active pace. */
   holdsPace: boolean;
+  /** The id a Subagent's transcript opens by, from the call that launched it; null when unknown. */
+  subagentIdOf: (workId: string) => string | null;
 }
 
 /**
@@ -51,5 +53,13 @@ export function useBackgroundWork(hostId: string, paneId: string): BackgroundWor
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, [ticks]);
-  return { work, presentation, holdsPace: holdsActivePace(work) };
+  const entries = snapshot.transcript.entries;
+  const subagentIdOf = useCallback(
+    (workId: string) => {
+      const entry = entries.find((candidate) => candidate.id === workId);
+      return entry?.content.type === 'tool' ? entry.content.value.subagentAgentID : null;
+    },
+    [entries],
+  );
+  return { work, presentation, holdsPace: holdsActivePace(work), subagentIdOf };
 }

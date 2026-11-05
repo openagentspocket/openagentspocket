@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 import { useConsoleState } from '@/console/hooks';
 import { useConversation } from '@/conversations/useConversation';
+import { useDetailUi } from '../detailUi';
 import { ChatBanners } from './ChatBanners';
 import { ChatRowView } from './ChatRowView';
 import { useChatRows } from './useChatRows';
@@ -43,6 +44,7 @@ export function ChatTimeline({
 }: Props) {
   const styles = useStyles();
   const conversation = useConversation(hostId, paneId);
+  const { openSubagent } = useDetailUi();
   const hostStatus = useConsoleState().hosts.find((host) => host.id === hostId)?.status;
   const { rows, toggle } = useChatRows(conversation.state, activity);
   const list = useRef<FlatList<ChatRow>>(null);
@@ -98,6 +100,7 @@ export function ChatTimeline({
             row={item}
             onToggle={toggle}
             onLoadOlder={() => conversation.loadOlder(false)}
+            onOpenSubagent={openSubagent}
             now={Date.now()}
           />
         )}

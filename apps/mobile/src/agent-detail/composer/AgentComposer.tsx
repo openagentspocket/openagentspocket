@@ -21,6 +21,7 @@ import { useState, useSyncExternalStore } from 'react';
 import { Pressable, View } from 'react-native';
 import { renderMessage } from '@/usage/usageText';
 import { agentBarLabels } from '../agentBarLabels';
+import { useDetailUi } from '../detailUi';
 import type { Surface } from '../surface';
 import type { AgentComposer } from './composerContext';
 
@@ -72,6 +73,7 @@ export function AgentComposerBar({
   onToggleSurface,
 }: Props) {
   const { store, snapshot, interrupt } = composer;
+  const { setComposing } = useDetailUi();
   const policy = surface === 'chat' ? chatPolicy : terminalPolicy;
   useSyncExternalStore(store.stop.subscribe, () => store.stop.phase);
   const held = useSyncExternalStore(store.stop.subscribe, () => store.stop.isHeldAfterSend);
@@ -147,6 +149,7 @@ export function AgentComposerBar({
         }}
         expanded={surface === 'terminal' ? true : undefined}
         moreAnchorKey={COMPOSER_MORE_ANCHOR}
+        onFocusChange={setComposing}
         moreMenu={[
           {
             key: 'paste',

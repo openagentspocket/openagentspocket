@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { renderText } from '../../errors/text';
 import type { BackgroundWorkUsage, ChatBackgroundWorkItem } from '../model/types';
 import type { ChatWorkflowAgent, ChatWorkflowProgress } from '../model/workflow-progress';
-import { backgroundWorkDuration, presentBackgroundWork } from './presentation';
+import { presentBackgroundWork } from './presentation';
 import type { BackgroundWorkRow, ChatBackgroundWork } from './work';
 
 const NOW = Date.parse('2026-10-06T15:20:00Z');
@@ -115,7 +115,7 @@ describe('background work presentation', () => {
     expect(renderText(done?.usage ?? '')).toBe('41.2K tokens · 14 tool uses');
     expect(presentation.ticks).toBe(true);
     expect(renderText(subagent?.accessibilityLabel ?? '')).toBe(
-      'Find old steps, Explore subagent, running, 2m 18s',
+      'Find old steps, Explore subagent, running, 2 minutes, 18 seconds',
     );
     expect(workflow?.agents.map((a) => a.label)).toEqual(['audit:setup', 'audit:index', '']);
     expect(workflow?.agents.map((a) => a.status)).toEqual(['completed', 'completed', 'running']);
@@ -260,15 +260,5 @@ describe('background work presentation', () => {
     expect(five.stripRows.map((r) => r.id)).toEqual(['work 1', 'work 2', 'work 3']);
     expect(five.overflow).toBe(2);
     expect(present([1, 2, 3].map((i) => row(`work ${i}`))).overflow).toBe(0);
-  });
-
-  it.each([
-    [0, '0s'],
-    [38.9, '38s'],
-    [138, '2m 18s'],
-    [3900, '1h 5m'],
-    [-5, '0s'],
-  ])('reads %s seconds as %s', (seconds, text) => {
-    expect(backgroundWorkDuration(seconds)).toBe(text);
   });
 });

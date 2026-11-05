@@ -33,6 +33,9 @@ export interface BackgroundWorkDetailItem {
   /** A Workflow's agents; the row opens to them. */
   agents?: readonly BackgroundWorkAgentItem[];
   accessibilityLabel?: string;
+  /** Opens what the work did (a Subagent's own transcript), read-only. */
+  onOpen?: () => void;
+  openLabel?: string;
 }
 
 export interface BackgroundWorkListLabels {
@@ -132,6 +135,18 @@ function DetailRow({
           <Text variant="caption" tone="secondary" tabularNums>
             {item.usage}
           </Text>
+        ) : null}
+        {item.onOpen ? (
+          <Pressable
+            onPress={item.onOpen}
+            accessibilityRole="button"
+            accessibilityLabel={`${item.openLabel ?? ''}, ${item.title}`}
+            testID={`work-open-${item.id}`}
+          >
+            <Text variant="subheadline" tone="accent">
+              {item.openLabel}
+            </Text>
+          </Pressable>
         ) : null}
       </View>
       {expandable ? (

@@ -1,4 +1,5 @@
 {
+  "%lld seconds": "{0, plural, one {# segundo} other {# segundos}}",
   "A finished turn's steps fold behind one line above its answer; a turn stays open while it runs or while its background work does.": "Los pasos de un turno terminado se pliegan en una línea sobre su respuesta; un turno queda abierto mientras corre o mientras su trabajo en segundo plano sigue.",
   "Add another way to reach this Host, such as its LAN address at home and an overlay network or Jump Host elsewhere.": "Agregá otra forma de llegar a este Host, como su dirección de LAN en casa y una red overlay o un Jump Host en otro lado.",
   "Agent view": "Vista del Agent",
@@ -12,9 +13,9 @@
   "Drag to reorder": "Arrastrar para reordenar",
   "More Options": "Más opciones",
   "New Agent Here": "Nuevo Agent acá",
-  "Open Chat": "Abrir chat",
   "On": "Activado",
   "Open Changes": "Abrir Cambios",
+  "Open Chat": "Abrir chat",
   "Search": "Buscar",
   "Show scripted sample data instead of connecting to your Hosts.": "Mostrar datos de ejemplo en lugar de conectarse a tus Hosts.",
   "Switch Agent": "Cambiar de Agent",

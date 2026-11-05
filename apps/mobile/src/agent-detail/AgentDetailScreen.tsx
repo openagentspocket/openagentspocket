@@ -7,7 +7,6 @@ import {
 import { t } from '@openagentspocket/i18n';
 import {
   type ActionMenuItem,
-  EdgeFade,
   EmptyState,
   makeStyles,
   Screen,
@@ -23,11 +22,11 @@ import { AgentSessionDrawer } from './AgentSessionDrawer';
 import { AgentSwitcher } from './AgentSwitcher';
 import { agentBarLabels } from './agentBarLabels';
 import { ChatAboveComposer } from './ChatAboveComposer';
-import { ChatTimeline } from './chat/ChatTimeline';
 import { AgentComposerBar } from './composer/AgentComposer';
 import { useAgentComposer } from './composer/composerContext';
+import { DetailSlot } from './DetailSlot';
+import { DetailUiProvider } from './detailUi';
 import { type Surface, useSurface } from './surface';
-import { TerminalSurface } from './terminal/TerminalSurface';
 import { useFocusDone } from './useFocusDone';
 
 const useStyles = makeStyles((th) => ({
@@ -78,69 +77,66 @@ export function AgentDetailScreen({
   const status = statusDot(row.agent.agent_status);
   const toggle = () => setSurface(surface === 'chat' ? 'terminal' : 'chat');
   return (
-    <Screen scroll={false} bare keyboardAvoiding edges={['top', 'bottom']} testID="agent-detail">
-      <View style={styles.fill} testID={`slot-${surface}`}>
-        {surface === 'chat' ? (
-          <ChatTimeline
+    <DetailUiProvider hostId={hostId} paneId={paneId}>
+      <Screen scroll={false} bare keyboardAvoiding edges={['top', 'bottom']} testID="agent-detail">
+        <View style={styles.fill} testID={`slot-${surface}`}>
+          <DetailSlot
             hostId={hostId}
             paneId={paneId}
+            surface={surface}
             activity={activityOf(row)}
-            topInset={headerHeight}
-            bottomInset={0}
+            headerHeight={headerHeight}
             onShowTerminal={() => setSurface('terminal')}
           />
-        ) : (
-          <View style={[styles.fill, { paddingTop: headerHeight }]}>
-            <TerminalSurface hostId={hostId} paneId={paneId} />
+          <View
+            style={styles.header}
+            pointerEvents="box-none"
+            onLayout={(event: LayoutChangeEvent) =>
+              setHeaderHeight(event.nativeEvent.layout.height)
+            }
+          >
+            <AgentHeader
+              row={row}
+              surface={surface}
+              onSurface={setSurface}
+              onSidebar={() => setDrawer(true)}
+              menu={menu}
+              showTitle={surface === 'terminal'}
+            />
           </View>
-        )}
-        {surface === 'chat' && headerHeight > 0 ? <EdgeFade height={headerHeight + 24} /> : null}
-        <View
-          style={styles.header}
-          pointerEvents="box-none"
-          onLayout={(event: LayoutChangeEvent) => setHeaderHeight(event.nativeEvent.layout.height)}
-        >
-          <AgentHeader
-            row={row}
+        </View>
+        <View style={styles.dock}>
+          {surface === 'chat' ? <ChatAboveComposer row={row} /> : null}
+          <StatusLine
+            status={status}
+            latencyMs={latency}
+            onOpenChanges={onOpenChanges}
+            labels={agentBarLabels()}
+          />
+          <AgentComposerBar
+            composer={composer}
+            surface={surface}
+            program={row.agent.agent ?? 'unknown'}
+            status={status}
+            onToggleSurface={toggle}
+            canStop={terminalStopAvailable(row.agent.agent ?? '')}
+          />
+          <AgentSwitcher
+            rows={rows}
+            currentKey={key}
+            onSelect={onSwitch}
             surface={surface}
             onSurface={setSurface}
-            onSidebar={() => setDrawer(true)}
-            menu={menu}
-            showTitle={surface === 'terminal'}
           />
         </View>
-      </View>
-      <View style={styles.dock}>
-        {surface === 'chat' ? <ChatAboveComposer row={row} /> : null}
-        <StatusLine
-          status={status}
-          latencyMs={latency}
-          onOpenChanges={onOpenChanges}
-          labels={agentBarLabels()}
-        />
-        <AgentComposerBar
-          composer={composer}
-          surface={surface}
-          program={row.agent.agent ?? 'unknown'}
-          status={status}
-          onToggleSurface={toggle}
-          canStop={terminalStopAvailable(row.agent.agent ?? '')}
-        />
-        <AgentSwitcher
+        <AgentSessionDrawer
+          visible={drawer}
+          onClose={() => setDrawer(false)}
           rows={rows}
-          currentKey={key}
+          current={row}
           onSelect={onSwitch}
-          surface={surface}
-          onSurface={setSurface}
         />
-      </View>
-      <AgentSessionDrawer
-        visible={drawer}
-        onClose={() => setDrawer(false)}
-        rows={rows}
-        current={row}
-        onSelect={onSwitch}
-      />
-    </Screen>
+      </Screen>
+    </DetailUiProvider>
   );
 }

@@ -428,8 +428,8 @@
   },
   {
     "id": "agent-detail.subagent-transcript",
-    "rn": "AgentDetailScreen",
-    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+    "rn": "AgentDetailScreen (DetailUiProvider SubagentSheet, ClaudeSubagentTranscript)",
+    "note": "opened from the finished Subagent row of the Background Work sheet"
   },
   {
     "id": "agent-detail.select-text-sheet",

@@ -26,6 +26,9 @@ export function ConversationsProvider({
   return <RegistryContext.Provider value={registry}>{children}</RegistryContext.Provider>;
 }
 
+/** The registry the app provides (undefined in demo mode and isolated screens). */
+export const useConversationRegistry = () => useContext(RegistryContext);
+
 const UNSUPPORTED: ChatUnavailableReason = { kind: 'unsupportedSession' };
 const NO_OUTPUTS: ConversationState['outputs'] = new Map();
 

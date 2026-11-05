@@ -2,11 +2,15 @@ import {
   type ChatAgentView,
   type ChatHostFiles,
   type ChatTranscriptCache,
+  type ClaudeSubagentOutcome,
+  type ClaudeSubagentRoute,
   type Clock,
   type ConsoleRow,
   ConversationStore,
   chatHerdrSession,
   type Host,
+  readSubagentTranscript,
+  subagentRoute,
 } from '@openagentspocket/core';
 import { chatAgentView } from './agentView';
 
@@ -72,6 +76,23 @@ export class ConversationRegistry {
     if (!this.active) store.suspend();
     this.entries.set(id, { store, lastView: JSON.stringify(this.viewOf(hostId, paneId) ?? null) });
     return store;
+  }
+
+  /**
+   * One Subagent's own transcript, read once and read-only: the call that reported `agentID` among
+   * the Agent's loaded messages gives its file. A call not loaded (an older page) or a session whose
+   * file is unknown reads as missing.
+   */
+  async readSubagent(
+    hostId: string,
+    paneId: string,
+    agentID: string,
+  ): Promise<{ route: ClaudeSubagentRoute | null; outcome: ClaudeSubagentOutcome }> {
+    const { snapshot } = this.get(hostId, paneId).getState();
+    const path = snapshot.phase.type === 'following' ? snapshot.phase.path : null;
+    const route = subagentRoute(agentID, path, snapshot.transcript.entries);
+    if (route === null) return { route, outcome: { type: 'missing' } };
+    return { route, outcome: await readSubagentTranscript(this.filesOf(hostId), route.path) };
   }
 
   /** Ends the stores of Hosts that are no longer saved and removes their cached transcripts. */

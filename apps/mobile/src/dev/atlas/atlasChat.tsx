@@ -154,8 +154,57 @@ const storeFor = (conversation: ConversationState) =>
     retry: () => undefined,
   }) as unknown as ConversationStore;
 
+/** A finished Subagent's own transcript: its task, a tool call and its answer. */
+const subagentTranscript = {
+  ...emptyTranscript(),
+  entries: [
+    {
+      id: 's1',
+      sourceOffset: 0,
+      content: {
+        type: 'user' as const,
+        value: userMessage('Check whether the screenshots still show the address field.'),
+      },
+    },
+    {
+      id: 's2',
+      sourceOffset: 1,
+      content: {
+        type: 'tool' as const,
+        value: toolActivity({
+          kind: 'search',
+          name: 'Grep',
+          title: 'Searched for "address field" in docs/guide',
+          status: 'succeeded',
+        }),
+      },
+    },
+    {
+      id: 's3',
+      sourceOffset: 2,
+      content: {
+        type: 'assistant' as const,
+        value: {
+          text: 'Two screenshots still show the address field: **setup-2.png** and **setup-3.png**.',
+        },
+      },
+    },
+  ],
+};
+
 const registryFor = (conversation: ConversationState) =>
-  ({ get: () => storeFor(conversation) }) as unknown as ConversationRegistry;
+  ({
+    get: () => storeFor(conversation),
+    readSubagent: async (_host: string, _pane: string, agentID: string) => ({
+      route: {
+        agentID,
+        path: `/demo/subagents/${agentID}.jsonl`,
+        title: 'Check screenshots',
+        subtitle: 'general-purpose',
+      },
+      outcome: { type: 'loaded' as const, transcript: subagentTranscript, isPartial: false },
+    }),
+  }) as unknown as ConversationRegistry;
 const work = (
   id: string,
   title: string,
@@ -195,6 +244,28 @@ const workState: ConversationState = {
     transcript: {
       ...state.snapshot.transcript,
       latestPromptOffset: 50,
+      entries: [
+        ...state.snapshot.transcript.entries,
+        ...[
+          ['w1', 'Find old pairing steps', 'Explore', 'started'],
+          ['w3', 'Check screenshots', 'general-purpose', 'succeeded'],
+          ['w4', 'Check link anchors', 'Explore', 'succeeded'],
+        ].map(([id = '', title = '', kind = '', status = ''], index) => ({
+          id,
+          sourceOffset: 100 + index,
+          content: {
+            type: 'tool' as const,
+            value: toolActivity({
+              kind: 'agent',
+              name: 'Task',
+              title,
+              subtitle: kind,
+              status: status as 'started' | 'succeeded',
+              subagentAgentID: `a-${id}`,
+            }),
+          },
+        })),
+      ],
       backgroundWork: [
         work('w1', 'Find old pairing steps', { subtitle: 'Explore', launchedAgo: 246 }),
         work('w2', 'docs-audit', {

@@ -5,6 +5,7 @@
 // Words are catalog keys (`Text`); the view renders them in its locale.
 
 import { message, type Text } from '../../errors/text';
+import { formatDuration } from '../../format/duration';
 import type {
   BackgroundWorkKind,
   BackgroundWorkUsage,
@@ -92,19 +93,6 @@ export interface BackgroundWorkPresentationOptions {
   locale?: string;
   /** IANA zone for times of day; the device's when omitted. */
   timeZone?: string;
-}
-
-/** "38s", "2m 18s", "1h 5m": as "Thought for" reads, with hours. */
-export function backgroundWorkDuration(seconds: number): string {
-  const whole = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0;
-  const hours = Math.floor(whole / 3600);
-  const minutes = Math.floor((whole % 3600) / 60);
-  const rest = whole % 60;
-  const units: string[] = [];
-  if (hours > 0) units.push(`${hours}h`);
-  if (minutes > 0) units.push(`${minutes}m`);
-  if (rest > 0 || units.length === 0) units.push(`${rest}s`);
-  return units.slice(0, 2).join(' ');
 }
 
 const join = (parts: Text[], separator: string): Text => ({ join: parts, separator });
@@ -250,7 +238,7 @@ class Style {
     const spoken: Text[] = [item.title, kindPhrase, statePhrase(status, lastSeen)];
     if (fraction)
       spoken.push(message('%lld of %lld agents done', n(fraction.done), n(fraction.total)));
-    if (seconds !== null) spoken.push(backgroundWorkDuration(seconds));
+    if (seconds !== null) spoken.push(formatDuration(seconds, 'wide'));
     return {
       id: item.id,
       kind: item.kind,
@@ -259,7 +247,7 @@ class Style {
       caption,
       detail: item.kind === 'workflow' ? item.subtitle : null,
       fraction,
-      time: seconds === null ? null : backgroundWorkDuration(seconds),
+      time: seconds === null ? null : formatDuration(seconds),
       note,
       shortNote,
       usage: usageText(item.usage),
