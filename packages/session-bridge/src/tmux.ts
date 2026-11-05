@@ -19,7 +19,10 @@ const FIELDS = [
   'pane_title',
 ] as const;
 
-export const PANE_FORMAT = FIELDS.map((field) => `#{${field}}`).join('\t');
+/** tmux prints control characters as `_`, so a tab or a unit separator cannot split fields. */
+const SEPARATOR = '|oap|';
+
+export const PANE_FORMAT = FIELDS.map((field) => `#{${field}}`).join(SEPARATOR);
 
 export interface TmuxPane {
   sessionId: string;
@@ -28,6 +31,11 @@ export interface TmuxPane {
   windowIndex: number;
   windowName: string;
   paneId: string;
+  /** The window's current pane, attached or not. */
+  current: boolean;
+  /** The session's current window, attached or not. */
+  windowCurrent: boolean;
+  /** Where a client is looking right now. */
   active: boolean;
   command: string;
   cwd: string;
@@ -35,7 +43,7 @@ export interface TmuxPane {
 }
 
 function parseLine(line: string): TmuxPane | null {
-  const parts = line.split('\t');
+  const parts = line.split(SEPARATOR);
   if (parts.length < FIELDS.length) return null;
   const [
     sessionId,
@@ -55,10 +63,12 @@ function parseLine(line: string): TmuxPane | null {
     windowIndex: Number(windowIndex),
     windowName,
     paneId,
+    current: pane === '1',
+    windowCurrent: window === '1',
     active: pane === '1' && window === '1' && attached !== '0',
     command: parts[9] ?? '',
     cwd: parts[10] ?? '',
-    title: parts.slice(11).join('\t'),
+    title: parts.slice(11).join(SEPARATOR),
   };
 }
 

@@ -4,11 +4,11 @@ import { handleLine } from './handler';
 import { SESSION_PROTOCOL } from './snapshot';
 import { parsePanes, type TmuxRunner } from './tmux';
 
-const line = (...fields: string[]) => fields.join('\t');
+const line = (...fields: string[]) => fields.join('|oap|');
 const PANES = [
   line('$0', 'work', '@1', '0', 'api', '%1', '1', '1', '1', 'codex', '/srv/api', 'codex run'),
   line('$0', 'work', '@1', '0', 'api', '%2', '0', '1', '1', 'zsh', '/srv/api', 'shell'),
-  line('$1', 'side', '@2', '1', 'web', '%3', '1', '1', '0', 'opencode', '/srv/web', 'a\tb'),
+  line('$1', 'side', '@2', '1', 'web', '%3', '1', '1', '0', 'opencode', '/srv/web', 'a|oap|b'),
 ].join('\n');
 
 function fakeTmux() {
@@ -26,10 +26,10 @@ const request = (method: string, params: object = {}) =>
   JSON.stringify({ id: '7', method, params });
 
 describe('parsePanes', () => {
-  it('reads every field, keeps tabs in a title and skips broken lines', () => {
+  it('reads every field, keeps a separator in a title and skips broken lines', () => {
     const panes = parsePanes(`${PANES}\nnot a pane\n`);
     expect(panes).toHaveLength(3);
-    expect(panes[2]?.title).toBe('a\tb');
+    expect(panes[2]?.title).toBe('a|oap|b');
     expect(panes[0]?.active).toBe(true);
   });
 

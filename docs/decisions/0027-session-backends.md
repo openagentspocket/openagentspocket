@@ -36,7 +36,7 @@ through plugin events such as `pane.agent_status_changed`. tmux has no such even
 1. Close what is open: settings-fixes, device install, the source of the stray `[object Promise]/` folder.
 2. `ProgramDefinition`.
 3. Session protocol as the contract: `packages/session-bridge` maps tmux to it and is pinned by the app's own decoder (done,
-   against a fake `tmux`: never run on a real one yet).
+   tested on a real tmux 3.8 too).
 4. Split `packages/plugin`; program hooks as a notification source, proved first on herdr Hosts.
 5. tmux end to end: the bridge's socket server and events, attach commands per backend, backend capabilities in the app,
    pairing through the standalone installer, a mark that tells backends apart.

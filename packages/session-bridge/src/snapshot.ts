@@ -59,7 +59,7 @@ function tabInfo(panes: readonly TmuxPane[]): herdr.TabInfo {
 
 function workspaceInfo(panes: readonly TmuxPane[], number: number): herdr.WorkspaceInfo {
   const first = panes[0] as TmuxPane;
-  const active = panes.find((pane) => pane.active) ?? first;
+  const active = panes.find((pane) => pane.windowCurrent) ?? first;
   return {
     active_tab_id: active.windowId,
     agent_status: UNKNOWN_STATUS,
