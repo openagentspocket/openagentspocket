@@ -50,4 +50,10 @@ describe('modal routes', () => {
       /name="add-host"[^>]*contentStyle: \{ backgroundColor: withAlpha\(theme\.colors\.canvas, 0\) \}/s,
     );
   });
+
+  it('the Agent detail route hides the navigator header and carries a real title, never the route name', () => {
+    expect(read('_layout.tsx')).toMatch(
+      /name="agent\/\[hostId\]\/\[paneId\]" options=\{\{ \.\.\.bare, title: t\('Agent'\) \}\}/,
+    );
+  });
 });
