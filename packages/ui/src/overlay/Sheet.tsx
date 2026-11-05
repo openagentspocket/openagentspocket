@@ -45,6 +45,7 @@ const useStyles = makeStyles((t) => ({
     alignSelf: 'center',
   },
   full: { width: '100%' },
+  fits: { maxHeight: '100%' },
   dragArea: { alignItems: 'center', paddingBottom: t.spacing.xs },
   grabber: {
     alignSelf: 'center',
@@ -152,7 +153,9 @@ export function Sheet({
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView
-        style={styles.root}
+        // The status bar's height stays free and the panel never outgrows what is left, so a sheet
+        // lifted by the keyboard stops under the status bar instead of passing through it.
+        style={[styles.root, { paddingTop: insets.top }]}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <Pressable
@@ -163,7 +166,7 @@ export function Sheet({
           testID={`${testID}-backdrop`}
         />
         <View
-          style={[styles.panel, styles.full, size, { paddingBottom: insets.bottom }]}
+          style={[styles.panel, styles.full, size, styles.fits, { paddingBottom: insets.bottom }]}
           accessibilityViewIsModal
           testID={testID}
         >

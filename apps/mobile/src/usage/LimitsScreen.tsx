@@ -35,7 +35,7 @@ export function LimitsScreen({ source }: Props) {
   const open = scope.included.find((host) => host.id === accountsHost);
   return (
     <AppScreen
-      header={{ variant: 'native' }}
+      header={{ variant: 'native', title: t('Usage Limits') }}
       refreshing={refreshing}
       onRefresh={refresh}
       testID="limits-screen"
