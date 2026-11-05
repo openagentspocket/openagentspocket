@@ -1,0 +1,50 @@
+{
+  "id": "zenbones",
+  "order": 23,
+  "title": "Zenbones",
+  "detail": "Paired low-contrast light and dark themes",
+  "dark": {
+    "background": "#1c1917",
+    "foreground": "#b4bdc3",
+    "ansi": [
+      "#1c1917",
+      "#de6e7c",
+      "#819b69",
+      "#b77e64",
+      "#6099c0",
+      "#b279a7",
+      "#66a5ad",
+      "#b4bdc3",
+      "#4d4540",
+      "#e8838f",
+      "#8bae68",
+      "#d68c67",
+      "#61abda",
+      "#cf86c1",
+      "#65b8c1",
+      "#888f94"
+    ]
+  },
+  "light": {
+    "background": "#f0edec",
+    "foreground": "#2c363c",
+    "ansi": [
+      "#f0edec",
+      "#a8334c",
+      "#4f6c31",
+      "#944927",
+      "#286486",
+      "#88507d",
+      "#3b8992",
+      "#2c363c",
+      "#b5a7a0",
+      "#94253e",
+      "#3f5a22",
+      "#803d1c",
+      "#1d5573",
+      "#7b3b70",
+      "#2b747c",
+      "#4f5e68"
+    ]
+  }
+}

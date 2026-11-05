@@ -1,0 +1,50 @@
+{
+  "id": "night-owl",
+  "order": 16,
+  "title": "Night Owl",
+  "detail": "Owlish Light in Light Mode, Night Owl in Dark Mode",
+  "dark": {
+    "background": "#011627",
+    "foreground": "#d6deeb",
+    "ansi": [
+      "#011627",
+      "#ef5350",
+      "#22da6e",
+      "#addb67",
+      "#82aaff",
+      "#c792ea",
+      "#21c7a8",
+      "#ffffff",
+      "#575656",
+      "#ef5350",
+      "#22da6e",
+      "#ffeb95",
+      "#82aaff",
+      "#c792ea",
+      "#7fdbca",
+      "#ffffff"
+    ]
+  },
+  "light": {
+    "background": "#ffffff",
+    "foreground": "#403f53",
+    "ansi": [
+      "#011627",
+      "#d3423e",
+      "#2aa298",
+      "#daaa01",
+      "#4876d6",
+      "#403f53",
+      "#08916a",
+      "#7a8181",
+      "#7a8181",
+      "#f76e6e",
+      "#49d0c5",
+      "#dac26b",
+      "#5ca7e4",
+      "#697098",
+      "#00c990",
+      "#989fb1"
+    ]
+  }
+}

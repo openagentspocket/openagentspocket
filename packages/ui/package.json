@@ -7,8 +7,8 @@
   "types": "src/index.ts",
   "scripts": {
     "test": "jest",
-    "gen": "node scripts/gen-tokens.mjs && node scripts/gen-brands.mjs",
-    "gen:check": "node scripts/gen-tokens.mjs --check && node scripts/gen-brands.mjs --check"
+    "gen": "node scripts/gen-tokens.mjs && node scripts/gen-brands.mjs && node scripts/gen-terminal-themes.mjs",
+    "gen:check": "node scripts/gen-tokens.mjs --check && node scripts/gen-brands.mjs --check && node scripts/gen-terminal-themes.mjs --check"
   },
   "dependencies": {
     "@expo/ui": "~58.0.26",

@@ -1,4 +1,5 @@
 import { AcknowledgementsList } from './AcknowledgementsList';
+import { AgentFieldHosts } from './agentFields/AgentFieldHosts';
 import { ChatCacheRows } from './ChatCacheRows';
 import { ChatSample } from './ChatSample';
 import { DemoModeRow } from './DemoModeRow';
@@ -20,6 +21,8 @@ export function CustomRow({ row, ctx }: { row: CustomSettingsRow; ctx: SettingsC
       return <ThemeCards ctx={ctx} />;
     case 'terminalPalette':
       return <TerminalPaletteScreen ctx={ctx} />;
+    case 'agentFieldHosts':
+      return <AgentFieldHosts />;
     case 'chatSample':
       return <ChatSample ctx={ctx} />;
     case 'chatCache':

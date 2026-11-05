@@ -1,0 +1,50 @@
+{
+  "id": "rose-pine",
+  "order": 10,
+  "title": "Rosé Pine",
+  "detail": "Dawn in Light Mode, the classic in Dark Mode",
+  "dark": {
+    "background": "#191724",
+    "foreground": "#e0def4",
+    "ansi": [
+      "#26233a",
+      "#eb6f92",
+      "#31748f",
+      "#f6c177",
+      "#9ccfd8",
+      "#c4a7e7",
+      "#ebbcba",
+      "#e0def4",
+      "#6e6a86",
+      "#eb6f92",
+      "#31748f",
+      "#f6c177",
+      "#9ccfd8",
+      "#c4a7e7",
+      "#ebbcba",
+      "#e0def4"
+    ]
+  },
+  "light": {
+    "background": "#faf4ed",
+    "foreground": "#575279",
+    "ansi": [
+      "#f2e9e1",
+      "#b4637a",
+      "#286983",
+      "#ea9d34",
+      "#56949f",
+      "#907aa9",
+      "#d7827e",
+      "#575279",
+      "#9893a5",
+      "#b4637a",
+      "#286983",
+      "#ea9d34",
+      "#56949f",
+      "#907aa9",
+      "#d7827e",
+      "#575279"
+    ]
+  }
+}

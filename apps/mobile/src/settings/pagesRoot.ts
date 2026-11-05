@@ -10,7 +10,6 @@ export const REPOSITORY_URL = 'https://github.com/openagentspocket/openagentspoc
 /** Routes of screens other tasks own; set a route here when that screen lands. */
 export const SETTINGS_ROUTES = {
   notifications: '/settings/notifications',
-  agentRows: '/settings/agent-fields',
   snippets: null,
   hosts: '/hosts',
   usage: '/usage',
@@ -101,7 +100,14 @@ export const root: SettingsPage = {
           icon: 'chat',
           page: 'chat',
         },
-        route('agentRows', () => t('Agent Rows'), 'agentRows'),
+        {
+          kind: 'page',
+          id: 'settings.agents.agentRows',
+          title: () => t('Agent Rows'),
+          subtitle: () => t('Fields, order, preview'),
+          icon: 'agentRows',
+          page: 'agentFields',
+        },
       ],
     },
     {

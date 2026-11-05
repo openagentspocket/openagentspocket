@@ -1,10 +1,10 @@
 # UX1-settings-pages: Terminal Palette, Agent List Fields and the missing settings atlas ids
 status: partial
 branch: ux-settings
-changed: apps/mobile/src/settings/{terminalPalettes.ts,terminalPalettes.json,terminalPalettesDetails.ts,TerminalPaletteScreen.tsx,agentFields/*,schema,pages*,customRows}, apps/mobile/src/app/settings/{_layout,agent-fields/*}, apps/mobile/src/dev/atlas/{familySettings,entries,atlasMap.json}, packages/core/src/settings/preferences.ts (terminalTheme), scripts/gen-terminal-palettes.py
+changed: packages/ui/{tokens/terminal-themes/*.json,scripts/gen-terminal-themes.mjs,src/theme/terminalPalettes.ts,src/components/OptionListSheet.tsx}, apps/mobile/src/settings/{TerminalPaletteScreen.tsx,agentFields/*,schema,pages*,customRows,ChatCacheRows}, apps/mobile/src/app/settings/{_layout,agent-fields/*}, apps/mobile/src/dev/atlas/{familySettings,entries,atlasMap.json}, packages/core/src/settings/preferences.ts (terminalTheme), scripts/gen-terminal-palettes.py
 tests: pnpm verify-fast -> green
 acceptance:
-- Terminal Palette page (settings.terminal-theme-picker): live preview, footnote, 30 curated palettes with swatches, check on the selected one; persisted as the `terminalTheme` setting; reached from a "Terminal Palette" row on the Theme page: met (palette data ported from the Swift GhosttyTheme catalog as JSON by scripts/gen-terminal-palettes.py; no hex in source).
+- Terminal Palette page (settings.terminal-theme-picker): live preview, footnote, 30 curated palettes with swatches, check on the selected one; persisted as the `terminalTheme` setting; reached from a "Terminal Palette" row on the Theme page: met (palettes are data: one JSON per theme in packages/ui/tokens/terminal-themes, imported once from Swift by scripts/gen-terminal-palettes.py).
 - Agent List Fields: Host list, per-Host editor with live preview, Add field sheet (herdr and app fields), Sync confirm, reset-saved-fields confirm with the unreadable banner; root "Agent Rows" row now opens it: UI met.
 - Atlas ids captured dark and Papel: settings.terminal-theme-picker, settings.agent-list-fields(-host, -add-field, -sync-confirm, -reset-confirm), settings.chat-cache-clear-confirm, settings.usage (alias of usage.tab), shell.hosts-settings-sheets (alias of settings.root), settings.theme. settings.notification-explainer already existed (familyNotifications).
 left:
@@ -12,5 +12,10 @@ left:
 - Agent List Fields layout is in memory per session: no persisted catalog, no plugin snapshot sync (Sync from plugin resets to the defaults), no style/move per field (tapping a field only offers Remove), no unreadable-saved-data detection (the atlas forces it).
 - settings.theme--catppuccin-mocha, --gruvbox-dark, --nord, --papel: RN ships three themes by decision (brief), so these Swift-only variants are not built. Papel itself is the --theme papel capture of settings.theme.
 - Snippets row stays hidden (no route).
+reusable:
+- Terminal theme registry: adding a theme = one JSON in packages/ui/tokens/terminal-themes + `pnpm gen` (gen-terminal-themes.mjs validates it, `gen:check` pins it); `terminalPalette`, `terminalThemeOptions`, `terminalThemeById` in packages/ui serve any terminal surface. `terminalTheme` accepts any id (unknown renders the default), so core never lists themes.
+- OptionListSheet (packages/ui): grouped pick-list sheet with Cancel, reusable for fields, peers, keys.
+- Settings schema: new pages `terminalTheme` and `agentFields` (custom blocks `terminalPalette`, `agentFieldHosts`); Agent Rows root row is a schema `page` row. Only the per-Host editor is a route (it needs the Host param).
+- confirmClearChatCache and confirmResetSavedFields are exported so the atlas opens the same dialogs the screens use.
 notes:
 - Web atlas dialogs use the bottom action sheet presentation where Swift shows an anchored popover.

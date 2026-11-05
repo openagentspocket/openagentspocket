@@ -4,13 +4,19 @@ import {
   AgentListFieldsEditor,
   AgentListFieldsPreview,
   confirm,
+  OptionListSheet,
   Screen,
 } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { useHosts } from '@/features/hosts/useHosts';
-import { AddFieldSheet } from './AddFieldSheet';
-import { DEFAULT_ROWS } from './fieldCatalog';
+import { APP_FIELDS, DEFAULT_ROWS, type FieldDef, HERDR_FIELDS } from './fieldCatalog';
 import { addField, removeField, setAgentRows, useAgentRows } from './useAgentFields';
+
+const asOption = (field: FieldDef) => ({
+  id: field.id,
+  title: field.id,
+  subtitle: field.describe(),
+});
 
 /** settings.agent-list-fields-host: the live preview and one chip row per console row for a Host. */
 export function AgentFieldsHostScreen({ hostId }: { hostId: string }) {
@@ -68,14 +74,20 @@ export function AgentFieldsHostScreen({ hostId }: { hostId: string }) {
         onAdd={setAdding}
         onSync={() => void sync()}
       />
-      <AddFieldSheet
+      <OptionListSheet
         visible={adding !== null}
-        rowNumber={addingIndex + 1}
+        title={t('Add to Row %lld', addingIndex + 1)}
+        cancelLabel={t('Cancel')}
+        groups={[
+          { title: t('herdr fields'), options: HERDR_FIELDS.map(asOption) },
+          { title: t('Agentico fields'), options: APP_FIELDS.map(asOption) },
+        ]}
         onClose={() => setAdding(null)}
         onPick={(field) => {
           if (adding) addField(hostId, adding, field);
           setAdding(null);
         }}
+        testID="add-field-sheet"
       />
     </Screen>
   );

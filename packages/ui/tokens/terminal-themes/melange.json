@@ -1,0 +1,50 @@
+{
+  "id": "melange",
+  "order": 22,
+  "title": "Melange",
+  "detail": "Warm paired light and dark themes",
+  "dark": {
+    "background": "#292522",
+    "foreground": "#ece1d7",
+    "ansi": [
+      "#34302c",
+      "#bd8183",
+      "#78997a",
+      "#e49b5d",
+      "#7f91b2",
+      "#b380b0",
+      "#7b9695",
+      "#c1a78e",
+      "#867462",
+      "#d47766",
+      "#85b695",
+      "#ebc06d",
+      "#a3a9ce",
+      "#cf9bc2",
+      "#89b3b6",
+      "#ece1d7"
+    ]
+  },
+  "light": {
+    "background": "#f1f1f1",
+    "foreground": "#54433a",
+    "ansi": [
+      "#e9e1db",
+      "#c77b8b",
+      "#6e9b72",
+      "#bc5c00",
+      "#7892bd",
+      "#be79bb",
+      "#739797",
+      "#7d6658",
+      "#a98a78",
+      "#bf0021",
+      "#3a684a",
+      "#a06d00",
+      "#465aa4",
+      "#904180",
+      "#3d6568",
+      "#54433a"
+    ]
+  }
+}

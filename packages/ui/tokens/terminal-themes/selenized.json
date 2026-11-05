@@ -1,0 +1,50 @@
+{
+  "id": "selenized",
+  "order": 19,
+  "title": "Selenized",
+  "detail": "A Solarized descendant for each appearance",
+  "dark": {
+    "background": "#103c48",
+    "foreground": "#adbcbc",
+    "ansi": [
+      "#184956",
+      "#fa5750",
+      "#75b938",
+      "#dbb32d",
+      "#4695f7",
+      "#f275be",
+      "#41c7b9",
+      "#adbcbc",
+      "#72898f",
+      "#ff665c",
+      "#84c747",
+      "#ebc13d",
+      "#58a3ff",
+      "#ff84cd",
+      "#53d6c7",
+      "#cad8d9"
+    ]
+  },
+  "light": {
+    "background": "#fbf3db",
+    "foreground": "#53676d",
+    "ansi": [
+      "#ece3cc",
+      "#d2212d",
+      "#489100",
+      "#ad8900",
+      "#0072d4",
+      "#ca4898",
+      "#009c8f",
+      "#53676d",
+      "#909995",
+      "#cc1729",
+      "#428b00",
+      "#a78300",
+      "#006dce",
+      "#c44392",
+      "#00978a",
+      "#3a4d53"
+    ]
+  }
+}

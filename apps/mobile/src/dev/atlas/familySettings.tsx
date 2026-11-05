@@ -1,14 +1,15 @@
 // Atlas entries of Settings and its pages (settings.*, shell.hosts-settings-sheets). Owned by its UX family task.
 import { t } from '@openagentspocket/i18n';
-import { confirm } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
 import SettingsRoot from '@/app/settings';
 import NotificationsRoute from '@/app/settings/notifications';
 import Usage from '@/app/usage';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
+import { confirmResetSavedFields } from '@/settings/agentFields/AgentFieldHosts';
 import { AgentFieldsHostScreen } from '@/settings/agentFields/AgentFieldsHostScreen';
-import { AgentFieldsListScreen } from '@/settings/agentFields/AgentFieldsListScreen';
+import { setAgentFieldsUnreadable } from '@/settings/agentFields/useAgentFields';
+import { confirmClearChatCache } from '@/settings/ChatCacheRows';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
 import { NOTICES } from '@/settings/notices.generated';
 import { SettingsScreen } from '@/settings/SettingsScreen';
@@ -38,21 +39,12 @@ export const settingsEntries: Readonly<Record<string, AtlasEntry>> = {
   'settings.chat': { render: () => settingsPage('chat') },
   'settings.chat-cache': { render: () => settingsPage('chat') },
   'settings.chat-cache-clear-confirm': {
-    script: {
-      run: () =>
-        void confirm({
-          title: t('Clear Chat cache?'),
-          message: t('Chat reloads messages from each Host the next time you open it.'),
-          confirmLabel: t('Clear Cache'),
-          destructive: true,
-          presentation: 'dialog',
-        }),
-    },
+    script: { run: () => void confirmClearChatCache() },
     render: () => settingsPage('chat'),
   },
   'settings.input-toolbar': { render: () => settingsPage('toolbar') },
   'settings.agent-list-fields': {
-    render: () => titled(t('Agent List Fields'), <AgentFieldsListScreen />),
+    render: () => settingsPage('agentFields'),
   },
   'settings.agent-list-fields-host': { render: fieldsHost },
   'settings.agent-list-fields-add-field': {
@@ -64,8 +56,13 @@ export const settingsEntries: Readonly<Record<string, AtlasEntry>> = {
     render: fieldsHost,
   },
   'settings.agent-list-fields-reset-confirm': {
-    script: { press: ['agent-fields-reset'] },
-    render: () => titled(t('Agent List Fields'), <AgentFieldsListScreen unreadable />),
+    script: {
+      run: () => {
+        setAgentFieldsUnreadable(true);
+        void confirmResetSavedFields();
+      },
+    },
+    render: () => settingsPage('agentFields'),
   },
   'settings.usage': { render: () => titled(t('Usage'), <Usage />) },
   'settings.acknowledgements': { render: () => settingsPage('acknowledgements') },

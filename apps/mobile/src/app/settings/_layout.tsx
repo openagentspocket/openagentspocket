@@ -11,7 +11,6 @@ export default function SettingsLayout() {
   return (
     <Stack screenOptions={{ ...useStackScreenOptions(), title: t('Settings') }}>
       <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="agent-fields/index" options={{ title: t('Agent List Fields') }} />
       <Stack.Screen name="agent-fields/[host]" options={{ title: '' }} />
       <Stack.Screen name="notifications" options={{ title: t('Notifications') }} />
       <Stack.Screen

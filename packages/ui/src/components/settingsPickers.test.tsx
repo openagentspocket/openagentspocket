@@ -2,6 +2,7 @@ import { fireEvent, screen } from '@testing-library/react-native';
 import { renderThemed } from '../test-utils';
 import { AgentListFieldsEditor } from './AgentListFieldsEditor';
 import { AgentListFieldsPreview } from './AgentListFieldsPreview';
+import { OptionListSheet } from './OptionListSheet';
 import { OverlayPeerPickerBody } from './OverlayPeerPicker';
 import { OverlayPeerViews } from './OverlayPeerViews';
 import { PortPreview } from './PortPreview';
@@ -148,5 +149,26 @@ describe('PortPreview', () => {
     );
     expect(screen.getByTestId('port-progress')).toBeTruthy();
     expect(screen.getByTestId('port-back').props.accessibilityState.disabled).toBe(false);
+  });
+});
+
+describe('OptionListSheet', () => {
+  it('lists every option under its group and reports the pick', async () => {
+    const onPick = jest.fn();
+    await renderThemed(
+      <OptionListSheet
+        visible
+        title="Add"
+        groups={[
+          { title: 'One', options: [{ id: 'a', title: 'Alpha' }] },
+          { options: [{ id: 'b', title: 'Beta' }] },
+        ]}
+        onPick={onPick}
+        onClose={jest.fn()}
+      />,
+    );
+    fireEvent.press(screen.getByTestId('option-list-sheet-b'));
+    expect(onPick).toHaveBeenCalledWith('b');
+    expect(screen.getByTestId('option-list-sheet-a')).toBeTruthy();
   });
 });

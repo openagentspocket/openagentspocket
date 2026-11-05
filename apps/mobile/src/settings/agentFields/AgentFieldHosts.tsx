@@ -1,33 +1,32 @@
 import { hostDisplayName } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Button, confirm, NavRow, Screen, Section, Text } from '@openagentspocket/ui';
+import { Banner, Button, confirm, NavRow, Section, Text } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
+import { View } from 'react-native';
 import { useHosts } from '@/features/hosts/useHosts';
-import { setAgentRows } from './useAgentFields';
+import { resetAgentFields, useAgentFieldsUnreadable } from './useAgentFields';
 
-interface Props {
-  /** The saved fields could not be read: editing pauses until the owner resets them. */
-  unreadable?: boolean;
+/** The confirmed way out of unreadable saved fields (also what the atlas opens). */
+export async function confirmResetSavedFields() {
+  const ok = await confirm({
+    title: t('Reset saved Agent List Fields?'),
+    message: t(
+      'The unreadable saved fields are deleted. Every Host returns to its herdr fields and can be edited again.',
+    ),
+    confirmLabel: t('Reset Saved Fields'),
+    destructive: true,
+    presentation: 'dialog',
+  });
+  if (ok) resetAgentFields();
 }
 
-/** settings.agent-list-fields: one row per Host; each opens that Host's field editor. */
-export function AgentFieldsListScreen({ unreadable = false }: Props) {
+/** The `agentFieldHosts` settings block: one row per Host, each opening that Host's field editor. */
+export function AgentFieldHosts() {
   const { hosts } = useHosts();
   const router = useRouter();
-  const reset = async () => {
-    const ok = await confirm({
-      title: t('Reset saved Agent List Fields?'),
-      message: t(
-        'The unreadable saved fields are deleted. Every Host returns to its herdr fields and can be edited again.',
-      ),
-      confirmLabel: t('Reset Saved Fields'),
-      destructive: true,
-      presentation: 'dialog',
-    });
-    if (ok) for (const host of hosts) setAgentRows(host.id, null);
-  };
+  const unreadable = useAgentFieldsUnreadable();
   return (
-    <Screen edges={['left', 'right']} testID="settings-agent-fields">
+    <View testID="settings-agent-fields">
       <Text tone="secondary" variant="footnote">
         {t(
           'Each Host decides which fields appear on its Agent rows in Console. Open a Host to change them.',
@@ -57,11 +56,11 @@ export function AgentFieldsListScreen({ unreadable = false }: Props) {
           <Button
             kind="text"
             title={t('Reset Saved Fields')}
-            onPress={() => void reset()}
+            onPress={() => void confirmResetSavedFields()}
             testID="agent-fields-reset"
           />
         </>
       ) : null}
-    </Screen>
+    </View>
   );
 }

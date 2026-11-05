@@ -6,44 +6,10 @@ export type SettingsThemeId = keyof typeof THEME_APPEARANCE;
 export type Appearance = 'dark' | 'light';
 
 export const TERMINAL_FONTS = ['jetbrains-mono', 'ibm-plex-mono', 'menlo', 'courier-new'] as const;
-/** The curated terminal palettes (their colors live in the app's palette data). */
-export const TERMINAL_THEMES = [
-  'follow-system',
-  'vesper',
-  'apple-system-colors',
-  'dracula',
-  'solarized',
-  'catppuccin',
-  'tokyo-night',
-  'gruvbox',
-  'nord',
-  'monokai-pro',
-  'rose-pine',
-  'ayu',
-  'one-half',
-  'kanagawa',
-  'everforest',
-  'github',
-  'night-owl',
-  'iceberg',
-  'flexoki',
-  'selenized',
-  'modus',
-  'tomorrow',
-  'melange',
-  'zenbones',
-  'atom-one-dark',
-  'snazzy',
-  'oceanic-next',
-  'poimandres',
-  'horizon',
-  'zenburn',
-] as const;
 export const CHAT_FONTS = ['system', 'rounded', 'serif', 'monospaced'] as const;
 export const GRACE_PERIODS = ['immediately', 'oneMinute', 'fiveMinutes', 'fifteenMinutes'] as const;
 
 export type TerminalFont = (typeof TERMINAL_FONTS)[number];
-export type TerminalThemeId = (typeof TERMINAL_THEMES)[number];
 export type ChatFont = (typeof CHAT_FONTS)[number];
 export type GracePeriod = (typeof GRACE_PERIODS)[number];
 
@@ -58,7 +24,8 @@ export interface SettingsValues {
   lightTheme: SettingsThemeId;
   terminalFont: TerminalFont;
   terminalFontSize: number;
-  terminalTheme: TerminalThemeId;
+  /** Id of a registered terminal theme (packages/ui/tokens/terminal-themes); unknown ids render the default. */
+  terminalTheme: string;
   chatFont: ChatFont;
   /** Dynamic-type steps from the system text size. */
   chatTextOffset: number;
@@ -106,7 +73,6 @@ const ALLOWED: Partial<Record<SettingKey, readonly string[]>> = {
   darkTheme: themesOf('dark'),
   lightTheme: themesOf('light'),
   terminalFont: TERMINAL_FONTS,
-  terminalTheme: TERMINAL_THEMES,
   chatFont: CHAT_FONTS,
   appLockGrace: GRACE_PERIODS,
 };
@@ -125,6 +91,7 @@ function sanitize(key: SettingKey, raw: unknown): SettingsValues[SettingKey] | u
     if (typeof raw !== 'number' || !Number.isFinite(raw) || !range) return undefined;
     return Math.min(range.max, Math.max(range.min, Math.round(raw)));
   }
+  if (key === 'terminalTheme') return typeof raw === 'string' && raw.length > 0 ? raw : undefined;
   const allowed = ALLOWED[key] ?? [];
   return typeof raw === 'string' && allowed.includes(raw) ? (raw as never) : undefined;
 }
