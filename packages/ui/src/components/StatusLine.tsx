@@ -34,7 +34,15 @@ const useStyles = makeStyles((t) => ({
 export interface StatusLineProps {
   status?: Status;
   branch?: string;
-  counts?: { behind?: number; ahead?: number; untracked?: number; changed?: number };
+  counts?: {
+    behind?: number;
+    ahead?: number;
+    /** Conflicted files (`~`), as Tide shows them before the staged count. */
+    conflicts?: number;
+    staged?: number;
+    changed?: number;
+    untracked?: number;
+  };
   diff?: { added: number; removed: number };
   /** Percent of context left; shown as an amber pill under 20. */
   contextLeft?: number;
@@ -66,7 +74,13 @@ export function StatusLine({
   const [width, setWidth] = useState(Number.POSITIVE_INFINITY);
   const [branchWidth, setBranchWidth] = useState(Number.POSITIVE_INFINITY);
   const hasCounts = Boolean(
-    counts && (counts.behind || counts.ahead || counts.untracked || counts.changed),
+    counts &&
+      (counts.behind ||
+        counts.ahead ||
+        counts.conflicts ||
+        counts.staged ||
+        counts.changed ||
+        counts.untracked),
   );
   if (
     !status &&
@@ -94,8 +108,10 @@ export function StatusLine({
   const countText = [
     counts?.behind ? `↓${counts.behind}` : null,
     counts?.ahead ? `↑${counts.ahead}` : null,
-    counts?.untracked ? `?${counts.untracked}` : null,
+    counts?.conflicts ? `~${counts.conflicts}` : null,
+    counts?.staged ? `+${counts.staged}` : null,
     counts?.changed ? `!${counts.changed}` : null,
+    counts?.untracked ? `?${counts.untracked}` : null,
   ]
     .filter(Boolean)
     .join(' ');
