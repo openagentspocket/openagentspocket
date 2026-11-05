@@ -31,7 +31,7 @@ export function SnippetsManager({ store }: { store: SnippetStore }) {
     });
 
   return (
-    <AppScreen header={{ variant: 'native' }} testID="snippets-manager">
+    <AppScreen header={{ variant: 'native', title: t('Snippets') }} testID="snippets-manager">
       {snippets.length === 0 ? (
         <EmptyState layout="compact" title={t('No Snippets yet')} />
       ) : (

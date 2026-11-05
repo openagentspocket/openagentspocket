@@ -130,7 +130,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   },
   'usage.host-section': {
     render: () => (
-      <AppScreen header={{ variant: 'native' }} testID="host-usage-screen">
+      <AppScreen header={{ variant: 'native', title: t('Usage') }} testID="host-usage-screen">
         <HostUsageSection hostId="demo" onOpenUsage={noop} />
       </AppScreen>
     ),

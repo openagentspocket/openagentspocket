@@ -38,7 +38,7 @@ export function UsagePhoneScreen(props: Props) {
   const { readings, scope, inScope, host, range, metric, now, refreshing } = props;
   return (
     <AppScreen
-      header={{ variant: 'native' }}
+      header={{ variant: 'native', title: t('Usage') }}
       refreshing={refreshing}
       onRefresh={props.onRefresh}
       testID="usage-screen"

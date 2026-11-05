@@ -307,7 +307,12 @@ export function UsageWideScreen({
 }: WideScreenProps) {
   const styles = useStyles();
   return (
-    <AppScreen header={{ variant: 'native' }} scroll={false} bare testID="usage-screen">
+    <AppScreen
+      header={{ variant: 'native', title: t('Usage') }}
+      scroll={false}
+      bare
+      testID="usage-screen"
+    >
       <View style={styles.root}>
         <UsageHostColumn scope={all} host={host} onHost={onHost} metric={detail.metric} />
         <ScrollView style={styles.detail} testID="usage-screen-scroll">

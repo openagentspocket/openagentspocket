@@ -21,7 +21,10 @@ export function NotificationSettingsScreen() {
   const [explaining, setExplaining] = useState(false);
 
   return (
-    <AppScreen header={{ variant: 'native' }} testID="settings-notifications">
+    <AppScreen
+      header={{ variant: 'native', title: t('Notifications') }}
+      testID="settings-notifications"
+    >
       <PushStatusSection push={push} onEnable={() => setExplaining(true)} />
       {push.kind === 'registered'
         ? store.hosts.map((host) => (
