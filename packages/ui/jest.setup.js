@@ -12,3 +12,12 @@ require('@testing-library/react-native').configure({ asyncUtilTimeout: 5000 });
 // Agents run their tests side by side on one machine; a render-heavy test (the component catalog,
 // the agent detail screen) can take well over jest's 5 s default without anything being wrong.
 jest.setTimeout(30_000);
+
+// The native sheet has no Jest runtime: `Sheet` falls back to its JS host when this import throws.
+jest.mock(
+  '@lodev09/react-native-true-sheet',
+  () => {
+    throw new Error('native only');
+  },
+  { virtual: true },
+);

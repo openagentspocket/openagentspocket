@@ -40,3 +40,16 @@ Select text, Background Work, Accounts, Plugin notice, What happens, Snippet edi
 JS `Sheet`, fraction: Usage day sheet (0.65).
 Migrated in this change: Connection, Text prompt, Paste review (medium -> fit); the + menu (ActionMenu -> ChoiceSheet);
 all route sheets (70% and full -> full).
+
+## Update: one native implementation behind `Sheet` (2026-11-05)
+
+`Sheet` keeps its props and its ~15 callers. On iOS and Android its host is `NativeSheet`: True Sheet
+(`@lodev09/react-native-true-sheet` 4.x: UISheetPresentationController, BottomSheetBehavior; v4 supports RN 0.82+ and
+Expo SDK 55+ including 58, New Architecture required, released 4.0.1 on 30 Oct 2026). `fit` = detent `auto`, `large` =
+the max-share fraction, `medium` and `{ fraction }` = fractions; the surface is the canvas with the glow and the radius
+comes from `metrics.sheetRadius`, the route sheets' values. Web, the gallery and Jest use `JsSheet` (same content, the
+JS panel): `loadTrueSheet.web.ts` returns null so Metro never bundles the package for the browser, and Jest mocks the
+import to throw. Both hosts draw the same `SheetContent`.
+Alternatives: `@expo/ui` BottomSheet (beta), route form sheets for state-driven sheets (see above).
+Unverified until a device build: the alert host inside a native sheet (an `OverlayHost` is mounted in the sheet, so it
+covers the sheet only), keyboard behavior with `scrollableRef`, and nested sheets.
