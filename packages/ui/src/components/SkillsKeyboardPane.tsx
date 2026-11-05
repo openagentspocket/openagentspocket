@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Spinner } from '../primitives/Spinner';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -154,7 +155,7 @@ export function SkillsKeyboardPane({
     if (skills.length === 0 && (phase === 'idle' || phase === 'loading'))
       return (
         <View style={styles.center}>
-          <ActivityIndicator color={theme.colors.textSecondary} testID="skills-pane-loading" />
+          <Spinner testID="skills-pane-loading" />
         </View>
       );
     if (skills.length === 0 && phase === 'failed')
@@ -230,9 +231,7 @@ export function SkillsKeyboardPane({
         <Text variant="body" tone="accent">
           {text.refresh}
         </Text>
-        {refreshing && skills.length > 0 ? (
-          <ActivityIndicator size="small" color={theme.colors.textSecondary} />
-        ) : null}
+        {refreshing && skills.length > 0 ? <Spinner size="small" /> : null}
       </Pressable>
       {panes?.length ? (
         <View style={styles.switcher} accessibilityRole="tablist" testID="skills-pane-switcher">

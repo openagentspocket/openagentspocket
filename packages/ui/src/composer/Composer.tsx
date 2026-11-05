@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { ScrollView, TextInput, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { Button } from '../primitives/Button';
 import { Chip } from '../primitives/Chip';
+import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
 
 export interface ComposerSuggestion {
@@ -117,13 +118,10 @@ export function Composer({
             testID={`${testID}-add`}
           />
         ) : null}
-        <TextInput
+        <ThemedTextInput
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor={theme.colors.textTertiary}
-          selectionColor={theme.colors.accent}
-          keyboardAppearance={theme.appearance}
           editable={!disabled}
           multiline
           style={styles.input}

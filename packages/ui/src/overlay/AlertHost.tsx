@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react';
-import {
-  Modal,
-  Platform,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { Modal, Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { noFocusRing } from '../primitives/Button';
 import { monoFamily, Text } from '../primitives/Text';
+import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { useInsets } from '../theme/insets';
 import { spacing } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -202,13 +195,11 @@ function AlertPanel({ request }: { request: AlertRequest }) {
         {request.message ? <Text tone="secondary">{request.message}</Text> : null}
       </View>
       {request.field ? (
-        <TextInput
+        <ThemedTextInput
           style={styles.input}
           value={text}
           onChangeText={setText}
           placeholder={request.field.placeholder}
-          placeholderTextColor={theme.colors.textTertiary}
-          selectionColor={theme.colors.accent}
           autoFocus
           selectTextOnFocus
           autoCapitalize="none"

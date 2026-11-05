@@ -1,6 +1,7 @@
-import { ActivityIndicator, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Spinner } from '../primitives/Spinner';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -74,11 +75,7 @@ function StatusMark({ status, label }: { status: ToolStatus; label?: string }) {
           : null;
   return (
     <View style={styles.trailing} testID={`tool-status-${status}`}>
-      {glyph ? (
-        <Icon name={glyph} size={14} tint={ink} />
-      ) : (
-        <ActivityIndicator size="small" color={theme.colors.textSecondary} />
-      )}
+      {glyph ? <Icon name={glyph} size={14} tint={ink} /> : <Spinner size="small" />}
       {label ? (
         <Text variant="footnote" style={{ color: ink }}>
           {label}
