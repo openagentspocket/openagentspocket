@@ -3,6 +3,7 @@ import { HostDetailScreen } from './HostDetailScreen';
 import { createDemoRuntime, setHostsRuntime } from './hostsRuntime';
 import { Form, probe, renderApp, SAMPLE, setup } from './hostsTestKit';
 import { SetupGuideScreen } from './SetupGuideScreen';
+import { pairCommandLines } from './setupGuideSteps';
 
 const mockCopy = jest.fn();
 jest.mock('expo-clipboard', () => ({ setStringAsync: (text: string) => mockCopy(text) }));
@@ -57,7 +58,7 @@ describe('hosts.setup-guide', () => {
     await renderApp(<SetupGuideScreen onBack={jest.fn()} />);
     expect(screen.getByTestId('guide-full')).toBeTruthy();
     expect(screen.queryByText(/<repository>/)).toBeNull();
-    expect(screen.getByText(/herdr plugin install \S+\/\S+ --ref plugin --yes/)).toBeTruthy();
+    expect(screen.getByText(pairCommandLines('unix')[0] ?? '')).toBeTruthy();
   });
 });
 

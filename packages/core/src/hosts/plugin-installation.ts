@@ -20,11 +20,25 @@ export const KNOWN_PLUGIN_IDS: readonly string[] = [AGENTICO_PLUGIN_ID, ...LEGAC
  * until then and Hosts use `herdr plugin link`.
  */
 export const PLUGIN_REPOSITORY = 'OWNER/agentico-app';
+/** Where the installer scripts (`packages/plugin/install`) are served from. */
+export const INSTALLER_BASE_URL = 'https://openagentspocket.com';
 /** The generated branch the plugin ships from. */
 export const PLUGIN_BRANCH = 'plugin';
 
 export function pluginInstallArguments(repository: string = PLUGIN_REPOSITORY): string[] {
   return ['plugin', 'install', repository, '--ref', PLUGIN_BRANCH, '--yes'];
+}
+
+export type InstallerPlatform = 'unix' | 'windows';
+
+/** The one-line installer a machine runs to set up the plugin and show its Pairing Code. */
+export function installerCommand(
+  platform: InstallerPlatform,
+  baseUrl: string = INSTALLER_BASE_URL,
+): string {
+  return platform === 'windows'
+    ? `irm ${baseUrl}/install.ps1 | iex`
+    : `curl -fsSL ${baseUrl}/install.sh | sh`;
 }
 
 /** One entry of herdr's plugin list (`plugin.list` or `herdr plugin list --json`). */

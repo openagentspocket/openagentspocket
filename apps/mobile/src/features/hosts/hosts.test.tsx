@@ -5,7 +5,7 @@ import { HostListScreen } from './HostListScreen';
 import { createDemoRuntime, setHostsRuntime } from './hostsRuntime';
 import { Form, fillRoute, probe, renderApp, SAMPLE, setup } from './hostsTestKit';
 import { PairingScreen } from './PairingScreen';
-import { PAIR_COMMAND } from './setupGuideSteps';
+import { pairCommandLines } from './setupGuideSteps';
 
 const mockCopy = jest.fn();
 jest.mock('expo-clipboard', () => ({ setStringAsync: (text: string) => mockCopy(text) }));
@@ -256,7 +256,7 @@ describe('hosts.pairing', () => {
         onOpenGuide={onOpenGuide}
       />,
     );
-    expect(await screen.findByText(PAIR_COMMAND)).toBeTruthy();
+    expect(await screen.findByText(pairCommandLines('unix')[0] ?? '')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('pairing-guide'));
     expect(onOpenGuide).toHaveBeenCalled();
   });
