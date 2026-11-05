@@ -18,6 +18,7 @@ done:
 - Terminals list: workspace headers that fold, TerminalGroup cards with New Terminal, ListToolbar.
 - Host connection sheet: Staging-style sheet (state, routes, failure, Retry Now, Stop Connecting, Edit).
 - console.new-item-button and console.agent-row are the plain Agents list (the Swift shots are that list).
+registered: SearchBar, TextPromptSheet, ConnectionSheet and FoldHeader's `workspace` variant are in the gallery registry (`gallery/components/navSheets.tsx`, `agentRows.tsx`) and in docs/ux/components/catalog.json + README (regenerated with `node scripts/ux-catalog.mjs`).
 round 2 (review fixes):
 - Show Changes uses `Icon` `diff`.
 - Remove Worktree confirm is the anchored popover (`confirm({ presentation: 'popover', anchorKey })` + `useAnchor` on the Remove row), like Close Pane. `alert-dismiss` testID added to the popover backdrop (tests dismiss through it).

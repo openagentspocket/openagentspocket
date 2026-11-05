@@ -106,6 +106,7 @@
       ],
       "variants": [
         "status|'Needs you 1' count capsule, trailing chevron",
+        "workspace|headline workspace name with the Host in secondary after it (the Terminals list), trailing chevron",
         "host|Host glyph + name + readiness text or status count pills when collapsed",
         "inbox|Home section title with count, no chevron",
         "see-all|footer line '1 idle' with accent 'See all'"
@@ -436,6 +437,64 @@
         "grabber 36x5 centered 6pt from the top",
         "title title2 bold, close = 32pt circle with an x in secondary",
         "sheet top radius 28, content inset screenInset"
+      ]
+    },
+    {
+      "name": "SearchBar",
+      "group": "nav-sheets",
+      "swift": ["Console/SidebarSearchDrawer.swift:1-163"],
+      "screens": ["console.search"],
+      "variants": [
+        "default|search field with a glass close circle at its right; replaces the toolbar and title while searching"
+      ],
+      "interactions": "the field filters live; the circle leaves search mode and clears the query",
+      "rnToday": ["packages/ui/src/form/SearchField.tsx (field only)"],
+      "props": "{ label, value, onChangeText, onClose, closeLabel?, clearLabel? }",
+      "composes": ["SearchField", "GlassCapsule", "Button"],
+      "accept": [
+        "44pt glass circle with an x, 8pt gap to the field",
+        "field fills the rest of the row and takes focus when the bar appears"
+      ]
+    },
+    {
+      "name": "TextPromptSheet",
+      "group": "nav-sheets",
+      "swift": ["Console/AgentDetailSheets.swift:100-151"],
+      "screens": ["console.rename-sheet"],
+      "variants": [
+        "default|Cancel and Save in the sheet bar, centered title, one text field, a footnote hint under it"
+      ],
+      "interactions": "Save (or return) hands the text over, an empty text is valid; Cancel and a backdrop tap dismiss",
+      "rnToday": [
+        "packages/ui/src/overlay/Sheet.tsx (bar actions)",
+        "packages/ui/src/form/TextField.tsx"
+      ],
+      "props": "{ visible, title, fieldLabel, initialValue?, hint?, cancelLabel?, saveLabel?, onSave, onClose }",
+      "composes": ["Sheet", "TextField", "Text"],
+      "accept": [
+        "the field opens focused with the initial text",
+        "hint in footnote secondary, closing sentence with a period"
+      ]
+    },
+    {
+      "name": "ConnectionSheet",
+      "group": "nav-sheets",
+      "swift": ["Hosts/HostOnboardingView.swift:777-912"],
+      "screens": ["console.host-connection-sheet"],
+      "variants": [
+        "default|Host name title, Edit in the bar, state line with attempt, mono routes, failure headline and detail, Retry Now and Stop Connecting"
+      ],
+      "interactions": "Retry Now restarts the connection, Stop Connecting stops a dial in flight, Edit opens the Host form",
+      "rnToday": [
+        "apps/mobile/src/features/hosts/HostConnectionSheet.tsx (wrapper)",
+        "apps/mobile/src/features/hosts/HostIssues.tsx"
+      ],
+      "props": "{ visible, title, state: { icon, label, note? }, detail?, failure?: { title, detail }, primary, secondary?, edit?, onClose }",
+      "composes": ["Sheet", "Button", "Icon", "Text"],
+      "accept": [
+        "state line: glyph, semibold label, secondary note",
+        "routes and failure detail in mono footnote",
+        "primary action pinned at the bottom with the text action under it"
       ]
     },
     {

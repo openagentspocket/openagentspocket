@@ -23,7 +23,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 |---|---|---|
 | UX3-agent-rows | `gallery/components/agentRows.tsx` | AgentCard, FoldHeader, WorkspaceCard, TerminalRow, AgentRowMenu, HostIssueRow |
 | UX3-home-shell | `gallery/components/homeShell.tsx` | InboxCard, SessionsStrip, HomeHostCard, UsageRing, Fab, LargeTitleBar |
-| UX3-nav-sheets | `gallery/components/navSheets.tsx` | ListToolbar, SidebarColumn, EmptyDetail, QuickSheetHeader, ScannerFrame, KeyValueGroup |
+| UX3-nav-sheets | `gallery/components/navSheets.tsx` | ListToolbar, SidebarColumn, EmptyDetail, QuickSheetHeader, SearchBar, TextPromptSheet, ConnectionSheet, ScannerFrame, KeyValueGroup |
 | UX3-agent-bar | `gallery/components/agentBar.tsx` | AgentHeader, AgentSwitcher, SessionDrawer, ComposerCard, StatusLine, ChangeRow |
 | UX3-chat-rows | `gallery/components/chatRows.tsx` | ChatUserBubble, ChatDivider, ChatThoughtRow, ChatToolRow, ChatNoticeRow, DiffRow |
 | UX3-blocked-terminal | `gallery/components/blockedTerminal.tsx` | BlockedCard, BackgroundWorkStrip, NoticeBanner, JumpControl, TerminalToolbar, KeyPad |
@@ -37,7 +37,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | Component | Task | Atlas screens | Crops | RN today | Swift |
 |---|---|---|---|---|---|
 | [AgentCard](#agentcard) | UX3-agent-rows | `console.agents-list-flat`<br>`console.agents-list-by-host`<br>`console.agents-list-by-status`<br>`console.agent-row`<br>`agents board`<br>`ipad/console.agents-list-flat` | default: [ref](ref/AgentCard.png) · [light](ref/AgentCard.light.png)<br>working: [ref](ref/AgentCard.working.png) · [light](ref/AgentCard.working.light.png)<br>idle-context: [ref](ref/AgentCard.idle-context.png) · [light](ref/AgentCard.idle-context.light.png)<br>wide: [ref](ref/AgentCard.wide.png) | `apps/mobile/src/features/agents/AgentRow.tsx`<br>`apps/mobile/src/board/BoardCard.tsx` | `Console/AgentCardView.swift:10-363`<br>`Console/AgentRowLayout.swift:1-373`<br>`Console/AgentContextLowBadge.swift:1-60` |
-| [FoldHeader](#foldheader) | UX3-agent-rows | `console.agents-list-by-status`<br>`console.agents-list-by-host`<br>`shell.home`<br>`console.agents-list-by-workspace` | status: [ref](ref/FoldHeader.status.png) · [light](ref/FoldHeader.status.light.png)<br>host: [ref](ref/FoldHeader.host.png) · [light](ref/FoldHeader.host.light.png)<br>inbox: [ref](ref/FoldHeader.inbox.png) · [light](ref/FoldHeader.inbox.light.png)<br>see-all: [ref](ref/FoldHeader.see-all.png) · [light](ref/FoldHeader.see-all.light.png) | apps/mobile/src/features/agents/AgentsScreen.tsx (section headers inline)<br>`packages/ui/src/primitives/SectionHeader.tsx` | `Console/ConsoleSectionHeaders.swift:54-149`<br>`Console/ConsoleHostSectionHeaderPresentation.swift:1-136`<br>`Console/StatusInbox/StatusInboxView.swift:66-105` |
+| [FoldHeader](#foldheader) | UX3-agent-rows | `console.agents-list-by-status`<br>`console.agents-list-by-host`<br>`shell.home`<br>`console.agents-list-by-workspace` | status: [ref](ref/FoldHeader.status.png) · [light](ref/FoldHeader.status.light.png)<br>workspace: none<br>host: [ref](ref/FoldHeader.host.png) · [light](ref/FoldHeader.host.light.png)<br>inbox: [ref](ref/FoldHeader.inbox.png) · [light](ref/FoldHeader.inbox.light.png)<br>see-all: [ref](ref/FoldHeader.see-all.png) · [light](ref/FoldHeader.see-all.light.png) | apps/mobile/src/features/agents/AgentsScreen.tsx (section headers inline)<br>`packages/ui/src/primitives/SectionHeader.tsx` | `Console/ConsoleSectionHeaders.swift:54-149`<br>`Console/ConsoleHostSectionHeaderPresentation.swift:1-136`<br>`Console/StatusInbox/StatusInboxView.swift:66-105` |
 | [WorkspaceCard](#workspacecard) | UX3-agent-rows | `console.agents-list-by-workspace`<br>`console.worktree-details` | default: [ref](ref/WorkspaceCard.png) · [light](ref/WorkspaceCard.light.png) | none | `Console/ConsoleWorkspaceCards.swift:47-436` |
 | [TerminalRow](#terminalrow) | UX3-agent-rows | `console.terminals-list`<br>`agent-detail.shell-terminal` | default: [ref](ref/TerminalRow.png) · [light](ref/TerminalRow.light.png)<br>tile: none | apps/mobile/src/features/terminals/ (no list yet, see ShellTerminalScreen.tsx) | `Console/TerminalListView.swift:403-598`<br>`Console/WorkspaceTerminalDetailView.swift:1-272` |
 | [AgentRowMenu](#agentrowmenu) | UX3-agent-rows | `console.row-context-menu`<br>`console.presentation-menu`<br>`console.host-filter-menu` | default: [ref](ref/AgentRowMenu.png) · [light](ref/AgentRowMenu.light.png) | packages/ui/src/overlay/ActionMenu.tsx (no lifted preview, see UX1-menu-preview) | `Console/AgentActionMenuContent.swift:206-304`<br>`Console/ConsoleView+AgentRows.swift:1-311` |
@@ -52,6 +52,9 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [SidebarColumn](#sidebarcolumn) | UX3-nav-sheets | `ipad/console.agents-list-flat`<br>`ipad/console.terminals-list`<br>`ipad/shell.hosts-settings-sheets` | default: [ref](ref/SidebarColumn.png) | none (UX1-wide) | `Console/ConsoleView+Sidebar.swift:1-370`<br>`Console/ConsoleSidebarChrome.swift:1-220`<br>`Console/SidebarSearchDrawer.swift:1-163`<br>`Console/ConsoleView+SplitView.swift:1-395` |
 | [EmptyDetail](#emptydetail) | UX3-nav-sheets | `ipad/console.agents-list-flat`<br>`console.no-hosts-empty`<br>`console.empty-states-agents` | default: [ref](ref/EmptyDetail.png) | packages/ui/src/primitives/EmptyState.tsx (no tinted capsule action) | `Console/ConsoleEmptyDetailPresentation.swift:1-114`<br>`DesignSystem/Components/EmptyState.swift:1-183` |
 | [QuickSheetHeader](#quicksheetheader) | UX3-nav-sheets | `usage.quick-sheet`<br>`console.quick-detail-sheet`<br>`usage.day-sheet` | default: [ref](ref/QuickSheetHeader.png) · [light](ref/QuickSheetHeader.light.png)<br>detail: [ref](ref/QuickSheetHeader.detail.png) · [light](ref/QuickSheetHeader.detail.light.png) | packages/ui/src/overlay/Sheet.tsx (bar actions exist, no quick header) | `Usage/UsageQuickSheet.swift:9-142`<br>`Console/ConsoleView+QuickDetail.swift:128-181`<br>`Console/ConsoleSheetPresentation.swift:1-225` |
+| [SearchBar](#searchbar) | UX3-nav-sheets | `console.search` | default: none | packages/ui/src/form/SearchField.tsx (field only) | `Console/SidebarSearchDrawer.swift:1-163` |
+| [TextPromptSheet](#textpromptsheet) | UX3-nav-sheets | `console.rename-sheet` | default: none | packages/ui/src/overlay/Sheet.tsx (bar actions)<br>`packages/ui/src/form/TextField.tsx` | `Console/AgentDetailSheets.swift:100-151` |
+| [ConnectionSheet](#connectionsheet) | UX3-nav-sheets | `console.host-connection-sheet` | default: none | apps/mobile/src/features/hosts/HostConnectionSheet.tsx (wrapper)<br>`apps/mobile/src/features/hosts/HostIssues.tsx` | `Hosts/HostOnboardingView.swift:777-912` |
 | [ScannerFrame](#scannerframe) | UX3-nav-sheets | `hosts.pairing-scanner`<br>`hosts.new-route` | unavailable: [ref](ref/ScannerFrame.unavailable.png) · [light](ref/ScannerFrame.unavailable.light.png) | `packages/ui/src/scanner/QRScanner.tsx`<br>`packages/ui/src/scanner/QRNotice.tsx` | `Pairing/PairingScanView.swift:13-349`<br>`Pairing/PairingScanStore.swift:1-335` |
 | [KeyValueGroup](#keyvaluegroup) | UX3-nav-sheets | `hosts.detail`<br>`console.quick-detail-sheet`<br>`usage.limits-sheet` | default: [ref](ref/KeyValueGroup.png) · [light](ref/KeyValueGroup.light.png) | `apps/mobile/src/features/hosts/HostInfoSections.tsx`<br>`packages/ui/src/primitives/CopyButton.tsx` | `DesignSystem/Components/CopyableValueRow.swift:1-120`<br>`Console/HostConnectionDetailView.swift:113-241`<br>`Hosts/HostListView.swift:206-340` |
 | [AgentHeader](#agentheader) | UX3-agent-bar | `agent-detail.header`<br>`agent-detail.chat`<br>`agent-detail.header-more-menu`<br>`agent-detail.terminal` | default: [ref](ref/AgentHeader.png) · [light](ref/AgentHeader.light.png) | `apps/mobile/src/agent-detail/AgentHeader.tsx` | `Console/AgentDetailHeader.swift:31-459`<br>`Console/AgentSurfaceToggle.swift:38-120`<br>`Console/MessageJumpControl.swift:577-700` |
@@ -129,6 +132,7 @@ Interactions: tap folds/unfolds with a snappy spring and chevron turn; a Host th
 Variants (gallery variant id = the id before the colon):
 
 - `status`: 'Needs you 1' count capsule, trailing chevron · crop [ref](ref/FoldHeader.status.png) · [light](ref/FoldHeader.status.light.png)
+- `workspace`: headline workspace name with the Host in secondary after it (the Terminals list), trailing chevron · crop none
 - `host`: Host glyph + name + readiness text or status count pills when collapsed · crop [ref](ref/FoldHeader.host.png) · [light](ref/FoldHeader.host.light.png)
 - `inbox`: Home section title with count, no chevron · crop [ref](ref/FoldHeader.inbox.png) · [light](ref/FoldHeader.inbox.light.png)
 - `see-all`: footer line '1 idle' with accent 'See all' · crop [ref](ref/FoldHeader.see-all.png) · [light](ref/FoldHeader.see-all.light.png)
@@ -396,6 +400,58 @@ Acceptance (the judge ticks each on the side-by-side):
 - [ ] grabber 36x5 centered 6pt from the top
 - [ ] title title2 bold, close = 32pt circle with an x in secondary
 - [ ] sheet top radius 28, content inset screenInset
+
+## SearchBar
+
+Task UX3-nav-sheets · target `packages/ui/src/components/SearchBar.tsx` · composes SearchField, GlassCapsule, Button
+
+Props sketch: `{ label, value, onChangeText, onClose, closeLabel?, clearLabel? }`
+
+Interactions: the field filters live; the circle leaves search mode and clears the query
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: search field with a glass close circle at its right; replaces the toolbar and title while searching · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] 44pt glass circle with an x, 8pt gap to the field
+- [ ] field fills the rest of the row and takes focus when the bar appears
+
+## TextPromptSheet
+
+Task UX3-nav-sheets · target `packages/ui/src/components/TextPromptSheet.tsx` · composes Sheet, TextField, Text
+
+Props sketch: `{ visible, title, fieldLabel, initialValue?, hint?, cancelLabel?, saveLabel?, onSave, onClose }`
+
+Interactions: Save (or return) hands the text over, an empty text is valid; Cancel and a backdrop tap dismiss
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Cancel and Save in the sheet bar, centered title, one text field, a footnote hint under it · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] the field opens focused with the initial text
+- [ ] hint in footnote secondary, closing sentence with a period
+
+## ConnectionSheet
+
+Task UX3-nav-sheets · target `packages/ui/src/components/ConnectionSheet.tsx` · composes Sheet, Button, Icon, Text
+
+Props sketch: `{ visible, title, state: { icon, label, note? }, detail?, failure?: { title, detail }, primary, secondary?, edit?, onClose }`
+
+Interactions: Retry Now restarts the connection, Stop Connecting stops a dial in flight, Edit opens the Host form
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: Host name title, Edit in the bar, state line with attempt, mono routes, failure headline and detail, Retry Now and Stop Connecting · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] state line: glyph, semibold label, secondary note
+- [ ] routes and failure detail in mono footnote
+- [ ] primary action pinned at the bottom with the text action under it
 
 ## ScannerFrame
 
