@@ -1,6 +1,6 @@
 import { t } from '@openagentspocket/i18n';
 import { useEffect, useState } from 'react';
-import { useHosts } from '@/features/hosts/useHosts';
+import { useConsoleState } from '@/console/hooks';
 import { useNotificationServices } from '@/notifications/services';
 
 export interface SettingsSummary {
@@ -12,7 +12,8 @@ export interface SettingsSummary {
 /** The live values the root rows show on their right edge. */
 export function useSettingsSummary(): SettingsSummary {
   const { pushToken } = useNotificationServices();
-  const hosts = useHosts();
+  // The Hosts Home shows (demo mode included), not only the saved catalog.
+  const { hosts } = useConsoleState();
   const [notifications, setNotifications] = useState<string>();
   useEffect(() => {
     let live = true;
@@ -27,5 +28,5 @@ export function useSettingsSummary(): SettingsSummary {
       live = false;
     };
   }, [pushToken]);
-  return { notifications, hostCount: hosts.hosts.length };
+  return { notifications, hostCount: hosts.length };
 }

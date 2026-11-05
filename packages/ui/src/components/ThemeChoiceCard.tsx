@@ -184,7 +184,11 @@ export function ThemeChoicePreview({
       >
         <View style={styles.header}>
           <View style={[styles.dot, { backgroundColor: colors.statusBlocked }]} />
-          <Text variant="headline" style={[styles.grow, { color: colors.textPrimary }]}>
+          <Text
+            variant="headline"
+            numberOfLines={1}
+            style={[styles.grow, { color: colors.textPrimary }]}
+          >
             {agentName}
           </Text>
           <View
