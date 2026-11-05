@@ -8,10 +8,6 @@ import { agentActions } from './agentActions';
 const mockPush = jest.fn();
 
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: mockPush }) }));
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 class RecordingTransport extends DemoConsoleTransport {
   readonly closed: string[] = [];
   readonly renamed: { target: string; name: string | null }[] = [];

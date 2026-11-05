@@ -10,10 +10,6 @@ import { NewTerminalScreen } from './NewTerminalScreen';
 import { type NewAgentServices, NewAgentServicesProvider } from './services';
 import { WorktreeDetailsScreen } from './WorktreeDetailsScreen';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 const label = (key: string) => translate('en', 'app', key);
 
 function renderApp(ui: ReactElement, services?: NewAgentServices) {

@@ -21,6 +21,7 @@ interface Props {
   /** The report day the day sheet shows, or null while closed. */
   day: string | null;
   onDay: (date: string | null) => void;
+  onDayDismissed: () => void;
   onBreakdown: (kind: BreakdownKind) => void;
   quick: boolean;
   onQuick: (open: boolean) => void;
@@ -42,6 +43,7 @@ export function UsageSheets(props: Props) {
         date={props.day}
         onDate={props.onDay}
         onClose={() => props.onDay(null)}
+        onDismissed={props.onDayDismissed}
         scope={scope}
         metric={metric}
         onBreakdown={props.onBreakdown}

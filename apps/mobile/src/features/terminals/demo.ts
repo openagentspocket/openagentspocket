@@ -5,8 +5,8 @@ import {
   type ShellTerminalRemote,
   TerminalConnectionPool,
 } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { utf8Encode } from 'agentico-ssh';
-import { systemClock } from '@/console/systemClock';
 import type { ShellTerminalServices } from './services';
 
 let counter = 0;

@@ -9,9 +9,10 @@ import {
   type ScreenHeader,
   Section,
   SkeletonRows,
+  useHandoverSheet,
+  useStoreState,
 } from '@openagentspocket/ui';
-import { type ReactNode, useEffect, useState } from 'react';
-import { useStoreState } from '@/changes/useStoreState';
+import { type ReactNode, useEffect } from 'react';
 import { AppScreen } from '@/navigation/AppScreen';
 import { OpenPortSheet } from './OpenPortSheet';
 import { PortRow } from './PortRow';
@@ -29,7 +30,7 @@ interface PortsScreenProps {
 /** browser.ports: the TCP servers listening on one Host, one row per port; a row opens its preview. */
 export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) {
   const state = useStoreState(store);
-  const [enteringPort, setEnteringPort] = useState(false);
+  const entering = useHandoverSheet();
   useAppActivity(store);
   useEffect(() => {
     store.start();
@@ -39,11 +40,11 @@ export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) 
     store.open(port);
     if (store.getState().preview) onOpenPreview();
   };
-  const openTyped = (port: number) => {
-    setEnteringPort(false);
-    store.openPort(port);
-    onOpenPreview();
-  };
+  const openTyped = (port: number) =>
+    entering.closeThen(() => {
+      store.openPort(port);
+      onOpenPreview();
+    });
   const { listing } = state;
   const refresh = () => store.refresh();
 
@@ -113,7 +114,7 @@ export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) 
       {
         label: t('Open Port…'),
         icon: 'hash',
-        onPress: () => setEnteringPort(true),
+        onPress: () => entering.open(true),
         testID: 'ports-open-port',
       },
     ],
@@ -128,9 +129,10 @@ export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) 
       <MetaChip label={t('Host %@', store.hostName)} icon="server" testID="ports-host" />
       {body}
       <OpenPortSheet
-        visible={enteringPort}
+        visible={entering.visible}
         hostName={store.hostName}
-        onClose={() => setEnteringPort(false)}
+        onClose={entering.close}
+        onDismissed={entering.onDismissed}
         onOpen={openTyped}
       />
     </AppScreen>

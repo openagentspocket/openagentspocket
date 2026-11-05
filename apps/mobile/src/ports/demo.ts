@@ -6,9 +6,9 @@ import {
   PortsStore,
   PreviewConnection,
 } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { FakeSession } from 'agentico-ssh';
 import type { PortsStoreFactory } from './registry';
-import { systemClock } from './systemClock';
 
 /**
  * An in-memory Host session for Demo mode: the discovery script's reply is a canned Linux Host

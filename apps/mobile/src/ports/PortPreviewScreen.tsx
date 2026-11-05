@@ -1,9 +1,8 @@
 import { hostUrl, type PortsStore, parseUrl, tunnelUrl } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { confirm, makeStyles, type ScreenHeader } from '@openagentspocket/ui';
+import { confirm, makeStyles, type ScreenHeader, useStoreState } from '@openagentspocket/ui';
 import { useEffect, useRef, useState } from 'react';
 import { Linking, Share, View } from 'react-native';
-import { useStoreState } from '@/changes/useStoreState';
 import { AppScreen } from '@/navigation/AppScreen';
 import { askLeavePreview } from './leaveDialog';
 import { PreviewStates } from './PreviewStates';

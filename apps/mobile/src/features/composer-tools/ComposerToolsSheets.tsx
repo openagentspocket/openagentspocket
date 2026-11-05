@@ -1,5 +1,5 @@
 import { t } from '@openagentspocket/i18n';
-import { Sheet } from '@openagentspocket/ui';
+import { Sheet, useSheetHandover } from '@openagentspocket/ui';
 import { SkillsPane } from './SkillsPane';
 import { SnippetsManager } from './SnippetsManager';
 import { SnippetsPane } from './SnippetsPane';
@@ -33,19 +33,32 @@ export function ComposerToolsSheets({
   onInsert,
 }: Props) {
   const skills = useSkillsPaneStore({ hostId, program, projectRoot });
+  const handover = useSheetHandover();
   const close = () => onOpen(null);
+  // One sheet leads to another: the next opens once this one has left.
+  const move = (next: ToolsSheet) => {
+    handover.after(() => onOpen(next));
+    close();
+  };
   const insert = (text: string) => {
     onInsert(text);
     close();
   };
   return (
     <>
-      <Sheet visible={open === 'skills'} onClose={close} title={t('Skills')} testID="skills-sheet">
+      <Sheet
+        visible={open === 'skills'}
+        onClose={close}
+        onDismissed={handover.onDismissed}
+        title={t('Skills')}
+        testID="skills-sheet"
+      >
         {open === 'skills' ? <SkillsPane store={skills} onInsert={insert} /> : null}
       </Sheet>
       <Sheet
         visible={open === 'snippets'}
         onClose={close}
+        onDismissed={handover.onDismissed}
         title={t('Snippets')}
         testID="snippets-sheet"
       >
@@ -53,13 +66,14 @@ export function ComposerToolsSheets({
           <SnippetsPane
             store={snippetStore()}
             onInsert={insert}
-            onManage={() => onOpen('snippets-manager')}
+            onManage={() => move('snippets-manager')}
           />
         ) : null}
       </Sheet>
       <Sheet
         visible={open === 'snippets-manager'}
-        onClose={() => onOpen('snippets')}
+        onClose={() => move('snippets')}
+        onDismissed={handover.onDismissed}
         title={t('Snippets')}
         testID="snippets-manager-sheet"
       >

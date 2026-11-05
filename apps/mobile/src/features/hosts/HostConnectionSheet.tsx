@@ -15,6 +15,7 @@ interface HostConnectionSheetProps {
   onStop: () => void;
   onEdit: () => void;
   onClose: () => void;
+  onDismissed?: () => void;
 }
 
 /** console.host-connection-sheet: what an offline Host is doing about it, as a `ConnectionSheet`. */
@@ -37,6 +38,7 @@ export function HostConnectionSheet(props: HostConnectionSheetProps) {
       secondary={stopped ? undefined : { label: t('Stop Connecting'), onPress: props.onStop }}
       edit={{ label: t('Edit'), onPress: props.onEdit }}
       onClose={props.onClose}
+      onDismissed={props.onDismissed}
       testID="host-connection-sheet"
     />
   );

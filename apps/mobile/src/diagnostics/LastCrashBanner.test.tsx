@@ -3,10 +3,6 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { type CrashStorage, readLastCrash } from './crashRecorder';
 import { LastCrashBanner } from './LastCrashBanner';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 function storageWith(raw: string): CrashStorage & { raw: string } {
   const state = { raw };
   return {

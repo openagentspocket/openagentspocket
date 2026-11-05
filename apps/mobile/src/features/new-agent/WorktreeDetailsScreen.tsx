@@ -6,10 +6,9 @@ import {
   type WorktreeRemovalReceipt,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, ListRow, Section, useAnchor } from '@openagentspocket/ui';
+import { Button, ListRow, Section, useAnchor, useStoreState } from '@openagentspocket/ui';
 import { useEffect, useMemo } from 'react';
 import { View } from 'react-native';
-import { useStoreState } from '@/changes/useStoreState';
 import { AppScreen } from '@/navigation/AppScreen';
 import { newAgentText } from './text';
 import { useWorktreeDialogs, WORKTREE_REMOVE_ANCHOR } from './useWorktreeDialogs';

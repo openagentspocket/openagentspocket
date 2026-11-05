@@ -35,3 +35,9 @@ jest.mock('react-native-drawer-layout', () => ({
 jest.mock('@lodev09/react-native-true-sheet', () => {
   throw new Error('native only');
 });
+
+// The native SafeAreaView needs a provider no unit test mounts.
+jest.mock('react-native-safe-area-context', () => ({
+  ...jest.requireActual('react-native-safe-area-context'),
+  SafeAreaView: require('react-native').View,
+}));

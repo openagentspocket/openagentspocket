@@ -13,14 +13,11 @@ import {
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Animated, Pressable, View } from 'react-native';
+import { statusDot } from '../console/agentStatus';
 import { useEntryMenus } from '../navigation/entryMenus';
 import { hrefs } from '../navigation/hrefs';
 import type { BoardEntry } from './boardModel';
 import { DragHandle } from './DragHandle';
-
-function statusDot(status: string): Status {
-  return status === 'blocked' || status === 'done' || status === 'working' ? status : 'idle';
-}
 
 const useStyles = makeStyles((th) => ({
   actions: { flexDirection: 'row', alignItems: 'center' },

@@ -1,3 +1,4 @@
+import { errorMessage } from '@openagentspocket/core';
 import { type OverlayPeer, type OverlayPeerMode, OverlayPeerPicker } from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
 import { hostsRuntime } from './hostsRuntime';
@@ -26,8 +27,7 @@ export function PeerChooser({
     setFailure(null);
     source.load().then(
       (loaded) => live && setPeers(loaded),
-      (error: unknown) =>
-        live && setFailure(error instanceof Error ? error.message : String(error)),
+      (error: unknown) => live && setFailure(errorMessage(error)),
     );
     return () => {
       live = false;

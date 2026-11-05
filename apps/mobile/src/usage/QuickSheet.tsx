@@ -17,6 +17,7 @@ const useStyles = makeStyles((th) => ({
 interface Props {
   visible: boolean;
   onClose: () => void;
+  onDismissed?: () => void;
   readings: readonly HostReading[];
   now: Date;
   onOpenFull: () => void;
@@ -25,7 +26,15 @@ interface Props {
 }
 
 /** usage.quick-sheet: every Host's Usage Limits at a glance, with the way to the full Usage tab. */
-export function QuickSheet({ visible, onClose, readings, now, onOpenFull, onClaudeLimits }: Props) {
+export function QuickSheet({
+  visible,
+  onClose,
+  onDismissed,
+  readings,
+  now,
+  onOpenFull,
+  onClaudeLimits,
+}: Props) {
   const styles = useStyles();
   // A closed sheet computes nothing: Home mounts it for the whole session.
   const { cards, footer, empty } = useMemo(
@@ -39,6 +48,7 @@ export function QuickSheet({ visible, onClose, readings, now, onOpenFull, onClau
     <Sheet
       visible={visible}
       onClose={onClose}
+      onDismissed={onDismissed}
       title={t('Usage')}
       closeLabel={t('Close')}
       footer={

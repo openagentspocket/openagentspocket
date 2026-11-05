@@ -17,12 +17,12 @@ import {
   makeStyles,
   SkeletonRows,
   Text,
+  useStoreState,
 } from '@openagentspocket/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
 import { diffHunks, isEmptyPatch, noteText, patchFileTitle } from './diffLines';
 import { say } from './say';
-import { useStoreState } from './useStoreState';
 
 const useStyles = makeStyles((t) => ({
   padded: { padding: t.metrics.screenInset, gap: t.spacing.sm },

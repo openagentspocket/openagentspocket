@@ -1,4 +1,5 @@
 import type { PluginNotice, PluginStep } from '@openagentspocket/core';
+import { errorMessage } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Button, Card, CommandBlock, Icon, Sheet, Text, useTheme } from '@openagentspocket/ui';
 import { useState } from 'react';
@@ -39,7 +40,7 @@ export function PluginNoticeSheet({
     try {
       await onRunAction(action.steps);
     } catch (error) {
-      setFailure(error instanceof Error ? error.message : String(error));
+      setFailure(errorMessage(error));
     } finally {
       setRunning(false);
     }

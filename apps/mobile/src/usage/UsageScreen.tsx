@@ -4,6 +4,7 @@ import {
   scopeDates,
   type UsageRange,
 } from '@openagentspocket/core';
+import { useSheetHandover } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
@@ -40,6 +41,7 @@ export function UsageScreen({
   const [range, setRange] = useState<UsageRange>('last30Days');
   const [metric, setMetric] = useState<UsageMetric>('cost');
   const [day, setDay] = useState<string | null>(null);
+  const dayHandover = useSheetHandover();
   const [quick, setQuick] = useState(initial?.quick ?? false);
   const [accounts, setAccounts] = useState(initial?.accounts ?? false);
 
@@ -74,10 +76,13 @@ export function UsageScreen({
       limits={limits}
       day={day ?? latest ?? null}
       onDay={setDay}
+      onDayDismissed={dayHandover.onDismissed}
       // The day sheet's links close it, then push the list.
       onBreakdown={(kind) => {
+        // The atlas's start day is no state to clear, so that sheet never leaves.
+        if (day === null) return showAll(kind);
+        dayHandover.after(() => showAll(kind));
         setDay(null);
-        showAll(kind);
       }}
       quick={quick}
       onQuick={setQuick}

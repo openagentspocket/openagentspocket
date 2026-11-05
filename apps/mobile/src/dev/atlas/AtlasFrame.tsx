@@ -6,11 +6,11 @@ import {
   MemoryStorage,
   PinnedAgents,
 } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { createDemoConsoleStore } from '@/console/demo';
 import { ConsoleStoreProvider } from '@/console/hooks';
 import { ConsoleStore } from '@/console/store';
-import { systemClock } from '@/console/systemClock';
 import type { DemoHostProbe } from '@/features/hosts/HostProbe';
 import { createDemoRuntime, policyFor, setHostsRuntime } from '@/features/hosts/hostsRuntime';
 import { createDemoServices } from '@/features/new-agent/demo';

@@ -1,16 +1,12 @@
 import { AgentStatusClocks, MemoryStorage, PinnedAgents } from '@openagentspocket/core';
 import { setLocale, translate } from '@openagentspocket/i18n';
+import { systemClock } from '@openagentspocket/transport';
 import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { Platform } from 'react-native';
 import { ConsoleStoreProvider } from '../console/hooks';
 import { ConsoleStore } from '../console/store';
-import { systemClock } from '../console/systemClock';
 import { HomeScreen } from './HomeScreen';
-
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
 
 const renderHome = (props: Parameters<typeof HomeScreen>[0] = {}) =>
   render(

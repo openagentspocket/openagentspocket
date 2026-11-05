@@ -7,10 +7,6 @@ import { TestSettings } from '@/settings/TestSettings';
 import { AgentDetailScreen } from '../AgentDetailScreen';
 import { ComposerRegistryProvider } from './composerContext';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 // Jest runs in node; the app's tsconfig carries no node typings.
 declare const __dirname: string;
 const { readFileSync } = require('node:fs') as {

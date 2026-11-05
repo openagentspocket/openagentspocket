@@ -18,10 +18,6 @@ import { releaseChangesStore, setChangesStoreFactory } from './registry';
 import { buildSections } from './rows';
 import { say } from './say';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 const clock: Clock = {
   setTimeout: (callback, ms) => setTimeout(callback, ms),
   clearTimeout: (handle) => clearTimeout(handle as ReturnType<typeof setTimeout>),

@@ -31,9 +31,11 @@ const useStyles = makeStyles((theme) => ({
 
 interface QuickDetailSheetProps {
   row: ConsoleRow | undefined;
+  visible: boolean;
   pinned: boolean;
   labels: AgentRowLabels;
   onClose: () => void;
+  onDismissed?: () => void;
   onOpen: (row: ConsoleRow) => void;
   onTogglePin: (row: ConsoleRow) => void;
   onCloseAgent: (row: ConsoleRow) => void;
@@ -42,9 +44,11 @@ interface QuickDetailSheetProps {
 /** The medium quick detail of an Agent: kind, status and age, title, chips, copyable ids, actions. */
 export function QuickDetailSheet({
   row,
+  visible,
   pinned,
   labels,
   onClose,
+  onDismissed,
   onOpen,
   onTogglePin,
   onCloseAgent,
@@ -69,8 +73,9 @@ export function QuickDetailSheet({
   const chips = [row.hostName, row.workspaceLabel].filter((chip): chip is string => Boolean(chip));
   return (
     <Sheet
-      visible
+      visible={visible}
       onClose={onClose}
+      onDismissed={onDismissed}
       detent="fit"
       closeButton={false}
       testID="quick-detail"

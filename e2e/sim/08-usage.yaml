@@ -7,3 +7,12 @@ appId: com.openagentspocket.app
 - waitForAnimationToEnd
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/08-usage
+# A choice in the sheet navigates only after the sheet has left: this froze the Add Host route.
+- tapOn:
+    id: open-full-usage
+- extendedWaitUntil:
+    visible:
+      id: usage-screen
+    timeout: 10000
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/08-usage-full

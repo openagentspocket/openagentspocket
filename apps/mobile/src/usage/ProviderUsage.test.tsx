@@ -4,10 +4,6 @@ import { render, screen, waitFor } from '@testing-library/react-native';
 import { ProviderUsageList } from './ProviderUsageList';
 import { useProviderUsage } from './useProviderUsage';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 function Probe({ source }: { source: FakeUsageSource }) {
   const { cards, footer } = useProviderUsage(source);
   return <ProviderUsageList cards={cards} footer={footer} />;

@@ -5,10 +5,6 @@ import { createDemoConsoleStore } from '../console/demo';
 import { ConsoleStoreProvider } from '../console/hooks';
 import { BoardScreen } from './BoardScreen';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 const renderBoard = () => {
   const store = createDemoConsoleStore();
   render(

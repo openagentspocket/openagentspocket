@@ -1,7 +1,7 @@
 import { needsConfirmation } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, QRScanner } from '@openagentspocket/ui';
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { Banner, QRScanner, useStoreState } from '@openagentspocket/ui';
+import { useEffect, useState } from 'react';
 import { AppScreen } from '@/navigation/AppScreen';
 import { EasyPairPanel } from './EasyPairPanel';
 import { hostsRuntime } from './hostsRuntime';
@@ -25,7 +25,7 @@ export function PairingScreen({
   onOpenGuide,
 }: PairingScreenProps) {
   const [store] = useState(() => hostsRuntime().createScanStore());
-  const state = useSyncExternalStore(store.subscribe, store.getState);
+  const state = useStoreState(store);
   const code = state.pairingCode;
 
   // A code that needs no confirmation starts pairing as soon as it parses.

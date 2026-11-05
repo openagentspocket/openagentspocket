@@ -13,9 +13,6 @@ import { SettingsProvider } from './SettingsProvider';
 import { SettingsScreen } from './SettingsScreen';
 import { SETTINGS_PAGES, type SettingsRow } from './schema';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
 jest.mock('expo-router', () => ({
   useRouter: () => ({ push: jest.fn() }),
   Stack: { Screen: () => null },

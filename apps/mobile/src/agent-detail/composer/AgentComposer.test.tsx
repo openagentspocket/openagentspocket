@@ -13,10 +13,6 @@ jest.mock('@/files/pickers', () => ({
   pickDocument: jest.fn(async () => null),
 }));
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn(), back: jest.fn() }) }));
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 function renderDetail(paneId: string, storage = new MemoryStorage()) {
   const registry = new ComposerRegistry({ storage, clock: new FakeClock() });
   const store = createDemoConsoleStore();

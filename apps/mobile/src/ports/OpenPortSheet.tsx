@@ -7,11 +7,18 @@ interface OpenPortSheetProps {
   visible: boolean;
   hostName: string;
   onClose: () => void;
+  onDismissed?: () => void;
   onOpen: (port: number) => void;
 }
 
 /** "Open Port…": a port the list does not show, on the Host's own loopback only. */
-export function OpenPortSheet({ visible, hostName, onClose, onOpen }: OpenPortSheetProps) {
+export function OpenPortSheet({
+  visible,
+  hostName,
+  onClose,
+  onDismissed,
+  onOpen,
+}: OpenPortSheetProps) {
   const [text, setText] = useState('');
   const port = manualPort(text);
   const submit = () => {
@@ -23,6 +30,7 @@ export function OpenPortSheet({ visible, hostName, onClose, onOpen }: OpenPortSh
     <Sheet
       visible={visible}
       onClose={onClose}
+      onDismissed={onDismissed}
       title={t('Open Port')}
       detent="fit"
       closeLabel={t('Cancel')}

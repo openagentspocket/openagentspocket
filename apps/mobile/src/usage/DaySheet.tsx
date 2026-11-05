@@ -46,6 +46,7 @@ interface Props {
   /** The report day (`YYYY-MM-DD`) to open, or null while closed. */
   date: string | null;
   onClose: () => void;
+  onDismissed?: () => void;
   /** Steps to another day of the scope. */
   onDate: (date: string) => void;
   scope: UsageScope;
@@ -55,7 +56,15 @@ interface Props {
 }
 
 /** usage.day-sheet: the day's figure, then By Host and By program with the token split. */
-export function DaySheet({ date, onClose, onDate, scope, metric, onBreakdown }: Props) {
+export function DaySheet({
+  date,
+  onClose,
+  onDismissed,
+  onDate,
+  scope,
+  metric,
+  onBreakdown,
+}: Props) {
   const styles = useStyles();
   const theme = useTheme();
   const locale = localeTag();
@@ -70,6 +79,7 @@ export function DaySheet({ date, onClose, onDate, scope, metric, onBreakdown }: 
     <Sheet
       visible={date !== null}
       onClose={onClose}
+      onDismissed={onDismissed}
       headerless
       detent={{ fraction: 0.65 }}
       closeLabel={t('Close')}

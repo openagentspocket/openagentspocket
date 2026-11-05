@@ -1,8 +1,7 @@
 import type { Host } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { HostIssueRow } from '@openagentspocket/ui';
+import { HostIssueRow, useHandoverSheet } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { failureText } from '@/connections/failureText';
 import { useConsoleState, useConsoleStore } from '@/console/hooks';
 import { homeLabels } from '@/home/homeLabels';
@@ -22,7 +21,8 @@ export function HostIssues() {
   const { hosts } = useConsoleState();
   const store = useConsoleStore();
   const saved = useHosts().hosts;
-  const [openId, setOpenId] = useState<string | undefined>();
+  const sheet = useHandoverSheet<string>();
+  const openId = sheet.value;
   const offline = hosts.filter((host) => hostState(host) === 'offline');
   const open = hosts.find((host) => host.id === openId);
   const status = open?.status;
@@ -36,11 +36,14 @@ export function HostIssues() {
       <HostIssueRow
         issues={offline.map((host) => ({ hostName: host.name || t('Offline'), kind: 'offline' }))}
         labels={homeLabels()}
-        onOpen={(issue) => setOpenId(hosts.find((host) => host.name === issue?.hostName)?.id)}
+        onOpen={(issue) => {
+          const id = hosts.find((host) => host.name === issue?.hostName)?.id;
+          if (id) sheet.open(id);
+        }}
       />
       {open ? (
         <HostConnectionSheet
-          visible
+          visible={sheet.visible}
           hostName={open.name}
           stopped={open.link === 'stopped'}
           attempt={status?.kind === 'reconnecting' ? status.attempt : undefined}
@@ -48,11 +51,9 @@ export function HostIssues() {
           failure={failure && { title: failure.summary, detail: failure.detail }}
           onRetry={() => void store.retry(open.id)}
           onStop={() => void store.stopConnecting(open.id)}
-          onEdit={() => {
-            setOpenId(undefined);
-            router.push(hrefs.hostForm({ edit: open.id }));
-          }}
-          onClose={() => setOpenId(undefined)}
+          onEdit={() => sheet.closeThen(() => router.push(hrefs.hostForm({ edit: open.id })))}
+          onClose={sheet.close}
+          onDismissed={sheet.onDismissed}
         />
       ) : null}
     </>

@@ -25,6 +25,7 @@ interface ConnectionSheetProps {
   /** The bar's trailing action ("Edit"). */
   edit?: { label: string; onPress: () => void };
   onClose: () => void;
+  onDismissed?: () => void;
   testID?: string;
 }
 
@@ -36,6 +37,7 @@ export function ConnectionSheet(props: ConnectionSheetProps) {
     <Sheet
       visible={props.visible}
       onClose={props.onClose}
+      onDismissed={props.onDismissed}
       title={props.title}
       detent="fit"
       trailing={edit ? { ...edit, testID: `${testID}-edit` } : undefined}

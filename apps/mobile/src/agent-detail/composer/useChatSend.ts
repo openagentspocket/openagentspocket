@@ -13,10 +13,9 @@ import {
   sendPolicyForAgent,
   sentMessages,
 } from '@openagentspocket/core';
-import { herdrScreenIO, isBlockedPaneApi } from '@openagentspocket/transport';
+import { herdrScreenIO, isBlockedPaneApi, systemClock } from '@openagentspocket/transport';
 import { useEffect, useMemo, useRef } from 'react';
 import { useConsoleStore } from '@/console/hooks';
-import { systemClock } from '@/console/systemClock';
 import { useConversationRegistry } from '@/conversations/useConversation';
 
 /** Chat's delivery for an Agent whose program Chat has no send rules for: the text goes as typed. */

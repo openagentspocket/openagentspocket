@@ -1,7 +1,7 @@
 import { consoleSubscriptions, EventsSession } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { createDemoConsoleStore } from '@/console/demo';
 import type { ConsoleStore } from '@/console/store';
-import { systemClock } from '@/console/systemClock';
 
 const neverConnects = () =>
   new EventsSession({

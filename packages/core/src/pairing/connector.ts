@@ -1,3 +1,4 @@
+import { errorMessage } from '../errors/message';
 import {
   PairingCancelledError,
   PairingCeremonyError,
@@ -109,7 +110,7 @@ export const CLEANUP_TIMEOUT_MS = 2_000;
 export const fail = (failure: PairingCeremonyFailure) => new PairingCeremonyError(failure);
 
 export function describeError(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  return errorMessage(error);
 }
 
 export function isCancellation(error: unknown): boolean {

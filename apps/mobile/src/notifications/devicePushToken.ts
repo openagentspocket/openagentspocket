@@ -1,6 +1,7 @@
 import {
   apnsToken,
   type DevicePushTokenSource,
+  errorMessage,
   fcmToken,
   type PushRegistrationState,
 } from '@openagentspocket/core';
@@ -82,7 +83,7 @@ export function createDevicePushTokenSource(
         if (!granted(status)) return { kind: 'denied' };
         return await fetchToken();
       } catch (error) {
-        return { kind: 'failed', message: error instanceof Error ? error.message : String(error) };
+        return { kind: 'failed', message: errorMessage(error) };
       }
     },
   };

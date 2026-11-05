@@ -1,6 +1,12 @@
 import { isFinishedStatus } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { BackgroundWorkList, BackgroundWorkStrip, makeStyles, Sheet } from '@openagentspocket/ui';
+import {
+  BackgroundWorkList,
+  BackgroundWorkStrip,
+  makeStyles,
+  Sheet,
+  useHandoverSheet,
+} from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useBackgroundWork } from '@/conversations/useBackgroundWork';
@@ -27,14 +33,13 @@ export function AgentBackgroundWork({ hostId, paneId, condensed = false }: Props
   const styles = useStyles();
   const { presentation, subagentIdOf } = useBackgroundWork(hostId, paneId);
   const { openSubagent } = useDetailUi();
-  /** undefined: closed. null: open at no row. A string: open with that Workflow expanded. */
-  const [open, setOpen] = useState<string | null | undefined>(undefined);
+  const sheet = useHandoverSheet();
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
   const empty = presentation.rows.length === 0;
   // A new message, or another conversation, leaves nothing to show.
   useEffect(() => {
-    if (empty) setOpen(undefined);
-  }, [empty]);
+    if (empty) sheet.close();
+  }, [empty, sheet.close]);
   const withOpen = (row: (typeof presentation.rows)[number]) => {
     const item = detailItem(row);
     const running = !isFinishedStatus(row.status);
@@ -43,10 +48,7 @@ export function AgentBackgroundWork({ hostId, paneId, condensed = false }: Props
     return {
       ...item,
       openLabel: t('Open Subagent Transcript'),
-      onOpen: () => {
-        setOpen(undefined);
-        openSubagent(agentId);
-      },
+      onOpen: () => sheet.closeThen(() => openSubagent(agentId)),
     };
   };
   const unfinished = presentation.unfinished.map(withOpen);
@@ -59,7 +61,7 @@ export function AgentBackgroundWork({ hostId, paneId, condensed = false }: Props
   };
   const show = (id: string | null) => {
     setExpanded(id === null ? new Set() : new Set([id]));
-    setOpen(id);
+    sheet.open(true);
   };
   return (
     <>
@@ -73,10 +75,11 @@ export function AgentBackgroundWork({ hostId, paneId, condensed = false }: Props
         />
       </View>
       <Sheet
-        visible={open !== undefined}
-        onClose={() => setOpen(undefined)}
+        visible={sheet.visible}
+        onClose={sheet.close}
+        onDismissed={sheet.onDismissed}
         title={t('Background Work')}
-        leading={{ label: t('Done'), onPress: () => setOpen(undefined), testID: 'work-done' }}
+        leading={{ label: t('Done'), onPress: sheet.close, testID: 'work-done' }}
         detent="large"
         testID="background-work-sheet"
       >

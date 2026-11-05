@@ -1,4 +1,5 @@
 import { HerdrApiError } from '../errors/herdr-api-error';
+import { errorMessage } from '../errors/message';
 import { message, type Text } from '../errors/text';
 import { TransportFailure } from '../errors/transport-error';
 import { isJsonObject, type JsonObject, type JsonValue, parseJson } from './json';
@@ -34,7 +35,7 @@ export function requestLine<M extends HerdrMethod>(
     return `${JSON.stringify({ id, method, params: params ?? {} })}\n`;
   } catch (error) {
     // A diagnostic, not catalog copy (unlocalized on the Swift side too).
-    const reason = error instanceof Error ? error.message : String(error);
+    const reason = errorMessage(error);
     throw malformed(`failed to encode request for ${method}: ${reason}`);
   }
 }

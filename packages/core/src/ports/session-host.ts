@@ -1,4 +1,5 @@
 import type { ShellExec } from '../changes/exec';
+import { errorMessage } from '../errors/message';
 import { asTransportError, type TransportError, TransportFailure } from '../errors/transport-error';
 import { canonicalAllowedAddress } from './address';
 import type { PreviewConnection, PreviewSession } from './connection';
@@ -43,7 +44,7 @@ function codeOf(thrown: unknown): string | null {
  */
 export function mapSessionError(thrown: unknown, port: number): TransportError {
   if (thrown instanceof TransportFailure) return thrown.error;
-  const detail = thrown instanceof Error ? thrown.message : String(thrown);
+  const detail = errorMessage(thrown);
   switch (codeOf(thrown)) {
     case 'targetUnreachable':
       return { kind: 'channelFailed', detail: nothingAnsweredDetail(port) };

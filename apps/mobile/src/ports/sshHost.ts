@@ -4,9 +4,9 @@ import {
   PortsStore,
   PreviewConnection,
 } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import type { SshSession } from 'agentico-ssh';
 import type { PortsStoreFactory } from './registry';
-import { systemClock } from './systemClock';
 
 /**
  * The production factory: each Ports store gets its own SSH session to the Host (never the

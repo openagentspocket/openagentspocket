@@ -8,10 +8,6 @@ import { durationText, rowToolStatus } from './chatRowModel';
 
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn() }) }));
 jest.mock('expo-clipboard', () => ({ getStringAsync: async () => '' }));
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 describe('chat row model', () => {
   it('formats durations as seconds, then minutes and seconds', () => {
     expect(durationText(26)).toBe('26s');

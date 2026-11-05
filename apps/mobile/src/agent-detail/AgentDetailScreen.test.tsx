@@ -11,10 +11,6 @@ import { parseSurface, readSurface } from './surface';
 
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn() }) }));
 jest.mock('expo-clipboard', () => ({ getStringAsync: async () => '' }));
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 function renderDetail(
   props: Partial<React.ComponentProps<typeof AgentDetailScreen>> & { paneId: string },
 ) {

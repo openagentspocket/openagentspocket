@@ -1,6 +1,6 @@
 import type { ConsoleRow, ListGroup } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, makeStyles } from '@openagentspocket/ui';
+import { EmptyState, makeStyles, useHandoverSheet } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
@@ -47,11 +47,10 @@ export function AgentsScreen(props: {
   const actions = useMemo(() => agentActions(list.store), [list.store]);
   const rename = useRename(actions);
   const [searchOpen, setSearchOpen] = useState(initialQuery !== undefined);
-  const [detailId, setDetailId] = useState(openDetail);
+  const detailSheet = useHandoverSheet<string>(openDetail);
   const detail = list.groups
     .flatMap((group) => group.rows)
-    .find((row) => row.agent.pane_id === detailId);
-  const setDetail = (row: ConsoleRow | undefined) => setDetailId(row?.agent.pane_id);
+    .find((row) => row.agent.pane_id === detailSheet.value);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: atlas start state, applied once
   useEffect(() => {
@@ -99,7 +98,7 @@ export function AgentsScreen(props: {
             onTogglePin={actions.togglePin}
             onRename={(row) => rename.open(row)}
             onClose={(row) => void close(row)}
-            onDetails={setDetail}
+            onDetails={(row) => detailSheet.open(row.agent.pane_id)}
           />
         ))}
       </View>
@@ -111,21 +110,17 @@ export function AgentsScreen(props: {
       ) : null}
       <QuickDetailSheet
         row={detail}
+        visible={detailSheet.visible}
         pinned={detail ? isPinned(detail) : false}
         labels={labels}
-        onClose={() => setDetail(undefined)}
-        onOpen={(row) => {
-          setDetail(undefined);
-          router.push(agentHref(row));
-        }}
+        onClose={detailSheet.close}
+        onDismissed={detailSheet.onDismissed}
+        onOpen={(row) => detailSheet.closeThen(() => router.push(agentHref(row)))}
         onTogglePin={(row) => {
           actions.togglePin(row);
-          setDetail(undefined);
+          detailSheet.close();
         }}
-        onCloseAgent={(row) => {
-          setDetail(undefined);
-          void close(row);
-        }}
+        onCloseAgent={(row) => detailSheet.closeThen(() => void close(row))}
       />
       {rename.sheet}
     </AppScreen>

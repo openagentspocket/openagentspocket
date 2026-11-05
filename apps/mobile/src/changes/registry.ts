@@ -1,12 +1,7 @@
 import { ChangesStore, type Clock } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { DEMO_PATCH, DEMO_READ } from './demo';
 import { say } from './say';
-
-const systemClock: Clock = {
-  setTimeout: (callback, ms) => setTimeout(callback, ms),
-  clearTimeout: (handle) => clearTimeout(handle as ReturnType<typeof setTimeout>),
-  monotonicMs: () => Date.now(),
-};
 
 export type ChangesStoreFactory = (agentId: string) => ChangesStore;
 

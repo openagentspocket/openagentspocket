@@ -1,10 +1,10 @@
 import { DEFAULT_DEVICE_KEY_ALIAS } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { appGroup } from 'agentico-app-group';
 import { liveActivityController } from 'agentico-live-activity';
 import { nativeSsh } from 'agentico-ssh';
 import Constants from 'expo-constants';
 import { AppState, Platform } from 'react-native';
-import { systemClock } from '@/console/systemClock';
 import { registerLiveRuntime } from '@/features/hosts/hostsRuntime';
 import { secureRandomBytes } from '@/lib/secureRandom';
 import { isApnsSandbox } from '@/notifications/apnsEnvironment';

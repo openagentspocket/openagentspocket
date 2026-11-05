@@ -12,10 +12,6 @@ import {
 
 const mockPush = jest.fn();
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: mockPush }) }));
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 const renderWith = (ui: ReactElement, services: NotificationServices) =>
   render(
     <ThemeProvider themeId="indigo">

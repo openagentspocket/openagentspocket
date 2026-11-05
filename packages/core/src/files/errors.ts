@@ -1,3 +1,4 @@
+import { errorMessage } from '../errors/message';
 import { presentation } from '../errors/presentation';
 import { message, type Text } from '../errors/text';
 import { TransportFailure } from '../errors/transport-error';
@@ -157,10 +158,7 @@ export function failureText(error: unknown): Text {
     const parts = shown.recovery ? [shown.summary, shown.recovery] : [shown.summary];
     return { join: parts, separator: ' ' };
   }
-  return message(
-    'Something went wrong: %@',
-    error instanceof Error ? error.message : String(error),
-  );
+  return message('Something went wrong: %@', errorMessage(error));
 }
 
 /** A change is never run twice, so a dead link leaves the outcome unknown. */

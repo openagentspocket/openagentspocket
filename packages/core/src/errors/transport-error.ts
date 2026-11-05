@@ -1,5 +1,6 @@
 import { isRouteHostKeySecurityFailure, type RouteFailure } from '../hosts/ssh-route';
 import { HerdrApiError } from './herdr-api-error';
+import { errorMessage } from './message';
 import type { Text } from './text';
 
 /**
@@ -184,6 +185,6 @@ export function asTransportError(thrown: unknown): TransportError {
   }
   return {
     kind: 'channelFailed',
-    detail: thrown instanceof Error ? thrown.message : String(thrown),
+    detail: errorMessage(thrown),
   };
 }

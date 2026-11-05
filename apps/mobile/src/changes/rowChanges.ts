@@ -1,5 +1,5 @@
 import { ChangesStore, RowChanges, type RowChangesTarget } from '@openagentspocket/core';
-import { systemClock } from '@/console/systemClock';
+import { systemClock } from '@openagentspocket/transport';
 import { demoReadFor } from './demo';
 import { say } from './say';
 

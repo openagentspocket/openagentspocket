@@ -6,9 +6,6 @@ import { atlasUsageSource } from '@/dev/atlas/atlasUsage';
 import { LimitsScreen } from './LimitsScreen';
 import { UsageScreen } from './UsageScreen';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
 const mockPush = jest.fn();
 jest.mock('expo-router', () => ({
   useRouter: () => ({ push: mockPush }),
@@ -123,10 +120,12 @@ describe('UsageScreen', () => {
     const sheet = await screen.findByTestId('usage-day-sheet');
     expect(within(sheet).getByTestId('usage-day-link-models')).toBeTruthy();
     await fireEvent.press(within(sheet).getByTestId('usage-day-link-directories'));
-    expect(mockPush).toHaveBeenCalledWith({
-      pathname: '/usage-breakdown',
-      params: { kind: 'directories', metric: 'cost' },
-    });
+    await waitFor(() =>
+      expect(mockPush).toHaveBeenCalledWith({
+        pathname: '/usage-breakdown',
+        params: { kind: 'directories', metric: 'cost' },
+      }),
+    );
   });
 
   it('carries the Claude Code limits switch on the quick sheet while the limits are off', async () => {

@@ -1,4 +1,5 @@
 export { HerdrApiError } from './herdr-api-error';
+export * from './message';
 export {
   explanation,
   presentation,

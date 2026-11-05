@@ -5,7 +5,7 @@ import {
   listLimitNotice,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, ChangeSection, type ScreenHeader } from '@openagentspocket/ui';
+import { Banner, ChangeSection, type ScreenHeader, useStoreState } from '@openagentspocket/ui';
 import { useCallback, useEffect, useMemo } from 'react';
 import { AppScreen } from '@/navigation/AppScreen';
 import { ChangedFileRow } from './ChangedFileRow';
@@ -14,7 +14,6 @@ import { ChangesBlockedState, ChangesNote, CleanState, TimedOutBanner } from './
 import { changesStoreFor, releaseChangesStore } from './registry';
 import { buildSections } from './rows';
 import { say } from './say';
-import { useStoreState } from './useStoreState';
 
 interface ChangesScreenProps {
   agentId: string;

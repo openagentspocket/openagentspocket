@@ -8,15 +8,8 @@ import {
   type StatusInboxSection,
   statusInboxItems,
 } from '@openagentspocket/core';
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+import { useStoreState } from '@openagentspocket/ui';
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { createDemoConsoleStore } from './demo';
 import type { ConsoleState, ConsoleStore } from './store';
 
@@ -47,7 +40,7 @@ export function useConsoleStore(): ConsoleStore {
 /** The whole Console state; re-renders on every change. */
 export function useConsoleState(): ConsoleState {
   const store = useConsoleStore();
-  return useSyncExternalStore(store.subscribe, store.getState, store.getState);
+  return useStoreState(store);
 }
 
 /** Every Host's Agents in Console order. */

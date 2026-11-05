@@ -1,3 +1,4 @@
+import { errorMessage } from '../errors/message';
 import type { Clock } from '../hosts/cancellation';
 
 /** What a Stop tap came to. `sent` means only that the keys left the app. */
@@ -128,7 +129,7 @@ export class ComposerStopStore {
     try {
       outcome = await interrupt();
     } catch (error) {
-      outcome = { kind: 'failed', message: error instanceof Error ? error.message : String(error) };
+      outcome = { kind: 'failed', message: errorMessage(error) };
     }
     this.attemptsOnTheirWay -= 1;
     this.lastAttemptEnded = this.clock.monotonicMs();

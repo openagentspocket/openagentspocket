@@ -4,7 +4,13 @@ import {
   fileDirectory,
   fileName,
 } from '@openagentspocket/core';
-import { EmptyState, makeStyles, type ScreenHeader, Text } from '@openagentspocket/ui';
+import {
+  EmptyState,
+  makeStyles,
+  type ScreenHeader,
+  Text,
+  useStoreState,
+} from '@openagentspocket/ui';
 import { useEffect } from 'react';
 import { ScrollView, View } from 'react-native';
 import { AppScreen } from '@/navigation/AppScreen';
@@ -12,7 +18,6 @@ import { DiffContent } from './DiffContent';
 import { readTimeText } from './format';
 import { changesStoreFor } from './registry';
 import { say } from './say';
-import { useStoreState } from './useStoreState';
 
 const useStyles = makeStyles((t) => ({
   scroll: { flex: 1 },

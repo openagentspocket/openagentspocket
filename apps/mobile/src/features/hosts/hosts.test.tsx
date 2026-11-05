@@ -11,9 +11,6 @@ import { guideSteps, pairCommandLines } from './setupGuideSteps';
 
 const mockCopy = jest.fn();
 jest.mock('expo-clipboard', () => ({ setStringAsync: (text: string) => mockCopy(text) }));
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
 jest.mock('expo-camera', () => {
   const { View } = require('react-native');
   return {

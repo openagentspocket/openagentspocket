@@ -7,9 +7,6 @@ import { deliver } from './deliver';
 import { FilesScreen } from './FilesScreen';
 import type { FileBrowserSource } from './source';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
 jest.mock('./deliver', () => ({ deliver: jest.fn(async () => {}) }));
 jest.mock('./pickers', () => ({ pickDocument: jest.fn(), pickPhoto: jest.fn() }));
 

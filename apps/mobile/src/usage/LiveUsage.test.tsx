@@ -5,16 +5,13 @@ import {
   MemoryAccountFileStore,
   MemoryStorage,
 } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
-import { systemClock } from '../console/systemClock';
 import { LimitsScreen } from './LimitsScreen';
 import { UsageScreen } from './UsageScreen';
 import { UsageSourceProvider } from './UsageSourceProvider';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn() }) }));
 
 const wrap = (node: React.ReactElement) =>

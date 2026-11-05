@@ -5,9 +5,6 @@ import { PortPreviewScreen } from './PortPreviewScreen';
 import { PortsScreen } from './PortsScreen';
 import { portsStoreFor, releasePortsStore } from './registry';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
 // The native web view is the integrator's to verify on a device: a View that keeps its props.
 jest.mock('react-native-webview', () => {
   const react = require('react');
@@ -73,7 +70,7 @@ describe('PortsScreen', () => {
     expect(screen.getByTestId('open-port-submit').props.accessibilityState?.disabled).toBe(true);
     await fireEvent.changeText(field, '3000');
     await fireEvent.press(screen.getByTestId('open-port-submit'));
-    expect(onOpenPreview).toHaveBeenCalledTimes(2);
+    await waitFor(() => expect(onOpenPreview).toHaveBeenCalledTimes(2));
     expect(store.getState().preview?.target).toEqual({ kind: 'loopbackV4', port: 3000 });
   });
 });

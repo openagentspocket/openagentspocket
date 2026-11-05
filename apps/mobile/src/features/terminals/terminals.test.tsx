@@ -12,10 +12,6 @@ import { createDemoShellServices } from './demo';
 import { ShellTerminalScreen } from './ShellTerminalScreen';
 import { type ShellTerminalServices, ShellTerminalServicesProvider } from './services';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 const pools: Array<ShellTerminalServices['pool']> = [];
 
 afterEach(async () => {

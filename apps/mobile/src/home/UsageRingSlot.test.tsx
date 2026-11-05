@@ -2,9 +2,6 @@ import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { UsageRingSlot } from './UsageRingSlot';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
 const mockPush = jest.fn();
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: mockPush }) }));
 
@@ -31,6 +28,6 @@ describe('UsageRingSlot', () => {
     await fireEvent.press(screen.getByTestId('home-usage-ring'));
     await waitFor(() => expect(screen.getByTestId('usage-quick-sheet')).toBeTruthy());
     await fireEvent.press(screen.getByText('Open full Usage'));
-    expect(mockPush).toHaveBeenCalledWith('/usage');
+    await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/usage'));
   });
 });

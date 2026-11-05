@@ -11,9 +11,9 @@ import {
   STATUS_CLOCKS_STORAGE_KEY,
   type TerminalAttachSession,
 } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { DemoTerminalSession } from './demoTerminal';
 import { ConsoleStore } from './store';
-import { systemClock } from './systemClock';
 
 const DEMO_HOST = { id: 'demo', name: 'Demo Host', username: 'demo' };
 /** The second Host of the rich demo (the atlas): same pane ids as the first, as on real Hosts. */

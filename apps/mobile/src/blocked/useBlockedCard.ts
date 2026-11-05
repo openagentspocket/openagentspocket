@@ -7,10 +7,9 @@ import {
   type ObservedActivity,
   programIdentity,
 } from '@openagentspocket/core';
-import { herdrScreenIO, isBlockedPaneApi } from '@openagentspocket/transport';
+import { herdrScreenIO, isBlockedPaneApi, systemClock } from '@openagentspocket/transport';
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { useConsoleStore } from '../console/hooks';
-import { systemClock } from '../console/systemClock';
 
 /** The Agent's program as Chat knows it; undefined for programs without a Blocked card. */
 export function chatProgramOf(row: ConsoleRow): ChatProgram | undefined {

@@ -89,7 +89,7 @@ export { Sheet, type SheetBarAction, type SheetDetent } from './overlay/Sheet';
 export { detentShare, type FractionDetent } from './overlay/sheetDetents';
 export { ToastHost } from './overlay/ToastHost';
 export { TOAST_DEFAULT_MS, type ToastOptions, toast } from './overlay/toast';
-export { useSheetHandover } from './overlay/useSheetHandover';
+export { useHandoverSheet, useSheetHandover } from './overlay/useSheetHandover';
 export { Badge, type BadgeKind, StatusPill } from './primitives/Badge';
 export { Banner } from './primitives/Banner';
 export { BarChart, type BarDatum, barShares, labeledIndexes } from './primitives/BarChart';
@@ -132,6 +132,7 @@ export {
 export { ThemedRefreshControl } from './primitives/ThemedRefreshControl';
 export { ThemedTextInput, type ThemedTextInputProps } from './primitives/ThemedTextInput';
 export { Toggle } from './primitives/Toggle';
+export { useStoreState } from './primitives/useStoreState';
 export {
   flattenSections,
   type ListSection,

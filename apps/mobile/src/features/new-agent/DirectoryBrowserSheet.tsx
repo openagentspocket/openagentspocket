@@ -11,10 +11,10 @@ import {
   Sheet,
   SkeletonRows,
   TextField,
+  useStoreState,
 } from '@openagentspocket/ui';
 import { type ReactNode, useEffect, useMemo } from 'react';
 import { View } from 'react-native';
-import { useStoreState } from '@/changes/useStoreState';
 import { browserErrorText } from './text';
 
 const useStyles = makeStyles((t) => ({

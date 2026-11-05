@@ -6,7 +6,7 @@ export interface SheetProps {
   visible: boolean;
   /** Called on the close button, a backdrop tap and the Android back button. */
   onClose: () => void;
-  /** After the close animation ended (iOS): where a sheet hands over to a route, which cannot present while it is still leaving. */
+  /** After the close animation ended, on every platform: where a sheet hands over to a route, which cannot present while it is still leaving. */
   onDismissed?: () => void;
   title?: string;
   /**

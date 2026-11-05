@@ -6,16 +6,11 @@ import {
   type BannerStoreOptions,
   type Clock,
 } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { NoticeBanner, ProgramMark, useInsets, useTheme } from '@openagentspocket/ui';
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import { renderMessage } from './renderText';
-
-const systemClock: Clock = {
-  setTimeout: (callback, ms) => setTimeout(callback, ms),
-  clearTimeout: (handle) => clearTimeout(handle as ReturnType<typeof setTimeout>),
-  monotonicMs: () => Date.now(),
-};
 
 const BannerContext = createContext<AgentBannerStore | null>(null);
 

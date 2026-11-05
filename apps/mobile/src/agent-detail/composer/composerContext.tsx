@@ -4,8 +4,10 @@ import {
   ComposerRegistry,
   type ComposerSnapshot,
   type ComposerStore,
+  errorMessage,
   type KeyValueStorage,
 } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import {
   createContext,
   type ReactNode,
@@ -16,7 +18,6 @@ import {
   useSyncExternalStore,
 } from 'react';
 import { useConsoleStore } from '@/console/hooks';
-import { systemClock } from '@/console/systemClock';
 
 const fallbacks = new WeakMap<KeyValueStorage, ComposerRegistry>();
 
@@ -105,7 +106,7 @@ export function useAgentComposer(
         });
         return { kind: 'sent' };
       } catch (error) {
-        return { kind: 'failed', message: error instanceof Error ? error.message : String(error) };
+        return { kind: 'failed', message: errorMessage(error) };
       }
     },
     [consoleStore, hostId, paneId],

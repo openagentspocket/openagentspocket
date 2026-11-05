@@ -1,4 +1,5 @@
 import { TransportFailure } from '../errors';
+import { errorMessage } from '../errors/message';
 import { agenticoEntry, parsePluginList } from '../hosts/plugin-installation';
 import { NotificationRegistrationError } from './errors';
 
@@ -35,7 +36,7 @@ function wrap<T>(kind: 'readFailed' | 'writeFailed', operation: () => Promise<T>
     }
     throw new NotificationRegistrationError({
       kind,
-      detail: thrown instanceof Error ? thrown.message : String(thrown),
+      detail: errorMessage(thrown),
     });
   });
 }

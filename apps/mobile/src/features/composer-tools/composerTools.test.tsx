@@ -16,10 +16,6 @@ import { SnippetsManager } from './SnippetsManager';
 import { SnippetsPane } from './SnippetsPane';
 import { StagingStatusBar } from './StagingStatusBar';
 
-jest.mock('react-native-safe-area-context', () => ({
-  SafeAreaView: require('react-native').View,
-}));
-
 const wrap = (node: React.ReactElement) =>
   render(
     <ThemeProvider themeId="indigo">

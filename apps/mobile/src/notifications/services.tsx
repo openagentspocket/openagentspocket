@@ -14,6 +14,7 @@ import {
   type PushRegistrationState,
   pluginVersion,
 } from '@openagentspocket/core';
+import { systemClock } from '@openagentspocket/transport';
 import { createContext, type ReactNode, useContext, useMemo } from 'react';
 
 /** What the notification screens need; the app wires real implementations around P5.3/P5.4. */
@@ -34,12 +35,6 @@ export interface LiveActivityToggles {
   isEnabled(hostId: string): boolean;
   setEnabled(enabled: boolean, hostId: string): void;
 }
-
-const systemClock: Clock = {
-  setTimeout: (callback, ms) => setTimeout(callback, ms),
-  clearTimeout: (handle) => clearTimeout(handle as ReturnType<typeof setTimeout>),
-  monotonicMs: () => Date.now(),
-};
 
 /** A token source that is granted on `enable()`; stands in until P5.3/P5.4 land. */
 class DemoPushTokenSource implements DevicePushTokenSource {
