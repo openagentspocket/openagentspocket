@@ -4,13 +4,14 @@ import {
   limitNoticeText,
   listLimitNotice,
 } from '@openagentspocket/core';
-import { Banner, Screen, VirtualSectionList } from '@openagentspocket/ui';
+import { t } from '@openagentspocket/i18n';
+import { Banner, ChangeSection, Screen, SheetBar } from '@openagentspocket/ui';
 import { useCallback, useEffect, useMemo } from 'react';
 import { ChangedFileRow } from './ChangedFileRow';
 import { ChangesHeader } from './ChangesHeader';
-import { ChangesBlockedState, CleanState, TimedOutBanner } from './ChangesStates';
+import { ChangesBlockedState, ChangesNote, CleanState, TimedOutBanner } from './ChangesStates';
 import { changesStoreFor, releaseChangesStore } from './registry';
-import { buildSections, type ChangesRow } from './rows';
+import { buildSections } from './rows';
 import { say } from './say';
 import { useStoreState } from './useStoreState';
 
@@ -18,11 +19,13 @@ interface ChangesScreenProps {
   agentId: string;
   /** Pushes the file diff over the list. */
   onOpenFile: (file: ChangedFile) => void;
+  /** The circular back button of the bar. */
+  onBack?: () => void;
   now?: () => number;
 }
 
 /** changes.list: the Checkout an Agent works in, its uncommitted files in Source Control groups. */
-export function ChangesScreen({ agentId, onOpenFile, now = Date.now }: ChangesScreenProps) {
+export function ChangesScreen({ agentId, onOpenFile, onBack, now = Date.now }: ChangesScreenProps) {
   const store = changesStoreFor(agentId);
   const state = useStoreState(store);
   const { expansions } = useStoreState(store.untrackedDirectories);
@@ -50,46 +53,57 @@ export function ChangesScreen({ agentId, onOpenFile, now = Date.now }: ChangesSc
     },
     [store, onOpenFile],
   );
+  const bar = (
+    <SheetBar
+      title={say('Changes')}
+      back
+      leading={{ label: t('Back'), onPress: onBack ?? (() => {}), testID: 'changes-back' }}
+    />
+  );
+  const edges = ['left', 'right', 'bottom'] as const;
 
   if (!changes) {
     return (
-      <Screen scroll={false} edges={['left', 'right', 'bottom']} testID="changes-screen">
+      <Screen scroll={false} header={bar} edges={edges} testID="changes-screen">
         <ChangesBlockedState phase={phase} onRetry={refresh} />
       </Screen>
     );
   }
   const notice = listLimitNotice(changes);
-  const header = (
-    <>
+  return (
+    <Screen
+      header={bar}
+      edges={edges}
+      refreshing={state.isRefreshing}
+      onRefresh={refresh}
+      testID="changes-screen"
+    >
       <ChangesHeader changes={changes} now={now()} possiblyIncompleteSince={state.freshness} />
       {state.timedOutKeepingContent ? <TimedOutBanner onRetry={refresh} /> : null}
       {notice ? <Banner tone="info" title={limitNoticeText(notice, say)} /> : null}
-    </>
-  );
-  return (
-    <Screen scroll={false} edges={['left', 'right', 'bottom']} testID="changes-screen">
-      <VirtualSectionList<ChangesRow>
-        sections={sections}
-        keyExtractor={(row) => row.key}
-        ListHeaderComponent={header}
-        ListEmptyComponent={isClean(changes) ? <CleanState /> : undefined}
-        refreshing={state.isRefreshing}
-        onRefresh={refresh}
-        renderItem={(row) =>
-          row.kind === 'file' ? (
-            <ChangedFileRow
-              file={row.file}
-              depth={row.depth}
-              expanded={row.expanded}
-              onOpen={open}
-              onToggleDirectory={(file) => void store.toggleDirectory(file)}
-            />
-          ) : (
-            <Banner tone="neutral" title={row.text} testID="changes-note" />
-          )
-        }
-        testID="changes-list"
-      />
+      {isClean(changes) ? <CleanState /> : null}
+      {sections.map((section) => (
+        <ChangeSection
+          key={section.key}
+          title={section.title}
+          count={section.data.filter((row) => row.kind === 'file').length}
+        >
+          {section.data.map((row) =>
+            row.kind === 'file' ? (
+              <ChangedFileRow
+                key={row.key}
+                file={row.file}
+                depth={row.depth}
+                expanded={row.expanded}
+                onOpen={open}
+                onToggleDirectory={(file) => void store.toggleDirectory(file)}
+              />
+            ) : (
+              <ChangesNote key={row.key} text={row.text} />
+            ),
+          )}
+        </ChangeSection>
+      ))}
     </Screen>
   );
 }

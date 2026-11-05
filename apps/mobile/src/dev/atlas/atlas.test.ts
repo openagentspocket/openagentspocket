@@ -1,3 +1,6 @@
+// The native web view is not loadable under jest; the atlas only needs the module to resolve.
+jest.mock('react-native-webview', () => ({ __esModule: true, default: () => null }));
+
 import atlasMap from './atlasMap.json';
 import { atlasEntries } from './entries';
 

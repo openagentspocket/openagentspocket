@@ -1,9 +1,10 @@
-import { Modal, Pressable, View } from 'react-native';
+import { useState } from 'react';
+import { Modal, Pressable, TextInput, View } from 'react-native';
 import { Button } from '../primitives/Button';
-import { Text } from '../primitives/Text';
+import { monoFamily, Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { spacing } from '../theme/metrics';
-import { makeStyles } from '../theme/theme';
+import { makeStyles, useTheme } from '../theme/theme';
 import { type AlertRequest, alertQueue, answerAlert } from './confirm';
 import { useActiveHost, useQueue } from './store';
 
@@ -26,6 +27,17 @@ const useStyles = makeStyles((t) => ({
   row: { flexDirection: 'row', gap: t.spacing.xs },
   grow: { flex: 1 },
   column: { gap: t.spacing.xs },
+  input: {
+    minHeight: t.metrics.minTapSize,
+    paddingHorizontal: t.spacing.sm,
+    borderRadius: t.metrics.chipRadius,
+    borderWidth: t.metrics.hairlineWidth,
+    borderColor: t.hairline,
+    backgroundColor: t.colors.control,
+    color: t.colors.textPrimary,
+    fontSize: 15,
+    fontFamily: monoFamily,
+  },
 }));
 
 /** Draws the request at the head of the confirm() queue. Mounted once, by OverlayHost. */
@@ -49,6 +61,8 @@ export function AlertHost() {
 function AlertPanel({ request }: { request: AlertRequest }) {
   const styles = useStyles();
   const insets = useInsets();
+  const theme = useTheme();
+  const [text, setText] = useState(request.field?.initial ?? '');
   const isAlert = request.presentation === 'alert';
   const cancel =
     request.cancelLabel === null ? null : (
@@ -66,7 +80,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
       <Button
         kind={action.destructive ? 'destructive' : index === 0 && isAlert ? 'primary' : 'secondary'}
         title={action.title}
-        onPress={() => answerAlert(request, action.key)}
+        onPress={() => answerAlert(request, action.key, text)}
         testID={`alert-action-${action.key}`}
       />
     </View>
@@ -105,6 +119,23 @@ function AlertPanel({ request }: { request: AlertRequest }) {
             </Text>
           ) : null}
         </View>
+        {request.field ? (
+          <TextInput
+            style={styles.input}
+            value={text}
+            onChangeText={setText}
+            placeholder={request.field.placeholder}
+            placeholderTextColor={theme.colors.textTertiary}
+            selectionColor={theme.colors.accent}
+            autoFocus
+            selectTextOnFocus
+            autoCapitalize="none"
+            autoCorrect={false}
+            returnKeyType="done"
+            onSubmitEditing={() => answerAlert(request, 'confirm', text)}
+            testID={request.field.testID ?? 'alert-field'}
+          />
+        ) : null}
         {isAlert && request.actions.length === 1 ? (
           <View style={styles.row}>
             {cancel}

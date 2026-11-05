@@ -5,6 +5,7 @@ import {
   ActionMenuButton,
   confirm,
   OverlayHost,
+  prompt,
   Sheet,
   ThemeProvider,
   TOAST_DEFAULT_MS,
@@ -60,6 +61,21 @@ describe('confirm()', () => {
     await fireEvent.press(await screen.findByRole('button', { name: 'Cancel' }));
     await expect(answer).resolves.toBe(false);
     expect(screen.queryByText('Reconnect?')).toBeNull();
+  });
+
+  it('prompt() resolves the edited text in a centered alert, or null on cancel', async () => {
+    await renderThemed(<OverlayHost />);
+    let { answer } = await ask(() =>
+      prompt({ title: 'Rename', initial: 'a.txt', confirmLabel: 'Rename' }),
+    );
+    expect(screen.getByTestId('alert-alert')).toBeTruthy();
+    await fireEvent.changeText(screen.getByTestId('alert-field'), 'b.txt');
+    await fireEvent.press(screen.getByTestId('alert-action-confirm'));
+    await expect(answer).resolves.toBe('b.txt');
+
+    ({ answer } = await ask(() => prompt({ title: 'Rename', initial: 'a.txt' })));
+    await fireEvent.press(screen.getByTestId('alert-cancel'));
+    await expect(answer).resolves.toBeNull();
   });
 
   it('draws a destructive action and a title header in an alert', async () => {

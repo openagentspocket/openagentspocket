@@ -76,6 +76,8 @@ export {
   type ConfirmOptions,
   type ConfirmPresentation,
   confirm,
+  type PromptOptions,
+  prompt,
 } from './overlay/confirm';
 export { OverlayHost } from './overlay/OverlayHost';
 export { Sheet, type SheetBarAction, type SheetDetent } from './overlay/Sheet';

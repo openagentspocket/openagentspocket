@@ -4,7 +4,15 @@ import {
   readFailureMessage,
   readFailureTitle,
 } from '@openagentspocket/core';
-import { Banner, EmptyState, ErrorState, SkeletonRows } from '@openagentspocket/ui';
+import {
+  Banner,
+  EmptyState,
+  ErrorState,
+  makeStyles,
+  SkeletonRows,
+  Text,
+} from '@openagentspocket/ui';
+import { View } from 'react-native';
 import { say } from './say';
 
 function failureCopy(phase: ChangesPhase): { title: string; message: string } | null {
@@ -62,5 +70,19 @@ export function TimedOutBanner({ onRetry }: { onRetry: () => void }) {
       onAction={onRetry}
       testID="changes-timed-out"
     />
+  );
+}
+
+/** A line under a directory row: loading, failed or limited listing. */
+const useStyles = makeStyles((t) => ({ note: { padding: t.spacing.sm } }));
+
+export function ChangesNote({ text }: { text: string }) {
+  const styles = useStyles();
+  return (
+    <View style={styles.note} testID="changes-note">
+      <Text variant="caption" tone="secondary">
+        {text}
+      </Text>
+    </View>
   );
 }

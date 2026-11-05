@@ -1,23 +1,13 @@
 import {
   type ChangedFile,
-  fileDetail,
   fileName,
   filePath,
   fileRowDetail,
   kindSymbol,
-  lineCountsSummary,
 } from '@openagentspocket/core';
-import { Badge, copyToClipboard, Icon, ListRow, makeStyles, Text } from '@openagentspocket/ui';
-import { View } from 'react-native';
+import { ActionMenu, type ChangeKind, ChangeRow, copyToClipboard } from '@openagentspocket/ui';
+import { useState } from 'react';
 import { say } from './say';
-
-const useStyles = makeStyles((t) => ({
-  nested: { paddingLeft: t.spacing.lg },
-  // One width for every change letter, so names start on the same edge in every row.
-  kind: { width: 36, alignItems: 'center' },
-  // One width and right edge for the line counts, so the deltas stack in a column.
-  delta: { minWidth: 92, alignItems: 'flex-end' },
-}));
 
 interface ChangedFileRowProps {
   file: ChangedFile;
@@ -29,7 +19,7 @@ interface ChangedFileRowProps {
   onToggleDirectory: (file: ChangedFile) => void;
 }
 
-/** One uncommitted file: change letter, name, rename source or directory, and its line counts. */
+/** One uncommitted file: name, directory, line counts and status letter; long press copies the path. */
 export function ChangedFileRow({
   file,
   depth,
@@ -37,48 +27,39 @@ export function ChangedFileRow({
   onOpen,
   onToggleDirectory,
 }: ChangedFileRowProps) {
-  const styles = useStyles();
+  const [menuOpen, setMenuOpen] = useState(false);
   const counts = file.lineCounts;
-  const detail = fileRowDetail(file, say);
-  const label = `${filePath(file)}, ${fileDetail(file, say)}${
-    counts && file.kind !== 'untracked' ? `, ${lineCountsSummary(counts, say)}` : ''
-  }`;
-  const row = (
-    <ListRow
-      testID={`changes-file-${file.path}`}
-      title={fileName(file)}
-      subtitle={detail ?? undefined}
-      accessibilityLabel={label}
-      leading={
-        <View style={styles.kind}>
-          <Badge
-            label={kindSymbol(file.kind)}
-            kind={file.kind === 'conflicted' ? 'accent' : 'control'}
-          />
-        </View>
-      }
-      trailing={
-        expanded !== null ? (
-          <Icon name={expanded ? 'chevronDown' : 'chevronRight'} size={12} />
-        ) : counts && file.kind !== 'untracked' ? (
-          <View style={styles.delta}>
-            <Text variant="footnote" tone="secondary">
-              {lineCountsSummary(counts, say)}
-            </Text>
-          </View>
-        ) : undefined
-      }
-      chevron={expanded === null}
-      onPress={() => (expanded === null ? onOpen(file) : onToggleDirectory(file))}
-      menu={[
-        {
-          key: 'copy-path',
-          title: say('Copy Path'),
-          icon: 'copy',
-          onPress: () => void copyToClipboard(filePath(file), say('Copied')),
-        },
-      ]}
-    />
+  const lines = counts && file.kind !== 'untracked' && counts.kind === 'lines' ? counts : null;
+  const symbol = kindSymbol(file.kind);
+  return (
+    <>
+      <ChangeRow
+        file={{
+          name: fileName(file),
+          dir: fileRowDetail(file, say) ?? undefined,
+          added: lines ? Number(lines.added) : undefined,
+          removed: lines ? Number(lines.removed) : undefined,
+          kind: symbol === '~' ? 'U' : (symbol as ChangeKind),
+          expanded: expanded === null ? undefined : expanded,
+        }}
+        indent={depth === 1}
+        onPress={() => (expanded === null ? onOpen(file) : onToggleDirectory(file))}
+        onLongPress={() => setMenuOpen(true)}
+        testID={`changes-file-${file.path}`}
+      />
+      <ActionMenu
+        title={fileName(file)}
+        visible={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        items={[
+          {
+            key: 'copy-path',
+            title: say('Copy Path'),
+            icon: 'copy',
+            onPress: () => void copyToClipboard(filePath(file), say('Copied')),
+          },
+        ]}
+      />
+    </>
   );
-  return depth === 0 ? row : <View style={styles.nested}>{row}</View>;
 }
