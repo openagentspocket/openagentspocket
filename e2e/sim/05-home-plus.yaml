@@ -4,8 +4,11 @@ appId: com.openagentspocket.app
 - runFlow: _demo.yaml
 - tapOn:
     id: fab
-- assertVisible: "New Agent"
-- assertVisible: "New Terminal"
-- assertVisible: "Add Host"
+- assertVisible:
+    id: fab-sheet-new-agent
+- assertVisible:
+    id: fab-sheet-new-terminal
+- assertVisible:
+    id: fab-sheet-add-host
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/05-home-plus

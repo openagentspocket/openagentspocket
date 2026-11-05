@@ -6,12 +6,18 @@ appId: com.openagentspocket.app
 - assertVisible: "Settings"
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/07-settings
-- tapOn: "Theme"
+- tapOn:
+    id: settings.appearance.theme
 - assertVisible: "Follow System"
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/07-settings-theme
-- back
-- tapOn: "Fonts & Size"
+# The native stack's interactive back gesture (Maestro's `back` does not pop on iOS).
+- swipe:
+    start: 2%, 50%
+    end: 80%, 50%
+- waitForAnimationToEnd
+- tapOn:
+    id: settings.appearance.fontsAndSize
 - waitForAnimationToEnd
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/07-settings-fonts

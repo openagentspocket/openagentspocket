@@ -2,7 +2,9 @@
 appId: com.openagentspocket.app
 ---
 - runFlow: _demo.yaml
-- openLink: openagentspocket:///agent/demo/p2
+# Agent links name a Host by UUID; the demo Host is opened from its Home card.
+- tapOn:
+    id: inbox-p2
 - extendedWaitUntil:
     visible:
       id: agent-header-sidebar

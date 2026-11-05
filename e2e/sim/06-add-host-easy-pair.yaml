@@ -2,13 +2,13 @@
 appId: com.openagentspocket.app
 ---
 - runFlow: _demo.yaml
-- openLink: openagentspocket:///hosts
-- tapOn:
-    id: hosts-add
-- assertVisible: "Easy Pair with QR"
+- openLink: openagentspocket:///add-host
+- assertVisible:
+    id: add-host-sheet-easy-pair
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/06-add-host-choice
-- tapOn: "Easy Pair with QR"
+- tapOn:
+    id: add-host-sheet-easy-pair
 - extendedWaitUntil:
     visible: "Easy Pair"
     timeout: 10000

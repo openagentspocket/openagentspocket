@@ -10,6 +10,7 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
+  copyFileSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
@@ -143,6 +144,19 @@ function crashesSince(since) {
 
 const appRunning = () => simctl('spawn', udid, 'launchctl', 'list').stdout.includes(bundle);
 
+/** Copies every takeScreenshot PNG under `dir` into design/atlas/sim/ by its own name. */
+function collectScreenshots(dir) {
+  const visit = (path) => {
+    for (const name of readdirSync(path)) {
+      const full = join(path, name);
+      if (statSync(full).isDirectory()) visit(full);
+      else if (name.endsWith('.png') && full.includes('takeScreenshot'))
+        copyFileSync(full, join(outDir, name));
+    }
+  };
+  visit(dir);
+}
+
 function pickFlows() {
   const all = readdirSync(flowsDir)
     .filter((name) => /^\d.*\.yaml$/.test(name))
@@ -188,11 +202,16 @@ try {
     simctl('terminate', udid, bundle);
     const flowStart = Date.now();
     log(`running ${flow}`);
-    const run = spawnSync(maestro, ['--udid', udid, 'test', join('e2e/sim', flow)], {
-      cwd: root,
-      encoding: 'utf8',
-      env: process.env,
-    });
+    // Maestro keeps `takeScreenshot` files under its test output dir, whatever path the flow names.
+    const runDir = mkdtempSync(join(tmpdir(), 'sim-verify-'));
+    const run = spawnSync(
+      maestro,
+      ['--udid', udid, 'test', '--test-output-dir', runDir, join('e2e/sim', flow)],
+      { cwd: root, encoding: 'utf8', env: process.env },
+    );
+    collectScreenshots(runDir);
+    // A failed flow keeps Maestro's debug output (hierarchy and screenshots of the failing step).
+    if (run.status === 0) rmSync(runDir, { recursive: true, force: true });
     const crashes = crashesSince(flowStart);
     const metroLog = readFileSync(metro.logPath, 'utf8');
     const redbox = /Unhandled JS Exception|Render Error|Invariant Violation/.exec(
@@ -200,7 +219,7 @@ try {
     );
     if (run.status !== 0) {
       failures.push(
-        `${flow}: Maestro failed\n${(run.stdout + run.stderr).split('\n').slice(-12).join('\n')}`,
+        `${flow}: Maestro failed (debug output kept in ${runDir})\n${(run.stdout + run.stderr).split('\n').slice(-12).join('\n')}`,
       );
     } else if (crashes.length > 0) {
       failures.push(`${flow}: the app crashed (${crashes[0]})`);
