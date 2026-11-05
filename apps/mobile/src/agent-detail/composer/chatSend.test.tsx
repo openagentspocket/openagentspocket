@@ -61,8 +61,6 @@ const type = async (text: string) => {
   await waitFor(() => expect(screen.getByTestId('composer-input').props.value).toBe(text));
 };
 
-jest.setTimeout(30_000);
-
 describe('Chat send through the program send policy', () => {
   it("reads the Agent's screen and sends into an empty input box", async () => {
     const transport = new PaneTransport();

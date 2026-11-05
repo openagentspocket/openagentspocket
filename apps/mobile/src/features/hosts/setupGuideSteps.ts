@@ -1,4 +1,4 @@
-import { PLUGIN_REPOSITORY, pluginInstallArguments } from '@openagentspocket/core';
+import { installerCommand, PLUGIN_REPOSITORY } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 
 export type SetupPlatform = 'unix' | 'windows';
@@ -19,15 +19,30 @@ export interface GuideStep {
 export const GUIDE_URL = `https://github.com/${PLUGIN_REPOSITORY}#installation`;
 export const WINDOWS_GUIDE_URL = `https://github.com/${PLUGIN_REPOSITORY}/blob/main/docs/guides/windows-setup.md`;
 export const HERDR_INSTALL_URL = 'https://herdr.dev/docs/install/';
-export const PLUGIN_INSTALL_COMMAND = ['herdr', ...pluginInstallArguments()].join(' ');
-export const PAIR_COMMAND = 'herdr plugin action invoke agentico.pair';
 
-/** How a machine shows its Pairing Code QR: the Setup Guide step, reused by Scan to Pair. */
-export function pairingCodeStep(): GuideStep {
+/**
+ * The commands a machine runs to show its Pairing Code: the one place the list is defined, so the
+ * screens, the Setup Guide and "What happens" never list commands of their own. The installer
+ * script (`packages/plugin/install`) does the whole job; Windows has no Pairing Code, so its
+ * script only checks the machine.
+ */
+export function pairCommandLines(platform: SetupPlatform): readonly string[] {
+  return [installerCommand(platform)];
+}
+
+/** How a machine shows its Pairing Code QR: the Setup Guide step, reused by Easy Pair. */
+export function pairingCodeStep(platform: SetupPlatform = 'unix'): GuideStep {
   return {
     title: t('Show a Pairing Code'),
-    detail: t('Run these on the machine. The second command shows a QR code.'),
-    commands: [PLUGIN_INSTALL_COMMAND, PAIR_COMMAND],
+    detail:
+      platform === 'windows'
+        ? t(
+            'Run this in PowerShell on the machine. It checks the setup and tells you the next step.',
+          )
+        : t(
+            'Run this on the machine. It checks the setup, installs the plugin and shows a QR code.',
+          ),
+    commands: pairCommandLines(platform),
   };
 }
 

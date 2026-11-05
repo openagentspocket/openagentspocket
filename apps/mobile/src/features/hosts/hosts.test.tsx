@@ -1,11 +1,13 @@
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react-native';
+import { AddHostSheet } from './AddHostSheet';
 import { extraKeys, extraTables } from './extraText';
 import { HostDetailScreen } from './HostDetailScreen';
 import { HostListScreen } from './HostListScreen';
 import { createDemoRuntime, setHostsRuntime } from './hostsRuntime';
 import { Form, fillRoute, probe, renderApp, SAMPLE, setup } from './hostsTestKit';
+import { installerSteps } from './installerSteps';
 import { PairingScreen } from './PairingScreen';
-import { PAIR_COMMAND } from './setupGuideSteps';
+import { guideSteps, pairCommandLines } from './setupGuideSteps';
 
 const mockCopy = jest.fn();
 jest.mock('expo-clipboard', () => ({ setStringAsync: (text: string) => mockCopy(text) }));
@@ -256,7 +258,7 @@ describe('hosts.pairing', () => {
         onOpenGuide={onOpenGuide}
       />,
     );
-    expect(await screen.findByText(PAIR_COMMAND)).toBeTruthy();
+    expect(await screen.findByText(pairCommandLines('unix')[0] ?? '')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('pairing-guide'));
     expect(onOpenGuide).toHaveBeenCalled();
   });
@@ -309,5 +311,46 @@ describe('extra strings', () => {
       expect(extraTables.en[key]).toBeTruthy();
       expect(extraTables.es[key]).toBeTruthy();
     }
+  });
+});
+
+describe('Easy Pair', () => {
+  const renderPairing = async () => {
+    setup();
+    await renderApp(
+      <PairingScreen
+        onCancel={jest.fn()}
+        onPaired={jest.fn()}
+        onAddManually={jest.fn()}
+        onOpenGuide={jest.fn()}
+      />,
+    );
+  };
+
+  it('switches the command and guidance with the platform', async () => {
+    await renderPairing();
+    expect(await screen.findByText(pairCommandLines('unix')[0] ?? '')).toBeTruthy();
+    await fireEvent.press(screen.getByText('Windows'));
+    expect(await screen.findByText(pairCommandLines('windows')[0] ?? '')).toBeTruthy();
+    expect(screen.getByText(guideSteps('windows')[0]?.title ?? '')).toBeTruthy();
+  });
+
+  it('opens What happens with one row per installer step', async () => {
+    await renderPairing();
+    await fireEvent.press(await screen.findByTestId('pairing-what-happens'));
+    for (const step of installerSteps('unix'))
+      expect(await screen.findByText(step.title)).toBeTruthy();
+  });
+
+  it('the Add Host sheet offers Easy Pair and Add Manually', async () => {
+    const onEasyPair = jest.fn();
+    const onAddManually = jest.fn();
+    await renderApp(
+      <AddHostSheet onClose={jest.fn()} onEasyPair={onEasyPair} onAddManually={onAddManually} />,
+    );
+    await fireEvent.press(await screen.findByTestId('add-host-sheet-manual'));
+    await fireEvent.press(screen.getByTestId('add-host-sheet-easy-pair'));
+    expect(onAddManually).toHaveBeenCalledTimes(1);
+    expect(onEasyPair).toHaveBeenCalledTimes(1);
   });
 });

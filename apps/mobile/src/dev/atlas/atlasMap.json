@@ -690,5 +690,10 @@
     "id": "shell.hosts-settings-sheets",
     "rn": "app/settings (SettingsScreen)",
     "note": "same as settings.root"
+  },
+  {
+    "id": "hosts.add-choice",
+    "rn": "app/add-host.tsx (AddHostSheet)",
+    "note": "new in RN: the choice sheet over the Hosts list; no Swift shot"
   }
 ]
