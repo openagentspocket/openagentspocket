@@ -20,22 +20,32 @@ through plugin events such as `pane.agent_status_changed`. tmux has no such even
   works under tmux, herdr or anything else; herdr events stay as they are until this path has proved itself.
 - **`packages/plugin` splits** into a backend-neutral core (keys, pairing, envelopes, push, usage) and thin entry points:
   the herdr plugin, and a standalone installer for Hosts without herdr.
-- **Two registries.** `ProgramDefinition` per program; a session backend per multiplexer with its own neutral model
-  (session, pane, Agent), declared capabilities, and herdr as the first implementation with no visible change. Screens
-  read capabilities; no screen branches on a backend name.
+- **The session protocol is the backend contract.** The app already speaks NDJSON over a Unix socket through
+  `direct-streamlocal`, and only about 11 files import herdr's types. So a backend does not get a new model inside the
+  app: it gets a bridge on the Host (`packages/session-bridge`) that answers the same protocol. tmux maps cleanly: a
+  session is a workspace, a window a tab, a pane a pane. herdr needs no bridge. A new multiplexer is a new bridge, and the
+  app, its stores and its tests do not change. This replaces the earlier idea of a neutral model behind `ConsoleTransport`,
+  which would have touched far more code for the same result.
+- **Costs of that choice.** The protocol's owner is herdr, so the bridge pins a schema revision and must follow it; names
+  in the app keep saying herdr. Methods a backend lacks answer `unsupported_method`, and screens must read declared
+  capabilities instead of failing.
+- **`ProgramDefinition` per program** (done), and no screen branches on a backend name.
 
 ## Order
 
 1. Close what is open: settings-fixes, device install, the source of the stray `[object Promise]/` folder.
 2. `ProgramDefinition`.
-3. Neutral session model and backend contract, starting at `ConsoleTransport`; herdr behind it.
+3. Session protocol as the contract: `packages/session-bridge` maps tmux to it and is pinned by the app's own decoder (done,
+   against a fake `tmux`: never run on a real one yet).
 4. Split `packages/plugin`; program hooks as a notification source, proved first on herdr Hosts.
-5. tmux backend: sessions, panes, read, send keys, attach, pairing through the standalone installer, a mark that tells
-   backends apart.
+5. tmux end to end: the bridge's socket server and events, attach commands per backend, backend capabilities in the app,
+   pairing through the standalone installer, a mark that tells backends apart.
 6. Host data contract (git status and the like), then `useLayoutMode` before iPad.
 
 ## Open
 
 - Which programs offer hooks for both approval and turn end. Where one has none, the Host component reads the screen.
 - How to map a hook event to a tmux pane (process tree or `TMUX_PANE` in the hook's environment); to be proved in step 4.
+- Which methods the app needs before a Host is usable (`events.subscribe` is not in the bridge yet), found by connecting it.
+- How to name agents that run under `node`, whose `pane_current_command` says nothing; hooks should report it.
 - Whether Blocked parsers, which read the screen, work unchanged over `capture-pane`.

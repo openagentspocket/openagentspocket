@@ -8,6 +8,7 @@
     { "path": "modules/app-group" },
     { "path": "modules/live-activity" },
     { "path": "packages/transport" },
+    { "path": "packages/session-bridge" },
     { "path": "apps/mobile" }
   ]
 }
