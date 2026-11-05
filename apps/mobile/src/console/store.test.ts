@@ -81,13 +81,15 @@ describe('ConsoleStore with the demo Host', () => {
     store.removeHost('demo');
   });
 
-  it('keeps a once-connected Host reading as resuming, not offline, while it is suspended', async () => {
+  it('reads a Host the user stopped as stopped, not resuming or offline, until it connects again', async () => {
     const store = createDemoConsoleStore();
     await ready(store);
     expect(store.getState().hosts[0]?.link).toBe('live');
     await store.stopConnecting('demo');
     await waitFor(() => expect(store.getState().hosts[0]?.status?.kind).toBe('suspended'));
-    expect(store.getState().hosts[0]?.link).toBe('resuming');
+    expect(store.getState().hosts[0]?.link).toBe('stopped');
+    await store.retry('demo');
+    await waitFor(() => expect(store.getState().hosts[0]?.link).toBe('live'));
     store.removeHost('demo');
   });
 });

@@ -31,4 +31,10 @@ describe('hostLink', () => {
     );
     expect(hostLink({ kind: 'ended' }, true)).toBe('offline');
   });
+
+  it('reads a user stop as stopped, before or after a connection, until the session leaves suspended', () => {
+    expect(hostLink({ kind: 'suspended' }, false, true)).toBe('stopped');
+    expect(hostLink({ kind: 'suspended' }, true, true)).toBe('stopped');
+    expect(hostLink({ kind: 'connecting' }, true, true)).toBe('resuming');
+  });
 });

@@ -12,6 +12,8 @@ export function linkToConnection(link: HostLink): HostConnection {
       return 'connected';
     case 'connecting':
       return 'connecting';
+    case 'stopped':
+      return 'notConnected';
     case 'offline':
       return 'cantConnect';
   }

@@ -42,6 +42,7 @@ export function HostIssues() {
         <HostConnectionSheet
           visible
           hostName={open.name}
+          stopped={open.link === 'stopped'}
           attempt={status?.kind === 'reconnecting' ? status.attempt : undefined}
           routes={savedHost ? routeLine(savedHost, open.routeId ?? null) : ''}
           failure={failure && { title: failure.summary, detail: failure.detail }}

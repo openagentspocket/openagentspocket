@@ -72,6 +72,8 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
   private readonly listeners = new Set<() => void>();
   /** Hosts that have been connected at least once this run: their last known good state stands. */
   private readonly connectedOnce = new Set<string>();
+  /** Hosts the user stopped with Stop Connecting; cleared when the session leaves suspended or retries. */
+  private readonly stoppedByUser = new Set<string>();
   private readonly extras = new Map<
     string,
     { changeTotals?: RowChangeTotals; contextUsage?: AgentContextUsage }
@@ -119,6 +121,7 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     if (!projection) return;
     this.projections.delete(hostId);
     this.connectedOnce.delete(hostId);
+    this.stoppedByUser.delete(hostId);
     this.options.clocks.retainHosts(new Set(this.projections.keys()));
     this.recompute();
     projection.end();
@@ -221,6 +224,7 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
   }
 
   retry(hostId: string): Promise<void> {
+    this.stoppedByUser.delete(hostId);
     return this.projection(hostId).retry();
   }
 
@@ -231,6 +235,7 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
 
   /** Stops a dial or backoff in flight; the Host rests until `retry`. */
   stopConnecting(hostId: string): Promise<void> {
+    this.stoppedByUser.add(hostId);
     return this.projection(hostId).session.suspend();
   }
 
@@ -254,6 +259,11 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     this.recompute();
   }
 
+  private isStopped(projection: { host: { id: string }; status?: { kind: string } }): boolean {
+    if (projection.status?.kind !== 'suspended') this.stoppedByUser.delete(projection.host.id);
+    return this.stoppedByUser.has(projection.host.id);
+  }
+
   private noteConnected(projection: { host: { id: string }; status?: { kind: string } }): boolean {
     if (projection.status?.kind === 'connected') this.connectedOnce.add(projection.host.id);
     return this.connectedOnce.has(projection.host.id);
@@ -274,7 +284,11 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
           : rows.map((row) => ({ ...row, ...this.extras.get(rowKey(row)) })),
       readyHosts,
       hosts: projections.map((projection) => ({
-        link: hostLink(projection.status, this.noteConnected(projection)),
+        link: hostLink(
+          projection.status,
+          this.noteConnected(projection),
+          this.isStopped(projection),
+        ),
         id: projection.host.id,
         name: projection.host.name,
         status: projection.status,
