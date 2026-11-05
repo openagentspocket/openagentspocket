@@ -15,7 +15,7 @@ acceptance:
 - Session drawer from the Sessions circle: met (this Host's Workspaces with their Agents, search); Tree/Agents toggle is the UI component's, Agents view not wired
 - Banners connecting / not connected / couldn't read with Retry or Show Agent Terminal: met (ChatBanners from core bannerLines)
 - Timings (composer fold 200 ms, overlay 280 ms): not built
-evidence: scratchpad rn/evidence/UX1-agent-detail (Swift | RN sheets, dark and Papel, captured after the last code commit on a cleared Metro cache, port 8721)
+evidence: design/atlas/compare/agent-detail.{container,terminal,chat-timeline,chat-blocked-card,agent-switcher,session-drawer,header-more-menu,composer-add-menu}[.papel].png (captured after main merge, port 8801, cleared cache; Papel compared with --theme light)
 left:
 - Status line branch/counts/diff and context-left need Console row git facts (new task: surface checkout branch and diff totals on ConsoleRow).
 - Chat composer fold, hide/show composer, keyboard-type switch, long-press pin, Add a Note, Background Work strip, subagent transcript sheet, select-text sheet.
