@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { View } from 'react-native';
+import { LimitWindowRow } from '../../components/LimitWindowRow';
+import { ProviderUsageCard, ProviderUsageFooter } from '../../components/ProviderUsageCard';
 import { UsageBreakdownRow, UsageHostGroup } from '../../components/UsageBreakdownRow';
 import { UsageChart } from '../../components/UsageChart';
 import type { HeatDay } from '../../components/UsageHeatMap';
@@ -215,8 +217,68 @@ function Breakdown({ host }: { host?: boolean }) {
   );
 }
 
+function ProviderCards() {
+  const styles = useStyles();
+  return (
+    <View style={styles.pad}>
+      <ProviderUsageCard
+        program="claude"
+        brand="claude"
+        name="Claude"
+        hostName="Studio Mac"
+        windows={[{ label: 'Weekly', usedShare: 0.62, percentText: '62%', resetText: '4d 23h' }]}
+        onPress={noop}
+      />
+      <ProviderUsageCard
+        program="codex"
+        brand="openai"
+        name="Codex"
+        hostName="Build Server"
+        windows={[
+          { label: '5-hour', usedShare: 0.07, percentText: '7%', resetText: '2h 26m' },
+          { label: 'Weekly', usedShare: 0.04, percentText: '4%', resetText: '6d 8h' },
+        ]}
+        onPress={noop}
+      />
+      <ProviderUsageCard
+        program="hermes"
+        brand="hermes"
+        name="Hermes"
+        hostName="Build Server"
+        windows={[]}
+        note="Usage Limits are off."
+        onPress={noop}
+      />
+      <ProviderUsageFooter text="Updated this minute" />
+    </View>
+  );
+}
+
+function WindowRows() {
+  const styles = useStyles();
+  const theme = useTheme();
+  const color = programTint('claude', theme);
+  return (
+    <View style={styles.pad}>
+      {[0, 0.04, 0.37, 0.62, 0.96, 1].map((share) => (
+        <LimitWindowRow
+          key={share}
+          label="Weekly"
+          usedShare={share}
+          color={color}
+          percentText={`${Math.round(share * 100)}%`}
+          resetText="4d 23h"
+          testID={`window-${share}`}
+        />
+      ))}
+    </View>
+  );
+}
+
 /** Demos of the UX3 group 'usage': one entry per component, one variant per catalog variant id. */
 export const usageEntries: readonly CatalogEntry[] = [
+  { name: 'ProviderUsageCard', variants: [{ id: 'default', render: () => <ProviderCards /> }] },
+  { name: 'LimitWindowRow', variants: [{ id: 'default', render: () => <WindowRows /> }] },
   { name: 'UsageLimitChip', variants: [{ id: 'default', render: () => <LimitChips /> }] },
   {
     name: 'UsageTotals',

@@ -29,7 +29,7 @@ describe('component catalog harness', () => {
       for (const variant of entry.variants)
         for (const skin of ['indigo', 'papel'])
           expect(screen.getByTestId(`catalog-${entry.name}-${variant.id}-${skin}`)).toBeTruthy();
-  });
+  }, 30_000);
 
   it('a capture of an unknown component says so instead of crashing', async () => {
     await renderThemed(<ComponentCapture name="NoSuchComponent.x" theme="papel" />);

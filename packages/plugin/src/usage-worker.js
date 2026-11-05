@@ -13,6 +13,7 @@ import { codexFiles, codexLines, ArchiveUnavailableError } from "./usage/codex-f
 import { createCodexState, consumeCodexLine, finishCodexRead, codexTotalSignature } from "./usage/codex-scanner.js";
 import { readCodexLimits, codexRolloutLimits, codexLimitsWithFallback } from "./usage/codex-limits.js";
 import { readClaudeLimits, readClaudeLimitsInServer, cacheClaudeLimits, claudeVersion, accountRuntime, claudeLimitsEntries, nextClaudeRead } from "./usage/claude-limits.js";
+import { collectProviderLimits } from "./usage/providers/index.js";
 import { readClaudeAccounts } from "./usage/accounts.js";
 import { homeCandidates } from "./usage/account-suggestions.js";
 
@@ -153,7 +154,8 @@ async function run() {
       const progress = { ...scan, pricingVersion, breakdownsVersion: 1, buckets: [...buckets.values()], errors, claudeCandidates,
         // The program's Claude reading stays the Default Account's, for apps that ignore Accounts.
         limitsVersion: 1, usageLimits: { codex: limits.codex?.report, claude: limits.claude.default?.report,
-          claudeAccounts: Object.fromEntries(accounts.map(({ id }) => [id, limits.claude[id]?.report])) },
+          claudeAccounts: Object.fromEntries(accounts.map(({ id }) => [id, limits.claude[id]?.report])),
+          providers: Object.fromEntries(Object.entries(limits.providers || {}).map(([program, entry]) => [program, entry.report])) },
         nextLimitsAt: limits.codex?.nextAllowedAt, nextClaudeLimitsAt: nextClaudeRead(limits.claude, accounts),
         skippedArchives: Object.values(fileStates).filter(file => file.skipped).length,
         unreadableFiles: unlistedPaths.length + files.filter(file => fileStates[file.logicalPath || file.path]?.unreadable).length,
@@ -325,6 +327,8 @@ async function run() {
       limits.claude[account.id] = cacheClaudeLimits(limits.claude[account.id], reading);
       heartbeat();
     }
+    limits.providers = await collectProviderLimits({ runtime, configDir: values.config, directory, previous: limits.providers });
+    heartbeat();
     const fallback = Object.values(fileStates).map(file => file.carry.latestLimits).filter(reading => reading?.windows?.length)
       .sort((a, b) => b.observedAt.localeCompare(a.observedAt))[0];
     // A reservation whose read never finished has no reading of its own.

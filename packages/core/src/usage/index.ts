@@ -7,6 +7,7 @@ export * from './host-store';
 export * from './limits';
 export * from './live-source';
 export * from './probe';
+export * from './providers';
 export * from './quick-sheet';
 export * from './report';
 export * from './ring';
