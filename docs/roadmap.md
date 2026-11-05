@@ -4,6 +4,8 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
+**2026-11-05 ~15:45 ART restart:** main 5be8d96; iPhone has Release 6ae2d5c. Open: Add Host freezes the app (TrueSheet over the /add-host transparentModal; fix = plain Sheet, no route), settings-fixes pending, full test not run since 9c49a54. Full lead state: the lead's private session handoff. Next: fix, all 8 `pnpm sim:verify` flows green, then install; full test; native-first; component dedup audit + jscpd ratchet.
+
 State (2026-11-02 ~16:00): wave 5 fully merged (incl. P1.12 SSH auth: password, RSA, bootstrap seed; P4.3b ports
 native config). UX phase A (atlas tooling + briefs) and B (UX1-design-system primitives, T-verify-fixes-w4 functional
 fixes, dev client rebuild + iOS atlas baseline) merged; full test green (core 2584, mobile 287, ui 158, transport 142,
