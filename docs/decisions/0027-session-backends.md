@@ -37,7 +37,10 @@ through plugin events such as `pane.agent_status_changed`. tmux has no such even
 2. `ProgramDefinition`.
 3. Session protocol as the contract: `packages/session-bridge` maps tmux to it and is pinned by the app's own decoder (done,
    tested on a real tmux 3.8 too).
-4. Split `packages/plugin`; program hooks as a notification source, proved first on herdr Hosts.
+4. Program hooks as a notification source: `notify-delivery.js` is backend-neutral, `program-hook.js` and its installer
+   cover Claude Code (done, tested with fake hook input and a fake relay; never fired by a real Claude Code). It stays quiet
+   inside herdr, so it is not proved on herdr Hosts as first planned. Still to do: Codex and other programs, approval
+   fields, the standalone package.
 5. tmux end to end: the bridge's socket server and events, attach commands per backend, backend capabilities in the app,
    pairing through the standalone installer, a mark that tells backends apart.
 6. Host data contract (git status and the like), then `useLayoutMode` before iPad.
