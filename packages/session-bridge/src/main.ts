@@ -13,7 +13,8 @@ import { installLauncher } from './install.js';
 import { tmuxRunner } from './runner.js';
 import { startBridge } from './server.js';
 
-const VERSION = '0.1.0';
+/** `+tmux` tells the app which backend this is (core's `pluginPresentation`). */
+const VERSION = '0.1.0+tmux';
 
 export const configDir = () =>
   process.env.OAP_CONFIG_DIR || join(homedir(), '.config', 'openagentspocket');

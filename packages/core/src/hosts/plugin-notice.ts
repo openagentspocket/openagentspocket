@@ -151,7 +151,18 @@ export function pluginPresentation(
   }
 }
 
+/** A session bridge reports `<version>+<backend>`: the herdr plugin flow has nothing to offer it. */
+const SESSION_BRIDGE = /^([0-9.]+)\+([a-z]+)$/;
+
 function describe(installation: PluginInstallation, ctx: Resolved): PluginPresentation {
+  const bridge = SESSION_BRIDGE.exec(installation.version);
+  if (bridge) {
+    const version = `${bridge[2]} ${bridge[1]}`;
+    return {
+      value: { kind: 'installed', version, linkedLocally: false, disabled: false },
+      notice: null,
+    };
+  }
   const version = installation.version === '' ? null : installation.version;
   const parsed = parsePluginVersion(installation.version);
   const isOutdated = parsed !== null && comparePluginVersions(parsed, ctx.bundled) < 0;

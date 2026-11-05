@@ -30,6 +30,12 @@ const noticeOf = (status: PluginStatus, context: Partial<PluginContext> = {}): P
 const noteFeatures = (notice: PluginNotice): PluginFeature[] => notice.notes.map((n) => n.feature);
 
 describe('plugin notice matrix', () => {
+  it('a session bridge names its backend and offers nothing to update', () => {
+    const { value, notice } = present(installed({ version: '0.1.0+tmux' }));
+    expect(value).toMatchObject({ kind: 'installed', version: 'tmux 0.1.0' });
+    expect(notice).toBeNull();
+  });
+
   it('shows only the value when there is nothing to do', () => {
     const cases: [PluginStatus, unknown][] = [
       [{ kind: 'checking' }, { kind: 'checking' }],
