@@ -2,11 +2,15 @@
 appId: com.openagentspocket.app
 ---
 - runFlow: _demo.yaml
-- openLink: openagentspocket:///agent/demo/p2?surface=terminal
+- tapOn:
+    id: inbox-p2
 - extendedWaitUntil:
     visible:
       id: agent-header-sidebar
     timeout: 15000
+- tapOn:
+    id: agent-header-more
+- tapOn: "Show Terminal"
 - waitForAnimationToEnd
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/03-agent-terminal

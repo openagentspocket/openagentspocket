@@ -2,7 +2,8 @@
 appId: com.openagentspocket.app
 ---
 - runFlow: _demo.yaml
-- openLink: openagentspocket:///agent/demo/p2
+- tapOn:
+    id: inbox-p2
 - extendedWaitUntil:
     visible:
       id: agent-header-sidebar
