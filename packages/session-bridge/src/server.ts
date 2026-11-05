@@ -56,7 +56,9 @@ export async function startBridge(options: BridgeOptions): Promise<Bridge> {
     void handleLine(tmux, version, line).then((response) => socket.end(response));
   };
 
-  const server = createServer((socket) => {
+  // Half open: a client may finish writing before the answer is ready, and over a forwarded channel
+  // that end arrives as soon as the request does.
+  const server = createServer({ allowHalfOpen: true }, (socket) => {
     let pending = '';
     let served = false;
     socket.on('error', () => socket.destroy());

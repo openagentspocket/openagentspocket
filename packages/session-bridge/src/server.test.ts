@@ -72,6 +72,19 @@ describe('the bridge socket', () => {
     expect(decodeResult(out, '1', 'pong').version).toBe('test');
   });
 
+  it('still answers a client that ended its side right after the request', async () => {
+    const socketPath = await start({ text: paneLine('%1') });
+    const out = await new Promise<string>((resolve) => {
+      let text = '';
+      const socket = connect(socketPath, () => socket.end('{"id":"1","method":"ping"}\n'));
+      socket.on('data', (chunk) => {
+        text += chunk.toString();
+      });
+      socket.on('close', () => resolve(text));
+    });
+    expect(decodeResult(out, '1', 'pong').version).toBe('test');
+  });
+
   it('tells the app’s own events channel when panes change', async () => {
     const panes = { text: paneLine('%1') };
     const socketPath = await start(panes);
