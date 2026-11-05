@@ -5,6 +5,7 @@ import { createDemoConsoleStore } from '@/console/demo';
 import { ConsoleStoreProvider } from '@/console/hooks';
 import { fakeAuthenticator } from '@/settings/authenticator';
 import { SettingsProvider } from '@/settings/SettingsProvider';
+import { DetailUiProvider, DockSlotView } from '../detailUi';
 import { TerminalSurface } from './TerminalSurface';
 
 const mockPush = jest.fn();
@@ -23,7 +24,10 @@ async function mountLive() {
     <ThemeProvider themeId="indigo">
       <SettingsProvider store={settings} authenticator={fakeAuthenticator(null)}>
         <ConsoleStoreProvider store={store}>
-          <TerminalSurface hostId="demo" paneId="p2" />
+          <DetailUiProvider hostId="demo" paneId="p2">
+            <TerminalSurface hostId="demo" paneId="p2" />
+            <DockSlotView />
+          </DetailUiProvider>
           <OverlayHost />
         </ConsoleStoreProvider>
       </SettingsProvider>

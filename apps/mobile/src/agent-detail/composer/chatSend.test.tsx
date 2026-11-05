@@ -3,6 +3,7 @@ import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore, DemoConsoleTransport } from '@/console/demo';
 import { ConsoleStoreProvider } from '@/console/hooks';
+import { TestSettings } from '@/settings/TestSettings';
 import { AgentDetailScreen } from '../AgentDetailScreen';
 import { ComposerRegistryProvider } from './composerContext';
 
@@ -46,11 +47,18 @@ function renderDetail(paneId: string, transport: PaneTransport) {
   const registry = new ComposerRegistry({ storage, clock: new FakeClock() });
   render(
     <ThemeProvider themeId="indigo">
-      <ConsoleStoreProvider store={createDemoConsoleStore(undefined, transport)}>
-        <ComposerRegistryProvider registry={registry}>
-          <AgentDetailScreen hostId="demo" paneId={paneId} storage={storage} onSwitch={jest.fn()} />
-        </ComposerRegistryProvider>
-      </ConsoleStoreProvider>
+      <TestSettings>
+        <ConsoleStoreProvider store={createDemoConsoleStore(undefined, transport)}>
+          <ComposerRegistryProvider registry={registry}>
+            <AgentDetailScreen
+              hostId="demo"
+              paneId={paneId}
+              storage={storage}
+              onSwitch={jest.fn()}
+            />
+          </ComposerRegistryProvider>
+        </ConsoleStoreProvider>
+      </TestSettings>
     </ThemeProvider>,
   );
 }

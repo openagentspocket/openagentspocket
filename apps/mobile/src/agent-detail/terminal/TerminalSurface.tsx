@@ -15,6 +15,7 @@ import { useCallback, useState, useSyncExternalStore } from 'react';
 import { View } from 'react-native';
 import { useSettings } from '@/settings/SettingsProvider';
 import { TerminalZoom } from '@/terminal/TerminalZoom';
+import { useDockSlot } from '../detailUi';
 import type { AgentTerminalSession } from './AgentTerminalSession';
 import { CONTROL_KEYS, FULL_KEYBOARD, type KeyRows, keyLabel } from './keyTables';
 import { PasteReviewSheet } from './PasteReviewSheet';
@@ -90,6 +91,21 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
   ];
   const dock = keys === 'system' ? null : DOCKS[keys];
 
+  // The toolbar sits in the detail's dock, under the status line and over the composer.
+  useDockSlot(
+    settings.terminalToolbarVisible ? (
+      <TerminalToolbar
+        keyboard={keyboard}
+        configuration={configuration}
+        onKey={sendKey}
+        fullKeyboardShown={keys === 'full'}
+        onToggleKeyboard={() => showKeys(keys === 'full' ? 'system' : 'full')}
+        onMore={() => setMenu(true)}
+        dPadOpen={dPad}
+        onToggleDPad={setDPad}
+      />
+    ) : null,
+  );
   return (
     <View style={{ flex: 1 }} testID="terminal-surface">
       <View style={{ flex: 1 }}>
@@ -107,16 +123,6 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
         </TerminalZoom>
         <StatusOverlay status={terminal.snapshot.status} onRetry={store.retry.bind(store)} />
       </View>
-      <TerminalToolbar
-        keyboard={keyboard}
-        configuration={configuration}
-        onKey={sendKey}
-        fullKeyboardShown={keys === 'full'}
-        onToggleKeyboard={() => showKeys(keys === 'full' ? 'system' : 'full')}
-        onMore={() => setMenu(true)}
-        dPadOpen={dPad}
-        onToggleDPad={setDPad}
-      />
       {dock ? <KeyboardDock rows={dock.rows} onKey={dockKey(dock)} testID="keys-dock" /> : null}
       <ActionMenu items={items} visible={menu} onClose={() => setMenu(false)} />
       <PasteReviewSheet

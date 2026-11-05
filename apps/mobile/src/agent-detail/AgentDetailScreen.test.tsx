@@ -1,6 +1,7 @@
 import { MemoryStorage, SettingsStore } from '@openagentspocket/core';
 import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { TestSettings } from '@/settings/TestSettings';
 import { createDemoConsoleStore } from '../console/demo';
 import { ConsoleStoreProvider } from '../console/hooks';
 import { fakeAuthenticator } from '../settings/authenticator';
@@ -71,14 +72,16 @@ describe('AgentDetailScreen', () => {
     const focus = jest.spyOn(store, 'focusAgent').mockResolvedValue();
     const view = (paneId: string) => (
       <ThemeProvider themeId="indigo">
-        <ConsoleStoreProvider store={store}>
-          <AgentDetailScreen
-            hostId="demo"
-            paneId={paneId}
-            storage={new MemoryStorage()}
-            onSwitch={jest.fn()}
-          />
-        </ConsoleStoreProvider>
+        <TestSettings>
+          <ConsoleStoreProvider store={store}>
+            <AgentDetailScreen
+              hostId="demo"
+              paneId={paneId}
+              storage={new MemoryStorage()}
+              onSwitch={jest.fn()}
+            />
+          </ConsoleStoreProvider>
+        </TestSettings>
       </ThemeProvider>
     );
     const first = await render(view('p2'));

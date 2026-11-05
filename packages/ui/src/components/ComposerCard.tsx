@@ -114,6 +114,8 @@ export interface ComposerCardProps {
   labels?: AgentBarLabels;
   /** The key the "..." circle registers as a popover anchor. */
   moreAnchorKey?: string;
+  /** A show/hide toggle for a bar above the composer (the terminal's key toolbar); omitted draws nothing. */
+  barToggle?: { visible: boolean; onToggle: () => void; label: string };
   /** The input gained or lost focus: the composer is open (a surface above it may condense). */
   onFocusChange?: (focused: boolean) => void;
   testID?: string;
@@ -170,6 +172,7 @@ export function ComposerCard({
   addMenu,
   moreMenu,
   moreAnchorKey,
+  barToggle,
   onFocusChange,
   skills,
   onSkill,
@@ -288,6 +291,14 @@ export function ComposerCard({
           <View style={styles.buttons}>
             {plus}
             {leadingMark}
+            {barToggle ? (
+              <Circle
+                icon="toolbar"
+                label={barToggle.label}
+                onPress={barToggle.onToggle}
+                testID={`${testID}-bar-toggle`}
+              />
+            ) : null}
             {moreMenu?.length ? (
               <Circle
                 icon="more"

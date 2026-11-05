@@ -5,6 +5,7 @@ import { ConsoleStoreProvider } from '@/console/hooks';
 import type { ConsoleStore } from '@/console/store';
 import { fakeAuthenticator } from '@/settings/authenticator';
 import { SettingsProvider } from '@/settings/SettingsProvider';
+import { DetailUiProvider, DockSlotView } from '../detailUi';
 import { TerminalSurface } from './TerminalSurface';
 
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn() }) }));
@@ -37,7 +38,10 @@ async function mount(pty: ScriptedTerminalSession) {
         authenticator={fakeAuthenticator(null)}
       >
         <ConsoleStoreProvider store={storeWith(pty)}>
-          <TerminalSurface hostId="h1" paneId="p1" />
+          <DetailUiProvider hostId="demo" paneId="p2">
+            <TerminalSurface hostId="h1" paneId="p1" />
+            <DockSlotView />
+          </DetailUiProvider>
         </ConsoleStoreProvider>
       </SettingsProvider>
     </ThemeProvider>,

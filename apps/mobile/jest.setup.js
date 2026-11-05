@@ -8,8 +8,12 @@ jest.mock('expo-sqlite/kv-store', () => ({
 // tests have none, so the header component is a no-op there.
 jest.mock('./src/navigation/NavigatorHeader', () => ({ NavigatorHeader: () => null }));
 
-// A gesture detector needs a GestureHandlerRootView, which component tests don't mount.
-jest.mock('react-native-gesture-handler', () => ({
-  ...jest.requireActual('react-native-gesture-handler'),
-  GestureDetector: ({ children }) => children,
-}));
+// Its deprecated DrawerLayoutAndroid export warns when read, so it is left out of the copy.
+jest.mock('react-native-gesture-handler', () => {
+  const actual = jest.requireActual('react-native-gesture-handler');
+  const copy = { __esModule: true, GestureDetector: ({ children }) => children };
+  for (const key of Object.keys(actual)) {
+    if (key !== 'DrawerLayoutAndroid' && key !== 'GestureDetector') copy[key] = actual[key];
+  }
+  return copy;
+});

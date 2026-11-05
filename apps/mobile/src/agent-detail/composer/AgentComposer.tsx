@@ -22,6 +22,7 @@ import { useState, useSyncExternalStore } from 'react';
 import { Pressable, View } from 'react-native';
 import { StagingStatusBar } from '@/features/composer-tools/StagingStatusBar';
 import { useAgentSkills } from '@/features/composer-tools/useAgentSkills';
+import { useSetting } from '@/settings/SettingsProvider';
 import { renderMessage } from '@/usage/usageText';
 import { agentBarLabels } from '../agentBarLabels';
 import { useDetailUi } from '../detailUi';
@@ -88,6 +89,7 @@ export function AgentComposerBar({
     snapshot,
     skills: agentSkills ?? hostSkills,
   });
+  const [toolbarVisible, setToolbarVisible] = useSetting('terminalToolbarVisible');
   const menus = useComposerMenus({ composer, surface, program, projectRoot, onToggleSurface });
   const policy = surface === 'chat' ? chatSend.delivery : terminalPolicy;
   // Chat's Stop is the program's own (keys and guard); the terminal's is Esc, which some programs ignore.
@@ -189,6 +191,15 @@ export function AgentComposerBar({
         // Folded to one line until the Composer is open (Swift): then the "..." menu shows.
         expanded={surface === 'terminal' || composing ? true : undefined}
         moreAnchorKey={COMPOSER_MORE_ANCHOR}
+        barToggle={
+          surface === 'terminal'
+            ? {
+                visible: toolbarVisible,
+                onToggle: () => setToolbarVisible(!toolbarVisible),
+                label: t('Toolbar'),
+              }
+            : undefined
+        }
         onFocusChange={setComposing}
         addMenu={menus.addItems}
         moreMenu={menus.moreItems}
