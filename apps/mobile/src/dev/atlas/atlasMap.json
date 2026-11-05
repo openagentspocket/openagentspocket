@@ -403,13 +403,13 @@
   },
   {
     "id": "agent-detail.chat-background-strip",
-    "rn": "AgentDetailScreen",
-    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+    "rn": "AgentDetailScreen (AgentBackgroundWork strip)",
+    "note": "two running, two finished, +1 more; scripted conversation"
   },
   {
     "id": "agent-detail.chat-background-sheet",
-    "rn": "AgentDetailScreen",
-    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+    "rn": "AgentBackgroundWork sheet (BackgroundWorkList)",
+    "note": "opened from the first strip row"
   },
   {
     "id": "agent-detail.chat-banners",

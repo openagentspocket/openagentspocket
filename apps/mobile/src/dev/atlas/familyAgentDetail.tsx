@@ -18,11 +18,12 @@ function detail(
   press?: readonly string[],
   blocked = false,
   looking = false,
+  background?: 'list' | 'blocked',
 ): AtlasEntry {
   return {
     script: press ? { press } : undefined,
     render: () => (
-      <AtlasChat looking={looking}>
+      <AtlasChat looking={looking} background={background}>
         <Stack.Screen options={{ headerShown: false }} />
         {blocked ? (
           <AtlasBlocked>
@@ -61,8 +62,8 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.chat': chat,
   'agent-detail.chat-timeline': chat,
   'agent-detail.chat-floating-controls': chat,
-  'agent-detail.chat-background-strip': chat,
-  'agent-detail.chat-background-sheet': chat,
+  'agent-detail.chat-background-strip': detail('p2', 'chat', undefined, false, false, 'list'),
+  'agent-detail.chat-background-sheet': detail('p2', 'chat', ['work-row-w1'], false, false, 'list'),
   'agent-detail.chat-banners': detail('p2', 'chat', undefined, false, true),
   'agent-detail.chat-command-suggestions': chat,
   'agent-detail.chat-tools-keyboard': chat,
@@ -78,7 +79,7 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.header-more-menu': detail('p2', 'chat', ['agent-header-more']),
   'agent-detail.session-drawer': detail('p2', 'chat', ['agent-header-sidebar']),
   'agent-detail.session-drawer--agents': detail('p2', 'chat', ['agent-header-sidebar']),
-  'agent-detail.chat-blocked-card': detail('p1', 'chat', undefined, true),
+  'agent-detail.chat-blocked-card': detail('p1', 'chat', undefined, true, false, 'blocked'),
   'agent-detail.direct-input': terminal,
   'agent-detail.direct-input-more-menu': detail('p2', 'terminal', ['toolbar-more']),
   'agent-detail.terminal-toolbar': terminal,

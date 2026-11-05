@@ -16,13 +16,13 @@ import {
 import { useState } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
-import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
 import { activityOf } from '../blocked/useBlockedCard';
 import { useAgent, useConsole, useConsoleState } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
 import { AgentSessionDrawer } from './AgentSessionDrawer';
 import { AgentSwitcher } from './AgentSwitcher';
 import { agentBarLabels } from './agentBarLabels';
+import { ChatAboveComposer } from './ChatAboveComposer';
 import { ChatTimeline } from './chat/ChatTimeline';
 import { AgentComposerBar } from './composer/AgentComposer';
 import { useAgentComposer } from './composer/composerContext';
@@ -111,7 +111,7 @@ export function AgentDetailScreen({
         </View>
       </View>
       <View style={styles.dock}>
-        {surface === 'chat' ? <BlockedCardSlot row={row} /> : null}
+        {surface === 'chat' ? <ChatAboveComposer row={row} /> : null}
         <StatusLine
           status={status}
           latencyMs={latency}

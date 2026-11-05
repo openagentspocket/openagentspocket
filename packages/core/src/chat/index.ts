@@ -1,6 +1,7 @@
 // The chat engine. `model` is program-agnostic (Codex, Pi, Grok and OpenCode engines reuse it);
 // `claude` is the Claude Code reader.
 
+export * from './background-work';
 export type { ClaudeRole } from './claude/chain';
 export * from './claude/location';
 export * from './claude/locator';

@@ -1,4 +1,5 @@
 import {
+  type ChatBackgroundWorkItem,
   type ChatEntry,
   type ConversationState,
   type ConversationStore,
@@ -155,21 +156,120 @@ const storeFor = (conversation: ConversationState) =>
 
 const registryFor = (conversation: ConversationState) =>
   ({ get: () => storeFor(conversation) }) as unknown as ConversationRegistry;
+const work = (
+  id: string,
+  title: string,
+  options: Partial<ChatBackgroundWorkItem> & { launchedAgo: number },
+): ChatBackgroundWorkItem => ({
+  id,
+  kind: 'subagent',
+  title,
+  subtitle: null,
+  state: 'running',
+  journalPath: null,
+  launchOffset: 100,
+  endOffset: null,
+  launchedAt: at(options.launchedAgo),
+  endedAt: null,
+  usage: null,
+  ...options,
+});
+
+const usage = (
+  fields: Partial<NonNullable<ChatBackgroundWorkItem['usage']>>,
+): NonNullable<ChatBackgroundWorkItem['usage']> => ({
+  tokens: null,
+  toolUses: null,
+  durationMilliseconds: null,
+  agents: null,
+  agentsDone: null,
+  agentsFailed: null,
+  ...fields,
+});
+
+/** Mid-session with Background Work: two running, two finished, one Workflow with its journal. */
+const workState: ConversationState = {
+  ...state,
+  snapshot: {
+    ...state.snapshot,
+    transcript: {
+      ...state.snapshot.transcript,
+      latestPromptOffset: 50,
+      backgroundWork: [
+        work('w1', 'Find old pairing steps', { subtitle: 'Explore', launchedAgo: 246 }),
+        work('w2', 'docs-audit', {
+          kind: 'workflow',
+          subtitle: 'Check every guide page against the QR code flow',
+          launchedAgo: 237,
+        }),
+        work('w3', 'Check screenshots', {
+          subtitle: 'general-purpose',
+          state: 'completed',
+          launchedAgo: 200,
+          endOffset: 120,
+          endedAt: at(76),
+          usage: usage({ tokens: 41_200, toolUses: 14, durationMilliseconds: 124_000 }),
+        }),
+        work('w4', 'Check link anchors', {
+          subtitle: 'Explore',
+          state: 'completed',
+          launchedAgo: 150,
+          endOffset: 130,
+          endedAt: at(79),
+          usage: usage({ durationMilliseconds: 71_000 }),
+        }),
+      ],
+    },
+  },
+  workflowProgress: {
+    w2: {
+      updatedAt: at(5),
+      agents: [
+        { id: 'k1', label: 'audit:setup', phase: 'Audit', state: 'done' },
+        { id: 'k2', label: 'audit:index', phase: 'Audit', state: 'done' },
+        { id: 'k3', label: null, phase: 'Verify', state: 'running' },
+      ],
+    },
+  },
+};
+
+/** The Blocked card's screen: one Subagent running, condensed to a line over the card. */
+const blockedWorkState: ConversationState = {
+  ...state,
+  snapshot: {
+    ...state.snapshot,
+    transcript: {
+      ...state.snapshot.transcript,
+      backgroundWork: [
+        work('w1', 'Find other retry callers', { subtitle: 'Explore', launchedAgo: 30 }),
+      ],
+    },
+  },
+};
+
 const registry = registryFor(state);
+const workRegistry = registryFor(workState);
+const blockedWorkRegistry = registryFor(blockedWorkState);
 const lookingRegistry = registryFor(lookingState);
 
 /** Gives the atlas a scripted conversation, so Chat renders as it does mid-session. */
 export function AtlasChat({
   children,
   looking = false,
+  background,
 }: {
   children: ReactNode;
   /** The conversation is still being located and the last read failed (chat-banners). */
   looking?: boolean;
+  /** Background Work over the Composer: the strip's list, or the Blocked card's single Subagent. */
+  background?: 'list' | 'blocked';
 }) {
-  return (
-    <ConversationsProvider registry={looking ? lookingRegistry : registry}>
-      {children}
-    </ConversationsProvider>
-  );
+  const scripted = looking
+    ? lookingRegistry
+    : background === 'list'
+      ? workRegistry
+      : background === 'blocked'
+        ? blockedWorkRegistry
+        : registry;
+  return <ConversationsProvider registry={scripted}>{children}</ConversationsProvider>;
 }

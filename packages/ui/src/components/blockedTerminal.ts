@@ -1,10 +1,18 @@
 // Barrel of the UX3 group 'blockedTerminal'.
 
 export {
-  BACKGROUND_WORK_ROWS,
+  type BackgroundWorkAgentItem,
+  type BackgroundWorkDetailItem,
+  BackgroundWorkList,
+  type BackgroundWorkListLabels,
+} from './BackgroundWorkList';
+export {
+  BackgroundWorkGlyph,
   type BackgroundWorkItem,
   type BackgroundWorkLabels,
+  type BackgroundWorkState,
   BackgroundWorkStrip,
+  type BackgroundWorkSummaryLine,
   defaultBackgroundWorkLabels,
 } from './BackgroundWorkStrip';
 export {
