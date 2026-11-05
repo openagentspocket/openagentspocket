@@ -1,15 +1,29 @@
-import type {
-  ChatHostFiles,
-  HostFileListing,
-  HostFileListingRequest,
-  HostFileRange,
-  HostFileSlice,
-  HostFileStatus,
+import {
+  type ChatHostFiles,
+  type ChatHostScriptRunner,
+  decodeUtf8,
+  encodeUtf8,
+  type HostFileListing,
+  type HostFileListingRequest,
+  type HostFileRange,
+  type HostFileSlice,
+  type HostFileStatus,
+  type OpenCodeQuery,
+  type OpenCodeQueryResponse,
+  openCodeQueryRunner,
 } from '@openagentspocket/core';
-import { SessionHostFiles, type SshTransport } from '@openagentspocket/transport';
+import {
+  ExecLane,
+  runBoundedScript,
+  SessionHostFiles,
+  type SshTransport,
+} from '@openagentspocket/transport';
 
 /** Runs an operation on the Host's current transport (the connection manager's `withTransport`). */
 export type RunOnTransport = <V>(operation: (transport: SshTransport) => Promise<V>) => Promise<V>;
+
+/** Chat's store queries (OpenCode) run one at a time per Host, each within this budget. */
+const CHAT_QUERY_TIMEOUT_MS = 10_000;
 
 /**
  * Chat's file port for one Host over the SSH transport. Each call runs on whatever transport the
@@ -18,6 +32,7 @@ export type RunOnTransport = <V>(operation: (transport: SshTransport) => Promise
  */
 export class TransportChatFiles implements ChatHostFiles {
   private current: { transport: SshTransport; files: SessionHostFiles } | undefined;
+  private readonly lane = new ExecLane();
 
   constructor(private readonly run: RunOnTransport) {}
 
@@ -31,6 +46,27 @@ export class TransportChatFiles implements ChatHostFiles {
 
   read(range: HostFileRange): Promise<HostFileSlice> {
     return this.run((transport) => this.filesOf(transport).read(range));
+  }
+
+  /** One read-only query of OpenCode's session store: one bounded script over one exec. */
+  queryOpenCode(query: OpenCodeQuery): Promise<OpenCodeQueryResponse> {
+    const runner: ChatHostScriptRunner = (script) =>
+      this.run(async (transport) => {
+        const result = await runBoundedScript(transport, decodeUtf8(script), {
+          feature: 'Chat',
+          deadlineMs: CHAT_QUERY_TIMEOUT_MS,
+          remoteSeconds: Math.max(1, CHAT_QUERY_TIMEOUT_MS / 1000 - 2),
+          timeoutMarkerPrefix: '__AGENTICO_OC_TIMEOUT_',
+          timedOut: { kind: 'hostFileTimedOut' },
+          lane: this.lane,
+        });
+        return {
+          stdout: encodeUtf8(result.stdout),
+          stderr: encodeUtf8(result.stderr),
+          exitStatus: result.exitCode,
+        };
+      });
+    return openCodeQueryRunner(runner)(query);
   }
 
   home(): Promise<string> {

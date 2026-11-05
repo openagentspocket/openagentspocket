@@ -15,6 +15,7 @@ import {
   PREVIEW_EXPANDED_LIMITS,
   withExpandedLimits,
 } from '../model/preview';
+import { ChatOutputTooLong, ChatSourceUnavailable } from '../model/source';
 import { listedBackgroundWork, recordedEntries } from '../model/transcript';
 import {
   type ChatProjectionContext,
@@ -23,6 +24,7 @@ import {
   emptyTranscript,
 } from '../model/types';
 import type { ChatWorkflowProgress } from '../model/workflow-progress';
+import { readsByQuery } from './adapter';
 import { ChatEngineBase, type ChatExpandedOutput, isCancelled } from './engine-base';
 import type { ChatConversationSnapshot, ChatToolOutputFailure } from './snapshot';
 
@@ -67,11 +69,15 @@ export class ChatConversationEngine extends ChatEngineBase {
     this.lostAMessage = lostAMessage;
     this.setContext(context);
     try {
-      const location = await this.locate();
-      if (location.type === 'found') await this.follow(location.path);
-      else this.stop(location.reason);
+      if (readsByQuery(this.adapter)) {
+        await this.followQuery();
+      } else {
+        const location = await this.locate();
+        if (location.type === 'found') await this.follow(location.path);
+        else this.stop(location.reason);
+      }
     } catch (thrown) {
-      this.recordFailure(thrown);
+      this.stopOrRecord(thrown);
     }
     this.projectIfNeeded();
     return this.current;
@@ -102,7 +108,7 @@ export class ChatConversationEngine extends ChatEngineBase {
           next.readFailure = null;
         });
       } catch (thrown) {
-        this.recordFailure(thrown);
+        this.stopOrRecord(thrown);
       }
     }
     this.projectIfNeeded();
@@ -163,7 +169,7 @@ export class ChatConversationEngine extends ChatEngineBase {
     const { first: firstPage, maximum } = first.olderPageLengths;
     let pageLength = firstPage;
     // What a bounded automatic request may still read; every byte counts, page overlaps included.
-    const bound = automatic ? first.limits.automaticOlderSearch : null;
+    const bound = automatic ? first.automaticOlderSearch : null;
     let allowance = bound;
     for (;;) {
       const source = this.source;
@@ -197,6 +203,10 @@ export class ChatConversationEngine extends ChatEngineBase {
           next.readFailure = null;
         });
       } catch (thrown) {
+        if (thrown instanceof ChatSourceUnavailable) {
+          this.stop(thrown.reason);
+          break;
+        }
         this.recordFailure(thrown);
         if (!isCancelled(thrown)) {
           const error = asTransportError(thrown);
@@ -316,6 +326,7 @@ export class ChatConversationEngine extends ChatEngineBase {
         output: { preview: spilled ?? output.fallback, fileChanges: output.fileChanges },
       };
     } catch (thrown) {
+      if (thrown instanceof ChatOutputTooLong) return { ok: false, failure: { type: 'tooLong' } };
       return { ok: false, failure: { type: 'unreadable', error: asTransportError(thrown) } };
     }
   }

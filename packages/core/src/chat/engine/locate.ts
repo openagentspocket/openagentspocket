@@ -2,9 +2,12 @@
 
 import { ClaudeTranscriptLocator } from '../claude/locator';
 import { type CodexRolloutSegment, CodexTranscriptLocator, liveSegment } from '../codex/locator';
+import { locateGrokTranscript } from '../grok/locate';
 import type { ConversationReference } from '../model/conversation-reference';
 import type { ChatHostFiles } from '../model/host-files';
 import type { ChatAgentActivity } from '../model/types';
+import { locateOpenCodeTranscript } from '../opencode/locate';
+import { locatePiTranscript } from '../pi/locate';
 import type { ChatUnavailableReason } from '../timeline/reasons';
 
 export interface LocateState {
@@ -110,8 +113,12 @@ export async function locateTranscript(state: LocateState): Promise<Location> {
         newConversationActivity: remembered,
       };
     }
-    default:
-      // Pi, Oh My Pi, Grok and OpenCode have no engine yet.
-      return unavailable({ kind: 'unsupportedSession' });
+    case 'pi':
+    case 'omp':
+      return locatePiTranscript(state);
+    case 'grok':
+      return locateGrokTranscript(state);
+    case 'opencode':
+      return locateOpenCodeTranscript(state);
   }
 }

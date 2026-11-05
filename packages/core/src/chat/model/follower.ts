@@ -9,6 +9,7 @@
 
 import { bytesEqual, type ChatHostFiles, concatBytes, readBytes } from './host-files';
 import { type ChatLine, JsonlLineFramer } from './lines';
+import type { ChatTranscriptSource } from './source';
 import type { ChatOutputReference } from './types';
 
 export interface FollowerLimits {
@@ -92,7 +93,7 @@ export function sameConversationHeads(
   return sameStart(a, b);
 }
 
-export class TranscriptFollower {
+export class TranscriptFollower implements ChatTranscriptSource {
   readonly limits: FollowerLimits;
   framer: JsonlLineFramer;
   /** The next byte to read. */
@@ -121,6 +122,10 @@ export class TranscriptFollower {
 
   get hasOlder(): boolean {
     return (this.windowStart ?? 0) > 0;
+  }
+
+  get automaticOlderSearch(): number | null {
+    return this.limits.automaticOlderSearch;
   }
 
   get hasUnreadBytes(): boolean {

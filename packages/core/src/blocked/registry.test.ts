@@ -8,17 +8,17 @@ import { type BlockedDialog, NO_DIALOG } from './types';
 function foreignDialog(): BlockedDialog {
   const parsed = parseBlockedDialog(loadScreen('claude-02-c1-bash-blocked'), 'claude');
   if (parsed.kind !== 'dialog') throw new Error('expected a dialog');
-  return { ...parsed.dialog, kind: 'grokPermission', program: 'grok' };
+  return { ...parsed.dialog, kind: 'grokPermission', program: 'pi' };
 }
 
 describe('the hooks for the other programs (P2.10)', () => {
   it('shows no dialog and refuses to plan for a program without a parser', () => {
-    expect(parseBlockedDialog(loadScreen('claude-02-c1-bash-blocked'), 'grok')).toEqual(NO_DIALOG);
+    expect(parseBlockedDialog(loadScreen('claude-02-c1-bash-blocked'), 'pi')).toEqual(NO_DIALOG);
     expect(planDialogAction(foreignDialog(), { kind: 'dismiss' }).ok).toBe(false);
   });
 
   it('routes a registered program to its own parser and planner', () => {
-    registerBlockedProgram('grok', {
+    registerBlockedProgram('pi', {
       parse: () => NO_DIALOG,
       plan: (_dialog, action, toolUseID) =>
         action.kind === 'dismiss'
