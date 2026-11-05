@@ -30,6 +30,13 @@ import { useResolvedThemeId } from '@/settings/useSettingsContext';
 import { useWidgetSync } from '@/widgets/useWidgetSync';
 
 recordUncaughtErrors();
+/**
+ * Home is always the first screen of the root stack, also when a link opens a sheet route directly
+ * (settings, hosts, add-host...): a form sheet cannot be the first screen of a native stack (the
+ * router would draw it as a card), and Home pushed over a sheet would itself be drawn as a modal.
+ */
+export const unstable_settings = { anchor: 'index' };
+
 const settingsStore = new SettingsStore(deviceStorage);
 bindDemoModeStorage(deviceStorage);
 
@@ -77,6 +84,8 @@ function AppStack() {
   return (
     <Stack screenOptions={options}>
       <Stack.Screen name="index" options={{ ...bare, title: t('Home') }} />
+      {/* The Agent detail draws its own floating header; the route name must never show as a title. */}
+      <Stack.Screen name="agent/[hostId]/[paneId]" options={{ ...bare, title: t('Agent') }} />
       <Stack.Screen name="changes" options={{ ...bare, title: t('Changes') }} />
       <Stack.Screen name="hosts" options={{ ...bare, ...sheet, title: t('Hosts') }} />
       <Stack.Screen

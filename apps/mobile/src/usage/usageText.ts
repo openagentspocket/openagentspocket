@@ -2,6 +2,7 @@ import {
   accountDisplayName,
   type ClaudeAccount,
   formatCost,
+  formatDate,
   formatTokens,
   renderText,
   type Summary,
@@ -51,4 +52,4 @@ export const metricTitle = (metric: UsageMetric): string =>
 export const updatedText = (refreshing: boolean, now: Date): string =>
   refreshing
     ? t('Refreshing')
-    : t('Updated %@', new Intl.DateTimeFormat(getLocaleTag(), { timeStyle: 'short' }).format(now));
+    : t('Updated %@', formatDate(now, getLocaleTag(), { timeStyle: 'short' }));

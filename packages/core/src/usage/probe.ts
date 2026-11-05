@@ -2,6 +2,7 @@ import { message } from '../errors/text';
 import { TransportFailure } from '../errors/transport-error';
 import type { HerdrEndpoint } from '../hosts/herdr-endpoint';
 import { herdrScriptCommand } from '../hosts/host-path';
+import { isTimeZone } from '../intl';
 import { decodeUsageReport, type UsageReport, UsageReportError } from './report';
 
 /** The whole framed response is capped here; truncation removes the end marker. */
@@ -38,12 +39,7 @@ export function isQueryableTimeZone(identifier: string): boolean {
       }),
   );
   if (!grammar) return false;
-  try {
-    new Intl.DateTimeFormat('en', { timeZone: identifier });
-    return true;
-  } catch {
-    return false;
-  }
+  return isTimeZone(identifier);
 }
 
 export interface UsageProbeOptions {

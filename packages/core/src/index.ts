@@ -10,6 +10,7 @@ export * from './events';
 export * from './files';
 export * from './format';
 export * from './hosts';
+export * from './intl';
 export * from './live-activity';
 export * from './new-agent';
 export * from './notifications';

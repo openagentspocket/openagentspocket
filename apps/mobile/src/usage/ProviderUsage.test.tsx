@@ -26,4 +26,20 @@ describe('useProviderUsage', () => {
     expect(ids.some((id: string) => id.endsWith('/codex'))).toBe(true);
     expect(screen.getByTestId('provider-usage-footer')).toBeTruthy();
   });
+
+  it('renders on an engine without Intl.RelativeTimeFormat (Hermes)', async () => {
+    const intl = Intl as unknown as { RelativeTimeFormat?: unknown };
+    const real = intl.RelativeTimeFormat;
+    intl.RelativeTimeFormat = undefined;
+    try {
+      await render(
+        <ThemeProvider themeId="indigo">
+          <Probe source={new FakeUsageSource()} />
+        </ThemeProvider>,
+      );
+      await waitFor(() => expect(screen.getByTestId('provider-usage-footer')).toBeTruthy());
+    } finally {
+      intl.RelativeTimeFormat = real;
+    }
+  });
 });
