@@ -25,9 +25,14 @@ UX1-agents-list, UX1-usage, UX1-notifications, UX3-agent-bar.
 UX phase F merged: UX3-agent-bar, UX1-home and UX1-usage approved after the judges regenerated the sheets
 themselves (round 3); ui 275, mobile 307. Lesson: workers passed atlas ids as one quoted string (nothing captured,
 old PNGs reused) and Metro served stale code: fresh server + cleared cache + separate ids + judge regeneration.
-**Running:** UX phase G (`scratchpad/rn/ux-g.js`): round 4 for UX1-agents-list (quick-detail sheet padding, nested
-row hairlines) and UX1-notifications (Papel alert surface, web focus ring, button wrap, popover anchor); assembly of
-UX1-agent-detail, UX1-files-changes-ports, UX1-new-agent. Next: UX1-tint-audit, UX1-wide, iOS atlas pass + Maestro.
+UX phase G: UX1-agents-list approved (round 4) and merged; the weekly usage limit cut the rest (2026-11-02,
+reset 2026-11-05). Lighter waves since (Enzo, 2026-11-05): 2-3 standalone agents (feedback by SendMessage, no fresh
+fix agents), Enzo reviews the compare sheets himself, max 2 iterations per screen, one atlas file per family
+(apps/mobile/src/dev/atlas/family*.tsx), one-page brief docs/agents/ux-worker.md, haiku for mechanical steps.
+**Running:** ux-detail (UX1-agent-detail, worktree wf_7d8339f1-ab3-3), ux-files (UX1-files-changes-ports,
+wf_7d8339f1-ab3-4), ux-newagent (UX1-new-agent, wf_7d8339f1-ab3-5). UX1-notifications (wf_308cc08d-920-18) waits
+for Enzo's visual review. Next: Enzo reviews design/atlas/compare/index.html, one fix pass, merge; then tint audit,
+wide, iOS atlas + Maestro.
 
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
