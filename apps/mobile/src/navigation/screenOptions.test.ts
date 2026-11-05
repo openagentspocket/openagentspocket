@@ -1,4 +1,4 @@
-import { buildTheme, themeIds } from '@openagentspocket/ui';
+import { buildTheme, mixed, themeIds } from '@openagentspocket/ui';
 import { stackScreenOptions, statusBarStyle } from './screenOptions';
 
 describe('stackScreenOptions', () => {
@@ -7,7 +7,15 @@ describe('stackScreenOptions', () => {
     const options = stackScreenOptions(theme);
     expect(options.headerTransparent).toBe(false);
     expect(options.headerBlurEffect).toBe('none');
-    expect(options.headerStyle).toEqual({ backgroundColor: theme.colors.canvas });
+    // The bar carries the glow's average tone, so it blends with the screen's wash below it.
+    expect(options.headerStyle).toEqual({
+      backgroundColor: mixed(
+        theme.colors.canvas,
+        theme.colors.glow,
+        theme.metrics.glowOpacity * 0.75,
+      ),
+    });
+    expect(options.headerBackButtonDisplayMode).toBe('minimal');
     expect(options.headerTitleStyle).toEqual({ color: theme.colors.textPrimary });
     expect(options.headerTintColor).toBe(theme.colors.accent);
     expect(options.contentStyle).toEqual({ backgroundColor: theme.colors.canvas });

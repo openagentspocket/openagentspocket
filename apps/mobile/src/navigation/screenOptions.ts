@@ -1,4 +1,4 @@
-import type { Theme } from '@openagentspocket/ui';
+import { mixed, type Theme } from '@openagentspocket/ui';
 import type { NativeStackNavigationOptions } from 'expo-router';
 
 /**
@@ -8,13 +8,18 @@ import type { NativeStackNavigationOptions } from 'expo-router';
  */
 export function stackScreenOptions({
   colors,
-}: Pick<Theme, 'colors'>): NativeStackNavigationOptions {
+  metrics,
+}: Pick<Theme, 'colors' | 'metrics'>): NativeStackNavigationOptions {
   return {
     headerShown: true,
     headerTransparent: false,
     headerBlurEffect: 'none',
     headerShadowVisible: false,
-    headerStyle: { backgroundColor: colors.canvas },
+    // The screen under it washes the canvas with the theme's glow at the top; a bar in the plain
+    // canvas would read as a black band, so it takes the glow's average tone.
+    headerStyle: { backgroundColor: mixed(colors.canvas, colors.glow, metrics.glowOpacity * 0.75) },
+    // Every stack's back button is the chevron alone, like the sheet bar's, never "< Title".
+    headerBackButtonDisplayMode: 'minimal',
     headerTitleStyle: { color: colors.textPrimary },
     headerTintColor: colors.accent,
     contentStyle: { backgroundColor: colors.canvas },

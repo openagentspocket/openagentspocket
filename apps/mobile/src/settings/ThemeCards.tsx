@@ -1,4 +1,4 @@
-import { type SettingsThemeId, themeSelectionPatch, themeSlot } from '@openagentspocket/core';
+import { type SettingsThemeId, themeSelectionPatch } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   makeStyles,
@@ -40,8 +40,8 @@ export function ThemeCards({ ctx }: { ctx: SettingsContext }) {
       {themeIds.map((id) => {
         const appearance = themes[id].appearance === 'dark' ? t('Dark') : t('Light');
         const subtitle = id === DEFAULT_THEME ? t('%@ · Default', appearance) : appearance;
-        const slot = themeSlot(values, id);
-        const selected = values.followSystem ? slot !== null : values.theme === id;
+        // One card is marked: the theme in force (with Follow System, the one for the current appearance).
+        const selected = ctx.themeId === id;
         return (
           <ThemeChoiceCard
             key={id}
