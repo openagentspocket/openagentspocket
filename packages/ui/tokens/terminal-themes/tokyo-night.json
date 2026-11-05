@@ -1,0 +1,50 @@
+{
+  "id": "tokyo-night",
+  "order": 6,
+  "title": "Tokyo Night",
+  "detail": "Day in Light Mode, Night in Dark Mode",
+  "dark": {
+    "background": "#1a1b26",
+    "foreground": "#c0caf5",
+    "ansi": [
+      "#15161e",
+      "#f7768e",
+      "#9ece6a",
+      "#e0af68",
+      "#7aa2f7",
+      "#bb9af7",
+      "#7dcfff",
+      "#a9b1d6",
+      "#414868",
+      "#f7768e",
+      "#9ece6a",
+      "#e0af68",
+      "#7aa2f7",
+      "#bb9af7",
+      "#7dcfff",
+      "#c0caf5"
+    ]
+  },
+  "light": {
+    "background": "#e1e2e7",
+    "foreground": "#3760bf",
+    "ansi": [
+      "#e9e9ed",
+      "#f52a65",
+      "#587539",
+      "#8c6c3e",
+      "#2e7de9",
+      "#9854f1",
+      "#007197",
+      "#6172b0",
+      "#a1a6c5",
+      "#f52a65",
+      "#587539",
+      "#8c6c3e",
+      "#2e7de9",
+      "#9854f1",
+      "#007197",
+      "#3760bf"
+    ]
+  }
+}

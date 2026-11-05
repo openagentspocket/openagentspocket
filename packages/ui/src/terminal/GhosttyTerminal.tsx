@@ -1,7 +1,7 @@
 import { toBase64, utf8Encode } from 'agentico-ssh';
 import { TerminalView as GhosttyView, type TerminalViewRef } from 'expo-libghostty';
 import { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
-import { useTheme } from '../theme/theme';
+import { useTerminalColors } from './TerminalThemeContext';
 import type { TerminalHandle, TerminalViewProps } from './terminalTypes';
 import { createWriteBatcher } from './writeBatcher';
 
@@ -13,7 +13,7 @@ const CLEAR = '\x1b[2J\x1b[3J\x1b[H';
  * selection and scrollback. Output is coalesced so a flood crosses the bridge in a few writes.
  */
 export function GhosttyTerminal({ onInput, onResize, fontSize = 13, ref }: TerminalViewProps) {
-  const theme = useTheme();
+  const surface = useTerminalColors();
   const native = useRef<TerminalViewRef>(null);
   const batcher = useMemo(
     () => createWriteBatcher((bytes) => native.current?.write(toBase64(bytes)).catch(() => {})),
@@ -38,10 +38,11 @@ export function GhosttyTerminal({ onInput, onResize, fontSize = 13, ref }: Termi
 
   const colors = useMemo(
     () => ({
-      background: theme.colors.terminalBackground,
-      foreground: theme.colors.terminalForeground,
+      background: surface.background,
+      foreground: surface.foreground,
+      palette: surface.palette ? [...surface.palette] : undefined,
     }),
-    [theme.colors.terminalBackground, theme.colors.terminalForeground],
+    [surface],
   );
 
   return (

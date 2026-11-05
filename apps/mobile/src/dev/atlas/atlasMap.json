@@ -645,5 +645,50 @@
     "id": "settings.notification-explainer",
     "rn": "NotificationExplainerSheet",
     "note": "open over Notifications settings"
+  },
+  {
+    "id": "settings.terminal-theme-picker",
+    "rn": "TerminalPaletteScreen",
+    "note": ""
+  },
+  {
+    "id": "settings.agent-list-fields",
+    "rn": "AgentFieldsListScreen",
+    "note": "hosts from the demo catalog"
+  },
+  {
+    "id": "settings.agent-list-fields-host",
+    "rn": "AgentFieldsHostScreen",
+    "note": "in-memory layout, no persistence/sync"
+  },
+  {
+    "id": "settings.agent-list-fields-add-field",
+    "rn": "AddFieldSheet",
+    "note": ""
+  },
+  {
+    "id": "settings.agent-list-fields-sync-confirm",
+    "rn": "AgentFieldsHostScreen",
+    "note": "sync resets to defaults, no plugin snapshot"
+  },
+  {
+    "id": "settings.agent-list-fields-reset-confirm",
+    "rn": "AgentFieldsListScreen",
+    "note": "unreadable state forced by the atlas"
+  },
+  {
+    "id": "settings.chat-cache-clear-confirm",
+    "rn": "ChatCacheRows",
+    "note": ""
+  },
+  {
+    "id": "settings.usage",
+    "rn": "app/usage",
+    "note": "alias of usage.tab"
+  },
+  {
+    "id": "shell.hosts-settings-sheets",
+    "rn": "app/settings (SettingsScreen)",
+    "note": "same as settings.root"
   }
 ]

@@ -24,6 +24,9 @@ export interface SettingsValues {
   lightTheme: SettingsThemeId;
   terminalFont: TerminalFont;
   terminalFontSize: number;
+  /** Ids of registered terminal themes (packages/ui/tokens/terminal-themes), one per system appearance; unknown ids render the default. */
+  terminalThemeLight: string;
+  terminalThemeDark: string;
   chatFont: ChatFont;
   /** Dynamic-type steps from the system text size. */
   chatTextOffset: number;
@@ -46,6 +49,8 @@ export const SETTINGS_DEFAULTS: Readonly<SettingsValues> = {
   lightTheme: 'papel',
   terminalFont: 'jetbrains-mono',
   terminalFontSize: 8,
+  terminalThemeLight: 'flexoki',
+  terminalThemeDark: 'vesper',
   chatFont: 'system',
   chatTextOffset: -2,
   foldFinishedTurns: true,
@@ -88,6 +93,8 @@ function sanitize(key: SettingKey, raw: unknown): SettingsValues[SettingKey] | u
     if (typeof raw !== 'number' || !Number.isFinite(raw) || !range) return undefined;
     return Math.min(range.max, Math.max(range.min, Math.round(raw)));
   }
+  if (key === 'terminalThemeLight' || key === 'terminalThemeDark')
+    return typeof raw === 'string' && raw.length > 0 ? raw : undefined;
   const allowed = ALLOWED[key] ?? [];
   return typeof raw === 'string' && allowed.includes(raw) ? (raw as never) : undefined;
 }

@@ -64,6 +64,8 @@ export type CustomComponent =
   | 'themePreview'
   | 'toolbarPreview'
   | 'themeCards'
+  | 'terminalPalette'
+  | 'agentFieldHosts'
   | 'chatSample'
   | 'chatCache'
   | 'acknowledgements'

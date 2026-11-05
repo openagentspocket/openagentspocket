@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from 'react';
 import { type AccessibilityActionEvent, Pressable, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { useAnchor } from '../overlay/anchors';
 import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
@@ -76,6 +77,8 @@ export interface ListRowProps {
   /** Overrides the spoken label (title, subtitle and value by default). */
   accessibilityLabel?: string;
   accessibilityHint?: string;
+  /** Registers the row as a popover anchor (`confirm({ anchorKey })`). */
+  anchorKey?: string;
   testID?: string;
 }
 
@@ -110,9 +113,11 @@ export function ListRow({
   disabled = false,
   accessibilityLabel,
   accessibilityHint,
+  anchorKey,
   testID,
 }: ListRowProps) {
   const styles = useStyles();
+  const anchorRef = useAnchor(anchorKey);
   const [menuOpen, setMenuOpen] = useState(false);
   // Swipe and menu actions, once each by key, as screen-reader actions.
   const extra = [...(swipeActions ?? []), ...(leadingSwipeActions ?? []), ...(menu ?? [])].filter(
@@ -124,6 +129,7 @@ export function ListRow({
 
   const body = (
     <Pressable
+      ref={anchorRef}
       onPress={onPress}
       onLongPress={menu?.length ? () => setMenuOpen(true) : undefined}
       disabled={disabled || (!onPress && !menu?.length)}

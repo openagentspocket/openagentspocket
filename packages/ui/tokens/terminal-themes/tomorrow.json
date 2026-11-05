@@ -1,0 +1,50 @@
+{
+  "id": "tomorrow",
+  "order": 21,
+  "title": "Tomorrow",
+  "detail": "Tomorrow in Light Mode, Tomorrow Night in Dark Mode",
+  "dark": {
+    "background": "#1d1f21",
+    "foreground": "#c5c8c6",
+    "ansi": [
+      "#000000",
+      "#cc6666",
+      "#b5bd68",
+      "#f0c674",
+      "#81a2be",
+      "#b294bb",
+      "#8abeb7",
+      "#ffffff",
+      "#4c4c4c",
+      "#cc6666",
+      "#b5bd68",
+      "#f0c674",
+      "#81a2be",
+      "#b294bb",
+      "#8abeb7",
+      "#ffffff"
+    ]
+  },
+  "light": {
+    "background": "#ffffff",
+    "foreground": "#4d4d4c",
+    "ansi": [
+      "#000000",
+      "#c82829",
+      "#718c00",
+      "#eab700",
+      "#4271ae",
+      "#8959a8",
+      "#3e999f",
+      "#bfbfbf",
+      "#000000",
+      "#c82829",
+      "#718c00",
+      "#eab700",
+      "#4271ae",
+      "#8959a8",
+      "#3e999f",
+      "#ffffff"
+    ]
+  }
+}

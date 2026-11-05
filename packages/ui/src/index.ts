@@ -141,6 +141,11 @@ export {
 export { type OpenAttachLinkOptions, openAttachLink } from './terminal/openAttachLink';
 export { type ReviewPasteLabels, ReviewPasteSheet } from './terminal/ReviewPasteSheet';
 export { SelectTextSheet } from './terminal/SelectTextSheet';
+export {
+  TerminalThemeProvider,
+  type TerminalThemeSlots,
+  useTerminalColors,
+} from './terminal/TerminalThemeContext';
 export { type TerminalHandle, TerminalView, type TerminalViewProps } from './terminal/TerminalView';
 export { appendOutput, gridSize, stripAnsi } from './terminal/terminalText';
 export { type AttachedTerminal, useAttachedTerminal } from './terminal/useAttachedTerminal';
@@ -157,6 +162,15 @@ export { useInsets } from './theme/insets';
 export { airy, metrics, spacing } from './theme/metrics';
 export { programTint } from './theme/programTint';
 export { type Status, statusColorKey, type Tone, toneColorKey } from './theme/status';
+export {
+  type TerminalThemeColors,
+  type TerminalThemeData,
+  terminalColors,
+  terminalPalette,
+  terminalThemeById,
+  terminalThemeOptions,
+  terminalThemes,
+} from './theme/terminalPalettes';
 export { buildTheme, makeStyles, type Theme, ThemeProvider, useTheme } from './theme/theme';
 export {
   type ColorKey,

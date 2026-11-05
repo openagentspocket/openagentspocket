@@ -1,0 +1,50 @@
+{
+  "id": "one-half",
+  "order": 12,
+  "title": "One Half",
+  "detail": "One Half Light and One Half Dark",
+  "dark": {
+    "background": "#282c34",
+    "foreground": "#dcdfe4",
+    "ansi": [
+      "#282c34",
+      "#e06c75",
+      "#98c379",
+      "#e5c07b",
+      "#61afef",
+      "#c678dd",
+      "#56b6c2",
+      "#dcdfe4",
+      "#5d677a",
+      "#e06c75",
+      "#98c379",
+      "#e5c07b",
+      "#61afef",
+      "#c678dd",
+      "#56b6c2",
+      "#dcdfe4"
+    ]
+  },
+  "light": {
+    "background": "#fafafa",
+    "foreground": "#383a42",
+    "ansi": [
+      "#383a42",
+      "#e45649",
+      "#50a14f",
+      "#c18401",
+      "#0184bc",
+      "#a626a4",
+      "#0997b3",
+      "#bababa",
+      "#4f525e",
+      "#e06c75",
+      "#98c379",
+      "#d8b36e",
+      "#61afef",
+      "#c678dd",
+      "#56b6c2",
+      "#ffffff"
+    ]
+  }
+}

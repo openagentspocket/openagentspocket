@@ -1,0 +1,50 @@
+{
+  "id": "follow-system",
+  "order": 0,
+  "title": "Default",
+  "detail": "Alabaster in Light Mode, Afterglow in Dark Mode",
+  "dark": {
+    "background": "#212121",
+    "foreground": "#d0d0d0",
+    "ansi": [
+      "#151515",
+      "#ac4142",
+      "#7e8e50",
+      "#e5b567",
+      "#6c99bb",
+      "#9f4e85",
+      "#7dd6cf",
+      "#d0d0d0",
+      "#505050",
+      "#ac4142",
+      "#7e8e50",
+      "#e5b567",
+      "#6c99bb",
+      "#9f4e85",
+      "#7dd6cf",
+      "#f5f5f5"
+    ]
+  },
+  "light": {
+    "background": "#f7f7f7",
+    "foreground": "#000000",
+    "ansi": [
+      "#000000",
+      "#aa3731",
+      "#448c27",
+      "#cb9000",
+      "#325cc0",
+      "#7a3e9d",
+      "#0083b2",
+      "#b7b7b7",
+      "#777777",
+      "#f05050",
+      "#60cb00",
+      "#f2af50",
+      "#007acc",
+      "#e64ce6",
+      "#00aacb",
+      "#f7f7f7"
+    ]
+  }
+}

@@ -1,8 +1,10 @@
 import { AcknowledgementsList } from './AcknowledgementsList';
+import { AgentFieldHosts } from './agentFields/AgentFieldHosts';
 import { ChatCacheRows } from './ChatCacheRows';
 import { ChatSample } from './ChatSample';
 import { DemoModeRow } from './DemoModeRow';
 import type { SettingsContext, SettingsRow } from './schema';
+import { TerminalPaletteScreen } from './TerminalPaletteScreen';
 import { ThemeCards, ThemePreview } from './ThemeCards';
 import { ToolbarPreview } from './ToolbarPreview';
 
@@ -17,6 +19,10 @@ export function CustomRow({ row, ctx }: { row: CustomSettingsRow; ctx: SettingsC
       return <ToolbarPreview ctx={ctx} />;
     case 'themeCards':
       return <ThemeCards ctx={ctx} />;
+    case 'terminalPalette':
+      return <TerminalPaletteScreen ctx={ctx} />;
+    case 'agentFieldHosts':
+      return <AgentFieldHosts />;
     case 'chatSample':
       return <ChatSample ctx={ctx} />;
     case 'chatCache':

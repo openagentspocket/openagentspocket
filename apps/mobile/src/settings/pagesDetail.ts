@@ -5,8 +5,10 @@ import {
   TERMINAL_FONTS,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
+import { terminalThemeById, themes } from '@openagentspocket/ui';
 import { CHAT_FONT_TITLES, fontOptions, TERMINAL_FONT_TITLES } from './pagesRoot';
 import type { SettingsPage } from './schema';
+import { translateThemeText } from './TerminalPaletteScreen';
 
 export const theme: SettingsPage = {
   id: 'theme',
@@ -38,6 +40,26 @@ export const theme: SettingsPage = {
       ],
     },
     {
+      id: 'terminal',
+      rows: [
+        {
+          kind: 'page',
+          id: 'settings.theme.terminalPalette',
+          title: () => t('Terminal Palette'),
+          icon: 'terminal',
+          page: 'terminalTheme',
+          value: (ctx) =>
+            translateThemeText(
+              terminalThemeById(
+                themes[ctx.themeId].appearance === 'dark'
+                  ? ctx.values.terminalThemeDark
+                  : ctx.values.terminalThemeLight,
+              ).title,
+            ),
+        },
+      ],
+    },
+    {
       id: 'themes',
       loose: true,
       rows: [
@@ -46,6 +68,44 @@ export const theme: SettingsPage = {
           id: 'settings.theme.cards',
           title: () => t('Theme'),
           component: 'themeCards',
+        },
+      ],
+    },
+  ],
+};
+
+export const terminalTheme: SettingsPage = {
+  id: 'terminalTheme',
+  title: () => t('Terminal Palette'),
+  sections: [
+    {
+      id: 'palettes',
+      loose: true,
+      rows: [
+        {
+          kind: 'custom',
+          id: 'settings.terminalTheme.picker',
+          title: () => t('Terminal Palette'),
+          component: 'terminalPalette',
+        },
+      ],
+    },
+  ],
+};
+
+export const agentFields: SettingsPage = {
+  id: 'agentFields',
+  title: () => t('Agent List Fields'),
+  sections: [
+    {
+      id: 'hosts',
+      loose: true,
+      rows: [
+        {
+          kind: 'custom',
+          id: 'settings.agentFields.hosts',
+          title: () => t('Agent List Fields'),
+          component: 'agentFieldHosts',
         },
       ],
     },

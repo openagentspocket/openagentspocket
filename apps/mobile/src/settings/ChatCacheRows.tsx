@@ -6,6 +6,19 @@ import { useChatCache } from './SettingsProvider';
 
 type State = { kind: 'measuring' } | { kind: 'measured'; bytes: number } | { kind: 'clearing' };
 
+export const CLEAR_CACHE_ANCHOR = 'settings.chat.clearCache';
+
+/** The confirm before Chat's cache is dropped (also what the atlas opens). */
+export const confirmClearChatCache = () =>
+  confirm({
+    title: t('Clear Chat cache?'),
+    message: t('Chat reloads messages from each Host the next time you open it.'),
+    confirmLabel: t('Clear Cache'),
+    destructive: true,
+    presentation: 'popover',
+    anchorKey: CLEAR_CACHE_ANCHOR,
+  });
+
 /** How much Chat keeps on this device, and the confirmed way to drop it. */
 export function ChatCacheRows() {
   const cache = useChatCache();
@@ -22,13 +35,7 @@ export function ChatCacheRows() {
   }, [cache]);
 
   const clear = useCallback(async () => {
-    const ok = await confirm({
-      title: t('Clear Chat cache?'),
-      message: t('Chat reloads messages from each Host the next time you open it.'),
-      confirmLabel: t('Clear Cache'),
-      destructive: true,
-      presentation: 'dialog',
-    });
+    const ok = await confirmClearChatCache();
     if (!ok) return;
     setState({ kind: 'clearing' });
     await cache.removeAll();
@@ -47,6 +54,7 @@ export function ChatCacheRows() {
         title={t('Clear Chat Cache')}
         disabled={state.kind !== 'measured' || state.bytes === 0}
         onPress={() => void clear()}
+        anchorKey={CLEAR_CACHE_ANCHOR}
         testID="settings.chat.clearCache"
       />
     </>

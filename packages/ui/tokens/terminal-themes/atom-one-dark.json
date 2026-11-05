@@ -1,0 +1,28 @@
+{
+  "id": "atom-one-dark",
+  "order": 24,
+  "title": "One Dark",
+  "detail": "Atom's One Dark for both appearances",
+  "dark": {
+    "background": "#21252b",
+    "foreground": "#abb2bf",
+    "ansi": [
+      "#21252b",
+      "#e06c75",
+      "#98c379",
+      "#e5c07b",
+      "#61afef",
+      "#c678dd",
+      "#56b6c2",
+      "#abb2bf",
+      "#767676",
+      "#e06c75",
+      "#98c379",
+      "#e5c07b",
+      "#61afef",
+      "#c678dd",
+      "#56b6c2",
+      "#abb2bf"
+    ]
+  }
+}

@@ -1065,6 +1065,17 @@
   title: "assemble Settings sheet and sub pages from the cloned components and compare whole screens (briefs/settings.md, components in docs/ux/components/README.md)"
   deps: [UX1-design-system, UX3-hosts-settings-files, UX3-nav-sheets, UX3-settings-pickers]
   files: [apps/mobile/src/settings/**, apps/mobile/src/app/settings/**]
+- id: UX1-settings-pages
+  phase: 9
+  kind: js
+  title: "Settings pages the Swift atlas has and RN lacked: Terminal Palette, Agent List Fields (list, host editor, add field, confirms), atlas ids for the chat-cache confirm, usage and hosts sheets"
+  deps: [UX1-settings]
+  files:
+    [
+      apps/mobile/src/settings/**,
+      apps/mobile/src/app/settings/**,
+      apps/mobile/src/dev/atlas/familySettings.tsx,
+    ]
 - id: UX1-files-changes-ports
   phase: 9
   kind: js

@@ -236,10 +236,10 @@ function AlertPanel({ request }: { request: AlertRequest }) {
     const dismiss = (
       <Pressable
         style={StyleSheet.absoluteFill}
+        testID="alert-dismiss"
         onPress={() => answerAlert(request, null)}
         accessibilityElementsHidden
         importantForAccessibility="no"
-        testID="alert-dismiss"
       />
     );
     if (!measured) return <View style={[styles.clear, noFocusRing]}>{dismiss}</View>;

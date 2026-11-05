@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { monoFamily, Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
+import { useTerminalColors } from './TerminalThemeContext';
 import { appendOutput, gridSize } from './terminalText';
 import type { TerminalHandle, TerminalViewProps } from './terminalTypes';
 import { decodeUtf8Stream } from './utf8';
@@ -34,6 +35,7 @@ export function PlainTerminal({
   ref,
 }: TerminalViewProps) {
   const styles = useStyles();
+  const colors = useTerminalColors();
   const [screen, setScreen] = useState('');
   const scroll = useRef<ScrollViewInstance>(null);
   const input = useRef<TextInputInstance>(null);
@@ -65,7 +67,7 @@ export function PlainTerminal({
 
   return (
     <Pressable
-      style={styles.root}
+      style={[styles.root, { backgroundColor: colors.background }]}
       onPress={() => input.current?.focus()}
       onLayout={onLayout}
       accessibilityLabel={accessibilityLabel}
@@ -78,7 +80,10 @@ export function PlainTerminal({
       >
         <Text
           selectable
-          style={[styles.text, { fontSize, lineHeight: Math.round(fontSize * 1.25) }]}
+          style={[
+            styles.text,
+            { color: colors.foreground, fontSize, lineHeight: Math.round(fontSize * 1.25) },
+          ]}
           testID={`${testID}-screen`}
         >
           {screen}

@@ -1,0 +1,50 @@
+{
+  "id": "ayu",
+  "order": 11,
+  "title": "Ayu",
+  "detail": "Light and dark halves of the Ayu palette",
+  "dark": {
+    "background": "#0b0e14",
+    "foreground": "#bfbdb6",
+    "ansi": [
+      "#11151c",
+      "#ea6c73",
+      "#7fd962",
+      "#f9af4f",
+      "#53bdfa",
+      "#cda1fa",
+      "#90e1c6",
+      "#c7c7c7",
+      "#686868",
+      "#f07178",
+      "#aad94c",
+      "#ffb454",
+      "#59c2ff",
+      "#d2a6ff",
+      "#95e6cb",
+      "#ffffff"
+    ]
+  },
+  "light": {
+    "background": "#f8f9fa",
+    "foreground": "#5c6166",
+    "ansi": [
+      "#000000",
+      "#ea6c6d",
+      "#6cbf43",
+      "#eca944",
+      "#3199e1",
+      "#9e75c7",
+      "#46ba94",
+      "#bababa",
+      "#686868",
+      "#f07171",
+      "#86b300",
+      "#f2ae49",
+      "#399ee6",
+      "#a37acc",
+      "#4cbf99",
+      "#d1d1d1"
+    ]
+  }
+}
