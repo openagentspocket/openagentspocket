@@ -77,6 +77,8 @@ function AppStack() {
   return (
     <Stack screenOptions={options}>
       <Stack.Screen name="index" options={{ ...bare, title: t('Home') }} />
+      {/* The Agent detail draws its own floating header; the route name must never show as a title. */}
+      <Stack.Screen name="agent/[hostId]/[paneId]" options={{ ...bare, title: t('Agent') }} />
       <Stack.Screen name="changes" options={{ ...bare, title: t('Changes') }} />
       <Stack.Screen name="hosts" options={{ ...bare, ...sheet, title: t('Hosts') }} />
       <Stack.Screen
