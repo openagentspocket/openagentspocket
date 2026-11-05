@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
-import { TextInput, View } from 'react-native';
+import { View } from 'react-native';
 import { ActionMenuButton, type ActionMenuItem } from '../overlay/ActionMenu';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
+import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
 
 /** Swift's footer glyphs are small, well under the 44 pt target. */
@@ -135,11 +136,10 @@ export function SidebarColumn({
       </View>
       <View style={styles.search}>
         <Icon name="search" size={15} />
-        <TextInput
+        <ThemedTextInput
           value={search}
           onChangeText={onSearchChange}
           placeholder={searchPlaceholder}
-          placeholderTextColor={theme.colors.textSecondary}
           accessibilityLabel={searchPlaceholder}
           style={styles.input}
           testID={`${testID}-search`}

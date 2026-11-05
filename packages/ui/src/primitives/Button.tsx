@@ -1,7 +1,9 @@
-import { ActivityIndicator, Platform, Pressable, type ViewStyle } from 'react-native';
+import { Platform, Pressable, type ViewStyle } from 'react-native';
 import { useAnchor } from '../overlay/anchors';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
+import type { ColorKey } from '../theme/tokens.generated';
 import { Icon, type IconName } from './Icon';
+import { Spinner } from './Spinner';
 import { Text } from './Text';
 
 export type ButtonKind = 'primary' | 'secondary' | 'destructive' | 'text' | 'capsule';
@@ -41,14 +43,15 @@ const useStyles = makeStyles((t) => ({
 /** Web only: the browser's blue focus ring is not part of the Swift look. */
 export const noFocusRing = (Platform.OS === 'web' ? { outlineStyle: 'none' } : {}) as ViewStyle;
 
-const inkFor = (kind: ButtonKind, t: Theme) =>
-  ({
-    primary: t.colors.onAccent,
-    secondary: t.colors.textPrimary,
-    destructive: t.colors.danger,
-    text: t.colors.accent,
-    capsule: t.colors.accent,
-  })[kind];
+const INK_KEY = {
+  primary: 'onAccent',
+  secondary: 'textPrimary',
+  destructive: 'danger',
+  text: 'accent',
+  capsule: 'accent',
+} as const satisfies Record<ButtonKind, ColorKey>;
+
+const inkFor = (kind: ButtonKind, t: Theme) => t.colors[INK_KEY[kind]];
 
 interface CommonProps {
   onPress: () => void;
@@ -126,7 +129,7 @@ export function Button({
         disabled && styles.disabled,
       ]}
     >
-      {loading ? <ActivityIndicator size="small" color={ink} testID="button-spinner" /> : null}
+      {loading ? <Spinner size="small" color={INK_KEY[kind]} testID="button-spinner" /> : null}
       {!loading && icon ? (
         <Icon name={icon} size={iconSize ?? (size === 'small' ? 15 : 17)} tint={ink} />
       ) : null}

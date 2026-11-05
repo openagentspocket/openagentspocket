@@ -5,10 +5,10 @@ import {
   Pressable,
   ScrollView,
   type ScrollViewInstance,
-  TextInput,
   type TextInputInstance,
 } from 'react-native';
 import { monoFamily, Text } from '../primitives/Text';
+import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles } from '../theme/theme';
 import { useTerminalColors } from './TerminalThemeContext';
 import { appendOutput, gridSize } from './terminalText';
@@ -89,7 +89,7 @@ export function PlainTerminal({
           {screen}
         </Text>
       </ScrollView>
-      <TextInput
+      <ThemedTextInput
         ref={input}
         style={styles.input}
         value=""

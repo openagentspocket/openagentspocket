@@ -9,9 +9,9 @@ import {
   pluginRequirements,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, Section, Text, ToggleRow } from '@openagentspocket/ui';
+import { Button, Section, Spinner, Text, ToggleRow } from '@openagentspocket/ui';
 import { useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
 import { renderMessage } from './renderText';
 import type { LiveActivityToggles } from './services';
 
@@ -81,7 +81,7 @@ export function HostNotificationSection({
       {!state || state.kind === 'loading' ? (
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text tone="secondary">{t('Checking this Host')}</Text>
-          <ActivityIndicator />
+          <Spinner />
         </View>
       ) : null}
       {state?.kind === 'unavailable' ? (

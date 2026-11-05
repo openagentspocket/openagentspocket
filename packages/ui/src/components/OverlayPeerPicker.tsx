@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Pressable, TextInput, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Sheet } from '../overlay/Sheet';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
@@ -7,6 +7,7 @@ import { EmptyState } from '../primitives/EmptyState';
 import { Icon } from '../primitives/Icon';
 import { Segmented } from '../primitives/Segmented';
 import { Text } from '../primitives/Text';
+import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
 import { OverlayPeerViews } from './OverlayPeerViews';
 
@@ -214,12 +215,10 @@ export function OverlayPeerPickerBody({
       </Card>
       <View style={styles.search}>
         <Icon name="search" size={15} />
-        <TextInput
+        <ThemedTextInput
           value={query}
           onChangeText={setQuery}
           placeholder={text.searchPlaceholder}
-          placeholderTextColor={theme.colors.textTertiary}
-          selectionColor={theme.colors.accent}
           accessibilityLabel={text.searchPlaceholder}
           style={styles.input}
           testID="peer-search"

@@ -169,6 +169,16 @@ describe('StatusLine', () => {
     expect(onOpen).toHaveBeenCalled();
   });
 
+  it('counts behind, ahead, conflicted, staged, modified and untracked in Tide order', async () => {
+    await renderThemed(
+      <StatusLine
+        branch="main"
+        counts={{ behind: 1, ahead: 3, conflicts: 1, staged: 2, changed: 4, untracked: 5 }}
+      />,
+    );
+    expect(screen.getByText('↓1 ↑3 ~1 +2 !4 ?5')).toBeTruthy();
+  });
+
   it('shows the context pill only when low', async () => {
     const { rerender } = await renderThemed(<StatusLine status="idle" contextLeft={16} />);
     expect(screen.getByText(/16/)).toBeTruthy();

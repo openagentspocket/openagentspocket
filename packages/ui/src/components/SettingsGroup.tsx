@@ -1,11 +1,12 @@
 import { Fragment, type ReactNode } from 'react';
-import { Switch, View } from 'react-native';
+import { View } from 'react-native';
 import { impact } from '../haptics';
 import { Card } from '../primitives/Card';
 import { Icon, type IconName } from '../primitives/Icon';
 import { ListRow } from '../primitives/ListRow';
 import { SectionHeader } from '../primitives/SectionHeader';
 import { Text } from '../primitives/Text';
+import { Toggle } from '../primitives/Toggle';
 import { makeStyles, useTheme } from '../theme/theme';
 
 const GLYPH = 24;
@@ -67,15 +68,13 @@ export function SettingsGroup({ title, rows, footer, testID }: SettingsGroupProp
               value={row.toggle ? undefined : row.value}
               trailing={
                 row.toggle ? (
-                  <Switch
+                  <Toggle
                     value={row.toggle.value}
                     onValueChange={(next) => {
                       impact('light');
                       row.toggle?.onChange(next);
                     }}
                     accessibilityLabel={row.title}
-                    trackColor={{ false: theme.colors.control, true: theme.colors.accent }}
-                    ios_backgroundColor={theme.colors.control}
                     testID={`settings-toggle-${row.key}`}
                   />
                 ) : (

@@ -1,5 +1,6 @@
 import { programIdentity } from '@openagentspocket/core';
-import { View } from 'react-native';
+import { Animated, View } from 'react-native';
+import { usePulse } from '../motion';
 import { useFontScale } from '../theme/accessibility';
 import { programTint } from '../theme/programTint';
 import type { Status } from '../theme/status';
@@ -28,6 +29,8 @@ interface ProgramMarkProps {
    * Defaults to the enclosing card's, sheet's or screen's fill.
    */
   surface?: ColorKey;
+  /** The status dot pulses while Working (the Agent chips); Reduce Motion keeps it still. */
+  pulse?: boolean;
 }
 
 /**
@@ -36,11 +39,12 @@ interface ProgramMarkProps {
  * mark as StatusDot's shaped glyph, so status is never color alone.
  * Decorative: the row around it names the program and status.
  */
-export function ProgramMark({ program, status, size = 20, surface }: ProgramMarkProps) {
+export function ProgramMark({ program, status, size = 20, surface, pulse }: ProgramMarkProps) {
   const theme = useTheme();
   const styles = useStyles();
   const fill = useSurfaceFill();
   const { isAccessibilitySize } = useFontScale();
+  const dotOpacity = usePulse(Boolean(pulse && status === 'working'));
   const identity = programIdentity(program);
   const { diameter: badge, center } = badgeGeometry(size);
   const initial = identity.displayName.charAt(0).toUpperCase() || '?';
@@ -91,9 +95,10 @@ export function ProgramMark({ program, status, size = 20, surface }: ProgramMark
     <View style={{ width: size, height: size }} {...hidden}>
       {glyph}
       {status ? (
-        <View
+        <Animated.View
           testID={`program-mark-status-${status}`}
           style={{
+            opacity: dotOpacity,
             position: 'absolute',
             left: center - badge / 2 - ring,
             top: center - badge / 2 - ring,

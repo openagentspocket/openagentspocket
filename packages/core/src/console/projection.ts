@@ -128,6 +128,11 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
     return this.revision;
   }
 
+  /** Rows from an earlier snapshot, kept while the Host reconnects: nothing is gone until a fresh one says so. */
+  get isStale(): boolean {
+    return this.awaitingSnapshot && this.agentsByPaneId.size > 0;
+  }
+
   /** An empty projection is "unknown", not "no Agents", until the connection's snapshot lands. */
   get isAwaitingSnapshot(): boolean {
     return this.awaitingSnapshot;
@@ -313,7 +318,7 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
     );
   }
 
-  /** Leaving `connected`: late responses from before this point must never repopulate the rows. */
+  /** Leaving `connected`: late responses are discarded; the last rows stay (stale) until the next snapshot. */
   private invalidateSnapshot(): void {
     this.snapshotEpoch += 1;
     this.awaitingSnapshot = true;
@@ -323,8 +328,6 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
     this.statusChanges.clear();
     this.paneChanges.clear();
     this.prompts.clearPending();
-    this.agentsByPaneId = new Map();
-    this.lists = { workspaces: [], terminals: [] };
   }
 
   private apply(snapshot: herdr.SessionSnapshot, statusStart: number, paneStart: number): void {

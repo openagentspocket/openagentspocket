@@ -114,6 +114,7 @@ export {
 } from './primitives/SectionHeader';
 export { Segmented, type SegmentedOption } from './primitives/Segmented';
 export { Skeleton, SkeletonRows } from './primitives/Skeleton';
+export { Spinner } from './primitives/Spinner';
 export { STATUS_GLYPH, StatusDot } from './primitives/StatusDot';
 export { StatusOrb } from './primitives/StatusOrb';
 export { type SwipeAction, SwipeRow } from './primitives/SwipeRow';
@@ -125,6 +126,9 @@ export {
   type TextVariant,
   uiMonoFamily,
 } from './primitives/Text';
+export { ThemedRefreshControl } from './primitives/ThemedRefreshControl';
+export { ThemedTextInput, type ThemedTextInputProps } from './primitives/ThemedTextInput';
+export { Toggle } from './primitives/Toggle';
 export {
   flattenSections,
   type ListSection,

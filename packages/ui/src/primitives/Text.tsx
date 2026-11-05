@@ -103,6 +103,7 @@ export function Text({
       : null;
   return (
     <RNText
+      selectionColor={theme.colors.accent}
       {...rest}
       style={[
         styles[variant],
