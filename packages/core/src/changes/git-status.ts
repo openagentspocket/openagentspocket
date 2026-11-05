@@ -9,8 +9,9 @@ export interface GitStatus {
   /** Commits ahead of and behind the upstream; 0 without one. */
   readonly ahead: number;
   readonly behind: number;
-  /** Tracked files with uncommitted changes (conflicts included). */
+  /** Files with unstaged changes (Tide's `!`); a file both staged and modified counts in both. */
   readonly changed: number;
+  readonly staged: number;
   readonly untracked: number;
   readonly conflicts: number;
   /** Lines added and removed against HEAD; absent when git could not count them. */
@@ -23,14 +24,16 @@ export interface GitStatus {
 export function gitStatusOf(changes: CheckoutChanges): GitStatus {
   const { head, totals, files } = changes;
   const tracking = head.upstream?.state.kind === 'tracking' ? head.upstream.state : null;
+  const open = files.filter((file) => file.kind !== 'conflicted');
   return {
     branch: head.branch.kind === 'named' ? head.branch.name : null,
     isDetached: head.branch.kind === 'detached',
     ahead: tracking?.ahead ?? 0,
     behind: tracking?.behind ?? 0,
-    changed: totals.trackedFiles,
+    changed: open.filter((f) => f.staging === 'unstaged' || f.staging === 'both').length,
+    staged: open.filter((f) => f.staging === 'staged' || f.staging === 'both').length,
     untracked: totals.untrackedItems,
-    conflicts: files.filter((file) => file.kind === 'conflicted').length,
+    conflicts: files.length - open.length,
     diff: totals.linesAreAvailable ? { added: totals.added, removed: totals.removed } : undefined,
     isTruncated: changes.isStatusTruncated || changes.isMetadataTruncated,
   };

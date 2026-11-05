@@ -1,6 +1,7 @@
-import { ActivityIndicator, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Meter } from '../primitives/Meter';
+import { Spinner } from '../primitives/Spinner';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -94,7 +95,7 @@ export function BackgroundWorkGlyph({ state }: { state: BackgroundWorkState }) {
   return (
     <View style={styles.lead} accessibilityElementsHidden importantForAccessibility="no">
       {icon === undefined ? (
-        <ActivityIndicator size="small" color={theme.colors.textSecondary} testID="work-spinner" />
+        <Spinner size="small" testID="work-spinner" />
       ) : (
         <Icon
           name={icon}

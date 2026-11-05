@@ -193,7 +193,7 @@ export const agentBarEntries: readonly CatalogEntry[] = [
           <StatusLine
             status="working"
             branch="attach-polish"
-            counts={{ behind: 1, ahead: 3, changed: 2 }}
+            counts={{ behind: 1, ahead: 3, conflicts: 1, staged: 2, changed: 2 }}
             diff={{ added: 2, removed: 2 }}
             latencyMs={0.4}
           />

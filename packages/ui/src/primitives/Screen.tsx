@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, RefreshControl, ScrollView, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { type Edge, SafeAreaView } from 'react-native-safe-area-context';
 import { LargeTitleBar, type TitleBarAction } from '../components/LargeTitleBar';
 import { SheetBar, type SheetBarItem } from '../components/SheetBar';
 import { makeStyles, useTheme } from '../theme/theme';
 import { ScreenBackground } from './ScreenBackground';
+import { ThemedRefreshControl } from './ThemedRefreshControl';
 
 const ALL_EDGES: readonly Edge[] = ['top', 'right', 'bottom', 'left'];
 const UNDER_NATIVE_HEADER: readonly Edge[] = ['right', 'bottom', 'left'];
@@ -81,13 +82,7 @@ export function Screen({
   const styles = useStyles();
   const theme = useTheme();
   const refresh = onRefresh ? (
-    <RefreshControl
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-      tintColor={theme.colors.accent}
-      colors={[theme.colors.accent]}
-      progressBackgroundColor={theme.colors.surfaceRaised}
-    />
+    <ThemedRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
   ) : undefined;
   return (
     <SafeAreaView

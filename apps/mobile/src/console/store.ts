@@ -28,6 +28,8 @@ export interface HostSummary {
   readonly name: string;
   readonly status: EventsSessionStatus | undefined;
   readonly isAwaitingSnapshot: boolean;
+  /** Its rows are from an earlier snapshot, kept while the Host reconnects (see `HostConsoleProjection.isStale`). */
+  readonly isStale?: boolean;
   readonly syncError: SyncError | undefined;
   readonly latencyMs: number | undefined;
   /** The route the live connection uses; undefined until one connected. */
@@ -264,6 +266,7 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
         name: projection.host.name,
         status: projection.status,
         isAwaitingSnapshot: projection.isAwaitingSnapshot,
+        isStale: projection.isStale,
         syncError: projection.syncError,
         latencyMs: projection.latency,
         routeId: projection.routeId,
