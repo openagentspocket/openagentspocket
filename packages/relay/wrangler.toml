@@ -26,7 +26,7 @@ workers_dev = true
 # APNs key ID, and the app's bundle ID (the APNs topic).
 APNS_TEAM_ID = ""
 APNS_KEY_ID = ""
-APNS_TOPIC = "com.example.agentico"
+APNS_TOPIC = "com.openagentspocket.app"
 # The address the privacy policy at GET /privacy publishes; /privacy answers
 # 503 until it is set.
 PRIVACY_CONTACT = ""
