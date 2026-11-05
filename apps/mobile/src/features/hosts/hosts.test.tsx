@@ -5,6 +5,7 @@ import { HostListScreen } from './HostListScreen';
 import { createDemoRuntime, setHostsRuntime } from './hostsRuntime';
 import { Form, fillRoute, probe, renderApp, SAMPLE, setup } from './hostsTestKit';
 import { PairingScreen } from './PairingScreen';
+import { PAIR_COMMAND } from './setupGuideSteps';
 
 const mockCopy = jest.fn();
 jest.mock('expo-clipboard', () => ({ setStringAsync: (text: string) => mockCopy(text) }));
@@ -224,7 +225,12 @@ describe('hosts.pairing', () => {
     const runtime = setup();
     const onPaired = jest.fn();
     await renderApp(
-      <PairingScreen onCancel={jest.fn()} onPaired={onPaired} onAddManually={jest.fn()} />,
+      <PairingScreen
+        onCancel={jest.fn()}
+        onPaired={onPaired}
+        onAddManually={jest.fn()}
+        onOpenGuide={jest.fn()}
+      />,
     );
 
     await fireEvent.changeText(await screen.findByTestId('qr-paste-field'), CONFIG_ONLY_CODE);
@@ -239,11 +245,32 @@ describe('hosts.pairing', () => {
     expect(key).toHaveLength(1);
   });
 
+  it('tells how to show a Pairing Code on the machine and opens the Setup Guide', async () => {
+    setup();
+    const onOpenGuide = jest.fn();
+    await renderApp(
+      <PairingScreen
+        onCancel={jest.fn()}
+        onPaired={jest.fn()}
+        onAddManually={jest.fn()}
+        onOpenGuide={onOpenGuide}
+      />,
+    );
+    expect(await screen.findByText(PAIR_COMMAND)).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('pairing-guide'));
+    expect(onOpenGuide).toHaveBeenCalled();
+  });
+
   it('explains a code that is not a Pairing Code and lets the user add manually', async () => {
     setup();
     const onAddManually = jest.fn();
     await renderApp(
-      <PairingScreen onCancel={jest.fn()} onPaired={jest.fn()} onAddManually={onAddManually} />,
+      <PairingScreen
+        onCancel={jest.fn()}
+        onPaired={jest.fn()}
+        onAddManually={onAddManually}
+        onOpenGuide={jest.fn()}
+      />,
     );
     await fireEvent.changeText(await screen.findByTestId('qr-paste-field'), 'hello');
     await fireEvent.press(screen.getByTestId('qr-paste-submit'));
@@ -261,7 +288,12 @@ describe('hosts.pairing', () => {
     const runtime = createDemoRuntime({ probe, connector: failing });
     setHostsRuntime(runtime);
     await renderApp(
-      <PairingScreen onCancel={jest.fn()} onPaired={jest.fn()} onAddManually={jest.fn()} />,
+      <PairingScreen
+        onCancel={jest.fn()}
+        onPaired={jest.fn()}
+        onAddManually={jest.fn()}
+        onOpenGuide={jest.fn()}
+      />,
     );
     await fireEvent.changeText(await screen.findByTestId('qr-paste-field'), CONFIG_ONLY_CODE);
     await fireEvent.press(screen.getByTestId('qr-paste-submit'));

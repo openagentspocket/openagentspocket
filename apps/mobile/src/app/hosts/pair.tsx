@@ -10,6 +10,7 @@ export default function PairRoute() {
       onCancel={() => router.back()}
       onPaired={(id) => router.replace({ pathname: '/hosts/[id]', params: { id } })}
       onAddManually={() => router.replace(hrefs.hostForm())}
+      onOpenGuide={() => router.push(hrefs.setupGuide())}
     />
   );
 }

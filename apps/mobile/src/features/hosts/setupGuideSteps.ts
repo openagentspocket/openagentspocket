@@ -22,6 +22,15 @@ export const HERDR_INSTALL_URL = 'https://herdr.dev/docs/install/';
 export const PLUGIN_INSTALL_COMMAND = ['herdr', ...pluginInstallArguments()].join(' ');
 export const PAIR_COMMAND = 'herdr plugin action invoke agentico.pair';
 
+/** How a machine shows its Pairing Code QR: the Setup Guide step, reused by Scan to Pair. */
+export function pairingCodeStep(): GuideStep {
+  return {
+    title: t('Show a Pairing Code'),
+    detail: t('Run these on the machine. The second command shows a QR code.'),
+    commands: [PLUGIN_INSTALL_COMMAND, PAIR_COMMAND],
+  };
+}
+
 /** The numbered steps of the guide, as the Swift Setup Guide lists them (reference-only variant). */
 export function guideSteps(platform: SetupPlatform): readonly GuideStep[] {
   if (platform === 'windows') {
@@ -51,11 +60,7 @@ export function guideSteps(platform: SetupPlatform): readonly GuideStep[] {
         'On a Mac, turn on Remote Login in System Settings › General › Sharing. On Linux, run the OpenSSH server.',
       ),
     },
-    {
-      title: t('Show a Pairing Code'),
-      detail: t('Run these on the machine. The second command shows a QR code.'),
-      commands: [PLUGIN_INSTALL_COMMAND, PAIR_COMMAND],
-    },
+    pairingCodeStep(),
     {
       title: t('Scan It'),
       detail: t('In Hosts, tap Scan to Pair and point the camera at the code.'),
