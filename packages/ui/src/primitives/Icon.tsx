@@ -106,6 +106,8 @@ const ICONS = {
   keysDock: { ios: 'creditcard.fill', android: 'credit_card' },
   tools: { ios: 'hammer.fill', android: 'construction' },
   people: { ios: 'person.2', android: 'group' },
+  // Show Changes (Swift plus.forwardslash.minus).
+  diff: { ios: 'plus.forwardslash.minus', android: 'difference' },
 } as const satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
