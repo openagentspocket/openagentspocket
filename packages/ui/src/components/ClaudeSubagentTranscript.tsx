@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
+import { Pressable, ScrollView, View } from 'react-native';
 import { Markdown } from '../markdown/Markdown';
 import { Button } from '../primitives/Button';
 import { EmptyState } from '../primitives/EmptyState';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Spinner } from '../primitives/Spinner';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 import { ChatToolRow } from './ChatToolRow';
@@ -141,7 +142,7 @@ export function ClaudeSubagentTranscript({
       case 'loading':
         return (
           <View style={styles.center} testID="subagent-loading">
-            <ActivityIndicator color={theme.colors.textSecondary} />
+            <Spinner />
             <Text variant="subheadline" tone="secondary">
               {text.loading}
             </Text>

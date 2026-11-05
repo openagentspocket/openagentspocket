@@ -1,7 +1,7 @@
 import type { AttachStatus } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, makeStyles, Text, useTheme, withAlpha } from '@openagentspocket/ui';
-import { ActivityIndicator, View } from 'react-native';
+import { Button, makeStyles, Spinner, Text, useTheme, withAlpha } from '@openagentspocket/ui';
+import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
 
 const useStyles = makeStyles((th) => ({
@@ -44,7 +44,7 @@ export function StatusOverlay({ status, onRetry }: { status: AttachStatus; onRet
       testID="terminal-status"
     >
       <View style={styles.card}>
-        {ended ? null : <ActivityIndicator size="large" color={theme.colors.textSecondary} />}
+        {ended ? null : <Spinner size="large" />}
         <Text variant="headline" accessibilityLiveRegion="polite" style={{ textAlign: 'center' }}>
           {ended
             ? renderMessage(status.message)

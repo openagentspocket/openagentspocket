@@ -1,5 +1,6 @@
-import { Pressable, TextInput, type TextInputProps, View } from 'react-native';
+import { Pressable, type TextInputProps, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
+import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
@@ -36,13 +37,11 @@ export function SearchField({
   return (
     <View style={styles.field}>
       <Icon name="search" size={16} color="textTertiary" />
-      <TextInput
+      <ThemedTextInput
         {...rest}
         value={value}
         onChangeText={onChangeText}
         placeholder={label}
-        placeholderTextColor={theme.colors.textTertiary}
-        selectionColor={theme.colors.accent}
         accessibilityLabel={label}
         style={styles.input}
       />

@@ -1,10 +1,11 @@
 import { useRef, useState } from 'react';
-import { type AccessibilityActionEvent, Switch, View, type ViewInstance } from 'react-native';
+import { type AccessibilityActionEvent, View, type ViewInstance } from 'react-native';
 import { ActionMenu, type MenuAnchor } from '../overlay/ActionMenu';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { ListRow, type ListRowProps } from '../primitives/ListRow';
 import { Text } from '../primitives/Text';
+import { Toggle } from '../primitives/Toggle';
 import { makeStyles, useTheme } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
@@ -51,14 +52,12 @@ export function ToggleRow({
           </Text>
         ) : null}
       </View>
-      <Switch
+      <Toggle
         value={value}
         onValueChange={onValueChange}
         disabled={disabled}
         accessibilityLabel={title}
         accessibilityHint={subtitle}
-        trackColor={{ false: theme.colors.control, true: theme.colors.accent }}
-        ios_backgroundColor={theme.colors.control}
         testID={testID}
       />
     </View>

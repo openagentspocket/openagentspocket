@@ -1,10 +1,11 @@
 import { type ReactNode, useState } from 'react';
-import { Platform, Pressable, TextInput, View } from 'react-native';
+import { Platform, Pressable, View } from 'react-native';
 import { composerAction } from '../composer/Composer';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { useAnchor } from '../overlay/anchors';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
+import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
@@ -186,16 +187,13 @@ export function ComposerCard({
   const stopInk = theme.appearance === 'dark' ? 'textPrimary' : 'onAccent';
   const hint = placeholder ?? labels.messagePlaceholder;
   const input = (
-    <TextInput
+    <ThemedTextInput
       value={value}
       onChangeText={(text) => {
         if (!text.startsWith('/')) setDismissed(false);
         onChange(text);
       }}
       placeholder={hint}
-      placeholderTextColor={theme.colors.textTertiary}
-      selectionColor={theme.colors.accent}
-      keyboardAppearance={theme.appearance}
       editable={!disabled}
       onFocus={() => onFocusChange?.(true)}
       onBlur={() => onFocusChange?.(false)}

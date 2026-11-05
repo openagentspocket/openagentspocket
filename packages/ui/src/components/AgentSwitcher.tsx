@@ -188,6 +188,7 @@ export function AgentSwitcher({
               <ProgramMark
                 program={agent.program}
                 status={agent.status}
+                pulse
                 size={26}
                 surface={current ? 'control' : 'surfaceRaised'}
               />
