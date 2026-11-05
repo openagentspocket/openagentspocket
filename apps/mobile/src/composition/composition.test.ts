@@ -1,7 +1,14 @@
+import { gitStatusOfState } from '@openagentspocket/core';
 import { waitFor } from '@testing-library/react-native';
 import { utf8Decode } from 'agentico-ssh';
 import { changesTargetId, parseChangesTarget } from '@/changes/target';
 import { createWorld, SAMPLE_HOST, type World } from '@/connections/testWorld';
+import {
+  changesRecording,
+  headers,
+  NONCE,
+  ordinary,
+} from '../../../../packages/core/src/changes/fixtures';
 import { type Composition, createComposition } from './createComposition';
 
 jest.mock('expo-secure-store', () => ({}));
@@ -83,6 +90,46 @@ describe('composition over a live Host', () => {
     await store.appear().catch(() => undefined);
     expect(exec).toHaveBeenCalled();
     expect(scripts.some((script) => script.includes('/work/api'))).toBe(true);
+    world.manager.stop();
+  });
+
+  it('reads the git status of an Agent directory over the Host transport, behind the Host gate', async () => {
+    const { world, composition } = await connectedWorld();
+    const session = world.ssh.sessions[0];
+    if (!session) throw new Error('no session');
+    const directories: string[] = [];
+    jest.spyOn(session, 'exec').mockImplementation(async (_command: string, ...rest: unknown[]) => {
+      const options = rest[0];
+      const input =
+        typeof options === 'object' && options !== null && 'input' in options
+          ? utf8Decode(options.input as Uint8Array)
+          : '';
+      const nonce = /__AGENTICO_GIT_([0-9a-f]{32})__/.exec(input)?.[1] ?? NONCE;
+      if (input.includes('/work/api')) directories.push('/work/api');
+      const out = changesRecording({
+        status: headers('# branch.ab +2 -1\0') + ordinary('.M', 'a.ts') + '? new.txt\0',
+        numstat: '5\t2\ta.ts\0',
+      });
+      return {
+        exitCode: 0,
+        stdout: out.stdout.replaceAll(NONCE, nonce),
+        stderr: out.stderr.replaceAll(NONCE, nonce),
+      };
+    });
+    const store = composition.rowChangesFactory({
+      hostId: HOST_ID,
+      directory: '/work/api',
+      paneId: 'p1',
+    });
+    await store?.appear();
+    expect(directories).toContain('/work/api');
+    const status = store ? gitStatusOfState(store.getState()) : null;
+    expect(status).toMatchObject({
+      branch: 'main',
+      changed: 1,
+      untracked: 1,
+      diff: { added: 5, removed: 2 },
+    });
     world.manager.stop();
   });
 

@@ -1,5 +1,7 @@
-import type { ConsoleRow } from '@openagentspocket/core';
+import { type ConsoleRow, rowDirectory } from '@openagentspocket/core';
 import { type Status, StatusLine } from '@openagentspocket/ui';
+import { statusLineGit } from '@/changes/statusLineGit';
+import { useGitStatus } from '@/changes/useGitStatus';
 import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
 import { agentBarLabels } from './agentBarLabels';
 import { AgentBackgroundWork } from './background/AgentBackgroundWork';
@@ -21,6 +23,7 @@ interface Props {
 export function DetailDock({ row, surface, status, latencyMs, onOpenChanges }: Props) {
   const { composing } = useDetailUi();
   const chat = surface === 'chat';
+  const git = useGitStatus(row.hostId, rowDirectory(row), row.agent.pane_id);
   return (
     <>
       {chat ? (
@@ -33,6 +36,7 @@ export function DetailDock({ row, surface, status, latencyMs, onOpenChanges }: P
       {chat ? <BlockedCardSlot row={row} /> : null}
       <StatusLine
         status={status}
+        {...statusLineGit(git)}
         latencyMs={latencyMs}
         onOpenChanges={onOpenChanges}
         labels={agentBarLabels()}

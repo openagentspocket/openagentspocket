@@ -2,12 +2,13 @@ import type { Clock, Host, KeyValueStorage, LiveUsageSource } from '@openagentsp
 import { hostDisplayName } from '@openagentspocket/core';
 import type { HostPlatform, SshTransport } from '@openagentspocket/transport';
 import type { ChangesStoreFactory } from '@/changes/registry';
+import type { RowChangesFactory } from '@/changes/rowChanges';
 import type { ConsoleStore } from '@/console/store';
 import type { NewAgentServices } from '@/features/new-agent/services';
 import type { FileBrowserSource } from '@/files/source';
 import type { PortsStoreFactory } from '@/ports/registry';
 import { sshPortsFactory } from '@/ports/sshHost';
-import { liveChangesFactory } from './changesLive';
+import { liveChangesFactory, liveRowChangesFactory } from './changesLive';
 import { type HostAccess, HostGates, liveFileSource } from './hostAccess';
 import { liveNewAgentServices } from './newAgentLive';
 import { createUsageLive } from './usageLive';
@@ -27,6 +28,8 @@ export interface Composition {
   readonly newAgent: NewAgentServices;
   readonly usage: LiveUsageSource;
   readonly changesFactory: ChangesStoreFactory;
+  /** The git reads behind rows and the status line (`useGitStatus`). */
+  readonly rowChangesFactory: RowChangesFactory;
   readonly portsFactory: PortsStoreFactory;
   /** The Files source of a Host; undefined when the Host is not in the catalog. */
   fileSource(hostId: string, startPath?: string): FileBrowserSource | undefined;
@@ -44,6 +47,7 @@ export function createComposition(deps: CompositionDeps): Composition {
     newAgent: liveNewAgentServices({ ...deps, gates }),
     usage: usage.source,
     changesFactory: liveChangesFactory({ ...deps, gates }),
+    rowChangesFactory: liveRowChangesFactory({ ...deps, gates }),
     portsFactory: sshPortsFactory((hostId) => deps.access.connectDedicated(hostId)),
     fileSource: (hostId, startPath) => {
       const host = deps.hosts().find((candidate) => candidate.id === hostId);

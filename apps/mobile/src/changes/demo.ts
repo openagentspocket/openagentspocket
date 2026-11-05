@@ -78,3 +78,28 @@ const PATCH = [
 ].join('\n');
 
 export const DEMO_PATCH: FilePatch = { files: parsePatchFiles(PATCH, false), isTruncated: false };
+
+/** Branch and line totals of the demo Agents' directories, as their rows and status line show them. */
+const DEMO_CHECKOUTS: Readonly<Record<string, { branch: string; lines: [number, number] }>> = {
+  '/work/api-server': { branch: 'migrate-db', lines: [12, 7] },
+  '/work/mobile': { branch: 'settings-refactor', lines: [2, 2] },
+  '/work/docs': { branch: 'install-guide', lines: [5, 1] },
+  '/work/infra': { branch: 'lint-cleanup', lines: [1, 1] },
+  '/work/scratch': { branch: 'scratch', lines: [2, 2] },
+  '/work/render-farm': { branch: 'cache-warmup', lines: [8, 0] },
+};
+
+/** The demo read of a directory: the sample Checkout, with that directory's branch and totals. */
+export function demoReadFor(directory: string): CheckoutChangesRead {
+  const demo = DEMO_CHECKOUTS[directory];
+  if (!demo) return DEMO_READ;
+  const { changes } = DEMO_READ;
+  return {
+    ...DEMO_READ,
+    changes: {
+      ...changes,
+      head: { ...changes.head, branch: { kind: 'named', name: demo.branch } },
+      totals: { ...changes.totals, added: demo.lines[0], removed: demo.lines[1] },
+    },
+  };
+}

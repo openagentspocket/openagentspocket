@@ -358,6 +358,19 @@
     title: "NEW two-line summary per agent (did / needs) from the transcript",
     deps: [P2.6a-chat-claude, P2.6a-timeline-projection, P2.6a-engine],
   }
+- {
+    id: P2.15-git-status,
+    phase: 2,
+    kind: js,
+    title: "Git data for the agent detail status line and the Agents rows: one shared read per Host directory (RowChanges over ChangesStore) behind useGitStatus(hostId, directory, paneId)",
+    deps: [P1.8-host-services],
+    files:
+      [
+        packages/core/src/changes/git-status.ts,
+        packages/core/src/changes/row-changes.ts,
+        apps/mobile/src/changes/**,
+      ],
+  }
 
 # ── Phase 3: Terminal ──────────────────────────────────────────────────────
 - {
