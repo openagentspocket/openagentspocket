@@ -535,7 +535,7 @@
         "on iOS the real notification services use KeychainNotificationKeyStore(appGroup().notificationKeychain) instead of the demo store (unit-tested through the fake keychain)",
         "the key mirror file notification-keys.json is written for Live Activity decrypt (P6.1b)",
         "APNs token source (registerForRemoteNotifications) feeds the registration file; needs the team and the relay APNs key",
-        "ios.appleTeamId is set in app.json (value provided by the owner) and the device build signs the app and the NSE",
+        "the Apple team never lands in a tracked file: apps/mobile/app.config.js injects it into ios.appleTeamId from app.local.json (gitignored) or APPLE_TEAM_ID, and @bacons/apple-targets takes it from there for the app and every target (the NSE and the widgets)",
       ],
   }
 - {
