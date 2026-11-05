@@ -82,6 +82,28 @@ describe('providerUsage', () => {
   });
 });
 
+it('reports a disabled non-Claude provider as off, not as an error', () => {
+  const report = decodeUsageReport(
+    JSON.stringify({
+      version: 1,
+      runtime: 'recorded',
+      generatedAt: NOW.toISOString(),
+      timeZone: 'UTC',
+      refreshing: false,
+      scan: { state: 'complete', skippedArchives: 0 },
+      programs: [
+        {
+          program: 'hermes',
+          tokenUsage: { state: 'unavailable' },
+          usageLimits: { state: 'disabled' },
+        },
+      ],
+    }),
+  );
+  const [hermes] = providerUsage([host(report)], NOW, translate);
+  expect(hermes?.state).toBe('off');
+});
+
 describe('updatedMessage', () => {
   it('reads this minute, then the age', () => {
     expect(renderText(updatedMessage(at(-30), NOW, 'en'))).toContain('this minute');

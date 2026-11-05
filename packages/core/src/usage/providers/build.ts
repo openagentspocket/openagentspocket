@@ -44,7 +44,7 @@ function usageOf(card: QuickCard, translate: Translate): ProviderUsage | null {
     case 'limitsOff':
       return { ...base, ...none, state: 'off', note: message('Usage Limits are off.') };
     case 'message':
-      return { ...base, ...none, state: 'unavailable', note: body.text };
+      return { ...base, ...none, state: body.off ? 'off' : 'unavailable', note: body.text };
     case 'uncounted':
       return { ...base, ...none, state: 'unavailable', note: body.reason };
   }
