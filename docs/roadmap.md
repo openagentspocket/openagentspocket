@@ -4,7 +4,7 @@ Living document: update it at every step so any agent can resume from it.
 
 ## Now / RESUME HERE
 
-**2026-11-05 ~17:15 ART:** main 23ac09d on origin (openagentspocket/openagentspocket, public). Add Host freeze fixed; `useHandoverSheet` at the seven sheets that closed and navigated; full test green; all 8 `pnpm sim:verify` flows green (one run lost the simulator itself after flow 08, no app crash, not explained). iPhone still has Release 6ae2d5c; settings-fixes still unmerged. Next: agree the plan for `ProgramDefinition` and a session backend (herdr, tmux).
+**2026-11-05 ~17:15 ART:** main 23ac09d on origin (openagentspocket/openagentspocket, public). Add Host freeze fixed; `useHandoverSheet` at the seven sheets that closed and navigated; full test green; all 8 `pnpm sim:verify` flows green (one run lost the simulator itself after flow 08, no app crash, not explained). iPhone still has Release 6ae2d5c; settings-fixes still unmerged. Next: the order in [ADR 0027](decisions/0027-session-backends.md) (proposed): tmux ships with a Host component, notifications come from program hooks.
 
 **2026-11-05 ~15:45 ART restart:** main 5be8d96; iPhone has Release 6ae2d5c. Open: Add Host freezes the app (TrueSheet over the /add-host transparentModal; fix = plain Sheet, no route), settings-fixes pending, full test not run since 9c49a54. Full lead state: the lead's private session handoff. Next: fix, all 8 `pnpm sim:verify` flows green, then install; full test; native-first; component dedup audit + jscpd ratchet.
 
