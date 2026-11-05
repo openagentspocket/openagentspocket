@@ -1,4 +1,4 @@
-import type { ConsoleRow } from '@openagentspocket/core';
+import { type ConsoleRow, rowDirectory } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   AgentCard,
@@ -7,6 +7,7 @@ import {
   agentRowActions,
 } from '@openagentspocket/ui';
 import { type Href, useRouter } from 'expo-router';
+import { useGitStatus } from '@/changes/useGitStatus';
 import { useEntryMenus } from '../../navigation/entryMenus';
 import { agentCardModel } from './agentCardModel';
 
@@ -49,6 +50,8 @@ export function AgentRow({
 }: AgentRowProps) {
   const router = useRouter();
   const entries = useEntryMenus();
+  const git = useGitStatus(row.hostId, rowDirectory(row), row.agent.pane_id);
+  const card = agentCardModel(row, showHost, nested, qualify);
   const actions = agentRowActions({
     pinned,
     labels,
@@ -68,7 +71,8 @@ export function AgentRow({
     <AgentCard
       testID={`agent-row-${row.agent.pane_id}`}
       agent={{
-        ...agentCardModel(row, showHost, nested, qualify),
+        ...card,
+        diff: git?.diff ?? card.diff,
         pinned,
         glyph: presentation === 'card' ? 'workspace' : 'program',
       }}

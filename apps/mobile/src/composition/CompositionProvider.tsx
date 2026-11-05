@@ -1,5 +1,6 @@
 import { createContext, type ReactNode, useContext, useEffect } from 'react';
 import { setChangesStoreFactory } from '@/changes/registry';
+import { setRowChangesFactory } from '@/changes/rowChanges';
 import { NewAgentServicesProvider } from '@/features/new-agent/services';
 import { setPortsStoreFactory } from '@/ports/registry';
 import { UsageSourceProvider } from '@/usage/UsageSourceProvider';
@@ -26,11 +27,13 @@ export function CompositionProvider({
   useEffect(() => {
     setPortsStoreFactory(composition.portsFactory);
     setChangesStoreFactory(composition.changesFactory);
+    setRowChangesFactory(composition.rowChangesFactory);
     const stop = composition.start();
     return () => {
       stop();
       setPortsStoreFactory(undefined);
       setChangesStoreFactory(undefined);
+      setRowChangesFactory(undefined);
     };
   }, [composition]);
   return (

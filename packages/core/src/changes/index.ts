@@ -23,11 +23,13 @@ export {
   type ListChange,
   type Truncation,
 } from './file-diff-store';
+export * from './git-status';
 export { ExecGate, Observable } from './observable';
 export { parseChanges, parseLatestCommit } from './parse-changes';
 export { filePatchRequest, parsePatch } from './patch';
 export { parsePatchFiles } from './patch-parser';
 export * from './presentation';
+export * from './row-changes';
 export { CHANGES_KEYS, type ChangesKey, type Say, sourceSay } from './say';
 export { changesScript, makeNonce, patchScript, untrackedDirectoryScript } from './script';
 export { ChangesStore } from './store';

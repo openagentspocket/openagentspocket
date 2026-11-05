@@ -7,6 +7,7 @@ import {
   rowDirectory,
 } from '@openagentspocket/core';
 import type { ChangesStoreFactory } from '@/changes/registry';
+import type { RowChangesFactory } from '@/changes/rowChanges';
 import { say } from '@/changes/say';
 import { parseChangesTarget } from '@/changes/target';
 import type { ConsoleStore } from '@/console/store';
@@ -48,14 +49,37 @@ function statusSource(deps: Deps, hostId: string, paneId: string): AgentStatusSo
   };
 }
 
+/** Git readers over a Host's live transport (resolved per call, so a reconnect never strands them). */
+function readersFor(deps: Deps, hostId: string) {
+  return createChangesReaders((command, options) =>
+    deps.access.withTransport(hostId, (transport) => transport.session.exec(command, options)),
+  );
+}
+
+/**
+ * The stores behind the list rows, the status line and the Board: one per Host directory, reading
+ * git over the live transport behind the Host's gate and following the driving Agent's status.
+ */
+export function liveRowChangesFactory(deps: Deps): RowChangesFactory {
+  return ({ hostId, directory, paneId }) => {
+    const readers = readersFor(deps, hostId);
+    return new ChangesStore({
+      directory: () => directory,
+      read: readers.read,
+      gate: deps.gates.gate(hostId),
+      agentStatus: paneId === undefined ? undefined : statusSource(deps, hostId, paneId),
+      clock: deps.clock,
+      say,
+    });
+  };
+}
+
 /** Changes stores that read git over the Host's live transport. Unknown ids read nothing. */
 export function liveChangesFactory(deps: Deps): ChangesStoreFactory {
   return (id) => {
     const target = parseChangesTarget(id);
     const hostId = target?.hostId ?? '';
-    const readers = createChangesReaders((command, options) =>
-      deps.access.withTransport(hostId, (transport) => transport.session.exec(command, options)),
-    );
+    const readers = readersFor(deps, hostId);
     const directory = (): string | null => {
       if (!target) return null;
       if (target.kind === 'directory') return target.directory;
