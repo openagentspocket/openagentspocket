@@ -1,7 +1,8 @@
 import { t } from '@openagentspocket/i18n';
-import { NavRow, Screen, Section } from '@openagentspocket/ui';
+import { NavRow, Section } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { CustomRelaySection } from './CustomRelaySection';
 import { HostNotificationSection } from './HostNotificationSection';
 import { NotificationExplainerSheet } from './NotificationDisclosure';
@@ -20,7 +21,7 @@ export function NotificationSettingsScreen() {
   const [explaining, setExplaining] = useState(false);
 
   return (
-    <Screen testID="settings-notifications">
+    <AppScreen header={{ variant: 'native' }} testID="settings-notifications">
       <PushStatusSection push={push} onEnable={() => setExplaining(true)} />
       {push.kind === 'registered'
         ? store.hosts.map((host) => (
@@ -54,6 +55,6 @@ export function NotificationSettingsScreen() {
         onClose={() => setExplaining(false)}
         onContinue={() => void enable()}
       />
-    </Screen>
+    </AppScreen>
   );
 }

@@ -9,7 +9,6 @@ import {
   ProgramMark,
   Section,
   SkeletonRows,
-  Text,
   TextField,
 } from '@openagentspocket/ui';
 import type { ReactNode } from 'react';

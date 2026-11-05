@@ -1104,6 +1104,17 @@
       apps/mobile/src/app/settings/**,
       apps/mobile/src/dev/atlas/familySettings.tsx,
     ]
+- id: UX1-screen-scaffold
+  phase: 9
+  kind: native
+  title: "one screen scaffold: header variants decide the safe-area top inset, AppScreen on every screen, iOS simulator pass over the atlas"
+  deps: [UX1-settings-pages]
+  files:
+    [
+      packages/ui/src/primitives/Screen.tsx,
+      apps/mobile/src/navigation/**,
+      apps/mobile/src/**/*Screen.tsx,
+    ]
 - id: UX1-files-changes-ports
   phase: 9
   kind: js

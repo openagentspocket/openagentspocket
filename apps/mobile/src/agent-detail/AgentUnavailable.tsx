@@ -1,5 +1,6 @@
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, Screen, Text } from '@openagentspocket/ui';
+import { EmptyState, Text } from '@openagentspocket/ui';
+import { AppScreen } from '@/navigation/AppScreen';
 
 /**
  * An Agent the console does not list: gone once its Host's fresh snapshot lacks it, otherwise
@@ -7,13 +8,13 @@ import { EmptyState, Screen, Text } from '@openagentspocket/ui';
  */
 export function AgentUnavailable({ gone }: { gone: boolean }) {
   return (
-    <Screen scroll={false} edges={['bottom']} testID={gone ? 'agent-gone' : 'agent-loading'}>
+    <AppScreen scroll={false} testID={gone ? 'agent-gone' : 'agent-loading'}>
       {gone ? (
         <EmptyState icon="info" title={t('Agent Gone')} />
       ) : (
         <EmptyState icon="wifi" title={t('Reconnecting…')} />
       )}
-    </Screen>
+    </AppScreen>
   );
 }
 

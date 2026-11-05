@@ -5,10 +5,10 @@ import {
   AgentListFieldsPreview,
   confirm,
   OptionListSheet,
-  Screen,
 } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { useHosts } from '@/features/hosts/useHosts';
+import { AppScreen } from '@/navigation/AppScreen';
 import { useAgentFields } from './agentFieldsStore';
 import { APP_FIELDS, type FieldDef, HERDR_FIELDS } from './fieldCatalog';
 
@@ -64,7 +64,7 @@ export function AgentFieldsHostScreen({ hostId }: { hostId: string }) {
   };
   const addingIndex = rows.findIndex((row) => row.id === adding);
   return (
-    <Screen edges={['left', 'right']} testID="settings-agent-fields-host">
+    <AppScreen header={{ variant: 'native' }} testID="settings-agent-fields-host">
       <AgentListFieldsEditor
         host={name}
         labels={{
@@ -108,6 +108,6 @@ export function AgentFieldsHostScreen({ hostId }: { hostId: string }) {
         }}
         testID="add-field-sheet"
       />
-    </Screen>
+    </AppScreen>
   );
 }

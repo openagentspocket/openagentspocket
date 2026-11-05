@@ -5,10 +5,11 @@ import {
   terminalStopAvailable,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { type ActionMenuItem, makeStyles, Screen } from '@openagentspocket/ui';
+import { type ActionMenuItem, makeStyles } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
+import { AppScreen } from '@/navigation/AppScreen';
 import { activityOf } from '../blocked/useBlockedCard';
 import { useAgentPhase, useConsole, useConsoleState } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
@@ -66,7 +67,7 @@ export function AgentDetailScreen({
   const toggle = () => setSurface(surface === 'chat' ? 'terminal' : 'chat');
   return (
     <DetailUiProvider hostId={hostId} paneId={paneId}>
-      <Screen scroll={false} bare keyboardAvoiding edges={['top', 'bottom']} testID="agent-detail">
+      <AppScreen scroll={false} bare keyboardAvoiding testID="agent-detail">
         <View style={styles.fill} testID={`slot-${surface}`}>
           <DetailSlot
             hostId={hostId}
@@ -125,7 +126,7 @@ export function AgentDetailScreen({
           current={row}
           onSelect={onSwitch}
         />
-      </Screen>
+      </AppScreen>
     </DetailUiProvider>
   );
 }

@@ -4,10 +4,11 @@ import {
   shellCreationRequest,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, confirm, EmptyState, makeStyles, Screen, useAnchor } from '@openagentspocket/ui';
+import { Button, confirm, EmptyState, makeStyles, useAnchor } from '@openagentspocket/ui';
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
+import { AppScreen } from '@/navigation/AppScreen';
 import { closeTerminalConfirmation } from './closeConfirmation';
 import { ShellSurface } from './ShellSurface';
 import { useShellTerminalServices } from './services';
@@ -42,9 +43,13 @@ export function ShellTerminalScreen({ hostId, workspaceId = '', cwd, label, onCl
   );
   if (!request) {
     return (
-      <Screen scroll={false} edges={['bottom']} testID="shell-no-directory">
+      <AppScreen
+        scroll={false}
+        header={{ variant: 'native', title: t('Terminal') }}
+        testID="shell-no-directory"
+      >
         <EmptyState icon="warning" title={t("Couldn't Open Terminal")} />
-      </Screen>
+      </AppScreen>
     );
   }
   return <Opened services={services} hostId={hostId} request={request} onClose={onClose} />;
@@ -93,7 +98,11 @@ function Opened({
   };
 
   return (
-    <Screen scroll={false} edges={['bottom']} testID="shell-terminal-screen">
+    <AppScreen
+      scroll={false}
+      header={{ variant: 'native', title: t('Terminal') }}
+      testID="shell-terminal-screen"
+    >
       {state.phase === 'failed' ? (
         <EmptyState
           icon="warning"
@@ -123,6 +132,6 @@ function Opened({
           </View>
         </View>
       )}
-    </Screen>
+    </AppScreen>
   );
 }

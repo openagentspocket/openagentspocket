@@ -1,5 +1,5 @@
 import { agentKey } from '@openagentspocket/core';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import { COMPOSER_MORE_ANCHOR } from '@/agent-detail/composer/AgentComposer';
 import { parseSurface } from '@/agent-detail/surface';
@@ -27,7 +27,6 @@ export default function AgentRoute() {
     : [];
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }} />
       <AgentDetailScreen
         key={`${params.hostId}/${params.paneId}`}
         hostId={params.hostId}

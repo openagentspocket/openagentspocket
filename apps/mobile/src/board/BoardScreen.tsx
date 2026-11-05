@@ -1,6 +1,7 @@
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, Screen, SectionHeader, Text } from '@openagentspocket/ui';
+import { EmptyState, SectionHeader, Text } from '@openagentspocket/ui';
 import { useRef } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { useConsoleState, useConsoleStore } from '../console/hooks';
 import { BoardCard } from './BoardCard';
 import { type BoardEntry, buildBoard, dragTarget } from './boardModel';
@@ -33,7 +34,7 @@ export function BoardScreen() {
     />
   );
   return (
-    <Screen testID="board-screen">
+    <AppScreen header={{ variant: 'native' }} testID="board-screen">
       <Text variant="title">{t('Agents')}</Text>
       {rows.length === 0 ? <EmptyState title={t('No Agents')} layout="compact" /> : null}
       {pinned.length > 0 ? (
@@ -46,6 +47,6 @@ export function BoardScreen() {
         <SectionHeader title={t('Agents')} count={others.length} />
       ) : null}
       {others.map((entry, index) => card(entry, entry, index))}
-    </Screen>
+    </AppScreen>
   );
 }

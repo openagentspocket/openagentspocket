@@ -104,7 +104,7 @@ export { ListRow, type ListRowProps } from './primitives/ListRow';
 export { MetaChip } from './primitives/MetaChip';
 export { METER_DANGER, METER_WARNING, Meter, meterColor } from './primitives/Meter';
 export { ProgramMark } from './primitives/ProgramMark';
-export { Screen } from './primitives/Screen';
+export { Screen, type ScreenHeader } from './primitives/Screen';
 export { ScreenBackground } from './primitives/ScreenBackground';
 export { Section } from './primitives/Section';
 export {

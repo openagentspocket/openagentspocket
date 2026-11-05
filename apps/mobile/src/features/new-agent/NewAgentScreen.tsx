@@ -1,7 +1,8 @@
 import type { LaunchOrigin } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Screen, SheetBar } from '@openagentspocket/ui';
+import { Banner, type ScreenHeader } from '@openagentspocket/ui';
 import { useEffect, useMemo, useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { AgentSection, DetailsSections } from './AgentSections';
 import { DirectoryBrowserSheet } from './DirectoryBrowserSheet';
 import { HostSection, WorkspaceSection, WorktreeSection } from './LaunchSections';
@@ -30,34 +31,28 @@ export function NewAgentScreen({ origin, onStarted, onCancel }: NewAgentScreenPr
     if (phase.kind === 'started') onStarted(phase.hostId, phase.paneId);
   }, [phase, onStarted]);
 
-  const bar = (
-    <SheetBar
-      title={t('New Agent')}
-      leading={{
-        label: t('Cancel'),
-        onPress: onCancel,
-        disabled: !store.canDismiss,
-        testID: 'new-agent-cancel',
-      }}
-      trailing={[
-        {
-          label: t('Start'),
-          onPress: () => void store.submit(),
-          disabled: !store.canSubmit,
-          loading: phase.kind === 'starting',
-          testID: 'new-agent-start',
-        },
-      ]}
-    />
-  );
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: t('New Agent'),
+    leading: {
+      label: t('Cancel'),
+      onPress: onCancel,
+      disabled: !store.canDismiss,
+      testID: 'new-agent-cancel',
+    },
+    trailing: [
+      {
+        label: t('Start'),
+        onPress: () => void store.submit(),
+        disabled: !store.canSubmit,
+        loading: phase.kind === 'starting',
+        testID: 'new-agent-start',
+      },
+    ],
+  };
 
   return (
-    <Screen
-      header={bar}
-      edges={['left', 'right', 'bottom']}
-      keyboardAvoiding
-      testID="new-agent-screen"
-    >
+    <AppScreen header={bar} keyboardAvoiding testID="new-agent-screen">
       {phase.kind === 'failed' ? (
         <Banner tone="danger" title={newAgentText(phase.message)} testID="new-agent-failure" />
       ) : null}
@@ -77,6 +72,6 @@ export function NewAgentScreen({ origin, onStarted, onCancel }: NewAgentScreenPr
           onClose={() => setBrowsing(false)}
         />
       )}
-    </Screen>
+    </AppScreen>
   );
 }

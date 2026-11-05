@@ -1,6 +1,7 @@
-import { Button, Card, Screen, Text } from '@openagentspocket/ui';
+import { Button, Card, Text } from '@openagentspocket/ui';
 import { nativeSsh } from 'agentico-ssh';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { type HarnessParams, runSshHarness, type StepResult } from './sshHarness';
 
 /** Dev-only screen that runs the SSH integration harness and lists every step. */
@@ -32,7 +33,7 @@ export function SshHarnessScreen({
 
   const passed = steps.filter((s) => s.ok).length;
   return (
-    <Screen>
+    <AppScreen header={{ variant: 'native' }}>
       <Text variant="title">SSH harness</Text>
       {params ? (
         <Text variant="mono" tone="secondary">
@@ -55,6 +56,6 @@ export function SshHarnessScreen({
           </Text>
         </Card>
       ))}
-    </Screen>
+    </AppScreen>
   );
 }
