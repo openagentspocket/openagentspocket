@@ -1,4 +1,16 @@
 // Barrel of the UX3 group 'usage': limit chip, totals, chart, heat map and breakdown row.
+
+export {
+  LIMIT_SEGMENTS,
+  LimitWindowRow,
+  type LimitWindowRowProps,
+  segmentFill,
+} from './LimitWindowRow';
+export {
+  ProviderUsageCard,
+  type ProviderUsageCardProps,
+  ProviderUsageFooter,
+} from './ProviderUsageCard';
 export {
   UsageBreakdownRow,
   type UsageBreakdownRowProps,

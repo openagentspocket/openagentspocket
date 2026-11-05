@@ -115,7 +115,10 @@ export function reportFromSnapshot(snapshot, timeZone, refreshing, now = Date.no
       usageLimits: claudeLimitsOf(snapshot?.usageLimits?.claudeAccounts?.[id] ?? (isDefault ? snapshot?.usageLimits?.claude : undefined)),
     }),
     accountSuggestions: suggestions };
-  const programs = [claude, { program: "codex", tokenUsage: usage(codex, errors.codex), usageLimits: limits(snapshot?.usageLimits?.codex) }];
+  // Providers beyond these two report limits only (see usage/providers).
+  const providers = Object.entries(snapshot?.usageLimits?.providers || {}).map(([program, reading]) =>
+    ({ program, tokenUsage: { state: "unavailable", reason: "notTracked" }, usageLimits: limits(reading) }));
+  const programs = [claude, { program: "codex", tokenUsage: usage(codex, errors.codex), usageLimits: limits(snapshot?.usageLimits?.codex) }, ...providers];
   // Clamp the first recorded day into the requested 30-day calendar.
   const since = Number.isFinite(snapshot?.coveredSince) ? dayInZone(snapshot.coveredSince) : null;
   const covered = since === null ? null : since < dates[0] ? dates[0] : since > today ? today : since;

@@ -72,7 +72,6 @@ export function QuickDetailSheet({
       visible
       onClose={onClose}
       detent="fit"
-      floating
       closeButton={false}
       testID="quick-detail"
       footer={

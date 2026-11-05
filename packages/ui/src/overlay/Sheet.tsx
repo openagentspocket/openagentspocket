@@ -16,15 +16,23 @@ import { ScreenBackground } from '../primitives/ScreenBackground';
 import { SurfaceFillProvider } from '../primitives/surfaceFill';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
-import { makeStyles } from '../theme/theme';
+import { makeStyles, useTheme } from '../theme/theme';
 import { OverlayHost } from './OverlayHost';
-import { DETENT_SHARE, detentShare, type SheetDetent, useSheetDrag } from './sheetDetents';
+import { detentShare, type SheetDetent, useSheetDrag } from './sheetDetents';
 
 export type { SheetDetent };
 
 const useStyles = makeStyles((t) => ({
   root: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { flex: 1, backgroundColor: t.backdrop },
+  // The scrim covers the whole window, also beside and under a floating panel.
+  backdrop: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: t.backdrop,
+  },
   panel: {
     backgroundColor: t.colors.surfaceOverlay,
     overflow: 'hidden',
@@ -37,17 +45,12 @@ const useStyles = makeStyles((t) => ({
     alignSelf: 'center',
   },
   full: { width: '100%' },
-  floating: {
-    borderRadius: t.metrics.sheetRadius * 2,
-    borderBottomWidth: t.metrics.hairlineWidth,
-    paddingBottom: t.spacing.lg,
-  },
   dragArea: { alignItems: 'center', paddingBottom: t.spacing.xs },
   grabber: {
     alignSelf: 'center',
-    width: 36,
-    height: 5,
-    borderRadius: 3,
+    width: t.metrics.sheetGrabberWidth,
+    height: t.metrics.sheetGrabberHeight,
+    borderRadius: t.metrics.sheetGrabberHeight / 2,
     backgroundColor: t.colors.control,
     marginTop: t.spacing.xs,
   },
@@ -84,6 +87,10 @@ interface SheetProps {
   /** Called on the close button, a backdrop tap and the Android back button. */
   onClose: () => void;
   title?: string;
+  /**
+   * Where the sheet opens. Default `fit`: as tall as its content (at least `sheetMinShare` of the
+   * window, at most `sheetMaxShare`), scrolling only past that. `medium`/`large`/`{ fraction }` fix a height.
+   */
   detent?: SheetDetent;
   /** Screen-reader label of the close button. Default "Close". */
   closeLabel?: string;
@@ -95,8 +102,6 @@ interface SheetProps {
   largeTitle?: boolean;
   /** False on an untitled sheet that dismisses by swipe or backdrop (the quick detail): no header row. */
   closeButton?: boolean;
-  /** Inset from the screen edges with every corner rounded (the quick detail), as in SwiftUI. */
-  floating?: boolean;
   /** No bar and no title row: the content draws its own header (a day sheet). */
   headerless?: boolean;
   /** Hide the grabber (large form sheets). Default shown. */
@@ -112,14 +117,13 @@ export function Sheet({
   visible,
   onClose,
   title,
-  detent = 'medium',
+  detent = 'fit',
   leading,
   trailing,
   largeTitle = false,
   headerless = false,
   grabber = true,
   closeButton = true,
-  floating = false,
   closeLabel = 'Close',
   footer,
   children,
@@ -127,14 +131,17 @@ export function Sheet({
 }: SheetProps) {
   const styles = useStyles();
   const insets = useInsets();
-  const { height, width } = useWindowDimensions();
-  const gutter = floating ? 8 : 0;
+  const { metrics } = useTheme();
+  const { height } = useWindowDimensions();
   const drag = useSheetDrag(detent, onClose, visible);
   const live = drag.detent;
   const share = detentShare(live);
-  const limit = height * DETENT_SHARE.large;
+  const limit = height * metrics.sheetMaxShare;
   const grown = Math.min(limit, Math.max(height * 0.2, height * share + drag.offset));
-  const size = live === 'fit' ? { maxHeight: height * share } : { height: grown };
+  const size =
+    live === 'fit'
+      ? { maxHeight: height * share, minHeight: height * metrics.sheetMinShare }
+      : { height: grown };
   const bar = leading !== undefined || trailing !== undefined;
   return (
     <Modal
@@ -156,15 +163,7 @@ export function Sheet({
           testID={`${testID}-backdrop`}
         />
         <View
-          style={[
-            styles.panel,
-            floating ? styles.floating : styles.full,
-            floating && { width: width - gutter * 2 },
-            size,
-            floating
-              ? { marginBottom: Math.max(insets.bottom, 8) }
-              : { paddingBottom: insets.bottom },
-          ]}
+          style={[styles.panel, styles.full, size, { paddingBottom: insets.bottom }]}
           accessibilityViewIsModal
           testID={testID}
         >

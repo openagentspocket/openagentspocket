@@ -39,6 +39,7 @@
   "Teammate @%@": "Teammate @{0}",
   "Terminal attach is not available yet.": "Terminal attach is not available yet.",
   "The app connects": "The app connects",
+  "Updated this minute": "Updated this minute",
   "What happens": "What happens",
   "When you scan it, the app connects with the code's single-use bootstrap key and enrolls this device's key.": "When you scan it, the app connects with the code's single-use bootstrap key and enrolls this device's key.",
   "Windows has no Pairing Code: you add the Host by hand with its address and login.": "Windows has no Pairing Code: you add the Host by hand with its address and login.",

@@ -139,23 +139,23 @@ describe('UsageScreen', () => {
     );
     const sheet = await screen.findByTestId('usage-quick-sheet');
     const toggle = within(sheet).getByTestId('claude-limits-toggle-demo');
-    expect(within(sheet).queryAllByTestId('meter-fiveHour')).toHaveLength(0);
+    expect(within(sheet).queryAllByTestId(/^provider-card-demo\/claude-.*segment-/)).toHaveLength(
+      0,
+    );
     await fireEvent(toggle, 'valueChange', true);
     await waitFor(() =>
       expect(within(sheet).queryByTestId('claude-limits-toggle-demo')).toBeNull(),
     );
   });
 
-  it('opens the quick sheet with a pace tick and the 80/95 colors on the right windows', async () => {
+  it('opens the quick sheet with one card per provider and a segmented bar per window', async () => {
     await wrap(<UsageScreen source={source} files={new MemoryAccountFileStore()} />);
     await waitFor(() => expect(screen.getByTestId('open-limits-sheet')).toBeTruthy());
     await fireEvent.press(screen.getByTestId('open-limits-sheet'));
     const sheet = screen.getByTestId('usage-quick-sheet');
-    expect(within(sheet).getAllByTestId('meter-pace').length).toBeGreaterThan(0);
-    // The demo has a window at 96%: its meter fills with danger, not the tint.
-    const fills = within(sheet).getAllByTestId('meter-fill');
-    const colors = fills.map((fill) => JSON.stringify(fill.props.style));
-    expect(new Set(colors).size).toBeGreaterThan(1);
+    expect(within(sheet).getAllByTestId(/^provider-card-demo\//).length).toBeGreaterThan(1);
+    expect(within(sheet).getAllByTestId(/-segment-0$/).length).toBeGreaterThan(1);
+    expect(within(sheet).getByTestId('provider-usage-footer')).toBeTruthy();
   });
 
   it('pushes the full limits page', async () => {

@@ -27,7 +27,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | UX3-agent-bar | `gallery/components/agentBar.tsx` | AgentHeader, AgentSwitcher, SessionDrawer, ComposerCard, StatusLine, ChangeRow |
 | UX3-chat-rows | `gallery/components/chatRows.tsx` | ChatUserBubble, ChatDivider, ChatThoughtRow, ChatToolRow, ChatNoticeRow, DiffRow |
 | UX3-blocked-terminal | `gallery/components/blockedTerminal.tsx` | BlockedCard, BackgroundWorkStrip, NoticeBanner, JumpControl, TerminalToolbar, KeyPad |
-| UX3-usage | `gallery/components/usage.tsx` | UsageLimitChip, UsageTotals, UsageChart, UsageHeatMap, UsageBreakdownRow |
+| UX3-usage | `gallery/components/usage.tsx` | UsageLimitChip, ProviderUsageCard, LimitWindowRow, UsageTotals, UsageChart, UsageHeatMap, UsageBreakdownRow |
 | UX3-hosts-settings-files | `gallery/components/hostsSettingsFiles.tsx` | HostRow, HostStatusCard, SettingsGroup, ThemeChoiceCard, FileRow, PortRow, ChoiceSheet, CommandBlock |
 | UX3-settings-pickers | `gallery/components/settingsPickers.tsx` | TerminalThemePicker, TerminalThemePreview, AgentListFieldsEditor, AgentListFieldsPreview, OverlayPeerPicker, OverlayPeerViews, PortPreview |
 | UX3-composer-extras | `gallery/components/composerExtras.tsx` | SkillsKeyboardPane, SkillContentSheet, ComposerStagingStatusBar, ClaudeSubagentTranscript |
@@ -76,6 +76,8 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [TerminalToolbar](#terminaltoolbar) | UX3-blocked-terminal | `agent-detail.terminal-toolbar`<br>`agent-detail.terminal-toolbar-dpad`<br>`agent-detail.terminal-toolbar-more-menu`<br>`agent-detail.shell-keys-dock` | default: [ref](ref/TerminalToolbar.png) · [light](ref/TerminalToolbar.light.png)<br>dock: [ref](ref/TerminalToolbar.dock.png) · [light](ref/TerminalToolbar.dock.light.png)<br>dpad: [ref](ref/TerminalToolbar.dpad.png) · [light](ref/TerminalToolbar.dpad.light.png) | `apps/mobile/src/agent-detail/terminal/TerminalToolbar.tsx` | `Terminal/Toolbar/TerminalToolbarCapsule.swift:1-388`<br>`Terminal/Toolbar/TerminalToolbarDPad.swift:7-65`<br>`Terminal/Toolbar/TerminalToolbarMoreMenu.swift:1-158`<br>`Terminal/Toolbar/TerminalToolbarBand.swift:1-134` |
 | [KeyPad](#keypad) | UX3-blocked-terminal | `agent-detail.control-keys`<br>`agent-detail.tools-keyboard`<br>`agent-detail.chat-tools-keyboard` | default: [ref](ref/KeyPad.png) · [light](ref/KeyPad.light.png) | `packages/ui/src/keys/KeyboardDock.tsx` | `Console/AgentControlKeyboard.swift:6-170`<br>`Console/AgentToolsKeyboard.swift:5-120`<br>`Console/AgentChatToolsKeyboard.swift:6-130`<br>`Terminal/TerminalFullKeyboard.swift:35-250` |
 | [UsageLimitChip](#usagelimitchip) | UX3-usage | `usage.tab`<br>`usage.limits-sheet`<br>`usage.quick-sheet` | default: [ref](ref/UsageLimitChip.png) · [light](ref/UsageLimitChip.light.png) | `apps/mobile/src/usage/QuickCardView.tsx`<br>`apps/mobile/src/usage/LimitWindowRow.tsx` | `Usage/AgentUsageSheets.swift:102-154`<br>`Usage/AgentUsageSection.swift:239-288`<br>`Usage/AgentUsageWide.swift:101-223` |
+| [ProviderUsageCard](#providerusagecard) | UX3-usage | `usage.quick-sheet`<br>`shell.home` | default: none | `packages/ui/src/components/ProviderUsageCard.tsx` |  |
+| [LimitWindowRow](#limitwindowrow) | UX3-usage | `usage.quick-sheet` | default: none | `packages/ui/src/components/LimitWindowRow.tsx` |  |
 | [UsageTotals](#usagetotals) | UX3-usage | `usage.tab`<br>`usage.tab--host`<br>`usage.day-sheet`<br>`usage.scope-menu` | default: [ref](ref/UsageTotals.png) · [light](ref/UsageTotals.light.png)<br>day: [ref](ref/UsageTotals.day.png) · [light](ref/UsageTotals.day.light.png) | `apps/mobile/src/usage/UsageTotals.tsx`<br>`apps/mobile/src/usage/UsageControls.tsx` | `Usage/AgentUsageTab.swift:5-130`<br>`Usage/AgentUsageDashboard.swift:30-300`<br>`Usage/AgentUsageCharts.swift:215-294` |
 | [UsageChart](#usagechart) | UX3-usage | `usage.tab` | default: [ref](ref/UsageChart.png) · [light](ref/UsageChart.light.png) | `apps/mobile/src/usage/DailyChart.tsx`<br>`packages/ui/src/primitives/BarChart.tsx` | `Usage/AgentUsageCharts.swift:7-189`<br>`Usage/AgentUsageCharts.swift:481-528` |
 | [UsageHeatMap](#usageheatmap) | UX3-usage | `usage.tab`<br>`usage.day-sheet` | default: [ref](ref/UsageHeatMap.png) · [light](ref/UsageHeatMap.light.png)<br>full: [ref](ref/UsageHeatMap.full.png) · [light](ref/UsageHeatMap.full.light.png) | none | `Usage/AgentUsageCharts.swift:294-480` |
@@ -845,6 +847,40 @@ Acceptance (the judge ticks each on the side-by-side):
 - [ ] chip radius 14 on the secondary surface, 44pt ring left
 - [ ] two text lines: Host with dot (caption), program and window (headline)
 - [ ] ring tone warn/critical from tokens
+
+## ProviderUsageCard
+
+Task UX3-usage · target `packages/ui/src/components/ProviderUsageCard.tsx` · composes Card, ProgramMark, StatusDot, Icon, Text, LimitWindowRow
+
+Props sketch: `{ program, brand, name, hostName, windows, note?, onPress? }`
+
+Interactions: tap opens the provider's detail; ProviderUsageFooter ('Updated this minute' with a status dot) closes the stack
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: one card per provider and Host: mark, name, Host, chevron, a LimitWindowRow per window; a note instead of windows when off or unavailable · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] bars take the provider's brand token tint (programTint), never a literal
+- [ ] one card per registered provider (packages/core/src/usage/providers); adding a provider adds no UI
+
+## LimitWindowRow
+
+Task UX3-usage · target `packages/ui/src/components/LimitWindowRow.tsx` · composes Text
+
+Props sketch: `{ label, usedShare, color, percentText, resetText }`
+
+Interactions: none
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: label, 10-segment bar with a partial last segment, percent, time to reset · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] segments fill left to right: whole ones, then one partial, track in the control token
+- [ ] percent and reset right-aligned in tabular figures
 
 ## UsageTotals
 

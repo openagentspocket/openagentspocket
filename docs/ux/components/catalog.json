@@ -999,6 +999,40 @@
       ]
     },
     {
+      "name": "ProviderUsageCard",
+      "group": "usage",
+      "swift": [],
+      "screens": ["usage.quick-sheet", "shell.home"],
+      "variants": [
+        "default|one card per provider and Host: mark, name, Host, chevron, a LimitWindowRow per window; a note instead of windows when off or unavailable"
+      ],
+      "interactions": "tap opens the provider's detail; ProviderUsageFooter ('Updated this minute' with a status dot) closes the stack",
+      "rnToday": ["packages/ui/src/components/ProviderUsageCard.tsx"],
+      "props": "{ program, brand, name, hostName, windows, note?, onPress? }",
+      "composes": ["Card", "ProgramMark", "StatusDot", "Icon", "Text", "LimitWindowRow"],
+      "accept": [
+        "bars take the provider's brand token tint (programTint), never a literal",
+        "one card per registered provider (packages/core/src/usage/providers); adding a provider adds no UI"
+      ]
+    },
+    {
+      "name": "LimitWindowRow",
+      "group": "usage",
+      "swift": [],
+      "screens": ["usage.quick-sheet"],
+      "variants": [
+        "default|label, 10-segment bar with a partial last segment, percent, time to reset"
+      ],
+      "interactions": "none",
+      "rnToday": ["packages/ui/src/components/LimitWindowRow.tsx"],
+      "props": "{ label, usedShare, color, percentText, resetText }",
+      "composes": ["Text"],
+      "accept": [
+        "segments fill left to right: whole ones, then one partial, track in the control token",
+        "percent and reset right-aligned in tabular figures"
+      ]
+    },
+    {
       "name": "UsageTotals",
       "group": "usage",
       "swift": [

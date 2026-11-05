@@ -1,8 +1,10 @@
-import { type HostReading, quickContent } from '@openagentspocket/core';
+import type { HostReading } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, EmptyState, makeStyles, Sheet, Text } from '@openagentspocket/ui';
+import { Button, EmptyState, makeStyles, Sheet, Text, ToggleRow } from '@openagentspocket/ui';
+import { useMemo } from 'react';
 import { View } from 'react-native';
-import { QuickCardView } from './QuickCardView';
+import { ProviderUsageList } from './ProviderUsageList';
+import { providerModels } from './providerCards';
 import { renderMessage } from './usageText';
 
 const useStyles = makeStyles((th) => ({
@@ -23,13 +25,15 @@ interface Props {
 /** usage.quick-sheet: every Host's Usage Limits at a glance, with the way to the full Usage tab. */
 export function QuickSheet({ visible, onClose, readings, now, onOpenFull, onClaudeLimits }: Props) {
   const styles = useStyles();
-  const { cards, empty } = quickContent(readings, now);
+  const { cards, footer, empty } = useMemo(() => providerModels(readings, now), [readings, now]);
+  const claudeOff = onClaudeLimits
+    ? cards.filter((c) => c.providerId === 'claude' && c.state === 'off')
+    : [];
   return (
     <Sheet
       visible={visible}
       onClose={onClose}
       title={t('Usage')}
-      detent="medium"
       closeLabel={t('Close')}
       footer={
         <View style={styles.footer}>
@@ -46,13 +50,21 @@ export function QuickSheet({ visible, onClose, readings, now, onOpenFull, onClau
       }
       testID="usage-quick-sheet"
     >
-      {cards.map((card) => (
-        <QuickCardView
-          key={card.id}
-          card={card}
-          now={now}
-          claudeLimits={onClaudeLimits ? { onChange: onClaudeLimits } : undefined}
-        />
+      <ProviderUsageList cards={cards} footer={footer} onOpen={onOpenFull} />
+      {claudeOff.map((card) => (
+        <View key={card.key} style={styles.footer}>
+          <ToggleRow
+            title={t('Claude Code limits')}
+            value={false}
+            onValueChange={(enabled) => onClaudeLimits?.(enabled)}
+            testID={`claude-limits-toggle-${card.hostId}`}
+          />
+          <Text variant="footnote" tone="secondary">
+            {t(
+              'The plugin asks Claude Code on this computer for your plan limits. Neither the plugin nor Agentico handles your sign-in. This automated use is not officially supported.',
+            )}
+          </Text>
+        </View>
       ))}
       {empty?.kind === 'noHosts' ? (
         <EmptyState

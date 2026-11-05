@@ -432,6 +432,13 @@
     deps: [P4.1-usage, P1.2-core-wire, P1.5-app-hosts],
   }
 - {
+    id: P4.1e-usage-providers,
+    phase: 4,
+    kind: js,
+    title: "Usage providers: registry, ProviderUsageCard cards on the compact Usage sheet, one plugin collector per provider",
+    deps: [P4.1b-usage-live],
+  }
+- {
     id: P4.1c-usage-home,
     phase: 4,
     kind: js,

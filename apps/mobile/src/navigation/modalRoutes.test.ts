@@ -28,10 +28,20 @@ describe('modal routes', () => {
       });
   });
 
-  it('declares new-agent, worktree and the settings group as modals in the root stack', () => {
+  it('declares the sheet routes through sheetOptions in the root stack', () => {
     const layout = read('_layout.tsx');
-    for (const name of ['new-agent', 'worktree', 'settings']) {
-      expect(layout).toMatch(new RegExp(`name="${name}"[^>]*presentation: 'modal'`, 's'));
+    for (const name of [
+      'hosts',
+      'ports',
+      'files',
+      'new-agent',
+      'new-terminal',
+      'worktree',
+      'settings',
+    ]) {
+      expect(layout).toMatch(new RegExp(`name="${name}"[^>]*\\.\\.\\.(list|form)`, 's'));
     }
+    // Only add-host stays outside sheetOptions: a transparent route that draws its own ChoiceSheet.
+    expect(layout.match(/presentation\s*:\s*'\w+'/g)).toEqual(["presentation: 'transparentModal'"]);
   });
 });

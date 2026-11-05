@@ -39,6 +39,7 @@
   "Teammate @%@": "Compañero @{0}",
   "Terminal attach is not available yet.": "Adjuntar la terminal todavía no está disponible.",
   "The app connects": "La app se conecta",
+  "Updated this minute": "Actualizado en este minuto",
   "What happens": "Qué pasa",
   "When you scan it, the app connects with the code's single-use bootstrap key and enrolls this device's key.": "Al escanearlo, la app se conecta con la clave de arranque de un solo uso del código y registra la clave de este dispositivo.",
   "Windows has no Pairing Code: you add the Host by hand with its address and login.": "Windows no tiene código de vinculación: agregás el Host a mano con su dirección y usuario.",

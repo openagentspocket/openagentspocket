@@ -41,8 +41,13 @@ export const metrics = {
   cardRadius: 8,
   /** Chips and the capsule-less badges. */
   chipRadius: 6,
-  /** Top corners of a sheet. */
-  sheetRadius: 16,
+  /** Top corners of a sheet (iOS 26 style); the native form sheet gets the same value. */
+  sheetRadius: 28,
+  /** A sheet is never shorter than this share of the window, nor taller than the max one. */
+  sheetMinShare: 0.3,
+  sheetMaxShare: 0.92,
+  sheetGrabberWidth: 36,
+  sheetGrabberHeight: 5,
   hairlineWidth: 1,
   /** Share of the primary text color used for card borders. */
   hairlineOpacity: 0.16,

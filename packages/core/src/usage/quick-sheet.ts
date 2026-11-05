@@ -39,7 +39,8 @@ export type QuickBody =
   | { readonly kind: 'reading' }
   /** Claude Code limits are off on this device for this Host. */
   | { readonly kind: 'limitsOff' }
-  | { readonly kind: 'message'; readonly text: Message }
+  /** `off`: the program's limits are switched off, not failing. */
+  | { readonly kind: 'message'; readonly text: Message; readonly off?: true }
   /** A Claude Code Account that adds nothing, and why. */
   | { readonly kind: 'uncounted'; readonly reason: Message };
 
@@ -195,7 +196,11 @@ function quickBody(limits: UsageLimits, program: string, now: Date): QuickBody {
       if (limits.reason === 'notReadYet') return { kind: 'reading' };
       break;
   }
-  return { kind: 'message', text: unavailableMessage(limits, program) };
+  return {
+    kind: 'message',
+    text: unavailableMessage(limits, program),
+    ...(limits.state === 'disabled' ? { off: true as const } : {}),
+  };
 }
 
 function quickWindow(window: LimitWindow, program: string, now: Date): QuickWindow {
