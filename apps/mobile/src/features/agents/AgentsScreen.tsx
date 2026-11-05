@@ -10,6 +10,7 @@ import { agentHref } from './AgentRow';
 import { AgentsToolbar } from './AgentsToolbar';
 import { agentActions } from './agentActions';
 import { agentRowLabels } from './agentRowLabels';
+import { closeAgent } from './closeAgent';
 import { QuickDetailSheet } from './QuickDetailSheet';
 import { RenameSheet } from './RenameSheet';
 import { useAgentsList } from './useAgentsList';
@@ -45,18 +46,7 @@ export function AgentsScreen({ openDetail }: { openDetail?: string }) {
     .find((row) => row.agent.pane_id === detailId);
   const setDetail = (row: ConsoleRow | undefined) => setDetailId(row?.agent.pane_id);
 
-  const close = async (row: ConsoleRow) => {
-    const name = row.agent.name ?? row.agent.agent ?? row.agent.pane_id;
-    const ok = await confirm({
-      title: t('Close %@?', name),
-      message: t(
-        "Closes this pane. Anything running in it stops. The tab's other panes stay open.",
-      ),
-      confirmLabel: t('Close Pane'),
-      destructive: true,
-    });
-    if (ok) await actions.close(row).catch(() => undefined);
-  };
+  const close = (row: ConsoleRow) => closeAgent(row, actions).then(() => undefined);
   const save = (row: ConsoleRow, name: string) => {
     setRenaming(undefined);
     actions.rename(row, name).catch(() => undefined);

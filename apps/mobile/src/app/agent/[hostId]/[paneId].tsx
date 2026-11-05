@@ -1,8 +1,11 @@
 import { agentKey } from '@openagentspocket/core';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
+import { COMPOSER_MORE_ANCHOR } from '@/agent-detail/composer/AgentComposer';
 import { parseSurface } from '@/agent-detail/surface';
-import { useAgent } from '@/console/hooks';
+import { useAgent, useConsoleStore } from '@/console/hooks';
+import { agentActions } from '@/features/agents/agentActions';
+import { closeAgentItem } from '@/features/agents/closeAgent';
 import { useEntryMenus } from '@/navigation/entryMenus';
 import { hrefs } from '@/navigation/hrefs';
 import { deviceStorage } from '@/settings/deviceStorage';
@@ -12,8 +15,16 @@ export default function AgentRoute() {
   const params = useLocalSearchParams<{ hostId: string; paneId: string; surface?: string }>();
   const row = useAgent(agentKey(params.hostId, params.paneId));
   const entries = useEntryMenus();
+  const store = useConsoleStore();
   // The floating header's menu: Changes, Ports and New Agent here (Open is where the user already is).
-  const items = row ? entries.agent(row).filter((item) => item.key !== 'open') : [];
+  const items = row
+    ? [
+        ...entries.agent(row).filter((item) => item.key !== 'open'),
+        closeAgentItem(row, agentActions(store), () => router.back(), {
+          anchorKey: COMPOSER_MORE_ANCHOR,
+        }),
+      ]
+    : [];
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />

@@ -5,29 +5,21 @@ import {
   terminalStopAvailable,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import {
-  type ActionMenuItem,
-  EdgeFade,
-  EmptyState,
-  makeStyles,
-  Screen,
-  StatusLine,
-} from '@openagentspocket/ui';
+import { type ActionMenuItem, EmptyState, makeStyles, Screen } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
-import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
 import { activityOf } from '../blocked/useBlockedCard';
 import { useAgent, useConsole, useConsoleState } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
 import { AgentSessionDrawer } from './AgentSessionDrawer';
 import { AgentSwitcher } from './AgentSwitcher';
-import { agentBarLabels } from './agentBarLabels';
-import { ChatTimeline } from './chat/ChatTimeline';
 import { AgentComposerBar } from './composer/AgentComposer';
 import { useAgentComposer } from './composer/composerContext';
+import { DetailDock } from './DetailDock';
+import { DetailSlot } from './DetailSlot';
+import { DetailUiProvider } from './detailUi';
 import { type Surface, useSurface } from './surface';
-import { TerminalSurface } from './terminal/TerminalSurface';
 import { useFocusDone } from './useFocusDone';
 
 const useStyles = makeStyles((th) => ({
@@ -78,69 +70,66 @@ export function AgentDetailScreen({
   const status = statusDot(row.agent.agent_status);
   const toggle = () => setSurface(surface === 'chat' ? 'terminal' : 'chat');
   return (
-    <Screen scroll={false} bare keyboardAvoiding edges={['top', 'bottom']} testID="agent-detail">
-      <View style={styles.fill} testID={`slot-${surface}`}>
-        {surface === 'chat' ? (
-          <ChatTimeline
+    <DetailUiProvider hostId={hostId} paneId={paneId}>
+      <Screen scroll={false} bare keyboardAvoiding edges={['top', 'bottom']} testID="agent-detail">
+        <View style={styles.fill} testID={`slot-${surface}`}>
+          <DetailSlot
             hostId={hostId}
             paneId={paneId}
+            surface={surface}
             activity={activityOf(row)}
-            topInset={headerHeight}
-            bottomInset={0}
+            headerHeight={headerHeight}
             onShowTerminal={() => setSurface('terminal')}
           />
-        ) : (
-          <View style={[styles.fill, { paddingTop: headerHeight }]}>
-            <TerminalSurface hostId={hostId} paneId={paneId} />
+          <View
+            style={styles.header}
+            pointerEvents="box-none"
+            onLayout={(event: LayoutChangeEvent) =>
+              setHeaderHeight(event.nativeEvent.layout.height)
+            }
+          >
+            <AgentHeader
+              row={row}
+              surface={surface}
+              onSurface={setSurface}
+              onSidebar={() => setDrawer(true)}
+              menu={menu}
+              showTitle={surface === 'terminal'}
+            />
           </View>
-        )}
-        {surface === 'chat' && headerHeight > 0 ? <EdgeFade height={headerHeight + 24} /> : null}
-        <View
-          style={styles.header}
-          pointerEvents="box-none"
-          onLayout={(event: LayoutChangeEvent) => setHeaderHeight(event.nativeEvent.layout.height)}
-        >
-          <AgentHeader
+        </View>
+        <View style={styles.dock}>
+          <DetailDock
             row={row}
             surface={surface}
+            status={status}
+            latencyMs={latency}
+            onOpenChanges={onOpenChanges}
+          />
+          <AgentComposerBar
+            composer={composer}
+            surface={surface}
+            program={row.agent.agent ?? 'unknown'}
+            status={status}
+            onToggleSurface={toggle}
+            canStop={terminalStopAvailable(row.agent.agent ?? '')}
+          />
+          <AgentSwitcher
+            rows={rows}
+            currentKey={key}
+            onSelect={onSwitch}
+            surface={surface}
             onSurface={setSurface}
-            onSidebar={() => setDrawer(true)}
-            menu={menu}
-            showTitle={surface === 'terminal'}
           />
         </View>
-      </View>
-      <View style={styles.dock}>
-        {surface === 'chat' ? <BlockedCardSlot row={row} /> : null}
-        <StatusLine
-          status={status}
-          latencyMs={latency}
-          onOpenChanges={onOpenChanges}
-          labels={agentBarLabels()}
-        />
-        <AgentComposerBar
-          composer={composer}
-          surface={surface}
-          program={row.agent.agent ?? 'unknown'}
-          status={status}
-          onToggleSurface={toggle}
-          canStop={terminalStopAvailable(row.agent.agent ?? '')}
-        />
-        <AgentSwitcher
+        <AgentSessionDrawer
+          visible={drawer}
+          onClose={() => setDrawer(false)}
           rows={rows}
-          currentKey={key}
+          current={row}
           onSelect={onSwitch}
-          surface={surface}
-          onSurface={setSurface}
         />
-      </View>
-      <AgentSessionDrawer
-        visible={drawer}
-        onClose={() => setDrawer(false)}
-        rows={rows}
-        current={row}
-        onSelect={onSwitch}
-      />
-    </Screen>
+      </Screen>
+    </DetailUiProvider>
   );
 }

@@ -112,6 +112,8 @@ export interface ComposerCardProps {
   labels?: AgentBarLabels;
   /** The key the "..." circle registers as a popover anchor. */
   moreAnchorKey?: string;
+  /** The input gained or lost focus: the composer is open (a surface above it may condense). */
+  onFocusChange?: (focused: boolean) => void;
   testID?: string;
 }
 
@@ -165,6 +167,7 @@ export function ComposerCard({
   addMenu,
   moreMenu,
   moreAnchorKey,
+  onFocusChange,
   skills,
   onSkill,
   expanded,
@@ -194,6 +197,8 @@ export function ComposerCard({
       selectionColor={theme.colors.accent}
       keyboardAppearance={theme.appearance}
       editable={!disabled}
+      onFocus={() => onFocusChange?.(true)}
+      onBlur={() => onFocusChange?.(false)}
       multiline={stacked || Platform.OS !== 'web'}
       style={[styles.input, stacked ? styles.inputStack : styles.inputOneLine]}
       accessibilityLabel={hint}

@@ -28,11 +28,19 @@ interface Props {
   /** Opens or closes a turn fold or tool group. */
   onToggle: (id: ChatRow['id']) => void;
   onLoadOlder: () => void;
+  /** Opens a Subagent's own transcript by the id its call reported. */
+  onOpenSubagent?: (agentId: string) => void;
   now: number;
 }
 
 /** One timeline row in the Swift app's look: quiet bubbles, flat answers, compact tool rows. */
-export const ChatRowView = memo(function ChatRowView({ row, onToggle, onLoadOlder, now }: Props) {
+export const ChatRowView = memo(function ChatRowView({
+  row,
+  onToggle,
+  onLoadOlder,
+  onOpenSubagent,
+  now,
+}: Props) {
   const styles = useStyles();
   const [open, setOpen] = useState(false);
   const { content } = row;
@@ -69,7 +77,25 @@ export const ChatRowView = memo(function ChatRowView({ row, onToggle, onLoadOlde
             onToggle={() => setOpen(!open)}
           />
         );
-      case 'tool':
+      case 'tool': {
+        const agentId = content.tool.subagentAgentID;
+        const status = rowToolStatus(content.tool.status, content.tool.isNotUpdating);
+        if (agentId !== null) {
+          return (
+            <ChatToolRow
+              openLabel={t('Open Subagent Transcript')}
+              subagents={[
+                {
+                  id: agentId,
+                  name: content.tool.title,
+                  kind: content.tool.subtitle ?? undefined,
+                  status,
+                  onOpen: onOpenSubagent ? () => onOpenSubagent(agentId) : undefined,
+                },
+              ]}
+            />
+          );
+        }
         return (
           <ChatToolRow
             tool={{
@@ -82,6 +108,7 @@ export const ChatRowView = memo(function ChatRowView({ row, onToggle, onLoadOlde
             onToggle={() => setOpen(!open)}
           />
         );
+      }
       case 'toolGroup':
         return (
           <ChatToolRow

@@ -50,19 +50,37 @@ describe('BlockedCard', () => {
 
 describe('BackgroundWorkStrip', () => {
   const items = [
-    { id: '1', title: 'A', kind: 'Explore', state: 'running' as const, elapsed: '1s' },
-    { id: '2', title: 'B', kind: 'Audit', state: 'done' as const, elapsed: '2s' },
-    { id: '3', title: 'C', kind: 'x', state: 'done' as const, elapsed: '3s' },
-    { id: '4', title: 'D', kind: 'x', state: 'done' as const, elapsed: '4s' },
+    { id: '1', title: 'A', caption: 'Explore', state: 'running' as const, meta: '1s' },
+    { id: '2', title: 'B', caption: 'Audit', state: 'completed' as const, meta: '2s' },
+    { id: '3', title: 'C', caption: 'x', state: 'failed' as const, meta: '3s' },
   ];
-  it('opens from the pill and caps the expanded rows at three plus a more line', async () => {
+  it('opens at a row, or at no row from "+N more"', async () => {
     const onOpen = jest.fn();
-    await renderThemed(<BackgroundWorkStrip items={items} expanded onOpen={onOpen} />);
-    expect(screen.queryByTestId('work-row-4')).toBeNull();
-    expect(screen.getByTestId('work-more')).toBeTruthy();
-    expect(screen.getAllByTestId('work-check')[0]).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('background-work-strip'));
-    expect(onOpen).toHaveBeenCalled();
+    await renderThemed(<BackgroundWorkStrip items={items} overflow={2} onOpen={onOpen} />);
+    expect(screen.getByTestId('work-spinner', { includeHiddenElements: true })).toBeTruthy();
+    expect(
+      screen.getByTestId('work-glyph-completed', { includeHiddenElements: true }),
+    ).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('work-row-2'));
+    expect(onOpen).toHaveBeenLastCalledWith('2');
+    await fireEvent.press(screen.getByTestId('work-more'));
+    expect(onOpen).toHaveBeenLastCalledWith(null);
+  });
+
+  it('condenses to one line that opens the list, and is empty with nothing to list', async () => {
+    const onOpen = jest.fn();
+    await renderThemed(
+      <BackgroundWorkStrip
+        items={items}
+        summary={{ state: 'running', text: '1 running · A' }}
+        onOpen={onOpen}
+      />,
+    );
+    expect(screen.queryByTestId('work-row-1')).toBeNull();
+    await fireEvent.press(screen.getByTestId('background-work-strip-summary'));
+    expect(onOpen).toHaveBeenCalledWith(null);
+    await renderThemed(<BackgroundWorkStrip items={[]} onOpen={onOpen} />);
+    expect(screen.queryByTestId('background-work-strip')).toBeNull();
   });
 });
 

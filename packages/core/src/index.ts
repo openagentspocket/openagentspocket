@@ -8,6 +8,7 @@ export * from './console';
 export * from './errors';
 export * from './events';
 export * from './files';
+export * from './format';
 export * from './hosts';
 export * from './live-activity';
 export * from './new-agent';

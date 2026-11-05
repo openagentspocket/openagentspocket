@@ -46,21 +46,20 @@ const work: readonly BackgroundWorkItem[] = [
   {
     id: 'a',
     title: 'Find old pairing steps',
-    kind: 'Explore',
+    caption: 'Explore',
     state: 'running',
-    elapsed: '4m 13s',
+    meta: '4m 13s',
   },
   {
     id: 'b',
     title: 'docs-audit',
-    kind: 'Audit',
+    caption: 'Audit',
     state: 'running',
-    progress: { done: 2, total: 3 },
-    elapsed: '4m 4s',
+    fraction: { done: 2, total: 3 },
+    meta: '4m 4s',
     monospaced: true,
   },
-  { id: 'c', title: 'Check screenshots', kind: 'general-purpose', state: 'done', elapsed: '2m 4s' },
-  { id: 'd', title: 'Read the roadmap', kind: 'Explore', state: 'done', elapsed: '1m 2s' },
+  { id: 'c', title: 'Check screenshots', caption: 'Subagent', state: 'completed', meta: '2m 4s' },
 ];
 
 function Padded({ children, lifted }: { children: React.ReactNode; lifted?: boolean }) {
@@ -146,7 +145,8 @@ export const blockedTerminalEntries: readonly CatalogEntry[] = [
         render: () => (
           <Padded>
             <BackgroundWorkStrip
-              items={[{ ...work[0], title: 'Find other retry callers' } as BackgroundWorkItem]}
+              items={work}
+              summary={{ state: 'running', text: '1 running · Find other retry callers' }}
               onOpen={noop}
             />
           </Padded>
@@ -156,7 +156,7 @@ export const blockedTerminalEntries: readonly CatalogEntry[] = [
         id: 'expanded',
         render: () => (
           <Padded>
-            <BackgroundWorkStrip items={work} expanded onOpen={noop} />
+            <BackgroundWorkStrip items={work} overflow={1} onOpen={noop} />
           </Padded>
         ),
       },
