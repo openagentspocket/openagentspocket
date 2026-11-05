@@ -61,8 +61,6 @@ function registryOf(transcript: ChatTranscript): ConversationRegistry {
   return { get: () => store } as unknown as ConversationRegistry;
 }
 
-jest.setTimeout(30_000);
-
 // Each program's conversation goes through the same Chat timeline: no screen knows the program.
 describe.each([
   ['Pi', 'pi/transcripts/summaries.golden.json'],

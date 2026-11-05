@@ -7,11 +7,11 @@ import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
 import { MENU_DISMISS_MS } from './dismiss';
 import { LiftedMenu } from './LiftedMenu';
-import { groupMenuItems } from './menuGroups';
+import { groupMenuItems, isDeadMenuTrigger } from './menuGroups';
 import { loadSwiftUi, NativeActionMenu } from './NativeActionMenu';
 
 export type { MenuGroup } from './menuGroups';
-export { groupMenuItems };
+export { groupMenuItems, isDeadMenuTrigger };
 
 const MEASURE_TIMEOUT_MS = 80;
 
@@ -255,6 +255,7 @@ export function ActionMenuButton({
     // Unmeasurable (tests, a detached view): open centered instead of never.
     setTimeout(() => show(), MEASURE_TIMEOUT_MS);
   };
+  if (isDeadMenuTrigger(items)) return null;
   if (ui) {
     return (
       <NativeActionMenu

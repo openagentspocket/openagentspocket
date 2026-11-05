@@ -2,25 +2,34 @@ import type { ConsoleRow } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { TextPromptSheet } from '@openagentspocket/ui';
 
+/** What a rename names: an Agent (an empty name falls back to its detected kind) or its Workspace (a label is required). */
+export type RenameSubject = 'agent' | 'workspace';
+
 interface RenameSheetProps {
-  /** The Agent being renamed; undefined keeps the sheet closed. */
+  /** The Agent being renamed, or whose Workspace is; undefined keeps the sheet closed. */
   row: ConsoleRow | undefined;
+  subject?: RenameSubject;
   onClose: () => void;
   onSave: (row: ConsoleRow, name: string) => void;
 }
 
-/** Names an Agent. Saving an empty name gives it back its own. */
-export function RenameSheet({ row, onClose, onSave }: RenameSheetProps) {
+/** Names an Agent or its Workspace: one sheet for both renames, as Swift's RenameStore. */
+export function RenameSheet({ row, subject = 'agent', onClose, onSave }: RenameSheetProps) {
+  const workspace = subject === 'workspace';
   return (
     <TextPromptSheet
       visible={row !== undefined}
-      title={t('Rename Agent')}
+      title={workspace ? t('Rename Workspace') : t('Rename Agent')}
       fieldLabel={t('Name')}
-      initialValue={row?.agent.name ?? ''}
-      hint={t('Leave empty to fall back to the detected kind (%@).', row?.agent.agent ?? '')}
+      initialValue={(workspace ? row?.workspaceLabel : row?.agent.name) ?? ''}
+      hint={
+        workspace
+          ? undefined
+          : t('Leave empty to fall back to the detected kind (%@).', row?.agent.agent ?? '')
+      }
       cancelLabel={t('Cancel')}
       saveLabel={t('Save')}
-      onSave={(name) => row && onSave(row, name)}
+      onSave={(name) => row && (!workspace || name.trim() !== '') && onSave(row, name)}
       onClose={onClose}
       testID="rename"
     />

@@ -3,6 +3,7 @@ import type {
   ChatAgentView,
   ChatProgram,
   ConsoleRow,
+  herdr,
 } from '@openagentspocket/core';
 
 const PROGRAMS: readonly ChatProgram[] = ['claude', 'codex', 'pi', 'omp', 'grok', 'opencode'];
@@ -22,7 +23,11 @@ function activityOf(status: string): ChatAgentActivity {
 
 /** What Chat follows of a Console row: the program, what herdr reports it doing, where, and its session. */
 export function chatAgentView(row: ConsoleRow): ChatAgentView {
-  const { agent } = row;
+  return chatAgentViewOf(row.agent);
+}
+
+/** The same, from herdr's record of the Agent (a Console row's, or a fresh `agent.get`). */
+export function chatAgentViewOf(agent: herdr.AgentInfo): ChatAgentView {
   const named = agent.agent ?? null;
   const reported = agent.agent_session ?? null;
   const program =
@@ -33,5 +38,6 @@ export function chatAgentView(row: ConsoleRow): ChatAgentView {
     cwd: agent.cwd ?? null,
     foregroundCwd: agent.foreground_cwd ?? null,
     session: reported,
+    terminalTitle: agent.terminal_title_stripped ?? null,
   };
 }

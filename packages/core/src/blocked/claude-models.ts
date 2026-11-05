@@ -42,12 +42,21 @@ function promptGlyph(row: ScreenRow): string | null {
   return numberedOption(row, CLAUDE_POINTER) === null ? first : null;
 }
 
+/** Claude's prompt box: its rules, the input rows between them and the prompt glyph. */
+export interface ClaudeInputBox {
+  readonly topRule: number;
+  /** The input rows: `[start, end)`; `end` is the bottom rule. */
+  readonly inputRows: { readonly start: number; readonly end: number };
+  readonly bottomRule: number;
+  readonly glyph: string;
+}
+
 /**
  * Claude's prompt: one or more input rows between two full-width rules, the first starting with
- * `❯` (or `!` in shell mode) and a blank at column 0, on no background. Whether one is on screen
- * means no dialog is.
+ * `❯` (or `!` in shell mode) and a blank at column 0, on no background. Null when none is on
+ * screen, which means a dialog may be.
  */
-export function hasClaudeInputBox(screen: AnsiScreen): boolean {
+export function locateClaudeInputBox(screen: AnsiScreen): ClaudeInputBox | null {
   const rows = screen.rows;
   const minimumWidth = Math.max(8, screen.columns - 4);
   const isRule = (at: number) => {
@@ -60,12 +69,24 @@ export function hasClaudeInputBox(screen: AnsiScreen): boolean {
     while (row > 0 && bottom - row <= 30) {
       if (isRule(row)) break;
       const current = rows[row];
-      if (current && promptGlyph(current) !== null && isRule(row - 1)) return true;
+      const glyph = current ? promptGlyph(current) : null;
+      if (glyph !== null && isRule(row - 1)) {
+        return {
+          topRule: row - 1,
+          inputRows: { start: row, end: bottom },
+          bottomRule: bottom,
+          glyph,
+        };
+      }
       row -= 1;
     }
   }
-  return false;
+  return null;
 }
+
+/** Whether Claude's prompt is on screen, which means no dialog is. */
+export const hasClaudeInputBox = (screen: AnsiScreen): boolean =>
+  locateClaudeInputBox(screen) !== null;
 
 /**
  * The numbered options nearest the bottom of the screen: rows 1…N whose numbers share one color,

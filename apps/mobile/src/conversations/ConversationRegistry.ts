@@ -1,4 +1,5 @@
 import {
+  type AnsiScreen,
   type ChatAgentView,
   type ChatHostFiles,
   type ChatTranscriptCache,
@@ -35,6 +36,10 @@ export interface ConversationRegistryDeps {
   readonly createFiles: (hostId: string) => ChatFilesHandle;
   readonly cache: ChatTranscriptCache;
   readonly clock: Clock;
+  /** The Agent's screen through `agent.read`, which Chat's sends are checked against. */
+  readonly readScreen?: (hostId: string, paneId: string) => Promise<AnsiScreen>;
+  /** The Agent's record read now (`agent.get`); absent where the transport cannot, which skips the checks that need it. */
+  readonly agentInfo?: (hostId: string, paneId: string) => Promise<ChatAgentView>;
 }
 
 interface Entry {
@@ -71,6 +76,12 @@ export class ConversationRegistry {
       files: this.filesOf(hostId),
       cache: this.deps.cache,
       clock: this.deps.clock,
+      readScreen: this.deps.readScreen
+        ? () => (this.deps.readScreen as NonNullable<typeof this.deps.readScreen>)(hostId, paneId)
+        : undefined,
+      agentInfo: this.deps.agentInfo
+        ? () => (this.deps.agentInfo as NonNullable<typeof this.deps.agentInfo>)(hostId, paneId)
+        : undefined,
     });
     store.hostConnectionChanged(this.isConnected(hostId));
     if (!this.active) store.suspend();

@@ -60,9 +60,11 @@ function canSendKeys(transport: object): transport is KeysTransport {
 }
 
 export interface AgentComposer {
+  readonly hostId: string;
+  readonly paneId: string;
   readonly store: ComposerStore;
   readonly snapshot: ComposerSnapshot;
-  /** Presses Esc in the Agent's program. */
+  /** Presses Esc in the Agent's program (the terminal's Stop; Chat's comes from the program's send policy). */
   readonly interrupt: () => Promise<AgentInterruptOutcome>;
 }
 
@@ -108,5 +110,5 @@ export function useAgentComposer(
     },
     [consoleStore, hostId, paneId],
   );
-  return { store, snapshot, interrupt };
+  return { hostId, paneId, store, snapshot, interrupt };
 }

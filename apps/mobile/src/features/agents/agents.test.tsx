@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-
 import { createDemoConsoleStore, DemoConsoleTransport } from '../../console/demo';
 import { ConsoleStoreProvider } from '../../console/hooks';
 import { AgentsScreen } from './AgentsScreen';
+import { agentActions } from './agentActions';
 
 const mockPush = jest.fn();
 
@@ -19,6 +20,12 @@ class RecordingTransport extends DemoConsoleTransport {
     this.closed.push(paneId);
   }
 
+  readonly workspaces: { workspace_id: string; label: string }[] = [];
+
+  override async renameWorkspace(params: { workspace_id: string; label: string }): Promise<void> {
+    this.workspaces.push(params);
+  }
+
   override async renameAgent(params: { target: string; name: string | null }): Promise<void> {
     this.renamed.push(params);
   }
@@ -26,7 +33,7 @@ class RecordingTransport extends DemoConsoleTransport {
 
 async function open(
   prepare?: (store: ReturnType<typeof createDemoConsoleStore>) => void,
-): Promise<{ transport: RecordingTransport }> {
+): Promise<{ transport: RecordingTransport; store: ReturnType<typeof createDemoConsoleStore> }> {
   const transport = new RecordingTransport();
   const store = createDemoConsoleStore(undefined, transport);
   prepare?.(store);
@@ -39,7 +46,7 @@ async function open(
     </ThemeProvider>,
   );
   await waitFor(() => expect(screen.getByTestId('agent-row-p1')).toBeTruthy());
-  return { transport };
+  return { transport, store };
 }
 
 const order = () =>
@@ -115,5 +122,18 @@ describe('AgentsScreen', () => {
     await fireEvent.changeText(await screen.findByTestId('rename-field'), '  Settings  ');
     await fireEvent.press(screen.getByTestId('rename-save'));
     await waitFor(() => expect(transport.renamed).toEqual([{ target: 'p2', name: 'Settings' }]));
+  });
+
+  it('renames a Workspace through the same sheet, and refuses an empty label', async () => {
+    const { transport, store } = await open();
+    const actions = agentActions(store);
+    const row = await waitFor(() => {
+      const first = store.getState().rows[0];
+      if (!first) throw new Error('the demo has rows');
+      return first;
+    });
+    await actions.renameWorkspace(row, '   ');
+    await actions.renameWorkspace(row, ' api ');
+    expect(transport.workspaces).toEqual([{ workspace_id: row.agent.workspace_id, label: 'api' }]);
   });
 });

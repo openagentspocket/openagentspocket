@@ -10,6 +10,7 @@ module.exports = {
     'react-native-gesture-handler/jestSetup',
     '<rootDir>/jest.setup.js',
     require.resolve('@openagentspocket/ui/jest.setup.js'),
+    '<rootDir>/jest.setup.js',
   ],
   transformIgnorePatterns: transformIgnorePatterns.map((pattern) =>
     pattern.startsWith('/node_modules/(?!(')

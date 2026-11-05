@@ -17,7 +17,7 @@ import {
   type ObservedActivity,
 } from './observation';
 import type { DialogAction, DialogActionPlan, DialogStep, PlanResult } from './plan-types';
-import { planDialogAction, planGenericOption } from './programs';
+import { blockedSupportFor, planDialogAction, planGenericOption } from './programs';
 import { type BlockedDialog, resultDialog, resultFingerprint } from './types';
 
 /**
@@ -129,9 +129,9 @@ export class BlockedCardStore extends CardBase {
   }
 
   private get readsScreen(): boolean {
-    const idleQuestion =
-      this.options.program === 'claude' && this.activity === 'idle' && this.openQuestion;
-    return this.activity === 'blocked' || idleQuestion;
+    if (this.activity === 'blocked') return true;
+    const watches = blockedSupportFor(this.options.program)?.readsScreenWhenIdleWithOpenQuestion;
+    return watches === true && this.activity === 'idle' && this.openQuestion;
   }
 
   // Actions

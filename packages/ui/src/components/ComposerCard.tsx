@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import { composerAction } from '../composer/Composer';
-import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { ActionMenu, type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
 import { useAnchor } from '../overlay/anchors';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
@@ -137,6 +137,7 @@ function Circle({
   const styles = useStyles();
   const [open, setOpen] = useState(false);
   const anchor = useAnchor(anchorKey);
+  if (isDeadMenuTrigger(menu, onPress)) return null;
   return (
     <>
       <Pressable
@@ -235,15 +236,7 @@ export function ComposerCard({
       </View>
     </View>
   ) : null;
-  const plus = (
-    <Circle
-      icon="add"
-      label={labels.add}
-      menu={addMenu}
-      onPress={() => {}}
-      testID={`${testID}-add`}
-    />
-  );
+  const plus = <Circle icon="add" label={labels.add} menu={addMenu} testID={`${testID}-add`} />;
   return (
     <View style={styles.card} testID={testID}>
       {showSkills ? (

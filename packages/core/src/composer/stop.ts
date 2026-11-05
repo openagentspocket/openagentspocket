@@ -21,11 +21,6 @@ export const ESCAPE_WAIT: AgentStopWait = {
   unconfirmedNotice: 'Esc went, but the Agent still shows Working.',
 };
 
-/** The terminal's Stop for an Agent of `kind`: one Esc, or no Stop in Grok Build (Esc only toasts there). */
-export function terminalStopAvailable(kind: string): boolean {
-  return kind !== 'grok';
-}
-
 export type ComposerPrimaryControl = 'send' | 'stop';
 
 /**

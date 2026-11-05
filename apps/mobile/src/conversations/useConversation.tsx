@@ -1,8 +1,10 @@
 import {
+  type AnsiScreen,
   type ChatUnavailableReason,
   type ConversationState,
   type ConversationStore,
   initialSnapshot,
+  type SentMessage,
 } from '@openagentspocket/core';
 import {
   createContext,
@@ -53,6 +55,12 @@ export interface ConversationHandle {
   loadOutput(entryId: string): void;
   /** Looks for the transcript again now. */
   retry(): void;
+  /** The messages Chat's Composer holds (`sentMessages`): each is followed until the transcript records it. */
+  updateSends(messages: readonly SentMessage[]): void;
+  /** Why a send the input box would take waits all the same, or null. */
+  sendConcern(outgoing: string, screen: AnsiScreen): string | null;
+  /** The Agent's screen was read for another reason; a returned send it no longer holds is discarded. */
+  inputBoxWasRead(screen: AnsiScreen): void;
 }
 
 /**
@@ -82,6 +90,9 @@ export function useConversation(hostId: string, paneId: string): ConversationHan
       loadOlder: (automatic = false) => store?.loadOlder(automatic),
       loadOutput: (entryId: string) => store?.loadOutput(entryId),
       retry: () => store?.retry(),
+      updateSends: (messages) => store?.updateSends(messages),
+      sendConcern: (outgoing, screen) => store?.sendConcern(outgoing, screen) ?? null,
+      inputBoxWasRead: (screen) => store?.inputBoxWasRead(screen),
     }),
     [state, store],
   );

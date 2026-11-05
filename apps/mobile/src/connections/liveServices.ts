@@ -6,6 +6,7 @@ import {
   type DevicePushTokenSource,
   type HostCatalog,
   type HostKeyCandidate,
+  type herdr,
   type KeyValueStorage,
   type KnownHostsStore,
   ListPreferences,
@@ -18,11 +19,17 @@ import {
   VolatileChatTranscriptCache,
 } from '@openagentspocket/core';
 import type { SshTransport } from '@openagentspocket/transport';
-import { pluginConfigFiles, runPluginStep } from '@openagentspocket/transport';
+import {
+  herdrScreenIO,
+  isBlockedPaneApi,
+  pluginConfigFiles,
+  runPluginStep,
+} from '@openagentspocket/transport';
 import { type AppGroupStore, unavailableAppGroup } from 'agentico-app-group';
 import { unavailableLiveActivities } from 'agentico-live-activity';
 import type { SshModule } from 'agentico-ssh';
 import { ConsoleStore } from '@/console/store';
+import { chatAgentViewOf } from '@/conversations/agentView';
 import { ConversationRegistry } from '@/conversations/ConversationRegistry';
 import { TransportChatFiles } from '@/conversations/chatFiles';
 import { HostsModel } from '@/features/hosts/HostsModel';
@@ -38,6 +45,13 @@ import { TRUST_TIMEOUT_MS, TrustPromptQueue } from './trustPrompt';
 import { newUuid } from './uuid';
 
 /** Everything the live app is built from; the device adapters in production, fakes in tests. */
+/** Whether a transport answers `agent.get` (the live one does; the demo does not). */
+function hasAgentInfo(
+  transport: unknown,
+): transport is { agentInfo(params: { target: string }): Promise<herdr.AgentInfo> } {
+  return typeof (transport as { agentInfo?: unknown } | null)?.agentInfo === 'function';
+}
+
 export interface LiveDeps {
   readonly ssh: SshModule;
   readonly hostCatalog: HostCatalog;
@@ -139,6 +153,18 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
       new TransportChatFiles((operation) => manager.withTransport(hostId, operation)),
     cache: deps.chatCache ?? new VolatileChatTranscriptCache(),
     clock: deps.clock,
+    readScreen: (hostId, paneId) =>
+      herdrScreenIO(paneId, (operation) =>
+        manager.withTransport(hostId, async (transport) => {
+          if (!isBlockedPaneApi(transport)) throw new Error('This Host cannot read panes.');
+          return operation(transport);
+        }),
+      ).readScreen(),
+    agentInfo: (hostId, paneId) =>
+      manager.withTransport(hostId, async (transport) => {
+        if (!hasAgentInfo(transport)) throw new Error('This Host cannot read an Agent.');
+        return chatAgentViewOf(await transport.agentInfo({ target: paneId }));
+      }),
   });
   // A removed Host takes its Chat stores and cached transcripts with it.
   model.subscribe(() => void conversations.retainHosts());

@@ -14,8 +14,8 @@ import { agentActions } from './agentActions';
 import { agentRowLabels } from './agentRowLabels';
 import { closeAgent } from './closeAgent';
 import { QuickDetailSheet } from './QuickDetailSheet';
-import { RenameSheet } from './RenameSheet';
 import { useAgentsList } from './useAgentsList';
+import { useRename } from './useRename';
 
 /** Workspace labels shared by several visible Agents: those rows name their Agent after the title. */
 function duplicateWorkspaces(groups: readonly ListGroup[]): ReadonlySet<string> {
@@ -45,7 +45,7 @@ export function AgentsScreen(props: {
   const list = useAgentsList();
   const labels = useMemo(agentRowLabels, []);
   const actions = useMemo(() => agentActions(list.store), [list.store]);
-  const [renaming, setRenaming] = useState<ConsoleRow | undefined>();
+  const rename = useRename(actions);
   const [searchOpen, setSearchOpen] = useState(initialQuery !== undefined);
   const [detailId, setDetailId] = useState(openDetail);
   const detail = list.groups
@@ -57,15 +57,11 @@ export function AgentsScreen(props: {
   useEffect(() => {
     if (initialQuery) list.setQuery(initialQuery);
     if (openRename) {
-      setRenaming(list.groups.flatMap((g) => g.rows).find((r) => r.agent.pane_id === openRename));
+      rename.open(list.groups.flatMap((g) => g.rows).find((r) => r.agent.pane_id === openRename));
     }
   }, []);
 
   const close = (row: ConsoleRow) => closeAgent(row, actions).then(() => undefined);
-  const save = (row: ConsoleRow, name: string) => {
-    setRenaming(undefined);
-    actions.rename(row, name).catch(() => undefined);
-  };
   const isPinned = (row: ConsoleRow) => list.store.isPinned(row.hostId, row.agent.pane_id);
   const qualified = useMemo(() => duplicateWorkspaces(list.groups), [list.groups]);
   const empty = list.groups.every((group) => group.rows.length === 0);
@@ -101,7 +97,7 @@ export function AgentsScreen(props: {
             isPinned={isPinned}
             onToggle={list.toggle}
             onTogglePin={actions.togglePin}
-            onRename={setRenaming}
+            onRename={(row) => rename.open(row)}
             onClose={(row) => void close(row)}
             onDetails={setDetail}
           />
@@ -131,7 +127,7 @@ export function AgentsScreen(props: {
           void close(row);
         }}
       />
-      <RenameSheet row={renaming} onClose={() => setRenaming(undefined)} onSave={save} />
+      {rename.sheet}
     </AppScreen>
   );
 }

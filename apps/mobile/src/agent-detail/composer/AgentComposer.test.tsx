@@ -3,9 +3,15 @@ import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore } from '@/console/demo';
 import { ConsoleStoreProvider } from '@/console/hooks';
+import { pickPhoto } from '@/files/pickers';
 import { AgentDetailScreen } from '../AgentDetailScreen';
 import { ComposerRegistryProvider } from './composerContext';
 
+jest.mock('@/files/pickers', () => ({
+  pickPhoto: jest.fn(async () => null),
+  pickDocument: jest.fn(async () => null),
+}));
+jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn(), back: jest.fn() }) }));
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaView: require('react-native').View,
 }));
@@ -61,5 +67,37 @@ describe('AgentComposerBar', () => {
     fireEvent.press(screen.getByTestId('composer-send'));
     await waitFor(() => expect(screen.getByTestId('composer-notice')).toBeTruthy());
     expect(screen.getByTestId('composer-input').props.value).toBe('n');
+  });
+
+  it('opens the + menu with the attachments and Add Image goes to the photo picker', async () => {
+    renderDetail('p2');
+    await waitFor(() => expect(screen.getByTestId('composer-add')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('composer-add'));
+    await waitFor(() => expect(screen.getByTestId('action-menu-add-image')).toBeTruthy());
+    expect(screen.getByTestId('action-menu-add-file')).toBeTruthy();
+    fireEvent.press(screen.getByTestId('action-menu-add-image'));
+    await waitFor(() => expect(pickPhoto).toHaveBeenCalledTimes(1));
+  });
+
+  it('opens the ... menu with the session tools and the lifecycle, Close Agent last', async () => {
+    renderDetail('p2');
+    await waitFor(() => expect(screen.getByTestId('composer-input')).toBeTruthy());
+    // Folded to one line, the Composer shows "..." once it is open.
+    expect(screen.queryByTestId('composer-more')).toBeNull();
+    fireEvent(screen.getByTestId('composer-input'), 'focus');
+    await waitFor(() => expect(screen.getByTestId('composer-more')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('composer-more'));
+    await waitFor(() => expect(screen.getByTestId('action-menu-show-terminal')).toBeTruthy());
+    for (const key of [
+      'back',
+      'changes',
+      'new-agent',
+      'skills',
+      'snippets',
+      'rename-agent',
+      'close',
+    ]) {
+      expect(screen.getByTestId(`action-menu-${key}`)).toBeTruthy();
+    }
   });
 });

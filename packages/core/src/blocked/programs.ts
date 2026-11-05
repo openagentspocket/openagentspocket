@@ -9,6 +9,7 @@ import { ompSupport } from './omp-support';
 import { openCodeSupport } from './opencode-support';
 import {
   attemptPlan,
+  type ConfirmationRule,
   type DialogAction,
   type DialogActionPlan,
   makePlan,
@@ -33,11 +34,41 @@ import {
 export interface BlockedProgramSupport {
   parse(screen: AnsiScreen): DialogParseResult;
   plan(dialog: BlockedDialog, action: DialogAction, toolUseID: string | null): DialogActionPlan;
+  /**
+   * Present when the program's generic card (a dialog no parser names, shown as an excerpt) may press
+   * the digit of a numbered option it lists. Absent: such a card has no option buttons.
+   */
+  readonly genericOptions?: {
+    /** A reverse-video cursor on screen means a text field has focus, where a digit would be typed. */
+    readonly refusesWhileCursorInField?: boolean;
+    /** What shows the press worked. */
+    readonly confirmation: ConfirmationRule;
+  };
+  /** The card keeps reading the screen while the Agent is idle with a question still open. */
+  readonly readsScreenWhenIdleWithOpenQuestion?: boolean;
 }
 
 const registry = new Map<ChatProgram, BlockedProgramSupport>([
-  ['claude', { parse: parseClaudeDialog, plan: planClaudeAction }],
-  ['codex', { parse: parseCodexDialog, plan: (dialog, action) => planCodexAction(dialog, action) }],
+  [
+    'claude',
+    {
+      parse: parseClaudeDialog,
+      plan: planClaudeAction,
+      genericOptions: {
+        refusesWhileCursorInField: true,
+        confirmation: { kind: 'fingerprintChange' },
+      },
+      readsScreenWhenIdleWithOpenQuestion: true,
+    },
+  ],
+  [
+    'codex',
+    {
+      parse: parseCodexDialog,
+      plan: (dialog, action) => planCodexAction(dialog, action),
+      genericOptions: { confirmation: { kind: 'fingerprintChangeOrUnblocked' } },
+    },
+  ],
 ]);
 
 for (const [program, support] of [
@@ -54,6 +85,11 @@ export function registerBlockedProgram(program: ChatProgram, support: BlockedPro
 }
 
 const terminalOnly = () => message('Answer this dialog in the Agent terminal.');
+
+/** What a program contributes to the Blocked card, or undefined for one with nothing. */
+export function blockedSupportFor(program: ChatProgram): BlockedProgramSupport | undefined {
+  return registry.get(program);
+}
 
 /** The parser for an Agent's program; programs without one show no dialog (Pi has none). */
 export function parseBlockedDialog(screen: AnsiScreen, program: ChatProgram): DialogParseResult {
@@ -85,9 +121,8 @@ export function planGenericOption(
   program: ChatProgram,
 ): PlanResult {
   return attemptPlan(() => {
-    if (program !== 'claude' && program !== 'codex') {
-      return refuse({ kind: 'unsupported', reason: terminalOnly() });
-    }
+    const options = registry.get(program)?.genericOptions;
+    if (!options) return refuse({ kind: 'unsupported', reason: terminalOnly() });
     if (!excerpt.numbered.has(number)) return refuse({ kind: 'noSuchOption', ordinal: number });
     const digit = digitKey(number);
     if (digit === null) {
@@ -96,10 +131,9 @@ export function planGenericOption(
         reason: message('Option %lld has no digit key.', String(number)),
       });
     }
-    // Claude draws its text cursor in reverse video. With a field focused, the digit would be
-    // typed rather than pressed.
+    // A text field with the cursor would take the digit as typed text.
     if (
-      program === 'claude' &&
+      options.refusesWhileCursorInField &&
       excerpt.rows.some((row) => row.runs.some((run) => run.style.isReverse))
     ) {
       return refuse({
@@ -109,11 +143,6 @@ export function planGenericOption(
         ),
       });
     }
-    return makePlan(
-      [{ kind: 'keys', keys: [digit] }],
-      program === 'claude'
-        ? { kind: 'fingerprintChange' }
-        : { kind: 'fingerprintChangeOrUnblocked' },
-    );
+    return makePlan([{ kind: 'keys', keys: [digit] }], options.confirmation);
   });
 }

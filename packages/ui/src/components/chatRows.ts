@@ -3,7 +3,7 @@ export { ChatDivider, formatClock } from './ChatDivider';
 export { ChatNoticeRow } from './ChatNoticeRow';
 export { ChatThoughtRow } from './ChatThoughtRow';
 export { ChatToolRow, type SubagentItem, type ToolStatus } from './ChatToolRow';
-export { ChatUserBubble } from './ChatUserBubble';
+export { ChatUserBubble, type ChatUserBubbleStatus } from './ChatUserBubble';
 export {
   type DiffFile,
   type DiffHunk,

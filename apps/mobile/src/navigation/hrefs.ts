@@ -30,6 +30,11 @@ export const hrefs = {
       ...(origin?.cwd ? { cwd: origin.cwd } : {}),
     },
   }),
+  /** Worktree Details for the linked worktree an Agent runs in. */
+  worktree: (hostId: string, paneId: string): Href => ({
+    pathname: '/worktree',
+    params: { host: hostId, pane: paneId },
+  }),
   terminals: (hostId?: string): Href => ({
     pathname: '/terminals',
     params: hostId ? { host: hostId } : {},

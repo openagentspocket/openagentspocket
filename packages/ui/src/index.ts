@@ -67,6 +67,7 @@ export {
   ActionMenuButton,
   type ActionMenuItem,
   groupMenuItems,
+  isDeadMenuTrigger,
   MENU_DISMISS_MS,
   type MenuAnchor,
   type MenuGroup,

@@ -463,13 +463,13 @@
   },
   {
     "id": "agent-detail.composer-more-menu",
-    "rn": "AgentDetailScreen",
-    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+    "rn": "AgentComposerBar \"...\" (composerMoreItems)",
+    "note": "opened after focusing the input (the folded composer shows no \"...\"); Worktree Details and Rename Workspace have no RN action yet"
   },
   {
     "id": "agent-detail.composer-add-menu",
-    "rn": "AgentDetailScreen",
-    "note": "+ menu pressed"
+    "rn": "AgentComposerBar \"+\" (composerAddItems)",
+    "note": "Add Image, Add File; opened from the \"+\" circle"
   },
   {
     "id": "agent-detail.header-more-menu",

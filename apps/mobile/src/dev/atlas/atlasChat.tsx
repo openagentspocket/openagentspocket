@@ -152,6 +152,9 @@ const storeFor = (conversation: ConversationState) =>
     loadOlder: () => undefined,
     loadOutput: () => undefined,
     retry: () => undefined,
+    updateSends: () => undefined,
+    sendConcern: () => null,
+    inputBoxWasRead: () => undefined,
   }) as unknown as ConversationStore;
 
 /** A finished Subagent's own transcript: its task, a tool call and its answer. */

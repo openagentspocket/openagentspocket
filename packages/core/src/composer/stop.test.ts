@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { FakeClock } from '../hosts/cancellation';
 import { containsOnlySafeScalars } from '../terminal/text-safety';
 import { refusalEndsWhenStatusBecomes } from './policy';
-import { ComposerStopStore, primaryControl, terminalStopAvailable } from './stop';
+import { ComposerStopStore, primaryControl } from './stop';
 import { detectSkillTrigger, matchingSkills } from './suggestions';
 
 const sent = async () => ({ kind: 'sent' as const });
@@ -15,8 +15,6 @@ describe('primaryControl', () => {
       expect(primaryControl({ status, draft: '', canStop: true })).toBe('send');
     }
     expect(primaryControl({ status: 'working', draft: '', canStop: false })).toBe('send');
-    expect(terminalStopAvailable('grok')).toBe(false);
-    expect(terminalStopAvailable('claude')).toBe(true);
   });
 });
 

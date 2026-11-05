@@ -1,6 +1,7 @@
 import {
   type BlockedCardState,
   BlockedCardStore,
+  blockedSupportFor,
   type ChatProgram,
   type ConsoleRow,
   type ObservedActivity,
@@ -11,12 +12,10 @@ import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import { useConsoleStore } from '../console/hooks';
 import { systemClock } from '../console/systemClock';
 
-const PROGRAMS: readonly string[] = ['claude', 'codex', 'pi', 'omp', 'grok', 'opencode'];
-
 /** The Agent's program as Chat knows it; undefined for programs without a Blocked card. */
 export function chatProgramOf(row: ConsoleRow): ChatProgram | undefined {
-  const kind = programIdentity(row.agent.agent ?? '').kind;
-  return kind && PROGRAMS.includes(kind) ? (kind as ChatProgram) : undefined;
+  const kind = programIdentity(row.agent.agent ?? '').kind as ChatProgram | undefined;
+  return kind && blockedSupportFor(kind) ? kind : undefined;
 }
 
 /** herdr's Agent Status as the card's confirmation rules see it. */

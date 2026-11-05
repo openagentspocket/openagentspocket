@@ -1,5 +1,6 @@
 // The shapes of the conversation store: the Agent record it follows, its pacing, its observable state.
 
+import type { AnsiScreen } from '../../blocked/screen';
 import type { Clock } from '../../hosts/cancellation';
 import type { AgentSessionInfo } from '../../protocol/herdr-types.generated';
 import type { ChatTranscriptCache } from '../model/cache';
@@ -10,6 +11,8 @@ import type {
 import type { ChatHostFiles } from '../model/host-files';
 import type { ChatAgentActivity, ChatProgram } from '../model/types';
 import type { ChatWorkflowProgress } from '../model/workflow-progress';
+import type { SendStatus } from '../send/echoes';
+import type { SendTiming } from '../send/tracker-types';
 import type { ChatUnavailableReason } from '../timeline/reasons';
 import type { ChatTranscriptAdapter } from './adapter';
 import type { ChatExpandedOutput } from './engine';
@@ -22,6 +25,8 @@ export interface ChatAgentView {
   cwd: string | null;
   foregroundCwd: string | null;
   session: AgentSessionInfo | null;
+  /** The pane's terminal title without escape sequences, for a program that names its conversation there. */
+  terminalTitle?: string | null;
 }
 
 export interface ChatTiming {
@@ -53,6 +58,8 @@ export interface ConversationState {
   workflowProgress: Readonly<Record<string, ChatWorkflowProgress>>;
   /** Expanded rows' outputs by entry id. */
   outputs: ReadonlyMap<string, ChatOutputState>;
+  /** Where each message Chat sent stands against the transcript (absent until one is sent). */
+  sendStatuses?: ReadonlyMap<string, SendStatus>;
   /** Bumped on every change, for `useSyncExternalStore`. */
   version: number;
 }
@@ -70,6 +77,11 @@ export interface ConversationStoreOptions {
   accountDirectories?: () => Promise<string[]>;
   timing?: Partial<ChatTiming>;
   adapterFor?: (program: ChatProgram) => ChatTranscriptAdapter | null;
+  /** The Agent's screen through `agent.read`: Chat's sends are checked against it. */
+  readScreen?: () => Promise<AnsiScreen>;
+  /** The Agent's record read now (`agent.get`); absent for a transport that cannot, which skips the checks that need it. */
+  agentInfo?: () => Promise<ChatAgentView>;
+  sendTiming?: Partial<SendTiming>;
 }
 
 export const sameReference = (a: ConversationReference | null, b: ConversationReference | null) =>
