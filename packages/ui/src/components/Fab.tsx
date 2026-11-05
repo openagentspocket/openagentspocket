@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { Pressable } from 'react-native';
+import { useRef, useState } from 'react';
+import { Platform, Pressable } from 'react-native';
 import { impact } from '../haptics';
-import { ActionMenu, type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
+import { type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
 import { Icon } from '../primitives/Icon';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
+import { ChoiceSheet } from './ChoiceSheet';
 
 export const FAB_SIZE = 58;
 const GLOW_OPACITY = 0.35;
@@ -26,7 +27,7 @@ const useStyles = makeStyles((t) => ({
 }));
 
 interface FabProps {
-  /** The New menu (New Agent, New Terminal, Add Host). */
+  /** The New choices (New Agent, New Terminal, Add Host): `subtitle` is the sentence under each title. */
   items: readonly ActionMenuItem[];
   accessibilityLabel: string;
   menuTitle?: string;
@@ -48,6 +49,8 @@ export function Fab({
   const styles = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  // A choice hands over to a route only after the sheet has left: iOS cannot present during a dismissal.
+  const chosen = useRef<(() => void) | null>(null);
   if (hidden || isDeadMenuTrigger(items, onPress)) return null;
   return (
     <>
@@ -68,7 +71,28 @@ export function Fab({
       >
         <Icon name="add" size={24} tint={theme.colors.onAccent} />
       </Pressable>
-      <ActionMenu items={items} title={menuTitle} visible={open} onClose={() => setOpen(false)} />
+      <ChoiceSheet
+        visible={open}
+        title={menuTitle ?? accessibilityLabel}
+        onClose={() => setOpen(false)}
+        onDismissed={() => {
+          const run = chosen.current;
+          chosen.current = null;
+          run?.();
+        }}
+        testID={`${testID}-sheet`}
+        options={items.map((item) => ({
+          id: item.key,
+          icon: item.icon ?? 'add',
+          title: item.title,
+          description: item.subtitle,
+          onPress: () => {
+            if (Platform.OS === 'ios') chosen.current = item.onPress;
+            setOpen(false);
+            if (Platform.OS !== 'ios') item.onPress();
+          },
+        }))}
+      />
     </>
   );
 }

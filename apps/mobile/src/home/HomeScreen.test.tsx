@@ -2,6 +2,7 @@ import { AgentStatusClocks, MemoryStorage, PinnedAgents } from '@openagentspocke
 import { setLocale, translate } from '@openagentspocket/i18n';
 import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { Platform } from 'react-native';
 import { ConsoleStoreProvider } from '../console/hooks';
 import { ConsoleStore } from '../console/store';
 import { systemClock } from '../console/systemClock';
@@ -63,7 +64,9 @@ describe('HomeScreen', () => {
     }
   });
 
-  it('opens the + menu with New Agent, New Terminal and Add Host', async () => {
+  it('opens the + sheet with New Agent, New Terminal and Add Host', async () => {
+    // On iOS a choice runs once the sheet has left (Modal onDismiss, never fired in Jest).
+    Object.defineProperty(Platform, 'OS', { configurable: true, get: () => 'android' });
     const onNewAgent = jest.fn();
     await renderHome({ onNewAgent });
     fireEvent.press(await screen.findByTestId('fab'));

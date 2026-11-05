@@ -49,15 +49,14 @@ function ThemedStatusBar() {
 function AppStack() {
   const theme = useTheme();
   const options = useStackScreenOptions();
-  // Routes that are sheets in the Swift app: lists open at 70% and drag to full, forms open full.
-  const list = sheetOptions(theme, { detents: [0.7, 1] });
-  const form = sheetOptions(theme);
+  // Routes that are sheets in the Swift app. They scroll and push screens, so they open full.
+  const sheet = sheetOptions(theme);
   const bare = { headerShown: false } as const;
   return (
     <Stack screenOptions={options}>
       <Stack.Screen name="index" options={{ ...bare, title: t('Home') }} />
       <Stack.Screen name="changes" options={{ ...bare, title: t('Changes') }} />
-      <Stack.Screen name="hosts" options={{ ...bare, ...list, title: t('Hosts') }} />
+      <Stack.Screen name="hosts" options={{ ...bare, ...sheet, title: t('Hosts') }} />
       <Stack.Screen
         name="add-host"
         options={{
@@ -67,15 +66,15 @@ function AppStack() {
           animation: 'none',
         }}
       />
-      <Stack.Screen name="ports" options={{ ...bare, ...list, title: t('Ports') }} />
+      <Stack.Screen name="ports" options={{ ...bare, ...sheet, title: t('Ports') }} />
       <Stack.Screen name="usage" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-breakdown" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-limits" options={{ title: t('Usage Limits') }} />
-      <Stack.Screen name="files" options={{ ...bare, ...list, title: t('Files') }} />
-      <Stack.Screen name="settings" options={{ ...bare, ...list, title: t('Settings') }} />
-      <Stack.Screen name="new-agent" options={{ ...bare, ...form, title: t('New Agent') }} />
-      <Stack.Screen name="new-terminal" options={{ ...bare, ...form, title: t('New Terminal') }} />
-      <Stack.Screen name="worktree" options={{ ...form, title: t('Worktree') }} />
+      <Stack.Screen name="files" options={{ ...bare, ...sheet, title: t('Files') }} />
+      <Stack.Screen name="settings" options={{ ...bare, ...sheet, title: t('Settings') }} />
+      <Stack.Screen name="new-agent" options={{ ...bare, ...sheet, title: t('New Agent') }} />
+      <Stack.Screen name="new-terminal" options={{ ...bare, ...sheet, title: t('New Terminal') }} />
+      <Stack.Screen name="worktree" options={{ ...sheet, title: t('Worktree') }} />
       <Stack.Screen name="__gallery" options={bare} />
       <Stack.Screen name="__atlas" options={bare} />
       <Stack.Screen name="__ssh" options={bare} />

@@ -87,6 +87,8 @@ interface SheetProps {
   visible: boolean;
   /** Called on the close button, a backdrop tap and the Android back button. */
   onClose: () => void;
+  /** After the close animation ended (iOS): where a sheet hands over to a route, which cannot present while it is still leaving. */
+  onDismissed?: () => void;
   title?: string;
   /**
    * Where the sheet opens. Default `fit`: as tall as its content (at least `sheetMinShare` of the
@@ -117,6 +119,7 @@ interface SheetProps {
 export function Sheet({
   visible,
   onClose,
+  onDismissed,
   title,
   detent = 'fit',
   leading,
@@ -151,6 +154,7 @@ export function Sheet({
       animationType="slide"
       statusBarTranslucent
       onRequestClose={onClose}
+      onDismiss={onDismissed}
     >
       <KeyboardAvoidingView
         // The status bar's height stays free and the panel never outgrows what is left, so a sheet

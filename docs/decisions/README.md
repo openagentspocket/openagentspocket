@@ -25,3 +25,4 @@ One short ADR per founding decision. Add a new numbered file for any decision th
 - [0021](./0021-agent-workflow.md) How agents work in this repo
 - [0023](./0023-terminal-renderer.md) Terminal renderer: expo-libghostty, with the SSH backpressure and ordering fixes the spike found
 - [0025](./0025-usage-providers.md) Usage providers: one registry, one collector per provider
+- [0026](./0026-sheets.md) Sheets: one look, one sizing rule, two hosts
