@@ -1,20 +1,30 @@
 import { needsConfirmation } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Button, QRScanner, Screen, SheetBar } from '@openagentspocket/ui';
+import { Banner, Button, Card, ListRow, QRScanner } from '@openagentspocket/ui';
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { hostsRuntime } from './hostsRuntime';
 import { PairingCeremony } from './PairingCeremony';
 import { pairingMessageText, scannerLabels } from './pairingText';
+import { SetupStep } from './SetupStep';
+import { pairingCodeStep } from './setupGuideSteps';
 
 interface PairingScreenProps {
   onCancel: () => void;
+  /** Opens the Setup Guide (installing herdr and the plugin on a new machine). */
+  onOpenGuide: () => void;
   /** Called once with the saved Host's id, after the verified reconnect. */
   onPaired: (hostId: string) => void;
   onAddManually: () => void;
 }
 
 /** hosts.pairing-scanner: scan or paste a HERDR-PAIR code, then run the ceremony. */
-export function PairingScreen({ onCancel, onPaired, onAddManually }: PairingScreenProps) {
+export function PairingScreen({
+  onCancel,
+  onPaired,
+  onAddManually,
+  onOpenGuide,
+}: PairingScreenProps) {
   const [store] = useState(() => hostsRuntime().createScanStore());
   const state = useSyncExternalStore(store.subscribe, store.getState);
   const code = state.pairingCode;
@@ -29,14 +39,12 @@ export function PairingScreen({ onCancel, onPaired, onAddManually }: PairingScre
   useEffect(() => () => store.cancel(), [store]);
 
   return (
-    <Screen
-      header={
-        <SheetBar
-          title={t('Scan to Pair')}
-          leading={{ label: t('Cancel'), onPress: onCancel, testID: 'pairing-cancel' }}
-        />
-      }
-      edges={['left', 'right', 'bottom']}
+    <AppScreen
+      header={{
+        variant: 'sheet',
+        title: t('Scan to Pair'),
+        leading: { label: t('Cancel'), onPress: onCancel, testID: 'pairing-cancel' },
+      }}
       testID="pairing-screen"
     >
       {code ? (
@@ -56,6 +64,16 @@ export function PairingScreen({ onCancel, onPaired, onAddManually }: PairingScre
               testID="pairing-scan-failure"
             />
           ) : null}
+          <Card padded={false}>
+            <SetupStep number={1} step={pairingCodeStep()} divider={false} />
+            <ListRow
+              icon="book"
+              title={t('Setup Guide')}
+              chevron
+              onPress={onOpenGuide}
+              testID="pairing-guide"
+            />
+          </Card>
           <Button
             kind="text"
             title={t('Add Manually')}
@@ -64,6 +82,6 @@ export function PairingScreen({ onCancel, onPaired, onAddManually }: PairingScre
           />
         </>
       )}
-    </Screen>
+    </AppScreen>
   );
 }

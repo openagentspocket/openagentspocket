@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChangesScreen } from '@/changes/ChangesScreen';
 
 /** `/changes?agent=<target id>`: the Changes list of an Agent's (or a directory's) Checkout. */
@@ -8,7 +8,6 @@ export default function ChangesRoute() {
   const agentId = agent ?? 'demo';
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }} />
       <ChangesScreen
         agentId={agentId}
         onBack={() => router.back()}

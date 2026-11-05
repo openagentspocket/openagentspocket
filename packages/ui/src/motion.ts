@@ -75,3 +75,40 @@ export function quick(
     useNativeDriver: true,
   });
 }
+
+/** Swift's Working pulse (agent chip dot): opacity 1 to 0.25 and back, 0.75 s each way, forever. */
+export const PULSE = { low: 0.25, halfPeriodMs: 750 } as const;
+
+/**
+ * An opacity that pulses while `active` and Reduce Motion is off, and stays 1 otherwise. Working is
+ * the one status worth animating: a still dot cannot tell a busy Agent from an idle one.
+ */
+export function usePulse(active: boolean): Animated.Value {
+  const reduce = useReducedMotion();
+  const [opacity] = useState(() => new Animated.Value(1));
+  useEffect(() => {
+    if (!active || reduce) {
+      opacity.setValue(1);
+      return;
+    }
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: PULSE.low,
+          duration: PULSE.halfPeriodMs,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: PULSE.halfPeriodMs,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [active, reduce, opacity]);
+  return opacity;
+}

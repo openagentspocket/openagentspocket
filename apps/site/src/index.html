@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agents Pocket — your coding agents, in your pocket</title>
+<meta name="description" content="Watch, answer and steer the coding agents running on your own machines from your phone. Open source, no accounts, no tracking.">
+<link rel="icon" href="/favicon.png">
+<link rel="apple-touch-icon" href="/icon.png">
+<style>
+:root { color-scheme: dark; /* DARK */ }
+@media (prefers-color-scheme: light) { :root { color-scheme: light; /* LIGHT */ } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--canvas); color: var(--text-primary);
+  font: 17px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif; }
+main { max-width: 64rem; margin: 0 auto; padding: 0 1.25rem 4rem; }
+.hero { text-align: center; padding: 5rem 0 3rem;
+  background: radial-gradient(40rem 22rem at 50% 0, var(--glow), transparent 70%); }
+.hero img { width: 112px; height: 112px; border-radius: 26px; box-shadow: 0 12px 40px var(--glow); }
+h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); line-height: 1.1; margin: 1.5rem 0 .75rem; letter-spacing: -.02em; }
+.lede { color: var(--text-secondary); font-size: 1.2rem; max-width: 38rem; margin: 0 auto; }
+.programs { color: var(--text-tertiary); margin-top: 1.25rem; font-size: .95rem; }
+.soon { display: inline-block; margin-top: 1.75rem; padding: .55rem 1.1rem; border-radius: 999px;
+  background: var(--accent-container); color: var(--accent); font-weight: 600; }
+h2 { font-size: 1.5rem; margin: 3.5rem 0 1.25rem; letter-spacing: -.01em; }
+.grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--separator); border-radius: 16px; padding: 1.25rem; }
+.card h3 { margin: 0 0 .4rem; font-size: 1.05rem; }
+.card p { margin: 0; color: var(--text-secondary); font-size: .95rem; }
+.dot { display: inline-block; width: .6rem; height: .6rem; border-radius: 50%; margin-right: .5rem; }
+ol { padding-left: 1.25rem; color: var(--text-secondary); } ol li { margin: .4rem 0; }
+ol strong { color: var(--text-primary); font-weight: 600; }
+.command { background: var(--terminal-background); color: var(--terminal-foreground); border: 1px solid var(--separator);
+  border-radius: 12px; padding: 1rem 1.25rem; overflow-x: auto; font: 15px/1.6 ui-monospace, "SF Mono", Menlo, monospace; }
+a { color: var(--accent); }
+footer { border-top: 1px solid var(--separator); margin-top: 4rem; padding-top: 1.5rem;
+  color: var(--text-tertiary); font-size: .9rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<main>
+<section class="hero">
+<img src="/icon.png" alt="" width="112" height="112">
+<h1>Your coding agents,<br>in your pocket</h1>
+<p class="lede">Agents Pocket shows the coding agents running on your own machines and lets you answer them from
+your phone. Open source, no accounts, no tracking.</p>
+<p class="programs">Claude Code · Codex · Pi · Grok · OpenCode</p>
+<span class="soon">iOS and Android, coming soon</span>
+</section>
+
+<h2>What it does</h2>
+<div class="grid">
+<div class="card"><h3><span class="dot" style="background: var(--status-working)"></span>Every agent at a glance</h3>
+<p>Working, blocked or done: every agent on every Host, with its repository, branch and changes.</p></div>
+<div class="card"><h3><span class="dot" style="background: var(--status-blocked)"></span>Answer when they wait</h3>
+<p>Approve a command or pick an option with one tap, read the chat, or open the terminal.</p></div>
+<div class="card"><h3><span class="dot" style="background: var(--status-done)"></span>Notifications only you can read</h3>
+<p>Your Host encrypts each notification with a key only your devices hold. The relay cannot read it.</p></div>
+<div class="card"><h3><span class="dot" style="background: var(--accent)"></span>Straight to your machines</h3>
+<p>The app talks to your Hosts over SSH. Your code, terminals and files never pass through a server of ours.</p></div>
+</div>
+
+<h2>How it works</h2>
+<ol>
+<li><strong>Run your agents in herdr</strong> on your Mac or Linux machine.</li>
+<li><strong>Install the Agents Pocket plugin</strong> and show a pairing code.</li>
+<li><strong>Scan it with the app.</strong> Your Host shows up with its agents.</li>
+</ol>
+{{INSTALL}}
+
+<footer>
+<span>Agents Pocket · open source (MIT)</span>
+<a href="{{PRIVACY_URL}}">Privacy</a>
+</footer>
+</main>
+</body>
+</html>

@@ -3,6 +3,18 @@ import { changesTargetId } from '@/changes/target';
 
 /** Every entry point builds its destination here, so a route change lands in one file. */
 export const hrefs = {
+  /** Adding a Host starts at Scan to Pair; its Add Manually opens the form (Swift ADR 0007). */
+  addHost: (): Href => '/hosts/pair',
+  /** How to prepare a machine and show its Pairing Code. */
+  setupGuide: (): Href => '/hosts/guide',
+  /** The manual Host form: new, or editing / duplicating a saved Host. */
+  hostForm: (origin?: { edit?: string; duplicate?: string }): Href => ({
+    pathname: '/hosts/form',
+    params: {
+      ...(origin?.edit ? { edit: origin.edit } : {}),
+      ...(origin?.duplicate ? { duplicate: origin.duplicate } : {}),
+    },
+  }),
   agent: (hostId: string, paneId: string): Href => ({
     pathname: '/agent/[hostId]/[paneId]',
     params: { hostId, paneId },

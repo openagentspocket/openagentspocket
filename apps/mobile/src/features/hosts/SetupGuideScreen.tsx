@@ -1,7 +1,8 @@
 import { t } from '@openagentspocket/i18n';
-import { Card, ListRow, Screen, Section, Segmented, SheetBar, Text } from '@openagentspocket/ui';
+import { Card, ListRow, Section, Segmented, Text } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { Linking, View } from 'react-native';
+import { AppScreen } from '@/navigation/AppScreen';
 import { SetupStep } from './SetupStep';
 import { GUIDE_URL, guideSteps, type SetupPlatform } from './setupGuideSteps';
 
@@ -14,15 +15,13 @@ export function SetupGuideScreen({ onBack }: SetupGuideScreenProps) {
   const [platform, setPlatform] = useState<SetupPlatform>('unix');
   const steps = guideSteps(platform);
   return (
-    <Screen
-      header={
-        <SheetBar
-          title={t('Setup Guide')}
-          back
-          leading={{ label: t('Back'), onPress: onBack, testID: 'guide-back' }}
-        />
-      }
-      edges={['left', 'right', 'bottom']}
+    <AppScreen
+      header={{
+        variant: 'sheet',
+        title: t('Setup Guide'),
+        back: true,
+        leading: { label: t('Back'), onPress: onBack, testID: 'guide-back' },
+      }}
       testID="setup-guide"
     >
       <View style={{ gap: 8 }}>
@@ -53,6 +52,6 @@ export function SetupGuideScreen({ onBack }: SetupGuideScreenProps) {
           testID="guide-full"
         />
       </Section>
-    </Screen>
+    </AppScreen>
   );
 }

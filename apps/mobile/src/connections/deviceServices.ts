@@ -2,10 +2,12 @@ import { DEFAULT_DEVICE_KEY_ALIAS } from '@openagentspocket/core';
 import { appGroup } from 'agentico-app-group';
 import { liveActivityController } from 'agentico-live-activity';
 import { nativeSsh } from 'agentico-ssh';
+import Constants from 'expo-constants';
 import { AppState, Platform } from 'react-native';
 import { systemClock } from '@/console/systemClock';
 import { registerLiveRuntime } from '@/features/hosts/hostsRuntime';
 import { secureRandomBytes } from '@/lib/secureRandom';
+import { isApnsSandbox } from '@/notifications/apnsEnvironment';
 import { createDevicePushTokenSource, lazyNotifications } from '@/notifications/devicePushToken';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { createDeviceStores } from '@/stores';
@@ -33,7 +35,7 @@ export function deviceServices(): LiveServices {
       randomBytes: secureRandomBytes,
       pushTokenSource: createDevicePushTokenSource(lazyNotifications, {
         platform: Platform.OS === 'android' ? 'android' : 'ios',
-        sandbox: __DEV__,
+        sandbox: isApnsSandbox(Constants.expoConfig, __DEV__),
       }),
     });
   }

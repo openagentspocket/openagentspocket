@@ -4,9 +4,10 @@ import {
   fileDirectory,
   fileName,
 } from '@openagentspocket/core';
-import { EmptyState, makeStyles, Screen, SheetBar, Text } from '@openagentspocket/ui';
+import { EmptyState, makeStyles, type ScreenHeader, Text } from '@openagentspocket/ui';
 import { useEffect } from 'react';
 import { ScrollView, View } from 'react-native';
+import { AppScreen } from '@/navigation/AppScreen';
 import { DiffContent } from './DiffContent';
 import { readTimeText } from './format';
 import { changesStoreFor } from './registry';
@@ -80,23 +81,16 @@ export function FileDiffScreen({
 }) {
   const current = useStoreState(changesStoreFor(agentId).fileDiff).current;
   const file = current?.getState().file;
-  const bar = (
-    <SheetBar
-      title={fileTitle(file)}
-      subtitle={file ? fileDirectory(file) || undefined : undefined}
-      back
-      leading={{ label: say('Changes'), onPress: onBack ?? (() => {}), testID: 'diff-back' }}
-    />
-  );
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: fileTitle(file),
+    subtitle: file ? fileDirectory(file) || undefined : undefined,
+    back: true,
+    leading: { label: say('Changes'), onPress: onBack ?? (() => {}), testID: 'diff-back' },
+  };
   return (
-    <Screen
-      scroll={false}
-      bare
-      header={bar}
-      edges={['left', 'right', 'bottom']}
-      testID="file-diff-screen"
-    >
+    <AppScreen scroll={false} bare header={bar} testID="file-diff-screen">
       <Body agentId={agentId} width={width} />
-    </Screen>
+    </AppScreen>
   );
 }

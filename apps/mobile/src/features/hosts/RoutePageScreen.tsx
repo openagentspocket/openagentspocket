@@ -6,8 +6,9 @@ import {
   updateRoute,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, Icon, ListRow, Screen, Section, SheetBar, Text } from '@openagentspocket/ui';
+import { Button, Icon, ListRow, type ScreenHeader, Section, Text } from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { hostDraftStore, useHostDraft } from './hostDraftStore';
 import { hostsRuntime } from './hostsRuntime';
 import { PeerChooser } from './PeerChooser';
@@ -34,19 +35,13 @@ export function RoutePageScreen({ index, onBack, initiallyPicking = false }: Rou
   const [picking, setPicking] = useState(initiallyPicking);
   const isNew = index === 'new';
   const route = isNew ? fresh : draft?.routes[index];
-  const edges = ['left', 'right', 'bottom'] as const;
 
   // The form was left (or never opened): nothing to edit.
   useEffect(() => {
     if (!isNew && draft && !route) onBack();
   }, [isNew, draft, route, onBack]);
 
-  if (!route || !draft)
-    return (
-      <Screen edges={edges} testID="route-page-empty">
-        {null}
-      </Screen>
-    );
+  if (!route || !draft) return <AppScreen testID="route-page-empty">{null}</AppScreen>;
 
   const change = (patch: Partial<Omit<HostRouteDraft, 'id'>>) => {
     if (isNew) setFresh((current) => ({ ...current, ...patch }));
@@ -56,33 +51,30 @@ export function RoutePageScreen({ index, onBack, initiallyPicking = false }: Rou
   const peers = hostsRuntime().peers;
   const prefix = isNew ? 'new-route' : `route-${index}`;
 
-  const bar = (
-    <SheetBar
-      title={isNew ? t('New Route') : t('Route %lld', (index as number) + 1)}
-      back
-      leading={{ label: t('Back'), onPress: onBack, testID: 'route-back' }}
-      trailing={
-        isNew
-          ? [
-              {
-                label: t('Save'),
-                disabled: !valid,
-                onPress: () => {
-                  hostDraftStore.set((current) => ({
-                    ...current,
-                    routes: [...current.routes, fresh],
-                  }));
-                  onBack();
-                },
-                testID: 'route-save',
-              },
-            ]
-          : []
-      }
-    />
-  );
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: isNew ? t('New Route') : t('Route %lld', (index as number) + 1),
+    back: true,
+    leading: { label: t('Back'), onPress: onBack, testID: 'route-back' },
+    trailing: isNew
+      ? [
+          {
+            label: t('Save'),
+            disabled: !valid,
+            onPress: () => {
+              hostDraftStore.set((current) => ({
+                ...current,
+                routes: [...current.routes, fresh],
+              }));
+              onBack();
+            },
+            testID: 'route-save',
+          },
+        ]
+      : [],
+  };
   return (
-    <Screen header={bar} edges={edges} testID={isNew ? 'new-route-page' : 'route-page'}>
+    <AppScreen header={bar} testID={isNew ? 'new-route-page' : 'route-page'}>
       <Section title={t('Network')} footer={t("Direct uses this device's own network connection.")}>
         <ListRow
           title={t('Network')}
@@ -130,6 +122,6 @@ export function RoutePageScreen({ index, onBack, initiallyPicking = false }: Rou
           }}
         />
       ) : null}
-    </Screen>
+    </AppScreen>
   );
 }

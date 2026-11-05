@@ -1,6 +1,7 @@
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
 import { Sheet } from '../overlay/Sheet';
 import { Button } from '../primitives/Button';
+import { Spinner } from '../primitives/Spinner';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -59,7 +60,7 @@ export function SkillContentSheet({
     >
       {state === 'loading' ? (
         <View style={styles.center}>
-          <ActivityIndicator color={theme.colors.textSecondary} testID="skill-content-loading" />
+          <Spinner testID="skill-content-loading" />
         </View>
       ) : null}
       {state === 'loaded' ? (

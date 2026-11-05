@@ -8,3 +8,7 @@ beforeEach(() => setFontScale(1));
 // The first render of a screen in a worker pays module loading; under `pnpm test` every package
 // runs at once and that alone can pass RNTL's 1 s default for waitFor/findBy (FilesScreen did).
 require('@testing-library/react-native').configure({ asyncUtilTimeout: 5000 });
+
+// Agents run their tests side by side on one machine; a render-heavy test (the component catalog,
+// the agent detail screen) can take well over jest's 5 s default without anything being wrong.
+jest.setTimeout(30_000);

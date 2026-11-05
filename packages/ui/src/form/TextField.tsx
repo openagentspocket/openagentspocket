@@ -1,6 +1,7 @@
 import type { Ref } from 'react';
-import { TextInput, type TextInputInstance, type TextInputProps, View } from 'react-native';
+import { type TextInputInstance, type TextInputProps, View } from 'react-native';
 import { monoFamily, Text } from '../primitives/Text';
+import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
@@ -62,7 +63,7 @@ export function TextField({
           {label}
         </Text>
       )}
-      <TextInput
+      <ThemedTextInput
         ref={ref}
         {...input}
         multiline={multiline}
@@ -70,9 +71,6 @@ export function TextField({
         accessibilityHint={error ?? hint}
         aria-invalid={error !== undefined}
         placeholder={inline ? (input.placeholder ?? label) : input.placeholder}
-        placeholderTextColor={theme.colors.textTertiary}
-        selectionColor={theme.colors.accent}
-        keyboardAppearance={theme.appearance}
         style={[
           inline ? styles.inline : styles.input,
           multiline && styles.multiline,

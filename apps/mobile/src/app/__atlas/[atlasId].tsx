@@ -1,8 +1,9 @@
-import { EmptyState, Screen } from '@openagentspocket/ui';
+import { EmptyState } from '@openagentspocket/ui';
 import { useLocalSearchParams } from 'expo-router';
 import { AtlasActions } from '@/dev/atlas/AtlasActions';
 import { AtlasFrame } from '@/dev/atlas/AtlasFrame';
 import { atlasEntries } from '@/dev/atlas/entries';
+import { AppScreen } from '@/navigation/AppScreen';
 
 /** `/__atlas/<swift screen id>`: one RN screen in a fixed state with deterministic demo data. */
 export default function AtlasRoute() {
@@ -10,9 +11,9 @@ export default function AtlasRoute() {
   const entry = atlasEntries[atlasId];
   if (!entry) {
     return (
-      <Screen>
+      <AppScreen>
         <EmptyState icon="info" title={`No RN screen for ${atlasId}`} />
-      </Screen>
+      </AppScreen>
     );
   }
   return (

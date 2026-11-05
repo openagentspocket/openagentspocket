@@ -1,8 +1,9 @@
 import type { Host } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, EmptyState, Screen, SheetBar, Text } from '@openagentspocket/ui';
+import { Button, EmptyState, type ScreenHeader, Text } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
+import { AppScreen } from '@/navigation/AppScreen';
 import { extra } from './extraText';
 import { HostGroup } from './HostGroup';
 import type { HostConnection } from './HostsModel';
@@ -38,22 +39,20 @@ export function HostListScreen({
       return next;
     });
 
-  const bar = (
-    <SheetBar
-      title={t('Hosts')}
-      large
-      leading={{ label: t('Done'), onPress: onDone, testID: 'hosts-done' }}
-      trailing={[
-        { label: t('Scan to Pair'), icon: 'qr', onPress: onScan, testID: 'hosts-scan' },
-        { label: t('Add Host'), icon: 'add', onPress: onAdd, testID: 'hosts-add' },
-      ]}
-    />
-  );
-  const edges = ['left', 'right', 'bottom'] as const;
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: t('Hosts'),
+    large: true,
+    leading: { label: t('Done'), onPress: onDone, testID: 'hosts-done' },
+    trailing: [
+      { label: t('Scan to Pair'), icon: 'qr', onPress: onScan, testID: 'hosts-scan' },
+      { label: t('Add Host'), icon: 'add', onPress: onAdd, testID: 'hosts-add' },
+    ],
+  };
 
   if (snapshot.loadError) {
     return (
-      <Screen header={bar} edges={edges} testID="hosts-unavailable">
+      <AppScreen header={bar} testID="hosts-unavailable">
         <EmptyState
           icon="error"
           title={t('Hosts Unavailable')}
@@ -61,12 +60,12 @@ export function HostListScreen({
             'The saved Host catalog could not be read. Its original data was preserved; reinstalling or adding a Host would risk losing it.',
           )}
         />
-      </Screen>
+      </AppScreen>
     );
   }
   if (snapshot.hosts.length === 0) {
     return (
-      <Screen header={bar} edges={edges} testID="hosts-empty">
+      <AppScreen header={bar} testID="hosts-empty">
         <EmptyState
           icon="server"
           title={t('No Hosts')}
@@ -84,11 +83,11 @@ export function HostListScreen({
             </>
           }
         />
-      </Screen>
+      </AppScreen>
     );
   }
   return (
-    <Screen header={bar} edges={edges} testID="hosts-list">
+    <AppScreen header={bar} testID="hosts-list">
       {groupHosts(snapshot).map(({ group, hosts }) => (
         <HostGroup
           key={group}
@@ -114,6 +113,6 @@ export function HostListScreen({
           </Text>
         </Pressable>
       ) : null}
-    </Screen>
+    </AppScreen>
   );
 }

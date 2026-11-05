@@ -1,7 +1,8 @@
-import { ActivityIndicator, Pressable, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { impact } from '../haptics';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Spinner } from '../primitives/Spinner';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -74,7 +75,7 @@ export function BarAction({ action, testID }: { action: SheetBarItem; testID: st
       testID={action.testID ?? testID}
     >
       {action.loading ? (
-        <ActivityIndicator color={theme.colors.accent} />
+        <Spinner color="accent" />
       ) : action.icon ? (
         <Icon name={action.icon} size={20} color="accent" />
       ) : (

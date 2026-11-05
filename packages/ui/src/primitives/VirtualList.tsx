@@ -1,8 +1,9 @@
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 import { type ReactElement, type Ref, useMemo } from 'react';
-import { RefreshControl, View } from 'react-native';
+import { View } from 'react-native';
 import { makeStyles, useTheme } from '../theme/theme';
 import { SectionHeader } from './SectionHeader';
+import { ThemedRefreshControl } from './ThemedRefreshControl';
 
 const useStyles = makeStyles((t) => ({
   content: { paddingHorizontal: t.metrics.screenInset, paddingVertical: t.spacing.md },
@@ -70,12 +71,7 @@ export function VirtualList<T>({
       indicatorStyle={theme.appearance === 'dark' ? 'white' : 'black'}
       refreshControl={
         onRefresh ? (
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={theme.colors.accent}
-            colors={[theme.colors.accent]}
-          />
+          <ThemedRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         ) : undefined
       }
       testID={testID}

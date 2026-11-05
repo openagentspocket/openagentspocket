@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
 import { Button } from '../primitives/Button';
 import { EmptyState } from '../primitives/EmptyState';
+import { Spinner } from '../primitives/Spinner';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -112,7 +113,7 @@ export function PortPreview({
       <View style={styles.body}>
         {state === 'opening' ? (
           <>
-            <ActivityIndicator color={theme.colors.textSecondary} />
+            <Spinner />
             <Text tone="secondary">{text.opening}</Text>
           </>
         ) : null}

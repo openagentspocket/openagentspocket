@@ -1,8 +1,9 @@
 import type { HostReading, UsageRange, UsageScope } from '@openagentspocket/core';
 import { scopeIsEmpty } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, Screen, Skeleton } from '@openagentspocket/ui';
+import { EmptyState, Skeleton } from '@openagentspocket/ui';
 import type { ReactNode } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import type { BreakdownKind } from './BreakdownRows';
 import { UsageDashboard } from './UsageDashboard';
 import { UsageHeader } from './UsageHeader';
@@ -36,7 +37,12 @@ interface Props {
 export function UsagePhoneScreen(props: Props) {
   const { readings, scope, inScope, host, range, metric, now, refreshing } = props;
   return (
-    <Screen refreshing={refreshing} onRefresh={props.onRefresh} testID="usage-screen">
+    <AppScreen
+      header={{ variant: 'native' }}
+      refreshing={refreshing}
+      onRefresh={props.onRefresh}
+      testID="usage-screen"
+    >
       {readings === null ? <Skeleton /> : null}
       {readings?.length === 0 ? (
         <EmptyState title={t('No Hosts')} message={t('Add a Host to read its Usage.')} />
@@ -79,6 +85,6 @@ export function UsagePhoneScreen(props: Props) {
         </>
       ) : null}
       {props.sheets}
-    </Screen>
+    </AppScreen>
   );
 }

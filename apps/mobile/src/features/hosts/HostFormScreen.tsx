@@ -11,13 +11,13 @@ import {
   confirm,
   Icon,
   ListRow,
-  Screen,
+  type ScreenHeader,
   Section,
-  SheetBar,
   TextField,
 } from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { AppScreen } from '@/navigation/AppScreen';
 import { AuthFields } from './AuthFields';
 import { hostDraftStore, useHostDraft } from './hostDraftStore';
 import { hostsRuntime } from './hostsRuntime';
@@ -74,23 +74,22 @@ export function HostFormScreen({
     }
   };
 
-  const bar = (
-    <SheetBar
-      title={editing ? t('Edit Host') : t('Add Host')}
-      leading={{ label: t('Cancel'), onPress: onCancel, testID: 'host-cancel' }}
-      trailing={[
-        {
-          label: t('Save'),
-          onPress: () => void save(),
-          disabled: !canSaveHostDraft(draft, editing) || saving,
-          testID: 'host-save',
-        },
-      ]}
-    />
-  );
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: editing ? t('Edit Host') : t('Add Host'),
+    leading: { label: t('Cancel'), onPress: onCancel, testID: 'host-cancel' },
+    trailing: [
+      {
+        label: t('Save'),
+        onPress: () => void save(),
+        disabled: !canSaveHostDraft(draft, editing) || saving,
+        testID: 'host-save',
+      },
+    ],
+  };
 
   return (
-    <Screen header={bar} edges={['left', 'right', 'bottom']} keyboardAvoiding testID="host-form">
+    <AppScreen header={bar} keyboardAvoiding testID="host-form">
       <Section title={t('Host')}>
         <TextField
           inline
@@ -145,6 +144,6 @@ export function HostFormScreen({
         keepsPassword={editing?.authMethod === 'password'}
         onChange={change}
       />
-    </Screen>
+    </AppScreen>
   );
 }

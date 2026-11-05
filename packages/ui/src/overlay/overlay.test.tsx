@@ -287,7 +287,15 @@ describe('ActionMenu', () => {
     const onOff = jest.fn();
     await renderThemed(
       <NativeActionMenu
-        ui={{ Host: FakeHost, Menu: FakeMenu, Button: FakeButton }}
+        ui={{
+          Host: FakeHost,
+          Menu: FakeMenu,
+          Button: FakeButton,
+          modifiers: {
+            labelStyle: (style) => style,
+            accessibilityLabel: (label) => `a11y:${label}`,
+          },
+        }}
         accessibilityLabel="More"
         icon="more"
         testID="nm"
@@ -301,6 +309,8 @@ describe('ActionMenu', () => {
     expect(calls.Host?.[0]?.seedColor).toBe(themes.indigo.colors.accent);
     expect(calls.Menu).toHaveLength(1);
     expect(calls.Menu?.[0]?.label).toBe('More');
+    // The trigger is the symbol alone: its label must not be drawn as text.
+    expect(calls.Menu?.[0]?.modifiers).toEqual(['iconOnly', 'a11y:More']);
     const [pin, del, off] = calls.Button ?? [];
     expect(pin?.systemImage).toBe('checkmark');
     expect(pin?.role).toBeUndefined();

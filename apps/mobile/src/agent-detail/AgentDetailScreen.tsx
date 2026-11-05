@@ -1,14 +1,16 @@
 import { agentKey, type ConsoleRow, type KeyValueStorage } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { type ActionMenuItem, EmptyState, makeStyles, Screen } from '@openagentspocket/ui';
+import { type ActionMenuItem, makeStyles } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
+import { AppScreen } from '@/navigation/AppScreen';
 import { activityOf } from '../blocked/useBlockedCard';
-import { useAgent, useConsole, useConsoleState } from '../console/hooks';
+import { useAgentPhase, useConsole, useConsoleState } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
 import { AgentSessionDrawer } from './AgentSessionDrawer';
 import { AgentSwitcher } from './AgentSwitcher';
+import { AgentUnavailable, ReconnectingHint } from './AgentUnavailable';
 import { AgentComposerBar } from './composer/AgentComposer';
 import { useAgentComposer } from './composer/composerContext';
 import { DetailDock } from './DetailDock';
@@ -47,7 +49,7 @@ export function AgentDetailScreen({
 }: Props) {
   const styles = useStyles();
   const key = agentKey(hostId, paneId);
-  const row = useAgent(key);
+  const { row, phase } = useAgentPhase(hostId, paneId);
   const rows = useConsole();
   const latency = useConsoleState().hosts.find((host) => host.id === hostId)?.latencyMs;
   const [surface, setSurface] = useSurface(storage, requested);
@@ -55,18 +57,12 @@ export function AgentDetailScreen({
   const [headerHeight, setHeaderHeight] = useState(0);
   useFocusDone(hostId, paneId, row?.agent.agent_status === 'done');
   const composer = useAgentComposer(hostId, paneId, row?.agent.agent_status ?? 'unknown', storage);
-  if (!row) {
-    return (
-      <Screen scroll={false} edges={['bottom']} testID="agent-gone">
-        <EmptyState icon="info" title={t('Agent Gone')} />
-      </Screen>
-    );
-  }
+  if (!row) return <AgentUnavailable gone={phase === 'gone'} />;
   const status = statusDot(row.agent.agent_status);
   const toggle = () => setSurface(surface === 'chat' ? 'terminal' : 'chat');
   return (
     <DetailUiProvider hostId={hostId} paneId={paneId}>
-      <Screen scroll={false} bare keyboardAvoiding edges={['top', 'bottom']} testID="agent-detail">
+      <AppScreen scroll={false} bare keyboardAvoiding testID="agent-detail">
         <View style={styles.fill} testID={`slot-${surface}`}>
           <DetailSlot
             hostId={hostId}
@@ -95,6 +91,7 @@ export function AgentDetailScreen({
           </View>
         </View>
         <View style={styles.dock}>
+          {phase === 'stale' ? <ReconnectingHint /> : null}
           <DetailDock
             row={row}
             surface={surface}
@@ -125,7 +122,7 @@ export function AgentDetailScreen({
           current={row}
           onSelect={onSwitch}
         />
-      </Screen>
+      </AppScreen>
     </DetailUiProvider>
   );
 }
