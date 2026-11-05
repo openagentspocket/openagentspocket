@@ -16,9 +16,9 @@ import { ScreenBackground } from '../primitives/ScreenBackground';
 import { SurfaceFillProvider } from '../primitives/surfaceFill';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
-import { makeStyles } from '../theme/theme';
+import { makeStyles, useTheme } from '../theme/theme';
 import { OverlayHost } from './OverlayHost';
-import { DETENT_SHARE, detentShare, type SheetDetent, useSheetDrag } from './sheetDetents';
+import { detentShare, type SheetDetent, useSheetDrag } from './sheetDetents';
 
 export type { SheetDetent };
 
@@ -38,16 +38,16 @@ const useStyles = makeStyles((t) => ({
   },
   full: { width: '100%' },
   floating: {
-    borderRadius: t.metrics.sheetRadius * 2,
+    borderRadius: t.metrics.sheetRadius,
     borderBottomWidth: t.metrics.hairlineWidth,
     paddingBottom: t.spacing.lg,
   },
   dragArea: { alignItems: 'center', paddingBottom: t.spacing.xs },
   grabber: {
     alignSelf: 'center',
-    width: 36,
-    height: 5,
-    borderRadius: 3,
+    width: t.metrics.sheetGrabberWidth,
+    height: t.metrics.sheetGrabberHeight,
+    borderRadius: t.metrics.sheetGrabberHeight / 2,
     backgroundColor: t.colors.control,
     marginTop: t.spacing.xs,
   },
@@ -84,6 +84,10 @@ interface SheetProps {
   /** Called on the close button, a backdrop tap and the Android back button. */
   onClose: () => void;
   title?: string;
+  /**
+   * Where the sheet opens. Default `fit`: as tall as its content (at least `sheetMinShare` of the
+   * window, at most `sheetMaxShare`), scrolling only past that. `medium`/`large`/`{ fraction }` fix a height.
+   */
   detent?: SheetDetent;
   /** Screen-reader label of the close button. Default "Close". */
   closeLabel?: string;
@@ -112,7 +116,7 @@ export function Sheet({
   visible,
   onClose,
   title,
-  detent = 'medium',
+  detent = 'fit',
   leading,
   trailing,
   largeTitle = false,
@@ -127,14 +131,18 @@ export function Sheet({
 }: SheetProps) {
   const styles = useStyles();
   const insets = useInsets();
+  const { metrics } = useTheme();
   const { height, width } = useWindowDimensions();
-  const gutter = floating ? 8 : 0;
+  const gutter = floating ? metrics.sheetFloatingInset : 0;
   const drag = useSheetDrag(detent, onClose, visible);
   const live = drag.detent;
   const share = detentShare(live);
-  const limit = height * DETENT_SHARE.large;
+  const limit = height * metrics.sheetMaxShare;
   const grown = Math.min(limit, Math.max(height * 0.2, height * share + drag.offset));
-  const size = live === 'fit' ? { maxHeight: height * share } : { height: grown };
+  const size =
+    live === 'fit'
+      ? { maxHeight: height * share, minHeight: height * metrics.sheetMinShare }
+      : { height: grown };
   const bar = leading !== undefined || trailing !== undefined;
   return (
     <Modal
@@ -162,7 +170,7 @@ export function Sheet({
             floating && { width: width - gutter * 2 },
             size,
             floating
-              ? { marginBottom: Math.max(insets.bottom, 8) }
+              ? { marginBottom: Math.max(insets.bottom, gutter) }
               : { paddingBottom: insets.bottom },
           ]}
           accessibilityViewIsModal

@@ -34,7 +34,6 @@ export function QuickSheet({ visible, onClose, readings, now, onOpenFull, onClau
       visible={visible}
       onClose={onClose}
       title={t('Usage')}
-      detent="medium"
       closeLabel={t('Close')}
       footer={
         <View style={styles.footer}>

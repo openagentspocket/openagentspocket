@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, type ViewProps } from 'react-native';
+import { metrics } from '../theme/metrics';
 
 /**
  * medium: half the screen; large: nearly all of it; fit: as tall as its content;
@@ -9,7 +10,11 @@ export type FractionDetent = { fraction: number };
 export type SheetDetent = 'medium' | 'large' | 'fit' | FractionDetent;
 export type ResizableDetent = 'medium' | 'large' | FractionDetent;
 
-export const DETENT_SHARE = { medium: 0.5, large: 0.92, fit: 0.92 } as const;
+export const DETENT_SHARE = {
+  medium: 0.5,
+  large: metrics.sheetMaxShare,
+  fit: metrics.sheetMaxShare,
+} as const;
 
 /** The share of the window height a detent asks for (a fraction is kept below `large`). */
 export function detentShare(detent: SheetDetent): number {

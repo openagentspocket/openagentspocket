@@ -10,6 +10,7 @@ import { bindDemoModeStorage } from '@/connections/mode';
 import { useIncomingLinks } from '@/links/useIncomingLinks';
 import { useOpenAgent } from '@/links/useOpenAgent';
 import { statusBarStyle } from '@/navigation/screenOptions';
+import { sheetOptions } from '@/navigation/sheetOptions';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
 import { InAppBanner } from '@/notifications/InAppBanner';
 import { AppLockCover } from '@/settings/AppLockCover';
@@ -46,31 +47,26 @@ function ThemedStatusBar() {
  * harnesses draw none.
  */
 function AppStack() {
+  const theme = useTheme();
   const options = useStackScreenOptions();
+  // Routes that are sheets in the Swift app: lists open at 70% and drag to full, forms open full.
+  const list = sheetOptions(theme, { detents: [0.7, 1] });
+  const form = sheetOptions(theme);
   const bare = { headerShown: false } as const;
   return (
     <Stack screenOptions={options}>
       <Stack.Screen name="index" options={{ ...bare, title: t('Home') }} />
       <Stack.Screen name="changes" options={{ ...bare, title: t('Changes') }} />
-      <Stack.Screen name="hosts" options={{ ...bare, title: t('Hosts'), presentation: 'modal' }} />
-      <Stack.Screen name="ports" options={{ ...bare, title: t('Ports'), presentation: 'modal' }} />
+      <Stack.Screen name="hosts" options={{ ...bare, ...list, title: t('Hosts') }} />
+      <Stack.Screen name="ports" options={{ ...bare, ...list, title: t('Ports') }} />
       <Stack.Screen name="usage" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-breakdown" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-limits" options={{ title: t('Usage Limits') }} />
-      <Stack.Screen name="files" options={{ ...bare, title: t('Files'), presentation: 'modal' }} />
-      <Stack.Screen
-        name="settings"
-        options={{ ...bare, title: t('Settings'), presentation: 'modal' }}
-      />
-      <Stack.Screen
-        name="new-agent"
-        options={{ ...bare, title: t('New Agent'), presentation: 'modal' }}
-      />
-      <Stack.Screen
-        name="new-terminal"
-        options={{ ...bare, title: t('New Terminal'), presentation: 'modal' }}
-      />
-      <Stack.Screen name="worktree" options={{ title: t('Worktree'), presentation: 'modal' }} />
+      <Stack.Screen name="files" options={{ ...bare, ...list, title: t('Files') }} />
+      <Stack.Screen name="settings" options={{ ...bare, ...list, title: t('Settings') }} />
+      <Stack.Screen name="new-agent" options={{ ...bare, ...form, title: t('New Agent') }} />
+      <Stack.Screen name="new-terminal" options={{ ...bare, ...form, title: t('New Terminal') }} />
+      <Stack.Screen name="worktree" options={{ ...form, title: t('Worktree') }} />
       <Stack.Screen name="__gallery" options={bare} />
       <Stack.Screen name="__atlas" options={bare} />
       <Stack.Screen name="__ssh" options={bare} />
