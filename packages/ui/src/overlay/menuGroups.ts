@@ -23,3 +23,14 @@ export function groupMenuItems(items: readonly ActionMenuItem[]): MenuGroup[] {
   }
   return groups;
 }
+
+/**
+ * Whether a button that opens `items` (or runs `onPress`) would do nothing: no items and no
+ * press handler. Menu triggers render nothing then, so a dead button can never ship.
+ */
+export function isDeadMenuTrigger(
+  items: readonly unknown[] | undefined,
+  onPress?: (() => void) | undefined,
+): boolean {
+  return (items === undefined || items.length === 0) && onPress === undefined;
+}

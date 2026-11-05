@@ -1,6 +1,11 @@
-import type { ChatToolActivity, ToolKind, ToolStatus } from '@openagentspocket/core';
+import type {
+  ChatPendingEchoState,
+  ChatToolActivity,
+  ToolKind,
+  ToolStatus,
+} from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import type { IconName } from '@openagentspocket/ui';
+import type { ChatUserBubbleStatus, IconName } from '@openagentspocket/ui';
 
 type RowToolStatus = 'running' | 'waiting' | 'done' | 'failed';
 
@@ -50,4 +55,45 @@ export function durationText(seconds: number): string {
   if (whole < 60) return `${whole}s`;
   const rest = whole % 60;
   return `${Math.floor(whole / 60)}:${rest < 10 ? '0' : ''}${rest}`;
+}
+
+/**
+ * What a message Chat sent shows under its bubble once it left the Composer (Swift ChatPendingBubble):
+ * nothing while it is sent, and what went wrong or is still unknown otherwise. `sending` has its own
+ * dimmed bubble and caption.
+ */
+export function echoStatus(state: ChatPendingEchoState): ChatUserBubbleStatus | undefined {
+  switch (state.kind) {
+    case 'sending':
+    case 'sent':
+      return undefined;
+    case 'unconfirmed':
+      return {
+        text: t("Sent. It hasn't appeared in the conversation yet."),
+        icon: 'clock',
+        tone: 'secondary',
+      };
+    case 'failed':
+      return { text: t('Not sent. %@', state.reason), icon: 'warning', tone: 'danger' };
+    case 'notDelivered':
+      return {
+        text: t("Not delivered. The text is still in the Agent's input box."),
+        icon: 'warning',
+        tone: 'warning',
+      };
+    case 'discarded':
+      return {
+        text: t("Not delivered. It's no longer in the Agent's input box."),
+        icon: 'warning',
+        tone: 'warning',
+      };
+    case 'refused':
+      return { text: state.reason, icon: 'info', tone: 'secondary' };
+    case 'misdirected':
+      return {
+        text: t('Sent, but the Agent recorded it in another session.'),
+        icon: 'warning',
+        tone: 'warning',
+      };
+  }
 }

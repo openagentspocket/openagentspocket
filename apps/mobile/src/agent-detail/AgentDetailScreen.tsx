@@ -106,6 +106,7 @@ export function AgentDetailScreen({
             composer={composer}
             surface={surface}
             program={row.agent.agent ?? 'unknown'}
+            projectRoot={row.agent.cwd ?? undefined}
             status={status}
             onToggleSurface={toggle}
           />

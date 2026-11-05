@@ -5,7 +5,7 @@
 import type { AnsiScreen } from '../../blocked/screen';
 import { asTransportError } from '../../errors';
 import type { ConversationReference } from '../model/conversation-reference';
-import type { ChatProgram, ChatToolActivity } from '../model/types';
+import type { ChatProgram } from '../model/types';
 import { projectionContext } from '../model/types';
 import type { ChatWorkflowProgress } from '../model/workflow-progress';
 import type { SentMessage } from '../send/echoes';
@@ -16,7 +16,9 @@ import { Pacing } from './pacing';
 import { type ChatConversationSnapshot, initialSnapshot } from './snapshot';
 import { bindTarget, continuationOf, unavailableSnapshot } from './store-bind';
 import { type ConversationEngineRef, createEngine } from './store-engine';
+import { ToolOutputLoader } from './store-outputs';
 import { ConversationSends } from './store-sends';
+import { SessionWatch } from './store-session';
 import {
   type ChatAgentView,
   type ChatOutputState,
@@ -48,14 +50,14 @@ export class ConversationStore {
   private skillNames: ReadonlySet<string> = new Set();
   private needsRelocate = false;
   private olderRequest: 'user' | 'automatic' | null = null;
-  private isHostConnected = true;
-  private readonly waitingOutputs = new Set<string>();
   private generation = 0;
   private viewers = new Set<unknown>();
   private suspended = false;
   private ended = false;
 
   private readonly sends: ConversationSends;
+  private readonly session: SessionWatch;
+  private readonly outputs: ToolOutputLoader;
   private readonly loop: LoopRunner;
   private readonly pacing: Pacing;
 
@@ -83,6 +85,24 @@ export class ConversationStore {
       wake: () => this.loop.wake(),
       changed: (sendStatuses) => this.commit({ ...this.state, sendStatuses }),
     });
+    this.outputs = new ToolOutputLoader({
+      state: () => this.state,
+      engine: () => this.engine,
+      generation: () => this.generation,
+      set: (id, o) => this.setOutput(id, o),
+    });
+    this.session = new SessionWatch({
+      options,
+      now: this.now,
+      followed: () => this.followed,
+      boundTo: () => this.boundTo,
+      rebind: (view) => this.bind(view),
+      isVisible: () => this.viewers.size > 0,
+      generation: () => this.generation,
+      transcriptTitle: () => this.state.snapshot.transcript.title,
+      wake: () => this.loop.wake(),
+      recheckMs: this.timing.sessionRecheckMs,
+    });
     this.loop = new LoopRunner({
       clock: options.clock,
       step: () => this.step(),
@@ -106,16 +126,12 @@ export class ConversationStore {
   /** A Chat view is on screen: follow the conversation. Each view passes its own token. */
   show(viewer: unknown = this): void {
     if (this.ended) return;
-    if (this.viewers.size === 0) {
-      const phase = this.state.snapshot.phase;
-      if (
-        phase.type === 'locating' ||
-        (phase.type === 'unavailable' && phase.reason.kind === 'notFound')
-      ) {
-        // Opening Chat looks at once and backs off afresh.
-        this.pacing.openNow();
-      }
-    }
+    const { phase } = this.state.snapshot;
+    const waiting =
+      phase.type === 'locating' ||
+      (phase.type === 'unavailable' && phase.reason.kind === 'notFound');
+    // Opening Chat looks at once and backs off afresh.
+    if (this.viewers.size === 0 && waiting) this.pacing.openNow();
     this.viewers.add(viewer);
     this.startLoop();
   }
@@ -150,6 +166,7 @@ export class ConversationStore {
 
   /** Looks for the transcript again now, after a failure or an unavailable state the user may have fixed. */
   retry(): void {
+    this.session.requestCheck();
     this.pacing.openNow();
     this.loop.wake();
   }
@@ -177,37 +194,12 @@ export class ConversationStore {
 
   /** Reads a tool's output again for its expanded row, once the transcript is open and the Host connected. */
   loadOutput(entryId: string): void {
-    const entry = [...this.state.snapshot.transcript.entries]
-      .reverse()
-      .find((e) => e.id === entryId);
-    if (entry?.content.type !== 'tool') return;
-    const tool: ChatToolActivity = entry.content.value;
-    const current = this.state.outputs.get(entryId);
-    if (!tool.output || current?.type === 'loading' || current?.type === 'loaded') return;
-    const engine = this.engine;
-    if (this.state.snapshot.phase.type !== 'following' || !this.isHostConnected || !engine) {
-      this.waitingOutputs.add(entryId);
-      return;
-    }
-    this.waitingOutputs.delete(entryId);
-    this.setOutput(entryId, { type: 'loading' });
-    const generation = this.generation;
-    void engine.output(tool).then((result) => {
-      if (generation !== this.generation) return;
-      this.setOutput(
-        entryId,
-        result.ok
-          ? { type: 'loaded', output: result.output }
-          : { type: 'failed', failure: result.failure },
-      );
-    });
+    this.outputs.load(entryId);
   }
 
   /** The Console's Host status changed. Rows expanded while it was not connected are read once it is. */
   hostConnectionChanged(connected: boolean): void {
-    if (connected === this.isHostConnected) return;
-    this.isHostConnected = connected;
-    if (connected) for (const id of [...this.waitingOutputs]) this.loadOutput(id);
+    this.outputs.hostConnectionChanged(connected);
   }
 
   // MARK: Loop
@@ -218,9 +210,13 @@ export class ConversationStore {
    * Workflow journals. Public for tests, which drive turns directly.
    */
   async step(): Promise<void> {
-    const view = this.options.agent();
+    let view = this.session.view();
     this.noteAgent(view);
     this.bind(view);
+    if (view) {
+      await this.session.checkStartScreen(view);
+      view = this.session.view();
+    }
     const engine = this.engine;
     if (!engine || !view) return;
     if (!this.restored) {
@@ -294,6 +290,10 @@ export class ConversationStore {
   /** The Agent's screen was read for another reason (the check before a send). */
   readonly inputBoxWasRead = (screen: AnsiScreen): void => this.sends.inputBoxWasRead(screen);
 
+  /** The check before a send (`SessionWatch.confirmBeforeSend`): why it would land outside the conversation shown, or null. */
+  readonly confirmSessionBeforeSend = (): Promise<string | null> =>
+    this.session.confirmBeforeSend();
+
   /** The pause after each turn. */
   get interval(): number {
     return this.pacing.interval(this.engine !== null);
@@ -313,8 +313,10 @@ export class ConversationStore {
       this.adapterFor,
       this.boundTo,
       this.continued,
+      this.session.stale,
     );
     ({ boundTo: this.boundTo, continued: this.continued } = kept);
+    this.session.noteBinding(this.boundTo);
     if (sameReference(target, this.followed)) {
       if (!target && reason) this.showUnavailable(reason);
       return;
@@ -329,7 +331,7 @@ export class ConversationStore {
     this.olderRequest = null;
     this.needsRelocate = false;
     this.pacing.openNow();
-    this.waitingOutputs.clear();
+    this.outputs.clear();
     this.engine = null;
     this.state = { ...this.state, workflowProgress: {}, outputs: new Map() };
     const adapter = target ? this.adapterFor(target.program) : null;
@@ -357,8 +359,7 @@ export class ConversationStore {
     if (next.transcript.entries !== this.state.snapshot.transcript.entries)
       this.pacing.noteChange();
     this.setSnapshot(next);
-    if (next.phase.type === 'following')
-      for (const id of [...this.waitingOutputs]) this.loadOutput(id);
+    if (next.phase.type === 'following') this.outputs.flush();
     const linked = next.transcript.links.continuedInSessionID;
     if (linked && this.followed && linked !== this.followed.sessionID)
       this.followContinuation(linked);

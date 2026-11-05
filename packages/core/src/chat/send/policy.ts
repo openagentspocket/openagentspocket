@@ -93,7 +93,14 @@ export type TerminalTitleVerdict =
 /** A program that leaves its conversation without a report and says which one it shows in its title. */
 export interface TerminalTitleCheck {
   verdict(terminalTitle: string | null, sessionTitle: string | null): TerminalTitleVerdict;
+  /** The title the program writes while it shows a conversation titled `sessionTitle`. */
+  expected(sessionTitle: string | null): string;
+  /** The title its home screen writes too, so it never tells a conversation from the home screen. */
+  readonly untitled: string;
 }
+
+/** Which screen a program shows: its home screen, a conversation, or anything else. */
+export type ScreenRoute = 'home' | 'session' | 'other';
 
 /**
  * A program that declines a `/compact` only on screen (`declinesCompactOnScreen`): how its running
@@ -159,4 +166,10 @@ export interface ProgramSendPolicy {
   readonly sendWitness?: SendWitness;
   /** The program can leave its conversation without herdr reporting it; its title says which one shows. */
   readonly terminalTitle?: TerminalTitleCheck;
+  /** Each send first re-reads the Agent's record and checks the title (needs `terminalTitle`). */
+  readonly confirmsSessionBeforeSend?: boolean;
+  /** The program can leave its conversation for its home screen while herdr keeps reporting it (the start-screen watch). */
+  readonly leavesSessionWithoutReport?: boolean;
+  /** Which screen the program shows now; the start-screen watch reads it (needs `terminalTitle`). */
+  screenRoute?(screen: AnsiScreen): ScreenRoute;
 }

@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { Icon, type IconName } from '../primitives/Icon';
 import { MetaChip } from '../primitives/MetaChip';
-import { Text } from '../primitives/Text';
+import { Text, type TextTone } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
 const BUBBLE_RADIUS = 20;
+const STATUS_INK = { secondary: 'textSecondary', warning: 'warning', danger: 'danger' } as const;
 
 const useStyles = makeStyles((t) => ({
   row: { alignItems: 'flex-end' },
@@ -20,7 +22,22 @@ const useStyles = makeStyles((t) => ({
   pending: { opacity: 0.55 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.xxs },
   sending: { paddingTop: t.spacing.xxs },
+  status: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: t.spacing.xxs,
+    paddingTop: t.spacing.xxs,
+    maxWidth: '80%',
+  },
+  statusText: { flexShrink: 1, textAlign: 'right' },
 }));
+
+/** What became of a message Chat sent, as a caption with a glyph under its bubble. */
+export interface ChatUserBubbleStatus {
+  text: string;
+  icon: IconName;
+  tone: Extract<TextTone, 'secondary' | 'warning' | 'danger'>;
+}
 
 interface ChatUserBubbleProps {
   text: string;
@@ -29,6 +46,8 @@ interface ChatUserBubbleProps {
   /** Dimmed, with a sending caption until the Host echoes the message. */
   pending?: boolean;
   pendingLabel?: string;
+  /** The send's outcome when it is not the plain sending state (not delivered, refused, ...). */
+  status?: ChatUserBubbleStatus;
   /** Long press menu (copy, select text); the caller owns the actions and strings. */
   menu?: readonly ActionMenuItem[];
   testID?: string;
@@ -40,6 +59,7 @@ export function ChatUserBubble({
   attachments,
   pending,
   pendingLabel,
+  status,
   menu,
   testID = 'chat-user-bubble',
 }: ChatUserBubbleProps) {
@@ -69,6 +89,14 @@ export function ChatUserBubble({
         <Text variant="caption2" tone="tertiary" style={styles.sending}>
           {pendingLabel}
         </Text>
+      ) : null}
+      {status ? (
+        <View style={styles.status} testID={`${testID}-status`}>
+          <Icon name={status.icon} size={13} color={STATUS_INK[status.tone]} />
+          <Text variant="caption" tone={status.tone} style={styles.statusText}>
+            {status.text}
+          </Text>
+        </View>
       ) : null}
       {menu?.length ? (
         <ActionMenu items={menu} visible={open} onClose={() => setOpen(false)} />

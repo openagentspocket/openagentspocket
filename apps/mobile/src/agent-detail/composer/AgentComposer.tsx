@@ -18,18 +18,20 @@ import {
   ProgramMark,
   type Status,
 } from '@openagentspocket/ui';
-import * as Clipboard from 'expo-clipboard';
 import { useState, useSyncExternalStore } from 'react';
 import { Pressable, View } from 'react-native';
+import { StagingStatusBar } from '@/features/composer-tools/StagingStatusBar';
+import { useAgentSkills } from '@/features/composer-tools/useAgentSkills';
 import { renderMessage } from '@/usage/usageText';
 import { agentBarLabels } from '../agentBarLabels';
 import { useDetailUi } from '../detailUi';
 import type { Surface } from '../surface';
+import { COMPOSER_MORE_ANCHOR } from './composerAnchors';
 import type { AgentComposer } from './composerContext';
 import { useChatSend } from './useChatSend';
+import { useComposerMenus } from './useComposerMenus';
 
-/** The key the Close Pane popover points at: the composer's "..." circle. */
-export const COMPOSER_MORE_ANCHOR = 'agent-composer-more';
+export { COMPOSER_MORE_ANCHOR };
 
 /** The keys that finish a draft typed into a Blocked terminal: the user presses them themselves. */
 const ATTACH_KEYS: readonly (readonly KeySpec[])[] = [
@@ -47,6 +49,8 @@ interface Props {
   skillPrefixes?: readonly string[];
   /** The Host's skills the Chat `/` menu offers (the program's send policy picks which). */
   agentSkills?: readonly AgentSkill[];
+  /** The Agent's launch directory: its project skills are listed in the menu too. */
+  projectRoot?: string;
   /** Writes a key to the live terminal; the tools dock shows only after a draft went there. */
   onAttachKey?: (key: KeySpec) => void;
   /** The Agent's program and status: its mark flips Chat/Terminal in the composer row. */
@@ -62,20 +66,29 @@ export function AgentComposerBar({
   skills = [],
   skillPrefixes = ['/'],
   agentSkills,
+  projectRoot,
   onAttachKey,
   program = 'unknown',
   status,
   onToggleSurface,
 }: Props) {
   const { store, snapshot, interrupt } = composer;
-  const { setComposing } = useDetailUi();
+  const { composing, setComposing } = useDetailUi();
+  // The Host's skills, unless the caller brings its own.
+  const hostSkills = useAgentSkills({
+    hostId: composer.hostId,
+    program,
+    projectRoot,
+    enabled: surface === 'chat' && agentSkills === undefined,
+  });
   const chatSend = useChatSend({
     hostId: composer.hostId,
     paneId: composer.paneId,
     program,
     snapshot,
-    skills: agentSkills,
+    skills: agentSkills ?? hostSkills,
   });
+  const menus = useComposerMenus({ composer, surface, program, projectRoot, onToggleSurface });
   const policy = surface === 'chat' ? chatSend.delivery : terminalPolicy;
   // Chat's Stop is the program's own (keys and guard); the terminal's is Esc, which some programs ignore.
   const chatStop = surface === 'chat' ? chatSend.chatInterrupt : null;
@@ -151,6 +164,7 @@ export function AgentComposerBar({
       {stopNotice ? (
         <Banner tone="warning" title={stopNotice} testID="composer-stop-notice" />
       ) : null}
+      <StagingStatusBar store={menus.staging} />
       <ComposerCard
         value={snapshot.draft}
         onChange={(text) => store.applyEditorDraft(text, { start: text.length, end: text.length })}
@@ -172,28 +186,12 @@ export function AgentComposerBar({
             store.replaceTrailingToken(trigger.token, `${command} `);
           }
         }}
-        expanded={surface === 'terminal' ? true : undefined}
+        // Folded to one line until the Composer is open (Swift): then the "..." menu shows.
+        expanded={surface === 'terminal' || composing ? true : undefined}
         moreAnchorKey={COMPOSER_MORE_ANCHOR}
         onFocusChange={setComposing}
-        moreMenu={[
-          {
-            key: 'paste',
-            title: t('Paste'),
-            icon: 'copy',
-            onPress: () =>
-              void Clipboard.getStringAsync().then((text) => {
-                if (!text) return;
-                const draft = snapshot.draft + text;
-                store.applyEditorDraft(draft, { start: draft.length, end: draft.length });
-              }),
-          },
-          {
-            key: 'clear',
-            title: t('Clear'),
-            icon: 'trash',
-            onPress: () => store.applyEditorDraft('', { start: 0, end: 0 }),
-          },
-        ]}
+        addMenu={menus.addItems}
+        moreMenu={menus.moreItems}
         leading={
           <Pressable
             onPress={onToggleSurface}
@@ -208,6 +206,7 @@ export function AgentComposerBar({
         labels={agentBarLabels()}
         testID="composer"
       />
+      {menus.sheets}
       {attachDraft && onAttachKey ? (
         <KeyboardDock rows={ATTACH_KEYS} onKey={(key) => onAttachKey(key)} />
       ) : null}

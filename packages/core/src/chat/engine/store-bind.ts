@@ -23,15 +23,21 @@ export function bindTarget(
   adapterFor: (program: ChatProgram) => ChatTranscriptAdapter | null,
   boundTo: ConversationReference | null,
   continued: ConversationReference | null,
+  /** The conversation the program left for its home screen: a report of it reads as none. */
+  stale: ConversationReference | null = null,
 ): Binding {
   const resolution = resolveConversation(view?.session);
   const program = view?.program ?? 'claude';
-  if (resolution.type !== 'bound') {
+  const staleReport = resolution.type === 'bound' && sameReference(resolution.reference, stale);
+  if (resolution.type !== 'bound' || staleReport) {
     return {
       boundTo: null,
       continued,
       target: null,
-      reason: unavailableReason(resolution, program),
+      reason:
+        stale && (staleReport || resolution.type === 'noSession')
+          ? { kind: 'startScreen', program }
+          : unavailableReason(resolution as Exclude<typeof resolution, { type: 'bound' }>, program),
     };
   }
   const reported = resolution.reference;

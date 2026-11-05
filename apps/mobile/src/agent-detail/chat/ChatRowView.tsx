@@ -14,7 +14,7 @@ import {
 import { memo, useState } from 'react';
 import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
-import { durationText, rowToolStatus, toolIcon, toolStatusLabel } from './chatRowModel';
+import { durationText, echoStatus, rowToolStatus, toolIcon, toolStatusLabel } from './chatRowModel';
 
 const useStyles = makeStyles((th) => ({
   muted: { opacity: 0.7 },
@@ -59,6 +59,7 @@ export const ChatRowView = memo(function ChatRowView({
             text={content.echo.text}
             pending={content.echo.state.kind === 'sending'}
             pendingLabel={t('Sending…')}
+            status={echoStatus(content.echo.state)}
           />
         );
       case 'assistant':

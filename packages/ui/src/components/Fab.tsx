@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable } from 'react-native';
 import { impact } from '../haptics';
-import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { ActionMenu, type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
 import { Icon } from '../primitives/Icon';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -48,7 +48,7 @@ export function Fab({
   const styles = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  if (hidden) return null;
+  if (hidden || isDeadMenuTrigger(items, onPress)) return null;
   return (
     <>
       <Pressable

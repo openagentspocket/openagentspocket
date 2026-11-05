@@ -25,6 +25,8 @@ export interface ChatAgentView {
   cwd: string | null;
   foregroundCwd: string | null;
   session: AgentSessionInfo | null;
+  /** The pane's terminal title without escape sequences, for a program that names its conversation there. */
+  terminalTitle?: string | null;
 }
 
 export interface ChatTiming {
@@ -77,6 +79,8 @@ export interface ConversationStoreOptions {
   adapterFor?: (program: ChatProgram) => ChatTranscriptAdapter | null;
   /** The Agent's screen through `agent.read`: Chat's sends are checked against it. */
   readScreen?: () => Promise<AnsiScreen>;
+  /** The Agent's record read now (`agent.get`); absent for a transport that cannot, which skips the checks that need it. */
+  agentInfo?: () => Promise<ChatAgentView>;
   sendTiming?: Partial<SendTiming>;
 }
 

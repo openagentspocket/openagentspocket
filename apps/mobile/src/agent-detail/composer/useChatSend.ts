@@ -93,6 +93,8 @@ export function useChatSend(input: {
         conversation?.inputBoxWasRead(screen);
         return screen;
       },
+      // A program that can leave its conversation unreported is checked before the screen is read.
+      confirmSession: () => conversation?.confirmSessionBeforeSend() ?? Promise.resolve(null),
       sendConcern: (outgoing, screen) => conversation?.sendConcern(outgoing, screen) ?? null,
       // The send's witness mark is on its way before the screen read.
       willReadScreen: () => conversation?.updateSends(sentMessages(messagesRef.current, rules)),
