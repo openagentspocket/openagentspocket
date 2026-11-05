@@ -56,4 +56,8 @@ describe('modal routes', () => {
       /name="agent\/\[hostId\]\/\[paneId\]" options=\{\{ \.\.\.bare, title: t\('Agent'\) \}\}/,
     );
   });
+
+  it('anchors the root stack on Home so a sheet route is never its first screen', () => {
+    expect(read('_layout.tsx')).toMatch(/export const unstable_settings = \{ anchor: 'index' \}/);
+  });
 });
