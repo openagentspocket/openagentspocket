@@ -65,13 +65,44 @@ describe('HostConsoleProjection resync', () => {
     h.projection.end();
   });
 
-  it('empties the rows the moment the Host disconnects', async () => {
+  it('keeps the rows, marked stale, while the Host reconnects', async () => {
     const h = harness(snapshotOf([agentInfo('w1:p1', 'working')]));
     await started(h, ['w1:p1']);
+    expect(h.projection.isStale).toBe(false);
     h.transport.failEventStream(failures.channelFailed('offline'));
     await waitUntil('reconnecting', () => h.projection.status?.kind === 'reconnecting');
-    expect(h.panes()).toEqual([]);
+    expect(h.panes()).toEqual(['w1:p1']);
     expect(h.projection.isAwaitingSnapshot).toBe(true);
+    expect(h.projection.isStale).toBe(true);
+    h.projection.end();
+  });
+
+  it('is not stale before any snapshot: an empty projection is unknown', () => {
+    const h = harness(snapshotOf([agentInfo('w1:p1', 'working')]));
+    expect(h.projection.isStale).toBe(false);
+    expect(h.projection.isAwaitingSnapshot).toBe(true);
+    h.projection.end();
+  });
+
+  it('keeps the rows over a background and foreground, and drops a removed Agent only with the fresh snapshot', async () => {
+    const h = harness(snapshotOf([agentInfo('w1:p1', 'working'), agentInfo('w1:p2', 'idle')]));
+    await started(h, ['w1:p1', 'w1:p2']);
+    await h.projection.session.suspend();
+    await waitUntil('suspended', () => h.projection.status?.kind === 'suspended');
+    expect(h.panes()).toEqual(['w1:p1', 'w1:p2']);
+    expect(h.projection.isStale).toBe(true);
+    // p2 was closed while the app was away.
+    h.transport.setSnapshot(snapshotOf([agentInfo('w1:p1', 'working')]));
+    const gate = new CallGate();
+    h.transport.gateNextSnapshot(gate);
+    await h.projection.session.resume();
+    await gate.waitForEntry();
+    expect(h.panes()).toEqual(['w1:p1', 'w1:p2']);
+    expect(h.projection.isStale).toBe(true);
+    gate.open();
+    await waitUntil('fresh snapshot', () => !h.projection.isAwaitingSnapshot);
+    expect(h.panes()).toEqual(['w1:p1']);
+    expect(h.projection.isStale).toBe(false);
     h.projection.end();
   });
 
@@ -87,7 +118,9 @@ describe('HostConsoleProjection resync', () => {
     gate.open();
     await settle();
     await settle();
-    expect(h.panes()).toEqual([]);
+    // The old response is discarded: it did not become the fresh snapshot.
+    expect(h.projection.isAwaitingSnapshot).toBe(true);
+    expect(h.projection.isStale).toBe(true);
     h.projection.end();
   });
 
@@ -102,6 +135,7 @@ describe('HostConsoleProjection resync', () => {
     await waitUntil('reconnecting', () => h.projection.status?.kind === 'reconnecting');
     gate.open();
     await settle();
+    expect(h.projection.isAwaitingSnapshot).toBe(true);
     expect(h.panes()).toEqual([]);
     await h.clock.advance(1000);
     await waitUntil(
