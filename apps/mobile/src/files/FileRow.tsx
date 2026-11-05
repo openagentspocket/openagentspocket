@@ -1,6 +1,7 @@
 import {
   type FileBrowserItem,
   formatBytes,
+  formatDate,
   isNameUsable,
   itemLooksSecret,
 } from '@openagentspocket/core';
@@ -17,7 +18,7 @@ export function rowDetail(item: FileBrowserItem): string | undefined {
   if (item.kind === 'file' && item.size !== null) parts.push(formatBytes(item.size));
   if (item.modifiedAt) {
     const date = new Date(item.modifiedAt * 1000);
-    parts.push(date.toLocaleString(getLocaleTag(), { dateStyle: 'medium', timeStyle: 'short' }));
+    parts.push(formatDate(date, getLocaleTag(), { dateStyle: 'medium', timeStyle: 'short' }));
   }
   if (item.kind === 'symlink') parts.push(t('link'));
   return parts.length > 0 ? parts.join(' · ') : undefined;

@@ -6,6 +6,7 @@
 
 import { message, type Text } from '../../errors/text';
 import { formatDuration } from '../../format/duration';
+import { dateKey, formatDate, formatNumber } from '../../intl';
 import type {
   BackgroundWorkKind,
   BackgroundWorkUsage,
@@ -140,10 +141,10 @@ function usageText(usage: BackgroundWorkUsage | null): Text | null {
   if (usage === null) return null;
   const parts: Text[] = [];
   if (usage.tokens != null) {
-    const compact = new Intl.NumberFormat('en', {
+    const compact = formatNumber(usage.tokens, 'en', {
       notation: 'compact',
       maximumFractionDigits: 1,
-    }).format(usage.tokens);
+    });
     parts.push(message('%@ tokens', compact));
   }
   if (usage.toolUses != null) {
@@ -184,11 +185,11 @@ class Style {
     const { locale, timeZone, now } = this.options;
     const date = new Date(iso);
     const sameDay = this.sameDay(date, new Date(now));
-    return new Intl.DateTimeFormat(locale, {
+    return formatDate(date, locale, {
       timeZone,
       ...(sameDay ? {} : { dateStyle: 'medium' as const }),
       timeStyle: 'short',
-    }).format(date);
+    });
   }
 
   /** A time of day if it is today, otherwise only the day. */
@@ -196,15 +197,12 @@ class Style {
     const { locale, timeZone, now } = this.options;
     const date = new Date(iso);
     if (this.sameDay(date, new Date(now))) return this.time(iso);
-    return new Intl.DateTimeFormat(locale, { timeZone, month: 'short', day: 'numeric' }).format(
-      date,
-    );
+    return formatDate(date, locale, { timeZone, month: 'short', day: 'numeric' });
   }
 
   private sameDay(a: Date, b: Date): boolean {
     const { locale, timeZone } = this.options;
-    const key = new Intl.DateTimeFormat(locale, { timeZone, dateStyle: 'short' });
-    return key.format(a) === key.format(b);
+    return dateKey(a, locale, timeZone) === dateKey(b, locale, timeZone);
   }
 
   row(row: BackgroundWorkRow): BackgroundWorkPresentedRow {

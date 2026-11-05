@@ -2,6 +2,7 @@ import type { Message } from '../errors/text';
 import type { Clock } from '../hosts/cancellation';
 import type { KeyValueStorage } from '../hosts/known-hosts';
 import { isPluginFeatureSupported, type PluginVersion } from '../hosts/plugin-version';
+import { deviceTimeZone } from '../intl';
 import {
   featureRequirementNote,
   readUsage,
@@ -41,7 +42,7 @@ export interface UsageHostSnapshot {
   readonly claudeLimitsEnabled: boolean;
 }
 
-const deviceZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+const deviceZone = deviceTimeZone;
 
 /**
  * One Host's on-demand Usage reading (Swift `AgentUsageStore`): reads over the Host's port,

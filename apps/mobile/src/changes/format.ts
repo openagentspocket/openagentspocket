@@ -1,4 +1,4 @@
-import { type CommitAge, commitAge } from '@openagentspocket/core';
+import { type CommitAge, commitAge, formatDate, formatRelative } from '@openagentspocket/core';
 import { getLocaleTag } from '@openagentspocket/i18n';
 import { say } from './say';
 
@@ -6,25 +6,18 @@ import { say } from './say';
 export function ageText(committedAt: number, now: number): string {
   const age: CommitAge | null = commitAge(committedAt, now);
   if (age === null) return say('just now');
-  try {
-    return new Intl.RelativeTimeFormat(getLocaleTag(), { numeric: 'auto' }).format(
-      -age.count,
-      age.unit,
-    );
-  } catch {
-    return `${age.count} ${age.unit}`;
-  }
+  return formatRelative(-age.count, age.unit, getLocaleTag(), { numeric: 'auto' });
 }
 
 function timeOf(at: number): string {
-  return new Date(at).toLocaleTimeString(getLocaleTag(), { hour: 'numeric', minute: '2-digit' });
+  return formatDate(new Date(at), getLocaleTag(), { hour: 'numeric', minute: '2-digit' });
 }
 
 /** "Read at 3:41 PM", or the date too when the read was on another day. */
 export function readTimeText(readAt: number, now: number): string {
   const sameDay = new Date(readAt).toDateString() === new Date(now).toDateString();
   if (sameDay) return say('Read at %@', timeOf(readAt));
-  const date = new Date(readAt).toLocaleDateString(getLocaleTag(), { dateStyle: 'medium' });
+  const date = formatDate(new Date(readAt), getLocaleTag(), { dateStyle: 'medium' });
   return say('Read %@ at %@', date, timeOf(readAt));
 }
 

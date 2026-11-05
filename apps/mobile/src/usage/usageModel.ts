@@ -1,4 +1,5 @@
 import {
+  formatDate,
   formatDay,
   programDisplayName,
   type ScopeProgram,
@@ -83,8 +84,9 @@ export function heatLabel(date: string, locale: string, withMonth: boolean): str
 /** Seven narrow weekday letters, Monday first, in `locale`. */
 export function weekdayLetters(locale: string): string[] {
   const monday = Date.UTC(2026, 10, 2);
-  const format = new Intl.DateTimeFormat(locale, { weekday: 'narrow', timeZone: 'UTC' });
-  return Array.from({ length: 7 }, (_, index) => format.format(new Date(monday + index * DAY_MS)));
+  return Array.from({ length: 7 }, (_, index) =>
+    formatDate(new Date(monday + index * DAY_MS), locale, { weekday: 'narrow', timeZone: 'UTC' }),
+  );
 }
 
 /** A program's 30-day token kinds, in the split bar's order. */

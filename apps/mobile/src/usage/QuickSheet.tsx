@@ -4,8 +4,10 @@ import { Button, EmptyState, makeStyles, Sheet, Text, ToggleRow } from '@openage
 import { useMemo } from 'react';
 import { View } from 'react-native';
 import { ProviderUsageList } from './ProviderUsageList';
-import { providerModels } from './providerCards';
+import { type ProviderModels, providerModels } from './providerCards';
 import { renderMessage } from './usageText';
+
+const CLOSED: ProviderModels = { cards: [], footer: null, empty: null };
 
 const useStyles = makeStyles((th) => ({
   footer: { gap: th.spacing.xs },
@@ -25,7 +27,11 @@ interface Props {
 /** usage.quick-sheet: every Host's Usage Limits at a glance, with the way to the full Usage tab. */
 export function QuickSheet({ visible, onClose, readings, now, onOpenFull, onClaudeLimits }: Props) {
   const styles = useStyles();
-  const { cards, footer, empty } = useMemo(() => providerModels(readings, now), [readings, now]);
+  // A closed sheet computes nothing: Home mounts it for the whole session.
+  const { cards, footer, empty } = useMemo(
+    () => (visible ? providerModels(readings, now) : CLOSED),
+    [visible, readings, now],
+  );
   const claudeOff = onClaudeLimits
     ? cards.filter((c) => c.providerId === 'claude' && c.state === 'off')
     : [];
