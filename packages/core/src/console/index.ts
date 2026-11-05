@@ -3,6 +3,7 @@ export * from './host-link';
 export * from './list';
 export * from './list-preferences';
 export * from './ordering';
+export * from './pane-snapshot';
 export * from './pins';
 export * from './projection';
 export * from './projection-types';
