@@ -54,7 +54,10 @@ describe.skipIf(!BINARY)('the bridge on a real tmux', () => {
   });
 
   it('types into a pane, presses Enter and reads the answer back', async () => {
-    const pane = (await snapshot()).panes[0]?.pane_id as string;
+    // The `work` panes: `side` runs a shell with no UTF-8 locale.
+    const shot = await snapshot();
+    const work = shot.workspaces.find((w) => w.label === 'work');
+    const pane = shot.panes.find((p) => p.workspace_id === work?.workspace_id)?.pane_id as string;
     const text = 'echo "ñandú $((40 + 2))"';
     await ask('pane.send_input', { pane_id: pane, text, keys: ['Enter'] });
     await eventually(async () => {

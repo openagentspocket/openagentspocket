@@ -127,7 +127,7 @@ for (const dir of ['packages/ui', 'apps/mobile']) {
     );
   }
 }
-for (const dir of ['packages/plugin', 'packages/relay', 'apps/site']) {
+for (const dir of ['packages/plugin', 'packages/relay', 'packages/session-bridge', 'apps/site']) {
   if (inPkg(`${dir}/`).length) checks.push(run(`${dir} tests`, 'pnpm', ['test'], dir));
 }
 
