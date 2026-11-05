@@ -11,6 +11,11 @@ wearing the Índigo skin. Color comes from tokens, never from the Swift shots (t
   Open only the ids of your family.
 - Swift source only when the brief does not answer a layout question.
 
+## Reusable by default
+
+Follow CLAUDE.md "Reusable by default": anything a second screen could use goes into packages/ui (component, prop
+variant) or core (helper); never a screen-local copy. Report the reusable pieces you created.
+
 ## Files you own
 
 - Your family's screens in `apps/mobile` and your family's atlas entries file
