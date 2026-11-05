@@ -35,14 +35,12 @@ const useStyles = makeStyles((t) => ({
     left: 0,
     backgroundColor: t.backdrop,
   },
+  // The same surface and edge as a native route sheet: the canvas with its glow, no border.
   panel: {
-    backgroundColor: t.colors.surfaceOverlay,
+    backgroundColor: t.colors.canvas,
     overflow: 'hidden',
     borderTopLeftRadius: t.metrics.sheetRadius,
     borderTopRightRadius: t.metrics.sheetRadius,
-    borderWidth: t.metrics.hairlineWidth,
-    borderBottomWidth: 0,
-    borderColor: t.hairline,
     maxWidth: t.metrics.readableWidth,
     alignSelf: 'center',
   },
@@ -161,6 +159,12 @@ export function Sheet({
       return;
     }
     if (!mounted) return;
+    // Reduce Motion, and the web (the gallery and atlas have no native frame loop to wait for): jump.
+    if (reduce || Platform.OS === 'web') {
+      progress.setValue(visible ? 1 : 0);
+      if (!visible) setMounted(false);
+      return;
+    }
     const animation = quick(progress, visible ? 1 : 0, reduce, visible ? 'overlay' : 'settle');
     animation.start(({ finished }) => {
       if (!visible && finished) setMounted(false);
