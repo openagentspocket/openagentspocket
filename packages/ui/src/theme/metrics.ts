@@ -46,8 +46,6 @@ export const metrics = {
   /** A sheet is never shorter than this share of the window, nor taller than the max one. */
   sheetMinShare: 0.3,
   sheetMaxShare: 0.92,
-  /** Gap between a floating sheet and the screen edges. */
-  sheetFloatingInset: 8,
   sheetGrabberWidth: 36,
   sheetGrabberHeight: 5,
   hairlineWidth: 1,

@@ -45,11 +45,6 @@ const useStyles = makeStyles((t) => ({
     alignSelf: 'center',
   },
   full: { width: '100%' },
-  floating: {
-    borderRadius: t.metrics.sheetRadius,
-    borderBottomWidth: t.metrics.hairlineWidth,
-    paddingBottom: t.spacing.lg,
-  },
   dragArea: { alignItems: 'center', paddingBottom: t.spacing.xs },
   grabber: {
     alignSelf: 'center',
@@ -107,8 +102,6 @@ interface SheetProps {
   largeTitle?: boolean;
   /** False on an untitled sheet that dismisses by swipe or backdrop (the quick detail): no header row. */
   closeButton?: boolean;
-  /** Inset from the screen edges with every corner rounded (the quick detail), as in SwiftUI. */
-  floating?: boolean;
   /** No bar and no title row: the content draws its own header (a day sheet). */
   headerless?: boolean;
   /** Hide the grabber (large form sheets). Default shown. */
@@ -131,7 +124,6 @@ export function Sheet({
   headerless = false,
   grabber = true,
   closeButton = true,
-  floating = false,
   closeLabel = 'Close',
   footer,
   children,
@@ -140,8 +132,7 @@ export function Sheet({
   const styles = useStyles();
   const insets = useInsets();
   const { metrics } = useTheme();
-  const { height, width } = useWindowDimensions();
-  const gutter = floating ? metrics.sheetFloatingInset : 0;
+  const { height } = useWindowDimensions();
   const drag = useSheetDrag(detent, onClose, visible);
   const live = drag.detent;
   const share = detentShare(live);
@@ -172,15 +163,7 @@ export function Sheet({
           testID={`${testID}-backdrop`}
         />
         <View
-          style={[
-            styles.panel,
-            floating ? styles.floating : styles.full,
-            floating && { width: width - gutter * 2 },
-            size,
-            floating
-              ? { marginBottom: Math.max(insets.bottom, gutter) }
-              : { paddingBottom: insets.bottom },
-          ]}
+          style={[styles.panel, styles.full, size, { paddingBottom: insets.bottom }]}
           accessibilityViewIsModal
           testID={testID}
         >
