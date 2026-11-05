@@ -1,4 +1,5 @@
 import { ActivityIndicator, Platform, Pressable, type ViewStyle } from 'react-native';
+import { useAnchor } from '../overlay/anchors';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
 import { Text } from './Text';
@@ -63,6 +64,8 @@ interface CommonProps {
   pill?: boolean;
   /** Minimal side padding, for buttons that share a row (alert actions) so labels stay on one line. */
   tight?: boolean;
+  /** Registers the button as a popover anchor (`confirm({ anchorKey })`). */
+  anchorKey?: string;
   testID?: string;
 }
 
@@ -86,8 +89,10 @@ export function Button({
   iconSize,
   pill = false,
   tight = false,
+  anchorKey,
   testID,
 }: ButtonProps) {
+  const anchorRef = useAnchor(anchorKey);
   const styles = useStyles();
   const theme = useTheme();
   const ink = inkFor(kind, theme);
@@ -95,6 +100,7 @@ export function Button({
   const iconOnly = title === undefined;
   return (
     <Pressable
+      ref={anchorRef}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? title}
       accessibilityHint={accessibilityHint}

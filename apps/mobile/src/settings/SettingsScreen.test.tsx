@@ -148,7 +148,7 @@ describe('SettingsScreen', () => {
     await fireEvent(screen.getByTestId('settings.toolbar.tab'), 'valueChange', false);
     expect(store.get('toolbarTab')).toBe(false);
     await fireEvent.press(screen.getByTestId('settings.toolbar.reset'));
-    await fireEvent.press(await screen.findByTestId('alert-action-confirm'));
+    fireEvent.press(await screen.findByTestId('alert-action-confirm'));
     await waitFor(() => expect(store.get('toolbarTab')).toBe(true));
   });
 
@@ -162,11 +162,14 @@ describe('SettingsScreen', () => {
     await waitFor(() => expect(clear.props.accessibilityState?.disabled).toBeFalsy());
 
     await fireEvent.press(clear);
-    await fireEvent.press(await screen.findByTestId('alert-cancel'));
+    // A popover has no Cancel: tapping outside dismisses it.
+    // The dismiss layer is hidden from accessibility, so the query must include hidden elements.
+    fireEvent.press(await screen.findByTestId('alert-dismiss', { includeHiddenElements: true }));
+    await waitFor(() => expect(screen.queryByTestId('alert-popover')).toBeNull());
     expect(removeAll).not.toHaveBeenCalled();
 
     await fireEvent.press(clear);
-    await fireEvent.press(await screen.findByTestId('alert-action-confirm'));
+    fireEvent.press(await screen.findByTestId('alert-action-confirm'));
     await waitFor(() => expect(removeAll).toHaveBeenCalledTimes(1));
     await waitFor(() =>
       expect(

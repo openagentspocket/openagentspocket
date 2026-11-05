@@ -1,4 +1,6 @@
 // Atlas entries of Settings and its pages (settings.*, shell.hosts-settings-sheets). Owned by its UX family task.
+
+import { AGENT_FIELDS_STORAGE_KEY } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
@@ -8,8 +10,9 @@ import Usage from '@/app/usage';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
 import { confirmResetSavedFields } from '@/settings/agentFields/AgentFieldHosts';
 import { AgentFieldsHostScreen } from '@/settings/agentFields/AgentFieldsHostScreen';
-import { setAgentFieldsUnreadable } from '@/settings/agentFields/useAgentFields';
+import { agentFieldsStore } from '@/settings/agentFields/agentFieldsStore';
 import { confirmClearChatCache } from '@/settings/ChatCacheRows';
+import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
 import { NOTICES } from '@/settings/notices.generated';
 import { SettingsScreen } from '@/settings/SettingsScreen';
@@ -58,7 +61,9 @@ export const settingsEntries: Readonly<Record<string, AtlasEntry>> = {
   'settings.agent-list-fields-reset-confirm': {
     script: {
       run: () => {
-        setAgentFieldsUnreadable(true);
+        // Unreadable saved data, as a failed read would leave it.
+        deviceStorage.set(AGENT_FIELDS_STORAGE_KEY, '{');
+        agentFieldsStore().reload();
         void confirmResetSavedFields();
       },
     },

@@ -1,6 +1,6 @@
 import { SettingsStore } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { OverlayHost, ThemeProvider, useTheme } from '@openagentspocket/ui';
+import { OverlayHost, TerminalThemeProvider, ThemeProvider, useTheme } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import type { ReactNode } from 'react';
@@ -15,7 +15,7 @@ import { InAppBanner } from '@/notifications/InAppBanner';
 import { AppLockCover } from '@/settings/AppLockCover';
 import { deviceAuthenticator } from '@/settings/deviceAuthenticator';
 import { deviceStorage } from '@/settings/deviceStorage';
-import { SettingsProvider } from '@/settings/SettingsProvider';
+import { SettingsProvider, useSettings } from '@/settings/SettingsProvider';
 import { useResolvedThemeId } from '@/settings/useSettingsContext';
 import { useWidgetSync } from '@/widgets/useWidgetSync';
 
@@ -25,7 +25,14 @@ bindDemoModeStorage(deviceStorage);
 /** The theme in force comes from Settings (chosen, or the Dark/Light pair for the system). */
 function SettingsTheme({ children }: { children: ReactNode }) {
   const themeId = useResolvedThemeId();
-  return <ThemeProvider themeId={themeId}>{children}</ThemeProvider>;
+  const { terminalThemeLight, terminalThemeDark } = useSettings();
+  return (
+    <ThemeProvider themeId={themeId}>
+      <TerminalThemeProvider light={terminalThemeLight} dark={terminalThemeDark}>
+        {children}
+      </TerminalThemeProvider>
+    </ThemeProvider>
+  );
 }
 
 /** The status bar ink follows the app theme, not the system appearance. */

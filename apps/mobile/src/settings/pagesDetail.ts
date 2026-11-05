@@ -5,7 +5,7 @@ import {
   TERMINAL_FONTS,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { terminalThemeById } from '@openagentspocket/ui';
+import { terminalThemeById, themes } from '@openagentspocket/ui';
 import { CHAT_FONT_TITLES, fontOptions, TERMINAL_FONT_TITLES } from './pagesRoot';
 import type { SettingsPage } from './schema';
 import { translateThemeText } from './TerminalPaletteScreen';
@@ -48,7 +48,14 @@ export const theme: SettingsPage = {
           title: () => t('Terminal Palette'),
           icon: 'terminal',
           page: 'terminalTheme',
-          value: (ctx) => translateThemeText(terminalThemeById(ctx.values.terminalTheme).title),
+          value: (ctx) =>
+            translateThemeText(
+              terminalThemeById(
+                themes[ctx.themeId].appearance === 'dark'
+                  ? ctx.values.terminalThemeDark
+                  : ctx.values.terminalThemeLight,
+              ).title,
+            ),
         },
       ],
     },

@@ -141,6 +141,11 @@ export {
 export { type OpenAttachLinkOptions, openAttachLink } from './terminal/openAttachLink';
 export { type ReviewPasteLabels, ReviewPasteSheet } from './terminal/ReviewPasteSheet';
 export { SelectTextSheet } from './terminal/SelectTextSheet';
+export {
+  TerminalThemeProvider,
+  type TerminalThemeSlots,
+  useTerminalColors,
+} from './terminal/TerminalThemeContext';
 export { type TerminalHandle, TerminalView, type TerminalViewProps } from './terminal/TerminalView';
 export { appendOutput, gridSize, stripAnsi } from './terminal/terminalText';
 export { type AttachedTerminal, useAttachedTerminal } from './terminal/useAttachedTerminal';

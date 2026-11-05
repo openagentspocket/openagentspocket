@@ -236,6 +236,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
     const dismiss = (
       <Pressable
         style={StyleSheet.absoluteFill}
+        testID="alert-dismiss"
         onPress={() => answerAlert(request, null)}
         accessibilityElementsHidden
         importantForAccessibility="no"

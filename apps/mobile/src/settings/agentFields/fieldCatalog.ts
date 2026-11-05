@@ -24,15 +24,3 @@ export const APP_FIELDS: readonly FieldDef[] = [
   { id: 'status', describe: () => t('Agent Status as text') },
   { id: 'directory', describe: () => t('Working directory') },
 ];
-
-export interface FieldRow {
-  id: string;
-  fields: readonly string[];
-}
-
-/** What a Host with no saved choice shows: herdr's rows, then the app's own third row. */
-export const DEFAULT_ROWS: readonly FieldRow[] = [
-  { id: 'row1', fields: ['workspace'] },
-  { id: 'row2', fields: ['terminal_title_stripped'] },
-  { id: 'row3', fields: ['directory'] },
-];

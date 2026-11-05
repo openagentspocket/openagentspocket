@@ -1,4 +1,4 @@
-import { hostDisplayName } from '@openagentspocket/core';
+import { DEFAULT_AGENT_ROWS, hostDisplayName } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   AgentListFieldsEditor,
@@ -9,8 +9,10 @@ import {
 } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { useHosts } from '@/features/hosts/useHosts';
-import { APP_FIELDS, DEFAULT_ROWS, type FieldDef, HERDR_FIELDS } from './fieldCatalog';
-import { addField, removeField, setAgentRows, useAgentRows } from './useAgentFields';
+import { useAgentFields } from './agentFieldsStore';
+import { APP_FIELDS, type FieldDef, HERDR_FIELDS } from './fieldCatalog';
+
+const SYNC_ANCHOR = 'settings.agentFields.sync';
 
 const asOption = (field: FieldDef) => ({
   id: field.id,
@@ -22,7 +24,8 @@ const asOption = (field: FieldDef) => ({
 export function AgentFieldsHostScreen({ hostId }: { hostId: string }) {
   const { hosts } = useHosts();
   const host = hosts.find((candidate) => candidate.id === hostId);
-  const rows = useAgentRows(hostId);
+  const store = useAgentFields();
+  const rows = store.rows(hostId);
   const [adding, setAdding] = useState<string | null>(null);
   const name = host ? hostDisplayName(host) : '';
   const rowTitle = (index: number) => t('Row %lld', index + 1);
@@ -32,17 +35,32 @@ export function AgentFieldsHostScreen({ hostId }: { hostId: string }) {
       title: t("Replace rows with herdr's fields?"),
       message: t("This Host's rows are replaced with its herdr fields and saved right away."),
       confirmLabel: t('Replace Rows'),
-      presentation: 'dialog',
+      presentation: 'popover',
+      anchorKey: SYNC_ANCHOR,
     });
     // No plugin snapshot to read yet: the herdr fields are the defaults.
-    if (ok) setAgentRows(hostId, DEFAULT_ROWS);
+    if (ok) store.setRows(hostId, DEFAULT_AGENT_ROWS);
   };
+  /** What tapping a field offers, as in Swift's chip menu: style, move, remove. */
   const edit = async (rowId: string, field: string) => {
+    const row = rows.find((candidate) => candidate.id === rowId);
+    const index = row?.fields.indexOf(field) ?? -1;
+    const dimmed = row?.dim?.includes(field) ?? false;
     const choice = await confirm({
       title: field,
-      actions: [{ key: 'remove', title: t('Remove'), destructive: true }],
+      actions: [
+        { key: 'style', title: dimmed ? t('Default Style') : t('Secondary Style') },
+        ...(index > 0 ? [{ key: 'left', title: t('Move Left') }] : []),
+        ...(row && index >= 0 && index < row.fields.length - 1
+          ? [{ key: 'right', title: t('Move Right') }]
+          : []),
+        { key: 'remove', title: t('Remove'), destructive: true },
+      ],
     });
-    if (choice === 'remove') removeField(hostId, rowId, field);
+    if (choice === 'style') store.toggleStyle(hostId, rowId, field);
+    else if (choice === 'left') store.moveField(hostId, rowId, field, -1);
+    else if (choice === 'right') store.moveField(hostId, rowId, field, 1);
+    else if (choice === 'remove') store.removeField(hostId, rowId, field);
   };
   const addingIndex = rows.findIndex((row) => row.id === adding);
   return (
@@ -73,6 +91,7 @@ export function AgentFieldsHostScreen({ hostId }: { hostId: string }) {
         onEdit={(rowId, field) => void edit(rowId, field)}
         onAdd={setAdding}
         onSync={() => void sync()}
+        syncAnchorKey={SYNC_ANCHOR}
       />
       <OptionListSheet
         visible={adding !== null}
@@ -84,7 +103,7 @@ export function AgentFieldsHostScreen({ hostId }: { hostId: string }) {
         ]}
         onClose={() => setAdding(null)}
         onPick={(field) => {
-          if (adding) addField(hostId, adding, field);
+          if (adding) store.addField(hostId, adding, field);
           setAdding(null);
         }}
         testID="add-field-sheet"

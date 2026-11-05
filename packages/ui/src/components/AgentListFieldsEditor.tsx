@@ -11,6 +11,8 @@ export interface AgentFieldRow {
   id: string;
   title: string;
   fields: readonly string[];
+  /** Fields in the secondary style: their chip is drawn dimmed. */
+  dimmed?: readonly string[];
 }
 
 export interface AgentListFieldsLabels {
@@ -42,6 +44,7 @@ const useStyles = makeStyles((t) => ({
     borderTopColor: t.hairline,
   },
   chips: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: t.spacing.xs },
+  dimmed: { opacity: 0.55 },
   add: { minWidth: 32, minHeight: 32, alignItems: 'center', justifyContent: 'center' },
   actions: { alignItems: 'flex-start', gap: t.spacing.xxs },
 }));
@@ -56,6 +59,8 @@ interface AgentListFieldsEditorProps {
   onAdd: (rowId: string) => void;
   onSync: () => void;
   onReset?: () => void;
+  /** Registers the Sync button as the anchor of its confirm popover. */
+  syncAnchorKey?: string;
 }
 
 /** Settings > Agent list fields for one Host: preview, one chip row per console row, Sync. */
@@ -68,6 +73,7 @@ export function AgentListFieldsEditor({
   onAdd,
   onSync,
   onReset,
+  syncAnchorKey,
 }: AgentListFieldsEditorProps) {
   const styles = useStyles();
   const text = { ...defaultAgentListFieldsLabels, ...labels };
@@ -95,6 +101,7 @@ export function AgentListFieldsEditor({
                   onPress={() => onEdit(row.id, field)}
                   accessibilityRole="button"
                   accessibilityLabel={field}
+                  style={row.dimmed?.includes(field) ? styles.dimmed : undefined}
                   testID={`field-chip-${row.id}-${field}`}
                 >
                   <MetaChip label={field} />
@@ -122,6 +129,7 @@ export function AgentListFieldsEditor({
           icon="refresh"
           title={text.sync}
           onPress={onSync}
+          anchorKey={syncAnchorKey}
           testID="fields-sync"
         />
         {onReset ? (
