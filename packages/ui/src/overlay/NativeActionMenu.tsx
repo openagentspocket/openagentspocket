@@ -9,6 +9,11 @@ interface SwiftUiMenu {
   Menu: React.ComponentType<Record<string, unknown>>;
   Button: React.ComponentType<Record<string, unknown>>;
   Section?: React.ComponentType<Record<string, unknown>>;
+  /** Modifier builders from `@expo/ui/swift-ui/modifiers`. */
+  modifiers?: {
+    labelStyle: (style: 'iconOnly') => unknown;
+    accessibilityLabel: (label: string) => unknown;
+  };
   ContextMenu?: React.ComponentType<Record<string, unknown>> & {
     Trigger: React.ComponentType<{ children: React.ReactNode }>;
     Preview: React.ComponentType<{ children: React.ReactNode }>;
@@ -27,11 +32,21 @@ export function loadSwiftUi(): SwiftUiMenu | null {
   }
   try {
     // Lazy so Android, web and Jest never evaluate the native module.
-    cached = require('@expo/ui/swift-ui') as SwiftUiMenu;
+    const swift = require('@expo/ui/swift-ui') as SwiftUiMenu;
+    cached = { ...swift, modifiers: loadModifiers() };
   } catch {
     cached = null;
   }
   return cached;
+}
+
+function loadModifiers(): SwiftUiMenu['modifiers'] {
+  try {
+    const { labelStyle, accessibilityLabel } = require('@expo/ui/swift-ui/modifiers');
+    return { labelStyle, accessibilityLabel };
+  } catch {
+    return undefined;
+  }
 }
 
 /** Forget the cached module (tests that toggle availability). */
@@ -100,6 +115,11 @@ export function NativePreviewMenu({
   );
 }
 
+const iconOnly = (modifiers: NonNullable<SwiftUiMenu['modifiers']>, label: string) => [
+  modifiers.labelStyle('iconOnly'),
+  modifiers.accessibilityLabel(label),
+];
+
 interface NativeActionMenuProps {
   ui: SwiftUiMenu;
   items: readonly ActionMenuItem[];
@@ -122,7 +142,13 @@ export function NativeActionMenu({
   const theme = useTheme();
   return (
     <Host matchContents seedColor={theme.colors.accent} testID={testID}>
-      <Menu label={title ?? accessibilityLabel} systemImage={iconSymbol(icon)}>
+      <Menu
+        label={title ?? accessibilityLabel}
+        systemImage={iconSymbol(icon)}
+        // A SwiftUI Menu draws its label as text beside the symbol; the trigger is the icon alone (the
+        // label stays as the accessibility name), like every non-menu icon button.
+        modifiers={ui.modifiers ? iconOnly(ui.modifiers, accessibilityLabel) : undefined}
+      >
         {menuSections(ui, items)}
       </Menu>
     </Host>
