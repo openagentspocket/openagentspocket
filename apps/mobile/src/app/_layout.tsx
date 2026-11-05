@@ -32,7 +32,7 @@ import { useWidgetSync } from '@/widgets/useWidgetSync';
 recordUncaughtErrors();
 /**
  * Home is always the first screen of the root stack, also when a link opens a sheet route directly
- * (settings, hosts, add-host...): a form sheet cannot be the first screen of a native stack (the
+ * (settings, hosts...): a form sheet cannot be the first screen of a native stack (the
  * router would draw it as a card), and Home pushed over a sheet would itself be drawn as a modal.
  */
 export const unstable_settings = { anchor: 'index' };
@@ -88,17 +88,6 @@ function AppStack() {
       <Stack.Screen name="agent/[hostId]/[paneId]" options={{ ...bare, title: t('Agent') }} />
       <Stack.Screen name="changes" options={{ ...bare, title: t('Changes') }} />
       <Stack.Screen name="hosts" options={{ ...bare, ...sheet, title: t('Hosts') }} />
-      <Stack.Screen
-        name="add-host"
-        options={{
-          ...bare,
-          title: t('Add Host'),
-          presentation: 'transparentModal',
-          animation: 'none',
-          // The stack's default content color is the opaque canvas: without this the route is a white wall.
-          contentStyle: { backgroundColor: withAlpha(theme.colors.canvas, 0) },
-        }}
-      />
       <Stack.Screen name="ports" options={{ ...bare, ...sheet, title: t('Ports') }} />
       <Stack.Screen name="usage" options={{ title: t('Usage') }} />
       <Stack.Screen name="usage-breakdown" options={{ title: t('Usage') }} />

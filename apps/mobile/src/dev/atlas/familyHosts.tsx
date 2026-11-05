@@ -10,7 +10,7 @@ export const hostsEntries: Readonly<Record<string, AtlasEntry>> = {
     render: () => (
       <>
         <HostsRoute />
-        <AddHostSheet onClose={noop} onEasyPair={noop} onAddManually={noop} />
+        <AddHostSheet visible onClose={noop} onEasyPair={noop} onAddManually={noop} />
       </>
     ),
   },

@@ -109,6 +109,14 @@ export function JsSheet({
     });
     return () => animation.stop();
   }, [visible, mounted, reduce, progress]);
+  // Every platform reports the end of the close: the Modal's own onDismiss is iOS only.
+  const wasMounted = useRef(mounted);
+  const dismissed = useRef(onDismissed);
+  dismissed.current = onDismissed;
+  useEffect(() => {
+    if (wasMounted.current && !mounted) dismissed.current?.();
+    wasMounted.current = mounted;
+  }, [mounted]);
   const rise = progress.interpolate({ inputRange: [0, 1], outputRange: [height, 0] });
   return (
     <Modal
@@ -117,7 +125,6 @@ export function JsSheet({
       animationType="none"
       statusBarTranslucent
       onRequestClose={onClose}
-      onDismiss={onDismissed}
     >
       <KeyboardAvoidingView
         // The status bar's height stays free and the panel never outgrows what is left, so a sheet

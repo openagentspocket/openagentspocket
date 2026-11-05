@@ -2,7 +2,10 @@
 appId: com.openagentspocket.app
 ---
 - runFlow: _demo.yaml
-- openLink: openagentspocket:///add-host
+- tapOn:
+    id: fab
+- tapOn:
+    id: fab-sheet-add-host
 - assertVisible:
     id: add-host-sheet-easy-pair
 - runFlow: _guard.yaml

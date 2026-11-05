@@ -4,7 +4,6 @@ import { changesTargetId } from '@/changes/target';
 /** Every entry point builds its destination here, so a route change lands in one file. */
 export const hrefs = {
   /** Adding a Host starts at a choice sheet: Easy Pair with QR or Add Manually. */
-  addHost: (): Href => '/add-host',
   /** Easy Pair: the camera and the command to run on the machine (Swift ADR 0007's Scan to Pair). */
   easyPair: (): Href => '/hosts/pair',
   /** How to prepare a machine and show its Pairing Code. */

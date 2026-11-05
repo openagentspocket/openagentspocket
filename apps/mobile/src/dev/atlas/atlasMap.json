@@ -693,7 +693,7 @@
   },
   {
     "id": "hosts.add-choice",
-    "rn": "app/add-host.tsx (AddHostSheet)",
+    "rn": "features/hosts/AddHostSheet (useAddHostSheet)",
     "note": "new in RN: the choice sheet over the Hosts list; no Swift shot"
   }
 ]

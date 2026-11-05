@@ -346,7 +346,12 @@ describe('Easy Pair', () => {
     const onEasyPair = jest.fn();
     const onAddManually = jest.fn();
     await renderApp(
-      <AddHostSheet onClose={jest.fn()} onEasyPair={onEasyPair} onAddManually={onAddManually} />,
+      <AddHostSheet
+        visible
+        onClose={jest.fn()}
+        onEasyPair={onEasyPair}
+        onAddManually={onAddManually}
+      />,
     );
     await fireEvent.press(await screen.findByTestId('add-host-sheet-manual'));
     await fireEvent.press(screen.getByTestId('add-host-sheet-easy-pair'));

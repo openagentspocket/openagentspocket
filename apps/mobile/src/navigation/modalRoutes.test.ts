@@ -41,20 +41,9 @@ describe('modal routes', () => {
     ]) {
       expect(layout).toMatch(new RegExp(`name="${name}"[^>]*\\.\\.\\.sheet`, 's'));
     }
-    // Only add-host stays outside sheetOptions: a transparent route that draws its own ChoiceSheet.
-    expect(layout.match(/presentation\s*:\s*'\w+'/g)).toEqual(["presentation: 'transparentModal'"]);
-  });
-
-  it('add-host is transparent in the content, not only in the presentation', () => {
-    expect(read('_layout.tsx')).toMatch(
-      /name="add-host"[^>]*contentStyle: \{ backgroundColor: withAlpha\(theme\.colors\.canvas, 0\) \}/s,
-    );
-  });
-
-  it('the Agent detail route hides the navigator header and carries a real title, never the route name', () => {
-    expect(read('_layout.tsx')).toMatch(
-      /name="agent\/\[hostId\]\/\[paneId\]" options=\{\{ \.\.\.bare, title: t\('Agent'\) \}\}/,
-    );
+    // No route draws a sheet over a transparent modal (it froze the app): Add Host is a Sheet in its screen.
+    expect(layout).not.toMatch(/presentation\s*:/);
+    expect(layout).not.toMatch(/name="add-host"/);
   });
 
   it('anchors the root stack on Home so a sheet route is never its first screen', () => {

@@ -2,16 +2,25 @@ import { t } from '@openagentspocket/i18n';
 import { ChoiceSheet } from '@openagentspocket/ui';
 
 interface AddHostSheetProps {
+  visible: boolean;
+  onDismissed?: () => void;
   onClose: () => void;
   onEasyPair: () => void;
   onAddManually: () => void;
 }
 
 /** hosts.add-choice: the two ways to add a Host, the QR one recommended. */
-export function AddHostSheet({ onClose, onEasyPair, onAddManually }: AddHostSheetProps) {
+export function AddHostSheet({
+  visible,
+  onClose,
+  onDismissed,
+  onEasyPair,
+  onAddManually,
+}: AddHostSheetProps) {
   return (
     <ChoiceSheet
-      visible
+      visible={visible}
+      onDismissed={onDismissed}
       title={t('Add Host')}
       onClose={onClose}
       testID="add-host-sheet"

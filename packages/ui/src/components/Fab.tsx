@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
-import { Platform, Pressable } from 'react-native';
+import { useState } from 'react';
+import { Pressable } from 'react-native';
 import { impact } from '../haptics';
 import { type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
+import { useSheetHandover } from '../overlay/useSheetHandover';
 import { Icon } from '../primitives/Icon';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -49,8 +50,7 @@ export function Fab({
   const styles = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  // A choice hands over to a route only after the sheet has left: iOS cannot present during a dismissal.
-  const chosen = useRef<(() => void) | null>(null);
+  const handover = useSheetHandover();
   if (hidden || isDeadMenuTrigger(items, onPress)) return null;
   return (
     <>
@@ -75,11 +75,7 @@ export function Fab({
         visible={open}
         title={menuTitle ?? accessibilityLabel}
         onClose={() => setOpen(false)}
-        onDismissed={() => {
-          const run = chosen.current;
-          chosen.current = null;
-          run?.();
-        }}
+        onDismissed={handover.onDismissed}
         testID={`${testID}-sheet`}
         options={items.map((item) => ({
           id: item.key,
@@ -87,9 +83,8 @@ export function Fab({
           title: item.title,
           description: item.subtitle,
           onPress: () => {
-            if (Platform.OS === 'ios') chosen.current = item.onPress;
+            handover.after(item.onPress);
             setOpen(false);
-            if (Platform.OS !== 'ios') item.onPress();
           },
         }))}
       />
