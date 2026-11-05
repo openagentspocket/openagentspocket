@@ -1,5 +1,5 @@
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react-native';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import {
   ActionMenu,
   ActionMenuButton,
@@ -219,6 +219,21 @@ describe('Sheet', () => {
     expect(within(screen.getByTestId('sheet-host')).getByText('Refresh now?')).toBeTruthy();
     await fireEvent.press(screen.getByRole('button', { name: 'Refresh' }));
     await expect(answer).resolves.toBe(true);
+  });
+
+  it('fades its scrim and only slides the panel', async () => {
+    await renderThemed(
+      <Sheet visible title="Usage" onClose={() => {}}>
+        <Text>body</Text>
+      </Sheet>,
+    );
+    const scrim = StyleSheet.flatten(
+      screen.getByTestId('sheet-backdrop', { includeHiddenElements: true }).parent?.props.style,
+    );
+    const panel = StyleSheet.flatten(screen.getByTestId('sheet').props.style);
+    expect(scrim).toHaveProperty('opacity');
+    expect(scrim.transform).toBeUndefined();
+    expect(panel.transform?.[0]).toHaveProperty('translateY');
   });
 
   it('renders nothing while hidden', async () => {
