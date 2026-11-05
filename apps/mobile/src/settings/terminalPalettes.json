@@ -1,0 +1,1330 @@
+{
+  "options": [
+    {
+      "id": "follow-system",
+      "title": "Default",
+      "dark": "Afterglow",
+      "light": "Alabaster"
+    },
+    {
+      "id": "vesper",
+      "title": "Vesper",
+      "dark": "Vesper",
+      "light": "Vesper"
+    },
+    {
+      "id": "apple-system-colors",
+      "title": "Apple System Colors",
+      "dark": "Apple System Colors",
+      "light": "Apple System Colors Light"
+    },
+    {
+      "id": "dracula",
+      "title": "Dracula",
+      "dark": "Dracula",
+      "light": "Dracula"
+    },
+    {
+      "id": "solarized",
+      "title": "Solarized",
+      "dark": "iTerm2 Solarized Dark",
+      "light": "iTerm2 Solarized Light"
+    },
+    {
+      "id": "catppuccin",
+      "title": "Catppuccin",
+      "dark": "Catppuccin Mocha",
+      "light": "Catppuccin Latte"
+    },
+    {
+      "id": "tokyo-night",
+      "title": "Tokyo Night",
+      "dark": "TokyoNight Night",
+      "light": "TokyoNight Day"
+    },
+    {
+      "id": "gruvbox",
+      "title": "Gruvbox",
+      "dark": "Gruvbox Dark",
+      "light": "Gruvbox Light"
+    },
+    {
+      "id": "nord",
+      "title": "Nord",
+      "dark": "Nord",
+      "light": "Nord Light"
+    },
+    {
+      "id": "monokai-pro",
+      "title": "Monokai Pro",
+      "dark": "Monokai Pro",
+      "light": "Monokai Pro Light"
+    },
+    {
+      "id": "rose-pine",
+      "title": "Rosé Pine",
+      "dark": "Rose Pine",
+      "light": "Rose Pine Dawn"
+    },
+    {
+      "id": "ayu",
+      "title": "Ayu",
+      "dark": "Ayu",
+      "light": "Ayu Light"
+    },
+    {
+      "id": "one-half",
+      "title": "One Half",
+      "dark": "One Half Dark",
+      "light": "One Half Light"
+    },
+    {
+      "id": "kanagawa",
+      "title": "Kanagawa",
+      "dark": "Kanagawa Wave",
+      "light": "Kanagawa Lotus"
+    },
+    {
+      "id": "everforest",
+      "title": "Everforest",
+      "dark": "Everforest Dark Hard",
+      "light": "Everforest Light Med"
+    },
+    {
+      "id": "github",
+      "title": "GitHub",
+      "dark": "GitHub Dark Default",
+      "light": "GitHub Light Default"
+    },
+    {
+      "id": "night-owl",
+      "title": "Night Owl",
+      "dark": "Night Owl",
+      "light": "Night Owlish Light"
+    },
+    {
+      "id": "iceberg",
+      "title": "Iceberg",
+      "dark": "Iceberg Dark",
+      "light": "Iceberg Light"
+    },
+    {
+      "id": "flexoki",
+      "title": "Flexoki",
+      "dark": "Flexoki Dark",
+      "light": "Flexoki Light"
+    },
+    {
+      "id": "selenized",
+      "title": "Selenized",
+      "dark": "Selenized Dark",
+      "light": "Selenized Light"
+    },
+    {
+      "id": "modus",
+      "title": "Modus",
+      "dark": "Modus Vivendi",
+      "light": "Modus Operandi"
+    },
+    {
+      "id": "tomorrow",
+      "title": "Tomorrow",
+      "dark": "Tomorrow Night",
+      "light": "Tomorrow"
+    },
+    {
+      "id": "melange",
+      "title": "Melange",
+      "dark": "Melange Dark",
+      "light": "Melange Light"
+    },
+    {
+      "id": "zenbones",
+      "title": "Zenbones",
+      "dark": "Zenbones Dark",
+      "light": "Zenbones Light"
+    },
+    {
+      "id": "atom-one-dark",
+      "title": "One Dark",
+      "dark": "Atom One Dark",
+      "light": "Atom One Dark"
+    },
+    {
+      "id": "snazzy",
+      "title": "Snazzy",
+      "dark": "Snazzy",
+      "light": "Snazzy"
+    },
+    {
+      "id": "oceanic-next",
+      "title": "Oceanic Next",
+      "dark": "Oceanic Next",
+      "light": "Oceanic Next"
+    },
+    {
+      "id": "poimandres",
+      "title": "Poimandres",
+      "dark": "Poimandres",
+      "light": "Poimandres"
+    },
+    {
+      "id": "horizon",
+      "title": "Horizon",
+      "dark": "Horizon",
+      "light": "Horizon"
+    },
+    {
+      "id": "zenburn",
+      "title": "Zenburn",
+      "dark": "Zenburn",
+      "light": "Zenburn"
+    }
+  ],
+  "themes": {
+    "Afterglow": {
+      "background": "#212121",
+      "foreground": "#d0d0d0",
+      "palette": [
+        "#151515",
+        "#ac4142",
+        "#7e8e50",
+        "#e5b567",
+        "#6c99bb",
+        "#9f4e85",
+        "#7dd6cf",
+        "#d0d0d0",
+        "#505050",
+        "#ac4142",
+        "#7e8e50",
+        "#e5b567",
+        "#6c99bb",
+        "#9f4e85",
+        "#7dd6cf",
+        "#f5f5f5"
+      ]
+    },
+    "Alabaster": {
+      "background": "#f7f7f7",
+      "foreground": "#000000",
+      "palette": [
+        "#000000",
+        "#aa3731",
+        "#448c27",
+        "#cb9000",
+        "#325cc0",
+        "#7a3e9d",
+        "#0083b2",
+        "#b7b7b7",
+        "#777777",
+        "#f05050",
+        "#60cb00",
+        "#f2af50",
+        "#007acc",
+        "#e64ce6",
+        "#00aacb",
+        "#f7f7f7"
+      ]
+    },
+    "Vesper": {
+      "background": "#101010",
+      "foreground": "#ffffff",
+      "palette": [
+        "#101010",
+        "#f5a191",
+        "#90b99f",
+        "#e6b99d",
+        "#aca1cf",
+        "#e29eca",
+        "#ea83a5",
+        "#a0a0a0",
+        "#7e7e7e",
+        "#ff8080",
+        "#99ffe4",
+        "#ffc799",
+        "#b9aeda",
+        "#ecaad6",
+        "#f591b2",
+        "#ffffff"
+      ]
+    },
+    "Apple System Colors": {
+      "background": "#1e1e1e",
+      "foreground": "#ffffff",
+      "palette": [
+        "#1a1a1a",
+        "#cc372e",
+        "#26a439",
+        "#cdac08",
+        "#0869cb",
+        "#9647bf",
+        "#479ec2",
+        "#98989d",
+        "#464646",
+        "#ff453a",
+        "#32d74b",
+        "#ffd60a",
+        "#0a84ff",
+        "#bf5af2",
+        "#76d6ff",
+        "#ffffff"
+      ]
+    },
+    "Apple System Colors Light": {
+      "background": "#feffff",
+      "foreground": "#000000",
+      "palette": [
+        "#1a1a1a",
+        "#cc372e",
+        "#26a439",
+        "#cdac08",
+        "#0869cb",
+        "#9647bf",
+        "#479ec2",
+        "#98989d",
+        "#464646",
+        "#ff453a",
+        "#32d74b",
+        "#e5bc00",
+        "#0a84ff",
+        "#bf5af2",
+        "#69c9f2",
+        "#ffffff"
+      ]
+    },
+    "Dracula": {
+      "background": "#282a36",
+      "foreground": "#f8f8f2",
+      "palette": [
+        "#21222c",
+        "#ff5555",
+        "#50fa7b",
+        "#f1fa8c",
+        "#bd93f9",
+        "#ff79c6",
+        "#8be9fd",
+        "#f8f8f2",
+        "#6272a4",
+        "#ff6e6e",
+        "#69ff94",
+        "#ffffa5",
+        "#d6acff",
+        "#ff92df",
+        "#a4ffff",
+        "#ffffff"
+      ]
+    },
+    "iTerm2 Solarized Dark": {
+      "background": "#002b36",
+      "foreground": "#839496",
+      "palette": [
+        "#073642",
+        "#dc322f",
+        "#859900",
+        "#b58900",
+        "#268bd2",
+        "#d33682",
+        "#2aa198",
+        "#eee8d5",
+        "#335e69",
+        "#cb4b16",
+        "#586e75",
+        "#657b83",
+        "#839496",
+        "#6c71c4",
+        "#93a1a1",
+        "#fdf6e3"
+      ]
+    },
+    "iTerm2 Solarized Light": {
+      "background": "#fdf6e3",
+      "foreground": "#657b83",
+      "palette": [
+        "#073642",
+        "#dc322f",
+        "#859900",
+        "#b58900",
+        "#268bd2",
+        "#d33682",
+        "#2aa198",
+        "#bbb5a2",
+        "#002b36",
+        "#cb4b16",
+        "#586e75",
+        "#657b83",
+        "#839496",
+        "#6c71c4",
+        "#93a1a1",
+        "#fdf6e3"
+      ]
+    },
+    "Catppuccin Mocha": {
+      "background": "#1e1e2e",
+      "foreground": "#cdd6f4",
+      "palette": [
+        "#45475a",
+        "#f38ba8",
+        "#a6e3a1",
+        "#f9e2af",
+        "#89b4fa",
+        "#f5c2e7",
+        "#94e2d5",
+        "#a6adc8",
+        "#585b70",
+        "#f37799",
+        "#89d88b",
+        "#ebd391",
+        "#74a8fc",
+        "#f2aede",
+        "#6bd7ca",
+        "#bac2de"
+      ]
+    },
+    "Catppuccin Latte": {
+      "background": "#eff1f5",
+      "foreground": "#4c4f69",
+      "palette": [
+        "#5c5f77",
+        "#d20f39",
+        "#40a02b",
+        "#df8e1d",
+        "#1e66f5",
+        "#ea76cb",
+        "#179299",
+        "#acb0be",
+        "#6c6f85",
+        "#de293e",
+        "#49af3d",
+        "#eea02d",
+        "#456eff",
+        "#fe85d8",
+        "#2d9fa8",
+        "#bcc0cc"
+      ]
+    },
+    "TokyoNight Night": {
+      "background": "#1a1b26",
+      "foreground": "#c0caf5",
+      "palette": [
+        "#15161e",
+        "#f7768e",
+        "#9ece6a",
+        "#e0af68",
+        "#7aa2f7",
+        "#bb9af7",
+        "#7dcfff",
+        "#a9b1d6",
+        "#414868",
+        "#f7768e",
+        "#9ece6a",
+        "#e0af68",
+        "#7aa2f7",
+        "#bb9af7",
+        "#7dcfff",
+        "#c0caf5"
+      ]
+    },
+    "TokyoNight Day": {
+      "background": "#e1e2e7",
+      "foreground": "#3760bf",
+      "palette": [
+        "#e9e9ed",
+        "#f52a65",
+        "#587539",
+        "#8c6c3e",
+        "#2e7de9",
+        "#9854f1",
+        "#007197",
+        "#6172b0",
+        "#a1a6c5",
+        "#f52a65",
+        "#587539",
+        "#8c6c3e",
+        "#2e7de9",
+        "#9854f1",
+        "#007197",
+        "#3760bf"
+      ]
+    },
+    "Gruvbox Dark": {
+      "background": "#282828",
+      "foreground": "#ebdbb2",
+      "palette": [
+        "#282828",
+        "#cc241d",
+        "#98971a",
+        "#d79921",
+        "#458588",
+        "#b16286",
+        "#689d6a",
+        "#a89984",
+        "#928374",
+        "#fb4934",
+        "#b8bb26",
+        "#fabd2f",
+        "#83a598",
+        "#d3869b",
+        "#8ec07c",
+        "#ebdbb2"
+      ]
+    },
+    "Gruvbox Light": {
+      "background": "#fbf1c7",
+      "foreground": "#3c3836",
+      "palette": [
+        "#fbf1c7",
+        "#cc241d",
+        "#98971a",
+        "#d79921",
+        "#458588",
+        "#b16286",
+        "#689d6a",
+        "#7c6f64",
+        "#928374",
+        "#9d0006",
+        "#79740e",
+        "#b57614",
+        "#076678",
+        "#8f3f71",
+        "#427b58",
+        "#3c3836"
+      ]
+    },
+    "Nord": {
+      "background": "#2e3440",
+      "foreground": "#d8dee9",
+      "palette": [
+        "#3b4252",
+        "#bf616a",
+        "#a3be8c",
+        "#ebcb8b",
+        "#81a1c1",
+        "#b48ead",
+        "#88c0d0",
+        "#e5e9f0",
+        "#596377",
+        "#bf616a",
+        "#a3be8c",
+        "#ebcb8b",
+        "#81a1c1",
+        "#b48ead",
+        "#8fbcbb",
+        "#eceff4"
+      ]
+    },
+    "Nord Light": {
+      "background": "#e5e9f0",
+      "foreground": "#414858",
+      "palette": [
+        "#3b4252",
+        "#bf616a",
+        "#96b17f",
+        "#c5a565",
+        "#81a1c1",
+        "#b48ead",
+        "#7bb3c3",
+        "#a5abb6",
+        "#4c566a",
+        "#bf616a",
+        "#96b17f",
+        "#c5a565",
+        "#81a1c1",
+        "#b48ead",
+        "#82afae",
+        "#eceff4"
+      ]
+    },
+    "Monokai Pro": {
+      "background": "#2d2a2e",
+      "foreground": "#fcfcfa",
+      "palette": [
+        "#2d2a2e",
+        "#ff6188",
+        "#a9dc76",
+        "#ffd866",
+        "#fc9867",
+        "#ab9df2",
+        "#78dce8",
+        "#fcfcfa",
+        "#727072",
+        "#ff6188",
+        "#a9dc76",
+        "#ffd866",
+        "#fc9867",
+        "#ab9df2",
+        "#78dce8",
+        "#fcfcfa"
+      ]
+    },
+    "Monokai Pro Light": {
+      "background": "#faf4f2",
+      "foreground": "#29242a",
+      "palette": [
+        "#faf4f2",
+        "#e14775",
+        "#269d69",
+        "#cc7a0a",
+        "#e16032",
+        "#7058be",
+        "#1c8ca8",
+        "#29242a",
+        "#a59fa0",
+        "#e14775",
+        "#269d69",
+        "#cc7a0a",
+        "#e16032",
+        "#7058be",
+        "#1c8ca8",
+        "#29242a"
+      ]
+    },
+    "Rose Pine": {
+      "background": "#191724",
+      "foreground": "#e0def4",
+      "palette": [
+        "#26233a",
+        "#eb6f92",
+        "#31748f",
+        "#f6c177",
+        "#9ccfd8",
+        "#c4a7e7",
+        "#ebbcba",
+        "#e0def4",
+        "#6e6a86",
+        "#eb6f92",
+        "#31748f",
+        "#f6c177",
+        "#9ccfd8",
+        "#c4a7e7",
+        "#ebbcba",
+        "#e0def4"
+      ]
+    },
+    "Rose Pine Dawn": {
+      "background": "#faf4ed",
+      "foreground": "#575279",
+      "palette": [
+        "#f2e9e1",
+        "#b4637a",
+        "#286983",
+        "#ea9d34",
+        "#56949f",
+        "#907aa9",
+        "#d7827e",
+        "#575279",
+        "#9893a5",
+        "#b4637a",
+        "#286983",
+        "#ea9d34",
+        "#56949f",
+        "#907aa9",
+        "#d7827e",
+        "#575279"
+      ]
+    },
+    "Ayu": {
+      "background": "#0b0e14",
+      "foreground": "#bfbdb6",
+      "palette": [
+        "#11151c",
+        "#ea6c73",
+        "#7fd962",
+        "#f9af4f",
+        "#53bdfa",
+        "#cda1fa",
+        "#90e1c6",
+        "#c7c7c7",
+        "#686868",
+        "#f07178",
+        "#aad94c",
+        "#ffb454",
+        "#59c2ff",
+        "#d2a6ff",
+        "#95e6cb",
+        "#ffffff"
+      ]
+    },
+    "Ayu Light": {
+      "background": "#f8f9fa",
+      "foreground": "#5c6166",
+      "palette": [
+        "#000000",
+        "#ea6c6d",
+        "#6cbf43",
+        "#eca944",
+        "#3199e1",
+        "#9e75c7",
+        "#46ba94",
+        "#bababa",
+        "#686868",
+        "#f07171",
+        "#86b300",
+        "#f2ae49",
+        "#399ee6",
+        "#a37acc",
+        "#4cbf99",
+        "#d1d1d1"
+      ]
+    },
+    "One Half Dark": {
+      "background": "#282c34",
+      "foreground": "#dcdfe4",
+      "palette": [
+        "#282c34",
+        "#e06c75",
+        "#98c379",
+        "#e5c07b",
+        "#61afef",
+        "#c678dd",
+        "#56b6c2",
+        "#dcdfe4",
+        "#5d677a",
+        "#e06c75",
+        "#98c379",
+        "#e5c07b",
+        "#61afef",
+        "#c678dd",
+        "#56b6c2",
+        "#dcdfe4"
+      ]
+    },
+    "One Half Light": {
+      "background": "#fafafa",
+      "foreground": "#383a42",
+      "palette": [
+        "#383a42",
+        "#e45649",
+        "#50a14f",
+        "#c18401",
+        "#0184bc",
+        "#a626a4",
+        "#0997b3",
+        "#bababa",
+        "#4f525e",
+        "#e06c75",
+        "#98c379",
+        "#d8b36e",
+        "#61afef",
+        "#c678dd",
+        "#56b6c2",
+        "#ffffff"
+      ]
+    },
+    "Kanagawa Wave": {
+      "background": "#1f1f28",
+      "foreground": "#dcd7ba",
+      "palette": [
+        "#090618",
+        "#c34043",
+        "#76946a",
+        "#c0a36e",
+        "#7e9cd8",
+        "#957fb8",
+        "#6a9589",
+        "#c8c093",
+        "#727169",
+        "#e82424",
+        "#98bb6c",
+        "#e6c384",
+        "#7fb4ca",
+        "#938aa9",
+        "#7aa89f",
+        "#dcd7ba"
+      ]
+    },
+    "Kanagawa Lotus": {
+      "background": "#f2ecbc",
+      "foreground": "#545464",
+      "palette": [
+        "#1f1f28",
+        "#c84053",
+        "#6f894e",
+        "#77713f",
+        "#4d699b",
+        "#b35b79",
+        "#597b75",
+        "#545464",
+        "#8a8980",
+        "#d7474b",
+        "#6e915f",
+        "#836f4a",
+        "#6693bf",
+        "#624c83",
+        "#5e857a",
+        "#43436c"
+      ]
+    },
+    "Everforest Dark Hard": {
+      "background": "#1e2326",
+      "foreground": "#d3c6aa",
+      "palette": [
+        "#7a8478",
+        "#e67e80",
+        "#a7c080",
+        "#dbbc7f",
+        "#7fbbb3",
+        "#d699b6",
+        "#83c092",
+        "#f2efdf",
+        "#a6b0a0",
+        "#f85552",
+        "#8da101",
+        "#dfa000",
+        "#3a94c5",
+        "#df69ba",
+        "#35a77c",
+        "#fffbef"
+      ]
+    },
+    "Everforest Light Med": {
+      "background": "#efebd4",
+      "foreground": "#5c6a72",
+      "palette": [
+        "#7a8478",
+        "#e67e80",
+        "#9ab373",
+        "#c1a266",
+        "#7fbbb3",
+        "#d699b6",
+        "#83c092",
+        "#b2af9f",
+        "#a6b0a0",
+        "#f85552",
+        "#8da101",
+        "#dfa000",
+        "#3a94c5",
+        "#df69ba",
+        "#35a77c",
+        "#fffbef"
+      ]
+    },
+    "GitHub Dark Default": {
+      "background": "#0d1117",
+      "foreground": "#e6edf3",
+      "palette": [
+        "#484f58",
+        "#ff7b72",
+        "#3fb950",
+        "#d29922",
+        "#58a6ff",
+        "#bc8cff",
+        "#39c5cf",
+        "#b1bac4",
+        "#6e7681",
+        "#ffa198",
+        "#56d364",
+        "#e3b341",
+        "#79c0ff",
+        "#d2a8ff",
+        "#56d4dd",
+        "#ffffff"
+      ]
+    },
+    "GitHub Light Default": {
+      "background": "#ffffff",
+      "foreground": "#1f2328",
+      "palette": [
+        "#24292f",
+        "#cf222e",
+        "#116329",
+        "#4d2d00",
+        "#0969da",
+        "#8250df",
+        "#1b7c83",
+        "#6e7781",
+        "#57606a",
+        "#a40e26",
+        "#1a7f37",
+        "#633c01",
+        "#218bff",
+        "#a475f9",
+        "#3192aa",
+        "#8c959f"
+      ]
+    },
+    "Night Owl": {
+      "background": "#011627",
+      "foreground": "#d6deeb",
+      "palette": [
+        "#011627",
+        "#ef5350",
+        "#22da6e",
+        "#addb67",
+        "#82aaff",
+        "#c792ea",
+        "#21c7a8",
+        "#ffffff",
+        "#575656",
+        "#ef5350",
+        "#22da6e",
+        "#ffeb95",
+        "#82aaff",
+        "#c792ea",
+        "#7fdbca",
+        "#ffffff"
+      ]
+    },
+    "Night Owlish Light": {
+      "background": "#ffffff",
+      "foreground": "#403f53",
+      "palette": [
+        "#011627",
+        "#d3423e",
+        "#2aa298",
+        "#daaa01",
+        "#4876d6",
+        "#403f53",
+        "#08916a",
+        "#7a8181",
+        "#7a8181",
+        "#f76e6e",
+        "#49d0c5",
+        "#dac26b",
+        "#5ca7e4",
+        "#697098",
+        "#00c990",
+        "#989fb1"
+      ]
+    },
+    "Iceberg Dark": {
+      "background": "#161821",
+      "foreground": "#c6c8d1",
+      "palette": [
+        "#1e2132",
+        "#e27878",
+        "#b4be82",
+        "#e2a478",
+        "#84a0c6",
+        "#a093c7",
+        "#89b8c2",
+        "#c6c8d1",
+        "#6b7089",
+        "#e98989",
+        "#c0ca8e",
+        "#e9b189",
+        "#91acd1",
+        "#ada0d3",
+        "#95c4ce",
+        "#d2d4de"
+      ]
+    },
+    "Iceberg Light": {
+      "background": "#e8e9ec",
+      "foreground": "#33374c",
+      "palette": [
+        "#dcdfe7",
+        "#cc517a",
+        "#668e3d",
+        "#c57339",
+        "#2d539e",
+        "#7759b4",
+        "#3f83a6",
+        "#33374c",
+        "#8389a3",
+        "#cc3768",
+        "#598030",
+        "#b6662d",
+        "#22478e",
+        "#6845ad",
+        "#327698",
+        "#262a3f"
+      ]
+    },
+    "Flexoki Dark": {
+      "background": "#100f0f",
+      "foreground": "#cecdc3",
+      "palette": [
+        "#100f0f",
+        "#d14d41",
+        "#879a39",
+        "#d0a215",
+        "#4385be",
+        "#ce5d97",
+        "#3aa99f",
+        "#878580",
+        "#575653",
+        "#af3029",
+        "#66800b",
+        "#ad8301",
+        "#205ea6",
+        "#a02f6f",
+        "#24837b",
+        "#cecdc3"
+      ]
+    },
+    "Flexoki Light": {
+      "background": "#fffcf0",
+      "foreground": "#100f0f",
+      "palette": [
+        "#100f0f",
+        "#af3029",
+        "#66800b",
+        "#ad8301",
+        "#205ea6",
+        "#a02f6f",
+        "#24837b",
+        "#6f6e69",
+        "#b7b5ac",
+        "#d14d41",
+        "#879a39",
+        "#d0a215",
+        "#4385be",
+        "#ce5d97",
+        "#3aa99f",
+        "#cecdc3"
+      ]
+    },
+    "Selenized Dark": {
+      "background": "#103c48",
+      "foreground": "#adbcbc",
+      "palette": [
+        "#184956",
+        "#fa5750",
+        "#75b938",
+        "#dbb32d",
+        "#4695f7",
+        "#f275be",
+        "#41c7b9",
+        "#adbcbc",
+        "#72898f",
+        "#ff665c",
+        "#84c747",
+        "#ebc13d",
+        "#58a3ff",
+        "#ff84cd",
+        "#53d6c7",
+        "#cad8d9"
+      ]
+    },
+    "Selenized Light": {
+      "background": "#fbf3db",
+      "foreground": "#53676d",
+      "palette": [
+        "#ece3cc",
+        "#d2212d",
+        "#489100",
+        "#ad8900",
+        "#0072d4",
+        "#ca4898",
+        "#009c8f",
+        "#53676d",
+        "#909995",
+        "#cc1729",
+        "#428b00",
+        "#a78300",
+        "#006dce",
+        "#c44392",
+        "#00978a",
+        "#3a4d53"
+      ]
+    },
+    "Modus Vivendi": {
+      "background": "#000000",
+      "foreground": "#ffffff",
+      "palette": [
+        "#000000",
+        "#ff5f59",
+        "#44bc44",
+        "#d0bc00",
+        "#2fafff",
+        "#feacd0",
+        "#00d3d0",
+        "#a6a6a6",
+        "#595959",
+        "#ff7f9f",
+        "#00c06f",
+        "#fec43f",
+        "#79a8ff",
+        "#b6a0ff",
+        "#6ae4b9",
+        "#ffffff"
+      ]
+    },
+    "Modus Operandi": {
+      "background": "#ffffff",
+      "foreground": "#000000",
+      "palette": [
+        "#000000",
+        "#a60000",
+        "#006800",
+        "#6f5500",
+        "#0031a9",
+        "#721045",
+        "#005e8b",
+        "#a6a6a6",
+        "#595959",
+        "#972500",
+        "#00663f",
+        "#884900",
+        "#3548cf",
+        "#531ab6",
+        "#005f5f",
+        "#595959"
+      ]
+    },
+    "Tomorrow Night": {
+      "background": "#1d1f21",
+      "foreground": "#c5c8c6",
+      "palette": [
+        "#000000",
+        "#cc6666",
+        "#b5bd68",
+        "#f0c674",
+        "#81a2be",
+        "#b294bb",
+        "#8abeb7",
+        "#ffffff",
+        "#4c4c4c",
+        "#cc6666",
+        "#b5bd68",
+        "#f0c674",
+        "#81a2be",
+        "#b294bb",
+        "#8abeb7",
+        "#ffffff"
+      ]
+    },
+    "Tomorrow": {
+      "background": "#ffffff",
+      "foreground": "#4d4d4c",
+      "palette": [
+        "#000000",
+        "#c82829",
+        "#718c00",
+        "#eab700",
+        "#4271ae",
+        "#8959a8",
+        "#3e999f",
+        "#bfbfbf",
+        "#000000",
+        "#c82829",
+        "#718c00",
+        "#eab700",
+        "#4271ae",
+        "#8959a8",
+        "#3e999f",
+        "#ffffff"
+      ]
+    },
+    "Melange Dark": {
+      "background": "#292522",
+      "foreground": "#ece1d7",
+      "palette": [
+        "#34302c",
+        "#bd8183",
+        "#78997a",
+        "#e49b5d",
+        "#7f91b2",
+        "#b380b0",
+        "#7b9695",
+        "#c1a78e",
+        "#867462",
+        "#d47766",
+        "#85b695",
+        "#ebc06d",
+        "#a3a9ce",
+        "#cf9bc2",
+        "#89b3b6",
+        "#ece1d7"
+      ]
+    },
+    "Melange Light": {
+      "background": "#f1f1f1",
+      "foreground": "#54433a",
+      "palette": [
+        "#e9e1db",
+        "#c77b8b",
+        "#6e9b72",
+        "#bc5c00",
+        "#7892bd",
+        "#be79bb",
+        "#739797",
+        "#7d6658",
+        "#a98a78",
+        "#bf0021",
+        "#3a684a",
+        "#a06d00",
+        "#465aa4",
+        "#904180",
+        "#3d6568",
+        "#54433a"
+      ]
+    },
+    "Zenbones Dark": {
+      "background": "#1c1917",
+      "foreground": "#b4bdc3",
+      "palette": [
+        "#1c1917",
+        "#de6e7c",
+        "#819b69",
+        "#b77e64",
+        "#6099c0",
+        "#b279a7",
+        "#66a5ad",
+        "#b4bdc3",
+        "#4d4540",
+        "#e8838f",
+        "#8bae68",
+        "#d68c67",
+        "#61abda",
+        "#cf86c1",
+        "#65b8c1",
+        "#888f94"
+      ]
+    },
+    "Zenbones Light": {
+      "background": "#f0edec",
+      "foreground": "#2c363c",
+      "palette": [
+        "#f0edec",
+        "#a8334c",
+        "#4f6c31",
+        "#944927",
+        "#286486",
+        "#88507d",
+        "#3b8992",
+        "#2c363c",
+        "#b5a7a0",
+        "#94253e",
+        "#3f5a22",
+        "#803d1c",
+        "#1d5573",
+        "#7b3b70",
+        "#2b747c",
+        "#4f5e68"
+      ]
+    },
+    "Atom One Dark": {
+      "background": "#21252b",
+      "foreground": "#abb2bf",
+      "palette": [
+        "#21252b",
+        "#e06c75",
+        "#98c379",
+        "#e5c07b",
+        "#61afef",
+        "#c678dd",
+        "#56b6c2",
+        "#abb2bf",
+        "#767676",
+        "#e06c75",
+        "#98c379",
+        "#e5c07b",
+        "#61afef",
+        "#c678dd",
+        "#56b6c2",
+        "#abb2bf"
+      ]
+    },
+    "Snazzy": {
+      "background": "#1e1f29",
+      "foreground": "#ebece6",
+      "palette": [
+        "#000000",
+        "#fc4346",
+        "#50fb7c",
+        "#f0fb8c",
+        "#49baff",
+        "#fc4cb4",
+        "#8be9fe",
+        "#ededec",
+        "#555555",
+        "#fc4346",
+        "#50fb7c",
+        "#f0fb8c",
+        "#49baff",
+        "#fc4cb4",
+        "#8be9fe",
+        "#ededec"
+      ]
+    },
+    "Oceanic Next": {
+      "background": "#162c35",
+      "foreground": "#c0c5ce",
+      "palette": [
+        "#162c35",
+        "#ec5f67",
+        "#99c794",
+        "#fac863",
+        "#6699cc",
+        "#c594c5",
+        "#5fb3b3",
+        "#ffffff",
+        "#65737e",
+        "#ec5f67",
+        "#99c794",
+        "#fac863",
+        "#6699cc",
+        "#c594c5",
+        "#5fb3b3",
+        "#ffffff"
+      ]
+    },
+    "Poimandres": {
+      "background": "#1a1e28",
+      "foreground": "#a6accd",
+      "palette": [
+        "#1a1e28",
+        "#d0679d",
+        "#5de4c7",
+        "#fffac2",
+        "#89ddff",
+        "#fcc5e9",
+        "#add7ff",
+        "#ffffff",
+        "#a6accd",
+        "#d0679d",
+        "#5de4c7",
+        "#fffac2",
+        "#add7ff",
+        "#fae4fc",
+        "#89ddff",
+        "#ffffff"
+      ]
+    },
+    "Horizon": {
+      "background": "#1c1e26",
+      "foreground": "#d5d8da",
+      "palette": [
+        "#000000",
+        "#e95678",
+        "#29d398",
+        "#fab795",
+        "#26bbd9",
+        "#ee64ac",
+        "#59e1e3",
+        "#e5e5e5",
+        "#666666",
+        "#ec6a88",
+        "#3fdaa4",
+        "#fbc3a7",
+        "#3fc4de",
+        "#f075b5",
+        "#6be4e6",
+        "#e5e5e5"
+      ]
+    },
+    "Zenburn": {
+      "background": "#3f3f3f",
+      "foreground": "#dcdccc",
+      "palette": [
+        "#4d4d4d",
+        "#7d5d5d",
+        "#60b48a",
+        "#f0dfaf",
+        "#5d6d7d",
+        "#dc8cc3",
+        "#8cd0d3",
+        "#dcdccc",
+        "#709080",
+        "#dca3a3",
+        "#c3bf9f",
+        "#e0cf9f",
+        "#94bff3",
+        "#ec93d3",
+        "#93e0e3",
+        "#ffffff"
+      ]
+    }
+  }
+}

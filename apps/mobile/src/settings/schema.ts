@@ -64,6 +64,7 @@ export type CustomComponent =
   | 'themePreview'
   | 'toolbarPreview'
   | 'themeCards'
+  | 'terminalPalette'
   | 'chatSample'
   | 'chatCache'
   | 'acknowledgements'

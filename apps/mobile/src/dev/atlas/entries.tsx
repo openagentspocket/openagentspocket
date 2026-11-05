@@ -1,6 +1,5 @@
 import { t } from '@openagentspocket/i18n';
 import { confirm, Screen } from '@openagentspocket/ui';
-import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
 import Agents from '@/app/agents';
 import Board from '@/app/board';
@@ -8,17 +7,11 @@ import HostsRoute from '@/app/hosts';
 import HostFormRoute from '@/app/hosts/form';
 import PairRoute from '@/app/hosts/pair';
 import Index from '@/app/index';
-import SettingsRoot from '@/app/settings';
-import NotificationsRoute from '@/app/settings/notifications';
 import Usage from '@/app/usage';
 import UsageLimits from '@/app/usage-limits';
 import { HostDetailScreen } from '@/features/hosts/HostDetailScreen';
 import { SetupGuideScreen } from '@/features/hosts/SetupGuideScreen';
-import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
 import { AppLockView } from '@/settings/AppLockCover';
-import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
-import { NOTICES } from '@/settings/notices.generated';
-import { SettingsScreen } from '@/settings/SettingsScreen';
 import { HostUsageSection } from '@/usage/HostUsageSection';
 import { UsageBreakdownListScreen } from '@/usage/UsageBreakdownListScreen';
 import { UsageScreen } from '@/usage/UsageScreen';
@@ -30,6 +23,7 @@ import { agentDetailEntries } from './familyAgentDetail';
 import { filesEntries } from './familyFiles';
 import { newAgentEntries } from './familyNewAgent';
 import { notificationEntries } from './familyNotifications';
+import { settingsEntries } from './familySettings';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
@@ -39,23 +33,12 @@ export interface AtlasEntry {
   render: () => ReactNode;
 }
 
-/** A settings sub page as it pushes inside the sheet: native header, inline title, back button. */
-const settingsPage = (page: string): ReactNode => (
-  <>
-    <Stack.Screen options={{ headerShown: true }} />
-    <SettingsScreen page={page} />
-  </>
-);
-
-/**
- * Swift screen id -> the RN screen in a fixed state. Ids missing here are listed as "no RN screen
- * yet" by scripts/atlas-compare.mjs. Add the id to atlasMap.json too (a test checks both agree).
- */
 export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   ...agentDetailEntries,
   ...filesEntries,
   ...newAgentEntries,
   ...notificationEntries,
+  ...settingsEntries,
   'shell.home': { render: () => <Index /> },
   'shell.home-new-menu': { script: { press: ['fab'] }, render: () => <Index /> },
   'console.row-context-menu': { script: { longPress: 'inbox-p2' }, render: () => <Index /> },
@@ -108,18 +91,6 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   },
   'hosts.remove-confirm': { render: () => <RemoveConfirmDemo /> },
   'hosts.pairing-scanner': { render: () => <PairRoute /> },
-  'settings.root': { render: () => <SettingsRoot /> },
-  'settings.notifications': { render: () => <NotificationsRoute /> },
-  'settings.notification-privacy': {
-    render: () => titled(t('How notifications stay private'), <NotificationPrivacyScreen />),
-  },
-  'settings.theme': { render: () => settingsPage('theme') },
-  'settings.appearance': { render: () => settingsPage('fonts') },
-  'settings.chat': { render: () => settingsPage('chat') },
-  'settings.chat-cache': { render: () => settingsPage('chat') },
-  'settings.input-toolbar': { render: () => settingsPage('toolbar') },
-  'settings.acknowledgements': { render: () => settingsPage('acknowledgements') },
-  'settings.license-notice': { render: () => <LicenseNoticeScreen id={NOTICES[0]?.id} /> },
   'shell.app-lock': {
     render: () => <AppLockView kind="Face ID" locked message={null} onUnlock={noop} />,
   },

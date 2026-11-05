@@ -6,10 +6,44 @@ export type SettingsThemeId = keyof typeof THEME_APPEARANCE;
 export type Appearance = 'dark' | 'light';
 
 export const TERMINAL_FONTS = ['jetbrains-mono', 'ibm-plex-mono', 'menlo', 'courier-new'] as const;
+/** The curated terminal palettes (their colors live in the app's palette data). */
+export const TERMINAL_THEMES = [
+  'follow-system',
+  'vesper',
+  'apple-system-colors',
+  'dracula',
+  'solarized',
+  'catppuccin',
+  'tokyo-night',
+  'gruvbox',
+  'nord',
+  'monokai-pro',
+  'rose-pine',
+  'ayu',
+  'one-half',
+  'kanagawa',
+  'everforest',
+  'github',
+  'night-owl',
+  'iceberg',
+  'flexoki',
+  'selenized',
+  'modus',
+  'tomorrow',
+  'melange',
+  'zenbones',
+  'atom-one-dark',
+  'snazzy',
+  'oceanic-next',
+  'poimandres',
+  'horizon',
+  'zenburn',
+] as const;
 export const CHAT_FONTS = ['system', 'rounded', 'serif', 'monospaced'] as const;
 export const GRACE_PERIODS = ['immediately', 'oneMinute', 'fiveMinutes', 'fifteenMinutes'] as const;
 
 export type TerminalFont = (typeof TERMINAL_FONTS)[number];
+export type TerminalThemeId = (typeof TERMINAL_THEMES)[number];
 export type ChatFont = (typeof CHAT_FONTS)[number];
 export type GracePeriod = (typeof GRACE_PERIODS)[number];
 
@@ -24,6 +58,7 @@ export interface SettingsValues {
   lightTheme: SettingsThemeId;
   terminalFont: TerminalFont;
   terminalFontSize: number;
+  terminalTheme: TerminalThemeId;
   chatFont: ChatFont;
   /** Dynamic-type steps from the system text size. */
   chatTextOffset: number;
@@ -46,6 +81,7 @@ export const SETTINGS_DEFAULTS: Readonly<SettingsValues> = {
   lightTheme: 'papel',
   terminalFont: 'jetbrains-mono',
   terminalFontSize: 8,
+  terminalTheme: 'follow-system',
   chatFont: 'system',
   chatTextOffset: -2,
   foldFinishedTurns: true,
@@ -70,6 +106,7 @@ const ALLOWED: Partial<Record<SettingKey, readonly string[]>> = {
   darkTheme: themesOf('dark'),
   lightTheme: themesOf('light'),
   terminalFont: TERMINAL_FONTS,
+  terminalTheme: TERMINAL_THEMES,
   chatFont: CHAT_FONTS,
   appLockGrace: GRACE_PERIODS,
 };

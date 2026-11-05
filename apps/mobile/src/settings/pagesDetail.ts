@@ -7,6 +7,7 @@ import {
 import { t } from '@openagentspocket/i18n';
 import { CHAT_FONT_TITLES, fontOptions, TERMINAL_FONT_TITLES } from './pagesRoot';
 import type { SettingsPage } from './schema';
+import { terminalThemeName } from './terminalPalettes';
 
 export const theme: SettingsPage = {
   id: 'theme',
@@ -38,6 +39,19 @@ export const theme: SettingsPage = {
       ],
     },
     {
+      id: 'terminal',
+      rows: [
+        {
+          kind: 'page',
+          id: 'settings.theme.terminalPalette',
+          title: () => t('Terminal Palette'),
+          icon: 'terminal',
+          page: 'terminalTheme',
+          value: (ctx) => terminalThemeName(ctx.values.terminalTheme),
+        },
+      ],
+    },
+    {
       id: 'themes',
       loose: true,
       rows: [
@@ -46,6 +60,25 @@ export const theme: SettingsPage = {
           id: 'settings.theme.cards',
           title: () => t('Theme'),
           component: 'themeCards',
+        },
+      ],
+    },
+  ],
+};
+
+export const terminalTheme: SettingsPage = {
+  id: 'terminalTheme',
+  title: () => t('Terminal Palette'),
+  sections: [
+    {
+      id: 'palettes',
+      loose: true,
+      rows: [
+        {
+          kind: 'custom',
+          id: 'settings.terminalTheme.picker',
+          title: () => t('Terminal Palette'),
+          component: 'terminalPalette',
         },
       ],
     },
