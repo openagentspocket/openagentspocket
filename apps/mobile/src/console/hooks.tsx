@@ -1,4 +1,5 @@
 import {
+  agentKey,
   type ConsoleRow,
   type ConsoleTerminal,
   findRow,
@@ -60,6 +61,26 @@ export function useConsoleTerminals(): readonly ConsoleTerminal[] {
   const { revision } = useConsoleState();
   // biome-ignore lint/correctness/useExhaustiveDependencies: revision signals a new snapshot
   return useMemo(() => store.terminals(), [store, revision]);
+}
+
+/**
+ * Where an Agent stands: `live` (listed, its Host's snapshot is current), `stale` (listed from an
+ * earlier snapshot while its Host reconnects), `unknown` (not listed, but its Host has no fresh
+ * snapshot yet, so nothing is known), `gone` (not in a current snapshot of its Host).
+ */
+export type AgentPhase = 'live' | 'stale' | 'unknown' | 'gone';
+
+export function useAgentPhase(
+  hostId: string,
+  paneId: string,
+): { row: ConsoleRow | undefined; phase: AgentPhase } {
+  const { rows, readyHosts, hosts } = useConsoleState();
+  const row = findRow(rows, agentKey(hostId, paneId));
+  if (row) {
+    const stale = hosts.find((host) => host.id === row.hostId)?.isStale === true;
+    return { row, phase: stale ? 'stale' : 'live' };
+  }
+  return { row, phase: readyHosts.has(hostId) ? 'gone' : 'unknown' };
 }
 
 /** One Agent by key (see `agentKey`); undefined when it is not listed. */
