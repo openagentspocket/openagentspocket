@@ -1,25 +1,20 @@
-import { buildTheme, mixed, themeIds } from '@openagentspocket/ui';
+import { buildTheme, themeIds } from '@openagentspocket/ui';
 import { stackScreenOptions, statusBarStyle } from './screenOptions';
 
 describe('stackScreenOptions', () => {
-  it.each(themeIds)('is opaque and takes every color from the %s tokens', (id) => {
-    const theme = buildTheme(id);
-    const options = stackScreenOptions(theme);
-    expect(options.headerTransparent).toBe(false);
-    expect(options.headerBlurEffect).toBe('none');
-    // The bar carries the glow's average tone, so it blends with the screen's wash below it.
-    expect(options.headerStyle).toEqual({
-      backgroundColor: mixed(
-        theme.colors.canvas,
-        theme.colors.glow,
-        theme.metrics.glowOpacity * 0.75,
-      ),
-    });
-    expect(options.headerBackButtonDisplayMode).toBe('minimal');
-    expect(options.headerTitleStyle).toEqual({ color: theme.colors.textPrimary });
-    expect(options.headerTintColor).toBe(theme.colors.accent);
-    expect(options.contentStyle).toEqual({ backgroundColor: theme.colors.canvas });
-  });
+  it.each(themeIds)(
+    'is transparent over the screen background and takes every color from the %s tokens',
+    (id) => {
+      const theme = buildTheme(id);
+      const options = stackScreenOptions(theme);
+      expect(options.headerTransparent).toBe(true);
+      expect(options.headerBlurEffect).toBe('none');
+      expect(options.headerBackButtonDisplayMode).toBe('minimal');
+      expect(options.headerTitleStyle).toEqual({ color: theme.colors.textPrimary });
+      expect(options.headerTintColor).toBe(theme.colors.accent);
+      expect(options.contentStyle).toEqual({ backgroundColor: theme.colors.canvas });
+    },
+  );
 });
 
 describe('statusBarStyle', () => {

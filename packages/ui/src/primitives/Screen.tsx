@@ -1,10 +1,18 @@
 import type { ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { type Edge, SafeAreaView } from 'react-native-safe-area-context';
-import { LargeTitleBar, type TitleBarAction } from '../components/LargeTitleBar';
-import { SheetBar, type SheetBarItem } from '../components/SheetBar';
 import { makeStyles, useTheme } from '../theme/theme';
 import { ScreenBackground } from './ScreenBackground';
+import { type ScreenHeader, ScreenHeaderBar, useOffscreenBottom } from './screenParts';
+
+export type { ScreenHeader };
+
 import { ThemedRefreshControl } from './ThemedRefreshControl';
 
 const ALL_EDGES: readonly Edge[] = ['top', 'right', 'bottom', 'left'];
@@ -16,31 +24,6 @@ const useStyles = makeStyles((t) => ({
   content: { padding: t.metrics.screenInset, gap: t.spacing.lg },
   readable: { width: '100%', maxWidth: t.metrics.readableWidth, alignSelf: 'center' },
 }));
-
-/**
- * The three headers a screen can have. `native` draws nothing here (the navigator's header sits above
- * the screen, which then drops its own top inset); `large` is the title with a capsule of actions
- * (Home, Agents); `sheet` is the glass bar of a modal (Done, Cancel, back, an actions capsule), with an
- * optional large title under it.
- */
-export type ScreenHeader =
-  | {
-      variant: 'native';
-      /** The navigator's title; read by the app's `AppScreen`, not drawn here. */
-      title?: string;
-    }
-  | { variant: 'large'; title: string; actions?: readonly TitleBarAction[] }
-  | {
-      variant: 'sheet';
-      title: string;
-      subtitle?: string;
-      /** Large bold title under the bar instead of centered in it. */
-      large?: boolean;
-      leading?: SheetBarItem;
-      back?: boolean;
-      trailing?: readonly SheetBarItem[];
-      testID?: string;
-    };
 
 interface ScreenProps {
   children: ReactNode;
@@ -64,6 +47,11 @@ interface ScreenProps {
    * KeyboardAvoidingView. False only for a screen that has no fields.
    */
   keyboardAvoiding?: boolean;
+  /**
+   * Space reserved at the top for a transparent native header (its height, from the navigator): the
+   * screen's background runs under the bar and the content starts below it.
+   */
+  headerInset?: number;
   /** Full width, no inset or readable column: the screen lays out its own columns (non-scrolling). */
   bare?: boolean;
   testID?: string;
@@ -78,10 +66,12 @@ export function Screen({
   edges,
   keyboardAvoiding = true,
   header,
+  headerInset = 0,
   bare = false,
   testID = 'screen',
 }: ScreenProps) {
   const styles = useStyles();
+  const { hidden, ref, onLayout } = useOffscreenBottom();
   const theme = useTheme();
   const nativeInsets = Platform.OS === 'ios' && scroll && !bare;
   const refresh = onRefresh ? (
@@ -89,48 +79,40 @@ export function Screen({
   ) : undefined;
   return (
     <SafeAreaView
+      ref={ref}
+      onLayout={onLayout}
       style={styles.root}
       edges={edges ?? (header?.variant === 'native' ? UNDER_NATIVE_HEADER : ALL_EDGES)}
       testID={testID}
     >
       <ScreenBackground />
-      <ScreenHeaderBar header={header} />
-      <KeyboardAvoidingView
-        style={styles.fill}
-        enabled={keyboardAvoiding && !nativeInsets}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        testID={`${testID}-keyboard`}
-      >
-        {bare ? (
-          <View style={styles.fill}>{children}</View>
-        ) : scroll ? (
-          <ScrollView
-            style={styles.fill}
-            testID={`${testID}-scroll`}
-            contentContainerStyle={[styles.content, styles.readable]}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-            automaticallyAdjustKeyboardInsets={keyboardAvoiding}
-            refreshControl={refresh}
-          >
-            {children}
-          </ScrollView>
-        ) : (
-          <View style={[styles.fill, styles.content, styles.readable]}>{children}</View>
-        )}
-      </KeyboardAvoidingView>
+      <View style={[styles.fill, { paddingTop: headerInset, paddingBottom: hidden }]}>
+        <ScreenHeaderBar header={header} />
+        <KeyboardAvoidingView
+          style={styles.fill}
+          enabled={keyboardAvoiding && !nativeInsets}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          testID={`${testID}-keyboard`}
+        >
+          {bare ? (
+            <View style={styles.fill}>{children}</View>
+          ) : scroll ? (
+            <ScrollView
+              style={styles.fill}
+              testID={`${testID}-scroll`}
+              contentContainerStyle={[styles.content, styles.readable]}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
+              automaticallyAdjustKeyboardInsets={keyboardAvoiding}
+              refreshControl={refresh}
+            >
+              {children}
+            </ScrollView>
+          ) : (
+            <View style={[styles.fill, styles.content, styles.readable]}>{children}</View>
+          )}
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
-}
-
-/** Draws the header of a `large` or `sheet` screen; a native header is the navigator's. */
-function ScreenHeaderBar({ header }: { header: ScreenHeader | undefined }) {
-  if (header?.variant === 'large') {
-    return <LargeTitleBar title={header.title} actions={header.actions ?? []} />;
-  }
-  if (header?.variant === 'sheet') {
-    const { variant: _variant, ...bar } = header;
-    return <SheetBar {...bar} />;
-  }
-  return null;
 }
