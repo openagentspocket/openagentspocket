@@ -28,7 +28,7 @@ export const lazyNotifications: NotificationsApi = {
 
 export interface DevicePushTokenOptions {
   readonly platform: 'ios' | 'android';
-  /** iOS: a development build registers with the APNs sandbox. */
+  /** iOS: the token is for the APNs sandbox (see `isApnsSandbox`: the app's `aps-environment` entitlement). */
   readonly sandbox: boolean;
 }
 
