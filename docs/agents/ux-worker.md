@@ -24,7 +24,8 @@ wearing the Índigo skin. Color comes from tokens, never from the Swift shots (t
    `rm -rf apps/mobile/.expo/web-cache apps/mobile/node_modules/.cache`, then capture with your own port.
 2. Capture after your last change, ids as separate arguments (never one quoted string):
    `node scripts/atlas-web.mjs --port <port> <id> <id>` and `--theme papel`.
-3. Compare: `<scratchpad>/rn/venv-pil/bin/python3 scripts/atlas-compare.py <id> <id>`; open only the sheets of the
+3. Compare: `<scratchpad>/rn/venv-pil/bin/python3 scripts/atlas-compare.py <id> <id>` (Papel: `--theme light`,
+   after capturing with `--theme papel`); open only the sheets of the
    ids you changed in this iteration.
 4. Stop at "reads like Swift"; list remaining small differences instead of looping on them. At most two
    iterations per screen after the first build.
