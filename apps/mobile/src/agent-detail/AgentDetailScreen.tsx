@@ -5,13 +5,7 @@ import {
   terminalStopAvailable,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import {
-  type ActionMenuItem,
-  EmptyState,
-  makeStyles,
-  Screen,
-  StatusLine,
-} from '@openagentspocket/ui';
+import { type ActionMenuItem, EmptyState, makeStyles, Screen } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
@@ -20,10 +14,9 @@ import { useAgent, useConsole, useConsoleState } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
 import { AgentSessionDrawer } from './AgentSessionDrawer';
 import { AgentSwitcher } from './AgentSwitcher';
-import { agentBarLabels } from './agentBarLabels';
-import { ChatAboveComposer } from './ChatAboveComposer';
 import { AgentComposerBar } from './composer/AgentComposer';
 import { useAgentComposer } from './composer/composerContext';
+import { DetailDock } from './DetailDock';
 import { DetailSlot } from './DetailSlot';
 import { DetailUiProvider } from './detailUi';
 import { type Surface, useSurface } from './surface';
@@ -106,12 +99,12 @@ export function AgentDetailScreen({
           </View>
         </View>
         <View style={styles.dock}>
-          {surface === 'chat' ? <ChatAboveComposer row={row} /> : null}
-          <StatusLine
+          <DetailDock
+            row={row}
+            surface={surface}
             status={status}
             latencyMs={latency}
             onOpenChanges={onOpenChanges}
-            labels={agentBarLabels()}
           />
           <AgentComposerBar
             composer={composer}
