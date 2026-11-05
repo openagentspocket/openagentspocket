@@ -1,23 +1,21 @@
-import { mixed, type Theme } from '@openagentspocket/ui';
+import type { Theme } from '@openagentspocket/ui';
 import type { NativeStackNavigationOptions } from 'expo-router';
 
 /**
- * The one native header look, for every Stack on iOS and Android: an opaque bar in the canvas
- * color (content starts below it, never under it), title in primary ink, back button in the
+ * The one native header look, for every Stack on iOS and Android: a transparent bar over the
+ * screen's own background (content starts below it), title in primary ink, back button in the
  * accent, no hairline shadow. Built from tokens only; screens never restyle their header.
  */
 export function stackScreenOptions({
   colors,
-  metrics,
-}: Pick<Theme, 'colors' | 'metrics'>): NativeStackNavigationOptions {
+}: Pick<Theme, 'colors'>): NativeStackNavigationOptions {
   return {
     headerShown: true,
-    headerTransparent: false,
+    // Transparent: the screen's own background (canvas and glow) runs under the bar, as in Settings;
+    // `AppScreen` pads the content by the header's height.
+    headerTransparent: true,
     headerBlurEffect: 'none',
     headerShadowVisible: false,
-    // The screen under it washes the canvas with the theme's glow at the top; a bar in the plain
-    // canvas would read as a black band, so it takes the glow's average tone.
-    headerStyle: { backgroundColor: mixed(colors.canvas, colors.glow, metrics.glowOpacity * 0.75) },
     // Every stack's back button is the chevron alone, like the sheet bar's, never "< Title".
     headerBackButtonDisplayMode: 'minimal',
     headerTitleStyle: { color: colors.textPrimary },
