@@ -13,7 +13,7 @@ import type { AtlasEntry } from './entries';
 
 /** The Agent detail in a fixed state: Agent pane, surface, and what is pressed after it settles. */
 function detail(
-  pane: 'p1' | 'p2',
+  pane: 'p1' | 'p2' | 'p4',
   surface: 'chat' | 'terminal',
   press?: readonly string[],
   blocked = false,
@@ -81,7 +81,7 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.agent-switcher': chat,
   'agent-detail.composer': chat,
   'agent-detail.composer-skill-suggestions': chat,
-  'agent-detail.composer-more-menu': detail('p2', 'terminal', ['composer-more']),
+  'agent-detail.composer-more-menu': detail('p4', 'terminal', ['composer-more']),
   'agent-detail.composer-add-menu': detail('p2', 'chat', ['composer-add']),
   'agent-detail.header-more-menu': detail('p2', 'chat', ['agent-header-more']),
   'agent-detail.session-drawer': detail('p2', 'chat', ['agent-header-sidebar']),

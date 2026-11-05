@@ -192,6 +192,8 @@ export class DemoConsoleTransport extends ScriptedEventsTransport implements Con
 
   /** The demo keeps no names; the live Transport sends `agent.rename`. */
   async renameAgent(_params: { target: string; name: string | null }): Promise<void> {}
+
+  async renameWorkspace(_params: { workspace_id: string; label: string }): Promise<void> {}
 }
 
 /** A Console store fed by one demo Host (two with `rich`, for the atlas), until the live Transport lands. */

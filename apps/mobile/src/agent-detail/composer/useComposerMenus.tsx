@@ -13,13 +13,14 @@ import { type ReactNode, useMemo, useState, useSyncExternalStore } from 'react';
 import { useAgent, useConsoleStore } from '@/console/hooks';
 import { agentActions } from '@/features/agents/agentActions';
 import { closeAgent } from '@/features/agents/closeAgent';
-import { RenameSheet } from '@/features/agents/RenameSheet';
+import { useRename } from '@/features/agents/useRename';
 import {
   ComposerToolsSheets,
   type ToolsSheet,
 } from '@/features/composer-tools/ComposerToolsSheets';
 import { composerAddItems, composerMoreItems } from '@/features/composer-tools/composerMenus';
 import { attachmentActions, stagingFor } from '@/features/composer-tools/composerStaging';
+import { useNewAgentServices } from '@/features/new-agent/services';
 import { ExpoLocalFiles } from '@/files/expoLocalFiles';
 import { pickDocument, pickPhoto } from '@/files/pickers';
 import { hrefs } from '@/navigation/hrefs';
@@ -65,7 +66,6 @@ export function useComposerMenus({
   const consoleStore = useConsoleStore();
   const row = useAgent(agentKey(hostId, paneId));
   const [sheet, setSheet] = useState<ToolsSheet | null>(null);
-  const [renaming, setRenaming] = useState<ConsoleRow | undefined>();
   const staging = useMemo(() => {
     // The upload runs on the Host's transport at the time it starts.
     const stage: AttachmentStager = (prepared, options) =>
@@ -82,6 +82,10 @@ export function useComposerMenus({
     () => staging.state,
   );
   const actions = useMemo(() => agentActions(consoleStore), [consoleStore]);
+  const rename = useRename(actions);
+  // The route's own check: Worktree Details exist only for an Agent in a linked worktree.
+  const services = useNewAgentServices();
+  const inWorktree = services.worktreeDetail(hostId, paneId) !== undefined;
 
   const items = useMemo(() => {
     const directory = row ? rowDirectory(row) : undefined;
@@ -101,7 +105,11 @@ export function useComposerMenus({
       newAgent: () => router.push(hrefs.newAgent({ hostId, workspaceId, cwd: directory })),
       showSkills: () => setSheet('skills'),
       manageSnippets: () => setSheet('snippets'),
-      renameAgent: row ? () => setRenaming(row) : undefined,
+      showWorktreeDetails: inWorktree
+        ? () => router.push(hrefs.worktree(hostId, paneId))
+        : undefined,
+      renameAgent: row ? () => rename.open(row) : undefined,
+      renameWorkspace: row?.workspaceLabel ? () => rename.open(row, 'workspace') : undefined,
       closeAgent: row
         ? () =>
             void closeAgent(row, actions, { anchorKey: COMPOSER_MORE_ANCHOR }).then(
@@ -110,7 +118,19 @@ export function useComposerMenus({
         : undefined,
     };
     return { add: composerAddItems(menuActions), more: composerMoreItems(menuActions) };
-  }, [row, staging, staging.canBegin, router, surface, onToggleSurface, hostId, paneId, actions]);
+  }, [
+    row,
+    staging,
+    staging.canBegin,
+    router,
+    surface,
+    onToggleSurface,
+    hostId,
+    paneId,
+    actions,
+    rename.open,
+    inWorktree,
+  ]);
 
   const sheets = (
     <>
@@ -122,14 +142,7 @@ export function useComposerMenus({
         projectRoot={projectRoot}
         onInsert={(text) => store.insertIntoDraft(text)}
       />
-      <RenameSheet
-        row={renaming}
-        onClose={() => setRenaming(undefined)}
-        onSave={(target, name) => {
-          setRenaming(undefined);
-          actions.rename(target, name).catch(() => undefined);
-        }}
-      />
+      {rename.sheet}
     </>
   );
   return { addItems: items.add, moreItems: items.more, staging, sheets };

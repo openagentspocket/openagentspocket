@@ -5,6 +5,7 @@ import type { ConsoleStore } from '../../console/store';
 export interface AgentMutations {
   closePane(paneId: string): Promise<void>;
   renameAgent(params: { target: string; name: string | null }): Promise<void>;
+  renameWorkspace(params: { workspace_id: string; label: string }): Promise<void>;
 }
 
 function canMutate(transport: ConsoleTransport): transport is ConsoleTransport & AgentMutations {
@@ -12,7 +13,9 @@ function canMutate(transport: ConsoleTransport): transport is ConsoleTransport &
     'closePane' in transport &&
     typeof transport.closePane === 'function' &&
     'renameAgent' in transport &&
-    typeof transport.renameAgent === 'function'
+    typeof transport.renameAgent === 'function' &&
+    'renameWorkspace' in transport &&
+    typeof transport.renameWorkspace === 'function'
   );
 }
 
@@ -26,6 +29,8 @@ export interface AgentActions {
   close(row: ConsoleRow): Promise<void>;
   /** An empty name restores the Agent's own. */
   rename(row: ConsoleRow, name: string): Promise<void>;
+  /** The Workspace's label; an empty label is refused (the server would accept it, Swift does not). */
+  renameWorkspace(row: ConsoleRow, label: string): Promise<void>;
 }
 
 /** Binds a row's actions to the Console store: the store relays them to the row's Host. */
@@ -40,6 +45,16 @@ export function agentActions(store: ConsoleStore): AgentActions {
         mutations(transport).renameAgent({
           target: row.agent.pane_id,
           name: trimmed === '' ? null : trimmed,
+        }),
+      );
+    },
+    renameWorkspace: (row, label) => {
+      const trimmed = label.trim();
+      if (trimmed === '') return Promise.resolve();
+      return store.mutate(row.hostId, (transport) =>
+        mutations(transport).renameWorkspace({
+          workspace_id: row.agent.workspace_id,
+          label: trimmed,
         }),
       );
     },
