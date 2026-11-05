@@ -1,0 +1,16 @@
+{
+  "name": "@openagentspocket/site",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "openagentspocket.com: the landing page, the privacy link and the Host installer, as a static Cloudflare Worker",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test",
+    "deploy": "node scripts/build.mjs && npx wrangler deploy"
+  }
+}

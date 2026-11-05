@@ -94,7 +94,7 @@ suite("routing", () => {
     assert.equal(res.status, 200);
     assert.match(res.headers.get("content-type"), /^text\/html/);
     const html = await res.text();
-    assert.match(html, /Privacy Policy/);
+    assert.match(html, /Agents Pocket — Privacy Policy/);
     assert.match(html, /Política de privacidad/);
     assert.match(html, /mailto:privacy@example\.com/);
     assert.equal(calls.length, 0);
