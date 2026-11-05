@@ -1,3 +1,4 @@
+import type { ComposerMessage } from '@openagentspocket/core';
 import { EdgeFade, makeStyles } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { ChatTimeline } from './chat/ChatTimeline';
@@ -11,6 +12,8 @@ interface Props {
   paneId: string;
   surface: Surface;
   activity: Parameters<typeof ChatTimeline>[0]['activity'];
+  /** The Composer's messages, echoed in Chat until the transcript records them. */
+  messages: readonly ComposerMessage[];
   /** The floating header's height: content starts under it. */
   headerHeight: number;
   onShowTerminal: () => void;
@@ -22,6 +25,7 @@ export function DetailSlot({
   paneId,
   surface,
   activity,
+  messages,
   headerHeight,
   onShowTerminal,
 }: Props) {
@@ -33,6 +37,7 @@ export function DetailSlot({
           hostId={hostId}
           paneId={paneId}
           activity={activity}
+          messages={messages}
           topInset={headerHeight}
           bottomInset={0}
           onShowTerminal={onShowTerminal}

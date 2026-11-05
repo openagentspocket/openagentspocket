@@ -18,7 +18,12 @@ import {
   VolatileChatTranscriptCache,
 } from '@openagentspocket/core';
 import type { SshTransport } from '@openagentspocket/transport';
-import { pluginConfigFiles, runPluginStep } from '@openagentspocket/transport';
+import {
+  herdrScreenIO,
+  isBlockedPaneApi,
+  pluginConfigFiles,
+  runPluginStep,
+} from '@openagentspocket/transport';
 import { type AppGroupStore, unavailableAppGroup } from 'agentico-app-group';
 import { unavailableLiveActivities } from 'agentico-live-activity';
 import type { SshModule } from 'agentico-ssh';
@@ -139,6 +144,13 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
       new TransportChatFiles((operation) => manager.withTransport(hostId, operation)),
     cache: deps.chatCache ?? new VolatileChatTranscriptCache(),
     clock: deps.clock,
+    readScreen: (hostId, paneId) =>
+      herdrScreenIO(paneId, (operation) =>
+        manager.withTransport(hostId, async (transport) => {
+          if (!isBlockedPaneApi(transport)) throw new Error('This Host cannot read panes.');
+          return operation(transport);
+        }),
+      ).readScreen(),
   });
   // A removed Host takes its Chat stores and cached transcripts with it.
   model.subscribe(() => void conversations.retainHosts());

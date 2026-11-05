@@ -51,6 +51,7 @@ export {
 } from './plan-types';
 export {
   type BlockedProgramSupport,
+  blockedSupportFor,
   parseBlockedDialog,
   planDialogAction,
   planGenericOption,

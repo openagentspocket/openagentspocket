@@ -1,19 +1,22 @@
 // The conversation of one Agent, observable (the engine-facing part of Swift AgentChatStore):
 // resolves which conversation herdr reports, restores the device's copy, then runs one loop that
-// makes every engine call in turn. Sends, the Blocked card and the session witness belong to the
-// composer and approval tasks and are not here.
+// makes every engine call in turn. Chat's sends are followed by a `SendTracker` (store-sends.ts).
 
+import type { AnsiScreen } from '../../blocked/screen';
 import { asTransportError } from '../../errors';
-import { type ConversationReference, resolveConversation } from '../model/conversation-reference';
+import type { ConversationReference } from '../model/conversation-reference';
 import type { ChatProgram, ChatToolActivity } from '../model/types';
 import { projectionContext } from '../model/types';
 import type { ChatWorkflowProgress } from '../model/workflow-progress';
+import type { SentMessage } from '../send/echoes';
 import type { ChatUnavailableReason } from '../timeline/reasons';
 import { type ChatTranscriptAdapter, standardAdapter } from './adapter';
 import { LoopRunner } from './loop-runner';
 import { Pacing } from './pacing';
 import { type ChatConversationSnapshot, initialSnapshot } from './snapshot';
+import { bindTarget, continuationOf, unavailableSnapshot } from './store-bind';
 import { type ConversationEngineRef, createEngine } from './store-engine';
+import { ConversationSends } from './store-sends';
 import {
   type ChatAgentView,
   type ChatOutputState,
@@ -22,7 +25,6 @@ import {
   type ConversationStoreOptions,
   DEFAULT_CHAT_TIMING,
   sameReference,
-  unavailableReason,
 } from './store-types';
 
 export class ConversationStore {
@@ -53,6 +55,7 @@ export class ConversationStore {
   private suspended = false;
   private ended = false;
 
+  private readonly sends: ConversationSends;
   private readonly loop: LoopRunner;
   private readonly pacing: Pacing;
 
@@ -61,6 +64,25 @@ export class ConversationStore {
     this.now = options.now ?? (() => Date.now());
     this.adapterFor = options.adapterFor ?? standardAdapter;
     this.pacing = new Pacing(this.timing, this.now);
+    this.sends = new ConversationSends({
+      options,
+      now: this.now,
+      echoKey: (program, text) => this.adapterFor(program)?.echoKey(text) ?? text.trim(),
+      state: () => this.state,
+      generation: () => this.generation,
+      followedSessionID: () => this.followed?.sessionID ?? null,
+      sent: () => {
+        this.pacing.noteChange();
+        this.pacing.openNow();
+        this.loop.wake();
+      },
+      overdue: () => {
+        this.needsRelocate = true;
+        this.loop.wake();
+      },
+      wake: () => this.loop.wake(),
+      changed: (sendStatuses) => this.commit({ ...this.state, sendStatuses }),
+    });
     this.loop = new LoopRunner({
       clock: options.clock,
       step: () => this.step(),
@@ -208,6 +230,7 @@ export class ConversationStore {
     }
     const context = projectionContext({ activity: view.activity, skillNames: this.skillNames });
     const before = engine.snapshot;
+    const readStart = this.now();
     let snapshot: ChatConversationSnapshot;
     let polled = false;
     if (this.olderRequest) {
@@ -235,8 +258,12 @@ export class ConversationStore {
     }
     if (engine !== this.engine) return;
     this.apply(engine, snapshot);
+    this.sends.readApplied(polled ? readStart : null, snapshot);
+    this.sends.match();
     // Persist the transcript before optional journal requests can wait on an unavailable connection.
     await engine.save();
+    if (engine !== this.engine) return;
+    await this.sends.check(() => engine === this.engine);
     if (engine !== this.engine) return;
     if (polled && snapshot.phase.type === 'following' && snapshot.readFailure === null) {
       const progress = await engine.followWorkflows();
@@ -247,8 +274,25 @@ export class ConversationStore {
   private noteAgent(view: ChatAgentView | undefined): void {
     // A turn starting or ending is when a session changes, a missing transcript appears, and a
     // turn after an undo writes to the thread's new file.
-    if (view && this.pacing.noteActivity(view.activity)) this.needsRelocate = true;
+    if (!view) return;
+    const previous = this.pacing.activity;
+    if (this.pacing.noteActivity(view.activity)) {
+      this.needsRelocate = true;
+      this.sends.agentStatusChanged(view.activity, previous);
+    }
   }
+
+  // MARK: Sends
+
+  /** The Composer's messages (`sentMessages`), followed until the transcript records each: see `sendStatuses`. */
+  readonly updateSends = (messages: readonly SentMessage[]): void => this.sends.update(messages);
+
+  /** Why a send the input box would take waits all the same (another session's screen or log), or null. */
+  readonly sendConcern = (outgoing: string, screen: AnsiScreen): string | null =>
+    this.sends.concern(outgoing, screen);
+
+  /** The Agent's screen was read for another reason (the check before a send). */
+  readonly inputBoxWasRead = (screen: AnsiScreen): void => this.sends.inputBoxWasRead(screen);
 
   /** The pause after each turn. */
   get interval(): number {
@@ -264,23 +308,13 @@ export class ConversationStore {
 
   /** Follows the conversation herdr reports, or shows why there is none. */
   private bind(view: ChatAgentView | undefined): void {
-    const resolution = resolveConversation(view?.session);
-    const program = view?.program ?? 'claude';
-    let target: ConversationReference | null = null;
-    let reason: ChatUnavailableReason | null = null;
-    if (resolution.type === 'bound') {
-      if (!sameReference(resolution.reference, this.boundTo)) this.continued = null;
-      this.boundTo = resolution.reference;
-      if (
-        !this.adapterFor(resolution.reference.program) ||
-        resolution.reference.program !== program
-      )
-        reason = { kind: 'unsupportedSession' };
-      else target = this.continued ?? resolution.reference;
-    } else {
-      this.boundTo = null;
-      reason = unavailableReason(resolution, program);
-    }
+    const { target, reason, ...kept } = bindTarget(
+      view,
+      this.adapterFor,
+      this.boundTo,
+      this.continued,
+    );
+    ({ boundTo: this.boundTo, continued: this.continued } = kept);
     if (sameReference(target, this.followed)) {
       if (!target && reason) this.showUnavailable(reason);
       return;
@@ -289,6 +323,7 @@ export class ConversationStore {
     if (old) void old.save(true).catch(() => undefined);
     this.followed = target;
     this.generation += 1;
+    this.sends.conversationChanged();
     this.restored = false;
     this.appliedRevision = null;
     this.olderRequest = null;
@@ -307,17 +342,8 @@ export class ConversationStore {
   }
 
   private showUnavailable(reason: ChatUnavailableReason): void {
-    const next: ChatConversationSnapshot = {
-      ...initialSnapshot(),
-      phase: { type: 'unavailable', reason },
-    };
-    const current = this.state.snapshot;
-    if (
-      JSON.stringify(current.phase) === JSON.stringify(next.phase) &&
-      current.transcript.entries.length === 0
-    )
-      return;
-    this.setSnapshot(next);
+    const next = unavailableSnapshot(this.state.snapshot, reason);
+    if (next) this.setSnapshot(next);
   }
 
   // MARK: State
@@ -340,16 +366,9 @@ export class ConversationStore {
 
   /** The program continued the conversation in a session of its own (compaction into a new file). */
   private followContinuation(sessionID: string): void {
-    const program = this.followed?.program;
-    if (!program) return;
-    const resolved = resolveConversation({
-      source: `herdr:${program}`,
-      agent: program,
-      kind: 'id',
-      value: sessionID,
-    });
-    if (resolved.type !== 'bound') return;
-    this.continued = resolved.reference;
+    const resolved = continuationOf(this.followed, sessionID);
+    if (!resolved) return;
+    this.continued = resolved;
     this.bind(this.options.agent());
   }
 

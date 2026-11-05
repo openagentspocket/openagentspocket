@@ -1,9 +1,4 @@
-import {
-  agentKey,
-  type ConsoleRow,
-  type KeyValueStorage,
-  terminalStopAvailable,
-} from '@openagentspocket/core';
+import { agentKey, type ConsoleRow, type KeyValueStorage } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { type ActionMenuItem, EmptyState, makeStyles, Screen } from '@openagentspocket/ui';
 import { useState } from 'react';
@@ -78,6 +73,7 @@ export function AgentDetailScreen({
             paneId={paneId}
             surface={surface}
             activity={activityOf(row)}
+            messages={composer.snapshot.messages}
             headerHeight={headerHeight}
             onShowTerminal={() => setSurface('terminal')}
           />
@@ -112,7 +108,6 @@ export function AgentDetailScreen({
             program={row.agent.agent ?? 'unknown'}
             status={status}
             onToggleSurface={toggle}
-            canStop={terminalStopAvailable(row.agent.agent ?? '')}
           />
           <AgentSwitcher
             rows={rows}

@@ -331,6 +331,13 @@
     deps: [P2.6a-chat-claude, P2.6a-engine],
   }
 - {
+    id: P2.10b-send-policy,
+    phase: 2,
+    kind: js,
+    title: "One per-program send extension point (ProgramSendPolicy): echo matching, send witness and echo clock, composer policy and suggestions, Stop guard, terminal title, input-box detector; Claude/Codex first, then Pi/OMP, Grok, OpenCode",
+    deps: [P2.10-chat-others, P2.8-composer],
+  }
+- {
     id: P2.11-background-work,
     phase: 2,
     kind: js,

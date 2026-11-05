@@ -1,7 +1,9 @@
 import {
-  type ComposerDeliveryPolicy,
+  type AgentSkill,
   type ComposerSkill,
+  commandSuggestions,
   detectSkillTrigger,
+  ESCAPE_WAIT,
   matchingSkills,
   primaryControl,
   refusalText,
@@ -24,17 +26,10 @@ import { agentBarLabels } from '../agentBarLabels';
 import { useDetailUi } from '../detailUi';
 import type { Surface } from '../surface';
 import type { AgentComposer } from './composerContext';
+import { useChatSend } from './useChatSend';
 
 /** The key the Close Pane popover points at: the composer's "..." circle. */
 export const COMPOSER_MORE_ANCHOR = 'agent-composer-more';
-
-/** Chat never types into the terminal: a Blocked Agent is answered with the Blocked card. */
-const chatPolicy: ComposerDeliveryPolicy = {
-  route: 'chat',
-  insertsIntoAttachWhenBlocked: false,
-  outgoingText: (text) => text,
-  validate: () => undefined,
-};
 
 /** The keys that finish a draft typed into a Blocked terminal: the user presses them themselves. */
 const ATTACH_KEYS: readonly (readonly KeySpec[])[] = [
@@ -50,8 +45,8 @@ interface Props {
   /** Commands or Skills the draft's trailing token can complete; empty when the source is unknown. */
   skills?: readonly ComposerSkill[];
   skillPrefixes?: readonly string[];
-  /** False where Esc does not interrupt (Grok Build): Send stays. */
-  canStop?: boolean;
+  /** The Host's skills the Chat `/` menu offers (the program's send policy picks which). */
+  agentSkills?: readonly AgentSkill[];
   /** Writes a key to the live terminal; the tools dock shows only after a draft went there. */
   onAttachKey?: (key: KeySpec) => void;
   /** The Agent's program and status: its mark flips Chat/Terminal in the composer row. */
@@ -66,7 +61,7 @@ export function AgentComposerBar({
   surface,
   skills = [],
   skillPrefixes = ['/'],
-  canStop = true,
+  agentSkills,
   onAttachKey,
   program = 'unknown',
   status,
@@ -74,12 +69,35 @@ export function AgentComposerBar({
 }: Props) {
   const { store, snapshot, interrupt } = composer;
   const { setComposing } = useDetailUi();
-  const policy = surface === 'chat' ? chatPolicy : terminalPolicy;
+  const chatSend = useChatSend({
+    hostId: composer.hostId,
+    paneId: composer.paneId,
+    program,
+    snapshot,
+    skills: agentSkills,
+  });
+  const policy = surface === 'chat' ? chatSend.delivery : terminalPolicy;
+  // Chat's Stop is the program's own (keys and guard); the terminal's is Esc, which some programs ignore.
+  const chatStop = surface === 'chat' ? chatSend.chatInterrupt : null;
+  const canStop = surface === 'chat' ? true : (chatSend.policy?.terminalStop ?? true);
   useSyncExternalStore(store.stop.subscribe, () => store.stop.phase);
   const held = useSyncExternalStore(store.stop.subscribe, () => store.stop.isHeldAfterSend);
   const [attachDraft, setAttachDraft] = useState(false);
   const trigger = detectSkillTrigger(snapshot.draft, skillPrefixes);
   const matches = trigger ? matchingSkills(trigger, skills) : [];
+  // Chat's `/` menu: the commands a leading `/` matches, which complete in the draft and send nothing.
+  const menu =
+    surface === 'chat' && chatSend.policy
+      ? commandSuggestions(snapshot.draft, chatSend.commands)
+      : null;
+  const suggestions = menu
+    ? menu.map((command) => ({
+        name: `/${command.name}`,
+        description: command.isEnabled
+          ? (command.summary ?? '')
+          : t('Available once the Agent is idle'),
+      }))
+    : matches.map((skill) => ({ name: skill.command, description: skill.description ?? '' }));
   const control = primaryControl({
     status: snapshot.status,
     draft: snapshot.draft,
@@ -137,15 +155,22 @@ export function AgentComposerBar({
         value={snapshot.draft}
         onChange={(text) => store.applyEditorDraft(text, { start: text.length, end: text.length })}
         onSend={() => void send()}
-        onStop={canStop ? () => void store.stop.stop(interrupt) : undefined}
+        onStop={
+          canStop
+            ? () =>
+                void store.stop.stop(chatStop?.perform ?? interrupt, chatStop?.wait ?? ESCAPE_WAIT)
+            : undefined
+        }
         working={control === 'stop'}
         placeholder={t('Message Agent')}
-        skills={matches.map((skill) => ({
-          name: skill.command,
-          description: skill.description ?? '',
-        }))}
+        skills={suggestions}
         onSkill={(command) => {
-          if (trigger) store.replaceTrailingToken(trigger.token, `${command} `);
+          if (menu) {
+            const entry = menu.find((candidate) => `/${candidate.name}` === command);
+            if (entry?.isEnabled) store.replaceDraft(`${command} `);
+          } else if (trigger) {
+            store.replaceTrailingToken(trigger.token, `${command} `);
+          }
         }}
         expanded={surface === 'terminal' ? true : undefined}
         moreAnchorKey={COMPOSER_MORE_ANCHOR}

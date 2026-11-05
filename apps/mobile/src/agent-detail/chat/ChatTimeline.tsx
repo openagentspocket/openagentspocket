@@ -1,7 +1,12 @@
-import type { ChatAgentActivity, ChatRow } from '@openagentspocket/core';
+import {
+  type ChatAgentActivity,
+  type ChatRow,
+  type ComposerMessage,
+  pendingEchoes,
+} from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { makeStyles, metrics, NoticeBanner } from '@openagentspocket/ui';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 import { useConsoleState } from '@/console/hooks';
 import { useConversation } from '@/conversations/useConversation';
@@ -9,6 +14,9 @@ import { useDetailUi } from '../detailUi';
 import { ChatBanners } from './ChatBanners';
 import { ChatRowView } from './ChatRowView';
 import { useChatRows } from './useChatRows';
+
+const NO_MESSAGES: readonly ComposerMessage[] = [];
+const NO_STATUSES = new Map<string, never>();
 
 /** How far from the end still counts as reading the newest row, in points. */
 const NEAR_END = 120;
@@ -27,6 +35,8 @@ interface Props {
   hostId: string;
   paneId: string;
   activity: ChatAgentActivity;
+  /** The Composer's messages: the ones the transcript has not recorded yet show as echoes at the end. */
+  messages?: readonly ComposerMessage[];
   /** Room for the floating header and the dock the list scrolls under. */
   topInset: number;
   bottomInset: number;
@@ -38,6 +48,7 @@ export function ChatTimeline({
   hostId,
   paneId,
   activity,
+  messages = NO_MESSAGES,
   topInset,
   bottomInset,
   onShowTerminal,
@@ -46,7 +57,12 @@ export function ChatTimeline({
   const conversation = useConversation(hostId, paneId);
   const { openSubagent } = useDetailUi();
   const hostStatus = useConsoleState().hosts.find((host) => host.id === hostId)?.status;
-  const { rows, toggle } = useChatRows(conversation.state, activity);
+  const { sendStatuses } = conversation.state;
+  const pending = useMemo(
+    () => pendingEchoes(messages, sendStatuses ?? NO_STATUSES),
+    [messages, sendStatuses],
+  );
+  const { rows, toggle } = useChatRows(conversation.state, activity, pending);
   const list = useRef<FlatList<ChatRow>>(null);
   /** Follows new rows only while the reader is at the end. */
   const nearEnd = useRef(true);

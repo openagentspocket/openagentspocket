@@ -1,5 +1,6 @@
 import {
   type ChatAgentActivity,
+  type ChatPendingEcho,
   type ChatRow,
   ChatRowBuilder,
   type ChatRowID,
@@ -9,10 +10,13 @@ import {
 } from '@openagentspocket/core';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+const NO_PENDING: readonly ChatPendingEcho[] = [];
+
 /** The timeline rows of a conversation, folded as Swift folds them; headers open on their own. */
 export function useChatRows(
   state: ConversationState,
   activity: ChatAgentActivity,
+  pending: readonly ChatPendingEcho[] = NO_PENDING,
 ): { rows: ChatRow[]; toggle: (id: ChatRowID) => void } {
   const builder = useRef(new ChatRowBuilder());
   const [open, setOpen] = useState<ReadonlySet<ChatRowID>>(new Set());
@@ -28,7 +32,7 @@ export function useChatRows(
   const rows = useMemo(() => {
     const built = builder.current.rows({
       entries: transcript.entries,
-      pending: [],
+      pending,
       older: snapshot.older.type === 'failed' ? { failed: 'failed' } : snapshot.older.type,
     });
     const background = transcript.backgroundWork.some((item) => item.state === 'running');
@@ -44,6 +48,14 @@ export function useChatRows(
       open,
     }).rows;
     // The revision changes whenever the snapshot does.
-  }, [transcript, snapshot.older, snapshot.isFromCache, snapshot.olderAwaitsUser, activity, open]);
+  }, [
+    transcript,
+    pending,
+    snapshot.older,
+    snapshot.isFromCache,
+    snapshot.olderAwaitsUser,
+    activity,
+    open,
+  ]);
   return { rows, toggle };
 }
