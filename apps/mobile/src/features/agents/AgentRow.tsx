@@ -8,8 +8,8 @@ import {
 } from '@openagentspocket/ui';
 import { type Href, useRouter } from 'expo-router';
 import { useGitStatus } from '@/changes/useGitStatus';
-import { useEntryMenus } from '../../navigation/entryMenus';
 import { agentCardModel } from './agentCardModel';
+import { useAgentMenu } from './useAgentMenu';
 
 /** The agent detail route (built by the detail task). */
 export function agentHref(row: Pick<ConsoleRow, 'hostId' | 'agent'>): Href {
@@ -49,7 +49,7 @@ export function AgentRow({
   onDetails,
 }: AgentRowProps) {
   const router = useRouter();
-  const entries = useEntryMenus();
+  const agentMenu = useAgentMenu();
   const git = useGitStatus(row.hostId, rowDirectory(row), row.agent.pane_id);
   const card = agentCardModel(row, showHost, nested, qualify);
   const actions = agentRowActions({
@@ -59,14 +59,14 @@ export function AgentRow({
     onDetails: () => onDetails(row),
     onClose: () => onClose(row),
   });
-  const [pin, details, close] = actions.menu;
-  const menu = [
-    ...entries.agent(row),
-    ...(pin ? [pin] : []),
-    ...(details ? [details] : []),
-    { key: 'rename', title: t('Rename…'), icon: 'edit' as const, onPress: () => onRename(row) },
-    ...(close ? [close] : []),
-  ];
+  const menu = agentMenu(row, {
+    pinned,
+    labels,
+    onPin: () => onTogglePin(row),
+    onDetails: () => onDetails(row),
+    onRename: () => onRename(row),
+    onClose: () => onClose(row),
+  });
   return (
     <AgentCard
       testID={`agent-row-${row.agent.pane_id}`}
