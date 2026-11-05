@@ -9,6 +9,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "deploy": "node scripts/deploy.mjs"
   }
 }

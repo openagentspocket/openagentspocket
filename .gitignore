@@ -19,3 +19,4 @@ design/atlas/
 # Firebase app config (downloaded with firebase apps:sdkconfig; not committed)
 apps/mobile/google-services.json
 apps/mobile/app.local.json
+packages/relay/deploy.local.json

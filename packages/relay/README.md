@@ -166,19 +166,21 @@ FCM assertion and access-token cache, and the rate-limit windows.
 
 ## Deploy
 
-Agentico's default relay URL is `http://127.0.0.1:8787`, a relay on the Host
-itself. The hosted relay is the Cloudflare Worker `agentico-relay` on
-workers.dev (`https://agentico-relay.<account subdomain>.workers.dev`); set
+OpenAgentsPocket's default relay URL is `http://127.0.0.1:8787`, a relay on the Host
+itself. The hosted relay is the Cloudflare Worker `openagentspocket-relay` on
+workers.dev (`https://openagentspocket-relay.<account subdomain>.workers.dev`); set
 that origin as the app's custom relay URL. The same Worker serves the app's
 privacy policy at `GET /privacy` (`src/privacy.js`, contact from the
 `PRIVACY_CONTACT` var; the App Store listing links there).
 
 1. In the Apple Developer portal, create an APNs auth key (`.p8`) for the
    team that signs the app; note the key id and team id.
-2. `npx wrangler deploy` from this directory (a Cloudflare account is the
-   only prerequisite; the worker has no build step).
-3. Set the vars: `APNS_TEAM_ID`, `APNS_KEY_ID`, `APNS_TOPIC` and
-   `PRIVACY_CONTACT` (in `wrangler.toml` or in the dashboard).
+2. Write your account values to `deploy.local.json` in this directory (gitignored: the repo is open
+   source, so account ids never go in `wrangler.toml`):
+   `{ "APNS_TEAM_ID": "...", "APNS_KEY_ID": "...", "FCM_PROJECT_ID": "...", "PRIVACY_CONTACT": "..." }`
+   (`APNS_TOPIC` defaults to the app bundle id in `wrangler.toml`).
+3. `pnpm deploy` (= `node scripts/deploy.mjs`; add `--dry-run` to check) after `npx wrangler login`. It passes
+   those values as `wrangler deploy --var`. A Cloudflare account is the only prerequisite; no build step.
 4. `npx wrangler secret put APNS_KEY_P8` and paste the `.p8` PEM contents.
 5. Smoke-test with a sandbox token:
    `curl -s -X POST http://127.0.0.1:8787/push -d '{"token":"<hex>","env":"sandbox","envelope":"{}","collapse":"smoke"}'`

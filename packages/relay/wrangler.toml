@@ -11,10 +11,10 @@
 #
 # See README.md for the full deploy walkthrough.
 
-name = "agentico-relay"
+name = "openagentspocket-relay"
 main = "src/worker.js"
 compatibility_date = "2026-07-01"
-# Served at https://agentico-relay.<account subdomain>.workers.dev. A custom
+# Served at https://openagentspocket-relay.<account subdomain>.workers.dev. A custom
 # domain can replace it later:
 # [[routes]]
 # pattern = "relay.example.com"
