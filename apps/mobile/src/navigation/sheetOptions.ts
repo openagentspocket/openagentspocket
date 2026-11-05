@@ -3,25 +3,27 @@ import type { NativeStackNavigationOptions } from 'expo-router';
 import { Platform } from 'react-native';
 
 /**
- * Where a route sheet rests, as shares of the screen height, ascending: `[0.7, 1]` opens at 70% and
- * drags up to full; `'fit'` is as tall as the content (needs content that has its own height).
+ * How tall a route sheet opens. `full` (the default): a sheet whose content scrolls or pushes
+ * further screens opens at full height and never at a guessed fraction. `fit`: as tall as its
+ * content, for a short sheet whose content has its own height (no `flex: 1` inside).
  */
-export type SheetDetents = readonly number[] | 'fit';
+export type SheetSize = 'full' | 'fit';
 
 /**
- * The one way a route is presented as a sheet: iOS's native form sheet (rounded, grabber, detents,
- * system material) with the radius from the sheet token. Android and web keep the full-screen modal:
- * the Android bottom sheet cannot host the nested Stacks some of these routes own, and web has no
- * native sheet. Presentation is static, so call this in the root stack only (see modalRoutes.test).
+ * The one way a route is presented as a sheet: iOS's native form sheet (rounded, grabber, system
+ * behavior) with the radius from the sheet token and the app's own opaque surface, so it matches
+ * the JS `Sheet`. Android and web keep the full-screen modal: the Android bottom sheet cannot host
+ * the nested Stacks some of these routes own, and web has no native sheet. Presentation is static,
+ * so call this in the root stack only (see modalRoutes.test).
  */
 export function sheetOptions(
   { metrics }: Pick<Theme, 'metrics'>,
-  { detents = [1] }: { detents?: SheetDetents } = {},
+  { size = 'full' }: { size?: SheetSize } = {},
 ): NativeStackNavigationOptions {
   if (Platform.OS !== 'ios') return { presentation: 'modal' };
   return {
     presentation: 'formSheet',
-    sheetAllowedDetents: detents === 'fit' ? 'fitToContents' : [...detents],
+    sheetAllowedDetents: size === 'fit' ? 'fitToContents' : [1],
     sheetCornerRadius: metrics.sheetRadius,
     sheetGrabberVisible: true,
     sheetExpandsWhenScrolledToEdge: true,

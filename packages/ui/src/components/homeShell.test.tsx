@@ -1,4 +1,5 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
+import { Platform } from 'react-native';
 import { renderThemed } from '../test-utils';
 import { Fab, HomeHostCard, InboxCard, LargeTitleBar, SessionsStrip, UsageRing } from './homeShell';
 
@@ -103,6 +104,12 @@ describe('UsageRing', () => {
 });
 
 describe('Fab', () => {
+  // On iOS a choice runs once the sheet has left (the Modal's onDismiss, which Jest never fires).
+  const asOS = (os: 'ios' | 'android') =>
+    Object.defineProperty(Platform, 'OS', { configurable: true, get: () => os });
+  beforeEach(() => asOS('android'));
+  afterEach(() => asOS('ios'));
+
   it('opens the New menu and runs an item', async () => {
     const onAgent = jest.fn();
     await renderThemed(
@@ -112,7 +119,7 @@ describe('Fab', () => {
       />,
     );
     await fireEvent.press(screen.getByRole('button', { name: 'New' }));
-    await fireEvent.press(await screen.findByRole('menuitem', { name: 'New Agent' }));
+    await fireEvent.press(await screen.findByTestId('fab-sheet-agent'));
     await waitFor(() => expect(onAgent).toHaveBeenCalledTimes(1));
   });
 

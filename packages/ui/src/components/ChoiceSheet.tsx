@@ -18,7 +18,8 @@ export interface ChoiceOption {
   /** A small caps line above the title ("Recommended"). */
   eyebrow?: string;
   title: string;
-  description: string;
+  /** One sentence under the title; a compact row without it. */
+  description?: string;
   /** A trailing footnote ("~2 min"). */
   meta?: string;
   /** Outlines the card in the accent color: the choice we suggest. */
@@ -31,20 +32,29 @@ interface ChoiceSheetProps {
   title: string;
   options: readonly ChoiceOption[];
   onClose: () => void;
+  onDismissed?: () => void;
   testID?: string;
 }
 
-/** A bottom sheet of a few big choices, each a card with an icon, title, sentence and meta; testIDs are `<testID>-<option id>`. */
+/** A bottom sheet of a few choices, each a card with an icon, title, optional sentence and meta; testIDs are `<testID>-<option id>`. */
 export function ChoiceSheet({
   visible,
   title,
   options,
   onClose,
+  onDismissed,
   testID = 'choice-sheet',
 }: ChoiceSheetProps) {
   const styles = useStyles();
   return (
-    <Sheet visible={visible} onClose={onClose} title={title} detent="fit" testID={testID}>
+    <Sheet
+      visible={visible}
+      onClose={onClose}
+      onDismissed={onDismissed}
+      title={title}
+      detent="fit"
+      testID={testID}
+    >
       <View style={styles.body}>
         {options.map((option) => (
           <Card
@@ -75,9 +85,11 @@ export function ChoiceSheet({
                   </Text>
                 ) : null}
                 <Text variant="headline">{option.title}</Text>
-                <Text variant="subheadline" tone="secondary">
-                  {option.description}
-                </Text>
+                {option.description ? (
+                  <Text variant="subheadline" tone="secondary">
+                    {option.description}
+                  </Text>
+                ) : null}
                 {option.meta ? (
                   <Text variant="footnote" tone="tertiary" style={styles.meta}>
                     {option.meta}

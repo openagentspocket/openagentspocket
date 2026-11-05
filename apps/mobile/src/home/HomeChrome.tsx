@@ -54,7 +54,7 @@ export function NewStrip({ items }: { items: readonly ActionMenuItem[] }) {
   const styles = useStyles();
   return (
     <View style={[styles.strip, styles.floating]} pointerEvents="box-none">
-      <Fab items={items} accessibilityLabel={t('New')} />
+      <Fab items={items} accessibilityLabel={t('New')} menuTitle={t('New')} />
     </View>
   );
 }

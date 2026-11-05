@@ -37,7 +37,7 @@ export function ConnectionSheet(props: ConnectionSheetProps) {
       visible={props.visible}
       onClose={props.onClose}
       title={props.title}
-      detent="medium"
+      detent="fit"
       trailing={edit ? { ...edit, testID: `${testID}-edit` } : undefined}
       footer={
         <View style={styles.footer}>

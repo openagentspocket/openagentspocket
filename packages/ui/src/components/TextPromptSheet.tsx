@@ -41,7 +41,7 @@ export function TextPromptSheet({
       visible={visible}
       onClose={onClose}
       title={title}
-      detent="medium"
+      detent="fit"
       leading={{ label: cancelLabel, onPress: onClose, testID: `${testID}-cancel` }}
       trailing={{ label: saveLabel, onPress: () => onSave(value), testID: `${testID}-save` }}
       testID={testID}

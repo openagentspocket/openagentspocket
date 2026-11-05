@@ -12,14 +12,14 @@ describe('sheetOptions', () => {
 
   it('is the native form sheet on iOS with the radius token and the given detents', () => {
     setOS('ios');
-    expect(sheetOptions(theme, { detents: [0.7, 1] })).toMatchObject({
+    expect(sheetOptions(theme, { size: 'full' })).toMatchObject({
       presentation: 'formSheet',
-      sheetAllowedDetents: [0.7, 1],
+      sheetAllowedDetents: [1],
       sheetCornerRadius: metrics.sheetRadius,
       sheetGrabberVisible: true,
     });
     expect(sheetOptions(theme).sheetAllowedDetents).toEqual([1]);
-    expect(sheetOptions(theme, { detents: 'fit' }).sheetAllowedDetents).toBe('fitToContents');
+    expect(sheetOptions(theme, { size: 'fit' }).sheetAllowedDetents).toBe('fitToContents');
   });
 
   it('keeps the full-screen modal where there is no native form sheet', () => {

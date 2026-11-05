@@ -23,7 +23,7 @@ export function PasteReviewSheet({ review, onConfirm, onCancel }: Props) {
       visible={review !== null}
       onClose={onCancel}
       title={t('Review Paste')}
-      detent="medium"
+      detent="fit"
       testID="paste-review"
       footer={
         <View style={styles.actions}>

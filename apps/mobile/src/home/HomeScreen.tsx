@@ -52,14 +52,27 @@ export function HomeScreen(props: HomeScreenProps) {
   const reserved = useNewStripHeight();
 
   const newMenu = [
-    { key: 'new-agent', title: t('New Agent'), icon: 'add', onPress: () => props.onNewAgent?.() },
+    {
+      key: 'new-agent',
+      title: t('New Agent'),
+      subtitle: t('Start an agent on one of your Hosts.'),
+      icon: 'add',
+      onPress: () => props.onNewAgent?.(),
+    },
     {
       key: 'new-terminal',
       title: t('New Terminal'),
+      subtitle: t('Open a shell on one of your Hosts.'),
       icon: 'terminal',
       onPress: () => props.onNewTerminal?.(),
     },
-    { key: 'add-host', title: t('Add Host'), icon: 'server', onPress: () => onAddHost?.() },
+    {
+      key: 'add-host',
+      title: t('Add Host'),
+      subtitle: t('Pair a computer with a QR code or add it by hand.'),
+      icon: 'server',
+      onPress: () => onAddHost?.(),
+    },
   ] as const;
   const empty = hosts.length === 0;
   return (
