@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Modal, Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { noFocusRing } from '../primitives/Button';
 import { monoFamily, Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
@@ -264,7 +272,9 @@ function AlertPanel({ request }: { request: AlertRequest }) {
   }
 
   return (
-    <View
+    // Padding while the keyboard is up keeps a prompt's text field above it.
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={[
         styles.backdrop,
         noFocusRing,
@@ -286,7 +296,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
       >
         {body}
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

@@ -57,9 +57,11 @@ interface ScreenProps {
    */
   edges?: readonly Edge[];
   /**
-   * Lifts the content above the software keyboard. Android draws edge to edge, so the window no
-   * longer resizes and the keyboard would cover the lower fields (a tap on them hit the keys and the
-   * text went to the previously focused field).
+   * Keeps the focused field above the software keyboard (on by default, in sheets too: the screen's
+   * own frame is measured, so a form sheet at a partial detent is handled). A scrolling screen on iOS
+   * lets the ScrollView inset itself and scroll the field into view; the others, and Android (which
+   * draws edge to edge, so the window no longer resizes), lift the content with a
+   * KeyboardAvoidingView. False only for a screen that has no fields.
    */
   keyboardAvoiding?: boolean;
   /** Full width, no inset or readable column: the screen lays out its own columns (non-scrolling). */
@@ -74,13 +76,14 @@ export function Screen({
   refreshing = false,
   onRefresh,
   edges,
-  keyboardAvoiding = false,
+  keyboardAvoiding = true,
   header,
   bare = false,
   testID = 'screen',
 }: ScreenProps) {
   const styles = useStyles();
   const theme = useTheme();
+  const nativeInsets = Platform.OS === 'ios' && scroll && !bare;
   const refresh = onRefresh ? (
     <ThemedRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
   ) : undefined;
@@ -94,7 +97,7 @@ export function Screen({
       <ScreenHeaderBar header={header} />
       <KeyboardAvoidingView
         style={styles.fill}
-        enabled={keyboardAvoiding}
+        enabled={keyboardAvoiding && !nativeInsets}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         testID={`${testID}-keyboard`}
       >
@@ -107,6 +110,7 @@ export function Screen({
             contentContainerStyle={[styles.content, styles.readable]}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="on-drag"
+            automaticallyAdjustKeyboardInsets={keyboardAvoiding}
             refreshControl={refresh}
           >
             {children}

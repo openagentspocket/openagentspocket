@@ -232,6 +232,8 @@ export function Sheet({
           <ScrollView
             contentContainerStyle={styles.body}
             keyboardShouldPersistTaps="handled"
+            // The panel already lifts with the keyboard; this scrolls the focused field into view.
+            automaticallyAdjustKeyboardInsets
             style={live === 'fit' ? { flexShrink: 1 } : { flex: 1 }}
           >
             <SurfaceFillProvider value="surfaceOverlay">{children}</SurfaceFillProvider>
