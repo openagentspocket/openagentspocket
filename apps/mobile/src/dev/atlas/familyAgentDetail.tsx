@@ -1,11 +1,13 @@
+// Atlas entries of the agent detail family (agent-detail.*). Owned by its UX family task, so parallel tasks never edit the same registry file.
+import { t } from '@openagentspocket/i18n';
 import { Stack } from 'expo-router';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
+import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { AtlasBlocked } from './atlasBlocked';
 import { AtlasChat } from './atlasChat';
+import { noop, titled } from './atlasHelpers';
 import type { AtlasEntry } from './entries';
-
-const noop = () => {};
 
 /** The Agent detail in a fixed state: Agent pane, surface, and what is pressed after it settles. */
 function detail(
@@ -93,4 +95,16 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.snippet-editor': terminal,
   'agent-detail.shell-close-confirm': terminal,
   'agent-detail.shell-keys-dock': terminal,
+  'agent-detail.shell-terminal': {
+    render: () =>
+      titled(
+        t('Terminal'),
+        <ShellTerminalScreen
+          hostId="demo"
+          workspaceId="w0"
+          cwd="/work/api-server"
+          onClose={noop}
+        />,
+      ),
+  },
 };

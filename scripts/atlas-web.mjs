@@ -60,12 +60,24 @@ try {
     if (device === 'ipad') browser('set', 'viewport', '1366', '1024', '2');
     else browser('set', 'viewport', '402', '874', '3');
   };
+  const ready = () => {
+    try {
+      return (
+        Number(browser('eval', "document.querySelectorAll('[data-testid]').length").trim()) > 3
+      );
+    } catch {
+      return false;
+    }
+  };
   // The first load bundles; later ones are instant.
   const suffix = theme === 'indigo' ? '' : `.${theme}`;
   for (const id of targets) {
     setViewport(devices.get(id) ?? 'iphone');
     browser('open', `${base}/__atlas/${id}?theme=${theme}`);
-    await sleep(id === targets[0] ? 8000 : 1800);
+    // Readiness check, not a fixed wait: the first load bundles and can paint a blank canvas.
+    await sleep(1800);
+    for (let i = 0; i < 60 && !ready(); i++) await sleep(1000);
+    await sleep(600);
     // Expo's dev error toast (web-only DOM prop warnings) must not cover the capture.
     browser(
       'eval',

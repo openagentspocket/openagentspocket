@@ -22,9 +22,12 @@ UX phase E merged what the judges approved: UX3-composer-extras (round 2), UX1-s
 routes, keyboard avoiding + pinned sheet bar in Screen), UX1-menu-preview, T-e2e-w5 (real push permission, e2e flows,
 Android cold-start link, port field); ui 265, mobile 301. Rejected on stale evidence or real gaps: UX1-home,
 UX1-agents-list, UX1-usage, UX1-notifications, UX3-agent-bar.
-**Running:** UX phase F (`scratchpad/rn/ux-f.js`): third round for those five in their worktrees, fresh captures
-enforced (new server, cleared Metro cache, evidence newer than the last commit) and judges regenerate the sheets
-themselves. Next: UX1-agent-detail, UX1-files-changes-ports, UX1-new-agent, UX1-tint-audit, UX1-wide, iOS atlas pass.
+UX phase F merged: UX3-agent-bar, UX1-home and UX1-usage approved after the judges regenerated the sheets
+themselves (round 3); ui 275, mobile 307. Lesson: workers passed atlas ids as one quoted string (nothing captured,
+old PNGs reused) and Metro served stale code: fresh server + cleared cache + separate ids + judge regeneration.
+**Running:** UX phase G (`scratchpad/rn/ux-g.js`): round 4 for UX1-agents-list (quick-detail sheet padding, nested
+row hairlines) and UX1-notifications (Papel alert surface, web focus ring, button wrap, popover anchor); assembly of
+UX1-agent-detail, UX1-files-changes-ports, UX1-new-agent. Next: UX1-tint-audit, UX1-wide, iOS atlas pass + Maestro.
 
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
