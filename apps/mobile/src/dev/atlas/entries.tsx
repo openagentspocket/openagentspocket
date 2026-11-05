@@ -2,28 +2,20 @@ import { t } from '@openagentspocket/i18n';
 import { confirm, Screen } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
-import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import Agents from '@/app/agents';
 import Board from '@/app/board';
-import ChangesRoute from '@/app/changes';
-import FileDiffRoute from '@/app/changes/diff';
-import FilesRoute from '@/app/files';
 import HostsRoute from '@/app/hosts';
 import HostFormRoute from '@/app/hosts/form';
 import PairRoute from '@/app/hosts/pair';
 import Index from '@/app/index';
-import NewAgentRoute from '@/app/new-agent';
-import PortsRoute from '@/app/ports';
 import SettingsRoot from '@/app/settings';
 import NotificationsRoute from '@/app/settings/notifications';
 import Usage from '@/app/usage';
 import UsageLimits from '@/app/usage-limits';
 import { HostDetailScreen } from '@/features/hosts/HostDetailScreen';
 import { SetupGuideScreen } from '@/features/hosts/SetupGuideScreen';
-import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
 import { AppLockView } from '@/settings/AppLockCover';
-import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
 import { NOTICES } from '@/settings/notices.generated';
 import { SettingsScreen } from '@/settings/SettingsScreen';
@@ -32,7 +24,11 @@ import { UsageBreakdownListScreen } from '@/usage/UsageBreakdownListScreen';
 import { UsageScreen } from '@/usage/UsageScreen';
 import type { AtlasScript } from './AtlasActions';
 import type { AtlasData } from './AtlasFrame';
+import { noop, titled } from './atlasHelpers';
 import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
+import { agentDetailEntries } from './familyAgentDetail';
+import { filesEntries } from './familyFiles';
+import { newAgentEntries } from './familyNewAgent';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
@@ -41,15 +37,6 @@ export interface AtlasEntry {
   script?: AtlasScript;
   render: () => ReactNode;
 }
-
-const titled = (title: string, body: ReactNode): ReactNode => (
-  <>
-    <Stack.Screen options={{ headerShown: true, title }} />
-    {body}
-  </>
-);
-
-const noop = () => {};
 
 /** A settings sub page as it pushes inside the sheet: native header, inline title, back button. */
 const settingsPage = (page: string): ReactNode => (
@@ -64,6 +51,9 @@ const settingsPage = (page: string): ReactNode => (
  * yet" by scripts/atlas-compare.mjs. Add the id to atlasMap.json too (a test checks both agree).
  */
 export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
+  ...agentDetailEntries,
+  ...filesEntries,
+  ...newAgentEntries,
   'shell.home': { render: () => <Index /> },
   'shell.home-new-menu': { script: { press: ['fab'] }, render: () => <Index /> },
   'console.row-context-menu': { script: { longPress: 'inbox-p2' }, render: () => <Index /> },
@@ -93,7 +83,6 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
     render: () => <Agents openDetail="p2" />,
   },
   'console.empty-states-agents': { data: { console: 'empty' }, render: () => <Agents /> },
-  'console.start-agent': { render: () => titled(t('New Agent'), <NewAgentRoute />) },
   'hosts.list': { render: () => <HostsRoute /> },
   'hosts.form': { render: () => <HostFormRoute /> },
   'hosts.detail': {
@@ -192,47 +181,5 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   },
   'usage.limits-sheet': { render: () => <UsageLimits /> },
   'usage.limits-page': { render: () => <UsageLimits /> },
-  'files.browser': { render: () => <FilesRoute /> },
-  'browser.ports': { render: () => <PortsRoute /> },
-  'changes.list': { render: () => <ChangesRoute /> },
-  'changes.file-diff': { render: () => <FileDiffRoute /> },
-  'agent-detail.container': {
-    render: () =>
-      titled(
-        '',
-        <AgentDetailScreen
-          hostId="demo"
-          paneId="p1"
-          storage={deviceStorage}
-          surface="chat"
-          onSwitch={noop}
-        />,
-      ),
-  },
-  'agent-detail.terminal': {
-    render: () =>
-      titled(
-        '',
-        <AgentDetailScreen
-          hostId="demo"
-          paneId="p1"
-          storage={deviceStorage}
-          surface="terminal"
-          onSwitch={noop}
-        />,
-      ),
-  },
-  'agent-detail.shell-terminal': {
-    render: () =>
-      titled(
-        t('Terminal'),
-        <ShellTerminalScreen
-          hostId="demo"
-          workspaceId="w0"
-          cwd="/work/api-server"
-          onClose={noop}
-        />,
-      ),
-  },
   'rn.board': { render: () => <Board /> },
 };
