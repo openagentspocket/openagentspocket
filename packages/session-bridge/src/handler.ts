@@ -1,8 +1,16 @@
-import { errorMessage, type herdr } from '@openagentspocket/core';
-import { SESSION_PROTOCOL, sessionSnapshot } from './snapshot';
-import { listPanes, type TmuxPane, type TmuxRunner } from './tmux';
+import type { herdr } from '@openagentspocket/core';
+import { SESSION_PROTOCOL, sessionSnapshot } from './snapshot.js';
+import { listPanes, type TmuxPane, type TmuxRunner } from './tmux.js';
 
 const DEFAULT_READ_LINES = 200;
+
+/** The app reads this to find where the Notification Registration goes. */
+export const pluginEntry = (version: string) => ({
+  plugin_id: 'agentico',
+  plugin_root: '',
+  enabled: true,
+  version,
+});
 
 interface Request {
   id: string;
@@ -88,6 +96,8 @@ async function answer(tmux: TmuxRunner, version: string, request: Request): Prom
     }
     case 'pane.read':
       return readPane(tmux, params);
+    case 'plugin.list':
+      return { type: 'plugin_list', plugins: [pluginEntry(version)] };
     case 'pane.send_text':
     case 'pane.send_keys':
     case 'pane.send_input':
@@ -115,6 +125,6 @@ export async function handleLine(tmux: TmuxRunner, version: string, line: string
     return `${JSON.stringify({ id, result: await answer(tmux, version, request) })}\n`;
   } catch (error) {
     const code = error instanceof BridgeError ? error.code : 'internal_error';
-    return `${JSON.stringify({ id, error: { code, message: errorMessage(error) } })}\n`;
+    return `${JSON.stringify({ id, error: { code, message: error instanceof Error ? error.message : String(error) } })}\n`;
   }
 }

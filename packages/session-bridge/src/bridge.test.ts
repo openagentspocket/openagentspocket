@@ -1,8 +1,8 @@
-import { decodeResult } from '@openagentspocket/core';
+import { agenticoEntry, decodeResult, parsePluginList } from '@openagentspocket/core';
 import { describe, expect, it } from 'vitest';
-import { handleLine } from './handler';
-import { SESSION_PROTOCOL } from './snapshot';
-import { parsePanes, type TmuxRunner } from './tmux';
+import { handleLine } from './handler.js';
+import { SESSION_PROTOCOL } from './snapshot.js';
+import { parsePanes, type TmuxRunner } from './tmux.js';
 
 const line = (...fields: string[]) => fields.join('|oap|');
 const PANES = [
@@ -39,6 +39,12 @@ describe('parsePanes', () => {
 });
 
 describe('the session protocol over tmux', () => {
+  it('lists the plugin the app looks for, so the device can register', async () => {
+    const out = await handleLine(fakeTmux().tmux, '0.1.0', request('plugin.list'));
+    const entries = parsePluginList(decodeResult(out, '7', 'plugin_list'));
+    expect(entries && agenticoEntry(entries, true)?.pluginId).toBe('agentico');
+  });
+
   it('answers ping as the app decodes it', async () => {
     const out = await handleLine(fakeTmux().tmux, '0.1.0', request('ping'));
     expect(decodeResult(out, '7', 'pong')).toMatchObject({ protocol: SESSION_PROTOCOL });

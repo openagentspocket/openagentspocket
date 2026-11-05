@@ -41,8 +41,11 @@ through plugin events such as `pane.agent_status_changed`. tmux has no such even
    cover Claude Code (done, tested with fake hook input and a fake relay; never fired by a real Claude Code). It stays quiet
    inside herdr, so it is not proved on herdr Hosts as first planned. Still to do: Codex and other programs, approval
    fields, the standalone package.
-5. tmux end to end: the bridge's socket server and events, attach commands per backend, backend capabilities in the app,
-   pairing through the standalone installer, a mark that tells backends apart.
+5. tmux end to end. The Host presents itself as a relocated herdr: the app already takes an endpoint (socket plus an
+   executable that behaves as `herdr`, ADRs 0023 and 0029 of the Swift app), so connect, attach and device registration
+   need no app change. Done: socket server, change events by polling, launcher, `install`. To do: a Pairing Code from a
+   Host without herdr (the only way to give the app an endpoint), starting the bridge at login, backend capabilities and
+   the mark that tells backends apart, and a run over real SSH.
 6. Host data contract (git status and the like), then `useLayoutMode` before iPad.
 
 ## Open

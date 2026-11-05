@@ -1,9 +1,9 @@
 import { existsSync } from 'node:fs';
 import { decodeResult } from '@openagentspocket/core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { handleLine } from './handler';
-import { tmuxRunner } from './runner';
-import { listPanes } from './tmux';
+import { handleLine } from './handler.js';
+import { tmuxRunner } from './runner.js';
+import { listPanes } from './tmux.js';
 
 const BINARY = ['/opt/homebrew/bin/tmux', '/usr/local/bin/tmux', '/usr/bin/tmux'].find(existsSync);
 const SOCKET = `oap-bridge-test-${process.pid}`;
@@ -75,6 +75,16 @@ describe.skipIf(!BINARY)('the bridge on a real tmux', () => {
       const out = await ask('pane.read', params);
       return decodeResult(out, '1', 'pane_read').read.text.includes('Enter');
     });
+  });
+
+  it('a Host with no tmux server is a Host with nothing open', async () => {
+    const idle = tmuxRunner({ binary: BINARY ?? 'tmux', socketName: `${SOCKET}-none` });
+    const out = await handleLine(
+      idle,
+      'test',
+      JSON.stringify({ id: '1', method: 'session.snapshot' }),
+    );
+    expect(decodeResult(out, '1', 'session_snapshot').snapshot.panes).toEqual([]);
   });
 
   it('reports the program a pane is running', async () => {

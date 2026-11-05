@@ -1,5 +1,6 @@
-import { type herdr, programIdentity } from '@openagentspocket/core';
-import type { TmuxPane } from './tmux';
+import type { herdr } from '@openagentspocket/core';
+import { agentKindOf } from './agents.js';
+import type { TmuxPane } from './tmux.js';
 
 /** The schema revision the bridge answers as (`packages/core/schema/herdr-schema.json`). */
 export const SESSION_PROTOCOL = 22;
@@ -8,7 +9,7 @@ export const SESSION_PROTOCOL = 22;
 const UNKNOWN_STATUS: herdr.AgentStatus = 'unknown';
 
 /** A pane's program when it is a known one; agents that run under `node` need the hooks to be named. */
-const agentOf = (pane: TmuxPane): string | undefined => programIdentity(pane.command).kind;
+const agentOf = (pane: TmuxPane): string | undefined => agentKindOf(pane.command);
 
 function paneInfo(pane: TmuxPane): herdr.PaneInfo {
   return {

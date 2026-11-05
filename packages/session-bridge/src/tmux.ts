@@ -79,6 +79,15 @@ export function parsePanes(output: string): TmuxPane[] {
     .filter((pane) => pane !== null);
 }
 
+/** tmux exits with an error when no server runs: to the app that is a Host with nothing open. */
+const isNoServer = (error: unknown) =>
+  error instanceof Error && /no server running|error connecting/.test(error.message);
+
 export async function listPanes(tmux: TmuxRunner): Promise<TmuxPane[]> {
-  return parsePanes(await tmux.run(['list-panes', '-a', '-F', PANE_FORMAT]));
+  try {
+    return parsePanes(await tmux.run(['list-panes', '-a', '-F', PANE_FORMAT]));
+  } catch (error) {
+    if (isNoServer(error)) return [];
+    throw error;
+  }
 }

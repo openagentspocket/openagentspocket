@@ -1,6 +1,6 @@
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import type { TmuxRunner } from './tmux';
+import type { TmuxRunner } from './tmux.js';
 
 const run = promisify(execFile);
 

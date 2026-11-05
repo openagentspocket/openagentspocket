@@ -9,7 +9,8 @@
   "scripts": {
     "test": "pnpm run typecheck:tests && vitest run",
     "typecheck:tests": "tsc -p tsconfig.tests.json",
-    "test:related": "vitest related --run"
+    "test:related": "vitest related --run",
+    "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@openagentspocket/core": "workspace:*"
