@@ -1,26 +1,16 @@
 import {
-  closeShellTerminal,
   type ShellTerminalCreationRequest,
+  type ShellTerminalIdentity,
   shellCreationRequest,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, confirm, EmptyState, makeStyles, useAnchor } from '@openagentspocket/ui';
-import { useMemo, useState } from 'react';
-import { View } from 'react-native';
-import { renderMessage } from '@/lib/renderText';
+import { EmptyState } from '@openagentspocket/ui';
+import { useMemo } from 'react';
 import { AppScreen } from '@/navigation/AppScreen';
-import { closeTerminalConfirmation } from './closeConfirmation';
-import { ShellSurface } from './ShellSurface';
+import { OpenedShell } from './OpenedShell';
 import { useShellTerminalServices } from './services';
-import { useShellTerminal } from './useShellTerminal';
 
-/** The key the Close Terminal popover points at. */
-export const SHELL_CLOSE_ANCHOR = 'shell-close';
-
-const useStyles = makeStyles((th) => ({
-  fill: { flex: 1 },
-  toolbar: { flexDirection: 'row', justifyContent: 'center', padding: th.spacing.xs },
-}));
+export { SHELL_CLOSE_ANCHOR } from './OpenedShell';
 
 interface Props {
   hostId: string;
@@ -30,12 +20,21 @@ interface Props {
   cwd?: string;
   /** The tab's name; empty keeps herdr's numbered one. */
   label?: string;
+  /** A pane that already exists: it is attached instead of opening a new tab. */
+  existing?: ShellTerminalIdentity;
   /** The shell was closed on the Host, or the user left it. */
   onClose: () => void;
 }
 
 /** A shell on a Host in a directory: opens or reattaches its tab, retained across navigation. */
-export function ShellTerminalScreen({ hostId, workspaceId = '', cwd, label, onClose }: Props) {
+export function ShellTerminalScreen({
+  hostId,
+  workspaceId = '',
+  cwd,
+  label,
+  existing,
+  onClose,
+}: Props) {
   const services = useShellTerminalServices();
   const request = useMemo<ShellTerminalCreationRequest | null>(
     () => shellCreationRequest(workspaceId, cwd, label),
@@ -52,86 +51,13 @@ export function ShellTerminalScreen({ hostId, workspaceId = '', cwd, label, onCl
       </AppScreen>
     );
   }
-  return <Opened services={services} hostId={hostId} request={request} onClose={onClose} />;
-}
-
-function Opened({
-  services,
-  hostId,
-  request,
-  onClose,
-}: {
-  services: ReturnType<typeof useShellTerminalServices>;
-  hostId: string;
-  request: ShellTerminalCreationRequest;
-  onClose: () => void;
-}) {
-  const styles = useStyles();
-  const { state, retry } = useShellTerminal(services, { hostId, request });
-  const [closing, setClosing] = useState(false);
-  const closeAnchor = useAnchor(SHELL_CLOSE_ANCHOR);
-
-  const close = async () => {
-    if (state.phase !== 'ready' || closing) return;
-    const ok = await confirm({ ...closeTerminalConfirmation(), anchorKey: SHELL_CLOSE_ANCHOR });
-    if (!ok) return;
-    setClosing(true);
-    const { identity } = state.entry.store;
-    const key = request.workspaceId || request.cwd;
-    const result = await closeShellTerminal(
-      services.remote(hostId),
-      services.memory(hostId, key),
-      identity,
-    );
-    if (!result.closed) {
-      setClosing(false);
-      await confirm({
-        title: t("Couldn't Close Terminal"),
-        message: renderMessage(result.message),
-        confirmLabel: t('OK'),
-        cancelLabel: null,
-      });
-      return;
-    }
-    await services.pool.remove(hostId, identity);
-    onClose();
-  };
-
   return (
-    <AppScreen
-      scroll={false}
-      header={{ variant: 'native', title: t('Terminal') }}
-      testID="shell-terminal-screen"
-    >
-      {state.phase === 'failed' ? (
-        <EmptyState
-          icon="warning"
-          title={t("Couldn't Open Terminal")}
-          message={renderMessage(state.message)}
-          testID="shell-failed"
-          actions={<Button title={t('Try Again')} onPress={retry} testID="shell-retry" />}
-        />
-      ) : (
-        <View style={styles.fill}>
-          {state.phase === 'ready' ? (
-            <ShellSurface entry={state.entry} />
-          ) : (
-            <EmptyState icon="terminal" title={t('Opening Terminal…')} testID="shell-opening" />
-          )}
-          <View style={styles.toolbar}>
-            <View ref={closeAnchor} collapsable={false}>
-              <Button
-                kind="capsule"
-                icon="more"
-                accessibilityLabel={t('Close Terminal')}
-                disabled={closing || state.phase !== 'ready'}
-                onPress={() => void close()}
-                testID="shell-close"
-              />
-            </View>
-          </View>
-        </View>
-      )}
-    </AppScreen>
+    <OpenedShell
+      services={services}
+      hostId={hostId}
+      request={request}
+      existing={existing}
+      onClose={onClose}
+    />
   );
 }

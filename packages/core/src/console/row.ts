@@ -34,6 +34,8 @@ export interface ConsoleTerminal {
   readonly hostId: string;
   readonly hostName: string;
   readonly paneId: string;
+  readonly tabId: string;
+  readonly terminalId: string;
   readonly workspaceId: string;
   readonly workspaceLabel?: string;
   /** The tab or pane name herdr reports, when there is one. */

@@ -43,6 +43,25 @@ export const hrefs = {
     pathname: '/terminal',
     params: { host: target.hostId, workspace: target.workspaceId, cwd: target.cwd },
   }),
+  /** A shell pane that already exists on the Host. */
+  openShell: (target: {
+    hostId: string;
+    workspaceId: string;
+    cwd: string;
+    paneId: string;
+    tabId: string;
+    terminalId: string;
+  }): Href => ({
+    pathname: '/terminal',
+    params: {
+      host: target.hostId,
+      workspace: target.workspaceId,
+      cwd: target.cwd,
+      pane: target.paneId,
+      tab: target.tabId,
+      terminal: target.terminalId,
+    },
+  }),
   files: (hostId: string, path?: string): Href => ({
     pathname: '/files',
     params: { host: hostId, ...(path ? { path } : {}) },

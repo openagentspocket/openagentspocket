@@ -45,8 +45,8 @@ through plugin events such as `pane.agent_status_changed`. tmux has no such even
    executable that behaves as `herdr`, ADRs 0023 and 0029 of the Swift app), so connect, attach and device registration
    need no app change. Done: socket server, change events by polling, launcher, `install`, `pair` (the plugin's ceremony,
    unchanged, run as for a relocated herdr). To do: starting the bridge at login, backend capabilities and
-   the mark that tells backends apart. Proved with OpenSSH on a user-level `sshd`: exec, launcher, forwarded socket and
-   attach. Not yet through the app's own SSH module.
+   the mark that tells backends apart. Proved on the simulator against a user-level `sshd` on localhost: pairing, enrollment, Console,
+   Agent detail and attach, through the app's own SSH module. Push is not: a simulator has no token.
 6. Host data contract (git status and the like), then `useLayoutMode` before iPad.
 
 ## Open

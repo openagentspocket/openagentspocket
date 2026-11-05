@@ -97,6 +97,7 @@ function AppStack() {
       <Stack.Screen name="new-agent" options={{ ...bare, ...sheet, title: t('New Agent') }} />
       <Stack.Screen name="new-terminal" options={{ ...bare, ...sheet, title: t('New Terminal') }} />
       <Stack.Screen name="worktree" options={{ ...sheet, title: t('Worktree') }} />
+      <Stack.Screen name="terminals" options={{ ...bare, title: t('Terminals') }} />
       <Stack.Screen name="__gallery" options={bare} />
       <Stack.Screen name="__atlas" options={bare} />
       <Stack.Screen name="__ssh" options={bare} />

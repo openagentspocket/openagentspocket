@@ -65,7 +65,7 @@ export function ShellSurface({ entry }: { entry: PoolEntry }) {
           />
         )}
       </TerminalZoom>
-      <Overlay status={store.terminalStatus} store={store} />
+      <Overlay status={terminal.snapshot.status} store={store} />
     </View>
   );
 }

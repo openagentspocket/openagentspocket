@@ -35,12 +35,19 @@ export default function TerminalsRoute() {
     if (cwd)
       router.push(hrefs.shell({ hostId: group.hostId, workspaceId: group.workspaceId, cwd }));
   };
+  const open = (rowId: string) => {
+    const at = rowId.lastIndexOf(':');
+    const group = groups.find((candidate) => candidate.id === rowId.slice(0, at))?.source;
+    const terminal = group?.terminals[Number(rowId.slice(at + 1))];
+    if (group && terminal?.cwd) router.push(hrefs.openShell({ ...terminal, cwd: terminal.cwd }));
+  };
   return (
     <>
       <TerminalsListScreen
         groups={groups}
         onHome={() => router.back()}
         onNew={() => router.push('/new-terminal')}
+        onOpen={open}
         onNewIn={newIn}
       />
     </>

@@ -130,6 +130,8 @@ export function projectSnapshot(input: SnapshotInputs): ProjectedSnapshot {
         hostId: host.id,
         hostName: host.name,
         paneId: pane.pane_id,
+        tabId: pane.tab_id,
+        terminalId: pane.terminal_id,
         workspaceId: pane.workspace_id,
         workspaceLabel: workspaceById.get(pane.workspace_id)?.label,
         label: pane.label ?? undefined,

@@ -9,6 +9,8 @@ const shell = (paneId: string, workspaceId: string, extra: Partial<ConsoleTermin
   hostId: 'h',
   hostName: 'Host',
   paneId,
+  tabId: 't',
+  terminalId: paneId,
   workspaceId,
   ...extra,
 });

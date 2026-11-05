@@ -1,12 +1,31 @@
+import { systemClock } from '@openagentspocket/transport';
 import { type ReactNode, useEffect, useSyncExternalStore } from 'react';
 import { AppState } from 'react-native';
 import { CompositionProvider } from '@/composition/CompositionProvider';
 import { deviceComposition } from '@/composition/deviceComposition';
 import { ConsoleStoreProvider } from '@/console/hooks';
 import { ConversationsProvider } from '@/conversations/useConversation';
+import { createLiveShellServices } from '@/features/terminals/liveServices';
+import {
+  type ShellTerminalServices,
+  ShellTerminalServicesProvider,
+} from '@/features/terminals/services';
 import { NotificationServicesProvider } from '@/notifications/services';
 import { deviceServices } from './deviceServices';
+import type { LiveServices } from './liveServices';
 import { isDemoMode, subscribeDemoMode } from './mode';
+
+let shells: ShellTerminalServices | undefined;
+
+/** One set per app run: the pool's retention budget spans every screen. */
+function shellServices({ store }: LiveServices): ShellTerminalServices {
+  shells ??= createLiveShellServices({
+    console: store,
+    clock: systemClock,
+    hostName: (hostId) => store.getState().hosts.find((host) => host.id === hostId)?.name ?? '',
+  });
+  return shells;
+}
 
 /**
  * Starts the live connections and hands the Console its store, unless demo mode is on (then
@@ -39,7 +58,11 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
     <ConsoleStoreProvider store={services.store}>
       <ConversationsProvider registry={services.conversations}>
         <NotificationServicesProvider services={services.notifications}>
-          <CompositionProvider composition={deviceComposition()}>{children}</CompositionProvider>
+          <CompositionProvider composition={deviceComposition()}>
+            <ShellTerminalServicesProvider services={shellServices(services)}>
+              {children}
+            </ShellTerminalServicesProvider>
+          </CompositionProvider>
         </NotificationServicesProvider>
       </ConversationsProvider>
     </ConsoleStoreProvider>

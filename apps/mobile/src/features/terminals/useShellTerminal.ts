@@ -6,6 +6,8 @@ import {
   RetentionFailure,
   resolveShellTerminal,
   type ShellTerminalCreationRequest,
+  type ShellTerminalIdentity,
+  type ShellTerminalMemory,
   type Text,
 } from '@openagentspocket/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -21,7 +23,16 @@ export interface ShellTerminalTarget {
   readonly hostId: string;
   /** The shell's directory; also what the remembered tab is keyed by without a Workspace. */
   readonly request: ShellTerminalCreationRequest;
+  /** A pane the Host already has; it is verified, and a new shell opens if it is gone. */
+  readonly existing?: ShellTerminalIdentity;
 }
+
+/** Memory that recalls one pane and keeps nothing else: what the user tapped is not remembered. */
+const rememberedOnly = (identity: ShellTerminalIdentity): ShellTerminalMemory => ({
+  recall: () => identity,
+  remember: () => {},
+  forget: () => {},
+});
 
 const failureOf = (error: unknown): OpenTerminalFailure =>
   error instanceof RetentionFailure
@@ -34,7 +45,7 @@ const failureOf = (error: unknown): OpenTerminalFailure =>
  * explicit open or retry, never from a reconnect.
  */
 export function useShellTerminal(services: ShellTerminalServices, target: ShellTerminalTarget) {
-  const { hostId, request } = target;
+  const { hostId, request, existing } = target;
   const [state, setState] = useState<ShellTerminalState>({ phase: 'opening' });
   const [attempt, setAttempt] = useState(0);
   const owner = useRef(newUuid());
@@ -50,7 +61,7 @@ export function useShellTerminal(services: ShellTerminalServices, target: ShellT
     (async () => {
       const identity = await resolveShellTerminal(
         services.remote(hostId),
-        services.memory(hostId, key),
+        existing ? rememberedOnly(existing) : services.memory(hostId, key),
         request,
       );
       const entry = await pool.select({
@@ -76,7 +87,7 @@ export function useShellTerminal(services: ShellTerminalServices, target: ShellT
       cancellation.cancel();
       released?.();
     };
-  }, [services, hostId, key, request, attempt]);
+  }, [existing, services, hostId, key, request, attempt]);
 
   const retry = useCallback(() => setAttempt((value) => value + 1), []);
   return { state, retry };
