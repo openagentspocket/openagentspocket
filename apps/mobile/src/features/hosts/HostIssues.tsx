@@ -7,6 +7,7 @@ import { failureText } from '@/connections/failureText';
 import { useConsoleState, useConsoleStore } from '@/console/hooks';
 import { homeLabels } from '@/home/homeLabels';
 import { hostState } from '@/home/homeModel';
+import { hrefs } from '@/navigation/hrefs';
 import { HostConnectionSheet } from './HostConnectionSheet';
 import { routeLine } from './HostInfoSections';
 import { useHosts } from './useHosts';
@@ -48,7 +49,7 @@ export function HostIssues() {
           onStop={() => void store.stopConnecting(open.id)}
           onEdit={() => {
             setOpenId(undefined);
-            router.push({ pathname: '/hosts/form', params: { edit: open.id } });
+            router.push(hrefs.hostForm({ edit: open.id }));
           }}
           onClose={() => setOpenId(undefined)}
         />

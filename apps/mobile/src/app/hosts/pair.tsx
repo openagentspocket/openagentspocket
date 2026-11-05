@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { PairingScreen } from '@/features/hosts/PairingScreen';
+import { hrefs } from '@/navigation/hrefs';
 
 /** `/hosts/pair`: scan or paste a Pairing Code. */
 export default function PairRoute() {
@@ -8,7 +9,7 @@ export default function PairRoute() {
     <PairingScreen
       onCancel={() => router.back()}
       onPaired={(id) => router.replace({ pathname: '/hosts/[id]', params: { id } })}
-      onAddManually={() => router.replace('/hosts/form')}
+      onAddManually={() => router.replace(hrefs.hostForm())}
     />
   );
 }

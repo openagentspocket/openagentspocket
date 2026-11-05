@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { HostListScreen } from '@/features/hosts/HostListScreen';
+import { hrefs } from '@/navigation/hrefs';
 
 /** `/hosts`: the saved Hosts. */
 export default function HostsRoute() {
@@ -9,12 +10,10 @@ export default function HostsRoute() {
       onDone={() => router.dismiss()}
       onSetupGuide={() => router.push('/hosts/guide')}
       onOpen={(host) => router.push({ pathname: '/hosts/[id]', params: { id: host.id } })}
-      onAdd={() => router.push('/hosts/form')}
-      onScan={() => router.push('/hosts/pair')}
-      onEdit={(host) => router.push({ pathname: '/hosts/form', params: { edit: host.id } })}
-      onDuplicate={(host) =>
-        router.push({ pathname: '/hosts/form', params: { duplicate: host.id } })
-      }
+      onAdd={() => router.push(hrefs.hostForm())}
+      onScan={() => router.push(hrefs.addHost())}
+      onEdit={(host) => router.push(hrefs.hostForm({ edit: host.id }))}
+      onDuplicate={(host) => router.push(hrefs.hostForm({ duplicate: host.id }))}
     />
   );
 }

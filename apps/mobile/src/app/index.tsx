@@ -9,7 +9,7 @@ export default function Index() {
   const router = useRouter();
   return (
     <HomeScreen
-      onAddHost={() => router.push('/hosts/form')}
+      onAddHost={() => router.push(hrefs.addHost())}
       onSetupGuide={() => void Linking.openURL(REPOSITORY_URL)}
       onOpenSettings={() => router.push('/settings')}
       onOpenHost={(id) => router.push({ pathname: '/hosts/[id]', params: { id } })}
