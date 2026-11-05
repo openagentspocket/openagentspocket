@@ -33,6 +33,10 @@ for the app's Usage Limits and Token Usage views.
 
 ## Install
 
+On macOS and Linux one command does the checks below, installs the plugin and opens the Pairing Code:
+`curl -fsSL https://openagentspocket.com/install.sh | sh` (script: `install/install.sh`; `--dry-run` only prints).
+The manual steps follow.
+
 On a new machine, first install the requirements above and make sure the
 OpenSSH server is running. On macOS, enable **System Settings > General >
 Sharing > Remote Login**. If `/etc/ssh` still has no `ssh_host_*_key.pub`
