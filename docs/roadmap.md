@@ -31,11 +31,13 @@ fix agents), Enzo reviews the compare sheets himself, max 2 iterations per scree
 (apps/mobile/src/dev/atlas/family*.tsx), one-page brief docs/agents/ux-worker.md, haiku for mechanical steps.
 Enzo reviewed the compare sheets himself (2026-11-05: "está todo perfecto, me encanta"): UX1-agent-detail,
 UX1-files-changes-ports and UX1-new-agent merged (ui 276, mobile 312, full test green).
-**Running (standalone agents, reused with SendMessage):** ux-detail ports the approved UX1-notifications branch
-(wf_308cc08d-920-18, built on the Nov 2 main) onto the assembled agent detail; ux-newagent builds the missing console
-screens (UX1-console, worktree ux-console); ux-files builds the missing settings pages (UX1-settings-pages, worktree
-ux-settings). Then: chat for Pi/OMP/Grok/OpenCode (P2.10), background work strip (P2.11), git data for the status
-line, iPad (UX1-wide), tint audit, iOS simulator pass + Maestro, watch/Siri last.
+2026-11-05: UX1-notifications, UX1-console, UX1-settings-pages and P2.11 background work merged after Enzo's review
+(main c57c41f; core 2611, ui 283, mobile 314). iPhone screen parity: 123 of 138 Swift atlas ids mapped, 13 dropped by
+decision (overlay networks, extra app themes), 2 left (settings.theme--papel is the Papel capture of settings.theme;
+shell.window-root is iPad). Next: P2.10 chat for Pi/OMP/Grok/OpenCode (ChatTranscriptAdapter), git status probe for the
+status line, UX1-wide (iPad), UX1-tint-audit, iOS simulator pass + Maestro, then the small leftovers in the progress
+docs (open an existing shell pane, terminal row swipe close, agent rows read the saved field layout, plugin method for
+field sync, Home background work, Files date format, Snippets route).
 
 Enzo decision (2026-11-05): extra Swift app themes (Catppuccin Mocha, Gruvbox Dark, Nord) only as terminal palettes; the
 app keeps Índigo, Papel, Noche.
