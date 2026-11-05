@@ -12,6 +12,7 @@
   "Demo Mode": "Modo demo",
   "Demo mode is set by the EXPO_PUBLIC_DEMO build flag.": "El modo demo lo fija el flag de compilación EXPO_PUBLIC_DEMO.",
   "Drag to reorder": "Arrastrar para reordenar",
+  "Easy Pair": "Easy Pair",
   "Easy Pair with QR": "Easy Pair con QR",
   "For people who know SSH: host, user and key.": "Para quienes conocen SSH: host, usuario y clave.",
   "It checks the machine": "Revisa la máquina",
