@@ -24,6 +24,7 @@ export interface AgentBarLabels {
   possiblyIncomplete: (readAt: string) => string;
   changes: string;
   openChanges: string;
+  dismissKeyboard: string;
 }
 
 /** English defaults, the Swift app's wording. */
@@ -52,4 +53,5 @@ export const defaultAgentBarLabels: AgentBarLabels = {
   possiblyIncomplete: (readAt) => `Possibly incomplete · Read at ${readAt}`,
   changes: 'Changes',
   openChanges: 'Open Changes',
+  dismissKeyboard: 'Dismiss keyboard',
 };

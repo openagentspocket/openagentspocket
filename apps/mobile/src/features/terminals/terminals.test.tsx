@@ -1,6 +1,13 @@
-import { HerdrApiError, type ShellTerminalRemote } from '@openagentspocket/core';
+import {
+  HerdrApiError,
+  MemoryStorage,
+  SettingsStore,
+  type ShellTerminalRemote,
+} from '@openagentspocket/core';
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { fakeAuthenticator } from '@/settings/authenticator';
+import { SettingsProvider } from '@/settings/SettingsProvider';
 import { createDemoShellServices } from './demo';
 import { ShellTerminalScreen } from './ShellTerminalScreen';
 import { type ShellTerminalServices, ShellTerminalServicesProvider } from './services';
@@ -26,8 +33,13 @@ async function renderShell(
   const view = await render(
     <ShellTerminalServicesProvider services={services}>
       <ThemeProvider themeId="indigo">
-        <OverlayHost />
-        <ShellTerminalScreen hostId="h1" cwd="/work/app" onClose={onClose} {...props} />
+        <SettingsProvider
+          store={new SettingsStore(new MemoryStorage())}
+          authenticator={fakeAuthenticator(null)}
+        >
+          <OverlayHost />
+          <ShellTerminalScreen hostId="h1" cwd="/work/app" onClose={onClose} {...props} />
+        </SettingsProvider>
       </ThemeProvider>
     </ShellTerminalServicesProvider>,
   );

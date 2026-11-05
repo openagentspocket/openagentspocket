@@ -7,6 +7,7 @@ import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
+import { KeyboardDismissButton } from './KeyboardDismissButton';
 import { useKeyRepeat } from './keyRepeat';
 
 /** A sticky modifier: off, armed for the next key, or locked until tapped again. */
@@ -102,12 +103,14 @@ const useStyles = makeStyles((t) => ({
 export interface TerminalToolbarLabels {
   dpad: string;
   keyboard: string;
+  hideKeyboard: string;
   more: string;
 }
 
 export const defaultToolbarLabels: TerminalToolbarLabels = {
   dpad: 'Arrow keys',
   keyboard: 'Keyboard',
+  hideKeyboard: 'Dismiss keyboard',
   more: 'More',
 };
 
@@ -321,6 +324,7 @@ export function TerminalToolbar({
         >
           <Icon name="keyboard" size={22} color="textPrimary" />
         </Pressable>
+        <KeyboardDismissButton label={text.hideKeyboard} testID="toolbar-keyboard-dismiss" />
         <ActionMenuButton items={moreItems} accessibilityLabel={text.more} testID="toolbar-more" />
       </GlassCapsule>
     </View>

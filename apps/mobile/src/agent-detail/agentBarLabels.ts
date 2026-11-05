@@ -28,5 +28,6 @@ export function agentBarLabels(): AgentBarLabels {
     possiblyIncomplete: (readAt) => t('Possibly incomplete · %@', t('Read at %@', readAt)),
     changes: t('Changes'),
     openChanges: t('Open Changes'),
+    dismissKeyboard: t('Dismiss keyboard'),
   };
 }
