@@ -62,67 +62,69 @@ export function AgentDetailScreen({
   const toggle = () => setSurface(surface === 'chat' ? 'terminal' : 'chat');
   return (
     <DetailUiProvider hostId={hostId} paneId={paneId}>
-      <AppScreen scroll={false} bare keyboardAvoiding testID="agent-detail">
-        <View style={styles.fill} testID={`slot-${surface}`}>
-          <DetailSlot
-            hostId={hostId}
-            paneId={paneId}
-            surface={surface}
-            activity={activityOf(row)}
-            messages={composer.snapshot.messages}
-            headerHeight={headerHeight}
-            onShowTerminal={() => setSurface('terminal')}
-          />
-          <View
-            style={styles.header}
-            pointerEvents="box-none"
-            onLayout={(event: LayoutChangeEvent) =>
-              setHeaderHeight(event.nativeEvent.layout.height)
-            }
-          >
-            <AgentHeader
+      <AgentSessionDrawer
+        open={drawer}
+        onOpen={() => setDrawer(true)}
+        onClose={() => setDrawer(false)}
+        rows={rows}
+        current={row}
+        onSelect={onSwitch}
+      >
+        <AppScreen scroll={false} bare keyboardAvoiding testID="agent-detail">
+          <View style={styles.fill} testID={`slot-${surface}`}>
+            <DetailSlot
+              hostId={hostId}
+              paneId={paneId}
+              surface={surface}
+              activity={activityOf(row)}
+              messages={composer.snapshot.messages}
+              headerHeight={headerHeight}
+              onShowTerminal={() => setSurface('terminal')}
+            />
+            <View
+              style={styles.header}
+              pointerEvents="box-none"
+              onLayout={(event: LayoutChangeEvent) =>
+                setHeaderHeight(event.nativeEvent.layout.height)
+              }
+            >
+              <AgentHeader
+                row={row}
+                surface={surface}
+                onSurface={setSurface}
+                onSidebar={() => setDrawer(true)}
+                menu={menu}
+                showTitle={surface === 'terminal'}
+              />
+            </View>
+          </View>
+          <View style={styles.dock}>
+            {phase === 'stale' ? <ReconnectingHint /> : null}
+            <DetailDock
               row={row}
               surface={surface}
+              status={status}
+              latencyMs={latency}
+              onOpenChanges={onOpenChanges}
+            />
+            <AgentComposerBar
+              composer={composer}
+              surface={surface}
+              program={row.agent.agent ?? 'unknown'}
+              projectRoot={row.agent.cwd ?? undefined}
+              status={status}
+              onToggleSurface={toggle}
+            />
+            <AgentSwitcher
+              rows={rows}
+              currentKey={key}
+              onSelect={onSwitch}
+              surface={surface}
               onSurface={setSurface}
-              onSidebar={() => setDrawer(true)}
-              menu={menu}
-              showTitle={surface === 'terminal'}
             />
           </View>
-        </View>
-        <View style={styles.dock}>
-          {phase === 'stale' ? <ReconnectingHint /> : null}
-          <DetailDock
-            row={row}
-            surface={surface}
-            status={status}
-            latencyMs={latency}
-            onOpenChanges={onOpenChanges}
-          />
-          <AgentComposerBar
-            composer={composer}
-            surface={surface}
-            program={row.agent.agent ?? 'unknown'}
-            projectRoot={row.agent.cwd ?? undefined}
-            status={status}
-            onToggleSurface={toggle}
-          />
-          <AgentSwitcher
-            rows={rows}
-            currentKey={key}
-            onSelect={onSwitch}
-            surface={surface}
-            onSurface={setSurface}
-          />
-        </View>
-        <AgentSessionDrawer
-          visible={drawer}
-          onClose={() => setDrawer(false)}
-          rows={rows}
-          current={row}
-          onSelect={onSwitch}
-        />
-      </AppScreen>
+        </AppScreen>
+      </AgentSessionDrawer>
     </DetailUiProvider>
   );
 }

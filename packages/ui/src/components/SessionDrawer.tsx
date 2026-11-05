@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Modal, Pressable, View } from 'react-native';
+import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { Icon } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { StatusDot } from '../primitives/StatusDot';
@@ -132,6 +133,8 @@ export interface SessionDrawerProps {
   selectedId?: string;
   onSelect: (id: string) => void;
   onAdd?: () => void;
+  /** Long-pressing an item opens this menu (the same actions the Agent lists offer); none draws no menu. */
+  menuFor?: (id: string) => readonly ActionMenuItem[];
   /** Present: the drawer floats in a Modal over a dimmed detail; tapping the scrim closes it. */
   onClose?: () => void;
   visible?: boolean;
@@ -149,6 +152,7 @@ export function SessionDrawer({
   selectedId,
   onSelect,
   onAdd,
+  menuFor,
   onClose,
   visible = true,
   labels = defaultAgentBarLabels,
@@ -159,6 +163,7 @@ export function SessionDrawer({
   const theme = useTheme();
   const [query, setQuery] = useState('');
   const [view, setView] = useState<'tree' | 'agents'>('tree');
+  const [menu, setMenu] = useState<readonly ActionMenuItem[] | null>(null);
   const [folded, setFolded] = useState<ReadonlySet<string>>(new Set());
   const needle = query.trim().toLowerCase();
   const shown = workspaces
@@ -182,6 +187,14 @@ export function SessionDrawer({
       <Pressable
         key={item.id}
         onPress={() => onSelect(item.id)}
+        onLongPress={
+          menuFor
+            ? () => {
+                const items = menuFor(item.id);
+                if (items.length > 0) setMenu(items);
+              }
+            : undefined
+        }
         accessibilityRole="button"
         accessibilityState={{ selected }}
         accessibilityLabel={item.title}
@@ -220,6 +233,8 @@ export function SessionDrawer({
     <View
       style={[
         styles.drawer,
+        // Embedded in a drawer layout it fills the drawer's height.
+        !onClose && { flexGrow: 1 },
         // The drawer is a window over the screen: it keeps clear of the notch and the home indicator.
         {
           paddingTop: insets.top + theme.spacing.sm,
@@ -356,11 +371,22 @@ export function SessionDrawer({
       )}
     </View>
   );
-  if (!onClose) return panel;
+  const actionMenu = (
+    <ActionMenu items={menu ?? []} visible={menu !== null} onClose={() => setMenu(null)} />
+  );
+  if (!onClose) {
+    return (
+      <>
+        {panel}
+        {actionMenu}
+      </>
+    );
+  }
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.scrim}>
         {panel}
+        {actionMenu}
         <Pressable
           style={styles.flex}
           onPress={onClose}

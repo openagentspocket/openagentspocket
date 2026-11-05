@@ -17,3 +17,16 @@ jest.mock('react-native-gesture-handler', () => {
   }
   return copy;
 });
+
+// The drawer runs on reanimated's native runtime; tests draw its content while it is open.
+jest.mock('react-native-drawer-layout', () => ({
+  Drawer: ({ open, renderDrawerContent, children }) => {
+    const { View } = require('react-native');
+    return (
+      <View>
+        {children}
+        {open ? renderDrawerContent() : null}
+      </View>
+    );
+  },
+}));
