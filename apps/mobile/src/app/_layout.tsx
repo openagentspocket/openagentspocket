@@ -13,6 +13,7 @@ import type { ReactNode } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
 import { bindDemoModeStorage } from '@/connections/mode';
+import { recordUncaughtErrors } from '@/diagnostics/crashStorage';
 import { useIncomingLinks } from '@/links/useIncomingLinks';
 import { useOpenAgent } from '@/links/useOpenAgent';
 import { statusBarStyle } from '@/navigation/screenOptions';
@@ -26,6 +27,7 @@ import { SettingsProvider, useSettings } from '@/settings/SettingsProvider';
 import { useResolvedThemeId } from '@/settings/useSettingsContext';
 import { useWidgetSync } from '@/widgets/useWidgetSync';
 
+recordUncaughtErrors();
 const settingsStore = new SettingsStore(deviceStorage);
 bindDemoModeStorage(deviceStorage);
 
