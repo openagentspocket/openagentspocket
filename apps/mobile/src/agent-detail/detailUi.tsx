@@ -1,10 +1,36 @@
 import { t } from '@openagentspocket/i18n';
 import { ClaudeSubagentTranscript, makeStyles, Sheet } from '@openagentspocket/ui';
-import { createContext, type ReactNode, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import { View } from 'react-native';
 import { useSubagentTranscript } from '@/conversations/useSubagentTranscript';
 
+/** One node a surface hands the dock (the terminal's key toolbar), drawn between the status line and the composer. */
+class DockSlot {
+  node: ReactNode = null;
+  private readonly listeners = new Set<() => void>();
+  readonly subscribe = (listener: () => void) => {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  };
+  readonly get = () => this.node;
+  set(node: ReactNode): void {
+    if (node === this.node) return;
+    this.node = node;
+    for (const listener of [...this.listeners]) listener();
+  }
+}
+
 interface DetailUi {
+  slot: DockSlot;
   /** The composer has focus: surfaces over it condense (Swift: "while the Composer is open"). */
   composing: boolean;
   setComposing: (composing: boolean) => void;
@@ -13,12 +39,31 @@ interface DetailUi {
 }
 
 const DetailUiContext = createContext<DetailUi>({
+  slot: new DockSlot(),
   composing: false,
   setComposing: () => undefined,
   openSubagent: () => undefined,
 });
 
 export const useDetailUi = () => useContext(DetailUiContext);
+
+/**
+ * Hands the dock a node to draw over the composer while the caller is mounted. The slot notifies
+ * only the dock's own subscriber, so the caller re-rendering does not loop.
+ */
+export function useDockSlot(node: ReactNode): void {
+  const { slot } = useDetailUi();
+  useEffect(() => {
+    slot.set(node);
+  });
+  useEffect(() => () => slot.set(null), [slot]);
+}
+
+/** Where the dock draws what `useDockSlot` was handed. */
+export function DockSlotView(): ReactNode {
+  const { slot } = useDetailUi();
+  return useSyncExternalStore(slot.subscribe, slot.get, slot.get);
+}
 
 // The sheet pads its body; the transcript draws its own bar and runs edge to edge.
 const useStyles = makeStyles((th) => ({ bleed: { marginHorizontal: -th.metrics.screenInset } }));
@@ -80,7 +125,11 @@ export function DetailUiProvider({
 }) {
   const [composing, setComposing] = useState(false);
   const [agentId, setAgentId] = useState<string | null>(null);
-  const value = useMemo(() => ({ composing, setComposing, openSubagent: setAgentId }), [composing]);
+  const slot = useRef(new DockSlot()).current;
+  const value = useMemo(
+    () => ({ slot, composing, setComposing, openSubagent: setAgentId }),
+    [slot, composing],
+  );
   return (
     <DetailUiContext.Provider value={value}>
       {children}

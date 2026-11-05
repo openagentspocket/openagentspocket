@@ -25,6 +25,9 @@ export interface AgentBarLabels {
   changes: string;
   openChanges: string;
   dismissKeyboard: string;
+  needsYou: string;
+  shells: string;
+  toolbar: string;
 }
 
 /** English defaults, the Swift app's wording. */
@@ -54,4 +57,7 @@ export const defaultAgentBarLabels: AgentBarLabels = {
   changes: 'Changes',
   openChanges: 'Open Changes',
   dismissKeyboard: 'Dismiss keyboard',
+  needsYou: 'Needs you',
+  shells: 'Shells',
+  toolbar: 'Toolbar',
 };

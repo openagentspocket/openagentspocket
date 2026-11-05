@@ -11,6 +11,9 @@ import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
+import { AGENT_SECTIONS, type DrawerItem, type DrawerWorkspace } from './sessionDrawerModel';
+
+export type { DrawerItem, DrawerWorkspace } from './sessionDrawerModel';
 
 const DRAWER_WIDTH = 330;
 /** Left padding of a tab row: its icon sits under the Workspace title, not the chevron. */
@@ -122,24 +125,6 @@ const useStyles = makeStyles((t) => ({
   flex: { flex: 1 },
 }));
 
-export interface DrawerItem {
-  id: string;
-  kind: 'agent' | 'shell';
-  title: string;
-  /** Required for an agent (draws its mark). */
-  program?: string;
-  /** "7m". */
-  age?: string;
-  status?: Status;
-}
-
-export interface DrawerWorkspace {
-  id: string;
-  title: string;
-  branch?: string;
-  items: readonly DrawerItem[];
-}
-
 export interface SessionDrawerProps {
   /** "Studio Mac" and the counts line "3 Agents · 2 shells". */
   host: { name: string; summary: string; status?: Status };
@@ -173,6 +158,7 @@ export function SessionDrawer({
   const insets = useInsets();
   const theme = useTheme();
   const [query, setQuery] = useState('');
+  const [view, setView] = useState<'tree' | 'agents'>('tree');
   const [folded, setFolded] = useState<ReadonlySet<string>>(new Set());
   const needle = query.trim().toLowerCase();
   const shown = workspaces
@@ -190,6 +176,46 @@ export function SessionDrawer({
       if (!next.delete(id)) next.add(id);
       return next;
     });
+  const renderRow = (item: DrawerItem) => {
+    const selected = item.id === selectedId;
+    return (
+      <Pressable
+        key={item.id}
+        onPress={() => onSelect(item.id)}
+        accessibilityRole="button"
+        accessibilityState={{ selected }}
+        accessibilityLabel={item.title}
+        testID={`${testID}-row-${item.id}`}
+        style={[styles.row, selected && { backgroundColor: withAlpha(theme.colors.accent, 0.25) }]}
+      >
+        <View style={styles.lead}>
+          {item.kind === 'agent' ? (
+            <ProgramMark
+              program={item.program ?? ''}
+              status={item.status}
+              size={22}
+              surface="surfaceRaised"
+            />
+          ) : (
+            <Icon name="terminal" size={18} />
+          )}
+        </View>
+        <Text variant="body" style={styles.rowTitle} numberOfLines={1}>
+          {item.title}
+        </Text>
+        {item.age ? (
+          <Text variant="footnote" tone="secondary" tabularNums>
+            {item.age}
+          </Text>
+        ) : null}
+      </Pressable>
+    );
+  };
+  const agentSections = AGENT_SECTIONS.map(({ key, pick }) => ({
+    key,
+    title: labels[key],
+    items: shown.flatMap((ws) => ws.items).filter(pick),
+  })).filter((section) => section.items.length > 0);
   const panel = (
     <View
       style={[
@@ -215,12 +241,29 @@ export function SessionDrawer({
           />
         </View>
         <View style={styles.toggles}>
-          <View style={[styles.toggle, { backgroundColor: withAlpha(theme.colors.accent, 0.25) }]}>
-            <Icon name="list" size={18} tint={theme.colors.accent} />
-          </View>
-          <View style={styles.toggle}>
-            <Icon name="people" size={18} />
-          </View>
+          {(['tree', 'agents'] as const).map((mode) => {
+            const active = view === mode;
+            return (
+              <Pressable
+                key={mode}
+                style={[
+                  styles.toggle,
+                  active && { backgroundColor: withAlpha(theme.colors.accent, 0.25) },
+                ]}
+                onPress={() => setView(mode)}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                accessibilityLabel={mode === 'tree' ? labels.workspaces : labels.switcher}
+                testID={`${testID}-view-${mode}`}
+              >
+                <Icon
+                  name={mode === 'tree' ? 'list' : 'people'}
+                  size={18}
+                  tint={active ? theme.colors.accent : undefined}
+                />
+              </Pressable>
+            );
+          })}
         </View>
       </View>
       <View style={styles.host}>
@@ -245,87 +288,72 @@ export function SessionDrawer({
           </Pressable>
         ) : null}
       </View>
-      <View style={styles.groupLabel}>
-        <Text variant="subheadline" tone="secondary" semibold>
-          {labels.workspaces}
-        </Text>
-        <View style={styles.count}>
-          <Text variant="caption2" tone="secondary" tabularNums>
-            {String(shown.length)}
-          </Text>
-        </View>
-      </View>
-      {shown.map((ws) => {
-        const open = !folded.has(ws.id) || Boolean(needle);
-        return (
-          <View key={ws.id} style={styles.group}>
-            <Pressable
-              style={styles.groupHead}
-              onPress={() => toggle(ws.id)}
-              accessibilityRole="button"
-              accessibilityState={{ expanded: open }}
-              accessibilityLabel={ws.title}
-              testID={`${testID}-fold-${ws.id}`}
-            >
-              <Icon name={open ? 'chevronDown' : 'chevronRight'} size={14} />
-              <Text variant="headline" style={styles.groupTitle} numberOfLines={1}>
-                {ws.title}
+      {view === 'agents' ? (
+        agentSections.map((section) => (
+          <View key={section.key} testID={`${testID}-agents-${section.key}`}>
+            <View style={styles.groupLabel}>
+              <Text variant="subheadline" tone="secondary" semibold>
+                {section.title}
               </Text>
-              <Text variant="footnote" tone="secondary" tabularNums>
-                {String(ws.items.length)}
-              </Text>
-            </Pressable>
-            {open && ws.branch ? (
-              <View style={styles.branch}>
-                <Icon name="branch" size={12} />
-                <Text variant="caption" tone="secondary" monospaced numberOfLines={1}>
-                  {ws.branch}
+              <View style={styles.count}>
+                <Text variant="caption2" tone="secondary" tabularNums>
+                  {String(section.items.length)}
                 </Text>
               </View>
-            ) : null}
-            {open
-              ? ws.items.map((item) => {
-                  const selected = item.id === selectedId;
-                  return (
-                    <Pressable
-                      key={item.id}
-                      onPress={() => onSelect(item.id)}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected }}
-                      accessibilityLabel={item.title}
-                      testID={`${testID}-row-${item.id}`}
-                      style={[
-                        styles.row,
-                        selected && { backgroundColor: withAlpha(theme.colors.accent, 0.25) },
-                      ]}
-                    >
-                      <View style={styles.lead}>
-                        {item.kind === 'agent' ? (
-                          <ProgramMark
-                            program={item.program ?? ''}
-                            status={item.status}
-                            size={22}
-                            surface="surfaceRaised"
-                          />
-                        ) : (
-                          <Icon name="terminal" size={18} />
-                        )}
-                      </View>
-                      <Text variant="body" style={styles.rowTitle} numberOfLines={1}>
-                        {item.title}
-                      </Text>
-                      {item.age ? (
-                        <Text variant="footnote" tone="secondary" tabularNums>
-                          {item.age}
-                        </Text>
-                      ) : null}
-                    </Pressable>
-                  );
-                })
-              : null}
+            </View>
+            {section.items.map(renderRow)}
           </View>
-        );
-      })}
+        ))
+      ) : (
+        <>
+          <View style={styles.groupLabel}>
+            <Text variant="subheadline" tone="secondary" semibold>
+              {labels.workspaces}
+            </Text>
+            <View style={styles.count}>
+              <Text variant="caption2" tone="secondary" tabularNums>
+                {String(shown.length)}
+              </Text>
+            </View>
+          </View>
+          {shown.map((ws) => {
+            const open = !folded.has(ws.id) || Boolean(needle);
+            return (
+              <View key={ws.id} style={styles.group}>
+                <Pressable
+                  style={styles.groupHead}
+                  onPress={() => toggle(ws.id)}
+                  accessibilityRole="button"
+                  accessibilityState={{ expanded: open }}
+                  accessibilityLabel={ws.title}
+                  testID={`${testID}-fold-${ws.id}`}
+                >
+                  <Icon name={open ? 'chevronDown' : 'chevronRight'} size={14} />
+                  <Text variant="headline" style={styles.groupTitle} numberOfLines={1}>
+                    {ws.title}
+                  </Text>
+                  <Text variant="footnote" tone="secondary" tabularNums>
+                    {String(ws.items.length)}
+                  </Text>
+                </Pressable>
+                {open && ws.branch ? (
+                  <View style={styles.branch}>
+                    <Icon name="branch" size={12} />
+                    <Text variant="caption" tone="secondary" monospaced numberOfLines={1}>
+                      {ws.branch}
+                    </Text>
+                  </View>
+                ) : null}
+                {open
+                  ? ws.items.map((item) => {
+                      return renderRow(item);
+                    })
+                  : null}
+              </View>
+            );
+          })}
+        </>
+      )}
     </View>
   );
   if (!onClose) return panel;

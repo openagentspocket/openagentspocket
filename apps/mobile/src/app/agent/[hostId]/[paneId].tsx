@@ -35,12 +35,8 @@ export default function AgentRoute() {
         surface={parseSurface(params.surface)}
         menu={items}
         onOpenChanges={() => router.push(hrefs.changesForAgent(params.hostId, params.paneId))}
-        onSwitch={(next) =>
-          router.replace({
-            pathname: '/agent/[hostId]/[paneId]',
-            params: { hostId: next.hostId, paneId: next.agent.pane_id },
-          })
-        }
+        // Same route, other Agent: swap in place, with no push animation.
+        onSwitch={(next) => router.setParams({ hostId: next.hostId, paneId: next.agent.pane_id })}
       />
     </>
   );

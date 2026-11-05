@@ -43,6 +43,7 @@ const ICONS = {
   clock: { ios: 'clock', android: 'schedule' },
   attach: { ios: 'paperclip', android: 'attach_file' },
   keyboard: { ios: 'keyboard', android: 'keyboard' },
+  toolbar: { ios: 'rectangle.bottomthird.inset.filled', android: 'bottom_navigation' },
   keyboardDown: { ios: 'keyboard.chevron.compact.down', android: 'keyboard_hide' },
   arrowUp: { ios: 'arrow.up', android: 'arrow_upward' },
   grip: { ios: 'line.3.horizontal', android: 'drag_handle' },

@@ -9,6 +9,7 @@ import { ThemeProvider } from '@openagentspocket/ui';
 import { render, screen, waitFor } from '@testing-library/react-native';
 import type { ConversationRegistry } from '@/conversations/ConversationRegistry';
 import { ConversationsProvider } from '@/conversations/useConversation';
+import { TestSettings } from '@/settings/TestSettings';
 import { ChatTimeline } from './ChatTimeline';
 
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn() }) }));
@@ -73,16 +74,18 @@ describe.each([
     expect(transcript.entries.length).toBeGreaterThan(1);
     await render(
       <ThemeProvider themeId="indigo">
-        <ConversationsProvider registry={registryOf(transcript)}>
-          <ChatTimeline
-            hostId="demo"
-            paneId="p1"
-            activity="idle"
-            topInset={0}
-            bottomInset={0}
-            onShowTerminal={jest.fn()}
-          />
-        </ConversationsProvider>
+        <TestSettings>
+          <ConversationsProvider registry={registryOf(transcript)}>
+            <ChatTimeline
+              hostId="demo"
+              paneId="p1"
+              activity="idle"
+              topInset={0}
+              bottomInset={0}
+              onShowTerminal={jest.fn()}
+            />
+          </ConversationsProvider>
+        </TestSettings>
       </ThemeProvider>,
     );
     await waitFor(() => expect(screen.getAllByTestId(/^chat-row-/).length).toBeGreaterThan(0));

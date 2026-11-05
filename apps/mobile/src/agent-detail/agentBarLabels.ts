@@ -29,5 +29,8 @@ export function agentBarLabels(): AgentBarLabels {
     changes: t('Changes'),
     openChanges: t('Open Changes'),
     dismissKeyboard: t('Dismiss keyboard'),
+    needsYou: t('Needs you'),
+    shells: t('Shells'),
+    toolbar: t('Toolbar'),
   };
 }

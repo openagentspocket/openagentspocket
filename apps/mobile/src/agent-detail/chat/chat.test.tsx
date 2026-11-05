@@ -2,6 +2,7 @@ import { MemoryStorage } from '@openagentspocket/core';
 import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { AtlasChat } from '@/dev/atlas/atlasChat';
+import { TestSettings } from '@/settings/TestSettings';
 import { AgentDetailScreen } from '../AgentDetailScreen';
 import { durationText, rowToolStatus } from './chatRowModel';
 
@@ -30,15 +31,17 @@ describe('Chat timeline in the Agent detail', () => {
   it('folds a finished turn behind its header and opens it on tap', async () => {
     await render(
       <ThemeProvider themeId="indigo">
-        <AtlasChat>
-          <AgentDetailScreen
-            hostId="demo"
-            paneId="p2"
-            storage={new MemoryStorage()}
-            surface="chat"
-            onSwitch={jest.fn()}
-          />
-        </AtlasChat>
+        <TestSettings>
+          <AtlasChat>
+            <AgentDetailScreen
+              hostId="demo"
+              paneId="p2"
+              storage={new MemoryStorage()}
+              surface="chat"
+              onSwitch={jest.fn()}
+            />
+          </AtlasChat>
+        </TestSettings>
       </ThemeProvider>,
     );
     await waitFor(() => expect(screen.getAllByTestId(/^chat-row-turn:/).length).toBe(1));

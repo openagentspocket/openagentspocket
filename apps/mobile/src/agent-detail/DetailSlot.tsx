@@ -1,5 +1,5 @@
 import type { ComposerMessage } from '@openagentspocket/core';
-import { EdgeFade, makeStyles } from '@openagentspocket/ui';
+import { makeStyles } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { ChatTimeline } from './chat/ChatTimeline';
 import type { Surface } from './surface';
@@ -42,7 +42,6 @@ export function DetailSlot({
           bottomInset={0}
           onShowTerminal={onShowTerminal}
         />
-        {headerHeight > 0 ? <EdgeFade height={headerHeight + 24} /> : null}
       </>
     );
   }

@@ -4,6 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 import { createDemoConsoleStore } from '@/console/demo';
 import { ConsoleStoreProvider } from '@/console/hooks';
 import { pickPhoto } from '@/files/pickers';
+import { TestSettings } from '@/settings/TestSettings';
 import { AgentDetailScreen } from '../AgentDetailScreen';
 import { ComposerRegistryProvider } from './composerContext';
 
@@ -21,11 +22,18 @@ function renderDetail(paneId: string, storage = new MemoryStorage()) {
   const store = createDemoConsoleStore();
   render(
     <ThemeProvider themeId="indigo">
-      <ConsoleStoreProvider store={store}>
-        <ComposerRegistryProvider registry={registry}>
-          <AgentDetailScreen hostId="demo" paneId={paneId} storage={storage} onSwitch={jest.fn()} />
-        </ComposerRegistryProvider>
-      </ConsoleStoreProvider>
+      <TestSettings>
+        <ConsoleStoreProvider store={store}>
+          <ComposerRegistryProvider registry={registry}>
+            <AgentDetailScreen
+              hostId="demo"
+              paneId={paneId}
+              storage={storage}
+              onSwitch={jest.fn()}
+            />
+          </ComposerRegistryProvider>
+        </ConsoleStoreProvider>
+      </TestSettings>
     </ThemeProvider>,
   );
   return { storage, registry };

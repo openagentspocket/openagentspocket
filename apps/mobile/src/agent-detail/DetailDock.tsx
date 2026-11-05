@@ -5,7 +5,7 @@ import { useGitStatus } from '@/changes/useGitStatus';
 import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
 import { agentBarLabels } from './agentBarLabels';
 import { AgentBackgroundWork } from './background/AgentBackgroundWork';
-import { useDetailUi } from './detailUi';
+import { DockSlotView, useDetailUi } from './detailUi';
 import type { Surface } from './surface';
 
 interface Props {
@@ -41,6 +41,7 @@ export function DetailDock({ row, surface, status, latencyMs, onOpenChanges }: P
         onOpenChanges={onOpenChanges}
         labels={agentBarLabels()}
       />
+      <DockSlotView />
     </>
   );
 }
