@@ -37,6 +37,9 @@ screens (UX1-console, worktree ux-console); ux-files builds the missing settings
 ux-settings). Then: chat for Pi/OMP/Grok/OpenCode (P2.10), background work strip (P2.11), git data for the status
 line, iPad (UX1-wide), tint audit, iOS simulator pass + Maestro, watch/Siri last.
 
+Enzo decision (2026-11-05): extra Swift app themes (Catppuccin Mocha, Gruvbox Dark, Nord) only as terminal palettes; the
+app keeps Índigo, Papel, Noche.
+
 Lead decisions while Enzo sleeps: xterm.js comparison removed after ADR 0023 (its generated bundle broke fresh
 checkouts); RNTL async timeout 5 s (first renders under the parallel suite); agent-source adapter dropped in
 favor of the console store; ChatProgram lives in chat/model only; RN-only strings live in

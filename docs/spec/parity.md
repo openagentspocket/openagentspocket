@@ -224,6 +224,9 @@ Dropped: libghostty rendering, Hangul input special-case (`HangulInput` 263: re-
 | 4.5 | Settings | settings.root, .theme, .appearance, .terminal-theme-picker, .chat, .chat-cache, .chat-cache-clear-confirm, .input-toolbar, .agent-list-fields(+host, add-field, reset/sync confirms), .acknowledgements, .license-notice, .usage, shell.app-lock; changes-settings#appearance..., #agent-list-fields-..., #acknowledgements... | one declarative schema renders all settings; M: theme switch Indigo/Papel applies; app lock cover on background (expo-local-authentication) |
 | 4.6 | Deep links | shell.window-root; console#deep-links-and-notification-routing | U: parse `agentico://agent/<hostUUID>[/<paneID>]` and `?host=&session=&pane=` |
 Dropped: settings.overlay-* (10 screens), iPad windows/scene restoration (`console#windows-and-scene-restoration-ipad-multi-window`, `changes-settings#windows-and-ipad`), ack: licences UI rebuilt from `Notices/inventory.json`.
+Dropped (Enzo, 2026-11-05): the extra Swift app themes `settings.theme--catppuccin-mocha`, `--gruvbox-dark`, `--nord`:
+the app keeps Índigo (default), Papel and Noche; those palettes exist only as terminal palettes (the terminal theme
+registry in `packages/ui/tokens/terminal-themes`).
 
 ### Phase 5: Notifications
 | # | Item | Features / screens | Acceptance |
