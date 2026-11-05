@@ -1,4 +1,5 @@
 import type { herdr } from '@openagentspocket/core';
+import { actionFor, BridgeError, type Result } from './actions.js';
 import { SESSION_PROTOCOL, sessionSnapshot } from './snapshot.js';
 import { listPanes, type TmuxPane, type TmuxRunner } from './tmux.js';
 
@@ -16,17 +17,6 @@ interface Request {
   id: string;
   method: string;
   params: Record<string, unknown>;
-}
-
-type Result = { type: string } & Record<string, unknown>;
-
-class BridgeError extends Error {
-  constructor(
-    readonly code: string,
-    message: string,
-  ) {
-    super(message);
-  }
 }
 
 function paneById(panes: readonly TmuxPane[], id: unknown): TmuxPane {
@@ -96,14 +86,21 @@ async function answer(tmux: TmuxRunner, version: string, request: Request): Prom
     }
     case 'pane.read':
       return readPane(tmux, params);
+    case 'agent.read':
+      return readPane(tmux, { ...params, pane_id: params.target });
     case 'plugin.list':
       return { type: 'plugin_list', plugins: [pluginEntry(version)] };
     case 'pane.send_text':
     case 'pane.send_keys':
     case 'pane.send_input':
       return sendInput(tmux, params);
-    default:
-      throw new BridgeError('unsupported_method', `The tmux bridge has no ${method}`);
+    case 'agent.send_keys':
+      return sendInput(tmux, { ...params, pane_id: params.target });
+    default: {
+      const action = actionFor(method);
+      if (!action) throw new BridgeError('unsupported_method', `The tmux bridge has no ${method}`);
+      return action(tmux, version, params);
+    }
   }
 }
 

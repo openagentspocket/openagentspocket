@@ -87,7 +87,7 @@ describe('the session protocol over tmux', () => {
 
   it('says so for a method it does not have, and survives a broken line', async () => {
     const { tmux } = fakeTmux();
-    const unknown = await handleLine(tmux, '0.1.0', request('tab.create'));
+    const unknown = await handleLine(tmux, '0.1.0', request('worktree.list'));
     expect(JSON.parse(unknown).error.code).toBe('unsupported_method');
     expect(JSON.parse(await handleLine(tmux, '0.1.0', '{')).error.code).toBe('internal_error');
   });

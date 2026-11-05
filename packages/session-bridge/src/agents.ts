@@ -36,6 +36,13 @@ const AGENT_EXECUTABLES: Readonly<Record<string, string>> = {
 
 export const agentExecutables = (): readonly string[] => Object.keys(AGENT_EXECUTABLES);
 
+/** What to run for an Agent kind; undefined for an unknown one. */
+export function agentExecutableOf(kind: string): string | undefined {
+  return Object.keys(AGENT_EXECUTABLES).find(
+    (executable) => AGENT_EXECUTABLES[executable] === kind,
+  );
+}
+
 export function agentKindOf(command: string): string | undefined {
   return Object.hasOwn(AGENT_EXECUTABLES, command) ? AGENT_EXECUTABLES[command] : undefined;
 }

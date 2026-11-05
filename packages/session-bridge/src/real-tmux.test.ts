@@ -87,6 +87,40 @@ describe.skipIf(!BINARY)('the bridge on a real tmux', () => {
     expect(decodeResult(out, '1', 'session_snapshot').snapshot.panes).toEqual([]);
   });
 
+  it('creates, renames and closes tabs and workspaces as the app decodes them', async () => {
+    const work = (await snapshot()).workspaces.find((w) => w.label === 'work');
+    const out = await ask('tab.create', {
+      workspace_id: work?.workspace_id,
+      label: 'new',
+      cwd: '/tmp',
+    });
+    const { tab, root_pane: pane } = decodeResult(out, '1', 'tab_created');
+    expect(tab.label).toBe('new');
+    expect(pane.tab_id).toBe(tab.tab_id);
+    await ask('tab.rename', { tab_id: tab.tab_id, label: 'renamed' });
+    expect((await snapshot()).tabs.find((t) => t.tab_id === tab.tab_id)?.label).toBe('renamed');
+    decodeResult(await ask('tab.close', { tab_id: tab.tab_id }), '1', 'ok');
+    expect((await snapshot()).tabs.some((t) => t.tab_id === tab.tab_id)).toBe(false);
+    const made = await ask('workspace.create', { label: 'fresh', cwd: '/tmp' });
+    const { workspace } = decodeResult(made, '1', 'workspace_created');
+    expect(workspace.label).toBe('fresh');
+    await ask('workspace.close', { workspace_id: workspace.workspace_id });
+    expect((await snapshot()).workspaces.some((w) => w.label === 'fresh')).toBe(false);
+  });
+
+  it('reports a pane’s process and starts a program in it', async () => {
+    const pane = (await snapshot()).panes[1]?.pane_id as string;
+    const info = await ask('pane.process_info', { pane_id: pane });
+    expect(decodeResult(info, '1', 'pane_process_info').process_info.shell_pid).toBeGreaterThan(0);
+    const out = await ask('agent.start', {
+      kind: 'codex',
+      pane_id: pane,
+      name: 'x',
+      args: ['--help'],
+    });
+    expect(decodeResult(out, '1', 'agent_started').argv).toEqual(['codex', '--help']);
+  });
+
   it('reports the program a pane is running', async () => {
     const pane = (await snapshot()).panes[2]?.pane_id as string;
     await ask('pane.send_input', { pane_id: pane, text: 'sleep 20', keys: ['Enter'] });
