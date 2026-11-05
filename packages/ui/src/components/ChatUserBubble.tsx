@@ -8,10 +8,10 @@ import { makeStyles } from '../theme/theme';
 const BUBBLE_RADIUS = 20;
 
 const useStyles = makeStyles((t) => ({
-  row: { alignItems: 'flex-end', paddingHorizontal: t.spacing.md },
+  row: { alignItems: 'flex-end' },
   bubble: {
     maxWidth: '80%',
-    backgroundColor: t.colors.surfaceRaised,
+    backgroundColor: t.colors.control,
     borderRadius: BUBBLE_RADIUS,
     paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.sm,

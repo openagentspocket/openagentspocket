@@ -65,11 +65,8 @@ export function stopLabel(dialog: BlockedDialog, progress: CardProgress): string
   return progress === 'unconfirmed' ? t('Stop') : null;
 }
 
-const APPROVING: readonly DialogOptionRole[] = [
-  'approve',
-  'approvePersistent',
-  'approveModeSwitch',
-];
+/** Only the lead approval is solid; one that saves a rule reads as a quieter second answer. */
+const APPROVING: readonly DialogOptionRole[] = ['approve', 'approveModeSwitch'];
 
 /** The button style of an option: approvals lead, declines warn, the rest stay quiet. */
 export function optionKind(option: DialogOption): 'primary' | 'secondary' | 'destructive' {

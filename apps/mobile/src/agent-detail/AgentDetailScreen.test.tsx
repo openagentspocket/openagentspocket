@@ -37,12 +37,13 @@ describe('AgentDetailScreen', () => {
     renderDetail({ paneId: 'p2' });
     await waitFor(() => expect(screen.getByTestId('agent-header')).toBeTruthy());
     expect(screen.getByTestId('slot-chat')).toBeTruthy();
+    expect(screen.getByTestId('chat-timeline')).toBeTruthy();
   });
 
   it('toggles to the terminal and persists the choice', async () => {
     const { storage } = renderDetail({ paneId: 'p2' });
-    await waitFor(() => expect(screen.getByTestId('surface-terminal')).toBeTruthy());
-    fireEvent.press(screen.getByTestId('surface-terminal'));
+    await waitFor(() => expect(screen.getByTestId('surface-toggle')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('surface-toggle'));
     await waitFor(() => expect(screen.getByTestId('slot-terminal')).toBeTruthy());
     expect(readSurface(storage)).toBe('terminal');
   });

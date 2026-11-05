@@ -1,7 +1,7 @@
 import type { BlockedCardState, BlockedDialog, GenericDialogExcerpt } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Button, Card, Icon, makeStyles, Text } from '@openagentspocket/ui';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { cardTitle, isTappable, optionKind, stopLabel } from './dialogModel';
 import { cardText } from './text';
 
@@ -15,6 +15,7 @@ const useStyles = makeStyles((th) => ({
   },
   choices: { gap: th.spacing.xs },
   pad: { flexDirection: 'row', gap: th.spacing.xs, flexWrap: 'wrap' },
+  warning: { flexDirection: 'row', alignItems: 'center', gap: th.spacing.xxs },
 }));
 
 export interface BlockedCardProps {
@@ -106,7 +107,11 @@ function Known({
   const stop = stopLabel(dialog, state.progress);
   return (
     <>
-      {description ? <Text variant="body">{description}</Text> : null}
+      {description ? (
+        <Text variant="subheadline" tone="secondary">
+          {description}
+        </Text>
+      ) : null}
       {code ? (
         <View style={styles.code}>
           <Text variant="mono">{code}</Text>
@@ -114,14 +119,23 @@ function Known({
       ) : null}
       <View style={styles.choices}>
         {dialog.options.filter(isTappable).map((option) => (
-          <Button
-            key={option.ordinal}
-            title={option.label}
-            kind={optionKind(option)}
-            disabled={disabled}
-            onPress={() => onChoose(option.ordinal)}
-            testID={`blocked-option-${option.ordinal}`}
-          />
+          <View key={option.ordinal} style={styles.choices}>
+            <Button
+              title={option.label}
+              kind={optionKind(option)}
+              disabled={disabled}
+              onPress={() => onChoose(option.ordinal)}
+              testID={`blocked-option-${option.ordinal}`}
+            />
+            {option.role === 'approvePersistent' ? (
+              <View style={styles.warning}>
+                <Icon name="warning" size={13} color="warning" />
+                <Text variant="footnote" tone="warning">
+                  {t("Saves a rule, so this isn't asked again.")}
+                </Text>
+              </View>
+            ) : null}
+          </View>
         ))}
         {dialog.options.some((option) => !isTappable(option)) ? (
           <Text variant="footnote" tone="secondary">
@@ -159,19 +173,20 @@ export function BlockedCard(props: BlockedCardProps) {
         : t('Keys');
   return (
     <Card accent="warning" testID="blocked-card">
-      <View style={styles.header}>
-        <Icon name="warning" color="warning" />
+      <Pressable
+        style={styles.header}
+        onPress={() => onCollapsedChange(!state.isCollapsed)}
+        accessibilityRole="button"
+        accessibilityLabel={`${heading}, ${state.isCollapsed ? t('Expand') : t('Collapse')}`}
+        accessibilityState={{ expanded: !state.isCollapsed }}
+        testID="blocked-collapse"
+      >
+        <Icon name="hand" size={20} color="warning" />
         <Text variant="headline" style={styles.title} numberOfLines={state.isCollapsed ? 1 : 2}>
           {heading}
         </Text>
-        <Button
-          kind="text"
-          size="small"
-          title={state.isCollapsed ? t('Expand') : t('Collapse')}
-          onPress={() => onCollapsedChange(!state.isCollapsed)}
-          testID="blocked-collapse"
-        />
-      </View>
+        <Icon name={state.isCollapsed ? 'chevronRight' : 'chevronDown'} color="accent" />
+      </Pressable>
       {state.isCollapsed ? null : (
         <>
           {content.kind === 'card' ? (

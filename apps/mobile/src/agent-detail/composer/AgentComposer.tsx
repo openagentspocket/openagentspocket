@@ -8,10 +8,19 @@ import {
   terminalPolicy,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Composer, KeyboardDock, type KeySpec } from '@openagentspocket/ui';
+import {
+  Banner,
+  ComposerCard,
+  KeyboardDock,
+  type KeySpec,
+  ProgramMark,
+  type Status,
+} from '@openagentspocket/ui';
+import * as Clipboard from 'expo-clipboard';
 import { useState, useSyncExternalStore } from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { renderMessage } from '@/usage/usageText';
+import { agentBarLabels } from '../agentBarLabels';
 import type { Surface } from '../surface';
 import type { AgentComposer } from './composerContext';
 
@@ -41,6 +50,10 @@ interface Props {
   canStop?: boolean;
   /** Writes a key to the live terminal; the tools dock shows only after a draft went there. */
   onAttachKey?: (key: KeySpec) => void;
+  /** The Agent's program and status: its mark flips Chat/Terminal in the composer row. */
+  program?: string;
+  status?: Status;
+  onToggleSurface?: () => void;
 }
 
 /** The Composer under the Chat or Terminal slot: draft, Send or Stop, suggestions and what went wrong. */
@@ -51,6 +64,9 @@ export function AgentComposerBar({
   skillPrefixes = ['/'],
   canStop = true,
   onAttachKey,
+  program = 'unknown',
+  status,
+  onToggleSurface,
 }: Props) {
   const { store, snapshot, interrupt } = composer;
   const policy = surface === 'chat' ? chatPolicy : terminalPolicy;
@@ -112,21 +128,52 @@ export function AgentComposerBar({
       {stopNotice ? (
         <Banner tone="warning" title={stopNotice} testID="composer-stop-notice" />
       ) : null}
-      <Composer
+      <ComposerCard
         value={snapshot.draft}
-        onChangeText={(text) =>
-          store.applyEditorDraft(text, { start: text.length, end: text.length })
-        }
+        onChange={(text) => store.applyEditorDraft(text, { start: text.length, end: text.length })}
         onSend={() => void send()}
         onStop={canStop ? () => void store.stop.stop(interrupt) : undefined}
-        busy={control === 'stop'}
-        placeholder={t('Message the Agent')}
-        sendLabel={t('Send')}
-        stopLabel={t('Stop')}
-        suggestions={matches.map((skill) => ({ key: skill.command, label: skill.command }))}
-        onSuggestion={(command) => {
+        working={control === 'stop'}
+        placeholder={t('Message Agent')}
+        skills={matches.map((skill) => ({
+          name: skill.command,
+          description: skill.description ?? '',
+        }))}
+        onSkill={(command) => {
           if (trigger) store.replaceTrailingToken(trigger.token, `${command} `);
         }}
+        expanded={surface === 'terminal' ? true : undefined}
+        moreMenu={[
+          {
+            key: 'paste',
+            title: t('Paste'),
+            icon: 'copy',
+            onPress: () =>
+              void Clipboard.getStringAsync().then((text) => {
+                if (!text) return;
+                const draft = snapshot.draft + text;
+                store.applyEditorDraft(draft, { start: draft.length, end: draft.length });
+              }),
+          },
+          {
+            key: 'clear',
+            title: t('Clear'),
+            icon: 'trash',
+            onPress: () => store.applyEditorDraft('', { start: 0, end: 0 }),
+          },
+        ]}
+        leading={
+          <Pressable
+            onPress={onToggleSurface}
+            accessibilityRole="button"
+            accessibilityLabel={surface === 'chat' ? t('Show Terminal') : t('Show Chat')}
+            testID="surface-toggle"
+          >
+            <ProgramMark program={program} status={status} size={26} />
+          </Pressable>
+        }
+        surfaceIcon={surface === 'chat' ? 'chat' : 'terminal'}
+        labels={agentBarLabels()}
         testID="composer"
       />
       {attachDraft && onAttachKey ? (
