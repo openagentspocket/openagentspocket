@@ -1,0 +1,9 @@
+# Smoke: the Usage sheet opens from the Home usage ring.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- tapOn:
+    id: home-usage-ring
+- waitForAnimationToEnd
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/08-usage

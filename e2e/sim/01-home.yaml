@@ -1,0 +1,8 @@
+# Smoke: Home in demo mode shows its sections.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- assertVisible: "WORKING.*"
+- assertVisible: "DONE.*"
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/01-home

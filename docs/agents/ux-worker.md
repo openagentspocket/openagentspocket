@@ -23,6 +23,15 @@ variant) or core (helper); never a screen-local copy. Report the reusable pieces
 - Do not edit `entries.tsx`, `_layout.tsx`, `Icon.tsx` or another family's files. If you need a shared change
   (a new icon, a root layout option), list it in your report; the lead lands it.
 
+## Proof on the simulator (mandatory)
+
+Any visual or navigation change passes `pnpm sim:verify <flow...>` with the flows it affects before you report
+(flows in `e2e/sim/`, numbered; no name runs all). It builds the dev client only when native inputs changed,
+runs the Maestro smoke flows on demo data on simulator 2798C301 holding the native slot, writes screenshots to
+`design/atlas/sim/`, and fails with the message on a flow failure, crash or development error screen. Add or
+extend a flow for a new screen. Your report lists the screenshots (absolute paths). Never computer-use. The web
+atlas below is support for iterating on layout, not proof.
+
 ## Visual loop (fresh every time)
 
 1. Clear the cache and start your own server once per iteration:
@@ -37,7 +46,7 @@ variant) or core (helper); never a screen-local copy. Report the reusable pieces
 
 ## Done
 
-`pnpm verify-fast` green (it runs the tests related to your change; never run the full `pnpm test`, the lead
+`pnpm verify-fast` green, `pnpm sim:verify` for the affected flows (screenshots listed) (it runs the tests related to your change; never run the full `pnpm test`, the lead
 runs it once per milestone), screens <=150 lines, files <=400, behavior and testIDs kept (or e2e flows updated),
 `docs/progress/<task>.md` honest (done/partial and what is left), `pnpm progress`, commit on your branch (no
 attribution trailers, never touch main). Report: commits, the ids you captured with the sheet paths, what is

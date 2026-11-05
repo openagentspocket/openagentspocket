@@ -1,0 +1,11 @@
+# Smoke: an Agent opens on its chat.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- openLink: openagentspocket:///agent/demo/p2
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 15000
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/02-agent-chat
