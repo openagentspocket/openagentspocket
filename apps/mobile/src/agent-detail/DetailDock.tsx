@@ -15,8 +15,8 @@ interface Props {
 }
 
 /**
- * What sits over the Composer, in Swift's order: the Background Work strip (Chat; one line while the
- * Composer is open or a Blocked card stands in), the status line, then the Blocked card (Chat).
+ * What sits over the Composer: the Background Work strip (Chat; one line while the
+ * Composer is open or a Blocked card stands in), the Blocked card (Chat), then the status line.
  */
 export function DetailDock({ row, surface, status, latencyMs, onOpenChanges }: Props) {
   const { composing } = useDetailUi();
@@ -30,13 +30,13 @@ export function DetailDock({ row, surface, status, latencyMs, onOpenChanges }: P
           condensed={composing || row.agent.agent_status === 'blocked'}
         />
       ) : null}
+      {chat ? <BlockedCardSlot row={row} /> : null}
       <StatusLine
         status={status}
         latencyMs={latencyMs}
         onOpenChanges={onOpenChanges}
         labels={agentBarLabels()}
       />
-      {chat ? <BlockedCardSlot row={row} /> : null}
     </>
   );
 }
