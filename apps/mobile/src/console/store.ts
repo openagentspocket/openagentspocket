@@ -1,6 +1,8 @@
 import {
+  type AgentContextUsage,
   type AgentPanelSort,
   type AgentStatusClocks,
+  agentKey,
   type CancelSignal,
   type Clock,
   type ConsoleRow,
@@ -12,6 +14,8 @@ import {
   type HostIdentity,
   ListPreferences,
   type PinnedAgents,
+  type RowChangeTotals,
+  rowKey,
   type SyncError,
   selectConsole,
   TransportFailure,
@@ -57,6 +61,10 @@ const DEFAULT_RETRY_MS = 5000;
 export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
   private readonly projections = new Map<string, HostConsoleProjection<T>>();
   private readonly listeners = new Set<() => void>();
+  private readonly extras = new Map<
+    string,
+    { changeTotals?: RowChangeTotals; contextUsage?: AgentContextUsage }
+  >();
   private state: ConsoleState = {
     rows: [],
     hosts: [],
@@ -213,6 +221,16 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     return projection;
   }
 
+  /** Sets what the rows cannot get from a snapshot: checkout line totals and context usage. */
+  setRowExtras(
+    hostId: string,
+    paneId: string,
+    extras: { changeTotals?: RowChangeTotals; contextUsage?: AgentContextUsage },
+  ): void {
+    this.extras.set(agentKey(hostId, paneId), extras);
+    this.recompute();
+  }
+
   private recompute(): void {
     const projections = [...this.projections.values()];
     const { rows, readyHosts } = selectConsole({
@@ -222,7 +240,10 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
       clocks: this.options.clocks,
     });
     this.state = {
-      rows,
+      rows:
+        this.extras.size === 0
+          ? rows
+          : rows.map((row) => ({ ...row, ...this.extras.get(rowKey(row)) })),
       readyHosts,
       hosts: projections.map((projection) => ({
         id: projection.host.id,

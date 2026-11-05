@@ -20,7 +20,6 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.xs,
-    paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.xs,
     minHeight: t.metrics.minTapSize,
   },

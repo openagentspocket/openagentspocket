@@ -82,6 +82,17 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'usage.quick-sheet': { script: { press: ['home-usage-ring'] }, render: () => <Index /> },
   'console.no-hosts-empty': { data: { console: 'empty', hosts: 'empty' }, render: () => <Index /> },
   'console.agents-list-flat': { render: () => <Agents /> },
+  'console.agents-list-by-status': { data: { presentation: 'byStatus' }, render: () => <Agents /> },
+  'console.agents-list-by-workspace': {
+    data: { presentation: 'byWorkspace' },
+    render: () => <Agents />,
+  },
+  'console.agents-list-by-host': { data: { presentation: 'byHost' }, render: () => <Agents /> },
+  'console.quick-detail-sheet': {
+    data: { presentation: 'byStatus' },
+    render: () => <Agents openDetail="p2" />,
+  },
+  'console.empty-states-agents': { data: { console: 'empty' }, render: () => <Agents /> },
   'console.start-agent': { render: () => titled(t('New Agent'), <NewAgentRoute />) },
   'hosts.list': { render: () => <HostsRoute /> },
   'hosts.form': { render: () => <HostFormRoute /> },
