@@ -1,0 +1,16 @@
+# Smoke: Hosts, Add Host offers Easy Pair, and Easy Pair opens (camera or the unavailable state).
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- openLink: openagentspocket:///hosts
+- tapOn:
+    id: hosts-add
+- assertVisible: "Easy Pair with QR"
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/06-add-host-choice
+- tapOn: "Easy Pair with QR"
+- extendedWaitUntil:
+    visible: "Easy Pair"
+    timeout: 10000
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/06-easy-pair

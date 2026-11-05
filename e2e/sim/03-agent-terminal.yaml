@@ -1,0 +1,12 @@
+# Smoke: the same Agent on its terminal surface.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- openLink: openagentspocket:///agent/demo/p2?surface=terminal
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 15000
+- waitForAnimationToEnd
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/03-agent-terminal

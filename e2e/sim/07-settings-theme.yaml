@@ -1,0 +1,17 @@
+# Smoke: Settings root, the Theme page and a second sub-page.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- openLink: openagentspocket:///settings
+- assertVisible: "Settings"
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/07-settings
+- tapOn: "Theme"
+- assertVisible: "Follow System"
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/07-settings-theme
+- back
+- tapOn: "Fonts & Size"
+- waitForAnimationToEnd
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/07-settings-fonts

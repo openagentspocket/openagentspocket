@@ -1,0 +1,16 @@
+# Shared prelude: a clean launch with demo mode on (no real Host), camera allowed, landing on Home.
+# Used by every smoke flow through `runFlow: _demo.yaml`; not run on its own.
+appId: com.openagentspocket.app
+---
+- launchApp:
+    clearState: true
+    permissions:
+      all: allow
+- openLink: openagentspocket:///settings
+- scrollUntilVisible:
+    element:
+      id: settings.general.demoMode
+- tapOn:
+    id: settings.general.demoMode
+- openLink: openagentspocket:///
+- assertVisible: "NEEDS YOU.*"

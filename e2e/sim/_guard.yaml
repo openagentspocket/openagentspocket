@@ -1,0 +1,5 @@
+# Shared check after each key step: no development error screen is showing.
+appId: com.openagentspocket.app
+---
+- assertNotVisible: ".*(Uncaught Error|Render Error|Unhandled JS Exception|Invariant Violation).*"
+- assertNotVisible: ".*(Something went wrong|Cannot find native module).*"

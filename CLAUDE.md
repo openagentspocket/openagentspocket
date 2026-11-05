@@ -32,7 +32,7 @@ TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/r
 | `packages/core`, `packages/ui`, `apps/mobile` JS | verify-fast (related tests); the merge commit reruns it over the whole branch diff |
 | `packages/plugin`, `packages/relay`, `apps/site` | verify-fast runs their suites |
 | A milestone (wave closed, device install, release) | the lead runs `pnpm test` once |
-| A screen's look | a Maestro flow with a screenshot, by the integrator |
+| A visual or navigation change | `pnpm sim:verify <flow...>` for the affected flows (e2e/sim, demo mode, simulator 2798C301, takes the native slot) before reporting; the report lists the screenshots in `design/atlas/sim/`. The web atlas is support, not proof |
 | Native deps, config plugins, `app.json` native fields | integrator only: `npx expo prebuild --clean` then rebuild native once per batch (a stale `ios/` silently skips modules) |
 
 ## Rules

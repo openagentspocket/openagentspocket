@@ -1,0 +1,11 @@
+# Smoke: the Home + button offers New Agent, New Terminal and Add Host.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- tapOn:
+    id: fab
+- assertVisible: "New Agent"
+- assertVisible: "New Terminal"
+- assertVisible: "Add Host"
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/05-home-plus

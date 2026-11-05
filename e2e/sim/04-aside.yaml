@@ -1,0 +1,14 @@
+# Smoke: the Agent's aside (session drawer) opens from the header.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- openLink: openagentspocket:///agent/demo/p2
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 15000
+- tapOn:
+    id: agent-header-sidebar
+- waitForAnimationToEnd
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/04-aside
