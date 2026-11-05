@@ -5,8 +5,9 @@ import {
   snippetDisplayTitle,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, EmptyState, ListRow, Screen, toast } from '@openagentspocket/ui';
+import { Button, EmptyState, ListRow, toast } from '@openagentspocket/ui';
 import { useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { SnippetEditorSheet } from './SnippetEditorSheet';
 import { useSnippets } from './snippetStore';
 
@@ -30,7 +31,7 @@ export function SnippetsManager({ store }: { store: SnippetStore }) {
     });
 
   return (
-    <Screen testID="snippets-manager">
+    <AppScreen header={{ variant: 'native' }} testID="snippets-manager">
       {snippets.length === 0 ? (
         <EmptyState layout="compact" title={t('No Snippets yet')} />
       ) : (
@@ -85,6 +86,6 @@ export function SnippetsManager({ store }: { store: SnippetStore }) {
         onSave={save}
         onClose={() => setEditing(undefined)}
       />
-    </Screen>
+    </AppScreen>
   );
 }

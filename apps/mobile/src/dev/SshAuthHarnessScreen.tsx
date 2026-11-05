@@ -1,6 +1,7 @@
-import { Card, Screen, Text } from '@openagentspocket/ui';
+import { Card, Text } from '@openagentspocket/ui';
 import { nativeSsh } from 'agentico-ssh';
 import { useEffect, useRef, useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { type AuthHarnessParams, runSshAuthHarness } from './sshAuthHarness';
 import type { StepResult } from './sshHarness';
 
@@ -20,7 +21,7 @@ export function SshAuthHarnessScreen({ params }: { params: AuthHarnessParams | n
 
   const passed = steps.filter((s) => s.ok).length;
   return (
-    <Screen>
+    <AppScreen header={{ variant: 'native' }}>
       <Text variant="title">SSH auth harness</Text>
       {params ? null : <Text tone="danger">Open with host, port, user, fport and pin.</Text>}
       <Text variant="headline" testID="ssh-auth-summary">
@@ -36,6 +37,6 @@ export function SshAuthHarnessScreen({ params }: { params: AuthHarnessParams | n
           </Text>
         </Card>
       ))}
-    </Screen>
+    </AppScreen>
   );
 }

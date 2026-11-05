@@ -1,6 +1,6 @@
-import { Screen } from '@openagentspocket/ui';
 import { DirectoryBrowserSheet } from '@/features/new-agent/DirectoryBrowserSheet';
 import { useNewAgentServices } from '@/features/new-agent/services';
+import { AppScreen } from '@/navigation/AppScreen';
 
 const noop = () => {};
 
@@ -8,13 +8,13 @@ const noop = () => {};
 export function DirectoryBrowserDemo() {
   const services = useNewAgentServices();
   return (
-    <Screen testID="directory-browser-demo">
+    <AppScreen testID="directory-browser-demo">
       <DirectoryBrowserSheet
         visible
         lister={services.directoryLister('demo')}
         onSelect={noop}
         onClose={noop}
       />
-    </Screen>
+    </AppScreen>
   );
 }

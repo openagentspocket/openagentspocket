@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { PortsScreen } from '@/ports/PortsScreen';
 import { portsStoreFor, releasePortsStore } from '@/ports/registry';
@@ -13,7 +13,6 @@ export default function PortsRoute() {
   useEffect(() => () => releasePortsStore(hostId), [hostId]);
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }} />
       <PortsScreen
         onDone={() => router.back()}
         store={store}

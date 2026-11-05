@@ -1,5 +1,5 @@
 import { t } from '@openagentspocket/i18n';
-import { confirm, Screen } from '@openagentspocket/ui';
+import { confirm } from '@openagentspocket/ui';
 import type { ReactNode } from 'react';
 import Agents from '@/app/agents';
 import Board from '@/app/board';
@@ -11,6 +11,7 @@ import Usage from '@/app/usage';
 import UsageLimits from '@/app/usage-limits';
 import { HostDetailScreen } from '@/features/hosts/HostDetailScreen';
 import { SetupGuideScreen } from '@/features/hosts/SetupGuideScreen';
+import { AppScreen } from '@/navigation/AppScreen';
 import { AppLockView } from '@/settings/AppLockCover';
 import { HostUsageSection } from '@/usage/HostUsageSection';
 import { UsageBreakdownListScreen } from '@/usage/UsageBreakdownListScreen';
@@ -127,9 +128,9 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   },
   'usage.host-section': {
     render: () => (
-      <Screen testID="host-usage-screen">
+      <AppScreen header={{ variant: 'native' }} testID="host-usage-screen">
         <HostUsageSection hostId="demo" onOpenUsage={noop} />
-      </Screen>
+      </AppScreen>
     ),
   },
   'usage.hosts-section': {
