@@ -1,15 +1,14 @@
-import { useRouter } from 'expo-router';
 import { AddHostSheet } from '@/features/hosts/AddHostSheet';
-import { hrefs } from '@/navigation/hrefs';
+import { useAddHostNavigation } from '@/navigation/addHostNavigation';
 
 /** `/add-host`: the choice sheet over whatever screen asked to add a Host. */
 export default function AddHostRoute() {
-  const router = useRouter();
+  const navigation = useAddHostNavigation();
   return (
     <AddHostSheet
-      onClose={() => router.back()}
-      onEasyPair={() => router.replace(hrefs.easyPair())}
-      onAddManually={() => router.replace(hrefs.hostForm())}
+      onClose={navigation.close}
+      onEasyPair={navigation.easyPair}
+      onAddManually={navigation.addManually}
     />
   );
 }

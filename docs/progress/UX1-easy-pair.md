@@ -14,5 +14,5 @@ left:
 - `PLUGIN_REPOSITORY` is still the placeholder `OWNER/agentico-app`; change it in core and in `install.sh` (a test compares them) when the repository exists.
 - The installer pins the `plugin` branch and only warns when herdr reports another version; a per-version tag from the release flow would pin it for real.
 - `install.ps1` only checks herdr 0.9.3+ and sshd (the plugin is macOS/Linux only); it has no test and shellcheck was not installed here, so `install.sh` was not linted.
-- Opening Add Host from inside the Hosts modal stacks a second Hosts modal when the choice is replaced into `/hosts/pair` or `/hosts/form`; Cancel returns to the list.
+- Fixed: from inside the Hosts modal the Add Host choice is navigated inside that stack (`useAddHostNavigation`, `addHostHandover`); from Home the sheet route is replaced. Not exercised on a device.
 notes: ChoiceSheet and CommandBlock replace the single-line CommandBlock that lived in features/hosts. `pairCommandLines(platform)` is the one place that lists the commands; swapping the installer is a change there and in core. `installerSteps(platform)` mirrors the script's steps for the What happens sheet. `entries.tsx` got one import and one spread for `familyHosts.tsx` (no hosts family file existed).
