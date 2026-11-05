@@ -24,6 +24,9 @@ import { agentBarLabels } from '../agentBarLabels';
 import type { Surface } from '../surface';
 import type { AgentComposer } from './composerContext';
 
+/** The key the Close Pane popover points at: the composer's "..." circle. */
+export const COMPOSER_MORE_ANCHOR = 'agent-composer-more';
+
 /** Chat never types into the terminal: a Blocked Agent is answered with the Blocked card. */
 const chatPolicy: ComposerDeliveryPolicy = {
   route: 'chat',
@@ -143,6 +146,7 @@ export function AgentComposerBar({
           if (trigger) store.replaceTrailingToken(trigger.token, `${command} `);
         }}
         expanded={surface === 'terminal' ? true : undefined}
+        moreAnchorKey={COMPOSER_MORE_ANCHOR}
         moreMenu={[
           {
             key: 'paste',

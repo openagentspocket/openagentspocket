@@ -2,12 +2,10 @@ import { LIST_PRESENTATIONS, type ListPresentation } from '@openagentspocket/cor
 import { type AppKey, t } from '@openagentspocket/i18n';
 import {
   type ActionMenuItem,
-  Button,
-  GlassCapsule,
   type IconName,
   ListToolbar,
   makeStyles,
-  SearchField,
+  SearchBar,
   Text,
   type ListPresentation as ToolbarPresentation,
 } from '@openagentspocket/ui';
@@ -98,30 +96,19 @@ export function AgentsToolbar(props: AgentsToolbarProps) {
   if (props.searchOpen || props.query !== '') {
     // Search mode takes over the top of the list, as in Swift: field and a close circle, no title.
     return (
-      <View style={styles.searchRow}>
-        <View style={styles.searchField}>
-          <SearchField
-            label={t('Search Agents')}
-            value={props.query}
-            onChangeText={props.onQuery}
-            clearLabel={t('Clear Filter')}
-            autoCapitalize="none"
-            autoCorrect={false}
-            autoFocus
-            returnKeyType="search"
-            testID="agents-search"
-          />
-        </View>
-        <GlassCapsule style={styles.closeCircle}>
-          <Button
-            kind="text"
-            icon="close"
-            accessibilityLabel={t('Cancel')}
-            onPress={props.onCloseSearch}
-            testID="agents-search-close"
-          />
-        </GlassCapsule>
-      </View>
+      <SearchBar
+        label={t('Search Agents')}
+        value={props.query}
+        onChangeText={props.onQuery}
+        onClose={props.onCloseSearch}
+        closeLabel={t('Cancel')}
+        clearLabel={t('Clear Filter')}
+        autoCapitalize="none"
+        autoCorrect={false}
+        autoFocus
+        returnKeyType="search"
+        testID="agents-search"
+      />
     );
   }
   return (

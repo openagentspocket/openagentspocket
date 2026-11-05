@@ -1,7 +1,10 @@
 import { createQueue, hasHost } from './store';
 
-/** alert: a centered dialog; dialog: an action sheet anchored to the bottom (iOS confirmationDialog). */
-export type ConfirmPresentation = 'alert' | 'dialog';
+/**
+ * alert: a centered dialog; dialog: an action sheet anchored to the bottom (iOS confirmationDialog);
+ * popover: a card with an arrow above the bottom toolbar, dismissed by tapping outside (no Cancel).
+ */
+export type ConfirmPresentation = 'alert' | 'dialog' | 'popover';
 
 export interface ConfirmAction<K extends string = string> {
   key: K;
@@ -15,6 +18,10 @@ interface BaseOptions {
   /** The cancel button's title; null for an informational alert with one button. Default "Cancel". */
   cancelLabel?: string | null;
   presentation?: ConfirmPresentation;
+  /** A popover's arrow: under its control at the trailing edge (`end`) or centered. Default center. */
+  anchor?: 'center' | 'end';
+  /** A popover points at the control registered under this key (`useAnchor`); without one it sits above the bottom edge. */
+  anchorKey?: string;
 }
 
 export interface ConfirmOptions extends BaseOptions {
@@ -48,6 +55,8 @@ export interface AlertRequest {
   actions: readonly ConfirmAction[];
   cancelLabel: string | null;
   presentation: ConfirmPresentation;
+  anchor?: 'center' | 'end';
+  anchorKey?: string;
   resolve: (key: string | null, text?: string) => void;
 }
 
@@ -112,6 +121,8 @@ export async function confirm<K extends string>(
       actions: options.actions,
       cancelLabel,
       presentation: options.presentation ?? 'dialog',
+      anchor: options.anchor,
+      anchorKey: options.anchorKey,
     });
     return key as K | null;
   }
@@ -123,6 +134,8 @@ export async function confirm<K extends string>(
     ],
     cancelLabel,
     presentation: options.presentation ?? 'alert',
+    anchor: options.anchor,
+    anchorKey: options.anchorKey,
   });
   return key === 'confirm';
 }

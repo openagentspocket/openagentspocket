@@ -2,11 +2,13 @@
 import { t } from '@openagentspocket/i18n';
 import { Stack } from 'expo-router';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
-import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
+import { closeTerminalConfirmation } from '@/features/terminals/closeConfirmation';
+import { SHELL_CLOSE_ANCHOR, ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { AtlasBlocked } from './atlasBlocked';
 import { AtlasChat } from './atlasChat';
 import { noop, titled } from './atlasHelpers';
+import { AlertOver, closePanePopover, TerminalStatusAtlas } from './atlasOverlays';
 import type { AtlasEntry } from './entries';
 
 /** The Agent detail in a fixed state: Agent pane, surface, and what is pressed after it settles. */
@@ -15,11 +17,12 @@ function detail(
   surface: 'chat' | 'terminal',
   press?: readonly string[],
   blocked = false,
+  looking = false,
 ): AtlasEntry {
   return {
     script: press ? { press } : undefined,
     render: () => (
-      <AtlasChat>
+      <AtlasChat looking={looking}>
         <Stack.Screen options={{ headerShown: false }} />
         {blocked ? (
           <AtlasBlocked>
@@ -60,7 +63,7 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.chat-floating-controls': chat,
   'agent-detail.chat-background-strip': chat,
   'agent-detail.chat-background-sheet': chat,
-  'agent-detail.chat-banners': chat,
+  'agent-detail.chat-banners': detail('p2', 'chat', undefined, false, true),
   'agent-detail.chat-command-suggestions': chat,
   'agent-detail.chat-tools-keyboard': chat,
   'agent-detail.subagent-transcript': chat,
@@ -86,14 +89,37 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.skills-pane': terminal,
   'agent-detail.snippets-pane': terminal,
   'agent-detail.terminal-appearance-pane': terminal,
-  'agent-detail.terminal-status-overlay': terminal,
+  'agent-detail.terminal-status-overlay': {
+    render: () => (
+      <AtlasChat>
+        <Stack.Screen options={{ headerShown: false }} />
+        <TerminalStatusAtlas status={{ kind: 'connecting' }} />
+      </AtlasChat>
+    ),
+  },
   'agent-detail.attach-links': terminal,
-  'agent-detail.close-confirm': chat,
+  'agent-detail.close-confirm': {
+    render: () => <AlertOver options={closePanePopover}>{terminal.render()}</AlertOver>,
+  },
   'agent-detail.open-terminal-chooser': chat,
   'agent-detail.skills-picker': terminal,
   'agent-detail.snippets-manager': terminal,
   'agent-detail.snippet-editor': terminal,
-  'agent-detail.shell-close-confirm': terminal,
+  'agent-detail.shell-close-confirm': {
+    render: () => (
+      <AlertOver options={{ ...closeTerminalConfirmation(), anchorKey: SHELL_CLOSE_ANCHOR }}>
+        {titled(
+          t('Terminal'),
+          <ShellTerminalScreen
+            hostId="demo"
+            workspaceId="w0"
+            cwd="/work/api-server"
+            onClose={noop}
+          />,
+        )}
+      </AlertOver>
+    ),
+  },
   'agent-detail.shell-keys-dock': terminal,
   'agent-detail.shell-terminal': {
     render: () =>

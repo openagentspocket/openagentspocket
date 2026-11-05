@@ -4,6 +4,12 @@ branch: ux-console
 changed: apps/mobile/src/features/agents/{AgentsScreen,AgentsToolbar,RenameSheet}.tsx, features/terminals/TerminalsListScreen.tsx (new), features/hosts/HostConnectionSheet.tsx (new), features/new-agent/{WorktreeDetailsScreen,useWorktreeDialogs (new)}.ts(x), app/agents.tsx, dev/atlas/{familyConsole,ConsoleDemos (new),entries,atlasMap.json}
 tests: `pnpm verify-fast` green
 atlas ids (dark + Papel): console.search, host-filter-menu, presentation-menu, rename-sheet, terminals-list, worktree-details, worktree-remove-confirm, host-connection-sheet, new-item-button, agent-row. new-terminal / workspace-picker / directory-browser already existed.
+reusable pieces (packages/ui/src/components, exported via navSheets):
+- `SearchBar`: SearchField plus a glass close circle, the bar that takes over a list while searching (new).
+- `TextPromptSheet`: one-line text prompt sheet, Cancel/Save in the bar, hint under the field; `RenameSheet` is now a thin wrapper (new).
+- `ConnectionSheet`: state, mono detail, failure, primary and text action, optional Edit; `HostConnectionSheet` is a thin wrapper (new).
+- `FoldHeader` gained `subtitle` (headline title plus secondary word, folds): used by the Terminals list workspace headers.
+- Presentation menu icons are items of the existing `ActionMenu`; no console-local copy of a menu, sheet or row remains.
 done:
 - Search is a mode as in Swift: the field and a close circle replace the toolbar and title; close clears the query.
 - Presentation menu items carry their glyphs (list, server, folder, status).

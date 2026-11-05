@@ -4,17 +4,21 @@ import {
   shellCreationRequest,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, confirm, EmptyState, makeStyles, Screen } from '@openagentspocket/ui';
+import { Button, confirm, EmptyState, makeStyles, Screen, useAnchor } from '@openagentspocket/ui';
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
+import { closeTerminalConfirmation } from './closeConfirmation';
 import { ShellSurface } from './ShellSurface';
 import { useShellTerminalServices } from './services';
 import { useShellTerminal } from './useShellTerminal';
 
+/** The key the Close Terminal popover points at. */
+export const SHELL_CLOSE_ANCHOR = 'shell-close';
+
 const useStyles = makeStyles((th) => ({
   fill: { flex: 1 },
-  toolbar: { flexDirection: 'row', justifyContent: 'flex-end', padding: th.spacing.xs },
+  toolbar: { flexDirection: 'row', justifyContent: 'center', padding: th.spacing.xs },
 }));
 
 interface Props {
@@ -60,19 +64,11 @@ function Opened({
   const styles = useStyles();
   const { state, retry } = useShellTerminal(services, { hostId, request });
   const [closing, setClosing] = useState(false);
+  const closeAnchor = useAnchor(SHELL_CLOSE_ANCHOR);
 
   const close = async () => {
     if (state.phase !== 'ready' || closing) return;
-    const ok = await confirm({
-      title: t('Close Terminal?'),
-      message: t(
-        'This closes the pane on the Host, ending anything running in it. Going Back instead leaves it for desktop handoff.',
-      ),
-      confirmLabel: t('Close Terminal'),
-      cancelLabel: t('Cancel'),
-      destructive: true,
-      presentation: 'dialog',
-    });
+    const ok = await confirm({ ...closeTerminalConfirmation(), anchorKey: SHELL_CLOSE_ANCHOR });
     if (!ok) return;
     setClosing(true);
     const { identity } = state.entry.store;
@@ -98,21 +94,7 @@ function Opened({
 
   return (
     <Screen scroll={false} edges={['bottom']} testID="shell-terminal-screen">
-      {state.phase === 'ready' ? (
-        <View style={styles.fill}>
-          <ShellSurface entry={state.entry} />
-          <View style={styles.toolbar}>
-            <Button
-              kind="destructive"
-              icon="trash"
-              title={t('Close Terminal')}
-              disabled={closing}
-              onPress={() => void close()}
-              testID="shell-close"
-            />
-          </View>
-        </View>
-      ) : state.phase === 'failed' ? (
+      {state.phase === 'failed' ? (
         <EmptyState
           icon="warning"
           title={t("Couldn't Open Terminal")}
@@ -121,7 +103,25 @@ function Opened({
           actions={<Button title={t('Try Again')} onPress={retry} testID="shell-retry" />}
         />
       ) : (
-        <EmptyState icon="terminal" title={t('Opening Terminal…')} testID="shell-opening" />
+        <View style={styles.fill}>
+          {state.phase === 'ready' ? (
+            <ShellSurface entry={state.entry} />
+          ) : (
+            <EmptyState icon="terminal" title={t('Opening Terminal…')} testID="shell-opening" />
+          )}
+          <View style={styles.toolbar}>
+            <View ref={closeAnchor} collapsable={false}>
+              <Button
+                kind="capsule"
+                icon="more"
+                accessibilityLabel={t('Close Terminal')}
+                disabled={closing || state.phase !== 'ready'}
+                onPress={() => void close()}
+                testID="shell-close"
+              />
+            </View>
+          </View>
+        </View>
       )}
     </Screen>
   );

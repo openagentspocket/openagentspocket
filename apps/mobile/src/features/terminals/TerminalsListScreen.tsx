@@ -1,7 +1,7 @@
 import { t } from '@openagentspocket/i18n';
 import {
   type ActionMenuItem,
-  Icon,
+  FoldHeader,
   ListToolbar,
   makeStyles,
   Screen,
@@ -11,7 +11,7 @@ import {
   Text,
 } from '@openagentspocket/ui';
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 export interface TerminalsGroupModel {
   id: string;
@@ -23,14 +23,6 @@ export interface TerminalsGroupModel {
 const useStyles = makeStyles((theme) => ({
   bar: { marginHorizontal: -theme.metrics.screenInset },
   groups: { gap: theme.spacing.xs },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    gap: theme.spacing.xs,
-    minHeight: theme.metrics.minTapSize,
-    paddingTop: theme.spacing.xs,
-  },
-  grow: { flex: 1 },
 }));
 
 interface TerminalsListScreenProps {
@@ -91,25 +83,14 @@ export function TerminalsListScreen(props: TerminalsListScreenProps) {
           const isFolded = folded.has(group.id);
           return (
             <View key={group.id}>
-              <Pressable
-                onPress={() => toggle(group.id)}
-                accessibilityRole="button"
-                accessibilityState={{ expanded: !isFolded }}
-                style={styles.header}
+              <FoldHeader
+                kind="status"
+                title={group.workspace}
+                subtitle={group.host}
+                collapsed={isFolded}
+                onToggle={() => toggle(group.id)}
                 testID={`terminals-header-${group.id}`}
-              >
-                <Text variant="headline" numberOfLines={1}>
-                  {group.workspace}
-                </Text>
-                <Text tone="secondary" numberOfLines={1} style={styles.grow}>
-                  {group.host}
-                </Text>
-                <Icon
-                  name={isFolded ? 'chevronRight' : 'chevronDown'}
-                  size={14}
-                  color="textSecondary"
-                />
-              </Pressable>
+              />
               {isFolded ? null : (
                 <TerminalGroup onNewTerminal={() => props.onNewIn?.(group.id)}>
                   {group.terminals.map((terminal, index) => (

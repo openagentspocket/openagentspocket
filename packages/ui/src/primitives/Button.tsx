@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, type ViewStyle } from 'react-native';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
 import { Text } from './Text';
@@ -17,6 +17,7 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     gap: t.spacing.xs,
   },
+  tight: { paddingHorizontal: t.spacing.xxs },
   small: { minHeight: 32, paddingHorizontal: t.spacing.sm },
   dense: { paddingHorizontal: t.spacing.xs, gap: t.spacing.xxs },
   iconOnly: { paddingHorizontal: 0, minWidth: t.metrics.minTapSize },
@@ -35,6 +36,9 @@ const useStyles = makeStyles((t) => ({
   pressed: { opacity: 0.75 },
   disabled: { opacity: 0.4 },
 }));
+
+/** Web only: the browser's blue focus ring is not part of the Swift look. */
+export const noFocusRing = (Platform.OS === 'web' ? { outlineStyle: 'none' } : {}) as ViewStyle;
 
 const inkFor = (kind: ButtonKind, t: Theme) =>
   ({
@@ -57,6 +61,8 @@ interface CommonProps {
   iconSize?: number;
   /** Fully rounded ends (Swift capsule), whatever the kind. */
   pill?: boolean;
+  /** Minimal side padding, for buttons that share a row (alert actions) so labels stay on one line. */
+  tight?: boolean;
   testID?: string;
 }
 
@@ -79,6 +85,7 @@ export function Button({
   accessibilityHint,
   iconSize,
   pill = false,
+  tight = false,
   testID,
 }: ButtonProps) {
   const styles = useStyles();
@@ -101,11 +108,13 @@ export function Button({
       hitSlop={size === 'small' ? 6 : 0}
       style={({ pressed }) => [
         styles.base,
+        noFocusRing,
         size === 'small' && styles.small,
         size === 'dense' && styles.dense,
         iconOnly && styles.iconOnly,
         iconOnly && size === 'small' && styles.iconOnlySmall,
         styles[kind],
+        tight && styles.tight,
         pill && styles.pill,
         pressed && styles.pressed,
         disabled && styles.disabled,

@@ -36,6 +36,24 @@ TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/r
 ## Rules
 
 - Reuse first: search `packages/ui` exports before writing any UI. Add a primitive there if a second screen needs it.
+
+## Reusable by default (Enzo, 2026-11-05: for everything that comes)
+
+Build the generic piece once and extend it, so a similar feature tomorrow is quick and safe and an edit to a pattern
+changes it everywhere. Judges reject duplication.
+
+- Find the extension point first and plug into it; if none exists and a second use is plausible, create it first and
+  ship the feature as its first implementation. Existing ones: chat programs implement `ChatTranscriptAdapter`
+  (`packages/core/src/chat/engine/adapter.ts`) and register (Pi/OMP/Grok/OpenCode are new adapters, no UI branches);
+  Blocked dialogs are parser + planner per program in `packages/core/src/blocked`; Host data comes from probe
+  scripts over `packages/transport/src/host` (a new data source, such as git status for the status line, is a new
+  probe with its parser and refresh policy, not ad hoc exec calls); screens compose `packages/ui/src/components`;
+  layout differences (iPad, wide) go through one layout-mode hook and layout components, never per-screen forks;
+  every control's tint comes from tokens through shared wrappers.
+- Variants are props of one component, never copies. A pattern used twice becomes a component or a helper in the
+  package the next caller would search.
+- Shared fakes and fixtures for tests live next to the interface they fake.
+- In a report, list the reusable pieces you created or extended.
 - Screens (`apps/mobile/src/app/**`, `*Screen.tsx`) stay at 150 lines or fewer; any file at 400 or fewer (ratchet:
   `scripts/file-length-baseline.json` may only shrink; run `node scripts/check-file-length.mjs --update` after a split).
 - Colors only from theme tokens (`useTheme()`); no hex/rgb literal in app or UI source.

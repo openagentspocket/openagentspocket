@@ -1,7 +1,6 @@
 import type { ConsoleRow } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Sheet, Text, TextField } from '@openagentspocket/ui';
-import { useEffect, useState } from 'react';
+import { TextPromptSheet } from '@openagentspocket/ui';
 
 interface RenameSheetProps {
   /** The Agent being renamed; undefined keeps the sheet closed. */
@@ -12,37 +11,18 @@ interface RenameSheetProps {
 
 /** Names an Agent. Saving an empty name gives it back its own. */
 export function RenameSheet({ row, onClose, onSave }: RenameSheetProps) {
-  const [name, setName] = useState('');
-  const paneId = row?.agent.pane_id;
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset only when another Agent opens
-  useEffect(() => {
-    setName(row?.agent.name ?? '');
-  }, [paneId]);
   return (
-    <Sheet
+    <TextPromptSheet
       visible={row !== undefined}
-      onClose={onClose}
       title={t('Rename Agent')}
-      detent="medium"
-      leading={{ label: t('Cancel'), onPress: onClose, testID: 'rename-cancel' }}
-      trailing={{
-        label: t('Save'),
-        onPress: () => row && onSave(row, name),
-        testID: 'rename-save',
-      }}
-    >
-      <TextField
-        label={t('Name')}
-        value={name}
-        onChangeText={setName}
-        autoFocus
-        returnKeyType="done"
-        onSubmitEditing={() => row && onSave(row, name)}
-        testID="rename-field"
-      />
-      <Text variant="footnote" tone="secondary">
-        {t('Leave empty to fall back to the detected kind (%@).', row?.agent.agent ?? '')}
-      </Text>
-    </Sheet>
+      fieldLabel={t('Name')}
+      initialValue={row?.agent.name ?? ''}
+      hint={t('Leave empty to fall back to the detected kind (%@).', row?.agent.agent ?? '')}
+      cancelLabel={t('Cancel')}
+      saveLabel={t('Save')}
+      onSave={(name) => row && onSave(row, name)}
+      onClose={onClose}
+      testID="rename"
+    />
   );
 }

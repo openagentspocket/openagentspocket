@@ -2,6 +2,7 @@ import { type ReactNode, useState } from 'react';
 import { Platform, Pressable, TextInput, View } from 'react-native';
 import { composerAction } from '../composer/Composer';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { useAnchor } from '../overlay/anchors';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { airy } from '../theme/metrics';
@@ -109,6 +110,8 @@ export interface ComposerCardProps {
   placeholder?: string;
   disabled?: boolean;
   labels?: AgentBarLabels;
+  /** The key the "..." circle registers as a popover anchor. */
+  moreAnchorKey?: string;
   testID?: string;
 }
 
@@ -117,19 +120,24 @@ function Circle({
   label,
   onPress,
   menu,
+  anchorKey,
   testID,
 }: {
   icon: IconName;
   label: string;
   onPress?: () => void;
   menu?: readonly ActionMenuItem[];
+  /** Registers the circle as a popover anchor (`confirm({ anchorKey })`). */
+  anchorKey?: string;
   testID: string;
 }) {
   const styles = useStyles();
   const [open, setOpen] = useState(false);
+  const anchor = useAnchor(anchorKey);
   return (
     <>
       <Pressable
+        ref={anchor}
         style={styles.circle}
         onPress={menu ? () => setOpen(true) : onPress}
         accessibilityRole="button"
@@ -156,6 +164,7 @@ export function ComposerCard({
   leading,
   addMenu,
   moreMenu,
+  moreAnchorKey,
   skills,
   onSkill,
   expanded,
@@ -280,6 +289,7 @@ export function ComposerCard({
                 icon="more"
                 label={labels.moreOptions}
                 menu={moreMenu}
+                anchorKey={moreAnchorKey}
                 testID={`${testID}-more`}
               />
             ) : null}

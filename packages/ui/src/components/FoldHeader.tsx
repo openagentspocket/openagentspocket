@@ -44,6 +44,8 @@ interface FoldHeaderProps {
   kind: FoldHeaderKind;
   title: string;
   count?: number;
+  /** Status kind: a secondary word after a headline title (a workspace's Host). */
+  subtitle?: string;
   /** Host: the connection tone of the dot on the glyph. */
   hostTone?: Tone;
   /** Host, expanded: a short readiness sentence ("Ready"). */
@@ -68,6 +70,7 @@ export function FoldHeader({
   kind,
   title,
   count,
+  subtitle,
   hostTone = 'success',
   readiness,
   pills,
@@ -120,9 +123,19 @@ export function FoldHeader({
       </Text>
     ) : (
       <>
-        <Text variant="subheadline" semibold tone="secondary" numberOfLines={1}>
+        <Text
+          variant={subtitle ? 'headline' : 'subheadline'}
+          semibold={!subtitle}
+          tone={subtitle ? 'primary' : 'secondary'}
+          numberOfLines={1}
+        >
           {title}
         </Text>
+        {subtitle ? (
+          <Text tone="secondary" numberOfLines={1}>
+            {subtitle}
+          </Text>
+        ) : null}
         {count !== undefined ? <Badge label={String(count)} kind="control" /> : null}
       </>
     );
