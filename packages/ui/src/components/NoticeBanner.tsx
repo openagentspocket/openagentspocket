@@ -1,7 +1,8 @@
 import { type ReactNode, useEffect, useRef } from 'react';
-import { ActivityIndicator, Animated, PanResponder, Platform, Pressable, View } from 'react-native';
+import { Animated, PanResponder, Platform, Pressable, View } from 'react-native';
 import { quick, useReducedMotion } from '../motion';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Spinner } from '../primitives/Spinner';
 import { Text } from '../primitives/Text';
 import type { Tone } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -194,7 +195,7 @@ export function NoticeBanner(props: NoticeBannerProps) {
         accessibilityLabel={message}
         testID={testID ?? 'notice-locating'}
       >
-        <ActivityIndicator size="large" color={theme.colors.accent} />
+        <Spinner size="large" color="accent" />
         <Text variant="subheadline" tone="secondary">
           {message}
         </Text>

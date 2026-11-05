@@ -31,13 +31,17 @@ fix agents), Enzo reviews the compare sheets himself, max 2 iterations per scree
 (apps/mobile/src/dev/atlas/family*.tsx), one-page brief docs/agents/ux-worker.md, haiku for mechanical steps.
 Enzo reviewed the compare sheets himself (2026-11-05: "está todo perfecto, me encanta"): UX1-agent-detail,
 UX1-files-changes-ports and UX1-new-agent merged (ui 276, mobile 312, full test green).
-2026-11-05: UX1-notifications, UX1-console, UX1-settings-pages and P2.11 background work merged after Enzo's review
-(main c57c41f; core 2611, ui 283, mobile 314). iPhone screen parity: 123 of 138 Swift atlas ids mapped, 13 dropped by
-decision (overlay networks, extra app themes), 2 left (settings.theme--papel is the Papel capture of settings.theme;
-shell.window-root is iPad). Next: P2.10 chat for Pi/OMP/Grok/OpenCode (ChatTranscriptAdapter), git status probe for the
-status line, UX1-wide (iPad), UX1-tint-audit, iOS simulator pass + Maestro, then the small leftovers in the progress
-docs (open an existing shell pane, terminal row swipe close, agent rows read the saved field layout, plugin method for
-field sync, Home background work, Files date format, Snippets route).
+2026-11-05: UX1-notifications, UX1-console, UX1-settings-pages, P2.11 background work, P2.15 git status line and
+P2.10 chat for Pi/OMP/Grok/OpenCode merged (full test green: core 3499, ui 283, mobile 321). iPhone screen parity
+123/138 (13 dropped by decision). Home's Add Host opens Scan to Pair; Scan to Pair explains how to show the code.
+Apple Developer, Firebase project and the hosted relay are live (owner values stay in gitignored local files read
+by apps/mobile/app.config.js and packages/relay/scripts/deploy.mjs); the app runs on the owner's iPhone.
+**Running (standalone agents):** P2.10b send policy + composer "+" menus; tint audit + "Agent gone" on resume;
+screen scaffold (safe area fixed once in Screen, one scaffold for every screen, native menu trigger icon); P4.1e
+generic usage providers (cards per provider, plugin collectors); UX1-easy-pair (ChoiceSheet, CommandBlock, Easy
+Pair screen, install.sh / install.ps1). Next: merge each after Enzo's review, iOS simulator + Maestro pass, domain on
+Cloudflare (relay.openagentspocket.com, site with /privacy and /install.sh, privacy@ routing), iPad last. Full
+lead handoff (agents, accounts, merge procedure): the lead's private session handoff.
 
 Enzo decision (2026-11-05): extra Swift app themes (Catppuccin Mocha, Gruvbox Dark, Nord) only as terminal palettes; the
 app keeps Índigo, Papel, Noche.

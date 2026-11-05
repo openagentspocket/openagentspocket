@@ -1,8 +1,8 @@
 import type { PushRegistrationState } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Badge, Button, Icon, Section, spacing, Text } from '@openagentspocket/ui';
+import { Badge, Button, Icon, Section, Spinner, spacing, Text } from '@openagentspocket/ui';
 import type { ReactNode } from 'react';
-import { ActivityIndicator, Linking, View } from 'react-native';
+import { Linking, View } from 'react-native';
 
 interface Props {
   push: PushRegistrationState;
@@ -21,7 +21,7 @@ function StatusRow({ push, onEnable }: Props) {
       return (
         <Row>
           <Text tone="secondary">{t('Checking notification status')}</Text>
-          <ActivityIndicator />
+          <Spinner />
         </Row>
       );
     case 'needsPermission':
@@ -37,7 +37,7 @@ function StatusRow({ push, onEnable }: Props) {
       return (
         <Row>
           <Text>{t('Registering with Apple')}</Text>
-          <ActivityIndicator />
+          <Spinner />
         </Row>
       );
     case 'registered':

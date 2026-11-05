@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Modal, Pressable, TextInput, View } from 'react-native';
+import { Modal, Pressable, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { StatusDot } from '../primitives/StatusDot';
 import { Text } from '../primitives/Text';
+import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { withAlpha } from '../theme/color';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
@@ -192,13 +193,10 @@ export function SessionDrawer({
       <View style={styles.top}>
         <View style={styles.search}>
           <Icon name="search" size={16} />
-          <TextInput
+          <ThemedTextInput
             value={query}
             onChangeText={setQuery}
             placeholder={labels.searchPlaceholder}
-            placeholderTextColor={theme.colors.textTertiary}
-            selectionColor={theme.colors.accent}
-            keyboardAppearance={theme.appearance}
             accessibilityLabel={labels.search}
             style={styles.input}
             testID={`${testID}-search`}

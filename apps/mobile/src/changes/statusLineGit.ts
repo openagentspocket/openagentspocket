@@ -11,8 +11,10 @@ export function statusLineGit(
     counts: {
       behind: git.behind,
       ahead: git.ahead,
-      untracked: git.untracked,
+      conflicts: git.conflicts,
+      staged: git.staged,
       changed: git.changed,
+      untracked: git.untracked,
     },
     diff: git.diff,
   };
