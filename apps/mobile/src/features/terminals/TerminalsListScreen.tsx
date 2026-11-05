@@ -4,7 +4,6 @@ import {
   FoldHeader,
   ListToolbar,
   makeStyles,
-  Screen,
   TerminalGroup,
   type TerminalModel,
   TerminalRow,
@@ -12,6 +11,7 @@ import {
 } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { View } from 'react-native';
+import { AppScreen } from '@/navigation/AppScreen';
 
 export interface TerminalsGroupModel {
   id: string;
@@ -57,7 +57,7 @@ export function TerminalsListScreen(props: TerminalsListScreenProps) {
       return next;
     });
   return (
-    <Screen edges={['right', 'bottom', 'left']} testID="terminals-screen">
+    <AppScreen testID="terminals-screen">
       <View style={styles.bar}>
         <ListToolbar
           presentation="workspace"
@@ -108,6 +108,6 @@ export function TerminalsListScreen(props: TerminalsListScreenProps) {
           );
         })}
       </View>
-    </Screen>
+    </AppScreen>
   );
 }

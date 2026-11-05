@@ -1,7 +1,12 @@
 import {
   countdown,
   formatShare,
+  type HostReading,
   type ProviderUsage,
+  type ProviderUsageState,
+  providerUsageOf,
+  type QuickEmpty,
+  quickContent,
   renderText,
   updatedMessage,
 } from '@openagentspocket/core';
@@ -13,6 +18,7 @@ export interface ProviderCardModel {
   key: string;
   hostId: string;
   providerId: string;
+  state: ProviderUsageState;
   props: Omit<ProviderUsageCardProps, 'onPress' | 'testID'>;
 }
 
@@ -29,6 +35,7 @@ export function providerCardModel(usage: ProviderUsage, now: Date): ProviderCard
     key: `${usage.hostId}/${provider.id}`,
     hostId: usage.hostId,
     providerId: provider.id,
+    state: usage.state,
     props: {
       program: provider.id,
       brand: provider.brand,
@@ -62,4 +69,22 @@ export function providerFooter(
     translateKey,
   );
   return { text, status };
+}
+
+export interface ProviderModels {
+  cards: ProviderCardModel[];
+  footer: ProviderFooterModel | null;
+  /** Why there are no cards (no Hosts, still loading, nothing reported); null with cards. */
+  empty: QuickEmpty | null;
+}
+
+/** Everything a compact Usage surface shows, from the Hosts' readings. */
+export function providerModels(readings: readonly HostReading[], now: Date): ProviderModels {
+  const content = quickContent(readings, now);
+  const entries = providerUsageOf(content, translateKey);
+  return {
+    cards: entries.map((entry) => providerCardModel(entry, now)),
+    footer: providerFooter(entries, now),
+    empty: content.empty,
+  };
 }

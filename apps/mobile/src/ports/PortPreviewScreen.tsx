@@ -1,9 +1,10 @@
 import { hostUrl, type PortsStore, parseUrl, tunnelUrl } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { confirm, makeStyles, Screen, SheetBar } from '@openagentspocket/ui';
+import { confirm, makeStyles, type ScreenHeader } from '@openagentspocket/ui';
 import { useEffect, useRef, useState } from 'react';
 import { Linking, Share, View } from 'react-native';
 import { useStoreState } from '@/changes/useStoreState';
+import { AppScreen } from '@/navigation/AppScreen';
 import { askLeavePreview } from './leaveDialog';
 import { PreviewStates } from './PreviewStates';
 import { PreviewToolbar } from './PreviewToolbar';
@@ -70,26 +71,25 @@ export function PortPreviewScreen({
       cancelLabel: null,
     });
 
-  const bar = (
-    <SheetBar
-      title={title ?? store.hostName}
-      leading={{
-        label: t('Close'),
-        icon: 'close',
-        onPress: onClose ?? (() => {}),
-        testID: 'preview-close',
-      }}
-    />
-  );
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: title ?? store.hostName,
+    leading: {
+      label: t('Close'),
+      icon: 'close',
+      onPress: onClose ?? (() => {}),
+      testID: 'preview-close',
+    },
+  };
   // Nothing is open (the list was left, or the route was opened cold): the route is popping.
   if (!preview)
     return (
-      <Screen scroll={false} testID="preview-screen">
+      <AppScreen scroll={false} testID="preview-screen">
         {null}
-      </Screen>
+      </AppScreen>
     );
   return (
-    <Screen scroll={false} header={bar} edges={['left', 'right', 'bottom']} testID="preview-screen">
+    <AppScreen scroll={false} header={bar} testID="preview-screen">
       <View style={styles.body}>
         {open ? (
           <PreviewWebView
@@ -127,6 +127,6 @@ export function PortPreviewScreen({
         }}
         onShare={() => void Share.share({ message: hostUrl(state.url, port) })}
       />
-    </Screen>
+    </AppScreen>
   );
 }

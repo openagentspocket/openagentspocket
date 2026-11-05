@@ -15,7 +15,6 @@ import {
   EmptyState,
   ListRow,
   makeStyles,
-  Screen,
   Section,
   SectionHeader,
   Segmented,
@@ -23,6 +22,7 @@ import {
 } from '@openagentspocket/ui';
 import type { ReactNode } from 'react';
 import { ScrollView, View } from 'react-native';
+import { AppScreen } from '@/navigation/AppScreen';
 import { UsageBreakdownSection } from './UsageBreakdownSection';
 import { UsageCalendar, UsageDailyChart } from './UsageChartSection';
 import { UsageProgramsSection } from './UsageHostsSection';
@@ -307,7 +307,7 @@ export function UsageWideScreen({
 }: WideScreenProps) {
   const styles = useStyles();
   return (
-    <Screen scroll={false} bare testID="usage-screen">
+    <AppScreen header={{ variant: 'native' }} scroll={false} bare testID="usage-screen">
       <View style={styles.root}>
         <UsageHostColumn scope={all} host={host} onHost={onHost} metric={detail.metric} />
         <ScrollView style={styles.detail} testID="usage-screen-scroll">
@@ -329,6 +329,6 @@ export function UsageWideScreen({
         </ScrollView>
       </View>
       {sheets}
-    </Screen>
+    </AppScreen>
   );
 }

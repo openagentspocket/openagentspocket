@@ -6,14 +6,14 @@ import {
   EmptyState,
   ErrorState,
   makeStyles,
-  Screen,
+  type ScreenHeader,
   Section,
-  SheetBar,
   SkeletonRows,
 } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
+import { AppScreen } from '@/navigation/AppScreen';
 import { FileRow } from './FileRow';
 import { PathChip } from './PathChip';
 import { type FileBrowserSource, useFileBrowserSource } from './source';
@@ -45,9 +45,9 @@ export function FilesScreen({ source, onDone }: FilesScreenProps) {
   const store = useFileBrowserStore(source ?? fallback);
   if (!store) {
     return (
-      <Screen scroll={false} testID="files-loading">
+      <AppScreen scroll={false} testID="files-loading">
         <SkeletonRows />
-      </Screen>
+      </AppScreen>
     );
   }
   return <FileBrowser store={store} onDone={onDone} />;
@@ -67,31 +67,24 @@ function FileBrowser({ store, onDone }: { store: FileBrowserStore; onDone?: () =
   const empty =
     !state.isLoading && !state.loadError && state.currentPath && state.items.length === 0;
 
-  const bar = (
-    <SheetBar
-      title={store.title}
-      leading={{ label: t('Done'), onPress: onDone ?? (() => {}), testID: 'files-done' }}
-      trailing={[
-        {
-          label: t('Parent folder'),
-          icon: 'chevronUp',
-          disabled: !store.canGoUp,
-          onPress: () => store.goUp(),
-          testID: 'files-up',
-        },
-        { label: t('Upload'), icon: 'add', onPress: () => setAdding(true), testID: 'files-add' },
-      ]}
-    />
-  );
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: store.title,
+    leading: { label: t('Done'), onPress: onDone ?? (() => {}), testID: 'files-done' },
+    trailing: [
+      {
+        label: t('Parent folder'),
+        icon: 'chevronUp',
+        disabled: !store.canGoUp,
+        onPress: () => store.goUp(),
+        testID: 'files-up',
+      },
+      { label: t('Upload'), icon: 'add', onPress: () => setAdding(true), testID: 'files-add' },
+    ],
+  };
 
   return (
-    <Screen
-      scroll={false}
-      bare
-      header={bar}
-      edges={['left', 'right', 'bottom']}
-      testID="files-screen"
-    >
+    <AppScreen scroll={false} bare header={bar} testID="files-screen">
       <PathChip path={store.displayPath} loadingLabel={t('Loading %@…', state.hostName)} />
       <ScrollView style={styles.list} contentContainerStyle={styles.content}>
         {partial ? <Banner title={partial} tone="info" /> : null}
@@ -128,6 +121,6 @@ function FileBrowser({ store, onDone }: { store: FileBrowserStore; onDone?: () =
         visible={adding}
         onClose={() => setAdding(false)}
       />
-    </Screen>
+    </AppScreen>
   );
 }

@@ -5,8 +5,9 @@ import {
   listLimitNotice,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, ChangeSection, Screen, SheetBar } from '@openagentspocket/ui';
+import { Banner, ChangeSection, type ScreenHeader } from '@openagentspocket/ui';
 import { useCallback, useEffect, useMemo } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { ChangedFileRow } from './ChangedFileRow';
 import { ChangesHeader } from './ChangesHeader';
 import { ChangesBlockedState, ChangesNote, CleanState, TimedOutBanner } from './ChangesStates';
@@ -53,27 +54,24 @@ export function ChangesScreen({ agentId, onOpenFile, onBack, now = Date.now }: C
     },
     [store, onOpenFile],
   );
-  const bar = (
-    <SheetBar
-      title={say('Changes')}
-      back
-      leading={{ label: t('Back'), onPress: onBack ?? (() => {}), testID: 'changes-back' }}
-    />
-  );
-  const edges = ['left', 'right', 'bottom'] as const;
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: say('Changes'),
+    back: true,
+    leading: { label: t('Back'), onPress: onBack ?? (() => {}), testID: 'changes-back' },
+  };
 
   if (!changes) {
     return (
-      <Screen scroll={false} header={bar} edges={edges} testID="changes-screen">
+      <AppScreen scroll={false} header={bar} testID="changes-screen">
         <ChangesBlockedState phase={phase} onRetry={refresh} />
-      </Screen>
+      </AppScreen>
     );
   }
   const notice = listLimitNotice(changes);
   return (
-    <Screen
+    <AppScreen
       header={bar}
-      edges={edges}
       refreshing={state.isRefreshing}
       onRefresh={refresh}
       testID="changes-screen"
@@ -104,6 +102,6 @@ export function ChangesScreen({ agentId, onOpenFile, onBack, now = Date.now }: C
           )}
         </ChangeSection>
       ))}
-    </Screen>
+    </AppScreen>
   );
 }

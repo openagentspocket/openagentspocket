@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useStoreState } from '@/changes/useStoreState';
 import { PortPreviewScreen } from '@/ports/PortPreviewScreen';
 import { portsStoreFor } from '@/ports/registry';
@@ -14,7 +14,6 @@ export default function PortPreviewRoute() {
   const title = preview ? `${store.hostName}:${preview.target.port}` : store.hostName;
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }} />
       <PortPreviewScreen store={store} title={title} onClose={() => router.back()} />
     </>
   );

@@ -1,11 +1,11 @@
-import { Screen } from '@openagentspocket/ui';
+import { AppScreen } from '@/navigation/AppScreen';
 import { NotificationPrivacyContent } from './NotificationDisclosure';
 
 /** The persistent privacy disclosure: the explainer's story, reachable any time. */
 export function NotificationPrivacyScreen() {
   return (
-    <Screen testID="settings-notification-privacy">
+    <AppScreen header={{ variant: 'native' }} testID="settings-notification-privacy">
       <NotificationPrivacyContent />
-    </Screen>
+    </AppScreen>
   );
 }

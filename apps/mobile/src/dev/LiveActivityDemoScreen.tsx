@@ -1,7 +1,8 @@
-import { Button, Card, Screen, Text } from '@openagentspocket/ui';
+import { Button, Card, Text } from '@openagentspocket/ui';
 import { appGroup } from 'agentico-app-group';
 import { liveActivityController } from 'agentico-live-activity';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { type DemoStep, runDemoStep } from './liveActivityDemo';
 
 /** Dev-only: drives the real ActivityKit module with demo Agents. `?step=start|update|end` runs one on open. */
@@ -27,7 +28,7 @@ export function LiveActivityDemoScreen({ autoStep }: { autoStep: DemoStep | null
   }, [autoStep, run]);
 
   return (
-    <Screen>
+    <AppScreen header={{ variant: 'native' }}>
       <Text variant="title">Live Activity demo</Text>
       <Button title="Start" onPress={() => run('start')} />
       <Button title="Update" onPress={() => run('update')} />
@@ -39,6 +40,6 @@ export function LiveActivityDemoScreen({ autoStep }: { autoStep: DemoStep | null
           </Text>
         ))}
       </Card>
-    </Screen>
+    </AppScreen>
   );
 }

@@ -1,12 +1,6 @@
-import { providerUsage, type UsageSource } from '@openagentspocket/core';
+import type { UsageSource } from '@openagentspocket/core';
 import { useMemo } from 'react';
-import {
-  type ProviderCardModel,
-  type ProviderFooterModel,
-  providerCardModel,
-  providerFooter,
-} from './providerCards';
-import { translateKey } from './usageText';
+import { type ProviderModels, providerModels } from './providerCards';
 import { useUsage } from './useUsage';
 
 /**
@@ -14,22 +8,12 @@ import { useUsage } from './useUsage';
  * one per registered provider on each Host, plus the "Updated" footer. `loading` until the first
  * reading lands; `cards` is empty for a Host that reports no provider.
  */
-export function useProviderUsage(explicit?: UsageSource): {
-  cards: ProviderCardModel[];
-  footer: ProviderFooterModel | null;
+export function useProviderUsage(explicit?: UsageSource): ProviderModels & {
   loading: boolean;
   refreshing: boolean;
   refresh: () => Promise<void>;
 } {
   const { readings, now, refreshing, refresh } = useUsage(explicit);
-  const entries = useMemo(
-    () => (readings ? providerUsage(readings, now, translateKey) : []),
-    [readings, now],
-  );
-  const cards = useMemo(
-    () => entries.map((entry) => providerCardModel(entry, now)),
-    [entries, now],
-  );
-  const footer = useMemo(() => providerFooter(entries, now), [entries, now]);
-  return { cards, footer, loading: readings === null, refreshing, refresh };
+  const models = useMemo(() => providerModels(readings ?? [], now), [readings, now]);
+  return { ...models, loading: readings === null, refreshing, refresh };
 }

@@ -1,6 +1,6 @@
 import type { Translate } from '../../errors/text';
 import { message, renderText } from '../../errors/text';
-import { type QuickCard, type QuickWindow, quickContent } from '../quick-sheet';
+import { type QuickCard, type QuickContent, type QuickWindow, quickContent } from '../quick-sheet';
 import type { HostReading } from '../scope';
 import type { ProviderLimitWindow, ProviderUsage, ProviderUsageState } from './provider';
 import { usageProvider, usageProviders } from './registry';
@@ -59,8 +59,13 @@ export function providerUsage(
   now: Date,
   translate: Translate,
 ): ProviderUsage[] {
+  return providerUsageOf(quickContent(readings, now), translate);
+}
+
+/** `providerUsage` from content already built (a surface that also needs its empty state). */
+export function providerUsageOf(content: QuickContent, translate: Translate): ProviderUsage[] {
   const picked = new Map<string, ProviderUsage>();
-  for (const card of quickContent(readings, now).cards) {
+  for (const card of content.cards) {
     const usage = usageOf(card, translate);
     if (!usage) continue;
     const key = `${usage.hostId}/${usage.provider.id}`;
