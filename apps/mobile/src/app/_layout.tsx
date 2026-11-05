@@ -30,6 +30,13 @@ import { useResolvedThemeId } from '@/settings/useSettingsContext';
 import { useWidgetSync } from '@/widgets/useWidgetSync';
 
 recordUncaughtErrors();
+/**
+ * Home is always the first screen of the root stack, also when a link opens a sheet route directly
+ * (settings, hosts, add-host...): a form sheet cannot be the first screen of a native stack (the
+ * router would draw it as a card), and Home pushed over a sheet would itself be drawn as a modal.
+ */
+export const unstable_settings = { anchor: 'index' };
+
 const settingsStore = new SettingsStore(deviceStorage);
 bindDemoModeStorage(deviceStorage);
 
