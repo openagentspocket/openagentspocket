@@ -3,6 +3,8 @@ import { t } from '@openagentspocket/i18n';
 import { airy, makeStyles } from '@openagentspocket/ui';
 import { useMemo } from 'react';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
+import type { CrashStorage } from '@/diagnostics/crashRecorder';
+import { LastCrashBanner } from '@/diagnostics/LastCrashBanner';
 import { HostIssues } from '@/features/hosts/HostIssues';
 import { AppScreen } from '@/navigation/AppScreen';
 import { useConsoleState, useConsoleStore, useStatusInbox } from '../console/hooks';
@@ -24,6 +26,8 @@ const useStyles = makeStyles((th) => ({
 }));
 
 export interface HomeScreenProps {
+  /** Where the last uncaught error was kept; with it, Home offers that error to copy. */
+  crashStorage?: CrashStorage;
   /** Opens the Agent's detail; unset until the detail route exists. */
   onOpenAgent?: (row: ConsoleRow) => void;
   onOpenHost?: (hostId: string) => void;
@@ -102,6 +106,7 @@ export function HomeScreen(props: HomeScreenProps) {
             onOpenSessions={props.onOpenSessions}
           />
           <HostIssues />
+          {props.crashStorage ? <LastCrashBanner storage={props.crashStorage} /> : null}
           <View style={styles.body}>
             <HomeInbox
               content={content}

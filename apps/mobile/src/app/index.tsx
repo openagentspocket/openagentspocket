@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { Linking } from 'react-native';
+import { crashStorage } from '@/diagnostics/crashStorage';
 import { HomeScreen } from '@/home/HomeScreen';
 import { hrefs } from '@/navigation/hrefs';
 import { REPOSITORY_URL } from '@/settings/pagesRoot';
@@ -9,6 +10,7 @@ export default function Index() {
   const router = useRouter();
   return (
     <HomeScreen
+      crashStorage={crashStorage}
       onAddHost={() => router.push(hrefs.addHost())}
       onSetupGuide={() => void Linking.openURL(REPOSITORY_URL)}
       onOpenSettings={() => router.push('/settings')}
