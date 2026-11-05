@@ -1,6 +1,8 @@
 export * from './components/agentBar';
 export * from './components/agentRows';
 export * from './components/blockedTerminal';
+export { type ChoiceOption, ChoiceSheet } from './components/ChoiceSheet';
+export { CommandBlock } from './components/CommandBlock';
 export * from './components/chatRows';
 export * from './components/composerExtras';
 export * from './components/homeShell';

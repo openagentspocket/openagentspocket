@@ -1066,6 +1066,21 @@
   title: "assemble Hosts sheet, detail, pairing scanner and form from the cloned components and compare whole screens (briefs/hosts-pairing.md, components in docs/ux/components/README.md)"
   deps: [UX1-design-system, UX3-hosts-settings-files, UX3-nav-sheets, UX3-settings-pickers]
   files: [apps/mobile/src/app/hosts/**, apps/mobile/src/features/hosts/**]
+- id: UX1-easy-pair
+  phase: 9
+  kind: js
+  title: "Add Host flow: ChoiceSheet (Easy Pair with QR / Add Manually) and an Easy Pair screen with a platform-aware CommandBlock and a What happens sheet; generic ChoiceSheet and CommandBlock in packages/ui"
+  deps: [UX1-hosts]
+  files:
+    [
+      packages/ui/src/components/ChoiceSheet.tsx,
+      packages/ui/src/components/CommandBlock.tsx,
+      packages/ui/src/gallery/components/choiceCommand.tsx,
+      apps/mobile/src/features/hosts/**,
+      apps/mobile/src/app/hosts/**,
+      apps/mobile/src/navigation/hrefs.ts,
+      packages/i18n/src/extras/**,
+    ]
 - id: UX1-usage
   phase: 9
   kind: js
