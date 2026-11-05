@@ -35,8 +35,9 @@ interface TerminalsListScreenProps {
 
 /**
  * console.terminals-list: the shell terminals of each workspace as cards under a folding workspace
- * header. TODO: no RN store lists a Host's shell panes yet, so the owner passes the groups; the
- * presentation menu has its single entry until By Host exists.
+ * header. The groups come from the Console store (`groupTerminals`); the presentation menu has its
+ * single entry until a By Host layout exists. Opening an existing shell is not wired: the shell
+ * route only creates new ones.
  */
 export function TerminalsListScreen(props: TerminalsListScreenProps) {
   const styles = useStyles();

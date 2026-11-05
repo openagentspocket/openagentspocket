@@ -16,6 +16,15 @@ export const hrefs = {
       ...(origin?.cwd ? { cwd: origin.cwd } : {}),
     },
   }),
+  terminals: (hostId?: string): Href => ({
+    pathname: '/terminals',
+    params: hostId ? { host: hostId } : {},
+  }),
+  /** A new shell in a workspace's directory. */
+  shell: (target: { hostId: string; workspaceId: string; cwd: string }): Href => ({
+    pathname: '/terminal',
+    params: { host: target.hostId, workspace: target.workspaceId, cwd: target.cwd },
+  }),
   files: (hostId: string, path?: string): Href => ({
     pathname: '/files',
     params: { host: hostId, ...(path ? { path } : {}) },

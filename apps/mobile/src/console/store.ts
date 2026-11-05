@@ -7,6 +7,7 @@ import {
   type Clock,
   type ConsoleRow,
   type ConsoleSession,
+  type ConsoleTerminal,
   type ConsoleTransport,
   type ConsoleWorkspace,
   type EventsSessionStatus,
@@ -29,6 +30,8 @@ export interface HostSummary {
   readonly isAwaitingSnapshot: boolean;
   readonly syncError: SyncError | undefined;
   readonly latencyMs: number | undefined;
+  /** The route the live connection uses; undefined until one connected. */
+  readonly routeId?: string | undefined;
 }
 
 /** An immutable view of the whole Console; replaced (never mutated) on every change. */
@@ -115,6 +118,12 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
   /** The workspaces a Host's latest snapshot reports, in sidebar order; empty for an unknown Host. */
   workspaces(hostId: string): readonly ConsoleWorkspace[] {
     return this.projections.get(hostId)?.workspaces ?? [];
+  }
+
+  /** The shell panes (no Agent) of one Host's latest snapshot, or of every Host in order. */
+  terminals(hostId?: string): readonly ConsoleTerminal[] {
+    if (hostId !== undefined) return this.projections.get(hostId)?.terminals ?? [];
+    return [...this.projections.values()].flatMap((projection) => projection.terminals);
   }
 
   isPinned(hostId: string, paneId: string): boolean {
@@ -211,6 +220,11 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     return this.projection(hostId).revalidate();
   }
 
+  /** Stops a dial or backoff in flight; the Host rests until `retry`. */
+  stopConnecting(hostId: string): Promise<void> {
+    return this.projection(hostId).session.suspend();
+  }
+
   hasHost(hostId: string): boolean {
     return this.projections.has(hostId);
   }
@@ -252,6 +266,7 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
         isAwaitingSnapshot: projection.isAwaitingSnapshot,
         syncError: projection.syncError,
         latencyMs: projection.latency,
+        routeId: projection.routeId,
       })),
       revision: this.state.revision + 1,
     };

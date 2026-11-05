@@ -4,6 +4,9 @@ import { confirm, copyToClipboard } from '@openagentspocket/ui';
 import { useEffect } from 'react';
 import { newAgentText } from './text';
 
+/** The Remove row the confirmation popover points at. */
+export const WORKTREE_REMOVE_ANCHOR = 'worktree-remove-row';
+
 /** The remove confirmation and the refusal feedback of Worktree Details, as dialogs. */
 export function useWorktreeDialogs(
   store: WorktreeDetailStore,
@@ -17,7 +20,8 @@ export function useWorktreeDialogs(
       message: newAgentText(confirmation.message),
       confirmLabel: t('Remove Worktree'),
       destructive: true,
-      presentation: 'dialog',
+      presentation: 'popover',
+      anchorKey: WORKTREE_REMOVE_ANCHOR,
     }).then((confirmed) => {
       const request = confirmed ? store.beginRemoval() : undefined;
       if (!request) return store.cancelConfirmation();

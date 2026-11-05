@@ -6,11 +6,12 @@ import {
   type WorktreeRemovalReceipt,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, ListRow, Screen, Section, SheetBar } from '@openagentspocket/ui';
+import { Button, ListRow, Screen, Section, SheetBar, useAnchor } from '@openagentspocket/ui';
 import { useEffect, useMemo } from 'react';
+import { View } from 'react-native';
 import { useStoreState } from '@/changes/useStoreState';
 import { newAgentText } from './text';
-import { useWorktreeDialogs } from './useWorktreeDialogs';
+import { useWorktreeDialogs, WORKTREE_REMOVE_ANCHOR } from './useWorktreeDialogs';
 
 interface WorktreeDetailsScreenProps {
   options: WorktreeDetailOptions;
@@ -55,6 +56,7 @@ export function WorktreeDetailsScreen({ options, onRemoved, onDone }: WorktreeDe
         ? newAgentText(removalPhase.message)
         : t('Deletes this checkout and closes its workspace. No branch is deleted.');
   const shown = store.displayedBranch;
+  const removeAnchor = useAnchor(WORKTREE_REMOVE_ANCHOR);
   return (
     <Screen
       header={
@@ -89,7 +91,7 @@ export function WorktreeDetailsScreen({ options, onRemoved, onDone }: WorktreeDe
       {store.canShowChanges ? (
         <Section>
           <ListRow
-            icon="branch"
+            icon="diff"
             title={t('Show Changes')}
             titleTone="accent"
             onPress={() => store.showChanges()}
@@ -98,13 +100,15 @@ export function WorktreeDetailsScreen({ options, onRemoved, onDone }: WorktreeDe
         </Section>
       ) : null}
       <Section footer={phaseNote}>
-        <ListRow
-          title={t('Remove Worktree')}
-          titleTone="danger"
-          disabled={!store.canRemove || removalPhase.kind === 'removing'}
-          onPress={() => store.prepareConfirmation()}
-          testID="worktree-remove"
-        />
+        <View ref={removeAnchor} collapsable={false}>
+          <ListRow
+            title={t('Remove Worktree')}
+            titleTone="danger"
+            disabled={!store.canRemove || removalPhase.kind === 'removing'}
+            onPress={() => store.prepareConfirmation()}
+            testID="worktree-remove"
+          />
+        </View>
       </Section>
     </Screen>
   );

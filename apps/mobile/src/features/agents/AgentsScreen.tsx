@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { hrefs } from '../../navigation/hrefs';
+import { HostIssues } from '../hosts/HostIssues';
 import { AgentGroup } from './AgentGroup';
 import { agentHref } from './AgentRow';
 import { AgentsToolbar } from './AgentsToolbar';
@@ -77,7 +78,6 @@ export function AgentsScreen(props: {
   const isPinned = (row: ConsoleRow) => list.store.isPinned(row.hostId, row.agent.pane_id);
   const qualified = useMemo(() => duplicateWorkspaces(list.groups), [list.groups]);
   const empty = list.groups.every((group) => group.rows.length === 0);
-
   return (
     <Screen
       edges={['right', 'bottom', 'left']}
@@ -100,6 +100,7 @@ export function AgentsScreen(props: {
         }}
         onNew={() => router.push(hrefs.newAgent())}
       />
+      <HostIssues />
       <View style={styles.groups}>
         {list.groups.map((group) => (
           <AgentGroup

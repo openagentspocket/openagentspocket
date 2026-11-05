@@ -168,7 +168,7 @@ describe('WorktreeDetailsScreen', () => {
       />,
     );
     await fireEvent.press(screen.getByTestId('worktree-remove'));
-    await fireEvent.press(await screen.findByTestId('alert-cancel'));
+    await fireEvent.press(await screen.findByTestId('alert-dismiss', { hidden: true }));
     expect(remove).not.toHaveBeenCalled();
     await waitFor(() =>
       expect(screen.getByTestId('worktree-remove').props.accessibilityState?.disabled).toBeFalsy(),

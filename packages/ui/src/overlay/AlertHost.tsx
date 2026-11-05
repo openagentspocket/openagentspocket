@@ -239,6 +239,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
         onPress={() => answerAlert(request, null)}
         accessibilityElementsHidden
         importantForAccessibility="no"
+        testID="alert-dismiss"
       />
     );
     if (!measured) return <View style={[styles.clear, noFocusRing]}>{dismiss}</View>;

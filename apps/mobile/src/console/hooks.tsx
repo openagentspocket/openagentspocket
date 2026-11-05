@@ -1,5 +1,6 @@
 import {
   type ConsoleRow,
+  type ConsoleTerminal,
   findRow,
   nextTransition,
   type StatusInboxItem,
@@ -51,6 +52,14 @@ export function useConsoleState(): ConsoleState {
 /** Every Host's Agents in Console order. */
 export function useConsole(): readonly ConsoleRow[] {
   return useConsoleState().rows;
+}
+
+/** Every Host's shell panes (no Agent), re-read when the Console changes. */
+export function useConsoleTerminals(): readonly ConsoleTerminal[] {
+  const store = useConsoleStore();
+  const { revision } = useConsoleState();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: revision signals a new snapshot
+  return useMemo(() => store.terminals(), [store, revision]);
 }
 
 /** One Agent by key (see `agentKey`); undefined when it is not listed. */

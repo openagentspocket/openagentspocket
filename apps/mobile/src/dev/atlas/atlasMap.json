@@ -618,8 +618,8 @@
   },
   {
     "id": "console.terminals-list",
-    "rn": "features/terminals/TerminalsListScreen.tsx",
-    "note": "fixed groups, no RN store yet"
+    "rn": "app/terminals.tsx (TerminalsListScreen)",
+    "note": "demo console shell panes"
   },
   {
     "id": "console.worktree-details",
@@ -633,8 +633,8 @@
   },
   {
     "id": "console.host-connection-sheet",
-    "rn": "features/hosts/HostConnectionSheet.tsx",
-    "note": "over offline Home; not wired to Home yet"
+    "rn": "features/hosts/HostIssues.tsx (HostConnectionSheet)",
+    "note": "offline Home, Lab issue row pressed"
   },
   {
     "id": "shell.notification-banner",

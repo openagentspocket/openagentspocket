@@ -1,6 +1,5 @@
 import type { TransportError } from '../errors/transport-error';
 import type { EventsSessionStatus, EventsSessionUpdate } from '../events/types';
-import type { Clock } from '../hosts/cancellation';
 import type * as herdr from '../protocol/herdr-types.generated';
 import type { HerdrEvent, JsonValue } from '../wire';
 import {
@@ -13,8 +12,20 @@ import {
   syncErrorFor,
 } from './projection-types';
 import { BlockedPromptReader } from './prompt-reader';
-import { type ConsoleRow, type ConsoleWorkspace, withPaneDirectory, withStatus } from './row';
-import { type HostIdentity, projectSnapshot, type Stamped } from './snapshot-rows';
+import { ResyncRetry } from './resync-retry';
+import {
+  type ConsoleRow,
+  type ConsoleTerminal,
+  type ConsoleWorkspace,
+  withPaneDirectory,
+  withStatus,
+} from './row';
+import {
+  type HostIdentity,
+  type ProjectedSnapshot,
+  projectSnapshot,
+  type Stamped,
+} from './snapshot-rows';
 import { consoleSubscriptions, isResyncEvent } from './subscriptions';
 
 /**
@@ -32,7 +43,7 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
   readonly session: ConsoleSession<T>;
 
   private agentsByPaneId = new Map<string, ConsoleRow>();
-  private workspaceList: ConsoleWorkspace[] = [];
+  private lists: Omit<ProjectedSnapshot, 'agents'> = { workspaces: [], terminals: [] };
   private sessionStatus: EventsSessionStatus | undefined;
   private failure: TransportError | undefined;
   private latencyMs: number | undefined;
@@ -42,11 +53,9 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
   private revision = 0;
   private awaitingSnapshot = true;
 
-  private readonly clock: Clock;
-  private readonly retryMs: number;
   private readonly onChange: () => void;
   private resyncTask: Promise<void> | undefined;
-  private resyncRetry: unknown;
+  private readonly resyncRetry: ResyncRetry;
   private resyncPending = false;
   private snapshotEpoch = 0;
   private paneRevision = 0;
@@ -59,8 +68,7 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
   constructor(options: HostConsoleProjectionOptions<T>) {
     this.host = options.host;
     this.session = options.session;
-    this.clock = options.clock;
-    this.retryMs = options.snapshotRetryMs;
+    this.resyncRetry = new ResyncRetry(options.clock, options.snapshotRetryMs);
     this.onChange = options.onChange;
     this.prompts = new BlockedPromptReader(options.session, {
       isEnded: () => this.hasEnded,
@@ -81,7 +89,11 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
   }
 
   get workspaces(): readonly ConsoleWorkspace[] {
-    return this.workspaceList;
+    return this.lists.workspaces;
+  }
+
+  get terminals(): readonly ConsoleTerminal[] {
+    return this.lists.terminals;
   }
 
   get status(): EventsSessionStatus | undefined {
@@ -155,7 +167,7 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
     if (this.hasEnded) return;
     this.hasEnded = true;
     this.resyncPending = false;
-    this.cancelRetry();
+    this.resyncRetry.cancel();
     void this.session.end();
   }
 
@@ -279,7 +291,7 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
     try {
       const snapshot = await this.session.withTransport((transport) => transport.sessionSnapshot());
       if (!this.isCurrent(epoch)) return;
-      this.cancelRetry();
+      this.resyncRetry.cancel();
       this.syncFailure = undefined;
       this.apply(snapshot, statusStart, paneStart);
       await this.session.updateSubscriptions(
@@ -295,23 +307,10 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
   }
 
   private scheduleSnapshotRetry(): void {
-    if (
-      this.resyncRetry !== undefined ||
-      this.hasEnded ||
-      this.sessionStatus?.kind !== 'connected'
-    ) {
-      return;
-    }
-    this.resyncRetry = this.clock.setTimeout(() => {
-      this.resyncRetry = undefined;
-      if (!this.hasEnded && this.sessionStatus?.kind === 'connected') this.scheduleResync();
-    }, this.retryMs);
-  }
-
-  private cancelRetry(): void {
-    if (this.resyncRetry === undefined) return;
-    this.clock.clearTimeout(this.resyncRetry);
-    this.resyncRetry = undefined;
+    this.resyncRetry.schedule(
+      () => !this.hasEnded && this.sessionStatus?.kind === 'connected',
+      () => this.scheduleResync(),
+    );
   }
 
   /** Leaving `connected`: late responses from before this point must never repopulate the rows. */
@@ -319,13 +318,13 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
     this.snapshotEpoch += 1;
     this.awaitingSnapshot = true;
     this.resyncPending = false;
-    this.cancelRetry();
+    this.resyncRetry.cancel();
     this.syncFailure = undefined;
     this.statusChanges.clear();
     this.paneChanges.clear();
     this.prompts.clearPending();
     this.agentsByPaneId = new Map();
-    this.workspaceList = [];
+    this.lists = { workspaces: [], terminals: [] };
   }
 
   private apply(snapshot: herdr.SessionSnapshot, statusStart: number, paneStart: number): void {
@@ -343,7 +342,7 @@ export class HostConsoleProjection<T extends ConsoleTransport> {
     this.paneChanges.clear();
     this.awaitingSnapshot = false;
     this.agentsByPaneId = projected.agents;
-    this.workspaceList = projected.workspaces;
+    this.lists = projected;
     this.publish();
   }
 

@@ -1,7 +1,8 @@
 // Atlas entries of the console screens beyond the lists (search, menus, rename, terminals, worktree, connection). Owned by its UX family task, so parallel tasks never edit the same registry file.
 import Agents from '@/app/agents';
 import Index from '@/app/index';
-import { HostConnectionDemo, TerminalsDemo, WorktreeDemo } from './ConsoleDemos';
+import TerminalsRoute from '@/app/terminals';
+import { WorktreeDemo } from './ConsoleDemos';
 import type { AtlasEntry } from './entries';
 
 export const consoleEntries: Readonly<Record<string, AtlasEntry>> = {
@@ -17,7 +18,7 @@ export const consoleEntries: Readonly<Record<string, AtlasEntry>> = {
   'console.rename-sheet': { render: () => <Agents openRename="p2" /> },
   'console.new-item-button': { render: () => <Agents /> },
   'console.agent-row': { render: () => <Agents /> },
-  'console.terminals-list': { render: () => <TerminalsDemo /> },
+  'console.terminals-list': { render: () => <TerminalsRoute /> },
   'console.worktree-details': { render: () => <WorktreeDemo /> },
   'console.worktree-remove-confirm': {
     script: { press: ['worktree-remove'] },
@@ -25,11 +26,7 @@ export const consoleEntries: Readonly<Record<string, AtlasEntry>> = {
   },
   'console.host-connection-sheet': {
     data: { console: 'offline' },
-    render: () => (
-      <>
-        <Index />
-        <HostConnectionDemo />
-      </>
-    ),
+    script: { press: ['host-issue-row-Lab'] },
+    render: () => <Index />,
   },
 };
