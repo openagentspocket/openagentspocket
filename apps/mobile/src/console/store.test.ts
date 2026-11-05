@@ -1,4 +1,5 @@
 import { agentKey } from '@openagentspocket/core';
+import { waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore } from './demo';
 import type { ConsoleStore } from './store';
 
@@ -77,6 +78,16 @@ describe('ConsoleStore with the demo Host', () => {
     expect(front()).toEqual(['p2', 'p3']);
     store.movePin('demo', 'p3', 'up');
     expect(front()).toEqual(['p3', 'p2']);
+    store.removeHost('demo');
+  });
+
+  it('keeps a once-connected Host reading as resuming, not offline, while it is suspended', async () => {
+    const store = createDemoConsoleStore();
+    await ready(store);
+    expect(store.getState().hosts[0]?.link).toBe('live');
+    await store.stopConnecting('demo');
+    await waitFor(() => expect(store.getState().hosts[0]?.status?.kind).toBe('suspended'));
+    expect(store.getState().hosts[0]?.link).toBe('resuming');
     store.removeHost('demo');
   });
 });

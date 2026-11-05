@@ -106,7 +106,7 @@ export function AgentGroup(props: AgentGroupProps) {
         <FoldHeader
           kind="host"
           title={group.title ?? ''}
-          hostTone={host?.status?.kind === 'connected' ? 'success' : 'warning'}
+          hostTone={host?.link === 'live' || host?.link === 'resuming' ? 'success' : 'warning'}
           collapsed={!open}
           pills={statusPills(group.rows, labels)}
           onToggle={foldable}

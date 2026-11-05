@@ -17,6 +17,7 @@ import { PluginNoticeSheet } from './PluginNoticeSheet';
 import { PreflightSection } from './PreflightSection';
 import { removeHostWithConfirmation } from './removeHost';
 import { useHostChecks } from './useHostChecks';
+import { useHostConnections } from './useHostConnections';
 import { useHosts } from './useHosts';
 
 interface HostDetailScreenProps {
@@ -48,7 +49,7 @@ export function HostDetailScreen({
   const snapshot = useHosts();
   const host = snapshot.hosts.find((candidate) => candidate.id === hostId) ?? null;
   const { state, run, cancel, trustNewKey } = useHostChecks(host);
-  const connection = snapshot.connections[hostId] ?? 'notConnected';
+  const connection = useHostConnections()[hostId] ?? 'notConnected';
   const exists = host !== null;
   const [noticeOpen, setNoticeOpen] = useState(initiallyShowingPluginNotice);
 

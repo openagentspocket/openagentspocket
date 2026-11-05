@@ -1,4 +1,5 @@
 export * from './agent-fields';
+export * from './host-link';
 export * from './list';
 export * from './list-preferences';
 export * from './ordering';

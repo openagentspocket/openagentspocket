@@ -39,7 +39,8 @@ export function useHostChecks(host: Host | null) {
     const current = hostId ? model.find(hostId) : null;
     if (!current) return;
     const mine = ++generation.current;
-    model.setConnection(current.id, 'connecting');
+    // A Host that is connected keeps reading so while it is checked again.
+    if (model.connection(current.id) !== 'connected') model.setConnection(current.id, 'connecting');
     setState({ ...IDLE, running: true });
     const policy = policyFor(
       model,

@@ -8,6 +8,7 @@ import { extra } from './extraText';
 import { HostGroup } from './HostGroup';
 import type { HostConnection } from './HostsModel';
 import { groupHosts } from './hostRows';
+import { useHostConnections } from './useHostConnections';
 import { useHosts } from './useHosts';
 
 interface HostListScreenProps {
@@ -31,6 +32,7 @@ export function HostListScreen({
   onDuplicate,
 }: HostListScreenProps) {
   const snapshot = useHosts();
+  const connections = useHostConnections();
   const [collapsed, setCollapsed] = useState<ReadonlySet<HostConnection>>(new Set());
   const toggle = (group: HostConnection) =>
     setCollapsed((current) => {
@@ -88,7 +90,7 @@ export function HostListScreen({
   }
   return (
     <AppScreen header={bar} testID="hosts-list">
-      {groupHosts(snapshot).map(({ group, hosts }) => (
+      {groupHosts({ ...snapshot, connections }).map(({ group, hosts }) => (
         <HostGroup
           key={group}
           group={group}
