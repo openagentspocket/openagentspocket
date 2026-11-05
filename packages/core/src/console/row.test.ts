@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { agentDisplayName, agentKindLabel, agentTitle, stripTitleGlyphs } from './agent-fields';
 import {
   type ConsoleRow,
+  contextLowText,
   displayPath,
   matchesAgentSearch,
   rowDirectory,
@@ -123,5 +124,14 @@ describe('row helpers', () => {
     expect(matchesAgentSearch(row, '/root/proj')).toBe(true);
     expect(matchesAgentSearch(row, 'nothing here')).toBe(false);
     expect(matchesAgentSearch(row, '   ')).toBe(true);
+  });
+});
+
+describe('contextLowText', () => {
+  it('flags only a window at or below 20 percent left', () => {
+    expect(contextLowText({ usedTokens: 168_000, windowTokens: 200_000 })).toBe('16 %');
+    expect(contextLowText({ usedTokens: 100_000, windowTokens: 200_000 })).toBeUndefined();
+    expect(contextLowText({ usedTokens: 250_000, windowTokens: 200_000 })).toBe('0 %');
+    expect(contextLowText(undefined)).toBeUndefined();
   });
 });

@@ -31,9 +31,14 @@ const useStyles = makeStyles((t) => ({
     borderWidth: t.metrics.hairlineWidth,
     borderBottomWidth: 0,
     borderColor: t.hairline,
-    width: '100%',
     maxWidth: t.metrics.readableWidth,
     alignSelf: 'center',
+  },
+  full: { width: '100%' },
+  floating: {
+    borderRadius: t.metrics.sheetRadius * 2,
+    borderBottomWidth: t.metrics.hairlineWidth,
+    paddingBottom: t.spacing.lg,
   },
   dragArea: { alignItems: 'center', paddingBottom: t.spacing.xs },
   grabber: {
@@ -83,6 +88,10 @@ interface SheetProps {
   trailing?: SheetBarAction;
   /** Title drawn large under the bar (Settings, Hosts) instead of inline. */
   largeTitle?: boolean;
+  /** False on an untitled sheet that dismisses by swipe or backdrop (the quick detail): no header row. */
+  closeButton?: boolean;
+  /** Inset from the screen edges with every corner rounded (the quick detail), as in SwiftUI. */
+  floating?: boolean;
   /** No bar and no title row: the content draws its own header (a day sheet). */
   headerless?: boolean;
   /** Hide the grabber (large form sheets). Default shown. */
@@ -104,6 +113,8 @@ export function Sheet({
   largeTitle = false,
   headerless = false,
   grabber = true,
+  closeButton = true,
+  floating = false,
   closeLabel = 'Close',
   footer,
   children,
@@ -111,7 +122,8 @@ export function Sheet({
 }: SheetProps) {
   const styles = useStyles();
   const insets = useInsets();
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
+  const gutter = floating ? 8 : 0;
   const drag = useSheetDrag(detent, onClose, visible);
   const live = drag.detent;
   const share = detentShare(live);
@@ -139,7 +151,15 @@ export function Sheet({
           testID={`${testID}-backdrop`}
         />
         <View
-          style={[styles.panel, size, { paddingBottom: insets.bottom }]}
+          style={[
+            styles.panel,
+            floating ? styles.floating : styles.full,
+            floating && { width: width - gutter * 2 },
+            size,
+            floating
+              ? { marginBottom: Math.max(insets.bottom, 8) }
+              : { paddingBottom: insets.bottom },
+          ]}
           accessibilityViewIsModal
           testID={testID}
         >
@@ -186,7 +206,7 @@ export function Sheet({
                 </View>
               ) : null}
             </>
-          ) : (
+          ) : closeButton || title !== undefined ? (
             <View style={styles.header}>
               <Text variant="headline" accessibilityRole="header" style={styles.title}>
                 {title ?? ''}
@@ -199,11 +219,11 @@ export function Sheet({
                 testID={`${testID}-close`}
               />
             </View>
-          )}
+          ) : null}
           <ScrollView
             contentContainerStyle={styles.body}
             keyboardShouldPersistTaps="handled"
-            style={live === 'fit' ? undefined : { flex: 1 }}
+            style={live === 'fit' ? { flexShrink: 1 } : { flex: 1 }}
           >
             <SurfaceFillProvider value="surfaceOverlay">{children}</SurfaceFillProvider>
           </ScrollView>

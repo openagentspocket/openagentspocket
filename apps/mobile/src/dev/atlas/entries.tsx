@@ -2,28 +2,20 @@ import { t } from '@openagentspocket/i18n';
 import { confirm, Screen } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import type { ReactNode } from 'react';
-import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import Agents from '@/app/agents';
 import Board from '@/app/board';
-import ChangesRoute from '@/app/changes';
-import FilesRoute from '@/app/files';
 import HostsRoute from '@/app/hosts';
 import HostFormRoute from '@/app/hosts/form';
 import PairRoute from '@/app/hosts/pair';
 import Index from '@/app/index';
-import NewAgentRoute from '@/app/new-agent';
-import PortsRoute from '@/app/ports';
 import SettingsRoot from '@/app/settings';
 import NotificationsRoute from '@/app/settings/notifications';
 import Usage from '@/app/usage';
 import UsageLimits from '@/app/usage-limits';
 import { HostDetailScreen } from '@/features/hosts/HostDetailScreen';
 import { SetupGuideScreen } from '@/features/hosts/SetupGuideScreen';
-import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
-import { askCollisionChoice } from '@/files/useFileDialogs';
 import { NotificationPrivacyScreen } from '@/notifications/NotificationPrivacyScreen';
 import { AppLockView } from '@/settings/AppLockCover';
-import { deviceStorage } from '@/settings/deviceStorage';
 import { LicenseNoticeScreen } from '@/settings/LicenseNoticeScreen';
 import { NOTICES } from '@/settings/notices.generated';
 import { SettingsScreen } from '@/settings/SettingsScreen';
@@ -32,8 +24,11 @@ import { UsageBreakdownListScreen } from '@/usage/UsageBreakdownListScreen';
 import { UsageScreen } from '@/usage/UsageScreen';
 import type { AtlasScript } from './AtlasActions';
 import type { AtlasData } from './AtlasFrame';
+import { noop, titled } from './atlasHelpers';
 import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
-import { FileDiffDemo, PreviewDemo } from './FilesPortsDemos';
+import { agentDetailEntries } from './familyAgentDetail';
+import { filesEntries } from './familyFiles';
+import { newAgentEntries } from './familyNewAgent';
 import { PluginNoticeDemo, ReplaceKeyDemo, RoutePageDemo } from './HostsDemos';
 import { RemoveConfirmDemo } from './RemoveConfirmDemo';
 
@@ -42,15 +37,6 @@ export interface AtlasEntry {
   script?: AtlasScript;
   render: () => ReactNode;
 }
-
-const titled = (title: string, body: ReactNode): ReactNode => (
-  <>
-    <Stack.Screen options={{ headerShown: true, title }} />
-    {body}
-  </>
-);
-
-const noop = () => {};
 
 /** A settings sub page as it pushes inside the sheet: native header, inline title, back button. */
 const settingsPage = (page: string): ReactNode => (
@@ -65,6 +51,9 @@ const settingsPage = (page: string): ReactNode => (
  * yet" by scripts/atlas-compare.mjs. Add the id to atlasMap.json too (a test checks both agree).
  */
 export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
+  ...agentDetailEntries,
+  ...filesEntries,
+  ...newAgentEntries,
   'shell.home': { render: () => <Index /> },
   'shell.home-new-menu': { script: { press: ['fab'] }, render: () => <Index /> },
   'console.row-context-menu': { script: { longPress: 'inbox-p2' }, render: () => <Index /> },
@@ -83,7 +72,17 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   'usage.quick-sheet': { script: { press: ['home-usage-ring'] }, render: () => <Index /> },
   'console.no-hosts-empty': { data: { console: 'empty', hosts: 'empty' }, render: () => <Index /> },
   'console.agents-list-flat': { render: () => <Agents /> },
-  'console.start-agent': { render: () => titled(t('New Agent'), <NewAgentRoute />) },
+  'console.agents-list-by-status': { data: { presentation: 'byStatus' }, render: () => <Agents /> },
+  'console.agents-list-by-workspace': {
+    data: { presentation: 'byWorkspace' },
+    render: () => <Agents />,
+  },
+  'console.agents-list-by-host': { data: { presentation: 'byHost' }, render: () => <Agents /> },
+  'console.quick-detail-sheet': {
+    data: { presentation: 'byStatus' },
+    render: () => <Agents openDetail="p2" />,
+  },
+  'console.empty-states-agents': { data: { console: 'empty' }, render: () => <Agents /> },
   'hosts.list': { render: () => <HostsRoute /> },
   'hosts.form': { render: () => <HostFormRoute /> },
   'hosts.detail': {
@@ -182,84 +181,5 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   },
   'usage.limits-sheet': { render: () => <UsageLimits /> },
   'usage.limits-page': { render: () => <UsageLimits /> },
-  'files.browser': { render: () => <FilesRoute /> },
-  'files.quick-look': { script: { press: ['file-notes 2.txt'] }, render: () => <FilesRoute /> },
-  'files.share-sheet': {
-    script: { longPress: 'file-notes 2.txt', thenPress: ['action-menu-share'] },
-    render: () => <FilesRoute />,
-  },
-  'files.save-to-files': {
-    script: { longPress: 'file-notes 2.txt', thenPress: ['action-menu-save'] },
-    render: () => <FilesRoute />,
-  },
-  'files.download-confirm': { script: { press: ['file-.env'] }, render: () => <FilesRoute /> },
-  'files.download-confirm--secret': {
-    script: { press: ['file-.env'] },
-    render: () => <FilesRoute />,
-  },
-  'files.upload-pickers': { script: { press: ['files-add'] }, render: () => <FilesRoute /> },
-  'files.upload-collision': {
-    script: {
-      run: () =>
-        void askCollisionChoice({
-          upload: { name: 'notes 2.txt' },
-          existingKind: 'file',
-          canReplace: true,
-        } as Parameters<typeof askCollisionChoice>[0]),
-    },
-    render: () => <FilesRoute />,
-  },
-  'files.rename-alert': {
-    script: { longPress: 'file-notes 2.txt', thenPress: ['action-menu-rename'] },
-    render: () => <FilesRoute />,
-  },
-  'files.delete-confirm': {
-    script: { longPress: 'file-notes 2.txt', thenPress: ['action-menu-delete'] },
-    render: () => <FilesRoute />,
-  },
-  'browser.ports': { render: () => <PortsRoute /> },
-  'browser.open-port': { script: { press: ['ports-open-port'] }, render: () => <PortsRoute /> },
-  'browser.preview': { render: () => <PreviewDemo /> },
-  'browser.leave-confirm': { render: () => <PreviewDemo leaving /> },
-  'changes.list': { render: () => <ChangesRoute /> },
-  'changes.file-diff': { render: () => <FileDiffDemo /> },
-  'agent-detail.container': {
-    render: () =>
-      titled(
-        '',
-        <AgentDetailScreen
-          hostId="demo"
-          paneId="p1"
-          storage={deviceStorage}
-          surface="chat"
-          onSwitch={noop}
-        />,
-      ),
-  },
-  'agent-detail.terminal': {
-    render: () =>
-      titled(
-        '',
-        <AgentDetailScreen
-          hostId="demo"
-          paneId="p1"
-          storage={deviceStorage}
-          surface="terminal"
-          onSwitch={noop}
-        />,
-      ),
-  },
-  'agent-detail.shell-terminal': {
-    render: () =>
-      titled(
-        t('Terminal'),
-        <ShellTerminalScreen
-          hostId="demo"
-          workspaceId="w0"
-          cwd="/work/api-server"
-          onClose={noop}
-        />,
-      ),
-  },
   'rn.board': { render: () => <Board /> },
 };

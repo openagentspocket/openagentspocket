@@ -16,6 +16,8 @@ export interface AgentCardModel {
   status: Status;
   /** Blocked only: the question the Agent asks, in mono under the title. */
   blockedPrompt?: string;
+  /** Named after the title when another card shares it: "iOS App · Codex". */
+  qualifier?: string;
   subtitle?: string;
   host?: string;
   path?: string;
@@ -24,6 +26,10 @@ export interface AgentCardModel {
   contextLeft?: string;
   /** The Host is disconnected; the card is the saved copy. */
   saved?: boolean;
+  /** `workspace`: the book glyph of a single-Agent workspace card instead of the program mark. */
+  glyph?: 'program' | 'workspace';
+  /** Pinned rows carry a tertiary pin glyph before the title. */
+  pinned?: boolean;
 }
 
 const useStyles = makeStyles((t) => ({
@@ -32,6 +38,7 @@ const useStyles = makeStyles((t) => ({
   line: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   title: { flex: 1, flexShrink: 1 },
   grow: { flex: 1, flexShrink: 1 },
+  shrink: { flexShrink: 1 },
   bubble: {
     width: 18,
     height: 18,
@@ -43,6 +50,7 @@ const useStyles = makeStyles((t) => ({
   prompt: { flex: 1, flexShrink: 1 },
   pillGap: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
   diff: { flexDirection: 'row', gap: t.spacing.xxs },
+  ownTotals: { alignItems: 'flex-end' },
   contextPill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -74,16 +82,45 @@ export function AgentCardBody({
   const { status } = agent;
   const warning = theme.colors.warning;
   const hasMeta = Boolean(agent.subtitle || agent.host);
-  const hasPath = Boolean(agent.path || agent.diff);
+  const hasPath = Boolean(agent.path);
+  const diff =
+    agent.diff && (agent.diff.added > 0 || agent.diff.removed > 0) ? agent.diff : undefined;
+  // The totals end the last row: the path line, else the Host line, else a line of their own.
+  const diffOn = hasPath ? 'path' : hasMeta ? 'meta' : 'own';
+  const totals = diff ? (
+    <View style={styles.diff} testID="agent-card-diff">
+      {diff.added > 0 ? (
+        <Text variant="footnote" monospaced tabularNums tone="success">{`+${diff.added}`}</Text>
+      ) : null}
+      {diff.removed > 0 ? (
+        <Text variant="footnote" monospaced tabularNums tone="danger">{`−${diff.removed}`}</Text>
+      ) : null}
+    </View>
+  ) : null;
   return (
     <View style={styles.root}>
       <View style={styles.content}>
         <View style={styles.line}>
-          <ProgramMark program={agent.program} size={22} />
+          {agent.glyph === 'workspace' ? (
+            <Icon name="book" size={22} color="textSecondary" />
+          ) : (
+            <ProgramMark program={agent.program} size={22} />
+          )}
           <View style={[styles.line, styles.title]}>
-            <Text variant="headline" numberOfLines={1} style={styles.grow}>
+            <Text variant="headline" numberOfLines={1} style={styles.shrink}>
               {agent.title}
             </Text>
+            {agent.qualifier ? (
+              <Text
+                variant="headline"
+                tone="secondary"
+                numberOfLines={1}
+                testID="agent-card-qualifier"
+              >
+                {`· ${agent.qualifier}`}
+              </Text>
+            ) : null}
+            {agent.pinned ? <Icon name="pin" size={12} color="textTertiary" /> : null}
             {showProgramName ? (
               <Text variant="caption" tone="secondary" numberOfLines={1}>
                 {agent.program}
@@ -139,6 +176,7 @@ export function AgentCardBody({
                 {agent.host}
               </Text>
             ) : null}
+            {diffOn === 'meta' ? totals : null}
           </View>
         ) : null}
         {hasPath ? (
@@ -146,24 +184,10 @@ export function AgentCardBody({
             <Text variant="footnote" tone="secondary" numberOfLines={1} style={styles.grow}>
               {agent.path ?? ''}
             </Text>
-            {agent.diff ? (
-              <View style={styles.diff} testID="agent-card-diff">
-                <Text
-                  variant="footnote"
-                  monospaced
-                  tabularNums
-                  tone="success"
-                >{`+${agent.diff.added}`}</Text>
-                <Text
-                  variant="footnote"
-                  monospaced
-                  tabularNums
-                  tone="danger"
-                >{`−${agent.diff.removed}`}</Text>
-              </View>
-            ) : null}
+            {totals}
           </View>
         ) : null}
+        {diffOn === 'own' && totals ? <View style={styles.ownTotals}>{totals}</View> : null}
       </View>
       {chevron ? <DisclosureChevron expanded={false} /> : null}
     </View>
