@@ -1,6 +1,7 @@
 import { t } from '@openagentspocket/i18n';
-import { PickerRow, Screen, Section, SheetBar, TextField } from '@openagentspocket/ui';
+import { PickerRow, type ScreenHeader, Section, TextField } from '@openagentspocket/ui';
 import { useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { useNewAgentServices } from './services';
 
 const NONE = '\u0000none';
@@ -28,17 +29,14 @@ export function NewTerminalScreen({ onOpen, onCancel }: NewTerminalScreenProps) 
     const tab = label.trim();
     onOpen({ hostId, workspaceId: workspace.id, cwd, ...(tab === '' ? {} : { label: tab }) });
   };
-  const bar = (
-    <SheetBar
-      title={t('New Terminal')}
-      leading={{ label: t('Cancel'), onPress: onCancel, testID: 'new-terminal-cancel' }}
-      trailing={[
-        { label: t('Open'), onPress: open, disabled: !ready, testID: 'new-terminal-open' },
-      ]}
-    />
-  );
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: t('New Terminal'),
+    leading: { label: t('Cancel'), onPress: onCancel, testID: 'new-terminal-cancel' },
+    trailing: [{ label: t('Open'), onPress: open, disabled: !ready, testID: 'new-terminal-open' }],
+  };
   return (
-    <Screen header={bar} edges={['left', 'right', 'bottom']} keyboardAvoiding testID="new-terminal">
+    <AppScreen header={bar} keyboardAvoiding testID="new-terminal">
       <Section title={t('Host')}>
         <PickerRow
           title={t('Host')}
@@ -79,6 +77,6 @@ export function NewTerminalScreen({ onOpen, onCancel }: NewTerminalScreenProps) 
           testID="new-terminal-tab"
         />
       </Section>
-    </Screen>
+    </AppScreen>
   );
 }

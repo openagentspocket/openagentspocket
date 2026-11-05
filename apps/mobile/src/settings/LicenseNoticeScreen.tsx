@@ -1,13 +1,14 @@
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, Screen, Text } from '@openagentspocket/ui';
+import { EmptyState, Text } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
+import { AppScreen } from '@/navigation/AppScreen';
 import { NOTICES } from './notices.generated';
 
 /** One component's license notice: name, license, source and the full text. */
 export function LicenseNoticeScreen({ id }: { id?: string }) {
   const notice = NOTICES.find((candidate) => candidate.id === id);
   return (
-    <Screen edges={['bottom', 'left', 'right']} testID="settings-license">
+    <AppScreen header={{ variant: 'native' }} testID="settings-license">
       <Stack.Screen options={{ title: notice?.name ?? t('Acknowledgements') }} />
       {notice ? (
         <>
@@ -25,6 +26,6 @@ export function LicenseNoticeScreen({ id }: { id?: string }) {
       ) : (
         <EmptyState title={t('Notices Unavailable')} />
       )}
-    </Screen>
+    </AppScreen>
   );
 }

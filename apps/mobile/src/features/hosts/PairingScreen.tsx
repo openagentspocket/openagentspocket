@@ -1,7 +1,8 @@
 import { needsConfirmation } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Button, Card, ListRow, QRScanner, Screen, SheetBar } from '@openagentspocket/ui';
+import { Banner, Button, Card, ListRow, QRScanner } from '@openagentspocket/ui';
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { hostsRuntime } from './hostsRuntime';
 import { PairingCeremony } from './PairingCeremony';
 import { pairingMessageText, scannerLabels } from './pairingText';
@@ -38,14 +39,12 @@ export function PairingScreen({
   useEffect(() => () => store.cancel(), [store]);
 
   return (
-    <Screen
-      header={
-        <SheetBar
-          title={t('Scan to Pair')}
-          leading={{ label: t('Cancel'), onPress: onCancel, testID: 'pairing-cancel' }}
-        />
-      }
-      edges={['left', 'right', 'bottom']}
+    <AppScreen
+      header={{
+        variant: 'sheet',
+        title: t('Scan to Pair'),
+        leading: { label: t('Cancel'), onPress: onCancel, testID: 'pairing-cancel' },
+      }}
       testID="pairing-screen"
     >
       {code ? (
@@ -83,6 +82,6 @@ export function PairingScreen({
           />
         </>
       )}
-    </Screen>
+    </AppScreen>
   );
 }

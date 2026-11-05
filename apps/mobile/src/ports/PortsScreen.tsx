@@ -6,13 +6,13 @@ import {
   EmptyState,
   ErrorState,
   MetaChip,
-  Screen,
+  type ScreenHeader,
   Section,
-  SheetBar,
   SkeletonRows,
 } from '@openagentspocket/ui';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useStoreState } from '@/changes/useStoreState';
+import { AppScreen } from '@/navigation/AppScreen';
 import { OpenPortSheet } from './OpenPortSheet';
 import { PortRow } from './PortRow';
 import { portsMessage } from './text';
@@ -105,24 +105,22 @@ export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) 
       </>
     );
   }
-  const bar = (
-    <SheetBar
-      title={t('Ports')}
-      leading={{ label: t('Done'), onPress: onDone ?? (() => {}), testID: 'ports-done' }}
-      trailing={[
-        {
-          label: t('Open Port…'),
-          icon: 'hash',
-          onPress: () => setEnteringPort(true),
-          testID: 'ports-open-port',
-        },
-      ]}
-    />
-  );
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: t('Ports'),
+    leading: { label: t('Done'), onPress: onDone ?? (() => {}), testID: 'ports-done' },
+    trailing: [
+      {
+        label: t('Open Port…'),
+        icon: 'hash',
+        onPress: () => setEnteringPort(true),
+        testID: 'ports-open-port',
+      },
+    ],
+  };
   return (
-    <Screen
+    <AppScreen
       header={bar}
-      edges={['left', 'right', 'bottom']}
       refreshing={state.isRefreshing}
       onRefresh={refresh}
       testID="ports-screen"
@@ -135,6 +133,6 @@ export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) 
         onClose={() => setEnteringPort(false)}
         onOpen={openTyped}
       />
-    </Screen>
+    </AppScreen>
   );
 }

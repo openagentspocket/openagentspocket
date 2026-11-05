@@ -1,5 +1,5 @@
 import { groupTerminals, terminalTitle } from '@openagentspocket/core';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { useConsoleStore, useConsoleTerminals } from '@/console/hooks';
 import { TerminalsListScreen } from '@/features/terminals/TerminalsListScreen';
@@ -37,7 +37,6 @@ export default function TerminalsRoute() {
   };
   return (
     <>
-      <Stack.Screen options={{ headerShown: false }} />
       <TerminalsListScreen
         groups={groups}
         onHome={() => router.back()}

@@ -1,10 +1,10 @@
 import type { ConsoleRow } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { airy, makeStyles, ScreenBackground } from '@openagentspocket/ui';
+import { airy, makeStyles } from '@openagentspocket/ui';
 import { useMemo } from 'react';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { HostIssues } from '@/features/hosts/HostIssues';
+import { AppScreen } from '@/navigation/AppScreen';
 import { useConsoleState, useConsoleStore, useStatusInbox } from '../console/hooks';
 import { useHosts } from '../features/hosts/useHosts';
 import { HomeTitle, NewStrip, NoHosts, useNewStripHeight } from './HomeChrome';
@@ -18,7 +18,6 @@ import { useHomeActions } from './useHomeActions';
 const WIDE = 600;
 
 const useStyles = makeStyles((th) => ({
-  root: { flex: 1 },
   fill: { flex: 1 },
   content: { gap: airy.sectionGap },
   body: { paddingHorizontal: th.metrics.screenInset, paddingBottom: 0 },
@@ -64,12 +63,7 @@ export function HomeScreen(props: HomeScreenProps) {
   ] as const;
   const empty = hosts.length === 0;
   return (
-    <SafeAreaView
-      style={styles.root}
-      edges={['top', 'left', 'right', 'bottom']}
-      testID={empty ? 'home-empty' : 'home'}
-    >
-      <ScreenBackground />
+    <AppScreen bare scroll={false} testID={empty ? 'home-empty' : 'home'}>
       {empty ? (
         <>
           <HomeTitle usage={usage} onOpenSettings={props.onOpenSettings} />
@@ -109,6 +103,6 @@ export function HomeScreen(props: HomeScreenProps) {
       )}
       {empty ? null : <NewStrip items={newMenu} />}
       {usage.sheet}
-    </SafeAreaView>
+    </AppScreen>
   );
 }

@@ -6,10 +6,11 @@ import {
   type WorktreeRemovalReceipt,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, ListRow, Screen, Section, SheetBar, useAnchor } from '@openagentspocket/ui';
+import { Button, ListRow, Section, useAnchor } from '@openagentspocket/ui';
 import { useEffect, useMemo } from 'react';
 import { View } from 'react-native';
 import { useStoreState } from '@/changes/useStoreState';
+import { AppScreen } from '@/navigation/AppScreen';
 import { newAgentText } from './text';
 import { useWorktreeDialogs, WORKTREE_REMOVE_ANCHOR } from './useWorktreeDialogs';
 
@@ -58,14 +59,12 @@ export function WorktreeDetailsScreen({ options, onRemoved, onDone }: WorktreeDe
   const shown = store.displayedBranch;
   const removeAnchor = useAnchor(WORKTREE_REMOVE_ANCHOR);
   return (
-    <Screen
-      header={
-        <SheetBar
-          title={t('Worktree')}
-          leading={{ label: t('Done'), onPress: onDone, testID: 'worktree-done' }}
-        />
-      }
-      edges={['left', 'right', 'bottom']}
+    <AppScreen
+      header={{
+        variant: 'sheet',
+        title: t('Worktree'),
+        leading: { label: t('Done'), onPress: onDone, testID: 'worktree-done' },
+      }}
       testID="worktree-details"
     >
       <Section title={t('Linked Worktree')}>
@@ -110,6 +109,6 @@ export function WorktreeDetailsScreen({ options, onRemoved, onDone }: WorktreeDe
           />
         </View>
       </Section>
-    </Screen>
+    </AppScreen>
   );
 }

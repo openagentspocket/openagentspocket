@@ -5,10 +5,10 @@ import {
   EmptyState,
   HostStatusCard,
   type HostStatusTone,
-  Screen,
-  SheetBar,
+  type ScreenHeader,
 } from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { HostUsageSection } from '@/usage/HostUsageSection';
 import { ChangedKeySection } from './ChangedKeySection';
 import { connectionTitle, HostFacts, RoutesSection, routeLine } from './HostInfoSections';
@@ -58,22 +58,20 @@ export function HostDetailScreen({
     if (exists) void run();
   }, [exists, hostId]);
 
-  const bar = (
-    <SheetBar
-      title={host ? hostDisplayName(host) : t('Host Details')}
-      back
-      leading={{ label: t('Back'), onPress: onBack, testID: 'host-back' }}
-      trailing={
-        host ? [{ label: t('Edit'), onPress: () => onEdit(hostId), testID: 'host-edit' }] : []
-      }
-    />
-  );
-  const edges = ['left', 'right', 'bottom'] as const;
+  const bar: ScreenHeader = {
+    variant: 'sheet',
+    title: host ? hostDisplayName(host) : t('Host Details'),
+    back: true,
+    leading: { label: t('Back'), onPress: onBack, testID: 'host-back' },
+    trailing: host
+      ? [{ label: t('Edit'), onPress: () => onEdit(hostId), testID: 'host-edit' }]
+      : [],
+  };
   if (!host) {
     return (
-      <Screen header={bar} edges={edges} testID="host-removed">
+      <AppScreen header={bar} testID="host-removed">
         <EmptyState icon="server" title={t('Host removed')} />
-      </Screen>
+      </AppScreen>
     );
   }
   const running = connection === 'connecting';
@@ -82,7 +80,7 @@ export function HostDetailScreen({
     endpoint: host.herdrEndpoint,
   });
   return (
-    <Screen header={bar} edges={edges} testID="host-detail">
+    <AppScreen header={bar} testID="host-detail">
       <HostStatusCard
         tone={TONE[connection] ?? 'warning'}
         title={connectionTitle(connection)}
@@ -145,6 +143,6 @@ export function HostDetailScreen({
         onPress={() => void removeHostWithConfirmation(host).then((gone) => gone && onRemoved())}
         testID="host-remove"
       />
-    </Screen>
+    </AppScreen>
   );
 }

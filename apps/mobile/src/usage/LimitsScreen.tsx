@@ -1,7 +1,8 @@
 import { buildUsageScope, quickContent, type UsageSource } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, makeStyles, Screen, Text } from '@openagentspocket/ui';
+import { EmptyState, makeStyles, Text } from '@openagentspocket/ui';
 import { useState } from 'react';
+import { AppScreen } from '@/navigation/AppScreen';
 import { AccountsSheet } from './AccountsSheet';
 import { LimitsHostGroup } from './LimitsHostGroup';
 import { useAccountFiles } from './UsageSourceProvider';
@@ -33,7 +34,12 @@ export function LimitsScreen({ source }: Props) {
   const scope = buildUsageScope(shown);
   const open = scope.included.find((host) => host.id === accountsHost);
   return (
-    <Screen refreshing={refreshing} onRefresh={refresh} testID="limits-screen">
+    <AppScreen
+      header={{ variant: 'native' }}
+      refreshing={refreshing}
+      onRefresh={refresh}
+      testID="limits-screen"
+    >
       {scope.included.length > 1 ? (
         <Text variant="footnote" tone="tertiary" style={styles.intro}>
           {t(
@@ -78,6 +84,6 @@ export function LimitsScreen({ source }: Props) {
           store={files}
         />
       ) : null}
-    </Screen>
+    </AppScreen>
   );
 }

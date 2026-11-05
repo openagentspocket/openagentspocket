@@ -1,6 +1,7 @@
 import { buildUsageScope } from '@openagentspocket/core';
-import { Screen, Skeleton } from '@openagentspocket/ui';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Skeleton } from '@openagentspocket/ui';
+import { useLocalSearchParams } from 'expo-router';
+import { AppScreen } from '@/navigation/AppScreen';
 import { type BreakdownKind, BreakdownRows, breakdownTitle } from './BreakdownRows';
 import type { UsageMetric } from './usageText';
 import { useUsage } from './useUsage';
@@ -26,13 +27,15 @@ export function UsageBreakdownListScreen({ initial }: Props) {
   const { readings } = useUsage();
   const scoped = host ? (readings ?? []).filter((reading) => reading.id === host) : readings;
   return (
-    <Screen testID="usage-breakdown-list">
-      <Stack.Screen options={{ headerShown: true, title: breakdownTitle(kind) }} />
+    <AppScreen
+      header={{ variant: 'native', title: breakdownTitle(kind) }}
+      testID="usage-breakdown-list"
+    >
       {scoped === null ? (
         <Skeleton />
       ) : (
         <BreakdownRows scope={buildUsageScope(scoped)} kind={kind} metric={metric} />
       )}
-    </Screen>
+    </AppScreen>
   );
 }

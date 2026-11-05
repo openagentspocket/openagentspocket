@@ -1,9 +1,10 @@
 import type { ConsoleRow, ListGroup } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, makeStyles, Screen } from '@openagentspocket/ui';
+import { EmptyState, makeStyles } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
+import { AppScreen } from '@/navigation/AppScreen';
 import { hrefs } from '../../navigation/hrefs';
 import { HostIssues } from '../hosts/HostIssues';
 import { AgentGroup } from './AgentGroup';
@@ -69,11 +70,7 @@ export function AgentsScreen(props: {
   const qualified = useMemo(() => duplicateWorkspaces(list.groups), [list.groups]);
   const empty = list.groups.every((group) => group.rows.length === 0);
   return (
-    <Screen
-      edges={['right', 'bottom', 'left']}
-      testID="agents-screen"
-      onRefresh={() => setSearchOpen(true)}
-    >
+    <AppScreen testID="agents-screen" onRefresh={() => setSearchOpen(true)}>
       <AgentsToolbar
         hosts={list.hosts}
         hostId={list.hostId}
@@ -135,6 +132,6 @@ export function AgentsScreen(props: {
         }}
       />
       <RenameSheet row={renaming} onClose={() => setRenaming(undefined)} onSave={save} />
-    </Screen>
+    </AppScreen>
   );
 }

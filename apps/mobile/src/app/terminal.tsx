@@ -1,5 +1,4 @@
-import { t } from '@openagentspocket/i18n';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 
 /**
@@ -16,7 +15,6 @@ export default function TerminalRoute() {
   const router = useRouter();
   return (
     <>
-      <Stack.Screen options={{ headerShown: true, title: t('Terminal') }} />
       <ShellTerminalScreen
         key={`${host}/${workspace ?? cwd}`}
         hostId={host ?? ''}
