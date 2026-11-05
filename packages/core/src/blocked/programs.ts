@@ -4,6 +4,9 @@ import { parseClaudeDialog } from './claude-parser';
 import { planClaudeAction } from './claude-planner';
 import { parseCodexDialog } from './codex-parser';
 import { planCodexAction } from './codex-planner';
+import { grokSupport } from './grok-support';
+import { ompSupport } from './omp-support';
+import { openCodeSupport } from './opencode-support';
 import {
   attemptPlan,
   type DialogAction,
@@ -36,6 +39,14 @@ const registry = new Map<ChatProgram, BlockedProgramSupport>([
   ['claude', { parse: parseClaudeDialog, plan: planClaudeAction }],
   ['codex', { parse: parseCodexDialog, plan: (dialog, action) => planCodexAction(dialog, action) }],
 ]);
+
+for (const [program, support] of [
+  ['omp', ompSupport],
+  ['grok', grokSupport],
+  ['opencode', openCodeSupport],
+] as const) {
+  if (support) registry.set(program, support);
+}
 
 /** Adds or replaces a program's parser and planner (the hook for P2.10). */
 export function registerBlockedProgram(program: ChatProgram, support: BlockedProgramSupport): void {

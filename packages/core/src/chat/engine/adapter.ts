@@ -6,10 +6,13 @@ import { echoKey as claudeEchoKey } from '../claude/user-text';
 import { parseRolloutFileName } from '../codex/locator';
 import { codexEchoKey } from '../codex/pending-echo';
 import { CODEX_REVISION, CodexRolloutReducer } from '../codex/reducer';
+import { grokAdapter } from '../grok/adapter';
 import type { FollowerLimits, HeadIdentity } from '../model/follower';
 import type { ChatLine } from '../model/lines';
 import type { ChatTranscriptReducer } from '../model/reducer';
 import type { ChatProgram } from '../model/types';
+import { openCodeAdapter } from '../opencode/adapter';
+import { piAdapter } from '../pi/adapter';
 
 /** What a reducer is built from: the file it reads and, when its records depend on it, the file's first line. */
 export interface ChatReducerSeed {
@@ -104,7 +107,12 @@ export function standardAdapter(program: ChatProgram): ChatTranscriptAdapter | n
       return claudeAdapter;
     case 'codex':
       return codexAdapter;
-    default:
-      return null;
+    case 'pi':
+    case 'omp':
+      return piAdapter(program);
+    case 'grok':
+      return grokAdapter();
+    case 'opencode':
+      return openCodeAdapter();
   }
 }

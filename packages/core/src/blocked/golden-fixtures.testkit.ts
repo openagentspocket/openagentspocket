@@ -6,6 +6,10 @@ import type { AnsiScreen } from './screen';
 
 const GOLDENS = fileURLToPath(new URL('../../goldens/', import.meta.url));
 
+/** The programs with captured screens under goldens/ (Pi has captures and no dialog parser). */
+export type GoldenProgram = 'claude' | 'codex' | 'pi' | 'omp' | 'grok' | 'opencode';
+const PROGRAMS: readonly GoldenProgram[] = ['claude', 'codex', 'pi', 'omp', 'grok', 'opencode'];
+
 export interface ScreenFixture {
   name: string;
   ansi: string;
@@ -32,11 +36,11 @@ export interface GoldenPlan {
 
 /** One capture by stem (`claude-02-c1-bash-blocked`); the program is the stem's prefix. */
 export function loadScreen(stem: string): AnsiScreen {
-  const program = stem.startsWith('codex') ? 'codex' : 'claude';
+  const program = PROGRAMS.find((candidate) => stem.startsWith(`${candidate}-`)) ?? 'claude';
   return decodeAnsiScreen(readFileSync(`${GOLDENS}${program}/screens/${stem}.ansi`, 'utf8'));
 }
 
-export function screenFixtures(program: 'claude' | 'codex'): ScreenFixture[] {
+export function screenFixtures(program: GoldenProgram): ScreenFixture[] {
   const directory = `${GOLDENS}${program}/screens/`;
   return readdirSync(directory)
     .filter((file) => file.endsWith('.ansi'))
