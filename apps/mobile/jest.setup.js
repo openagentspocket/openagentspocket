@@ -30,3 +30,8 @@ jest.mock('react-native-drawer-layout', () => ({
     );
   },
 }));
+
+// The native sheet has no Jest runtime: `Sheet` falls back to its JS host when this import throws.
+jest.mock('@lodev09/react-native-true-sheet', () => {
+  throw new Error('native only');
+});
