@@ -16,6 +16,9 @@ const VERSION = '0.1.0';
 export const configDir = () =>
   process.env.OAP_CONFIG_DIR || join(homedir(), '.config', 'openagentspocket');
 
+const stateDir = () =>
+  process.env.OAP_STATE_DIR || join(homedir(), '.local', 'state', 'openagentspocket');
+
 /** In herdr's layout: the app's endpoint rules accept no other shape. */
 export const bridgeSocket = () => join(configDir(), 'herdr', 'herdr.sock');
 
@@ -30,6 +33,19 @@ function attach(target: string | undefined): number {
     spawnSync('tmux', args, { stdio: 'ignore' });
   }
   return spawnSync('tmux', ['attach-session', '-t', target], { stdio: 'inherit' }).status ?? 1;
+}
+
+/** Pairing is the plugin's own ceremony, run as it runs for a relocated herdr. */
+function pair(): number {
+  const popup = fileURLToPath(new URL('../../plugin/src/pair-popup.js', import.meta.url));
+  const env = {
+    ...process.env,
+    HERDR_PLUGIN_CONFIG_DIR: configDir(),
+    HERDR_PLUGIN_STATE_DIR: stateDir(),
+    HERDR_SOCKET_PATH: bridgeSocket(),
+    HERDR_PLUGIN_ID: 'agentico',
+  };
+  return spawnSync(process.execPath, [popup], { env, stdio: 'inherit' }).status ?? 1;
 }
 
 function startInBackground(): void {
@@ -55,6 +71,8 @@ export async function main(args: readonly string[]): Promise<number> {
       print({ socketPath: bridgeSocket(), executablePath: launcher });
       return 0;
     }
+    case 'pair':
+      return pair();
     case 'remote-client-bridge':
       startInBackground();
       return 0;

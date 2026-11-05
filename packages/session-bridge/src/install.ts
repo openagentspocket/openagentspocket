@@ -1,5 +1,13 @@
-import { chmodSync, mkdirSync, renameSync, writeFileSync } from 'node:fs';
+import { chmodSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+
+function readJson(path: string): Record<string, unknown> {
+  try {
+    return JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>;
+  } catch {
+    return {};
+  }
+}
 
 const quoted = (word: string) => `'${word.replaceAll("'", `'\\''`)}'`;
 
@@ -30,5 +38,9 @@ export function installLauncher(options: {
   );
   chmodSync(temp, 0o755);
   renameSync(temp, launcher);
+  // The Pairing Code names this launcher, as a relocated herdr's would.
+  const pairConfig = join(configDir, 'pair.json');
+  const existing = readJson(pairConfig);
+  writeFileSync(pairConfig, `${JSON.stringify({ ...existing, launcher })}\n`);
   return launcher;
 }

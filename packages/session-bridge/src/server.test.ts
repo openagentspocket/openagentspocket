@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { connect } from 'node:net';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -11,6 +11,7 @@ import {
 } from '@openagentspocket/core';
 import { afterEach, describe, expect, it } from 'vitest';
 import { agentExecutables } from './agents.js';
+import { installLauncher } from './install.js';
 import { type Bridge, startBridge } from './server.js';
 import type { TmuxRunner } from './tmux.js';
 
@@ -102,6 +103,23 @@ describe('the bridge socket', () => {
     const { value } = await channel.events[Symbol.asyncIterator]().next();
     expect(isResyncEvent(value.kind)).toBe(true);
     await channel.end();
+  });
+});
+
+describe('installLauncher', () => {
+  it('writes a launcher with the shell’s PATH and names it for the Pairing Code', () => {
+    dir = mkdtempSync(join(tmpdir(), 'oap-'));
+    const configDir = join(dir, 'config');
+    mkdirSync(configDir);
+    writeFileSync(join(configDir, 'pair.json'), '{"ssh_port":2222}');
+    const launcher = installLauncher({ configDir, node: '/n', script: "/it's.js", path: '/a:/b' });
+    const text = readFileSync(launcher, 'utf8');
+    expect(text).toContain("export PATH='/a:/b'");
+    expect(text).toContain(`'/it'\\''s.js'`);
+    expect(JSON.parse(readFileSync(join(configDir, 'pair.json'), 'utf8'))).toEqual({
+      ssh_port: 2222,
+      launcher,
+    });
   });
 });
 

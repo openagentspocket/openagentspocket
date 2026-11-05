@@ -43,8 +43,8 @@ through plugin events such as `pane.agent_status_changed`. tmux has no such even
    fields, the standalone package.
 5. tmux end to end. The Host presents itself as a relocated herdr: the app already takes an endpoint (socket plus an
    executable that behaves as `herdr`, ADRs 0023 and 0029 of the Swift app), so connect, attach and device registration
-   need no app change. Done: socket server, change events by polling, launcher, `install`. To do: a Pairing Code from a
-   Host without herdr (the only way to give the app an endpoint), starting the bridge at login, backend capabilities and
+   need no app change. Done: socket server, change events by polling, launcher, `install`, `pair` (the plugin's ceremony,
+   unchanged, run as for a relocated herdr). To do: starting the bridge at login, backend capabilities and
    the mark that tells backends apart. Proved with OpenSSH on a user-level `sshd`: exec, launcher, forwarded socket and
    attach. Not yet through the app's own SSH module.
 6. Host data contract (git status and the like), then `useLayoutMode` before iPad.
