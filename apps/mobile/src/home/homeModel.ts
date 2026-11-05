@@ -24,6 +24,7 @@ export function hostState(host: HostSummary): HostState {
       return 'live';
     case 'connecting':
       return 'loading';
+    case 'stopped':
     case 'offline':
       return 'offline';
   }
