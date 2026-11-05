@@ -15,12 +15,18 @@ export interface HomeInboxSection<T = StatusInboxItem> {
 
 export type HostState = 'live' | 'loading' | 'offline';
 
-/** Where a Host stands for its card: live, still loading its first snapshot, or not reachable. */
+/** Where a Host stands for its card: live, still loading, or not reachable (a confirmed failure). */
 export function hostState(host: HostSummary): HostState {
-  const kind = host.status?.kind;
-  if (kind === 'connected') return host.isAwaitingSnapshot ? 'loading' : 'live';
-  if (kind === 'connecting' || kind === undefined) return 'loading';
-  return 'offline';
+  switch (host.link) {
+    case 'live':
+      return host.isAwaitingSnapshot && !host.isStale ? 'loading' : 'live';
+    case 'resuming':
+      return 'live';
+    case 'connecting':
+      return 'loading';
+    case 'offline':
+      return 'offline';
+  }
 }
 
 export interface HomeContent<T = StatusInboxItem> {

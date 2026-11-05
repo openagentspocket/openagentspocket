@@ -56,7 +56,10 @@ export function ChatTimeline({
   const styles = useStyles();
   const conversation = useConversation(hostId, paneId);
   const { openSubagent } = useDetailUi();
-  const hostStatus = useConsoleState().hosts.find((host) => host.id === hostId)?.status;
+  const summary = useConsoleState().hosts.find((host) => host.id === hostId);
+  // While the Host resumes, the last known good state stands: no Connecting or Not Connected line.
+  const hostStatus =
+    summary?.link === 'resuming' ? { kind: 'connected' as const } : summary?.status;
   const { sendStatuses } = conversation.state;
   const pending = useMemo(
     () => pendingEchoes(messages, sendStatuses ?? NO_STATUSES),

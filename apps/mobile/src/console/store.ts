@@ -13,6 +13,8 @@ import {
   type EventsSessionStatus,
   HostConsoleProjection,
   type HostIdentity,
+  type HostLink,
+  hostLink,
   ListPreferences,
   type PinnedAgents,
   type RowChangeTotals,
@@ -30,6 +32,8 @@ export interface HostSummary {
   readonly isAwaitingSnapshot: boolean;
   /** Its rows are from an earlier snapshot, kept while the Host reconnects (see `HostConsoleProjection.isStale`). */
   readonly isStale?: boolean;
+  /** How the link reads to a person (see `hostLink`): last known good while it resumes. */
+  readonly link: HostLink;
   readonly syncError: SyncError | undefined;
   readonly latencyMs: number | undefined;
   /** The route the live connection uses; undefined until one connected. */
@@ -66,6 +70,8 @@ const DEFAULT_RETRY_MS = 5000;
 export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
   private readonly projections = new Map<string, HostConsoleProjection<T>>();
   private readonly listeners = new Set<() => void>();
+  /** Hosts that have been connected at least once this run: their last known good state stands. */
+  private readonly connectedOnce = new Set<string>();
   private readonly extras = new Map<
     string,
     { changeTotals?: RowChangeTotals; contextUsage?: AgentContextUsage }
@@ -112,6 +118,7 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     const projection = this.projections.get(hostId);
     if (!projection) return;
     this.projections.delete(hostId);
+    this.connectedOnce.delete(hostId);
     this.options.clocks.retainHosts(new Set(this.projections.keys()));
     this.recompute();
     projection.end();
@@ -247,6 +254,11 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
     this.recompute();
   }
 
+  private noteConnected(projection: { host: { id: string }; status?: { kind: string } }): boolean {
+    if (projection.status?.kind === 'connected') this.connectedOnce.add(projection.host.id);
+    return this.connectedOnce.has(projection.host.id);
+  }
+
   private recompute(): void {
     const projections = [...this.projections.values()];
     const { rows, readyHosts } = selectConsole({
@@ -262,6 +274,7 @@ export class ConsoleStore<T extends ConsoleTransport = ConsoleTransport> {
           : rows.map((row) => ({ ...row, ...this.extras.get(rowKey(row)) })),
       readyHosts,
       hosts: projections.map((projection) => ({
+        link: hostLink(projection.status, this.noteConnected(projection)),
         id: projection.host.id,
         name: projection.host.name,
         status: projection.status,

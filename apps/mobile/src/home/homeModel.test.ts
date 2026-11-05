@@ -1,16 +1,29 @@
-import { asTransportError } from '@openagentspocket/core';
+import { asTransportError, hostLink } from '@openagentspocket/core';
 import type { HostSummary } from '@/console/store';
 import { DONE_CAP, homeContent, hostState, WORKING_CAP } from './homeModel';
 
 const items = (count: number) => Array.from({ length: count }, (_, index) => index);
 
-const host = (status: HostSummary['status'], isAwaitingSnapshot = false): HostSummary => ({
+const host = (
+  status: HostSummary['status'],
+  isAwaitingSnapshot = false,
+  wasConnected = false,
+): HostSummary => ({
+  link: hostLink(status, wasConnected),
   id: 'h',
   name: 'h',
   status,
   isAwaitingSnapshot,
   syncError: undefined,
   latencyMs: undefined,
+});
+
+describe('hostState while a connected Host resumes', () => {
+  it('keeps reading as live in the background and while re-dialing, never offline', () => {
+    expect(hostState(host({ kind: 'suspended' }, true, true))).toBe('live');
+    expect(hostState(host({ kind: 'connecting' }, true, true))).toBe('live');
+    expect(hostState(host({ kind: 'suspended' }))).toBe('loading');
+  });
 });
 
 describe('homeContent', () => {
@@ -38,7 +51,8 @@ describe('homeContent', () => {
   it('reports unreachable Hosts', () => {
     const failure = asTransportError(new Error('x'));
     expect(hostState(host({ kind: 'failed', failure }))).toBe('offline');
-    expect(hostState(host({ kind: 'suspended' }))).toBe('offline');
+    // Suspended before any connection is not a failure: nothing has gone wrong yet.
+    expect(hostState(host({ kind: 'suspended' }))).toBe('loading');
     expect(hostState(host({ kind: 'connected' }, true))).toBe('loading');
     expect(hostState(host({ kind: 'connected' }))).toBe('live');
   });
