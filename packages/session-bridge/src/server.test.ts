@@ -11,6 +11,7 @@ import {
 } from '@openagentspocket/core';
 import { afterEach, describe, expect, it } from 'vitest';
 import { agentExecutables } from './agents.js';
+import { autostartFor } from './autostart.js';
 import { installLauncher } from './install.js';
 import { type Bridge, startBridge } from './server.js';
 import type { TmuxRunner } from './tmux.js';
@@ -120,6 +121,27 @@ describe('installLauncher', () => {
       ssh_port: 2222,
       launcher,
     });
+  });
+});
+
+describe('autostartFor', () => {
+  const base = { home: '/h', launcher: '/h/a&b/herdr', uid: 501 };
+
+  it('is a user LaunchAgent on macOS, with the path escaped', () => {
+    const service = autostartFor({ ...base, platform: 'darwin' });
+    expect(service?.path).toBe('/h/Library/LaunchAgents/com.openagentspocket.bridge.plist');
+    expect(service?.content).toContain('<string>/h/a&amp;b/herdr</string>');
+    expect(service?.enable.slice(0, 3)).toEqual(['launchctl', 'bootstrap', 'gui/501']);
+  });
+
+  it('is a systemd user unit on Linux', () => {
+    const service = autostartFor({ ...base, platform: 'linux' });
+    expect(service?.content).toContain('ExecStart="/h/a&b/herdr" serve');
+    expect(service?.enable).toContain('--user');
+  });
+
+  it('says nothing elsewhere', () => {
+    expect(autostartFor({ ...base, platform: 'freebsd' })).toBeNull();
   });
 });
 

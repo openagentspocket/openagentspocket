@@ -3,9 +3,11 @@
 // answered over tmux. The app never knows it is not herdr.
 
 import { spawn, spawnSync } from 'node:child_process';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { autostartFor } from './autostart.js';
 import { pluginEntry } from './handler.js';
 import { installLauncher } from './install.js';
 import { tmuxRunner } from './runner.js';
@@ -48,6 +50,24 @@ function pair(): number {
   return spawnSync(process.execPath, [popup], { env, stdio: 'inherit' }).status ?? 1;
 }
 
+/** Opt in: a service that outlives this shell is the user's call, so `install` does not do it. */
+function autostart(): number {
+  const service = autostartFor({
+    platform: process.platform,
+    home: homedir(),
+    launcher: join(configDir(), 'bin', 'herdr'),
+    uid: process.getuid?.() ?? 0,
+  });
+  if (!service) {
+    console.error('This system has no user services the bridge knows.');
+    return 2;
+  }
+  mkdirSync(dirname(service.path), { recursive: true });
+  writeFileSync(service.path, service.content);
+  const [command = '', ...args] = service.enable;
+  return spawnSync(command, args, { stdio: 'inherit' }).status ?? 1;
+}
+
 function startInBackground(): void {
   const script = fileURLToPath(import.meta.url);
   spawn(process.execPath, [script, 'serve'], { detached: true, stdio: 'ignore' }).unref();
@@ -71,6 +91,8 @@ export async function main(args: readonly string[]): Promise<number> {
       print({ socketPath: bridgeSocket(), executablePath: launcher });
       return 0;
     }
+    case 'autostart':
+      return autostart();
     case 'pair':
       return pair();
     case 'remote-client-bridge':
