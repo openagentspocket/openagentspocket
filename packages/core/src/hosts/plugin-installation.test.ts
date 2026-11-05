@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   agenticoEntry,
+  INSTALLER_BASE_URL,
   installationFromList,
+  installerCommand,
   isLegacyPluginId,
   type PluginListEntry,
   parsePluginList,
@@ -184,5 +186,15 @@ describe('plugin status reads', () => {
       'herdr-mobile.pairing',
     ]);
     expect(pluginStepArguments({ kind: 'enable', pluginId: 'agentico' })).toBeNull();
+  });
+});
+
+describe('installer command', () => {
+  it('is a curl pipe for macOS and Linux and a PowerShell pipe for Windows, from one base URL', () => {
+    expect(installerCommand('unix')).toBe(`curl -fsSL ${INSTALLER_BASE_URL}/install.sh | sh`);
+    expect(installerCommand('windows')).toBe(`irm ${INSTALLER_BASE_URL}/install.ps1 | iex`);
+    expect(installerCommand('unix', 'https://example.invalid')).toContain(
+      'https://example.invalid/',
+    );
   });
 });

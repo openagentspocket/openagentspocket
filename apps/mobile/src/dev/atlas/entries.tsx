@@ -23,6 +23,7 @@ import { atlasAccountFiles, atlasUsageSource } from './atlasUsage';
 import { agentDetailEntries } from './familyAgentDetail';
 import { consoleEntries } from './familyConsole';
 import { filesEntries } from './familyFiles';
+import { hostsEntries } from './familyHosts';
 import { newAgentEntries } from './familyNewAgent';
 import { notificationEntries } from './familyNotifications';
 import { settingsEntries } from './familySettings';
@@ -39,6 +40,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   ...agentDetailEntries,
   ...consoleEntries,
   ...filesEntries,
+  ...hostsEntries,
   ...newAgentEntries,
   ...notificationEntries,
   ...settingsEntries,

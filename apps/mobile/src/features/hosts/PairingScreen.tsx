@@ -1,13 +1,12 @@
 import { needsConfirmation } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Button, Card, ListRow, QRScanner } from '@openagentspocket/ui';
+import { Banner, QRScanner } from '@openagentspocket/ui';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { AppScreen } from '@/navigation/AppScreen';
+import { EasyPairPanel } from './EasyPairPanel';
 import { hostsRuntime } from './hostsRuntime';
 import { PairingCeremony } from './PairingCeremony';
 import { pairingMessageText, scannerLabels } from './pairingText';
-import { SetupStep } from './SetupStep';
-import { pairingCodeStep } from './setupGuideSteps';
 
 interface PairingScreenProps {
   onCancel: () => void;
@@ -42,7 +41,7 @@ export function PairingScreen({
     <AppScreen
       header={{
         variant: 'sheet',
-        title: t('Scan to Pair'),
+        title: t('Easy Pair'),
         leading: { label: t('Cancel'), onPress: onCancel, testID: 'pairing-cancel' },
       }}
       testID="pairing-screen"
@@ -64,22 +63,7 @@ export function PairingScreen({
               testID="pairing-scan-failure"
             />
           ) : null}
-          <Card padded={false}>
-            <SetupStep number={1} step={pairingCodeStep()} divider={false} />
-            <ListRow
-              icon="book"
-              title={t('Setup Guide')}
-              chevron
-              onPress={onOpenGuide}
-              testID="pairing-guide"
-            />
-          </Card>
-          <Button
-            kind="text"
-            title={t('Add Manually')}
-            onPress={onAddManually}
-            testID="pairing-manual"
-          />
+          <EasyPairPanel onOpenGuide={onOpenGuide} onAddManually={onAddManually} />
         </>
       )}
     </AppScreen>
