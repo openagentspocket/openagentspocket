@@ -10,6 +10,7 @@ import {
 import { useSyncExternalStore } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
+import { TerminalZoom } from '@/terminal/TerminalZoom';
 
 const useStyles = makeStyles((th) => ({
   fill: { flex: 1 },
@@ -53,12 +54,17 @@ export function ShellSurface({ entry }: { entry: PoolEntry }) {
   const terminal = useAttachedTerminal(store.terminal);
   return (
     <View style={styles.fill} testID="shell-terminal">
-      <TerminalView
-        key={terminal.snapshot.surfaceId}
-        accessibilityLabel={t('Terminal')}
-        testID="shell-terminal-view"
-        {...terminal.viewProps}
-      />
+      <TerminalZoom>
+        {(fontSize) => (
+          <TerminalView
+            key={terminal.snapshot.surfaceId}
+            accessibilityLabel={t('Terminal')}
+            testID="shell-terminal-view"
+            fontSize={fontSize}
+            {...terminal.viewProps}
+          />
+        )}
+      </TerminalZoom>
       <Overlay status={store.terminalStatus} store={store} />
     </View>
   );

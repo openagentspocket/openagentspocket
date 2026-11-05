@@ -14,6 +14,7 @@ import { useRouter } from 'expo-router';
 import { useCallback, useState, useSyncExternalStore } from 'react';
 import { View } from 'react-native';
 import { useSettings } from '@/settings/SettingsProvider';
+import { TerminalZoom } from '@/terminal/TerminalZoom';
 import type { AgentTerminalSession } from './AgentTerminalSession';
 import { CONTROL_KEYS, FULL_KEYBOARD, type KeyRows, keyLabel } from './keyTables';
 import { PasteReviewSheet } from './PasteReviewSheet';
@@ -92,13 +93,18 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
   return (
     <View style={{ flex: 1 }} testID="terminal-surface">
       <View style={{ flex: 1 }}>
-        <TerminalView
-          key={terminal.snapshot.surfaceId}
-          {...terminal.viewProps}
-          onInput={(data) => void keyboard.typed(data)}
-          accessibilityLabel={t('Terminal')}
-          testID="terminal-slot"
-        />
+        <TerminalZoom>
+          {(fontSize) => (
+            <TerminalView
+              key={terminal.snapshot.surfaceId}
+              {...terminal.viewProps}
+              fontSize={fontSize}
+              onInput={(data) => void keyboard.typed(data)}
+              accessibilityLabel={t('Terminal')}
+              testID="terminal-slot"
+            />
+          )}
+        </TerminalZoom>
         <StatusOverlay status={terminal.snapshot.status} onRetry={store.retry.bind(store)} />
       </View>
       <TerminalToolbar

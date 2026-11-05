@@ -9,6 +9,7 @@ import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
+import { KeyboardDismissButton } from './KeyboardDismissButton';
 
 const CIRCLE = 40;
 
@@ -182,6 +183,7 @@ export function ComposerCard({
   const styles = useStyles();
   const theme = useTheme();
   const [dismissed, setDismissed] = useState(false);
+  const [focused, setFocused] = useState(false);
   const action = composerAction(value, working, onStop !== undefined);
   const stacked = expanded ?? (value.includes('\n') || value.length > 36);
   const showSkills = Boolean(skills?.length) && value.startsWith('/') && !dismissed;
@@ -196,8 +198,14 @@ export function ComposerCard({
       }}
       placeholder={hint}
       editable={!disabled}
-      onFocus={() => onFocusChange?.(true)}
-      onBlur={() => onFocusChange?.(false)}
+      onFocus={() => {
+        setFocused(true);
+        onFocusChange?.(true);
+      }}
+      onBlur={() => {
+        setFocused(false);
+        onFocusChange?.(false);
+      }}
       multiline={stacked || Platform.OS !== 'web'}
       style={[styles.input, stacked ? styles.inputStack : styles.inputOneLine]}
       accessibilityLabel={hint}
@@ -290,6 +298,7 @@ export function ComposerCard({
               />
             ) : null}
             <View style={styles.spacer} />
+            {focused ? <KeyboardDismissButton label={labels.dismissKeyboard} /> : null}
             {trailing}
           </View>
         </View>
@@ -298,6 +307,7 @@ export function ComposerCard({
           {plus}
           {leadingMark}
           {input}
+          {focused ? <KeyboardDismissButton label={labels.dismissKeyboard} /> : null}
           {trailing}
         </View>
       )}

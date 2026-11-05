@@ -6,6 +6,7 @@ import { StatusDot } from '../primitives/StatusDot';
 import { Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { withAlpha } from '../theme/color';
+import { useInsets } from '../theme/insets';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -169,6 +170,7 @@ export function SessionDrawer({
   testID = 'session-drawer',
 }: SessionDrawerProps) {
   const styles = useStyles();
+  const insets = useInsets();
   const theme = useTheme();
   const [query, setQuery] = useState('');
   const [folded, setFolded] = useState<ReadonlySet<string>>(new Set());
@@ -189,7 +191,17 @@ export function SessionDrawer({
       return next;
     });
   const panel = (
-    <View style={styles.drawer} testID={testID}>
+    <View
+      style={[
+        styles.drawer,
+        // The drawer is a window over the screen: it keeps clear of the notch and the home indicator.
+        {
+          paddingTop: insets.top + theme.spacing.sm,
+          paddingBottom: insets.bottom + theme.spacing.md,
+        },
+      ]}
+      testID={testID}
+    >
       <View style={styles.top}>
         <View style={styles.search}>
           <Icon name="search" size={16} />
