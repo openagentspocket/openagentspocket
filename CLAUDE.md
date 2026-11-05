@@ -18,7 +18,8 @@ TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/r
 - `pnpm verify-fast`: typed routes (regenerated from `src/app`), biome, `tsc -b`, `gen:check`, file-length ratchet, theme-literal rule, then only the tests
   related to changed files (plugin/relay suites run only when touched; plugin takes ~50 s). Run before every report
   and commit. The pre-commit hook runs it.
-- `pnpm test`: every unit/component test. Once per run, by the integrator.
+- `pnpm test`: every unit/component test. Only the lead, only at a milestone (a wave closed, before a device
+  install or a release), never per task: workers never run it, and a merge relies on verify-fast's related tests.
 - `pnpm gen`: regenerate protocol types and theme tokens. Never hand-edit `*.generated.ts`.
 - Maestro flows in `e2e/`, run by the integrator on the shared simulator/emulator.
 
@@ -28,8 +29,9 @@ TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/r
 |---|---|
 | Any change | `pnpm verify-fast` (seconds) |
 | Docs only | nothing more |
-| `packages/core`, `packages/ui`, `apps/mobile` JS | verify-fast (related tests) while iterating; one `pnpm test` before merging |
-| `packages/plugin`, `packages/relay` | verify-fast runs their suites |
+| `packages/core`, `packages/ui`, `apps/mobile` JS | verify-fast (related tests); the merge commit reruns it over the whole branch diff |
+| `packages/plugin`, `packages/relay`, `apps/site` | verify-fast runs their suites |
+| A milestone (wave closed, device install, release) | the lead runs `pnpm test` once |
 | A screen's look | a Maestro flow with a screenshot, by the integrator |
 | Native deps, config plugins, `app.json` native fields | integrator only: `npx expo prebuild --clean` then rebuild native once per batch (a stale `ios/` silently skips modules) |
 
