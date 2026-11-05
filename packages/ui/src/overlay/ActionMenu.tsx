@@ -46,7 +46,6 @@ const useStyles = makeStyles((t) => ({
   backdrop: { flex: 1, backgroundColor: t.backdrop },
   menu: {
     position: 'absolute',
-    width: MENU_WIDTH,
     backgroundColor: t.colors.surfaceOverlay,
     borderRadius: t.metrics.cardRadius,
     borderWidth: t.metrics.hairlineWidth,
@@ -84,6 +83,8 @@ interface ActionMenuProps {
   preview?: ReactNode;
   /** With a preview: draw in place instead of a Modal (the gallery and tests). */
   inline?: boolean;
+  /** Menu width; a compact popover passes less than the default. */
+  width?: number;
   testID?: string;
 }
 
@@ -96,6 +97,7 @@ export function ActionMenu({
   anchor,
   preview,
   inline,
+  width = MENU_WIDTH,
   testID = 'action-menu',
 }: ActionMenuProps) {
   const styles = useStyles();
@@ -115,11 +117,8 @@ export function ActionMenu({
   const estimated = items.length * theme.metrics.minTapSize + (title ? 40 : 0);
   const margin = theme.spacing.xs;
   const left = anchor
-    ? Math.min(
-        Math.max(margin, anchor.x + anchor.width - MENU_WIDTH),
-        window.width - MENU_WIDTH - margin,
-      )
-    : (window.width - MENU_WIDTH) / 2;
+    ? Math.min(Math.max(margin, anchor.x + anchor.width - width), window.width - width - margin)
+    : (window.width - width) / 2;
   const below = anchor ? anchor.y + anchor.height + 4 : 0;
   const fitsBelow = below + estimated < window.height - insets.bottom - margin;
   const position = anchor
@@ -149,7 +148,7 @@ export function ActionMenu({
         importantForAccessibility="no"
         testID={`${testID}-backdrop`}
       />
-      <View style={[styles.menu, position]} accessibilityViewIsModal testID={testID}>
+      <View style={[styles.menu, { width }, position]} accessibilityViewIsModal testID={testID}>
         {title ? (
           <Text variant="footnote" tone="secondary" style={styles.title} accessibilityRole="header">
             {title}

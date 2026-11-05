@@ -19,6 +19,11 @@ review fixes:
 - Sheet's trailing action now uses the SheetBar glass capsule (BarAction exported from SheetBar): directory browser Select is a capsule.
 - Workspace picker anchor was a real bug, not web-only: PickerRow's menu had no anchor and always opened at the bottom. It now measures its row and opens beside it (checked in the atlas).
 - Entry points: the phone only has Home + (New Agent / New Terminal, plus Host menu New Agent and the Agent menu new tab). The Agents list + and the session drawer in Swift are the wide/iPad sidebar footers (shell.wide-iphone-footer): moved to UX1-new-agent-ipad-sheet. RN has no session drawer yet. Papel workspace-picker and new-terminal sheets were captured and look fine.
+review fixes 2:
+- Agent placeholder row wraps to two lines (`ListRow` `titleLines`), whole sentence shows (dark and Papel).
+- Workspace menu: no title header (`PickerRow` `menuHeader`), 224 wide when no Host (`menuWidth`, `ActionMenu` `width`), Browse Directory... hidden until a Host is picked.
+- Sheet bar trailing capsule sits on the 16pt gutter (bar header `paddingRight` = screenInset; the plain close-button header is unchanged). Directory browser Select now ends with the cards.
+- Captured dark + Papel: console.start-agent, console.workspace-picker, console.directory-browser (design/atlas/compare/<id>[.papel].png).
 notes:
 - `PickerRow` options take `section`, `subtitle`, `icon` and `valueTone`; `ListRow` takes `titleTone`.
 - `Section` only separates direct children, so the Agent rows are an array, not a fragment.

@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { Children, Fragment, type ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
@@ -18,10 +18,15 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.control,
     borderRadius: 999,
     paddingHorizontal: t.spacing.xs,
-    paddingVertical: 4,
-    minHeight: 30,
+    paddingVertical: 2,
+    minHeight: 24,
   },
-  body: { marginTop: t.spacing.xs, marginLeft: t.spacing.md },
+  body: { marginTop: t.spacing.xs, marginLeft: 0 },
+  divider: {
+    height: t.metrics.hairlineWidth,
+    backgroundColor: t.hairline,
+    marginVertical: t.spacing.xs,
+  },
   nested: { marginLeft: t.spacing.md },
 }));
 
@@ -87,11 +92,11 @@ export function WorkspaceCard({
         accessibilityState={{ expanded: !collapsed }}
         testID={`${testID}-fold`}
       >
-        <Text variant="subheadline" semibold tabularNums>
+        <Text variant="footnote" semibold tabularNums>
           {String(workspace.agentCount)}
         </Text>
         <View style={{ transform: [{ rotate: collapsed ? '0deg' : '90deg' }] }}>
-          <Icon name="chevronRight" size={12} tint={theme.colors.textSecondary} />
+          <Icon name="chevronRight" size={10} tint={theme.colors.textSecondary} />
         </View>
       </Pressable>
     </View>
@@ -100,7 +105,16 @@ export function WorkspaceCard({
     <View style={styles.slot}>
       <Card testID={testID}>
         {header}
-        {collapsed ? null : <View style={styles.body}>{children}</View>}
+        {collapsed ? null : (
+          <View style={styles.body}>
+            {Children.toArray(children).map((child, index) => (
+              <Fragment key={(child as { key?: string }).key ?? index}>
+                {index > 0 ? <View style={styles.divider} testID={`${testID}-divider`} /> : null}
+                {child}
+              </Fragment>
+            ))}
+          </View>
+        )}
       </Card>
     </View>
   );

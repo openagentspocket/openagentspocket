@@ -28,7 +28,13 @@ export function AgentSection({ store, state }: SectionProps) {
   const detect = () => void store.discoverAgents();
   let body: ReactNode;
   if (discovery.kind === 'idle') {
-    body = <ListRow title={t('Select a Host to detect installed Agents.')} titleTone="secondary" />;
+    body = (
+      <ListRow
+        title={t('Select a Host to detect installed Agents.')}
+        titleTone="secondary"
+        titleLines={2}
+      />
+    );
   } else if (discovery.kind === 'loading') {
     body = <SkeletonRows accessibilityLabel={t('Detecting installed Agents…')} />;
   } else if (discovery.kind === 'failed') {

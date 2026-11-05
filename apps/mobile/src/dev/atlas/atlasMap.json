@@ -15,6 +15,31 @@
     "note": "demo console"
   },
   {
+    "id": "console.agents-list-by-status",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "demo console, By Status"
+  },
+  {
+    "id": "console.agents-list-by-workspace",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "demo console, By Workspace"
+  },
+  {
+    "id": "console.agents-list-by-host",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "demo console, By Host"
+  },
+  {
+    "id": "console.quick-detail-sheet",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "quick detail of p2 over the Agents list; Swift draws it over Home (a status inbox) and RN Home has no quick detail, so the backdrop is the by-status Agents list"
+  },
+  {
+    "id": "console.empty-states-agents",
+    "rn": "app/agents.tsx (AgentsScreen)",
+    "note": "no Agents"
+  },
+  {
     "id": "console.start-agent",
     "rn": "app/new-agent.tsx (NewAgentScreen)",
     "note": "demo services, one Host"

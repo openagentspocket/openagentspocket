@@ -2,6 +2,7 @@ import {
   AgentStatusClocks,
   type Host,
   hostRoute,
+  type ListPresentation,
   MemoryStorage,
   PinnedAgents,
 } from '@openagentspocket/core';
@@ -21,6 +22,8 @@ export interface AtlasData {
   /** `empty`: no Hosts at all (first run). Default `demo`: the scripted Hosts and Agents. */
   console?: 'demo' | 'empty' | 'offline';
   hosts?: 'demo' | 'empty';
+  /** The Agents list grouping, for the list ids. Default flat. */
+  presentation?: ListPresentation;
   /** `false`: the Hosts never connected, so the first preflight asks to trust the key. */
   trusted?: boolean;
   /** The plugin version every Host reports (an old one raises the plugin notice). */
@@ -67,15 +70,16 @@ function emptyConsoleStore(): ConsoleStore {
 export function AtlasFrame({ data, children }: { data: AtlasData; children: ReactNode }) {
   freezeAtlasClock();
   const [ready, setReady] = useState(false);
-  const store = useMemo(
-    () =>
+  const store = useMemo(() => {
+    const created =
       data.console === 'empty'
         ? emptyConsoleStore()
         : data.console === 'offline'
           ? offlineHostsStore()
-          : createDemoConsoleStore(),
-    [data.console],
-  );
+          : createDemoConsoleStore(undefined, undefined, true);
+    if (data.presentation) created.listPrefs.setPresentation(data.presentation);
+    return created;
+  }, [data.console, data.presentation]);
   const hostless = useMemo(() => {
     if (data.newAgent !== 'hostless') return undefined;
     const demo = createDemoServices();

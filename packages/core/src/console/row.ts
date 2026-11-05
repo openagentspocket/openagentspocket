@@ -1,3 +1,4 @@
+import type { AgentContextUsage } from '../chat/model/types';
 import type * as herdr from '../protocol/herdr-types.generated';
 import { type AgentInfo, agentDisplayName, agentTitle, nonEmpty } from './agent-fields';
 
@@ -50,6 +51,31 @@ export interface ConsoleRow {
   readonly lastOutputSnippet?: string;
   /** The live directory of the Agent's pane, newer than the Agent record's. */
   readonly paneDirectory?: string;
+  /** Line totals of the Agent's checkout (the Changes read), when one is known. */
+  readonly changeTotals?: RowChangeTotals;
+  /** How full the Agent's context window is, when a transcript reports it. */
+  readonly contextUsage?: AgentContextUsage;
+}
+
+export interface RowChangeTotals {
+  readonly added: number;
+  readonly removed: number;
+}
+
+/** At or below this share of the window left, the Agents list flags the Agent. */
+export const CONTEXT_LOW_THRESHOLD = 0.2;
+
+/** Share of the window still free, 0 to 1; an overrun prompt reads as 0. */
+export function contextFractionLeft(usage: AgentContextUsage): number {
+  if (usage.windowTokens <= 0) return 0;
+  return Math.min(1, Math.max(0, 1 - usage.usedTokens / usage.windowTokens));
+}
+
+/** "16 %" when the window runs low, else undefined: an Agent with room shows nothing. */
+export function contextLowText(usage: AgentContextUsage | undefined): string | undefined {
+  if (!usage || usage.windowTokens <= 0) return undefined;
+  const left = contextFractionLeft(usage);
+  return left <= CONTEXT_LOW_THRESHOLD ? `${Math.round(left * 100)} %` : undefined;
 }
 
 const KEY_SEPARATOR = '\u001f';

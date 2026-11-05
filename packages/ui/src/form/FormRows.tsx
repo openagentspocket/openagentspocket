@@ -83,6 +83,10 @@ interface PickerRowProps<V extends string> {
   disabled?: boolean;
   /** Ink of the shown value; accent by default, secondary for "None reported". */
   valueTone?: ListRowProps['valueTone'];
+  /** Drop the title header of the menu (Swift's popover has none). */
+  menuHeader?: boolean;
+  /** Width of the menu; narrower for a short list. */
+  menuWidth?: number;
   testID?: string;
 }
 
@@ -94,6 +98,8 @@ export function PickerRow<V extends string>({
   onChange,
   disabled,
   valueTone = 'accent',
+  menuHeader = true,
+  menuWidth,
   testID,
 }: PickerRowProps<V>) {
   const [open, setOpen] = useState(false);
@@ -130,7 +136,8 @@ export function PickerRow<V extends string>({
         testID={testID}
       />
       <ActionMenu
-        title={title}
+        title={menuHeader ? title : undefined}
+        width={menuWidth}
         visible={open}
         anchor={anchor}
         onClose={() => setOpen(false)}

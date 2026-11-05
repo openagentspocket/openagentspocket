@@ -50,7 +50,9 @@ export function workspaceOptions(store: StartAgentStore, state: StartAgentState)
     ...(selected === NONE ? [{ value: NONE, label: t('None reported') }] : []),
     ...store.workspaces.map((workspace) => ({ value: workspace.id, label: workspace.label })),
     ...recents,
-    { value: BROWSE, label: t('Browse Directory…'), icon: 'folder', section: '' },
+    ...(state.selectedHostId === undefined
+      ? []
+      : [{ value: BROWSE, label: t('Browse Directory…'), icon: 'folder', section: '' } as const]),
     { value: NEW_WORKSPACE, label: newLabel, icon: 'add' },
   ];
   return { options, selected, isNew };
@@ -93,6 +95,8 @@ export function WorkspaceSection({
         value={selected}
         options={options}
         onChange={change}
+        menuHeader={false}
+        menuWidth={state.selectedHostId === undefined ? 224 : undefined}
         valueTone={selected === NONE ? 'tertiary' : 'accent'}
         testID="new-agent-workspace"
       />
