@@ -1,16 +1,16 @@
 import type { ConsoleRow } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { airy, HostIssueRow, makeStyles, ScreenBackground } from '@openagentspocket/ui';
+import { airy, makeStyles, ScreenBackground } from '@openagentspocket/ui';
 import { useMemo } from 'react';
 import { ScrollView, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { HostIssues } from '@/features/hosts/HostIssues';
 import { useConsoleState, useConsoleStore, useStatusInbox } from '../console/hooks';
 import { useHosts } from '../features/hosts/useHosts';
 import { HomeTitle, NewStrip, NoHosts, useNewStripHeight } from './HomeChrome';
 import { HomeHosts } from './HomeHosts';
 import { HomeInbox } from './HomeInbox';
 import { HomeSessions } from './HomeSessions';
-import { homeLabels } from './homeLabels';
 import { homeContent } from './homeModel';
 import { useUsageRing } from './UsageRingSlot';
 import { useHomeActions } from './useHomeActions';
@@ -52,10 +52,6 @@ export function HomeScreen(props: HomeScreenProps) {
   const saved = useHosts().hosts;
   const reserved = useNewStripHeight();
 
-  const issues = content.offlineHosts.map((host) => ({
-    hostName: host.name || t('Offline'),
-    kind: 'offline' as const,
-  }));
   const newMenu = [
     { key: 'new-agent', title: t('New Agent'), icon: 'add', onPress: () => props.onNewAgent?.() },
     {
@@ -86,14 +82,7 @@ export function HomeScreen(props: HomeScreenProps) {
           contentContainerStyle={[styles.content, { paddingBottom: reserved }]}
         >
           <HomeTitle usage={usage} onOpenSettings={props.onOpenSettings} />
-          <HostIssueRow
-            issues={issues}
-            labels={homeLabels()}
-            onOpen={(issue) => {
-              const host = hosts.find((h) => h.name === issue?.hostName);
-              if (host) onOpenHost?.(host.id);
-            }}
-          />
+          <HostIssues />
           <View style={styles.body}>
             <HomeInbox
               content={content}

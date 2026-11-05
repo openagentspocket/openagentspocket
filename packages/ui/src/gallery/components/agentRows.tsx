@@ -101,6 +101,12 @@ export const agentRowsEntries: readonly CatalogEntry[] = [
           />
         ),
       },
+      {
+        id: 'workspace',
+        render: () => (
+          <FoldHeader kind="status" title="iOS App" subtitle="Studio Mac" onToggle={noop} />
+        ),
+      },
       { id: 'inbox', render: () => <FoldHeader kind="inbox" title="Needs you" count={1} /> },
       {
         id: 'see-all',

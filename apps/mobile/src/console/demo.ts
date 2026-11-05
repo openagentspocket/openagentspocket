@@ -29,6 +29,8 @@ interface DemoAgent {
   /** Agents with the same workspace id share one workspace (default: their own). */
   workspaceId?: string;
   session?: string;
+  /** Shell panes (no Agent) in this Agent's workspace. */
+  shells?: readonly { pane: string; label?: string; cwd: string }[];
 }
 
 const AGENTS: readonly DemoAgent[] = [
@@ -39,6 +41,7 @@ const AGENTS: readonly DemoAgent[] = [
     workspace: 'api-server',
     title: 'Migration',
     seq: 9,
+    shells: [{ pane: 's1', label: 'logs', cwd: '/work/api-server/logs' }],
   },
   {
     pane: 'p2',
@@ -48,6 +51,10 @@ const AGENTS: readonly DemoAgent[] = [
     title: 'Settings refactor',
     seq: 7,
     session: '01a1108c-69c0-7a5e-8d2c-4f6b1e3a9c70',
+    shells: [
+      { pane: 's2', label: 'landing', cwd: '/work/mobile/landing' },
+      { pane: 's3', cwd: '/work/mobile' },
+    ],
   },
   {
     pane: 'p3',
@@ -132,7 +139,19 @@ function demoSnapshot(list: readonly DemoAgent[] = AGENTS): herdr.SessionSnapsho
       state_change_seq: a.seq,
     })),
     layouts: [],
-    panes: [],
+    panes: list.flatMap((a, index) =>
+      (a.shells ?? []).map((shell) => ({
+        agent_status: 'unknown' as const,
+        cwd: shell.cwd,
+        focused: false,
+        label: shell.label,
+        pane_id: shell.pane,
+        revision: 1,
+        tab_id: `${wsOf(a, index)}:t${shell.pane}`,
+        terminal_id: `term_${shell.pane}`,
+        workspace_id: wsOf(a, index),
+      })),
+    ),
     protocol: 20,
     tabs: [],
     version: 'demo',

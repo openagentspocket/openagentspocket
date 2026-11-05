@@ -29,6 +29,18 @@ export interface ConsoleWorkspace {
   readonly checkoutPath?: string;
 }
 
+/** A shell pane (one that runs no Agent) as the Terminals list shows it. */
+export interface ConsoleTerminal {
+  readonly hostId: string;
+  readonly hostName: string;
+  readonly paneId: string;
+  readonly workspaceId: string;
+  readonly workspaceLabel?: string;
+  /** The tab or pane name herdr reports, when there is one. */
+  readonly label?: string;
+  readonly cwd?: string;
+}
+
 /**
  * One Agent joined with the Host and snapshot facts the lists need. Immutable: a delta produces a
  * new row, so a stale reference never changes under a reader.

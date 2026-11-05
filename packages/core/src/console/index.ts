@@ -15,3 +15,4 @@ export * from './status-clocks';
 export * from './status-inbox';
 export * from './status-stamp';
 export * from './subscriptions';
+export * from './terminals';

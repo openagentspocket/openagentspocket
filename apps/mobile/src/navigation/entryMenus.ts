@@ -28,6 +28,12 @@ export function hostMenu(host: Hostish, isWindows: boolean, nav: Navigate): Acti
       onPress: () => nav.push(hrefs.newAgent({ hostId: host.id })),
     },
   ];
+  items.push({
+    key: 'terminals',
+    title: t('Terminals'),
+    icon: 'terminal',
+    onPress: () => nav.push(hrefs.terminals(host.id)),
+  });
   if (!isWindows) {
     items.push(
       {

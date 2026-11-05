@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { View } from 'react-native';
+import { ConnectionSheet } from '../../components/ConnectionSheet';
 import { EmptyDetail } from '../../components/EmptyDetail';
 import { KeyValueGroup } from '../../components/KeyValueGroup';
 import { ListToolbar } from '../../components/ListToolbar';
 import { QuickSheetHeader } from '../../components/QuickSheetHeader';
 import { ScannerFrame } from '../../components/ScannerFrame';
+import { SearchBar } from '../../components/SearchBar';
 import { SidebarColumn } from '../../components/SidebarColumn';
+import { TextPromptSheet } from '../../components/TextPromptSheet';
+import { Button } from '../../primitives/Button';
 import { ListRow } from '../../primitives/ListRow';
 import { MetaChip } from '../../primitives/MetaChip';
 import { ProgramMark } from '../../primitives/ProgramMark';
@@ -13,6 +17,35 @@ import { Text } from '../../primitives/Text';
 import type { CatalogEntry } from './types';
 
 const noop = () => {};
+
+function SearchBarDemo() {
+  const [query, setQuery] = useState('polish');
+  return (
+    <SearchBar
+      label="Search Agents"
+      value={query}
+      onChangeText={setQuery}
+      onClose={() => setQuery('')}
+    />
+  );
+}
+
+/** A sheet is a Modal: the gallery shows its opener and the sheet opens over it. */
+function SheetOpener({
+  title,
+  children,
+}: {
+  title: string;
+  children: (close: () => void) => ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View>
+      <Button kind="secondary" title={title} onPress={() => setOpen(true)} />
+      {open ? children(() => setOpen(false)) : null}
+    </View>
+  );
+}
 const items = (keys: readonly string[]) =>
   keys.map((key, index) => ({ key, title: key, checked: index === 0, onPress: noop }));
 
@@ -170,6 +203,59 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
               ]}
             />
           </View>
+        ),
+      },
+    ],
+  },
+  { name: 'SearchBar', variants: [{ id: 'default', render: () => <SearchBarDemo /> }] },
+  {
+    name: 'TextPromptSheet',
+    variants: [
+      {
+        id: 'default',
+        render: () => (
+          <SheetOpener title="Rename Agent">
+            {(close) => (
+              <TextPromptSheet
+                visible
+                title="Rename Agent"
+                fieldLabel="Name"
+                initialValue="ios-polish"
+                hint="Leave empty to fall back to the detected kind (codex)."
+                onSave={close}
+                onClose={close}
+              />
+            )}
+          </SheetOpener>
+        ),
+      },
+    ],
+  },
+  {
+    name: 'ConnectionSheet',
+    variants: [
+      {
+        id: 'default',
+        render: () => (
+          <SheetOpener title="Staging VPS">
+            {(close) => (
+              <ConnectionSheet
+                visible
+                title="Staging VPS"
+                state={{ icon: 'network', label: 'Reconnecting', note: 'Attempt 1' }}
+                detail="deploy · 2 routes"
+                failure={{
+                  title: 'No route reached the Host',
+                  detail:
+                    '10.0.0.8: Connection timed out;\nstaging.demo.invalid:2222: SSH unavailable',
+                }}
+                primary={{ label: 'Retry Now', onPress: close }}
+                secondary={{ label: 'Stop Connecting', onPress: close }}
+                edit={{ label: 'Edit', onPress: close }}
+                onClose={close}
+              />
+            )}
+          </SheetOpener>
         ),
       },
     ],

@@ -587,6 +587,56 @@
     "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
   },
   {
+    "id": "console.search",
+    "rn": "app/agents.tsx (AgentsScreen, search mode)",
+    "note": "query polish"
+  },
+  {
+    "id": "console.host-filter-menu",
+    "rn": "app/agents.tsx (AgentsToolbar)",
+    "note": "host menu open"
+  },
+  {
+    "id": "console.presentation-menu",
+    "rn": "app/agents.tsx (AgentsToolbar)",
+    "note": "presentation menu open"
+  },
+  {
+    "id": "console.rename-sheet",
+    "rn": "features/agents/RenameSheet.tsx",
+    "note": "opened on p2"
+  },
+  {
+    "id": "console.new-item-button",
+    "rn": "app/agents.tsx (AgentsToolbar)",
+    "note": "plain list"
+  },
+  {
+    "id": "console.agent-row",
+    "rn": "features/agents/AgentRow.tsx",
+    "note": "plain list"
+  },
+  {
+    "id": "console.terminals-list",
+    "rn": "app/terminals.tsx (TerminalsListScreen)",
+    "note": "demo console shell panes"
+  },
+  {
+    "id": "console.worktree-details",
+    "rn": "features/new-agent/WorktreeDetailsScreen.tsx",
+    "note": "demo worktree"
+  },
+  {
+    "id": "console.worktree-remove-confirm",
+    "rn": "features/new-agent/WorktreeDetailsScreen.tsx",
+    "note": "confirm open"
+  },
+  {
+    "id": "console.host-connection-sheet",
+    "rn": "features/hosts/HostIssues.tsx (HostConnectionSheet)",
+    "note": "offline Home, Lab issue row pressed"
+  },
+  {
     "id": "shell.notification-banner",
     "rn": "InAppBanner (NoticeBanner kind=inapp)",
     "note": "blocked Agent with a captured question; no Swift shot exists for this id"

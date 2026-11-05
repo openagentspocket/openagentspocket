@@ -20,9 +20,9 @@ const keys = (items: { key: string }[]) => items.map((item) => item.key);
 describe('entry menus', () => {
   beforeEach(() => nav.push.mockClear());
 
-  it('offers New Agent, Files and Ports on a Host, and hides the shell ones on Windows', () => {
-    expect(keys(hostMenu(host, false, nav))).toEqual(['new-agent', 'files', 'ports']);
-    expect(keys(hostMenu(host, true, nav))).toEqual(['new-agent']);
+  it('offers New Agent, Terminals, Files and Ports on a Host, and hides the shell ones on Windows', () => {
+    expect(keys(hostMenu(host, false, nav))).toEqual(['new-agent', 'terminals', 'files', 'ports']);
+    expect(keys(hostMenu(host, true, nav))).toEqual(['new-agent', 'terminals']);
   });
 
   it('offers Open, Changes, Ports and New Agent here on an Agent', () => {

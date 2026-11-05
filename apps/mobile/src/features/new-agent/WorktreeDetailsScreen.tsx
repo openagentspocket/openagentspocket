@@ -6,18 +6,12 @@ import {
   type WorktreeRemovalReceipt,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import {
-  Button,
-  confirm,
-  copyToClipboard,
-  ListRow,
-  Screen,
-  Section,
-  Text,
-} from '@openagentspocket/ui';
+import { Button, ListRow, Screen, Section, SheetBar, useAnchor } from '@openagentspocket/ui';
 import { useEffect, useMemo } from 'react';
+import { View } from 'react-native';
 import { useStoreState } from '@/changes/useStoreState';
 import { newAgentText } from './text';
+import { useWorktreeDialogs, WORKTREE_REMOVE_ANCHOR } from './useWorktreeDialogs';
 
 interface WorktreeDetailsScreenProps {
   options: WorktreeDetailOptions;
@@ -53,41 +47,7 @@ export function WorktreeDetailsScreen({ options, onRemoved, onDone }: WorktreeDe
     if (removalPhase.kind === 'removed') onRemoved(removalPhase.receipt);
   }, [removalPhase, onRemoved]);
 
-  useEffect(() => {
-    if (!confirmation) return;
-    void confirm({
-      title: newAgentText(confirmation.title),
-      message: newAgentText(confirmation.message),
-      confirmLabel: t('Remove Worktree'),
-      destructive: true,
-      presentation: 'dialog',
-    }).then((confirmed) => {
-      const request = confirmed ? store.beginRemoval() : undefined;
-      if (!request) return store.cancelConfirmation();
-      return store.finishRemoval(request);
-    });
-  }, [confirmation, store]);
-
-  useEffect(() => {
-    if (!showsFeedback) return;
-    const { refusalOffersChanges, refusalCommand } = store.getState();
-    const phase = store.getState().removalPhase;
-    void confirm({
-      title:
-        phase.kind === 'unconfirmed' ? t('Removal Unconfirmed') : t("Couldn't Remove Worktree"),
-      message:
-        phase.kind === 'failed' || phase.kind === 'stale' ? newAgentText(phase.message) : undefined,
-      cancelLabel: t('OK'),
-      actions: [
-        ...(refusalOffersChanges ? [{ key: 'changes', title: t('Show Changes') }] : []),
-        ...(refusalCommand ? [{ key: 'copy', title: t('Copy Command') }] : []),
-      ],
-    }).then((key) => {
-      if (key === 'changes') return store.showChanges();
-      if (key === 'copy' && refusalCommand) void copyToClipboard(refusalCommand, t('Copied'));
-      store.dismissFeedback();
-    });
-  }, [showsFeedback, store]);
+  useWorktreeDialogs(store, confirmation, showsFeedback);
 
   const phaseNote =
     removalPhase.kind === 'unconfirmed'
@@ -96,9 +56,18 @@ export function WorktreeDetailsScreen({ options, onRemoved, onDone }: WorktreeDe
         ? newAgentText(removalPhase.message)
         : t('Deletes this checkout and closes its workspace. No branch is deleted.');
   const shown = store.displayedBranch;
+  const removeAnchor = useAnchor(WORKTREE_REMOVE_ANCHOR);
   return (
-    <Screen edges={['left', 'right', 'bottom']} testID="worktree-details">
-      <Button kind="text" title={t('Done')} onPress={onDone} testID="worktree-done" />
+    <Screen
+      header={
+        <SheetBar
+          title={t('Worktree')}
+          leading={{ label: t('Done'), onPress: onDone, testID: 'worktree-done' }}
+        />
+      }
+      edges={['left', 'right', 'bottom']}
+      testID="worktree-details"
+    >
       <Section title={t('Linked Worktree')}>
         <ListRow title={t('Repository')} value={options.checkout.repoName} />
         <ListRow
@@ -117,27 +86,30 @@ export function WorktreeDetailsScreen({ options, onRemoved, onDone }: WorktreeDe
           }
           testID="worktree-branch"
         />
-        <ListRow title={t('Checkout Path')} subtitle={options.checkout.checkoutPath} />
+        <ListRow title={t('Checkout Path')} subtitle={options.checkout.checkoutPath} subtitleMono />
       </Section>
       {store.canShowChanges ? (
-        <Button
-          kind="secondary"
-          title={t('Show Changes')}
-          onPress={() => store.showChanges()}
-          testID="worktree-show-changes"
-        />
+        <Section>
+          <ListRow
+            icon="diff"
+            title={t('Show Changes')}
+            titleTone="accent"
+            onPress={() => store.showChanges()}
+            testID="worktree-show-changes"
+          />
+        </Section>
       ) : null}
-      <Button
-        kind="destructive"
-        title={t('Remove Worktree')}
-        loading={removalPhase.kind === 'removing'}
-        disabled={!store.canRemove}
-        onPress={() => store.prepareConfirmation()}
-        testID="worktree-remove"
-      />
-      <Text variant="footnote" tone="secondary">
-        {phaseNote}
-      </Text>
+      <Section footer={phaseNote}>
+        <View ref={removeAnchor} collapsable={false}>
+          <ListRow
+            title={t('Remove Worktree')}
+            titleTone="danger"
+            disabled={!store.canRemove || removalPhase.kind === 'removing'}
+            onPress={() => store.prepareConfirmation()}
+            testID="worktree-remove"
+          />
+        </View>
+      </Section>
     </Screen>
   );
 }

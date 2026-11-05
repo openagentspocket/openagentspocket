@@ -1,10 +1,11 @@
 import type { ConsoleRow, ListGroup } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { confirm, EmptyState, makeStyles, Screen } from '@openagentspocket/ui';
+import { EmptyState, makeStyles, Screen } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { hrefs } from '../../navigation/hrefs';
+import { HostIssues } from '../hosts/HostIssues';
 import { AgentGroup } from './AgentGroup';
 import { agentHref } from './AgentRow';
 import { AgentsToolbar } from './AgentsToolbar';
@@ -31,20 +32,33 @@ const useStyles = makeStyles((theme) => ({
   groups: { gap: theme.spacing.xs },
 }));
 
-/** The Agents list: toolbar, large title and search, then the chosen presentation of the cards. `openDetail` (a pane id) opens its quick detail (the atlas). */
-export function AgentsScreen({ openDetail }: { openDetail?: string }) {
+/** The Agents list: toolbar, large title and search, then the chosen presentation of the cards. The props are atlas start states: a pane id to open its detail or Rename sheet, a search query. */
+export function AgentsScreen(props: {
+  openDetail?: string;
+  openRename?: string;
+  initialQuery?: string;
+}) {
+  const { openDetail, openRename, initialQuery } = props;
   const styles = useStyles();
   const router = useRouter();
   const list = useAgentsList();
   const labels = useMemo(agentRowLabels, []);
   const actions = useMemo(() => agentActions(list.store), [list.store]);
   const [renaming, setRenaming] = useState<ConsoleRow | undefined>();
-  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(initialQuery !== undefined);
   const [detailId, setDetailId] = useState(openDetail);
   const detail = list.groups
     .flatMap((group) => group.rows)
     .find((row) => row.agent.pane_id === detailId);
   const setDetail = (row: ConsoleRow | undefined) => setDetailId(row?.agent.pane_id);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: atlas start state, applied once
+  useEffect(() => {
+    if (initialQuery) list.setQuery(initialQuery);
+    if (openRename) {
+      setRenaming(list.groups.flatMap((g) => g.rows).find((r) => r.agent.pane_id === openRename));
+    }
+  }, []);
 
   const close = (row: ConsoleRow) => closeAgent(row, actions).then(() => undefined);
   const save = (row: ConsoleRow, name: string) => {
@@ -54,7 +68,6 @@ export function AgentsScreen({ openDetail }: { openDetail?: string }) {
   const isPinned = (row: ConsoleRow) => list.store.isPinned(row.hostId, row.agent.pane_id);
   const qualified = useMemo(() => duplicateWorkspaces(list.groups), [list.groups]);
   const empty = list.groups.every((group) => group.rows.length === 0);
-
   return (
     <Screen
       edges={['right', 'bottom', 'left']}
@@ -71,8 +84,13 @@ export function AgentsScreen({ openDetail }: { openDetail?: string }) {
         searchOpen={searchOpen}
         onQuery={list.setQuery}
         onHome={() => router.back()}
+        onCloseSearch={() => {
+          setSearchOpen(false);
+          list.setQuery('');
+        }}
         onNew={() => router.push(hrefs.newAgent())}
       />
+      <HostIssues />
       <View style={styles.groups}>
         {list.groups.map((group) => (
           <AgentGroup

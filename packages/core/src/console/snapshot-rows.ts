@@ -1,6 +1,7 @@
 import type * as herdr from '../protocol/herdr-types.generated';
 import {
   type ConsoleRow,
+  type ConsoleTerminal,
   type ConsoleWorkspace,
   repositoryCheckout,
   withPaneDirectory,
@@ -35,6 +36,8 @@ export interface SnapshotInputs {
 export interface ProjectedSnapshot {
   readonly agents: Map<string, ConsoleRow>;
   readonly workspaces: ConsoleWorkspace[];
+  /** Panes that run no Agent, in snapshot order. */
+  readonly terminals: ConsoleTerminal[];
 }
 
 function firstBy<V>(items: readonly V[], key: (item: V) => string): Map<string, V> {
@@ -119,5 +122,19 @@ export function projectSnapshot(input: SnapshotInputs): ProjectedSnapshot {
       }),
     )
     .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'accent' }));
-  return { agents, workspaces };
+  const agentPanes = new Set(snapshot.agents.map((agent) => agent.pane_id));
+  const terminals = snapshot.panes
+    .filter((pane) => !agentPanes.has(pane.pane_id))
+    .map(
+      (pane): ConsoleTerminal => ({
+        hostId: host.id,
+        hostName: host.name,
+        paneId: pane.pane_id,
+        workspaceId: pane.workspace_id,
+        workspaceLabel: workspaceById.get(pane.workspace_id)?.label,
+        label: pane.label ?? undefined,
+        cwd: pane.foreground_cwd ?? pane.cwd ?? undefined,
+      }),
+    );
+  return { agents, workspaces, terminals };
 }
