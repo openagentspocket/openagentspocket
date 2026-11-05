@@ -24,7 +24,15 @@ export type { SheetDetent };
 
 const useStyles = makeStyles((t) => ({
   root: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { flex: 1, backgroundColor: t.backdrop },
+  // The scrim covers the whole window, also beside and under a floating panel.
+  backdrop: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    backgroundColor: t.backdrop,
+  },
   panel: {
     backgroundColor: t.colors.surfaceOverlay,
     overflow: 'hidden',
