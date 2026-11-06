@@ -1,6 +1,15 @@
 /** Runs one `tmux` command on the Host and gives back what it printed. */
 export interface TmuxRunner {
   run(args: readonly string[]): Promise<string>;
+  /** What the programs' hooks recorded, by pane. */
+  records?(): ReadonlyMap<string, PaneRecord>;
+}
+
+/** Written by `packages/plugin/src/pane-records.js`. */
+export interface PaneRecord {
+  readonly agent?: string;
+  readonly session?: string;
+  readonly status?: string;
 }
 
 /** One line of `list-panes -a` per pane. The title comes last: it is the only free text. */

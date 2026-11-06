@@ -1,6 +1,6 @@
 import type { herdr } from '@openagentspocket/core';
 import { actionFor, BridgeError, type Result } from './actions.js';
-import { SESSION_PROTOCOL, sessionSnapshot } from './snapshot.js';
+import { liveSnapshot, SESSION_PROTOCOL } from './snapshot.js';
 import { listPanes, type TmuxPane, type TmuxRunner } from './tmux.js';
 
 const DEFAULT_READ_LINES = 200;
@@ -71,15 +71,15 @@ async function answer(tmux: TmuxRunner, version: string, request: Request): Prom
     case 'session.snapshot':
       return {
         type: 'session_snapshot',
-        snapshot: sessionSnapshot(await listPanes(tmux), version),
+        snapshot: await liveSnapshot(tmux, version),
       };
     case 'agent.list':
       return {
         type: 'agent_list',
-        agents: sessionSnapshot(await listPanes(tmux), version).agents,
+        agents: (await liveSnapshot(tmux, version)).agents,
       };
     case 'agent.get': {
-      const { agents } = sessionSnapshot(await listPanes(tmux), version);
+      const { agents } = await liveSnapshot(tmux, version);
       const agent = agents.find((candidate) => candidate.pane_id === params.target);
       if (!agent) throw new BridgeError('agent_not_found', `No Agent ${String(params.target)}`);
       return { type: 'agent_info', agent };

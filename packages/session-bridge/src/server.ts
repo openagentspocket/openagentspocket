@@ -77,7 +77,8 @@ export async function startBridge(options: BridgeOptions): Promise<Bridge> {
       shape = null;
       return;
     }
-    const next = shapeOf(await listPanes(tmux).catch(() => []));
+    const panes = await listPanes(tmux).catch(() => []);
+    const next = `${shapeOf(panes)}\n${JSON.stringify([...(tmux.records?.() ?? [])])}`;
     if (shape !== null && next !== shape)
       for (const socket of subscribers) socket.write(CHANGED_EVENT);
     shape = next;

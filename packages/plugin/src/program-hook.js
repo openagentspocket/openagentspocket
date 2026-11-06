@@ -17,6 +17,7 @@ import { pathToFileURL } from "node:url";
 import { forDisplay, optionalText } from "./display-text.js";
 import { readNotificationConfig } from "./notification-config.js";
 import { deliverToDevices, readEligibleDevices } from "./notify-delivery.js";
+import { writePaneRecord } from "./pane-records.js";
 
 /**
  * Claude Code's hook input. `permission_prompt` fires once nobody has typed
@@ -67,6 +68,14 @@ export function parseHermesHook(input) {
   return input?.event === "post_llm_call" ? { status: "done", title: null } : null;
 }
 
+/** The status a hook shows beyond what notifies: tmux has no other way to know it. */
+export function activityOf(input, event) {
+  if (event) return event.status;
+  if (input?.hook_event_name === "SessionStart") return "idle";
+  const working = ["UserPromptSubmit", "PostToolUse"];
+  return working.includes(input?.hook_event_name) ? "working" : null;
+}
+
 const PARSERS = {
   claude: parseClaudeHook,
   codex: parseCodexHook,
@@ -101,8 +110,15 @@ async function main() {
   if (!Object.hasOwn(PARSERS, program) || herdrOwnsThisPane(process.env)) return;
   const event = PARSERS[program](input);
   const paneId = hookPaneId(process.env, input);
-  if (event === null || paneId === null) return;
   const configDir = configDirOf(process.env);
+  if (optionalText(process.env.TMUX_PANE)) {
+    writePaneRecord(configDir, process.env.TMUX_PANE, {
+      agent: program,
+      session: optionalText(input.session_id ?? input.sessionID),
+      status: activityOf(input, event),
+    });
+  }
+  if (event === null || paneId === null) return;
   const devices = readEligibleDevices(configDir, event.status, "");
   if (devices.length === 0) return;
   const cwd = optionalText(input.cwd);

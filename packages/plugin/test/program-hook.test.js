@@ -160,6 +160,27 @@ suite("the other programs", () => {
   });
 });
 
+suite("pane records", () => {
+  test("a hook in a tmux pane says what runs there, without any device", async () => {
+    await runHook({ hook_event_name: "SessionStart", session_id: "s1" }, { TMUX_PANE: "%3" });
+    const file = join(home, "panes", `${Buffer.from("%3").toString("base64url")}.json`);
+    assert.deepEqual(JSON.parse(readFileSync(file, "utf8")), {
+      agent: "claude",
+      session: "s1",
+      status: "idle",
+      pane: "%3",
+    });
+    await runHook({ hook_event_name: "UserPromptSubmit" }, { TMUX_PANE: "%3" });
+    assert.equal(JSON.parse(readFileSync(file, "utf8")).status, "working");
+    assert.equal(JSON.parse(readFileSync(file, "utf8")).session, "s1");
+  });
+
+  test("outside tmux nothing is recorded", async () => {
+    await runHook({ hook_event_name: "SessionStart", session_id: "s1" });
+    assert.equal(existsSync(join(home, "panes")), false);
+  });
+});
+
 suite("where a hook runs", () => {
   test("the tmux pane names it, else the program's session", () => {
     assert.equal(hookPaneId({ TMUX_PANE: "%3" }, { session_id: "abc" }), "%3");

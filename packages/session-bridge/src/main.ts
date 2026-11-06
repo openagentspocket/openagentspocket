@@ -82,7 +82,11 @@ export async function main(args: readonly string[]): Promise<number> {
   const words = `${command} ${subcommand ?? ''}`.trim();
   switch (words) {
     case 'serve':
-      await startBridge({ socketPath: bridgeSocket(), tmux: tmuxRunner(), version: VERSION });
+      await startBridge({
+        socketPath: bridgeSocket(),
+        tmux: tmuxRunner({ recordsDir: join(configDir(), 'panes') }),
+        version: VERSION,
+      });
       return -1;
     case 'install': {
       const launcher = installLauncher({

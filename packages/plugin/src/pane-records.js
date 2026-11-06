@@ -1,0 +1,25 @@
+// What a program's hooks know about the pane they run in: which Agent, its
+// session and its status. tmux knows none of it, so the session bridge reads
+// these files (packages/session-bridge) to report the Agent as herdr would.
+
+import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+
+const recordPath = (configDir, paneId) =>
+  join(configDir, "panes", `${Buffer.from(paneId, "utf8").toString("base64url")}.json`);
+
+/** Merges `fields` into the pane's record; a field left null keeps what was known. */
+export function writePaneRecord(configDir, paneId, fields) {
+  const path = recordPath(configDir, paneId);
+  let current = {};
+  try {
+    current = JSON.parse(readFileSync(path, "utf8"));
+  } catch {
+    // A first event, or a record that no longer reads.
+  }
+  const known = Object.fromEntries(Object.entries(fields).filter(([, value]) => value != null));
+  mkdirSync(join(configDir, "panes"), { recursive: true, mode: 0o700 });
+  const temp = `${path}.tmp-${process.pid}`;
+  writeFileSync(temp, JSON.stringify({ ...current, ...known, pane: paneId }));
+  renameSync(temp, path);
+}

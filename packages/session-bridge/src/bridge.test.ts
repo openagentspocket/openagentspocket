@@ -1,7 +1,7 @@
 import { agenticoEntry, decodeResult, parsePluginList } from '@openagentspocket/core';
 import { describe, expect, it } from 'vitest';
 import { handleLine } from './handler.js';
-import { SESSION_PROTOCOL } from './snapshot.js';
+import { SESSION_PROTOCOL, sessionSnapshot } from './snapshot.js';
 import { parsePanes, type TmuxRunner } from './tmux.js';
 
 const line = (...fields: string[]) => fields.join('|oap|');
@@ -35,6 +35,25 @@ describe('parsePanes', () => {
 
   it('a pane of a session nobody is attached to is not the focused one', () => {
     expect(parsePanes(PANES)[2]?.active).toBe(false);
+  });
+});
+
+describe('what the hooks recorded', () => {
+  const claude = { agent: 'claude', session: 'abc', status: 'blocked' };
+  const pane = (command: string) => parsePanes(PANES).map((p) => ({ ...p, command }));
+
+  it('names an Agent tmux sees as node, with its status and session', () => {
+    const shot = sessionSnapshot(pane('node').slice(0, 1), 'v', new Map([['%1', claude]]));
+    expect(shot.agents[0]).toMatchObject({
+      agent: 'claude',
+      agent_status: 'blocked',
+      agent_session: { agent: 'claude', kind: 'id', source: 'herdr:claude', value: 'abc' },
+    });
+  });
+
+  it('a pane back at its shell holds no Agent, whatever the record says', () => {
+    const shot = sessionSnapshot(pane('zsh').slice(0, 1), 'v', new Map([['%1', claude]]));
+    expect(shot.agents).toEqual([]);
   });
 });
 

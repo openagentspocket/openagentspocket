@@ -1,7 +1,7 @@
 import type { herdr } from '@openagentspocket/core';
 import { agentExecutableOf } from './agents.js';
-import { sessionSnapshot } from './snapshot.js';
-import { listPanes, type TmuxRunner } from './tmux.js';
+import { liveSnapshot } from './snapshot.js';
+import type { TmuxRunner } from './tmux.js';
 
 export type Params = Record<string, unknown>;
 export type Result = { type: string } & Record<string, unknown>;
@@ -33,7 +33,7 @@ const shellWord = (word: string) => `'${word.replaceAll("'", `'\\''`)}'`;
 /** What tmux just created, as the app reads it. */
 async function created(tmux: TmuxRunner, version: string, printed: string) {
   const [workspaceId, tabId, paneId] = printed.trim().split(SEPARATOR);
-  const snapshot = sessionSnapshot(await listPanes(tmux), version);
+  const snapshot = await liveSnapshot(tmux, version);
   const workspace = snapshot.workspaces.find((item) => item.workspace_id === workspaceId);
   const tab = snapshot.tabs.find((item) => item.tab_id === tabId);
   const pane = snapshot.panes.find((item) => item.pane_id === paneId);
@@ -84,7 +84,7 @@ async function agentOf(
   version: string,
   target: string,
 ): Promise<herdr.AgentInfo> {
-  const { agents } = sessionSnapshot(await listPanes(tmux), version);
+  const { agents } = await liveSnapshot(tmux, version);
   const agent = agents.find((candidate) => candidate.pane_id === target);
   if (!agent) throw new BridgeError('agent_not_found', `No Agent ${target}`);
   return agent;

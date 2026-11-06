@@ -84,16 +84,19 @@ const fill = (template, ctx) =>
 const template = (name) =>
   readFileSync(fileURLToPath(new URL(`./program-hooks/${name}`, import.meta.url)), "utf8");
 
+/** What keeps a pane's record current: its session, and that the Agent is working. */
+const LIFECYCLE = { SessionStart: null, UserPromptSubmit: null, PostToolUse: null };
+
 /** Where each program lives, and how it takes hooks. A program not installed is skipped. */
 const PROGRAMS = {
   claude: {
     root: (env, home) => env.CLAUDE_CONFIG_DIR || join(home, ".claude"),
     // `permission_prompt` waits until nobody is typing, which is when a phone should ring.
-    ...jsonHooks("settings.json", { Notification: "permission_prompt", Stop: null }, "claude"),
+    ...jsonHooks("settings.json", { ...LIFECYCLE, Notification: "permission_prompt", Stop: null }, "claude"),
   },
   codex: {
     root: (env, home) => env.CODEX_HOME || join(home, ".codex"),
-    ...jsonHooks("hooks.json", { PermissionRequest: null, Stop: null }, "codex"),
+    ...jsonHooks("hooks.json", { ...LIFECYCLE, PermissionRequest: null, Stop: null }, "codex"),
   },
   opencode: {
     root: (env, home) => join(env.XDG_CONFIG_HOME || join(home, ".config"), "opencode"),
