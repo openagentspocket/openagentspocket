@@ -27,6 +27,8 @@ export interface ConsoleWorkspace {
   readonly label: string;
   readonly order: number;
   readonly checkoutPath?: string;
+  /** Where a new shell opens: the checkout, or the directory of one of its panes. */
+  readonly directory?: string;
 }
 
 /** A shell pane (one that runs no Agent) as the Terminals list shows it. */

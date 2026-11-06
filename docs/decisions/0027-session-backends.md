@@ -54,4 +54,5 @@ through plugin events such as `pane.agent_status_changed`. tmux has no such even
 - How to map a hook event to a tmux pane (process tree or `TMUX_PANE` in the hook's environment); to be proved in step 4.
 - Which methods the app needs before a Host is usable (`events.subscribe` is not in the bridge yet), found by connecting it.
 - How to name agents that run under `node`, whose `pane_current_command` says nothing; hooks should report it.
+- Hermes Chat: its sessions live in `~/.hermes/state.db` (`sessions`, `messages`), so a reader looks like OpenCode's, about 5,700 lines. Not started: no live Hermes session to read, and how herdr names one is unknown.
 - Whether Blocked parsers, which read the screen, work unchanged over `capture-pane`.

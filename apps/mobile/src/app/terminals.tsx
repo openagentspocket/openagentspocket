@@ -31,7 +31,7 @@ export default function TerminalsRoute() {
     const group = groups.find((candidate) => candidate.id === groupId)?.source;
     if (!group) return;
     const workspace = store.workspaces(group.hostId).find((w) => w.id === group.workspaceId);
-    const cwd = workspace?.checkoutPath ?? group.terminals[0]?.cwd;
+    const cwd = workspace?.directory ?? group.terminals[0]?.cwd;
     if (cwd)
       router.push(hrefs.shell({ hostId: group.hostId, workspaceId: group.workspaceId, cwd }));
   };

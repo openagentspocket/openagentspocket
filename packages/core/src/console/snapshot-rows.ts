@@ -119,6 +119,11 @@ export function projectSnapshot(input: SnapshotInputs): ProjectedSnapshot {
         label: workspace.label,
         order,
         checkoutPath: workspace.worktree?.checkout_path,
+        directory:
+          workspace.worktree?.checkout_path ??
+          snapshot.panes.find((pane) => pane.workspace_id === workspace.workspace_id && pane.cwd)
+            ?.cwd ??
+          undefined,
       }),
     )
     .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'accent' }));

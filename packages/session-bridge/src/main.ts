@@ -35,7 +35,10 @@ function attach(target: string | undefined): number {
   ]) {
     spawnSync('tmux', args, { stdio: 'ignore' });
   }
-  return spawnSync('tmux', ['attach-session', '-t', target], { stdio: 'inherit' }).status ?? 1;
+  // `-u`: sshd gives the client no UTF-8 locale, and tmux would draw every non-ASCII cell as `_`.
+  return (
+    spawnSync('tmux', ['-u', 'attach-session', '-t', target], { stdio: 'inherit' }).status ?? 1
+  );
 }
 
 /** Pairing is the plugin's own ceremony, run as it runs for a relocated herdr. */

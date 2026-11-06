@@ -69,3 +69,24 @@ describe('projectSnapshot terminals', () => {
     ]);
   });
 });
+
+describe('where a new shell opens', () => {
+  it('falls back to a pane directory for a workspace that is no checkout', () => {
+    const snapshot = snapshotOf([], {
+      panes: [
+        { pane_id: 'p', tab_id: 't', workspace_id: 'w1', cwd: '/srv/plain' } as herdr.PaneInfo,
+      ],
+    });
+    const host = { id: 'h', name: 'Host' };
+    const projected = projectSnapshot({
+      host,
+      snapshot,
+      previous: new Map(),
+      paneChanges: new Map(),
+      paneStart: 0,
+      statusChanges: new Map(),
+      statusStart: 0,
+    });
+    expect(projected.workspaces[0]?.directory).toBe('/srv/plain');
+  });
+});

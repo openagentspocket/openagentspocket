@@ -22,7 +22,7 @@ export function NewTerminalScreen({ onOpen, onCancel }: NewTerminalScreenProps) 
   const [label, setLabel] = useState('');
   const workspaces = hostId === undefined ? [] : environment.workspaces(hostId);
   const workspace = workspaces.find((w) => w.id === picked) ?? workspaces[0];
-  const cwd = workspace?.checkoutPath;
+  const cwd = workspace?.directory;
   const ready = hostId !== undefined && workspace !== undefined && cwd !== undefined;
   const open = () => {
     if (!ready) return;

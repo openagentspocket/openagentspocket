@@ -33,8 +33,20 @@ const CHECKOUT = {
 export function createDemoServices(): NewAgentServices {
   const environment = new FakeNewAgentEnvironment();
   environment.workspacesByHost.set('demo', [
-    { id: 'w0', label: 'api-server', order: 0, checkoutPath: '/home/demo/projects/api-server' },
-    { id: 'w1', label: 'mobile', order: 1, checkoutPath: '/home/demo/projects/mobile' },
+    {
+      id: 'w0',
+      label: 'api-server',
+      order: 0,
+      checkoutPath: '/home/demo/projects/api-server',
+      directory: '/home/demo/projects/api-server',
+    },
+    {
+      id: 'w1',
+      label: 'mobile',
+      order: 1,
+      checkoutPath: '/home/demo/projects/mobile',
+      directory: '/home/demo/projects/mobile',
+    },
   ]);
   environment.kinds = ['claude', 'codex', 'omp'];
   environment.home = '/home/demo';
