@@ -1,5 +1,6 @@
 import {
   type Host,
+  hostSystemSource,
   type PluginValue,
   primaryRoute,
   routeEndpoint,
@@ -8,6 +9,7 @@ import {
 import { t } from '@openagentspocket/i18n';
 import { Icon, KeyValueGroup, ListRow, Section, StatusPill } from '@openagentspocket/ui';
 import { View } from 'react-native';
+import { useHostData } from '@/console/useHostData';
 import type { HostConnection } from './HostsModel';
 import { pluginValueText } from './pluginText';
 
@@ -73,8 +75,10 @@ export function HostFacts({
   onPluginPress?: () => void;
 }) {
   const endpoint = host.herdrEndpoint;
+  const system = useHostData(host.id, hostSystemSource).value;
   const rows = [
     { label: t('Account'), value: host.username },
+    ...(system ? [{ label: t('System'), value: system }] : []),
     endpoint
       ? { label: t('herdr Socket'), value: endpoint.socketPath, mono: true }
       : { label: t('Session'), value: host.sessionName === '' ? t('Default') : host.sessionName },

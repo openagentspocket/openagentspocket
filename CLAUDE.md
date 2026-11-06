@@ -47,10 +47,9 @@ changes it everywhere. Judges reject duplication.
 
 - Find the extension point first and plug into it; if none exists and a second use is plausible, create it first and
   ship the feature as its first implementation. Existing ones: a Chat program is one name in `CHAT_PROGRAMS` and one `ProgramDefinition`
-  (`packages/core/src/chat/programs`: adapter, locate, send policy, session naming, Blocked support), no UI branches; Host data comes from probe
-  scripts over `packages/transport/src/host` (a new data source, such as git status for the status line, is a new
-  probe with its parser and refresh policy, not ad hoc exec calls); screens compose `packages/ui/src/components`;
-  layout differences (iPad, wide) go through one layout-mode hook and layout components, never per-screen forks;
+  (`packages/core/src/chat/programs`: adapter, locate, send policy, session naming, Blocked support), no UI branches; Host data is a `HostDataSource` (`packages/core/src/hosts/host-data.ts`: script, parser, refresh) read with `useHostData`,
+  not ad hoc exec calls; screens compose `packages/ui/src/components`;
+  layout differences (iPad, wide) go through `useLayoutMode` and layout components, never per-screen forks;
   every control's tint comes from tokens through shared wrappers.
 - Variants are props of one component, never copies. A pattern used twice becomes a component or a helper in the
   package the next caller would search.

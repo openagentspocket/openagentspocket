@@ -4,6 +4,7 @@ export * from './herdr-command-line';
 export * from './herdr-endpoint';
 export * from './host';
 export * from './host-catalog';
+export * from './host-data';
 export * from './host-draft';
 export * from './host-key-policy';
 export * from './host-path';
