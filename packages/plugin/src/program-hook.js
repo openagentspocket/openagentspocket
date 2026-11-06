@@ -36,11 +36,47 @@ export function parseClaudeHook(input) {
   return null;
 }
 
-const PARSERS = { claude: parseClaudeHook };
+/**
+ * Codex's hooks have Claude Code's shape, but `PermissionRequest` is its only signal of an ask.
+ *
+ * @returns {{status: "blocked" | "done", title: string | null} | null}
+ */
+export function parseCodexHook(input) {
+  if (input?.hook_event_name === "PermissionRequest") {
+    return { status: "blocked", title: optionalText(input.tool_name) };
+  }
+  if (input?.hook_event_name === "Stop" && input.stop_hook_active !== true) {
+    return { status: "done", title: null };
+  }
+  return null;
+}
+
+/** What the OpenCode plugin forwards (src/program-hooks/opencode-plugin.js): its event's type. */
+export function parseOpenCodeHook(input) {
+  if (input?.event === "permission.asked") {
+    return { status: "blocked", title: optionalText(input.title) };
+  }
+  return input?.event === "session.idle" ? { status: "done", title: null } : null;
+}
+
+/** What the Hermes plugin forwards: the name of the hook that fired. */
+export function parseHermesHook(input) {
+  if (input?.event === "pre_approval_request") {
+    return { status: "blocked", title: optionalText(input.description ?? input.command) };
+  }
+  return input?.event === "post_llm_call" ? { status: "done", title: null } : null;
+}
+
+const PARSERS = {
+  claude: parseClaudeHook,
+  codex: parseCodexHook,
+  opencode: parseOpenCodeHook,
+  hermes: parseHermesHook,
+};
 
 /** The pane the Agent runs in, or its own session where no multiplexer holds it. */
 export function hookPaneId(env, input) {
-  return optionalText(env.TMUX_PANE) ?? optionalText(input?.session_id);
+  return optionalText(env.TMUX_PANE) ?? optionalText(input?.session_id ?? input?.sessionID);
 }
 
 /** Inside herdr its status events already notify: a second push would repeat them. */

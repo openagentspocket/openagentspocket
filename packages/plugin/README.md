@@ -1032,11 +1032,19 @@ contract and vectors together.
 ## Program hooks
 
 On a Host where no multiplexer reports Agent status (ADR 0027), the program's own hooks raise the Agent
-Notification: `src/program-hook.js` reads the hook JSON on stdin and delivers through the same path as the
-notify hook (`src/notify-delivery.js`). `node src/install-program-hooks.js` adds it to Claude Code's
-`settings.json` (`--uninstall` removes it, and nothing else). It reads `notifications.json` and `notify.json`
-from `OAP_CONFIG_DIR`, by default `~/.config/openagentspocket`, and stays quiet inside herdr, whose own events
-already notify. Only Claude Code so far; Blocked pushes carry no approval fields yet.
+Notification: `src/program-hook.js` reads what the program sends and delivers through the same path as the notify
+hook (`src/notify-delivery.js`). `node src/install-program-hooks.js` installs it in every program it finds
+(`--uninstall` removes it, and nothing else). A new program is one parser and one entry in that file's `PROGRAMS`.
+
+| Program | Mechanism | Blocked | Done |
+|---|---|---|---|
+| Claude Code | `settings.json` hooks | `Notification` `permission_prompt` | `Stop` |
+| Codex | `hooks.json` | `PermissionRequest` | `Stop` |
+| OpenCode | plugin in `plugins/` | `permission.asked` | `session.idle` |
+| Hermes | plugin in `~/.hermes/plugins`, then `hermes plugins enable agentico` | `pre_approval_request` | `post_llm_call` |
+
+It reads `notifications.json` and `notify.json` from `OAP_CONFIG_DIR`, by default `~/.config/openagentspocket`, and
+stays quiet inside herdr, whose own events already notify. Blocked pushes carry no approval fields yet.
 
 ## Notify hook
 

@@ -5,18 +5,26 @@ import { test, suite, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { createServer } from "node:http";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { withClaudeHooks, withoutClaudeHooks } from "../src/install-program-hooks.js";
-import { herdrOwnsThisPane, hookPaneId, parseClaudeHook } from "../src/program-hook.js";
+import { applyProgramHooks, withHooks, withoutHooks } from "../src/install-program-hooks.js";
+import {
+  herdrOwnsThisPane,
+  hookPaneId,
+  parseClaudeHook,
+  parseCodexHook,
+  parseHermesHook,
+  parseOpenCodeHook,
+} from "../src/program-hook.js";
 
 const HOOK = fileURLToPath(new URL("../src/program-hook.js", import.meta.url));
 const INSTALL = fileURLToPath(new URL("../src/install-program-hooks.js", import.meta.url));
 const KEY = Buffer.from(Array.from({ length: 32 }, (_, i) => i)).toString("base64url");
-const COMMAND = "node '/x/program-hook.js' claude";
+const COMMAND = "'/n' '/x/program-hook.js' claude";
+const GROUPS = { Notification: "permission_prompt", Stop: null };
 
 let home;
 let relay;
@@ -94,6 +102,64 @@ suite("parseClaudeHook", () => {
   });
 });
 
+suite("the other programs", () => {
+  test("Codex: a permission request is Blocked, a Stop is Done", () => {
+    const ask = { hook_event_name: "PermissionRequest", tool_name: "Bash" };
+    assert.deepEqual(parseCodexHook(ask), { status: "blocked", title: "Bash" });
+    assert.equal(parseCodexHook({ hook_event_name: "Stop" }).status, "done");
+    assert.equal(parseCodexHook({ hook_event_name: "PreToolUse" }), null);
+  });
+
+  test("OpenCode: permission.asked is Blocked, session.idle is Done", () => {
+    assert.equal(parseOpenCodeHook({ event: "permission.asked" }).status, "blocked");
+    assert.equal(parseOpenCodeHook({ event: "session.idle" }).status, "done");
+    assert.equal(parseOpenCodeHook({ event: "message.updated" }), null);
+  });
+
+  test("Hermes: an approval request is Blocked, a finished turn is Done", () => {
+    const ask = { event: "pre_approval_request", command: "rm -rf x" };
+    assert.deepEqual(parseHermesHook(ask), { status: "blocked", title: "rm -rf x" });
+    assert.equal(parseHermesHook({ event: "post_llm_call" }).status, "done");
+  });
+
+  test("the OpenCode plugin file runs and reaches the relay", async () => {
+    await startRelay();
+    register();
+    const config = join(home, "xdg", "opencode");
+    mkdirSync(config, { recursive: true });
+    const env = { XDG_CONFIG_HOME: join(home, "xdg") };
+    const ctx = { node: process.execPath, hook: HOOK };
+    assert.deepEqual(applyProgramHooks({ env, home: join(home, "none"), ctx }), ["opencode"]);
+    process.env.OAP_CONFIG_DIR = home;
+    const url = pathToFileURL(join(config, "plugins", "agentico-notify.js")).href;
+    const { AgenticoNotify } = await import(url);
+    const plugin = await AgenticoNotify({ directory: "/srv/api" });
+    await plugin.event({ event: { type: "message.updated" } });
+    await plugin.event({ event: { type: "session.idle", properties: { sessionID: "s" } } });
+    delete process.env.OAP_CONFIG_DIR;
+    for (let i = 0; i < 100 && relay.requests.length === 0; i += 1) {
+      await new Promise((done) => setTimeout(done, 50));
+    }
+    assert.equal(relay.requests.length, 1);
+  });
+
+  test("installs only for the programs found, and removes all of it", () => {
+    const env = { CODEX_HOME: join(home, "codex"), HERMES_HOME: join(home, "hermes") };
+    mkdirSync(env.CODEX_HOME);
+    mkdirSync(env.HERMES_HOME);
+    const ctx = { node: "/n", hook: "/h/program-hook.js" };
+    const none = join(home, "none");
+    assert.deepEqual(applyProgramHooks({ env, home: none, ctx }), ["codex", "hermes"]);
+    const hooks = JSON.parse(readFileSync(join(env.CODEX_HOME, "hooks.json"), "utf8")).hooks;
+    assert.equal(hooks.PermissionRequest[0].hooks[0].command, "'/n' '/h/program-hook.js' codex");
+    const python = readFileSync(join(env.HERMES_HOME, "plugins/agentico/__init__.py"), "utf8");
+    assert.match(python, /"\/n", "\/h\/program-hook\.js", "hermes"/);
+    applyProgramHooks({ env, home: none, ctx, uninstall: true });
+    assert.deepEqual(JSON.parse(readFileSync(join(env.CODEX_HOME, "hooks.json"), "utf8")), {});
+    assert.equal(existsSync(join(env.HERMES_HOME, "plugins/agentico")), false);
+  });
+});
+
 suite("where a hook runs", () => {
   test("the tmux pane names it, else the program's session", () => {
     assert.equal(hookPaneId({ TMUX_PANE: "%3" }, { session_id: "abc" }), "%3");
@@ -152,8 +218,8 @@ suite("install-program-hooks", () => {
   test("adds the hooks once and keeps the user's own", () => {
     const mine = { hooks: [{ type: "command", command: "say done" }] };
     const start = { model: "opus", hooks: { Stop: [mine], PreToolUse: [mine] } };
-    const once = withClaudeHooks(start, COMMAND);
-    assert.deepEqual(withClaudeHooks(once, COMMAND), once);
+    const once = withHooks(start, COMMAND, GROUPS);
+    assert.deepEqual(withHooks(once, COMMAND, GROUPS), once);
     assert.equal(once.model, "opus");
     assert.equal(once.hooks.Stop.length, 2);
     assert.deepEqual(once.hooks.Stop[0], mine);
@@ -164,15 +230,15 @@ suite("install-program-hooks", () => {
   test("uninstalling leaves the file as it was", () => {
     const mine = { hooks: [{ type: "command", command: "say done" }] };
     const start = { hooks: { Stop: [mine] } };
-    assert.deepEqual(withoutClaudeHooks(withClaudeHooks(start, COMMAND)), start);
-    assert.deepEqual(withoutClaudeHooks(withClaudeHooks({}, COMMAND)), {});
+    assert.deepEqual(withoutHooks(withHooks(start, COMMAND, GROUPS)), start);
+    assert.deepEqual(withoutHooks(withHooks({}, COMMAND, GROUPS)), {});
   });
 
   test("a settings file it cannot read is left alone", () => {
     const path = join(home, "settings.json");
     writeFileSync(path, "{ broken");
     const result = spawnSync(process.execPath, [INSTALL], {
-      env: { ...process.env, CLAUDE_CONFIG_DIR: home },
+      env: { ...process.env, CLAUDE_CONFIG_DIR: home, HOME: home },
     });
     assert.notEqual(result.status, 0);
     assert.equal(readFileSync(path, "utf8"), "{ broken");
@@ -180,7 +246,7 @@ suite("install-program-hooks", () => {
 
   test("writes the file a real Claude Code reads", () => {
     const result = spawnSync(process.execPath, [INSTALL], {
-      env: { ...process.env, CLAUDE_CONFIG_DIR: home },
+      env: { ...process.env, CLAUDE_CONFIG_DIR: home, HOME: home },
     });
     assert.equal(result.status, 0);
     const settings = JSON.parse(readFileSync(join(home, "settings.json"), "utf8"));

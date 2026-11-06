@@ -37,10 +37,9 @@ through plugin events such as `pane.agent_status_changed`. tmux has no such even
 2. `ProgramDefinition`.
 3. Session protocol as the contract: `packages/session-bridge` maps tmux to it and is pinned by the app's own decoder (done,
    tested on a real tmux 3.8 too).
-4. Program hooks as a notification source: `notify-delivery.js` is backend-neutral, `program-hook.js` and its installer
-   cover Claude Code (done, tested with fake hook input and a fake relay; never fired by a real Claude Code). It stays quiet
-   inside herdr, so it is not proved on herdr Hosts as first planned. Still to do: Codex and other programs, approval
-   fields, the standalone package.
+4. Program hooks as a notification source: `notify-delivery.js` is backend-neutral; `program-hook.js` and its installer
+   cover Claude Code (fired by a real one), Codex, OpenCode and Hermes (from their documented formats, not fired by the
+   real programs). It stays quiet inside herdr. Still to do: other programs, approval fields, the standalone package.
 5. tmux end to end. The Host presents itself as a relocated herdr: the app already takes an endpoint (socket plus an
    executable that behaves as `herdr`, ADRs 0023 and 0029 of the Swift app), so connect, attach and device registration
    need no app change. Done: socket server, change events by polling, launcher, `install`, `pair` (the plugin's ceremony,
