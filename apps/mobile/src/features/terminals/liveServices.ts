@@ -16,6 +16,7 @@ import type { ShellTerminalServices } from './services';
 export interface ShellConsole extends TerminalHostSource {
   mutate<V>(hostId: string, operation: (api: HerdrApi) => Promise<V>): Promise<V>;
   transportGeneration(hostId: string): number | null;
+  subscribe(listener: () => void): () => void;
 }
 
 function remoteFor(console: ShellConsole, hostId: string): ShellTerminalRemote {
@@ -57,5 +58,6 @@ export function createLiveShellServices(deps: {
     }),
     runner: (hostId) => hostTerminalRunner(console, hostId),
     generation: (hostId) => console.transportGeneration(hostId),
+    subscribe: (listener) => console.subscribe(listener),
   };
 }

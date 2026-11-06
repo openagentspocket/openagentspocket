@@ -13,6 +13,7 @@ function setup() {
     mutate: (_hostId, operation) => operation(api),
     withTerminalTransport: jest.fn(),
     transportGeneration: () => 3,
+    subscribe: () => () => {},
   } as ShellConsole;
   const services = createLiveShellServices({
     console,

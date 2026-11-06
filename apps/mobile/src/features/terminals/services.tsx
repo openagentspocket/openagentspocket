@@ -18,6 +18,8 @@ export interface ShellTerminalServices {
   runner(hostId: string): TerminalSessionRunner;
   /** The Host's current Transport generation, when known. */
   generation(hostId: string): number | null;
+  /** Called when a Host's connection may have changed. */
+  subscribe(listener: () => void): () => void;
 }
 
 let fallback: ShellTerminalServices | undefined;

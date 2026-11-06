@@ -42,5 +42,6 @@ export function createDemoShellServices(): ShellTerminalServices {
       await handler.runEndingSession(session);
     },
     generation: () => 1,
+    subscribe: () => () => {},
   };
 }

@@ -11,6 +11,7 @@ import {
   type Text,
 } from '@openagentspocket/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState } from 'react-native';
 import { newUuid } from '@/connections/uuid';
 import type { ShellTerminalServices } from './services';
 
@@ -88,6 +89,21 @@ export function useShellTerminal(services: ShellTerminalServices, target: ShellT
       released?.();
     };
   }, [existing, services, hostId, key, request, attempt]);
+
+  // A shell follows its Host back: a new connection replaces the attach that died with the old one.
+  const entry = state.phase === 'ready' ? state.entry : null;
+  useEffect(() => {
+    if (!entry) return;
+    const follow = () => entry.store.transportGenerationDidChange(services.generation(hostId));
+    const unsubscribe = services.subscribe(follow);
+    const foreground = AppState.addEventListener('change', (next) => {
+      if (next === 'active') entry.store.didBecomeActive(true);
+    });
+    return () => {
+      unsubscribe();
+      foreground.remove();
+    };
+  }, [entry, services, hostId]);
 
   const retry = useCallback(() => setAttempt((value) => value + 1), []);
   return { state, retry };
