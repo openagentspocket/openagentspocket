@@ -210,6 +210,7 @@ export class ConversationStore {
    * Workflow journals. Public for tests, which drive turns directly.
    */
   async step(): Promise<void> {
+    await this.session.discover();
     let view = this.session.view();
     this.noteAgent(view);
     this.bind(view);

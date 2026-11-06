@@ -2,6 +2,7 @@ import type { BlockedProgramSupport } from '../../blocked/programs';
 import type { Message } from '../../errors/text';
 import type { ChatTranscriptAdapter } from '../engine/adapter';
 import type { LocateState, Location } from '../engine/locate';
+import type { ChatHostFiles } from '../model/host-files';
 import type { ChatProgram } from '../model/types';
 import type { ProgramSendPolicy } from '../send/policy';
 import type { ChatSessionStoreProblem } from '../timeline/reasons';
@@ -25,6 +26,11 @@ export interface ProgramDefinition {
   movesFileOnRewrite?: boolean;
   /** Null for a program Chat cannot read in this build. */
   adapter: () => ChatTranscriptAdapter | null;
+  /** Names the Agent's conversation when herdr reports none; null when it cannot tell. */
+  discoverSession?: (
+    files: ChatHostFiles,
+    directories: readonly string[],
+  ) => Promise<string | null>;
   /** Finds the conversation's transcript on the Host. */
   locate: (state: LocateState) => Promise<Location>;
   sendPolicy: () => ProgramSendPolicy;

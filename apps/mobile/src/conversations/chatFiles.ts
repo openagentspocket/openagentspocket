@@ -50,24 +50,25 @@ export class TransportChatFiles implements ChatHostFiles {
   }
 
   /** One read-only query of a program's session store: one bounded script over one exec. */
-  queryStore(store: ChatStore, query: StoreQuery): Promise<StoreQueryResponse> {
-    const runner: ChatHostScriptRunner = (script) =>
-      this.run(async (transport) => {
-        const result = await runBoundedScript(transport, decodeUtf8(script), {
-          feature: 'Chat',
-          deadlineMs: CHAT_QUERY_TIMEOUT_MS,
-          remoteSeconds: Math.max(1, CHAT_QUERY_TIMEOUT_MS / 1000 - 2),
-          timeoutMarkerPrefix: '__AGENTICO_OC_TIMEOUT_',
-          timedOut: { kind: 'hostFileTimedOut' },
-          lane: this.lane,
-        });
-        return {
-          stdout: encodeUtf8(result.stdout),
-          stderr: encodeUtf8(result.stderr),
-          exitStatus: result.exitCode,
-        };
+  runScript: ChatHostScriptRunner = (script) =>
+    this.run(async (transport) => {
+      const result = await runBoundedScript(transport, decodeUtf8(script), {
+        feature: 'Chat',
+        deadlineMs: CHAT_QUERY_TIMEOUT_MS,
+        remoteSeconds: Math.max(1, CHAT_QUERY_TIMEOUT_MS / 1000 - 2),
+        timeoutMarkerPrefix: '__AGENTICO_OC_TIMEOUT_',
+        timedOut: { kind: 'hostFileTimedOut' },
+        lane: this.lane,
       });
-    return storeQueryRunner(runner)(store, query);
+      return {
+        stdout: encodeUtf8(result.stdout),
+        stderr: encodeUtf8(result.stderr),
+        exitStatus: result.exitCode,
+      };
+    });
+
+  queryStore(store: ChatStore, query: StoreQuery): Promise<StoreQueryResponse> {
+    return storeQueryRunner(this.runScript)(store, query);
   }
 
   home(): Promise<string> {

@@ -1,3 +1,4 @@
+import { programDefinition } from '../programs/registry';
 // Which conversation a program that can leave it without a report is really in (the session half of
 // Swift AgentChatStore: `adoptRecord`, `confirmSessionBeforeSend` and the start-screen watch, ADR
 // 0025). OpenCode's `/new` leaves herdr reporting the conversation it left for its home screen: the
@@ -33,6 +34,9 @@ export class SessionWatch {
   private override: { view: ChatAgentView; baseline: string } | null = null;
   private requested = false;
   private lastCheck = Number.NEGATIVE_INFINITY;
+  /** The session found on the Host while herdr reports none, and when it was last looked for. */
+  private discovered: string | null = null;
+  private lastDiscovery = Number.NEGATIVE_INFINITY;
 
   constructor(private readonly host: SessionHost) {}
 
@@ -43,7 +47,36 @@ export class SessionWatch {
       if (JSON.stringify(reported ?? null) === this.override.baseline) return this.override.view;
       this.override = null;
     }
+    if (reported && !reported.session && reported.program && this.discovered) {
+      const { program } = reported;
+      const session = {
+        source: `herdr:${program}`,
+        agent: program,
+        kind: 'id',
+        value: this.discovered,
+      };
+      return { ...reported, session } as ChatAgentView;
+    }
     return reported;
+  }
+
+  /** Asks the Host for the conversation of an Agent herdr names none for, at the recheck pace. */
+  async discover(): Promise<void> {
+    const { options } = this.host;
+    const view = options.agent();
+    if (!view?.program || view.session) {
+      this.discovered = null;
+      return;
+    }
+    const find = programDefinition(view.program).discoverSession;
+    if (!find || this.host.now() - this.lastDiscovery < this.host.recheckMs) return;
+    this.lastDiscovery = this.host.now();
+    const directories = [view.foregroundCwd, view.cwd].filter((cwd) => cwd !== null);
+    try {
+      this.discovered = await find(options.files, directories);
+    } catch {
+      // The Host may be away: the next look decides.
+    }
   }
 
   /** The user asked to look again (Retry): the screen is read once whatever the title says. */

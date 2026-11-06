@@ -1,3 +1,4 @@
+import type { ChatHostScriptResult } from '../store/host-query';
 // The port through which Chat reads files on the Host (Swift ChatHostFiles). Core never imports
 // modules/ssh: the app adapts its SFTP client to this interface, tests use FakeHostFiles.
 
@@ -54,6 +55,8 @@ export interface ChatHostFiles {
    * nothing can, as in the demo. Build it from a script runner with `storeQueryRunner`.
    */
   queryStore?(store: ChatStore, query: StoreQuery): Promise<StoreQueryResponse>;
+  /** Runs one bounded read-only script on the Host; absent where nothing can. */
+  runScript?(script: Uint8Array): Promise<ChatHostScriptResult>;
 }
 
 export function concatBytes(parts: readonly Uint8Array[]): Uint8Array {

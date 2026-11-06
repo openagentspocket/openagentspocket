@@ -21,7 +21,7 @@ const LOCATE = [
 /** The session id reaches this shell word: `hermesID` lets through nothing a shell or SQL reads specially. */
 const pickStore = (session: string) => [
   'if [ -n "$sq" ]; then',
-  '  for f in "$db" "$o"/profiles/*/state.db; do',
+  '  for f in "$db" "$o"/profiles/*/state.db /home/*/.hermes/state.db /home/*/.hermes/profiles/*/state.db; do',
   '    [ -e "$f-wal" ] && [ -e "$f-shm" ] || continue',
   `    q=$("$sq" -init /dev/null -readonly -batch -noheader -list "$f" "SELECT 1 FROM sessions WHERE id = '${session}'" 2>/dev/null) || continue`,
   '    [ -n "$q" ] && { db=$f; break; }',

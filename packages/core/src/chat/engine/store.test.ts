@@ -242,3 +242,25 @@ describe('ConversationStore', () => {
     expect(store.getState().outputs.get(row.id)?.type).toBe('loaded');
   });
 });
+
+describe('an Agent herdr names no conversation for', () => {
+  const answer = (stdout: string) => async () => ({
+    stdout: new TextEncoder().encode(stdout),
+    stderr: new Uint8Array(),
+    exitStatus: 0,
+  });
+
+  it('follows the only open conversation the Host finds', async () => {
+    const { store, files } = setup({ program: 'hermes', session: null });
+    Object.assign(files, { runScript: answer('local-abc\n') });
+    await store.step();
+    expect(store.getState().snapshot.phase).not.toMatchObject({ reason: { kind: 'noSession' } });
+  });
+
+  it('keeps waiting when two are open', async () => {
+    const { store, files } = setup({ program: 'hermes', session: null });
+    Object.assign(files, { runScript: answer('local-a\nlocal-b\n') });
+    await store.step();
+    expect(store.getState().snapshot.phase).toMatchObject({ reason: { kind: 'noSession' } });
+  });
+});
