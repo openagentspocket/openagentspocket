@@ -22,6 +22,7 @@ import { statusBarStyle } from '@/navigation/screenOptions';
 import { sheetOptions } from '@/navigation/sheetOptions';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
 import { InAppBanner } from '@/notifications/InAppBanner';
+import { useNotificationTaps } from '@/notifications/useNotificationTaps';
 import { AppLockCover } from '@/settings/AppLockCover';
 import { deviceAuthenticator } from '@/settings/deviceAuthenticator';
 import { deviceStorage } from '@/settings/deviceStorage';
@@ -109,6 +110,7 @@ function AppStack() {
 export default function RootLayout() {
   useWidgetSync();
   useIncomingLinks();
+  useNotificationTaps();
   const openAgent = useOpenAgent();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

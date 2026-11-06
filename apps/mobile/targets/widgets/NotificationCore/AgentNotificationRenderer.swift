@@ -50,7 +50,22 @@ enum AgentNotificationRenderer {
         rewritten.subtitle = ""
         rewritten.body = alert.body
         rewritten.sound = .default
+        if let link = link(userInfo: content.userInfo, keys: keys) {
+            rewritten.userInfo[linkKey] = link
+        }
         return rewritten
+    }
+
+    /// Where a tap on the notification leads. Set after decryption, so it
+    /// stays on the device and a forged push never names a screen.
+    static let linkKey = "agenticoLink"
+
+    /// The app link of the Agent a push is about; nil when it cannot be opened.
+    static func link(userInfo: [AnyHashable: Any], keys: [NotificationKeyRecord]) -> String? {
+        guard let (record, payload) = NotificationEnvelope.open(userInfo: userInfo, keys: keys),
+            let pane = payload.paneID.addingPercentEncoding(withAllowedCharacters: .alphanumerics)
+        else { return nil }
+        return "openagentspocket://agent/\(record.hostID.uuidString.lowercased())/\(pane)"
     }
 
     /// The one phrasing of an Agent Notification, shared by the push path
