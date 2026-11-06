@@ -1,6 +1,6 @@
 import type { ConsoleRow, ListGroup } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, makeStyles, useHandoverSheet } from '@openagentspocket/ui';
+import { Button, EmptyState, makeStyles, useHandoverSheet } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
@@ -64,12 +64,12 @@ export function AgentsScreen(props: {
   const isPinned = (row: ConsoleRow) => list.store.isPinned(row.hostId, row.agent.pane_id);
   const qualified = useMemo(() => duplicateWorkspaces(list.groups), [list.groups]);
   const empty = list.groups.every((group) => group.rows.length === 0);
+  const scopedEmpty = empty && list.hostId !== undefined && list.query === '';
   return (
     <AppScreen testID="agents-screen" onRefresh={() => setSearchOpen(true)}>
       <AgentsToolbar
-        hosts={list.hosts}
-        hostId={list.hostId}
-        onHost={list.setHostId}
+        hostItems={list.hostItems}
+        hostLabel={list.hostLabel}
         presentation={list.presentation}
         onPresentation={list.setPresentation}
         query={list.query}
@@ -104,8 +104,24 @@ export function AgentsScreen(props: {
       </View>
       {empty ? (
         <EmptyState
-          title={list.hasAgents ? t('No Agents Found') : t('No Agents')}
+          title={
+            scopedEmpty
+              ? t('No Agents on %@', list.hostLabel)
+              : list.hasAgents
+                ? t('No Agents Found')
+                : t('No Agents')
+          }
           layout={list.hasAgents ? 'compact' : 'fill'}
+          actions={
+            scopedEmpty ? (
+              <Button
+                kind="text"
+                title={t('Show All Hosts')}
+                onPress={() => list.setHostId(undefined)}
+                testID="agents-show-all-hosts"
+              />
+            ) : undefined
+          }
         />
       ) : null}
       <QuickDetailSheet

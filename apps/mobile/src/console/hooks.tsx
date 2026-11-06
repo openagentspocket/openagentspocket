@@ -2,6 +2,7 @@ import {
   agentKey,
   type ConsoleRow,
   type ConsoleTerminal,
+  filterByHost,
   findRow,
   nextTransition,
   type StatusInboxItem,
@@ -81,10 +82,13 @@ export function useAgent(key: string): ConsoleRow | undefined {
   return findRow(useConsole(), key);
 }
 
-/** Status Inbox sections, re-evaluated when the rows change or a timed transition comes due. */
-export function useStatusInbox(): Partial<Record<StatusInboxSection, StatusInboxItem[]>> {
+/** Status Inbox sections of every Host or one, re-evaluated when the rows change or a timed transition comes due. */
+export function useStatusInbox(
+  hostId?: string,
+): Partial<Record<StatusInboxSection, StatusInboxItem[]>> {
   const store = useConsoleStore();
-  const { rows, revision } = useConsoleState();
+  const { rows: allRows, revision } = useConsoleState();
+  const rows = useMemo(() => filterByHost(allRows, hostId), [allRows, hostId]);
   const [now, setNow] = useState(() => Date.now());
   // biome-ignore lint/correctness/useExhaustiveDependencies: revision signals clock changes
   const due = useMemo(

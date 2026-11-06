@@ -23,6 +23,7 @@ const useStyles = makeStyles((t) => ({
     minHeight: t.metrics.minTapSize + t.spacing.xs,
   },
   title: { flex: 1 },
+  center: { alignItems: 'center', paddingHorizontal: t.spacing.xxs },
   long: { fontSize: 26, lineHeight: 32 },
   action: {
     width: 40,
@@ -66,6 +67,8 @@ function ActionCapsule({
 interface LargeTitleBarProps {
   /** Omitted when capsules lead the bar instead (Home). */
   title?: string;
+  /** Drawn between the capsules when there is no title (Home's Host scope). */
+  center?: ReactNode;
   /** A capsule at the leading edge, drawn like the trailing one. */
   leadingActions?: readonly TitleBarAction[];
   actions: readonly TitleBarAction[];
@@ -75,6 +78,7 @@ interface LargeTitleBarProps {
 /** Swift's Home header: a 34 pt bold title at the screen inset, glass capsules of actions at the edges. */
 export function LargeTitleBar({
   title,
+  center,
   leadingActions = [],
   actions,
   testID = 'large-title-bar',
@@ -95,7 +99,7 @@ export function LargeTitleBar({
           {title}
         </Text>
       ) : (
-        <View style={styles.title} />
+        <View style={[styles.title, styles.center]}>{center}</View>
       )}
       <ActionCapsule actions={actions} testID={testID} />
     </View>

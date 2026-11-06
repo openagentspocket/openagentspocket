@@ -37,6 +37,7 @@ export type {
   StartAgentState,
   StartPhase,
 } from './start-agent-state';
+export { initialHostChoice } from './start-agent-state';
 export { type StartAgentOptions, StartAgentStore } from './start-agent-store';
 export { agentNameError, defaultAgentName, gitBranchNameError } from './validation';
 export {

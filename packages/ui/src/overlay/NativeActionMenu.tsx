@@ -162,6 +162,8 @@ interface NativeActionMenuProps {
   ui: SwiftUiMenu;
   items: readonly ActionMenuItem[];
   title?: string;
+  /** Text drawn beside the symbol; without it the trigger is the symbol alone. */
+  label?: string;
   accessibilityLabel: string;
   icon: Parameters<typeof iconSymbol>[0];
   testID: string;
@@ -172,6 +174,7 @@ export function NativeActionMenu({
   ui,
   items,
   title,
+  label,
   accessibilityLabel,
   icon,
   testID,
@@ -185,16 +188,20 @@ export function NativeActionMenu({
     () => (
       <Host matchContents seedColor={accent} testID={testID}>
         <Menu
-          label={title ?? accessibilityLabel}
+          label={label ?? title ?? accessibilityLabel}
           systemImage={iconSymbol(icon)}
           // A SwiftUI Menu draws its label as text beside the symbol; the trigger is the icon alone (the
           // label stays as the accessibility name), like every non-menu icon button.
-          modifiers={ui.modifiers ? iconOnly(ui.modifiers, accessibilityLabel) : undefined}
+          modifiers={
+            ui.modifiers && label === undefined
+              ? iconOnly(ui.modifiers, accessibilityLabel)
+              : undefined
+          }
         >
           {menuSections(ui, stable)}
         </Menu>
       </Host>
     ),
-    [Host, Menu, ui, accent, testID, title, accessibilityLabel, icon, stable],
+    [Host, Menu, ui, accent, testID, title, label, accessibilityLabel, icon, stable],
   );
 }

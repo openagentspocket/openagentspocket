@@ -4,6 +4,7 @@ import { Button } from '../primitives/Button';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import type { IconName } from '../primitives/Icon';
 import { makeStyles } from '../theme/theme';
+import { HostScopeMenu } from './HostScopeMenu';
 
 /** How the agents list is grouped; the toolbar icon follows it. */
 export type ListPresentation = 'flat' | 'host' | 'status' | 'workspace';
@@ -37,8 +38,10 @@ const useStyles = makeStyles((t) => ({
 interface ListToolbarProps {
   presentation: ListPresentation;
   presentationItems: readonly ActionMenuItem[];
-  /** Empty only before any Host exists: the filter is hidden. */
+  /** Empty with fewer than two Hosts: the Host scope is hidden. */
   hostItems: readonly ActionMenuItem[];
+  /** The current Host scope, drawn on its capsule. */
+  hostLabel?: string;
   onHome: () => void;
   onNew: () => void;
   labels?: { home: string; host: string; presentation: string; new: string };
@@ -52,11 +55,12 @@ const DEFAULT_LABELS = {
   new: 'New Agent',
 };
 
-/** Home in its own glass circle at left; Host filter, Presentation and New in one capsule at right. */
+/** Home in its own glass circle at left, the Host scope between, Presentation and New in one capsule at right. */
 export function ListToolbar({
   presentation,
   presentationItems,
   hostItems,
+  hostLabel,
   onHome,
   onNew,
   labels = DEFAULT_LABELS,
@@ -75,16 +79,13 @@ export function ListToolbar({
           testID={`${testID}-home`}
         />
       </GlassCapsule>
+      <HostScopeMenu
+        items={hostItems}
+        label={hostLabel ?? labels.host}
+        accessibilityLabel={labels.host}
+        testID={`${testID}-host`}
+      />
       <GlassCapsule style={styles.capsule} testID={`${testID}-capsule`}>
-        {hostItems.length > 0 ? (
-          <ActionMenuButton
-            items={hostItems}
-            icon="filter"
-            iconSize={TOOLBAR_ICON}
-            accessibilityLabel={labels.host}
-            testID={`${testID}-host`}
-          />
-        ) : null}
         <ActionMenuButton
           items={presentationItems}
           icon={PRESENTATION_ICON[presentation]}

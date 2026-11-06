@@ -57,13 +57,23 @@ export const trimmedOrUndefined = (value: string): string | undefined => {
   return trimmed === '' ? undefined : trimmed;
 };
 
-/** The empty form for a Host choice: the origin's Host, else the only Host, else none. */
+/** The Host a form opens on: the preferred one if it exists, else the only Host, else none. */
+export function initialHostChoice(
+  hosts: readonly { readonly id: string }[],
+  preferredHostId?: string,
+): string | undefined {
+  if (hosts.some((host) => host.id === preferredHostId)) return preferredHostId;
+  return hosts.length === 1 ? hosts[0]?.id : undefined;
+}
+
+/** The empty form for a Host choice: the origin's Host, else the preferred or only Host. */
 export function initialStartState(
   hosts: readonly LaunchHost[],
   origin: LaunchOrigin | undefined,
+  preferredHostId?: string,
 ): StartAgentState {
   return {
-    selectedHostId: origin?.hostId ?? (hosts.length === 1 ? hosts[0]?.id : undefined),
+    selectedHostId: origin?.hostId ?? initialHostChoice(hosts, preferredHostId),
     name: '',
     arguments: '',
     tabLabel: '',

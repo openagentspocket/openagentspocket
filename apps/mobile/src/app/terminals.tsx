@@ -1,19 +1,25 @@
 import { groupTerminals, terminalTitle } from '@openagentspocket/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useConsoleStore, useConsoleTerminals } from '@/console/hooks';
+import { useHostScope } from '@/console/useHostScope';
 import { TerminalsListScreen } from '@/features/terminals/TerminalsListScreen';
 import { hrefs } from '@/navigation/hrefs';
 
-/** `/terminals?host=<id>`: the shell panes of every Host (or one), grouped by workspace. */
+/** `/terminals?host=<id>`: the shell panes in the Host scope, grouped by workspace; `host` sets that scope. */
 export default function TerminalsRoute() {
   const { host } = useLocalSearchParams<{ host?: string }>();
   const router = useRouter();
   const store = useConsoleStore();
   const terminals = useConsoleTerminals();
+  const scope = useHostScope();
+  const { hostId, setHostId } = scope;
+  useEffect(() => {
+    if (host) setHostId(host);
+  }, [host, setHostId]);
   const groups = useMemo(
     () =>
-      groupTerminals(terminals.filter((terminal) => !host || terminal.hostId === host)).map(
+      groupTerminals(terminals.filter((terminal) => !hostId || terminal.hostId === hostId)).map(
         (group) => ({
           id: group.id,
           workspace: group.workspaceLabel,
@@ -25,7 +31,7 @@ export default function TerminalsRoute() {
           source: group,
         }),
       ),
-    [terminals, host],
+    [terminals, hostId],
   );
   const newIn = (groupId: string) => {
     const group = groups.find((candidate) => candidate.id === groupId)?.source;
@@ -45,6 +51,9 @@ export default function TerminalsRoute() {
     <>
       <TerminalsListScreen
         groups={groups}
+        hostItems={scope.items}
+        hostLabel={scope.label}
+        onShowAllHosts={hostId ? () => setHostId(undefined) : undefined}
         onHome={() => router.back()}
         onNew={() => router.push('/new-terminal')}
         onOpen={open}

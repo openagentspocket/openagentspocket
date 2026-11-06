@@ -10,7 +10,6 @@ import {
   type ListPresentation as ToolbarPresentation,
 } from '@openagentspocket/ui';
 import { View } from 'react-native';
-import type { HostSummary } from '../../console/store';
 
 const PRESENTATION_TITLES = {
   flat: 'All Agents',
@@ -51,9 +50,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface AgentsToolbarProps {
-  hosts: readonly HostSummary[];
-  hostId: string | undefined;
-  onHost: (hostId: string | undefined) => void;
+  hostItems: readonly ActionMenuItem[];
+  hostLabel: string;
   presentation: ListPresentation;
   onPresentation: (presentation: ListPresentation) => void;
   query: string;
@@ -66,26 +64,9 @@ interface AgentsToolbarProps {
   onNew: () => void;
 }
 
-/** Home and the Host filter, presentation and New capsule, the large title, then the search field once pulled down. */
+/** Home, the Host scope, the presentation and New capsule, the large title, then the search field once pulled down. */
 export function AgentsToolbar(props: AgentsToolbarProps) {
   const styles = useStyles();
-  const hostItems: ActionMenuItem[] =
-    props.hosts.length > 0
-      ? [
-          {
-            key: 'all',
-            title: t('All Hosts'),
-            checked: props.hostId === undefined,
-            onPress: () => props.onHost(undefined),
-          },
-          ...props.hosts.map((host) => ({
-            key: host.id,
-            title: host.name,
-            checked: props.hostId === host.id,
-            onPress: () => props.onHost(host.id),
-          })),
-        ]
-      : [];
   const presentationItems: ActionMenuItem[] = LIST_PRESENTATIONS.map((presentation) => ({
     key: presentation,
     title: t(PRESENTATION_TITLES[presentation]),
@@ -117,7 +98,8 @@ export function AgentsToolbar(props: AgentsToolbarProps) {
         <ListToolbar
           presentation={TOOLBAR_ICON[props.presentation]}
           presentationItems={presentationItems}
-          hostItems={hostItems}
+          hostItems={props.hostItems}
+          hostLabel={props.hostLabel}
           onHome={props.onHome}
           onNew={props.onNew}
           labels={{

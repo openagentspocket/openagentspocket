@@ -27,6 +27,7 @@ export class ListPreferences {
   private modeValue: ListPresentation;
   private hostValue: string | undefined;
   private collapsedValue: ReadonlySet<string>;
+  private readonly hostListeners = new Set<() => void>();
 
   constructor(private readonly storage: KeyValueStorage = new MemoryStorage()) {
     const stored = storage.getString(LIST_PRESENTATION_KEY);
@@ -60,7 +61,14 @@ export class ListPreferences {
     if (hostId === this.hostValue) return;
     this.hostValue = hostId;
     this.storage.set(LIST_HOST_FILTER_KEY, hostId ?? '');
+    for (const listener of this.hostListeners) listener();
   }
+
+  /** Every screen shares the Host scope, so each one hears when another changes it. */
+  readonly subscribeHost = (listener: () => void): (() => void) => {
+    this.hostListeners.add(listener);
+    return () => this.hostListeners.delete(listener);
+  };
 
   toggleCollapsed(id: string): void {
     const next = new Set(this.collapsedValue);

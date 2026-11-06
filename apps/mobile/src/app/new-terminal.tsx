@@ -1,11 +1,14 @@
 import { useRouter } from 'expo-router';
+import { useHostScope } from '@/console/useHostScope';
 import { NewTerminalScreen } from '@/features/new-agent/NewTerminalScreen';
 
 /** `/new-terminal`: the New Terminal form; Open replaces it with the shell. */
 export default function NewTerminalRoute() {
   const router = useRouter();
+  const scope = useHostScope();
   return (
     <NewTerminalScreen
+      preferredHostId={scope.hostId}
       onCancel={() => router.back()}
       onOpen={({ hostId, workspaceId, cwd, label }) =>
         router.replace({

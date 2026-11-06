@@ -3,8 +3,16 @@ import { HerdrApiError } from '../errors/herdr-api-error';
 import { TransportFailure } from '../errors/transport-error';
 import { StoredRecentWorkspaces } from './ports';
 import { HOST, ready, setup, WORKSPACES } from './start-agent.test-util';
+import { initialHostChoice } from './start-agent-state';
 
 describe('host and agent selection', () => {
+  it('opens on the preferred Host, and ignores one that is gone', () => {
+    const hosts = [HOST, { id: 'h2', name: 'Other' }];
+    expect(initialHostChoice(hosts, 'h2')).toBe('h2');
+    expect(initialHostChoice(hosts, 'gone')).toBeUndefined();
+    expect(initialHostChoice([HOST], 'gone')).toBe('h1');
+  });
+
   it('preselects the only Host and leaves several unselected', () => {
     expect(setup().store.getState().selectedHostId).toBe('h1');
     const many = setup({ hosts: [HOST, { id: 'h2', name: 'Other' }] });

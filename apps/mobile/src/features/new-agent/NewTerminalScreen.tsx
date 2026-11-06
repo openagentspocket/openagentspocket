@@ -1,3 +1,4 @@
+import { initialHostChoice } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { PickerRow, type ScreenHeader, Section, TextField } from '@openagentspocket/ui';
 import { useState } from 'react';
@@ -7,17 +8,17 @@ import { useNewAgentServices } from './services';
 const NONE = '\u0000none';
 
 interface NewTerminalScreenProps {
+  /** The Host the form opens on; with none it opens on the only Host, if there is one. */
+  preferredHostId?: string;
   /** The shell to open: its Host, Workspace, directory and optional tab name. */
   onOpen: (target: { hostId: string; workspaceId: string; cwd: string; label?: string }) => void;
   onCancel: () => void;
 }
 
 /** console.new-terminal: pick a Host and Workspace (and an optional tab name), then open a shell. */
-export function NewTerminalScreen({ onOpen, onCancel }: NewTerminalScreenProps) {
+export function NewTerminalScreen({ preferredHostId, onOpen, onCancel }: NewTerminalScreenProps) {
   const { hosts, environment } = useNewAgentServices();
-  const [hostId, setHostId] = useState<string | undefined>(
-    hosts.length === 1 ? hosts[0]?.id : undefined,
-  );
+  const [hostId, setHostId] = useState(() => initialHostChoice(hosts, preferredHostId));
   const [picked, setPicked] = useState<string | undefined>();
   const [label, setLabel] = useState('');
   const workspaces = hostId === undefined ? [] : environment.workspaces(hostId);

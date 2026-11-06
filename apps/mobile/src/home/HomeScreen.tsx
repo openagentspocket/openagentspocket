@@ -1,4 +1,4 @@
-import type { ConsoleRow } from '@openagentspocket/core';
+import { type ConsoleRow, filterByHost } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { airy, makeStyles, useLayoutMode } from '@openagentspocket/ui';
 import { useMemo } from 'react';
@@ -8,6 +8,7 @@ import { LastCrashBanner } from '@/diagnostics/LastCrashBanner';
 import { HostIssues } from '@/features/hosts/HostIssues';
 import { AppScreen } from '@/navigation/AppScreen';
 import { useConsoleState, useConsoleStore, useStatusInbox } from '../console/hooks';
+import { useHostScope } from '../console/useHostScope';
 import { useHosts } from '../features/hosts/useHosts';
 import { HomeTitle, NewStrip, NoHosts, useNewStripHeight } from './HomeChrome';
 import { HomeHosts } from './HomeHosts';
@@ -45,10 +46,16 @@ export interface HomeScreenProps {
 export function HomeScreen(props: HomeScreenProps) {
   const { onOpenAgent, onOpenHost, onAddHost, onSetupGuide } = props;
   const styles = useStyles();
-  const { hosts, rows } = useConsoleState();
+  const { hosts, rows: allRows } = useConsoleState();
   const store = useConsoleStore();
-  const inbox = useStatusInbox();
-  const content = useMemo(() => homeContent(inbox, hosts), [inbox, hosts]);
+  const scope = useHostScope();
+  const inbox = useStatusInbox(scope.hostId);
+  const rows = useMemo(() => filterByHost(allRows, scope.hostId), [allRows, scope.hostId]);
+  const shownHosts = useMemo(
+    () => hosts.filter((host) => scope.hostId === undefined || host.id === scope.hostId),
+    [hosts, scope.hostId],
+  );
+  const content = useMemo(() => homeContent(inbox, shownHosts), [inbox, shownHosts]);
   const actions = useHomeActions();
   const usage = useUsageRing();
   const columns = useLayoutMode() === 'compact' ? 1 : 2;
@@ -99,6 +106,7 @@ export function HomeScreen(props: HomeScreenProps) {
         >
           <HomeTitle
             usage={usage}
+            scope={scope}
             onOpenSettings={props.onOpenSettings}
             onOpenAgents={props.onOpenAgents}
             onOpenSessions={props.onOpenSessions}
@@ -119,7 +127,7 @@ export function HomeScreen(props: HomeScreenProps) {
           <HomeSessions rows={rows} onOpen={(row) => onOpenAgent?.(row)} />
           <View style={styles.body}>
             <HomeHosts
-              hosts={hosts}
+              hosts={shownHosts}
               rows={rows}
               saved={saved}
               columns={columns}

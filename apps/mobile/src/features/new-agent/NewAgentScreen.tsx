@@ -12,14 +12,21 @@ import { useStartAgent } from './useStartAgent';
 interface NewAgentScreenProps {
   /** Set when opened from an Agent: its Host, workspace and directory are inherited. */
   origin?: LaunchOrigin;
+  /** The Host the form opens on when no origin fixes one. */
+  preferredHostId?: string;
   /** The Agent started; the owner dismisses the screen and opens it. */
   onStarted: (hostId: string, paneId: string) => void;
   onCancel: () => void;
 }
 
 /** console.start-agent: pick a Host, a launch target and an installed Agent, then start it. */
-export function NewAgentScreen({ origin, onStarted, onCancel }: NewAgentScreenProps) {
-  const { store, state, services } = useStartAgent(origin);
+export function NewAgentScreen({
+  origin,
+  preferredHostId,
+  onStarted,
+  onCancel,
+}: NewAgentScreenProps) {
+  const { store, state, services } = useStartAgent(origin, preferredHostId);
   const [browsing, setBrowsing] = useState(false);
   const { selectedHostId } = state;
   const lister = useMemo(

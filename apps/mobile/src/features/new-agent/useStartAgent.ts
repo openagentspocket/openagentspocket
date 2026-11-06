@@ -7,12 +7,12 @@ import { useNewAgentServices } from './services';
  * The New Agent form's store for one visit. Detecting installed Agents and the Recent list
  * reload whenever the Host changes; neither blocks the form.
  */
-export function useStartAgent(origin?: LaunchOrigin) {
+export function useStartAgent(origin?: LaunchOrigin, preferredHostId?: string) {
   const services = useNewAgentServices();
   const originHost = origin?.hostId;
   const originWorkspace = origin?.workspaceId;
   const originCwd = origin?.cwd;
-  // biome-ignore lint/correctness/useExhaustiveDependencies: the origin's three fields are its identity
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the origin's three fields are its identity; the preferred Host only seeds the form
   const store = useMemo(
     () =>
       new StartAgentStore({
@@ -21,6 +21,7 @@ export function useStartAgent(origin?: LaunchOrigin) {
         recentWorkspaces: services.recentWorkspaces,
         recentDirectories: services.recentDirectories,
         origin,
+        preferredHostId,
       }),
     [services, originHost, originWorkspace, originCwd],
   );

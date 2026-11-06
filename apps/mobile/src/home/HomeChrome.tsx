@@ -5,11 +5,13 @@ import {
   EmptyState,
   FAB_SIZE,
   Fab,
+  HostScopeMenu,
   LargeTitleBar,
   makeStyles,
   useTheme,
 } from '@openagentspocket/ui';
 import { View } from 'react-native';
+import type { useHostScope } from '../console/useHostScope';
 import type { useUsageRing } from './UsageRingSlot';
 
 const useStyles = makeStyles((th) => ({
@@ -23,20 +25,32 @@ const useStyles = makeStyles((th) => ({
   empty: { flex: 1 },
 }));
 
-/** The Home header: All Agents and Sessions in a capsule at the leading edge, the Usage ring and the Settings gear in one at the trailing edge. */
+/** The Home header: All Agents and Sessions in a capsule at the leading edge, the Host scope between, the Usage ring and the Settings gear in one at the trailing edge. */
 export function HomeTitle({
   usage,
+  scope,
   onOpenSettings,
   onOpenAgents,
   onOpenSessions,
 }: {
   usage: ReturnType<typeof useUsageRing>;
+  scope?: ReturnType<typeof useHostScope>;
   onOpenSettings?: () => void;
   onOpenAgents?: () => void;
   onOpenSessions?: () => void;
 }) {
   return (
     <LargeTitleBar
+      center={
+        scope ? (
+          <HostScopeMenu
+            items={scope.items}
+            label={scope.label}
+            accessibilityLabel={t('Filter by Host')}
+            testID="home-host-scope"
+          />
+        ) : undefined
+      }
       leadingActions={[
         { label: t('All Agents'), icon: 'list', onPress: () => onOpenAgents?.() },
         { label: t('Sessions'), icon: 'terminal', onPress: () => onOpenSessions?.() },

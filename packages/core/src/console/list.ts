@@ -38,6 +38,17 @@ export function filterByHost(rows: readonly ConsoleRow[], hostId?: string): read
   return hostId === undefined ? rows : rows.filter((row) => row.hostId === hostId);
 }
 
+/**
+ * The Host a scope really narrows to: the saved one while it is among two or more Hosts. A removed
+ * Host, or a single Host, leaves every row in view, so a stale choice can never hide them.
+ */
+export function scopedHostId(
+  hostId: string | undefined,
+  hosts: readonly HostName[],
+): string | undefined {
+  return hosts.length > 1 && hosts.some((host) => host.id === hostId) ? hostId : undefined;
+}
+
 function contains(field: string | null | undefined, needle: string): boolean {
   return field?.toLowerCase().includes(needle) === true;
 }

@@ -223,6 +223,8 @@ interface ActionMenuButtonProps {
   items: readonly ActionMenuItem[];
   accessibilityLabel: string;
   title?: string;
+  /** Text on the trigger beside the icon, for a menu that shows its current choice. */
+  label?: string;
   icon?: IconName;
   /** Glyph size of the JS button; the iOS system menu draws its own symbol. */
   iconSize?: number;
@@ -236,6 +238,7 @@ export function ActionMenuButton({
   items,
   accessibilityLabel,
   title,
+  label,
   icon = 'more',
   iconSize,
   native = true,
@@ -262,6 +265,7 @@ export function ActionMenuButton({
         ui={ui}
         items={items}
         title={title}
+        label={label}
         accessibilityLabel={accessibilityLabel}
         icon={icon}
         testID={testID}
@@ -272,9 +276,10 @@ export function ActionMenuButton({
     <View ref={ref} collapsable={false}>
       <Button
         kind="text"
-        icon={icon}
+        {...(label === undefined
+          ? { icon, accessibilityLabel }
+          : { title: label, icon, accessibilityLabel })}
         iconSize={iconSize}
-        accessibilityLabel={accessibilityLabel}
         onPress={open}
         testID={testID}
       />

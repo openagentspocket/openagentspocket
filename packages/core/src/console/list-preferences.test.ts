@@ -23,6 +23,19 @@ describe('ListPreferences', () => {
     expect([...again.collapsed]).toEqual(['h2']);
   });
 
+  it('tells subscribers when the Host scope changes, and only then', () => {
+    const prefs = new ListPreferences(new MemoryStorage());
+    let heard = 0;
+    const stop = prefs.subscribeHost(() => {
+      heard += 1;
+    });
+    prefs.setHostId('h1');
+    prefs.setHostId('h1');
+    stop();
+    prefs.setHostId('h2');
+    expect(heard).toBe(1);
+  });
+
   it('keeps an emptied fold set instead of restoring the Idle default', () => {
     const storage = new MemoryStorage();
     new ListPreferences(storage).toggleCollapsed('idle');

@@ -9,6 +9,7 @@ import {
 } from '@openagentspocket/core';
 import { useCallback, useMemo, useState } from 'react';
 import { useConsoleState, useConsoleStore } from '../../console/hooks';
+import { useHostScope } from '../../console/useHostScope';
 
 /** The Agents list: filter and search over the Console store, then the chosen grouping. */
 export function useAgentsList() {
@@ -16,7 +17,8 @@ export function useAgentsList() {
   const { rows, hosts, revision } = useConsoleState();
   const prefs = store.listPrefs;
   const [presentation, setPresentationState] = useState<ListPresentation>(prefs.presentation);
-  const [hostId, setHostIdState] = useState<string | undefined>(prefs.hostId);
+  const scope = useHostScope();
+  const { hostId } = scope;
   const [query, setQuery] = useState('');
   const [collapsed, setCollapsed] = useState<ReadonlySet<string>>(prefs.collapsed);
 
@@ -24,13 +26,6 @@ export function useAgentsList() {
     (next: ListPresentation) => {
       prefs.setPresentation(next);
       setPresentationState(next);
-    },
-    [prefs],
-  );
-  const setHostId = useCallback(
-    (next: string | undefined) => {
-      prefs.setHostId(next);
-      setHostIdState(next);
     },
     [prefs],
   );
@@ -66,7 +61,9 @@ export function useAgentsList() {
     presentation,
     setPresentation,
     hostId,
-    setHostId,
+    setHostId: scope.setHostId,
+    hostLabel: scope.label,
+    hostItems: scope.items,
     query,
     setQuery,
     collapsed,

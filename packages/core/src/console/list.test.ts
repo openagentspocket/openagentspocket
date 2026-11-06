@@ -4,6 +4,7 @@ import {
   groupRows,
   isGroupOpen,
   matchesSearch,
+  scopedHostId,
   searchRows,
   statusGroups,
 } from './list';
@@ -128,5 +129,24 @@ describe('isGroupOpen', () => {
     expect(isGroupOpen('x', folded, '')).toBe(false);
     expect(isGroupOpen('x', folded, 'q')).toBe(true);
     expect(isGroupOpen('y', folded, '')).toBe(true);
+  });
+});
+
+describe('scopedHostId', () => {
+  const hosts = [
+    { id: 'a', name: 'A' },
+    { id: 'b', name: 'B' },
+  ];
+
+  it('keeps a saved Host that is among several', () => {
+    expect(scopedHostId('b', hosts)).toBe('b');
+  });
+
+  it('drops a removed Host, so a stale choice never hides every row', () => {
+    expect(scopedHostId('gone', hosts)).toBeUndefined();
+  });
+
+  it('has nothing to narrow with a single Host', () => {
+    expect(scopedHostId('a', hosts.slice(0, 1))).toBeUndefined();
   });
 });

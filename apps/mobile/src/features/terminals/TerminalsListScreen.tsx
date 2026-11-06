@@ -1,6 +1,8 @@
 import { t } from '@openagentspocket/i18n';
 import {
   type ActionMenuItem,
+  Button,
+  EmptyState,
   FoldHeader,
   ListToolbar,
   makeStyles,
@@ -27,6 +29,10 @@ const useStyles = makeStyles((theme) => ({
 
 interface TerminalsListScreenProps {
   groups: readonly TerminalsGroupModel[];
+  hostItems: readonly ActionMenuItem[];
+  hostLabel: string;
+  /** Set while the list is scoped to one Host: clears that scope. */
+  onShowAllHosts?: () => void;
   onHome: () => void;
   onNew: () => void;
   onOpen?: (terminalId: string) => void;
@@ -41,14 +47,6 @@ interface TerminalsListScreenProps {
 export function TerminalsListScreen(props: TerminalsListScreenProps) {
   const styles = useStyles();
   const [folded, setFolded] = useState<ReadonlySet<string>>(new Set());
-  const hosts = [...new Set(props.groups.map((group) => group.host))];
-  const hostItems: ActionMenuItem[] =
-    hosts.length > 1
-      ? [
-          { key: 'all', title: t('All Hosts'), checked: true, onPress: () => undefined },
-          ...hosts.map((name) => ({ key: name, title: name, onPress: () => undefined })),
-        ]
-      : [];
   const toggle = (id: string) =>
     setFolded((prev) => {
       const next = new Set(prev);
@@ -63,7 +61,8 @@ export function TerminalsListScreen(props: TerminalsListScreenProps) {
           presentationItems={[
             { key: 'workspace', title: t('By Workspace'), checked: true, onPress: () => undefined },
           ]}
-          hostItems={hostItems}
+          hostItems={props.hostItems}
+          hostLabel={props.hostLabel}
           onHome={props.onHome}
           onNew={props.onNew}
           labels={{
@@ -78,6 +77,22 @@ export function TerminalsListScreen(props: TerminalsListScreenProps) {
       <Text variant="title" accessibilityRole="header">
         {t('Terminals')}
       </Text>
+      {props.groups.length === 0 ? (
+        <EmptyState
+          title={t('No Terminals')}
+          layout="compact"
+          actions={
+            props.onShowAllHosts ? (
+              <Button
+                kind="text"
+                title={t('Show All Hosts')}
+                onPress={props.onShowAllHosts}
+                testID="terminals-show-all-hosts"
+              />
+            ) : undefined
+          }
+        />
+      ) : null}
       <View style={styles.groups}>
         {props.groups.map((group) => {
           const isFolded = folded.has(group.id);

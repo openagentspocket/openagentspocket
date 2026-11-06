@@ -28,6 +28,8 @@ export interface StartAgentOptions {
   readonly environment: NewAgentEnvironment;
   /** Set when the flow opens from an Agent: Host, workspace and directory are decided. */
   readonly origin?: LaunchOrigin;
+  /** The Host the form opens on when no origin fixes one. */
+  readonly preferredHostId?: string;
   readonly recentWorkspaces: RecentWorkspaces;
   readonly recentDirectories: RecentDirectories;
 }
@@ -49,7 +51,7 @@ export class StartAgentStore extends Observable<StartAgentState> {
 
   constructor(options: StartAgentOptions) {
     const { hosts, origin } = options;
-    super(initialStartState(hosts, origin));
+    super(initialStartState(hosts, origin, options.preferredHostId));
     this.hosts = hosts;
     this.origin = origin;
     this.environment = options.environment;
