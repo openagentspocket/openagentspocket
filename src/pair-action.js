@@ -5,9 +5,13 @@
 // through HERDR_BIN_PATH keeps this portable across socket transports.
 
 import { spawnSync } from "node:child_process";
+import { installMissingIntegrations } from "./install-integrations.js";
 
 const herdr = process.env.HERDR_BIN_PATH ?? "herdr";
 const plugin = process.env.HERDR_PLUGIN_ID ?? "agentico";
+
+// Chat reads a conversation by the session its program reports, which takes herdr's integration.
+installMissingIntegrations(herdr);
 
 const result = spawnSync(
   herdr,
