@@ -149,7 +149,6 @@ function Circle({
           icon={icon}
           iconSize={18}
           accessibilityLabel={label}
-          native={false}
           neutral
           testID={testID}
         />

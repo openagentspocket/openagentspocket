@@ -108,6 +108,7 @@ export function AgentHeader({
           items={menu}
           accessibilityLabel={labels.more}
           icon="more"
+          iconSize={20}
           testID={`${testID}-more`}
         />
       </GlassCapsule>

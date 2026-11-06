@@ -228,7 +228,10 @@ interface ActionMenuButtonProps {
   icon?: IconName;
   /** Glyph size of the JS button; the iOS system menu draws its own symbol. */
   iconSize?: number;
-  /** Use the system menu where available (iOS). Default true; false forces the JS menu. */
+  /**
+   * Use the system menu where available (iOS). Off by default: a SwiftUI Menu inside React Native
+   * lost taps on a device with a live Agent, while a `Button` answers the first one.
+   */
   native?: boolean;
   /** Draws the JS trigger in the text color (see `Button`). */
   neutral?: boolean;
@@ -243,7 +246,7 @@ export function ActionMenuButton({
   label,
   icon = 'more',
   iconSize,
-  native = true,
+  native = false,
   neutral,
   testID = 'menu-button',
 }: ActionMenuButtonProps) {

@@ -13,7 +13,7 @@ describe('HostScopeMenu', () => {
 
   it('draws the current choice on the menu trigger', async () => {
     await renderThemed(
-      <ActionMenuButton items={items} label="Studio" accessibilityLabel="Filter" native={false} />,
+      <ActionMenuButton items={items} label="Studio" accessibilityLabel="Filter" />,
     );
     expect(screen.getByText('Studio')).toBeTruthy();
   });

@@ -268,9 +268,10 @@ describe('ActionMenu', () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it('presents the system menu on iOS instead of the JS button', async () => {
+  it('presents the system menu on iOS when asked to', async () => {
     await renderThemed(
       <ActionMenuButton
+        native
         accessibilityLabel="More"
         items={[{ key: 'pin', title: 'Pin', onPress: () => {} }]}
       />,
