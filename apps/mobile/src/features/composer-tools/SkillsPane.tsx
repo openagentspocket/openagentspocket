@@ -6,15 +6,7 @@ import {
   skillInsertionText,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import {
-  Banner,
-  EmptyState,
-  ErrorState,
-  ListRow,
-  Section,
-  SkeletonRows,
-  TextField,
-} from '@openagentspocket/ui';
+import { AsyncContent, Banner, ListRow, Section, TextField } from '@openagentspocket/ui';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { View } from 'react-native';
 import { toolsText } from './text';
@@ -63,62 +55,65 @@ export function SkillsPane({ store, onInsert, onViewContent }: SkillsPaneProps) 
     void store.loadIfNeeded();
   }, [store]);
 
-  if (phase.kind === 'failed' && store.skills.length === 0) {
-    return (
-      <ErrorState
-        layout="compact"
-        summary={t('Skills Unavailable')}
-        detail={toolsText(phase.message)}
-        onRetry={() => void store.refresh()}
-        testID="skills-failed"
-      />
-    );
-  }
-  if (phase.kind === 'idle' || (phase.kind === 'loading' && store.skills.length === 0)) {
-    return <SkeletonRows accessibilityLabel={t('Loading…')} />;
-  }
-  if (store.skills.length === 0) {
-    return (
-      <EmptyState
-        layout="compact"
-        title={t('No Skills')}
-        message={t('No skills found for this agent.')}
-        testID="skills-empty"
-      />
-    );
-  }
+  const none = store.skills.length === 0;
   const shown = store.matching(query);
   const groups = [
     { key: 'project', title: t('Project'), skills: shown.filter((s) => s.scope === 'project') },
     { key: 'global', title: t('Global'), skills: shown.filter((s) => s.scope === 'global') },
   ];
   return (
-    <View testID="skills-pane">
-      {phase.kind === 'failed' ? (
-        <Banner title={toolsText(phase.message)} tone="warning" testID="skills-refresh-failed" />
-      ) : null}
-      <TextField
-        label={t('Search Skills')}
-        value={query}
-        onChangeText={setQuery}
-        autoCapitalize="none"
-        autoCorrect={false}
-        testID="skills-search"
-      />
-      {groups.map((group) =>
-        group.skills.length === 0 ? null : (
-          <Section key={group.key} title={group.title} count={group.skills.length} grouped>
-            {group.skills.map((skill) => (
-              <SkillRow
-                key={skillId(skill)}
-                skill={skill}
-                onInsert={onInsert}
-                onViewContent={onViewContent}
-              />
-            ))}
-          </Section>
-        ),
-      )}
-    </View>
+    <AsyncContent
+      failure={
+        phase.kind === 'failed' && none
+          ? {
+              layout: 'compact',
+              summary: t('Skills Unavailable'),
+              detail: toolsText(phase.message),
+              onRetry: () => void store.refresh(),
+              testID: 'skills-failed',
+            }
+          : null
+      }
+      loading={phase.kind === 'idle' || (phase.kind === 'loading' && none)}
+      loadingLabel={t('Loading…')}
+      empty={
+        none
+          ? {
+              layout: 'compact',
+              title: t('No Skills'),
+              message: t('No skills found for this agent.'),
+              testID: 'skills-empty',
+            }
+          : null
+      }
+    >
+      <View testID="skills-pane">
+        {phase.kind === 'failed' ? (
+          <Banner title={toolsText(phase.message)} tone="warning" testID="skills-refresh-failed" />
+        ) : null}
+        <TextField
+          label={t('Search Skills')}
+          value={query}
+          onChangeText={setQuery}
+          autoCapitalize="none"
+          autoCorrect={false}
+          testID="skills-search"
+        />
+        {groups.map((group) =>
+          group.skills.length === 0 ? null : (
+            <Section key={group.key} title={group.title} count={group.skills.length} grouped>
+              {group.skills.map((skill) => (
+                <SkillRow
+                  key={skillId(skill)}
+                  skill={skill}
+                  onInsert={onInsert}
+                  onViewContent={onViewContent}
+                />
+              ))}
+            </Section>
+          ),
+        )}
+      </View>
+    </AsyncContent>
   );
 }
