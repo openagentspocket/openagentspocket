@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { TextField } from '../form/TextField';
 import { impact } from '../haptics';
+import { BoundedScroll } from '../primitives/BoundedScroll';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
@@ -182,16 +183,18 @@ export function BlockedCard({
       </Tappable>
       {collapsed ? null : (
         <View style={styles.body}>
-          {prompt.description ? (
-            <Text variant="subheadline" tone="secondary">
-              {prompt.description}
-            </Text>
-          ) : null}
-          {prompt.code ? (
-            <View style={styles.code} testID="blocked-code">
-              <Text variant="mono">{prompt.code}</Text>
-            </View>
-          ) : null}
+          <BoundedScroll testID="blocked-subject">
+            {prompt.description ? (
+              <Text variant="subheadline" tone="secondary">
+                {prompt.description}
+              </Text>
+            ) : null}
+            {prompt.code ? (
+              <View style={styles.code} testID="blocked-code">
+                <Text variant="mono">{prompt.code}</Text>
+              </View>
+            ) : null}
+          </BoundedScroll>
           {options}
           {prompt.question ? (
             <>

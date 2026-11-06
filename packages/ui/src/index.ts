@@ -96,6 +96,7 @@ export { AsyncContent } from './primitives/AsyncContent';
 export { Badge, type BadgeKind, StatusPill } from './primitives/Badge';
 export { Banner } from './primitives/Banner';
 export { BarChart, type BarDatum, barShares, labeledIndexes } from './primitives/BarChart';
+export { BoundedScroll } from './primitives/BoundedScroll';
 export { Button, type ButtonKind, type ButtonSize } from './primitives/Button';
 export { CARD_FILL, Card, type CardLevel } from './primitives/Card';
 export { CardRow } from './primitives/CardRow';

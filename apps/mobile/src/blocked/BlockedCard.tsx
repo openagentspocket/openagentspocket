@@ -1,6 +1,14 @@
 import type { BlockedCardState, BlockedDialog, GenericDialogExcerpt } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, Card, Icon, makeStyles, Tappable, Text } from '@openagentspocket/ui';
+import {
+  BoundedScroll,
+  Button,
+  Card,
+  Icon,
+  makeStyles,
+  Tappable,
+  Text,
+} from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { cardTitle, isTappable, optionKind, stopLabel } from './dialogModel';
 import { cardText } from './text';
@@ -73,9 +81,11 @@ function Generic({
   const numbers = [...excerpt.numbered.keys()].sort((a, b) => a - b);
   return (
     <>
-      <View style={styles.code}>
-        <Text variant="mono">{excerpt.rows.map((row) => row.text.trimEnd()).join('\n')}</Text>
-      </View>
+      <BoundedScroll testID="blocked-excerpt">
+        <View style={styles.code}>
+          <Text variant="mono">{excerpt.rows.map((row) => row.text.trimEnd()).join('\n')}</Text>
+        </View>
+      </BoundedScroll>
       <View style={styles.choices}>
         {numbers.map((number) => (
           <Button
@@ -107,16 +117,18 @@ function Known({
   const stop = stopLabel(dialog, state.progress);
   return (
     <>
-      {description ? (
-        <Text variant="subheadline" tone="secondary">
-          {description}
-        </Text>
-      ) : null}
-      {code ? (
-        <View style={styles.code}>
-          <Text variant="mono">{code}</Text>
-        </View>
-      ) : null}
+      <BoundedScroll testID="blocked-subject">
+        {description ? (
+          <Text variant="subheadline" tone="secondary">
+            {description}
+          </Text>
+        ) : null}
+        {code ? (
+          <View style={styles.code}>
+            <Text variant="mono">{code}</Text>
+          </View>
+        ) : null}
+      </BoundedScroll>
       <View style={styles.choices}>
         {dialog.options.filter(isTappable).map((option) => (
           <View key={option.ordinal} style={styles.choices}>
