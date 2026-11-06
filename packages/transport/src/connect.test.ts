@@ -13,6 +13,11 @@ const KEY_B: HostKey = {
   fingerprint: 'SHA256:ICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj8',
 };
 
+const KEY_C: HostKey = {
+  algorithm: 'ssh-ed25519',
+  fingerprint: 'SHA256:QEFCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaW1xdXl8',
+};
+
 const echo = (_socket: string, request: Uint8Array) => reply(request, { type: 'ok' });
 
 async function failure(promise: Promise<unknown>): Promise<TransportError> {
@@ -99,15 +104,71 @@ describe('connectTransport outcomes', () => {
     const { transport } = { transport: await connectTransport(await fakeSsh(echo), settingsFor()) };
     expect(transport.routeId).toBe('r1');
   });
+});
 
-  it('refuses a Jump Host route as an unavailable feature', async () => {
-    const jump = { host: 'j.test', port: 22, username: 'jump' };
-    const settings = settingsFor({ routes: [{ ...directRoute('h.test', 'x'), jump }] });
-    const error = await failure(connectTransport(await fakeSsh(echo), settings));
+describe('connectTransport through a Jump Host', () => {
+  const jump = { host: 'j.test', port: 2222, username: 'jump' };
+  const route = { ...directRoute('h.test', 'x'), jump };
+
+  async function machines(target: HostKey = KEY_A) {
+    const bastion = await fakeSsh(echo, { hostKey: KEY_B, authorizedUsers: ['jump'] });
+    const host = await fakeSsh(echo, { hostKey: target });
+    const dialed: string[] = [];
+    const inner = perHost({ 'j.test': bastion, '127.0.0.1': host });
+    const ssh: SshModule = {
+      ...inner,
+      connect: (options) => {
+        dialed.push(`${options.username}@${options.host}:${options.port}`);
+        return inner.connect(options);
+      },
+    };
+    return { ssh, bastion, host, dialed };
+  }
+
+  it('reaches the Host through a forward on the jump session', async () => {
+    const { ssh, dialed } = await machines();
+    const settings = settingsFor({ routes: [route] });
+    const transport = await connectTransport(ssh, settings);
+    expect(await transport.isConnected()).toBe(true);
+    expect(dialed[0]).toBe('jump@j.test:2222');
+    expect(dialed[1]).toContain('@127.0.0.1:49152');
+  });
+
+  it('checks the Host by its own address, not the local forward', async () => {
+    const first = await machines(KEY_A);
+    const settings = settingsFor({ routes: [route] });
+    await connectTransport(first.ssh, settings);
+
+    const swapped = await machines(KEY_C);
+    const error = await failure(connectTransport(swapped.ssh, settings));
+    expect(error.kind).toBe('hostKeyMismatch');
+    expect(swapped.host.sessions).toHaveLength(0);
+    expect(await swapped.bastion.sessions[0]?.isConnected()).toBe(false);
+  });
+
+  it('reports a Jump Host that refuses as its own failure and never dials the Host', async () => {
+    const { ssh, host } = await machines();
+    const settings = settingsFor({ routes: [route] });
+    await connectTransport(ssh, settings);
+    const other = await fakeSsh(echo, { hostKey: KEY_C, authorizedUsers: ['jump'] });
+    const before = host.sessions.length;
+    const swapped = perHost({ 'j.test': other, '127.0.0.1': host });
+    const error = await failure(connectTransport(swapped, settings));
     expect(error).toMatchObject({
       kind: 'jumpHostFailed',
-      underlying: { kind: 'hostFeatureUnavailable' },
+      underlying: { kind: 'hostKeyMismatch' },
     });
+    expect(host.sessions).toHaveLength(before);
+  });
+
+  it('closes both hops together, and the Host counts as lost with its jump', async () => {
+    const { ssh, bastion, host } = await machines();
+    const transport = await connectTransport(ssh, settingsFor({ routes: [route] }));
+    await bastion.sessions[0]?.disconnect();
+    expect(await transport.isConnected()).toBe(false);
+
+    await transport.session.disconnect();
+    expect(await host.sessions[0]?.isConnected()).toBe(false);
   });
 });
 

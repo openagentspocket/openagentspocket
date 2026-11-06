@@ -14,6 +14,7 @@ import {
 import { SshError, type SshModule, type SshSession } from 'agentico-ssh';
 import { mapConnectError } from './error-mapping';
 import { checkPresentedHostKey } from './host-key';
+import { JUMP_LOCAL_HOST, openJumpHop, sessionThroughHop } from './jump';
 import { DEFAULT_CONNECT_TIMEOUT_MS, type TransportSettings } from './settings';
 import { SshTransport } from './transport';
 
@@ -26,8 +27,8 @@ function validEndpoint(route: SSHRoute): boolean {
 /**
  * Connects to a Host. With several routes they race only as far as a verified host key: the
  * first route whose Host presents a trusted key claims the race and is the only one that
- * authenticates; the others are told to stop. A Jump Host route is not reachable through the
- * SSH module yet (it cannot layer a session over a forwarded channel) and fails as such.
+ * authenticates; the others are told to stop. A Jump Host route logs in to the Jump Host first
+ * and reaches the Host over a local forward; the Host's key is still checked by its own address.
  */
 export async function connectTransport(
   ssh: SshModule,
@@ -43,22 +44,19 @@ export async function connectTransport(
   };
 
   const attempt = async (route: SSHRoute, signal: CancelSignal): Promise<SshSession> => {
-    if (route.jump) {
-      throw failWith({
-        kind: 'jumpHostFailed',
-        underlying: { kind: 'hostFeatureUnavailable', feature: 'Jump Host' },
-      });
-    }
     if (!validEndpoint(route)) {
       throw failWith({ kind: 'sshUnreachable', detail: 'Invalid SSH endpoint.' });
     }
+    const hop = route.jump
+      ? await openJumpHop(ssh, route, route.jump, settings, gate, signal)
+      : null;
     const index = routes.indexOf(route);
     let refusal: TransportError | null = null;
     let lost = false;
     try {
-      return await ssh.connect({
-        host: route.host,
-        port: route.port,
+      const session = await ssh.connect({
+        host: hop ? JUMP_LOCAL_HOST : route.host,
+        port: hop ? hop.localPort : route.port,
         username: settings.username,
         keyAlias: settings.keyAlias,
         credential: settings.credential,
@@ -91,7 +89,9 @@ export async function connectTransport(
           return true;
         },
       });
+      return hop ? sessionThroughHop(session, hop) : session;
     } catch (error) {
+      await hop?.close();
       const mapped: TransportError =
         refusal ??
         (lost && error instanceof SshError && error.code === 'hostKeyRejected'
