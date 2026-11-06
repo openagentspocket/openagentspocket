@@ -169,6 +169,7 @@ export {
 } from './theme/accessibility';
 export { withAlpha } from './theme/color';
 export { useInsets } from './theme/insets';
+export { type LayoutMode, layoutModeFor, useLayoutMode } from './theme/layoutMode';
 export { airy, metrics, spacing } from './theme/metrics';
 export { mixed, programTint } from './theme/programTint';
 export { type Status, statusColorKey, type Tone, toneColorKey } from './theme/status';

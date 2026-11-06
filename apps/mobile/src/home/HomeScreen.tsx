@@ -1,8 +1,8 @@
 import type { ConsoleRow } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { airy, makeStyles } from '@openagentspocket/ui';
+import { airy, makeStyles, useLayoutMode } from '@openagentspocket/ui';
 import { useMemo } from 'react';
-import { ScrollView, useWindowDimensions, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import type { CrashStorage } from '@/diagnostics/crashRecorder';
 import { LastCrashBanner } from '@/diagnostics/LastCrashBanner';
 import { HostIssues } from '@/features/hosts/HostIssues';
@@ -16,8 +16,6 @@ import { HomeSessions } from './HomeSessions';
 import { homeContent } from './homeModel';
 import { useUsageRing } from './UsageRingSlot';
 import { useHomeActions } from './useHomeActions';
-
-const WIDE = 600;
 
 const useStyles = makeStyles((th) => ({
   fill: { flex: 1 },
@@ -53,7 +51,7 @@ export function HomeScreen(props: HomeScreenProps) {
   const content = useMemo(() => homeContent(inbox, hosts), [inbox, hosts]);
   const actions = useHomeActions();
   const usage = useUsageRing();
-  const columns = useWindowDimensions().width >= WIDE ? 2 : 1;
+  const columns = useLayoutMode() === 'compact' ? 1 : 2;
   const saved = useHosts().hosts;
   const reserved = useNewStripHeight();
 

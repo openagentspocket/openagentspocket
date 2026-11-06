@@ -4,10 +4,9 @@ import {
   scopeDates,
   type UsageRange,
 } from '@openagentspocket/core';
-import { useSheetHandover } from '@openagentspocket/ui';
+import { useLayoutMode, useSheetHandover } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { useWindowDimensions } from 'react-native';
 import type { BreakdownKind } from './BreakdownRows';
 import { accountsNoticeTitle, UsageAccountsNotice } from './UsageAccountsNotice';
 import { UsageLimitsRows } from './UsageLimitsRows';
@@ -15,7 +14,7 @@ import { UsagePhoneScreen } from './UsagePhoneScreen';
 import type { UsageScreenProps } from './UsageScreenProps';
 import { UsageSheets } from './UsageSheets';
 import { useAccountFiles } from './UsageSourceProvider';
-import { UsageWideScreen, WIDE_WINDOW } from './UsageWide';
+import { UsageWideScreen } from './UsageWide';
 import type { UsageMetric } from './usageText';
 import { useClaudeLimits } from './useClaudeLimits';
 import { useUsage } from './useUsage';
@@ -30,8 +29,8 @@ export function UsageScreen({
   initial,
   wide: forceWide,
 }: UsageScreenProps) {
-  const { width } = useWindowDimensions();
-  const wide = forceWide ?? width >= WIDE_WINDOW;
+  const layout = useLayoutMode();
+  const wide = forceWide ?? layout === 'expansive';
   const providedFiles = useAccountFiles();
   const files = explicitFiles ?? providedFiles;
   const router = useRouter();

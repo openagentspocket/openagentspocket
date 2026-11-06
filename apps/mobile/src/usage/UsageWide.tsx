@@ -42,8 +42,6 @@ import {
 export const WIDE_DETAIL = 860;
 /** The Host column's width. */
 export const HOST_COLUMN = 300;
-/** Window width from which Usage shows the Host column beside the two-column dashboard. */
-export const WIDE_WINDOW = WIDE_DETAIL + HOST_COLUMN;
 
 const RANGE_TITLE = {
   today: () => t('Today'),

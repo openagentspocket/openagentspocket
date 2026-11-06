@@ -14,6 +14,7 @@ import {
   DiffRow,
   EmptyState,
   ErrorState,
+  layoutModeFor,
   makeStyles,
   SkeletonRows,
   Text,
@@ -51,7 +52,6 @@ function badgeFor(file: ChangedFile, patch: DiffFile, single: boolean) {
 }
 
 /** Side by side needs two readable columns. */
-const SPLIT_MIN_WIDTH = 600;
 
 export function DiffContent({ diff, width: given }: { diff: FileDiffStore; width?: number }) {
   const styles = useStyles();
@@ -78,7 +78,7 @@ export function DiffContent({ diff, width: given }: { diff: FileDiffStore; width
     );
   }
   if (!files) return <SkeletonRows accessibilityLabel={say('Reading Diff…')} />;
-  const canSplit = width >= SPLIT_MIN_WIDTH;
+  const canSplit = layoutModeFor(width) !== 'compact';
   return (
     <View testID="diff-content">
       <View style={styles.padded}>
