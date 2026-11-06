@@ -1,18 +1,17 @@
 import type { ListeningPort, PortsStore } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
+  AsyncContent,
   Banner,
   Button,
   EmptyState,
-  ErrorState,
   MetaChip,
   type ScreenHeader,
   Section,
-  SkeletonRows,
   useHandoverSheet,
   useStoreState,
 } from '@openagentspocket/ui';
-import { type ReactNode, useEffect } from 'react';
+import { useEffect } from 'react';
 import { AppScreen } from '@/navigation/AppScreen';
 import { OpenPortSheet } from './OpenPortSheet';
 import { PortRow } from './PortRow';
@@ -48,23 +47,24 @@ export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) 
   const { listing } = state;
   const refresh = () => store.refresh();
 
-  let body: ReactNode;
-  if (listing === null || listing.kind === 'loading') {
-    body = <SkeletonRows accessibilityLabel={t('Looking for servers on %@…', store.hostName)} />;
-  } else if (listing.kind === 'failed') {
-    body = (
-      <ErrorState
-        summary={t("Couldn't List Ports")}
-        recovery={portsMessage(listing.message)}
-        onRetry={refresh}
-        retryLabel={t('Try Again')}
-        testID="ports-failure"
-      />
-    );
-  } else {
-    const rows = store.visiblePorts;
-    const hidden = store.hiddenCount;
-    body = (
+  const rows = store.visiblePorts;
+  const hidden = store.hiddenCount;
+  const body = (
+    <AsyncContent
+      loading={listing === null || listing.kind === 'loading'}
+      loadingLabel={t('Looking for servers on %@…', store.hostName)}
+      failure={
+        listing?.kind === 'failed'
+          ? {
+              summary: t("Couldn't List Ports"),
+              recovery: portsMessage(listing.message),
+              onRetry: refresh,
+              retryLabel: t('Try Again'),
+              testID: 'ports-failure',
+            }
+          : null
+      }
+    >
       <>
         {store.isTruncated ? (
           <Banner tone="warning" title={t('The Host has more servers than this list shows.')} />
@@ -104,8 +104,8 @@ export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) 
           />
         ) : null}
       </>
-    );
-  }
+    </AsyncContent>
+  );
   const bar: ScreenHeader = {
     variant: 'sheet',
     title: t('Ports'),
