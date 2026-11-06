@@ -14,7 +14,7 @@ set -eu
 PLUGIN_ID="agentico"
 PLUGIN_VERSION="0.12.0"
 MIN_HERDR_VERSION="0.7.5"
-PLUGIN_REPOSITORY="OWNER/agentico-app"
+PLUGIN_REPOSITORY="openagentspocket/openagentspocket"
 PLUGIN_REF="plugin"
 MIN_NODE_MAJOR=20
 HERDR_INSTALLER_URL="https://herdr.dev/install.sh"

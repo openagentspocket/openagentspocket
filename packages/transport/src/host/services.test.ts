@@ -45,7 +45,7 @@ function plugins(entries: JsonObject[]) {
   };
 }
 
-const github = (version: string, repo = 'OWNER/agentico-app'): JsonObject => {
+const github = (version: string, repo = 'openagentspocket/openagentspocket'): JsonObject => {
   const [owner, name] = repo.split('/');
   return {
     plugin_id: 'agentico',
@@ -139,19 +139,26 @@ describe('plugin', () => {
     const { transport } = await connected(plugins([github('0.6.0')]));
     const installation = await readPlugin(transport);
     expect(installation?.version).toBe('0.6.0');
-    expect(installation?.repository).toBe('OWNER/agentico-app');
+    expect(installation?.repository).toBe('openagentspocket/openagentspocket');
     const none = await connected(plugins([]));
     expect(await readPlugin(none.transport)).toBeNull();
   });
 
   it('builds step commands: bare, with the node probe, session-scoped, and via a launcher', () => {
-    const install = ['plugin', 'install', 'OWNER/agentico-app', '--ref', 'plugin', '--yes'];
+    const install = [
+      'plugin',
+      'install',
+      'openagentspocket/openagentspocket',
+      '--ref',
+      'plugin',
+      '--yes',
+    ];
     const command = pluginStepCommand(install, { session: '', endpoint: null, findsNode: true });
     expect(
       command.startsWith(`/bin/sh -c '${HERDR_PATH_EXPORT}; __h_herdr=$(command -v herdr)`),
     ).toBe(true);
     expect(command).toContain(
-      String.raw`exec "$__h_herdr" plugin install '\''OWNER/agentico-app'\'' --ref plugin --yes`,
+      String.raw`exec "$__h_herdr" plugin install '\''openagentspocket/openagentspocket'\'' --ref plugin --yes`,
     );
     expect(
       pluginStepCommand(['plugin', 'uninstall', 'herdr-mobile.pairing'], {
@@ -243,7 +250,7 @@ describe('plugin', () => {
     const command = pluginBranchManifestCommand();
     expect(command).toContain('export GIT_TERMINAL_PROMPT=0');
     expect(command).toContain(
-      'fetch -q --depth 1 https://github.com/OWNER/agentico-app.git plugin',
+      'fetch -q --depth 1 https://github.com/openagentspocket/openagentspocket.git plugin',
     );
     expect(command).toContain('git show FETCH_HEAD:herdr-plugin.toml');
     expect(command.slice("/bin/sh -c '".length, -1)).not.toContain("'");
@@ -261,7 +268,14 @@ describe('plugin', () => {
   });
 
   it('installs when absent, upgrades an older own install, leaves a current or foreign one', async () => {
-    const installArgs = ['plugin', 'install', 'OWNER/agentico-app', '--ref', 'plugin', '--yes'];
+    const installArgs = [
+      'plugin',
+      'install',
+      'openagentspocket/openagentspocket',
+      '--ref',
+      'plugin',
+      '--yes',
+    ];
     const command = cLocale(
       pluginStepCommand(installArgs, { session: '', endpoint: null, findsNode: true }),
     );

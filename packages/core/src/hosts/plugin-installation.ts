@@ -15,11 +15,9 @@ export const LEGACY_PLUGIN_IDS: readonly string[] = ['herdr-mobile.pairing'];
 export const KNOWN_PLUGIN_IDS: readonly string[] = [AGENTICO_PLUGIN_ID, ...LEGACY_PLUGIN_IDS];
 
 /**
- * The GitHub repository `herdr plugin install` fetches. A placeholder until the
- * port's public repository exists (parity spec, known gaps): installs fail
- * until then and Hosts use `herdr plugin link`.
+ * The GitHub repository `herdr plugin install` fetches.
  */
-export const PLUGIN_REPOSITORY = 'OWNER/agentico-app';
+export const PLUGIN_REPOSITORY = 'openagentspocket/openagentspocket';
 /** Where the installer scripts (`packages/plugin/install`) are served from. */
 export const INSTALLER_BASE_URL = 'https://openagentspocket.com';
 /** The generated branch the plugin ships from. */

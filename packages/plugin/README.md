@@ -56,7 +56,7 @@ node --version    # 20 or newer
 Install the plugin from GitHub:
 
 ```bash
-herdr plugin install <owner>/agentico-app --ref plugin --yes
+herdr plugin install openagentspocket/openagentspocket --ref plugin --yes
 ```
 
 The `plugin` branch holds only the files the plugin runs, published from
