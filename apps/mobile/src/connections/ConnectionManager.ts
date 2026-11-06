@@ -48,6 +48,13 @@ export interface ConnectionManagerOptions {
   readonly connect?: typeof connectTransport;
 }
 
+/**
+ * How long connections outlive the app leaving the foreground, so Face ID, the app switcher or a
+ * quick look elsewhere does not cost a reconnect. iOS may freeze the timer: the return then
+ * revalidates the connection instead of trusting it.
+ */
+export const BACKGROUND_GRACE_MS = 15_000;
+
 /** The Hosts-list state of a session status. */
 export function connectionFor(status: EventsSessionStatus | undefined): HostConnection {
   switch (status?.kind) {
@@ -78,6 +85,7 @@ export class ConnectionManager {
   private readonly entries = new Map<string, Entry>();
   private active: boolean;
   private transitions: Promise<void> = Promise.resolve();
+  private graceTimer: unknown;
   private stopped = false;
   private unsubscribe: (() => void) | undefined;
   private unsubscribeStore: (() => void) | undefined;
@@ -98,6 +106,7 @@ export class ConnectionManager {
 
   stop(): void {
     this.stopped = true;
+    this.cancelGrace();
     this.unsubscribe?.();
     this.unsubscribeStore?.();
     for (const id of [...this.entries.keys()]) this.drop(id);
@@ -111,10 +120,36 @@ export class ConnectionManager {
     return [...this.entries.keys()];
   }
 
-  /** Foreground resumes (or re-proves) every Host; background suspends them. */
-  async setActive(active: boolean): Promise<void> {
-    if (this.stopped || this.active === active) return;
+  /**
+   * Foreground resumes (or re-proves) every Host; leaving it suspends them once the grace has
+   * passed, or at once with `immediately`.
+   */
+  async setActive(active: boolean, options?: { readonly immediately?: boolean }): Promise<void> {
+    if (this.stopped) return;
+    if (this.active === active) {
+      if (!active && options?.immediately && this.cancelGrace()) await this.transition(false);
+      return;
+    }
     this.active = active;
+    this.cancelGrace();
+    if (active || options?.immediately) {
+      await this.transition(active);
+      return;
+    }
+    this.graceTimer = this.options.clock.setTimeout(() => {
+      this.graceTimer = undefined;
+      void this.transition(false);
+    }, BACKGROUND_GRACE_MS);
+  }
+
+  private cancelGrace(): boolean {
+    if (this.graceTimer === undefined) return false;
+    this.options.clock.clearTimeout(this.graceTimer);
+    this.graceTimer = undefined;
+    return true;
+  }
+
+  private async transition(active: boolean): Promise<void> {
     // Serialized: a foreground return must see the state the background suspend left, not the
     // one before it. Reading the status while the suspend was still winding down made the resume
     // a plain revalidate, and the Host then settled on `suspended` for good.

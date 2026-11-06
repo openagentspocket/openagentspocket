@@ -29,8 +29,8 @@ function shellServices({ store }: LiveServices): ShellTerminalServices {
 
 /**
  * Starts the live connections and hands the Console its store, unless demo mode is on (then
- * the Console keeps its scripted data). Foreground resumes the Hosts, background suspends them.
- * Flipping demo mode at runtime suspends the Hosts or resumes them.
+ * the Console keeps its scripted data). Foreground resumes the Hosts; leaving it suspends them
+ * after a grace. Flipping demo mode at runtime suspends the Hosts or resumes them.
  */
 export function ConnectionsProvider({ children }: { children: ReactNode }) {
   const demo = useSyncExternalStore(subscribeDemoMode, isDemoMode);
@@ -47,7 +47,7 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
     });
     return () => {
       subscription.remove();
-      void manager.setActive(false);
+      void manager.setActive(false, { immediately: true });
       deviceServices().conversations.setActive(false);
       void liveActivity.stop();
     };

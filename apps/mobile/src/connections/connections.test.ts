@@ -1,5 +1,6 @@
 import { fingerprintFromDigest, hostTrustKey } from '@openagentspocket/core';
 import { waitFor } from '@testing-library/react-native';
+import { BACKGROUND_GRACE_MS } from './ConnectionManager';
 import { createWorld, HOST_KEY, OTHER_KEY, SAMPLE_HOST, type World } from './testWorld';
 import { TrustPromptQueue } from './trustPrompt';
 
@@ -53,6 +54,7 @@ describe('connection manager', () => {
     await untilStatus(world, 'connected');
 
     await world.manager.setActive(false);
+    await world.clock.advance(BACKGROUND_GRACE_MS);
     await untilStatus(world, 'suspended');
     expect(world.runtime.model.connection(SAMPLE_HOST.id)).toBe('notConnected');
 
@@ -74,6 +76,35 @@ describe('connection manager', () => {
     await untilStatus(world, 'connected');
     expect(world.runtime.model.connection(SAMPLE_HOST.id)).toBe('connected');
     expect(world.prompts.count).toBe(1);
+    world.manager.stop();
+  });
+
+  it('keeps the connection through a short trip away, Face ID included', async () => {
+    const world = await createWorld();
+    world.manager.start();
+    await world.runtime.model.add(SAMPLE_HOST, null);
+    await untilStatus(world, 'connected');
+    const dialed = world.ssh.sessions.length;
+
+    await world.manager.setActive(false);
+    await world.clock.advance(BACKGROUND_GRACE_MS - 1);
+    expect(statusOf(world)).toBe('connected');
+    await world.manager.setActive(true);
+    await world.clock.advance(BACKGROUND_GRACE_MS);
+
+    await untilStatus(world, 'connected');
+    expect(world.ssh.sessions).toHaveLength(dialed);
+    world.manager.stop();
+  });
+
+  it('suspends at once when asked to, without the grace', async () => {
+    const world = await createWorld();
+    world.manager.start();
+    await world.runtime.model.add(SAMPLE_HOST, null);
+    await untilStatus(world, 'connected');
+
+    await world.manager.setActive(false, { immediately: true });
+    await untilStatus(world, 'suspended');
     world.manager.stop();
   });
 
