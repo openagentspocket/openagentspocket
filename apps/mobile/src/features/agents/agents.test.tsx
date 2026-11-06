@@ -57,6 +57,13 @@ async function runAction(pane: string, actionName: string) {
 describe('AgentsScreen', () => {
   afterEach(() => mockPush.mockClear());
 
+  it('opens the Board from the presentation menu', async () => {
+    await open();
+    await fireEvent.press(screen.getByTestId('agents-toolbar-presentation'));
+    await fireEvent.press(await screen.findByText('Board'));
+    await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/board'));
+  });
+
   it('lists every Agent flat, in Console order', async () => {
     await open();
     expect(order()).toEqual(['p1', 'p4', 'p2', 'p3', 'p5']);

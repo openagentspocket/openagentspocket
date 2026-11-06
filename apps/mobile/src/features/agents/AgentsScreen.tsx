@@ -81,6 +81,7 @@ export function AgentsScreen(props: {
           list.setQuery('');
         }}
         onNew={() => router.push(hrefs.newAgent())}
+        onBoard={() => router.push(hrefs.board())}
       />
       <HostIssues />
       <View style={styles.groups}>

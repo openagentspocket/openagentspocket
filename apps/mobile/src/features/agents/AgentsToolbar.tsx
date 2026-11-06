@@ -62,18 +62,22 @@ interface AgentsToolbarProps {
   /** Leaves search mode and clears the query. */
   onCloseSearch: () => void;
   onNew: () => void;
+  onBoard: () => void;
 }
 
 /** Home, the Host scope, the presentation and New capsule, the large title, then the search field once pulled down. */
 export function AgentsToolbar(props: AgentsToolbarProps) {
   const styles = useStyles();
-  const presentationItems: ActionMenuItem[] = LIST_PRESENTATIONS.map((presentation) => ({
-    key: presentation,
-    title: t(PRESENTATION_TITLES[presentation]),
-    icon: MENU_ICON[presentation],
-    checked: props.presentation === presentation,
-    onPress: () => props.onPresentation(presentation),
-  }));
+  const presentationItems: ActionMenuItem[] = [
+    ...LIST_PRESENTATIONS.map((presentation) => ({
+      key: presentation,
+      title: t(PRESENTATION_TITLES[presentation]),
+      icon: MENU_ICON[presentation],
+      checked: props.presentation === presentation,
+      onPress: () => props.onPresentation(presentation),
+    })),
+    { key: 'board', title: t('Board'), icon: 'pin', onPress: props.onBoard },
+  ];
   if (props.searchOpen || props.query !== '') {
     // Search mode takes over the top of the list, as in Swift: field and a close circle, no title.
     return (

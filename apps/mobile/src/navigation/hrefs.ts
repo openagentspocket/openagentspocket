@@ -29,6 +29,8 @@ export const hrefs = {
       ...(origin?.cwd ? { cwd: origin.cwd } : {}),
     },
   }),
+  /** Every Agent on every Host, the pinned ones first. */
+  board: (): Href => '/board',
   /** Worktree Details for the linked worktree an Agent runs in. */
   worktree: (hostId: string, paneId: string): Href => ({
     pathname: '/worktree',

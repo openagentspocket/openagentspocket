@@ -1,0 +1,17 @@
+# Smoke: the Board opens from the Agents presentation menu.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- tapOn: "All Agents"
+- extendedWaitUntil:
+    visible:
+      id: agents-toolbar-presentation
+    timeout: 10000
+- tapOn:
+    id: agents-toolbar-presentation
+- tapOn: "Board"
+- extendedWaitUntil:
+    visible: "Board"
+    timeout: 10000
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/13-board
