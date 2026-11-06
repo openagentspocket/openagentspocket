@@ -47,6 +47,7 @@ describe.each(['idle', 'working', 'blocked', 'done'])(
         </ThemeProvider>,
       );
       await waitFor(() => expect(screen.getByTestId('agent-detail')).toBeTruthy());
+      await waitFor(() => expect(screen.getByText('Conversation Not Readable')).toBeTruthy());
     });
   },
 );

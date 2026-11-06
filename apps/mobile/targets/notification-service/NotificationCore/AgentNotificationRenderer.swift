@@ -53,6 +53,12 @@ enum AgentNotificationRenderer {
         if let link = link(userInfo: content.userInfo, keys: keys) {
             rewritten.userInfo[linkKey] = link
         }
+        // Set after decryption, so a forged push can never draw Approve or Deny.
+        if let (_, payload) = NotificationEnvelope.open(userInfo: content.userInfo, keys: keys),
+            let category = ApprovalNotification.categoryID(for: payload)
+        {
+            rewritten.categoryIdentifier = category
+        }
         return rewritten
     }
 

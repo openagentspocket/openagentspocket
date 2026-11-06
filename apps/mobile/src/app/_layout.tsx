@@ -21,6 +21,7 @@ import { useOpenAgent } from '@/links/useOpenAgent';
 import { statusBarStyle } from '@/navigation/screenOptions';
 import { sheetOptions } from '@/navigation/sheetOptions';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
+import { ApprovalActions } from '@/notifications/ApprovalActions';
 import { InAppBanner } from '@/notifications/InAppBanner';
 import { useNotificationTaps } from '@/notifications/useNotificationTaps';
 import { AppLockCover } from '@/settings/AppLockCover';
@@ -119,6 +120,7 @@ export default function RootLayout() {
           <RootCanvas>
             <ThemedStatusBar />
             <ConnectionsProvider>
+              <ApprovalActions />
               <InAppBanner openAgent={openAgent}>
                 <AppStack />
               </InAppBanner>

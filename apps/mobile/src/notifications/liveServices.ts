@@ -1,4 +1,5 @@
 import {
+  ApprovalLedger,
   type Clock,
   type DevicePushTokenSource,
   type KeyValueStorage,
@@ -12,6 +13,7 @@ import {
   type PushDeviceToken,
   type PushRegistrationState,
   type RandomBytes,
+  StoredApprovalOptIns,
   unavailablePushTokenSource,
 } from '@openagentspocket/core';
 import type { AppGroupStore } from 'agentico-app-group';
@@ -55,7 +57,9 @@ export function createLiveNotificationParts(deps: LiveNotificationDeps): LiveNot
   const source = deps.tokenSource ?? unavailablePushTokenSource;
   let current: PushRegistrationState = { kind: 'unknown' };
   const deviceToken = () => (current.kind === 'registered' ? current.token : null);
+  const approvalOptIns = new StoredApprovalOptIns(deps.storage);
   const store = new NotificationPreferencesStore({
+    approvalOptIns,
     transports: deps.transports,
     ceremony,
     deviceToken,
@@ -71,7 +75,13 @@ export function createLiveNotificationParts(deps: LiveNotificationDeps): LiveNot
   };
   void keys.sync();
   return {
-    services: { store, relay, pushToken, pluginVersionOf: () => null },
+    services: {
+      store,
+      relay,
+      pushToken,
+      pluginVersionOf: () => null,
+      approvals: { keys, optIns: approvalOptIns, ledger: new ApprovalLedger(deps.storage) },
+    },
     keys,
     ceremony,
     deviceToken,

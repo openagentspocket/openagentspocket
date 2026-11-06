@@ -1,4 +1,5 @@
 import {
+  type ApprovalLedger,
   apnsToken,
   type Clock,
   type DevicePushTokenSource,
@@ -7,12 +8,14 @@ import {
   MemoryNotificationKeyStore,
   MemoryStorage,
   makeHost,
+  type NotificationKeyStore,
   NotificationPreferencesStore,
   NotificationRegistrationCeremony,
   NotificationRelaySettings,
   type PluginVersion,
   type PushRegistrationState,
   pluginVersion,
+  type StoredApprovalOptIns,
 } from '@openagentspocket/core';
 import { systemClock } from '@openagentspocket/transport';
 import { createContext, type ReactNode, useContext, useMemo } from 'react';
@@ -24,6 +27,12 @@ export interface NotificationServices {
   readonly pushToken: DevicePushTokenSource;
   /** The Agentico plugin version a Host reported, null while unknown. */
   readonly pluginVersionOf: (hostId: string) => PluginVersion | null;
+  /** What answering from a notification needs; absent in demo mode, where no push arrives. */
+  readonly approvals?: {
+    readonly keys: Pick<NotificationKeyStore, 'allRecords'>;
+    readonly optIns: StoredApprovalOptIns;
+    readonly ledger: ApprovalLedger;
+  };
   /** The per-Host Live Activity opt-in; absent where Live Activities do not run (demo, tests). */
   readonly liveActivity?: LiveActivityToggles;
 }

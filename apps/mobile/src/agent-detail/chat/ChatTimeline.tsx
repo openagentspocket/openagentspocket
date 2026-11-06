@@ -12,6 +12,7 @@ import { useConsoleState } from '@/console/hooks';
 import { useConversation } from '@/conversations/useConversation';
 import { useDetailUi } from '../detailUi';
 import { ChatBanners } from './ChatBanners';
+import { ChatEmpty } from './ChatEmpty';
 import { ChatRowView } from './ChatRowView';
 import { useChatRows } from './useChatRows';
 
@@ -102,15 +103,7 @@ export function ChatTimeline({
           </View>
         }
         ListEmptyComponent={
-          <NoticeBanner
-            kind="locating"
-            message={
-              conversation.state.snapshot.phase.type === 'locating'
-                ? t('Looking for the conversation…')
-                : t('Waiting for Conversation')
-            }
-            testID="chat-slot"
-          />
+          <ChatEmpty phase={conversation.state.snapshot.phase} onShowTerminal={onShowTerminal} />
         }
         ListFooterComponent={<View style={{ height: bottomInset }} />}
         contentContainerStyle={styles.content}
