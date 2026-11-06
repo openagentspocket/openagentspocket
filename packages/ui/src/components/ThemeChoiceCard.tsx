@@ -1,6 +1,7 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { impact } from '../haptics';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -92,7 +93,7 @@ export function ThemeChoiceCard({
   const styles = useStyles();
   const name = themes[themeId].name;
   return (
-    <Pressable
+    <Tappable
       accessibilityRole="button"
       accessibilityLabel={`${name}, ${subtitle}`}
       accessibilityState={{ selected }}
@@ -115,7 +116,7 @@ export function ThemeChoiceCard({
       <View style={[styles.check, selected ? styles.filled : styles.empty]} testID="theme-check">
         {selected ? <Icon name="check" size={15} color="onAccent" /> : null}
       </View>
-    </Pressable>
+    </Tappable>
   );
 }
 

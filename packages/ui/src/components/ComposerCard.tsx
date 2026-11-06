@@ -1,10 +1,11 @@
 import { type ReactNode, useState } from 'react';
-import { Platform, Pressable, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { composerAction } from '../composer/Composer';
 import { ActionMenuButton, type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
 import { useAnchor } from '../overlay/anchors';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { airy } from '../theme/metrics';
@@ -226,7 +227,7 @@ export function ComposerCard({
   );
   const trailing =
     action === 'stop' ? (
-      <Pressable
+      <Tappable
         style={[styles.circle, { backgroundColor: theme.colors.danger }]}
         onPress={() => onStop?.()}
         accessibilityRole="button"
@@ -234,9 +235,9 @@ export function ComposerCard({
         testID={`${testID}-stop`}
       >
         <Icon name="stop" size={20} color={stopInk} />
-      </Pressable>
+      </Tappable>
     ) : (
-      <Pressable
+      <Tappable
         style={[styles.circle, { backgroundColor: theme.colors.textPrimary }]}
         onPress={onSend}
         disabled={disabled || action !== 'send'}
@@ -246,7 +247,7 @@ export function ComposerCard({
         testID={`${testID}-send`}
       >
         <Icon name="send" size={18} color="canvas" />
-      </Pressable>
+      </Tappable>
     );
   const leadingMark = leading ? (
     <View style={styles.circle}>
@@ -265,7 +266,7 @@ export function ComposerCard({
             <Text variant="caption" tone="secondary" semibold>
               {labels.skills.toUpperCase()}
             </Text>
-            <Pressable
+            <Tappable
               style={styles.close}
               onPress={() => setDismissed(true)}
               accessibilityRole="button"
@@ -273,10 +274,10 @@ export function ComposerCard({
               testID={`${testID}-skills-close`}
             >
               <Icon name="close" size={16} />
-            </Pressable>
+            </Tappable>
           </View>
           {skills?.map((skill, index) => (
-            <Pressable
+            <Tappable
               key={skill.name}
               onPress={() => onSkill?.(skill.name)}
               accessibilityRole="button"
@@ -290,7 +291,7 @@ export function ComposerCard({
               <Text variant="caption" tone="secondary" numberOfLines={1}>
                 {skill.description}
               </Text>
-            </Pressable>
+            </Tappable>
           ))}
         </View>
       ) : null}

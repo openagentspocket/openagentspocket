@@ -3,13 +3,13 @@ import {
   type AccessibilityActionEvent,
   type AccessibilityActionInfo,
   type GestureResponderEvent,
-  Pressable,
   View,
 } from 'react-native';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
 import { SurfaceFillProvider } from './surfaceFill';
+import { Tappable } from './Tappable';
 
 export type CardLevel = 'surface' | 'overlay';
 
@@ -82,7 +82,7 @@ export function Card({
     );
   }
   return (
-    <Pressable
+    <Tappable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       accessibilityHint={accessibilityHint}
@@ -94,6 +94,6 @@ export function Card({
       style={({ pressed }) => [...look, pressed && styles.pressed]}
     >
       {filled}
-    </Pressable>
+    </Tappable>
   );
 }

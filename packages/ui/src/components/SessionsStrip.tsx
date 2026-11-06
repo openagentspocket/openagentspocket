@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { SectionHeader } from '../primitives/SectionHeader';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { useTerminalColors } from '../terminal/TerminalThemeContext';
 import { withAlpha } from '../theme/color';
@@ -90,7 +91,7 @@ export function SessionsStrip({
         contentContainerStyle={styles.strip}
       >
         {sessions.map((s) => (
-          <Pressable
+          <Tappable
             key={s.id}
             style={styles.item}
             onPress={() => onOpen(s.id)}
@@ -130,7 +131,7 @@ export function SessionsStrip({
             <Text variant="caption2" monospaced tone="tertiary" numberOfLines={1}>
               {s.host}
             </Text>
-          </Pressable>
+          </Tappable>
         ))}
       </ScrollView>
     </View>

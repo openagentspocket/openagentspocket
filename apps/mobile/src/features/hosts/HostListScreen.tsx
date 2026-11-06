@@ -1,8 +1,7 @@
 import type { Host } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, EmptyState, type ScreenHeader, Text } from '@openagentspocket/ui';
+import { Button, EmptyState, type ScreenHeader, Tappable, Text } from '@openagentspocket/ui';
 import { useState } from 'react';
-import { Pressable } from 'react-native';
 import { AppScreen } from '@/navigation/AppScreen';
 import { extra } from './extraText';
 import { HostGroup } from './HostGroup';
@@ -104,7 +103,7 @@ export function HostListScreen({
         />
       ))}
       {onSetupGuide ? (
-        <Pressable
+        <Tappable
           accessibilityRole="link"
           onPress={onSetupGuide}
           style={{ alignSelf: 'flex-start', paddingHorizontal: 4, paddingVertical: 4 }}
@@ -113,7 +112,7 @@ export function HostListScreen({
           <Text variant="footnote" tone="accent">
             {t('Setup Guide')}
           </Text>
-        </Pressable>
+        </Tappable>
       ) : null}
     </AppScreen>
   );

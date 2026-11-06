@@ -3,12 +3,11 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
-  Pressable,
   StyleSheet,
   useWindowDimensions,
   View,
 } from 'react-native';
-import { noFocusRing } from '../primitives/Button';
+import { noFocusRing, Tappable } from '../primitives/Tappable';
 import { monoFamily, Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { useInsets } from '../theme/insets';
@@ -121,7 +120,7 @@ function AlertButton({
   const styles = useStyles();
   const theme = useTheme();
   return (
-    <Pressable
+    <Tappable
       accessibilityRole="button"
       accessibilityLabel={title}
       onPress={onPress}
@@ -131,7 +130,7 @@ function AlertButton({
       <Text variant="headline" numberOfLines={1} style={{ color: theme.colors[tone] }}>
         {title}
       </Text>
-    </Pressable>
+    </Tappable>
   );
 }
 
@@ -233,7 +232,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
 
   if (isPopover) {
     const dismiss = (
-      <Pressable
+      <Tappable
         style={StyleSheet.absoluteFill}
         testID="alert-dismiss"
         onPress={() => answerAlert(request, null)}
@@ -282,7 +281,7 @@ function AlertPanel({ request }: { request: AlertRequest }) {
       ]}
     >
       {isAlert ? null : (
-        <Pressable
+        <Tappable
           style={styles.grow}
           onPress={() => request.cancelLabel !== null && answerAlert(request, null)}
           accessibilityElementsHidden

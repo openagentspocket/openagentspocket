@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -104,7 +105,7 @@ export function TerminalThemePicker({
           return (
             <View key={option.id}>
               {index > 0 ? <View style={styles.separator} /> : null}
-              <Pressable
+              <Tappable
                 onPress={() => onSelect(option.id)}
                 accessibilityRole="button"
                 accessibilityLabel={`${option.name}, ${option.subtitle}`}
@@ -123,7 +124,7 @@ export function TerminalThemePicker({
                 {selected ? (
                   <Icon name="check" size={17} color="accent" testID="theme-check" />
                 ) : null}
-              </Pressable>
+              </Tappable>
             </View>
           );
         })}

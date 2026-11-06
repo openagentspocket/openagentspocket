@@ -1,9 +1,10 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import type { ActionMenuItem } from '../overlay/ActionMenu';
 import { loadSwiftUi, NativePreviewMenu, supportsNativePreview } from '../overlay/NativeActionMenu';
 import { useRowMenu } from '../overlay/useRowMenu';
 import { Card } from '../primitives/Card';
 import { type SwipeAction, SwipeRow } from '../primitives/SwipeRow';
+import { Tappable } from '../primitives/Tappable';
 import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import { AgentCardBody, type AgentCardModel, agentCardLabel } from './AgentCardBody';
@@ -112,7 +113,7 @@ export function AgentCard({
         ) : null}
       </View>
     ) : (
-      <Pressable
+      <Tappable
         {...a11y}
         onPress={onPress}
         onLongPress={open}
@@ -124,7 +125,7 @@ export function AgentCard({
         testID={testID}
       >
         {body}
-      </Pressable>
+      </Tappable>
     );
   const swipeable = swipeActions?.length || leadingSwipeActions?.length;
   const lifted = <Card>{body}</Card>;

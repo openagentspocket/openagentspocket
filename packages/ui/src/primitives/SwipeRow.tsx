@@ -1,5 +1,5 @@
 import { type ReactNode, useRef, useState } from 'react';
-import { Animated, PanResponder, Pressable, View } from 'react-native';
+import { Animated, PanResponder, View } from 'react-native';
 import { impact } from '../haptics';
 import { snappy, useReducedMotion } from '../motion';
 import type { Tone } from '../theme/status';
@@ -14,6 +14,7 @@ import {
   type SwipeRest,
   settleSwipe,
 } from './swipeMath';
+import { Tappable } from './Tappable';
 import { Text } from './Text';
 
 export interface SwipeAction {
@@ -119,7 +120,7 @@ export function SwipeRow({
       importantForAccessibility={rest === 'closed' ? 'no-hide-descendants' : 'auto'}
     >
       {list.map((action) => (
-        <Pressable
+        <Tappable
           key={action.key}
           style={[
             styles.action,
@@ -137,7 +138,7 @@ export function SwipeRow({
           <Text variant="caption" semibold tone="onAccent" numberOfLines={1}>
             {action.title}
           </Text>
-        </Pressable>
+        </Tappable>
       ))}
     </View>
   );

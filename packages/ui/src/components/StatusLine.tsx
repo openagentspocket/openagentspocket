@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { StatusDot } from '../primitives/StatusDot';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
@@ -116,7 +117,7 @@ export function StatusLine({
     .filter(Boolean)
     .join(' ');
   return (
-    <Pressable
+    <Tappable
       style={styles.line}
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
       onPress={onOpenChanges}
@@ -198,6 +199,6 @@ export function StatusLine({
           {latency}
         </Text>
       ) : null}
-    </Pressable>
+    </Tappable>
   );
 }

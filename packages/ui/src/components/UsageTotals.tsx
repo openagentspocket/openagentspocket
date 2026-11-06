@@ -1,8 +1,9 @@
 import { type ReactNode, useRef } from 'react';
-import { Pressable, View, type ViewInstance } from 'react-native';
+import { View, type ViewInstance } from 'react-native';
 import type { MenuAnchor } from '../overlay/ActionMenu';
 import { Icon } from '../primitives/Icon';
 import { Segmented, type SegmentedOption } from '../primitives/Segmented';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -86,7 +87,7 @@ function RoundButton({ label, onPress, disabled, children, testID }: RoundButton
   const styles = useStyles();
   const theme = useTheme();
   return (
-    <Pressable
+    <Tappable
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"
@@ -103,7 +104,7 @@ function RoundButton({ label, onPress, disabled, children, testID }: RoundButton
       testID={testID}
     >
       {children}
-    </Pressable>
+    </Tappable>
   );
 }
 
@@ -200,7 +201,7 @@ export function UsageTotals<M extends string, R extends string>({
             {status}
           </Text>
           {scope ? (
-            <Pressable
+            <Tappable
               ref={pill}
               onLayout={measure}
               onPress={openScope}
@@ -213,7 +214,7 @@ export function UsageTotals<M extends string, R extends string>({
                 {scope.label}
               </Text>
               <Icon name="chevronUpDown" size={12} color="textSecondary" />
-            </Pressable>
+            </Tappable>
           ) : null}
         </View>
       ) : null}

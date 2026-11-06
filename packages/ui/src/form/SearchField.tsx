@@ -1,5 +1,6 @@
-import { Pressable, type TextInputProps, View } from 'react-native';
+import { type TextInputProps, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -46,14 +47,14 @@ export function SearchField({
         style={styles.input}
       />
       {value !== '' ? (
-        <Pressable
+        <Tappable
           onPress={() => onChangeText?.('')}
           accessibilityRole="button"
           accessibilityLabel={clearLabel}
           hitSlop={10}
         >
           <Icon name="close" size={16} color="textTertiary" />
-        </Pressable>
+        </Tappable>
       ) : null}
     </View>
   );

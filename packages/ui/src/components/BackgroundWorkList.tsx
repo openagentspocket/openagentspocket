@@ -1,7 +1,8 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { Meter } from '../primitives/Meter';
 import { Section } from '../primitives/Section';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 import { BackgroundWorkGlyph, type BackgroundWorkState } from './BackgroundWorkStrip';
@@ -137,7 +138,7 @@ function DetailRow({
           </Text>
         ) : null}
         {item.onOpen ? (
-          <Pressable
+          <Tappable
             onPress={item.onOpen}
             accessibilityRole="button"
             accessibilityLabel={`${item.openLabel ?? ''}, ${item.title}`}
@@ -146,7 +147,7 @@ function DetailRow({
             <Text variant="subheadline" tone="accent">
               {item.openLabel}
             </Text>
-          </Pressable>
+          </Tappable>
         ) : null}
       </View>
       {expandable ? (
@@ -157,14 +158,14 @@ function DetailRow({
   return (
     <View testID={`work-sheet-${item.id}`}>
       {expandable ? (
-        <Pressable
+        <Tappable
           onPress={onToggle}
           accessibilityRole="button"
           accessibilityState={{ expanded: open }}
           accessibilityLabel={item.accessibilityLabel}
         >
           {body}
-        </Pressable>
+        </Tappable>
       ) : (
         body
       )}

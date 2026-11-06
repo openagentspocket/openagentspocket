@@ -1,5 +1,6 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { type DiffLabels, defaultDiffLabels } from '../diff/diffLabels';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 import {
@@ -143,7 +144,7 @@ export function DiffRow({
       </View>
       {hunks.map((hunk) => (
         <View key={hunk.header}>
-          <Pressable
+          <Tappable
             style={diff.band}
             onPress={hunk.onExpandGap}
             disabled={!hunk.onExpandGap}
@@ -165,7 +166,7 @@ export function DiffRow({
                 {hunk.gapLabel}
               </Text>
             ) : null}
-          </Pressable>
+          </Tappable>
           {layout === 'sideBySide'
             ? pairLines(hunk.lines).map((pair, i) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: diff rows are positional.

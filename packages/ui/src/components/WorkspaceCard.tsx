@@ -1,7 +1,8 @@
 import { Children, Fragment, type ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -67,7 +68,7 @@ export function WorkspaceCard({
       <View style={styles.glyph}>
         <Icon name="folder" size={22} color="textSecondary" />
       </View>
-      <Pressable
+      <Tappable
         style={styles.titles}
         onPress={onOpen}
         disabled={!onOpen}
@@ -82,8 +83,8 @@ export function WorkspaceCard({
             {workspace.subtitle}
           </Text>
         ) : null}
-      </Pressable>
-      <Pressable
+      </Tappable>
+      <Tappable
         onPress={onToggle}
         disabled={!onToggle}
         style={styles.count}
@@ -98,7 +99,7 @@ export function WorkspaceCard({
         <View style={{ transform: [{ rotate: collapsed ? '0deg' : '90deg' }] }}>
           <Icon name="chevronRight" size={10} tint={theme.colors.textSecondary} />
         </View>
-      </Pressable>
+      </Tappable>
     </View>
   );
   return (

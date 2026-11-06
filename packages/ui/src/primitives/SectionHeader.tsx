@@ -1,9 +1,10 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import type { Status } from '../theme/status';
 import { makeStyles } from '../theme/theme';
 import { Badge } from './Badge';
 import { Icon } from './Icon';
 import { StatusDot } from './StatusDot';
+import { Tappable } from './Tappable';
 import { Text } from './Text';
 
 const useStyles = makeStyles((t) => ({
@@ -65,14 +66,14 @@ export function SectionHeader({
   return (
     <View style={styles.row} testID={testID}>
       {onToggle ? (
-        <Pressable
+        <Tappable
           style={styles.title}
           onPress={onToggle}
           accessibilityRole="header"
           accessibilityState={{ expanded: expanded ?? false }}
         >
           {heading}
-        </Pressable>
+        </Tappable>
       ) : (
         <View style={styles.title} accessible accessibilityRole="header">
           {heading}
@@ -80,7 +81,7 @@ export function SectionHeader({
       )}
       <View style={styles.spacer} />
       {action ? (
-        <Pressable
+        <Tappable
           onPress={action.onPress}
           accessibilityRole="button"
           accessibilityLabel={action.accessibilityLabel ?? action.title}
@@ -90,7 +91,7 @@ export function SectionHeader({
           <Text variant="footnote" semibold tone="accent">
             {action.title}
           </Text>
-        </Pressable>
+        </Tappable>
       ) : null}
     </View>
   );

@@ -1,8 +1,9 @@
 import { Children, Fragment, type ReactNode } from 'react';
-import { type GestureResponderEvent, Pressable, View } from 'react-native';
+import { type GestureResponderEvent, View } from 'react-native';
 import { Badge } from '../primitives/Badge';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -174,7 +175,7 @@ export function ChangeRow({
     U: theme.colors.danger,
   }[file.kind];
   return (
-    <Pressable
+    <Tappable
       style={[styles.file, indent && styles.indented]}
       onPress={onPress}
       onLongPress={onLongPress}
@@ -207,7 +208,7 @@ export function ChangeRow({
       <Text variant="subheadline" semibold monospaced style={[styles.kind, { color: kindColor }]}>
         {file.kind}
       </Text>
-    </Pressable>
+    </Tappable>
   );
 }
 

@@ -17,9 +17,10 @@ import {
   type KeySpec,
   ProgramMark,
   type Status,
+  Tappable,
 } from '@openagentspocket/ui';
 import { useState, useSyncExternalStore } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { StagingStatusBar } from '@/features/composer-tools/StagingStatusBar';
 import { useAgentSkills } from '@/features/composer-tools/useAgentSkills';
 import { useSetting } from '@/settings/SettingsProvider';
@@ -204,14 +205,14 @@ export function AgentComposerBar({
         addMenu={menus.addItems}
         moreMenu={menus.moreItems}
         leading={
-          <Pressable
+          <Tappable
             onPress={onToggleSurface}
             accessibilityRole="button"
             accessibilityLabel={surface === 'chat' ? t('Show Terminal') : t('Show Chat')}
             testID="surface-toggle"
           >
             <ProgramMark program={program} status={status} size={26} />
-          </Pressable>
+          </Tappable>
         }
         surfaceIcon={surface === 'chat' ? 'chat' : 'terminal'}
         labels={agentBarLabels()}

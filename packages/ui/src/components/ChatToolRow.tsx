@@ -1,7 +1,8 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Spinner } from '../primitives/Spinner';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -105,7 +106,7 @@ function SubagentCard({ item, openLabel }: { item: SubagentItem; openLabel?: str
         <StatusMark status={item.status} />
       </View>
       {openLabel && item.onOpen && !running ? (
-        <Pressable
+        <Tappable
           style={styles.link}
           onPress={item.onOpen}
           accessibilityRole="link"
@@ -115,7 +116,7 @@ function SubagentCard({ item, openLabel }: { item: SubagentItem; openLabel?: str
             {openLabel}
           </Text>
           <Icon name="chevronRight" size={11} />
-        </Pressable>
+        </Tappable>
       ) : null}
     </Card>
   );

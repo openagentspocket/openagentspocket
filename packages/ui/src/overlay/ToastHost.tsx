@@ -1,13 +1,7 @@
 import { useEffect, useRef } from 'react';
-import {
-  AccessibilityInfo,
-  Animated,
-  PanResponder,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { AccessibilityInfo, Animated, PanResponder, StyleSheet, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -80,7 +74,7 @@ function ToastCard({ request }: { request: ToastRequest }) {
   const swipe = useRef(new Animated.Value(0)).current;
   const dismissRef = useRef(dismiss);
   dismissRef.current = dismiss;
-  // Swipe up to dismiss; a short drag springs back and a tap still reaches the Pressable.
+  // Swipe up to dismiss; a short drag springs back and a tap still reaches the Tappable.
   const pan = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_e, g) => g.dy < -6 && Math.abs(g.dy) > Math.abs(g.dx),
@@ -115,7 +109,7 @@ function ToastCard({ request }: { request: ToastRequest }) {
         },
       ]}
     >
-      <Pressable
+      <Tappable
         style={styles.card}
         onPress={onPress}
         accessibilityRole={request.onPress ? 'button' : 'alert'}
@@ -139,7 +133,7 @@ function ToastCard({ request }: { request: ToastRequest }) {
             </Text>
           ) : null}
         </View>
-      </Pressable>
+      </Tappable>
     </Animated.View>
   );
 }

@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { MetaChip } from '../primitives/MetaChip';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -96,7 +97,7 @@ export function AgentListFieldsEditor({
             <Text variant="headline">{row.title}</Text>
             <View style={styles.chips}>
               {row.fields.map((field) => (
-                <Pressable
+                <Tappable
                   key={field}
                   onPress={() => onEdit(row.id, field)}
                   accessibilityRole="button"
@@ -105,9 +106,9 @@ export function AgentListFieldsEditor({
                   testID={`field-chip-${row.id}-${field}`}
                 >
                   <MetaChip label={field} />
-                </Pressable>
+                </Tappable>
               ))}
-              <Pressable
+              <Tappable
                 onPress={() => onAdd(row.id)}
                 accessibilityRole="button"
                 accessibilityLabel={text.addField(row.title)}
@@ -115,7 +116,7 @@ export function AgentListFieldsEditor({
                 testID={`field-add-${row.id}`}
               >
                 <Icon name="add" size={17} color="accent" />
-              </Pressable>
+              </Tappable>
             </View>
           </View>
         ))}

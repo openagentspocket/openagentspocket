@@ -10,9 +10,9 @@ import {
   trailingKeys,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Icon, type IconName, makeStyles, Text } from '@openagentspocket/ui';
+import { Icon, type IconName, makeStyles, Tappable, Text } from '@openagentspocket/ui';
 import { useSyncExternalStore } from 'react';
-import { type GestureResponderEvent, Pressable, View } from 'react-native';
+import { type GestureResponderEvent, View } from 'react-native';
 import { keySpec, spokenName } from './keyTables';
 
 const useStyles = makeStyles((th) => ({
@@ -103,7 +103,7 @@ export function TerminalToolbar({
     };
     const glyph = GLYPH[key];
     return (
-      <Pressable
+      <Tappable
         key={key}
         onPress={press}
         onLongPress={isCtrl ? () => keyboard.lockModifier('control') : undefined}
@@ -121,7 +121,7 @@ export function TerminalToolbar({
             {label}
           </Text>
         )}
-      </Pressable>
+      </Tappable>
     );
   };
 
@@ -132,7 +132,7 @@ export function TerminalToolbar({
           {DPAD_KEYS.map((key) => {
             const spec = keySpec(key);
             return (
-              <Pressable
+              <Tappable
                 key={quickKeyId(key)}
                 onPress={() => onKey(key)}
                 accessibilityRole="keyboardkey"
@@ -145,7 +145,7 @@ export function TerminalToolbar({
                 ) : (
                   <Icon name="send" size={16} color="textPrimary" />
                 )}
-              </Pressable>
+              </Tappable>
             );
           })}
         </View>

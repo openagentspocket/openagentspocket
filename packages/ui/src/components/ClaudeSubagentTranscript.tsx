@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Markdown } from '../markdown/Markdown';
 import { Button } from '../primitives/Button';
 import { EmptyState } from '../primitives/EmptyState';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Spinner } from '../primitives/Spinner';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 import { ChatToolRow } from './ChatToolRow';
@@ -204,7 +205,7 @@ export function ClaudeSubagentTranscript({
     <View style={styles.root} testID={testID}>
       <View style={styles.header}>
         <View style={styles.bar}>
-          <Pressable
+          <Tappable
             onPress={onBack}
             accessibilityRole="button"
             accessibilityLabel={text.back}
@@ -212,7 +213,7 @@ export function ClaudeSubagentTranscript({
             style={styles.back}
           >
             <Icon name="chevronLeft" size={22} color="textPrimary" weight="bold" />
-          </Pressable>
+          </Tappable>
           <Text
             variant="headline"
             numberOfLines={1}

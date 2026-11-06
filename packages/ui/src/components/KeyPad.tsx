@@ -1,8 +1,9 @@
 import { Fragment, useRef } from 'react';
-import { PanResponder, Pressable, View } from 'react-native';
+import { PanResponder, View } from 'react-native';
 import { impact } from '../haptics';
 import type { KeySpec } from '../keys/KeyboardDock';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 import { useKeyRepeat } from './keyRepeat';
@@ -92,7 +93,7 @@ function Cap({ spec, onKey }: { spec: KeySpec; onKey: (key: KeySpec) => void }) 
   const styles = useStyles();
   const repeat = useKeyRepeat(() => onKey(spec));
   return (
-    <Pressable
+    <Tappable
       style={({ pressed }) => [styles.cap, pressed && styles.pressed]}
       onPressIn={() => {
         impact('light');
@@ -106,7 +107,7 @@ function Cap({ spec, onKey }: { spec: KeySpec; onKey: (key: KeySpec) => void }) 
       <Text variant="body" semibold>
         {spec.label}
       </Text>
-    </Pressable>
+    </Tappable>
   );
 }
 
@@ -171,7 +172,7 @@ export function KeyPad({
                   ))}
                 </View>
               ) : null}
-              <Pressable
+              <Tappable
                 style={styles.pagerTitle}
                 onPress={() => onPageChange(entry.id)}
                 accessibilityRole="tab"
@@ -186,7 +187,7 @@ export function KeyPad({
                 >
                   {entry.title}
                 </Text>
-              </Pressable>
+              </Tappable>
             </Fragment>
           );
         })}
@@ -205,7 +206,7 @@ export function KeyPad({
           {tabs.map((entry) => {
             const selected = entry.id === tab;
             return (
-              <Pressable
+              <Tappable
                 key={entry.id}
                 style={[styles.tab, selected && styles.tabOn]}
                 onPress={() => onTabChange?.(entry.id)}
@@ -219,7 +220,7 @@ export function KeyPad({
                   size={20}
                   tint={selected ? theme.colors.accent : theme.colors.textSecondary}
                 />
-              </Pressable>
+              </Tappable>
             );
           })}
         </View>

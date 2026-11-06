@@ -1,10 +1,11 @@
 import { Children, Fragment, type ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { useRowMenu } from '../overlay/useRowMenu';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { type SwipeAction, SwipeRow } from '../primitives/SwipeRow';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
@@ -79,7 +80,7 @@ export function TerminalRow({
   const styles = useStyles();
   const rowMenu = useRowMenu(menu, swipeActions);
   const body = (
-    <Pressable
+    <Tappable
       onPress={onPress}
       onLongPress={rowMenu.onLongPress}
       accessibilityRole="button"
@@ -102,7 +103,7 @@ export function TerminalRow({
         ) : null}
       </View>
       <Icon name="chevronRight" size={13} color="textTertiary" />
-    </Pressable>
+    </Tappable>
   );
   return (
     <>
@@ -151,7 +152,7 @@ export function TerminalGroup({
         {onNewTerminal ? (
           <>
             {rows.length > 0 ? <View style={styles.separator} /> : null}
-            <Pressable
+            <Tappable
               onPress={onNewTerminal}
               accessibilityRole="button"
               accessibilityLabel={labels.newTerminal}
@@ -162,7 +163,7 @@ export function TerminalGroup({
                 <Icon name="add" size={20} color="textSecondary" />
               </View>
               <Text tone="secondary">{labels.newTerminal}</Text>
-            </Pressable>
+            </Tappable>
           </>
         ) : null}
       </Card>
@@ -182,7 +183,7 @@ export function TerminalTile({
 }) {
   const styles = useStyles();
   return (
-    <Pressable
+    <Tappable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={[terminal.title, terminal.path].filter(Boolean).join(', ')}
@@ -198,6 +199,6 @@ export function TerminalTile({
           {terminal.path}
         </Text>
       ) : null}
-    </Pressable>
+    </Tappable>
   );
 }

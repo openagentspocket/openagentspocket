@@ -9,8 +9,16 @@ import {
   type UsageScope,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Card, Icon, makeStyles, programTint, Text, useTheme } from '@openagentspocket/ui';
-import { Pressable, View } from 'react-native';
+import {
+  Card,
+  Icon,
+  makeStyles,
+  programTint,
+  Tappable,
+  Text,
+  useTheme,
+} from '@openagentspocket/ui';
+import { View } from 'react-native';
 import { localeTag, metricText, metricValue, type UsageMetric } from './usageText';
 
 export type BreakdownKind = 'models' | 'directories' | 'days';
@@ -158,7 +166,7 @@ export function BreakdownRows({ scope, kind, metric, limit, onDay, onShowAll }: 
         return (
           <View key={entry.key}>
             {index > 0 ? <View style={styles.separator} /> : null}
-            <Pressable
+            <Tappable
               onPress={press}
               disabled={!press}
               accessibilityRole={press ? 'button' : undefined}
@@ -204,14 +212,14 @@ export function BreakdownRows({ scope, kind, metric, limit, onDay, onShowAll }: 
                   </Text>
                 )}
               </View>
-            </Pressable>
+            </Tappable>
           </View>
         );
       })}
       {more ? (
         <View>
           <View style={styles.separator} />
-          <Pressable
+          <Tappable
             onPress={onShowAll}
             accessibilityRole="button"
             style={styles.showAll}
@@ -221,7 +229,7 @@ export function BreakdownRows({ scope, kind, metric, limit, onDay, onShowAll }: 
               {showAllTitle(kind, all.length)}
             </Text>
             <Icon name="chevronRight" size={12} color="textTertiary" />
-          </Pressable>
+          </Tappable>
         </View>
       ) : null}
     </Card>

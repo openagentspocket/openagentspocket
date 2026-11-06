@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { makeStyles } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
+import { Tappable } from './Tappable';
 import { Text } from './Text';
 
 const useStyles = makeStyles((t) => ({
@@ -65,7 +66,7 @@ export function Chip({
     );
   }
   return (
-    <Pressable
+    <Tappable
       accessibilityRole="button"
       accessibilityState={{ selected }}
       accessibilityLabel={accessibilityLabel ?? label}
@@ -75,7 +76,7 @@ export function Chip({
       style={({ pressed }) => [styles.chip, selected && styles.selected, pressed && styles.pressed]}
     >
       {content}
-    </Pressable>
+    </Tappable>
   );
 }
 

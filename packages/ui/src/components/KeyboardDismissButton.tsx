@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Keyboard, Pressable } from 'react-native';
+import { Keyboard } from 'react-native';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { makeStyles } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
@@ -46,7 +47,7 @@ export function KeyboardDismissButton({
   const visible = useKeyboardVisible();
   if (!visible && !alwaysVisible) return null;
   return (
-    <Pressable
+    <Tappable
       style={styles.button}
       onPress={() => Keyboard.dismiss()}
       accessibilityRole="button"
@@ -54,6 +55,6 @@ export function KeyboardDismissButton({
       testID={testID}
     >
       <Icon name="keyboardDown" size={22} color="textPrimary" />
-    </Pressable>
+    </Tappable>
   );
 }

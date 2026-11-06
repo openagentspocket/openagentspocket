@@ -1,10 +1,11 @@
 import { type ReactNode, useRef, useState } from 'react';
-import { PanResponder, Pressable, View } from 'react-native';
+import { PanResponder, View } from 'react-native';
 import { impact } from '../haptics';
 import type { KeyModifier, KeyModifiers, KeySpec } from '../keys/KeyboardDock';
 import { ActionMenuButton, type ActionMenuItem } from '../overlay/ActionMenu';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 import { KeyboardDismissButton } from './KeyboardDismissButton';
@@ -148,7 +149,7 @@ function ToolbarKey({
   const repeat = useKeyRepeat(onKey);
   const on = state !== 'off';
   return (
-    <Pressable
+    <Tappable
       style={({ pressed }) => [styles.key, pressed && styles.pressed]}
       onPress={spec.modifier ? onModifier : undefined}
       onPressIn={
@@ -169,7 +170,7 @@ function ToolbarKey({
       <Text variant="body" monospaced semibold tone={on ? 'accent' : 'primary'}>
         {spec.label}
       </Text>
-    </Pressable>
+    </Tappable>
   );
 }
 
@@ -194,7 +195,7 @@ function Dpad({
     <GlassCapsule style={styles.popover} testID="toolbar-dpad">
       <View accessibilityLabel={label} style={{ width: 176, height: 176 }}>
         {(Object.keys(offsets) as DpadDirection[]).map((direction) => (
-          <Pressable
+          <Tappable
             key={direction}
             style={[styles.popKey, offsets[direction]]}
             onPress={() => {
@@ -206,9 +207,9 @@ function Dpad({
             testID={`dpad-${direction}`}
           >
             <Icon name={DPAD_KEYS[direction].icon} size={20} color="textPrimary" />
-          </Pressable>
+          </Tappable>
         ))}
-        <Pressable
+        <Tappable
           style={[styles.hub, { position: 'absolute', left: 60, top: 60 }]}
           onPress={() => {
             impact('light');
@@ -219,7 +220,7 @@ function Dpad({
           testID="dpad-enter"
         >
           <Icon name="enter" size={22} color="textPrimary" />
-        </Pressable>
+        </Tappable>
       </View>
     </GlassCapsule>
   );
@@ -293,7 +294,7 @@ export function TerminalToolbar({
           />
         ))}
         <View {...drag.panHandlers} style={styles.arrowsWrap}>
-          <Pressable
+          <Tappable
             style={styles.key}
             onLongPress={() => {
               impact('light');
@@ -310,9 +311,9 @@ export function TerminalToolbar({
               size={22}
               tint={dpadOpen ? theme.colors.accent : theme.colors.textPrimary}
             />
-          </Pressable>
+          </Tappable>
         </View>
-        <Pressable
+        <Tappable
           style={styles.key}
           onPress={() => {
             impact('light');
@@ -323,7 +324,7 @@ export function TerminalToolbar({
           testID="toolbar-keyboard"
         >
           <Icon name="keyboard" size={22} color="textPrimary" />
-        </Pressable>
+        </Tappable>
         <KeyboardDismissButton label={text.hideKeyboard} testID="toolbar-keyboard-dismiss" />
         <ActionMenuButton items={moreItems} accessibilityLabel={text.more} testID="toolbar-more" />
       </GlassCapsule>

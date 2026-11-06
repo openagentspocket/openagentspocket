@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { impact } from '../haptics';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { makeStyles } from '../theme/theme';
 
 /** Idle time before the expanded previous/next pair folds back (ms). */
@@ -54,7 +55,7 @@ function Glyph({
 }) {
   const styles = useStyles();
   return (
-    <Pressable
+    <Tappable
       style={styles.button}
       onPress={() => {
         impact('light');
@@ -66,7 +67,7 @@ function Glyph({
       testID={testID}
     >
       <Icon name={icon} size={17} color="textPrimary" />
-    </Pressable>
+    </Tappable>
   );
 }
 

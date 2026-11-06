@@ -1,5 +1,6 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentRowLabels, defaultAgentRowLabels } from './agentRowLabels';
@@ -54,7 +55,7 @@ export function HostIssueRow({
   return (
     <View style={styles.stack} testID={testID}>
       {lines.map((line) => (
-        <Pressable
+        <Tappable
           key={line.key}
           onPress={onOpen ? () => onOpen(line.issue) : undefined}
           disabled={!onOpen}
@@ -69,7 +70,7 @@ export function HostIssueRow({
           <Text variant="subheadline" style={[styles.text, { color: ink }]} numberOfLines={1}>
             {line.text}
           </Text>
-        </Pressable>
+        </Tappable>
       ))}
     </View>
   );

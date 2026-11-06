@@ -1,8 +1,9 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { impact } from '../haptics';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Spinner } from '../primitives/Spinner';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -62,7 +63,7 @@ export function BarAction({ action, testID }: { action: SheetBarItem; testID: st
   const styles = useStyles();
   const theme = useTheme();
   return (
-    <Pressable
+    <Tappable
       style={[styles.action, (action.disabled || action.loading) && styles.disabled]}
       accessibilityRole="button"
       accessibilityLabel={action.label}
@@ -83,7 +84,7 @@ export function BarAction({ action, testID }: { action: SheetBarItem; testID: st
           {action.label}
         </Text>
       )}
-    </Pressable>
+    </Tappable>
   );
 }
 

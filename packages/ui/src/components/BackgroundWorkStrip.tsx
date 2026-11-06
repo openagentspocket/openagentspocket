@@ -1,7 +1,8 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Meter } from '../primitives/Meter';
 import { Spinner } from '../primitives/Spinner';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -112,7 +113,7 @@ function WorkRow({ item, onPress }: { item: BackgroundWorkItem; onPress: () => v
   const styles = useStyles();
   const muted = item.state === 'completed' || item.state === 'stopped';
   return (
-    <Pressable
+    <Tappable
       style={styles.row}
       onPress={onPress}
       accessibilityRole="button"
@@ -158,7 +159,7 @@ function WorkRow({ item, onPress }: { item: BackgroundWorkItem; onPress: () => v
           </Text>
         ) : null}
       </View>
-    </Pressable>
+    </Tappable>
   );
 }
 
@@ -192,7 +193,7 @@ export function BackgroundWorkStrip({
   if (items.length === 0 && !summary) return null;
   if (summary) {
     return (
-      <Pressable
+      <Tappable
         style={styles.summary}
         onPress={() => onOpen(null)}
         accessibilityRole="button"
@@ -206,7 +207,7 @@ export function BackgroundWorkStrip({
           {summary.text}
         </Text>
         <Icon name="chevronRight" size={12} color="textTertiary" />
-      </Pressable>
+      </Tappable>
     );
   }
   return (
@@ -215,7 +216,7 @@ export function BackgroundWorkStrip({
         <WorkRow key={item.id} item={item} onPress={() => onOpen(item.id)} />
       ))}
       {overflow > 0 ? (
-        <Pressable
+        <Tappable
           onPress={() => onOpen(null)}
           accessibilityRole="button"
           accessibilityLabel={text.more(overflow)}
@@ -226,7 +227,7 @@ export function BackgroundWorkStrip({
           <Text variant="footnote" tone="accent" semibold>
             {text.more(overflow)}
           </Text>
-        </Pressable>
+        </Tappable>
       ) : null}
     </View>
   );

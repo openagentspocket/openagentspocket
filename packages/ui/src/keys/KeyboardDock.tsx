@@ -1,6 +1,7 @@
 import { type ReactNode, useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles } from '../theme/theme';
@@ -67,7 +68,7 @@ export function KeyRow({ keys, onKey, latched = NONE, onToggleModifier }: KeyRow
       {keys.map((key) => {
         const on = key.modifier ? latched[key.modifier] : false;
         return (
-          <Pressable
+          <Tappable
             key={key.id}
             onPress={() => (key.modifier ? onToggleModifier?.(key.modifier) : onKey(key, latched))}
             accessibilityRole={key.modifier ? 'togglebutton' : 'keyboardkey'}
@@ -83,7 +84,7 @@ export function KeyRow({ keys, onKey, latched = NONE, onToggleModifier }: KeyRow
                 {key.label}
               </Text>
             )}
-          </Pressable>
+          </Tappable>
         );
       })}
     </ScrollView>

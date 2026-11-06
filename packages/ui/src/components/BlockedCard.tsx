@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { TextField } from '../form/TextField';
 import { impact } from '../haptics';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -83,7 +84,7 @@ function OptionButton({ option, onPress }: { option: BlockedOption; onPress: () 
   const styles = useStyles();
   const kind = option.kind ?? 'secondary';
   return (
-    <Pressable
+    <Tappable
       accessibilityRole="button"
       accessibilityLabel={option.label}
       onPress={() => {
@@ -105,7 +106,7 @@ function OptionButton({ option, onPress }: { option: BlockedOption; onPress: () 
       >
         {option.label}
       </Text>
-    </Pressable>
+    </Tappable>
   );
 }
 
@@ -165,7 +166,7 @@ export function BlockedCard({
   );
   return (
     <Card accent="warning" testID={testID}>
-      <Pressable
+      <Tappable
         style={styles.header}
         onPress={onToggleCollapsed}
         accessibilityRole="button"
@@ -178,7 +179,7 @@ export function BlockedCard({
           {prompt.title}
         </Text>
         <Icon name={collapsed ? 'chevronRight' : 'chevronDown'} tint={theme.colors.accent} />
-      </Pressable>
+      </Tappable>
       {collapsed ? null : (
         <View style={styles.body}>
           {prompt.description ? (
@@ -229,7 +230,7 @@ export function BlockedCard({
                   />
                 </>
               ) : (
-                <Pressable
+                <Tappable
                   style={styles.note}
                   onPress={() => setNoting(true)}
                   accessibilityRole="button"
@@ -240,7 +241,7 @@ export function BlockedCard({
                   <Text variant="subheadline" tone="accent">
                     {text.addNote}
                   </Text>
-                </Pressable>
+                </Tappable>
               )}
             </>
           )}

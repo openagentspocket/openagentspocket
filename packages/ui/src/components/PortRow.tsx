@@ -1,8 +1,9 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { useRowMenu } from '../overlay/useRowMenu';
 import { Icon } from '../primitives/Icon';
 import { MetaChip } from '../primitives/MetaChip';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -64,7 +65,7 @@ export function PortRow({
   const number = String(port.number);
   return (
     <>
-      <Pressable
+      <Tappable
         onPress={onOpen}
         onLongPress={rowMenu.onLongPress}
         disabled={!port.reachable && !menu?.length}
@@ -120,7 +121,7 @@ export function PortRow({
           {number}
         </Text>
         {port.reachable ? <Icon name="chevronRight" size={13} color="textTertiary" /> : null}
-      </Pressable>
+      </Tappable>
       {menu?.length ? <ActionMenu items={menu} title={port.name} {...rowMenu.menuProps} /> : null}
     </>
   );

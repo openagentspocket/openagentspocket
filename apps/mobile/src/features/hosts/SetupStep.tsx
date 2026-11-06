@@ -1,6 +1,6 @@
 import { t } from '@openagentspocket/i18n';
-import { CommandBlock, Text, useTheme } from '@openagentspocket/ui';
-import { Linking, Pressable, View } from 'react-native';
+import { CommandBlock, Tappable, Text, useTheme } from '@openagentspocket/ui';
+import { Linking, View } from 'react-native';
 import type { GuideStep } from './setupGuideSteps';
 
 interface SetupStepProps {
@@ -56,14 +56,14 @@ export function SetupStep({ number, step, divider }: SetupStepProps) {
             </Text>
           </View>
           {step.link ? (
-            <Pressable
+            <Tappable
               accessibilityRole="link"
               onPress={() => void Linking.openURL(step.link?.url ?? '')}
             >
               <Text variant="subheadline" tone="accent">
                 {step.link.label}
               </Text>
-            </Pressable>
+            </Tappable>
           ) : null}
           {step.commands ? (
             <CommandBlock lines={step.commands} copyLabel={t('Copy')} copiedLabel={t('Copied')} />

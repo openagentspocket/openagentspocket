@@ -1,8 +1,9 @@
 import { type ReactNode, useEffect, useRef } from 'react';
-import { Animated, PanResponder, Platform, Pressable, View } from 'react-native';
+import { Animated, PanResponder, Platform, View } from 'react-native';
 import { quick, useReducedMotion } from '../motion';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Spinner } from '../primitives/Spinner';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import type { Tone } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -142,7 +143,7 @@ function Inapp({
         },
       ]}
     >
-      <Pressable
+      <Tappable
         testID={testID}
         style={[styles.inapp, WEB_NO_RING]}
         onPress={onPress}
@@ -174,7 +175,7 @@ function Inapp({
             </Text>
           )}
         </View>
-      </Pressable>
+      </Tappable>
     </Animated.View>
   );
 }
@@ -214,7 +215,7 @@ export function NoticeBanner(props: NoticeBannerProps) {
         {message}
       </Text>
       {action ? (
-        <Pressable
+        <Tappable
           style={styles.action}
           onPress={action.onPress}
           accessibilityRole="button"
@@ -225,7 +226,7 @@ export function NoticeBanner(props: NoticeBannerProps) {
           <Text variant="footnote" tone="accent" semibold>
             {action.label}
           </Text>
-        </Pressable>
+        </Tappable>
       ) : null}
     </View>
   );

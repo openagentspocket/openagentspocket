@@ -1,6 +1,7 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { withAlpha } from '../theme/color';
 import { useTheme } from '../theme/theme';
@@ -71,7 +72,7 @@ export function UsageRing({
       </View>
     );
   return (
-    <Pressable
+    <Tappable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
@@ -80,6 +81,6 @@ export function UsageRing({
       testID={testID}
     >
       {content}
-    </Pressable>
+    </Tappable>
   );
 }

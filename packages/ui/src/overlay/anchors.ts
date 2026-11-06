@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-/** What a ref to a View or Pressable gives: only measuring is used. */
+/** What a ref to a View or Tappable gives: only measuring is used. */
 interface Measurable {
   measureInWindow(callback: (x: number, y: number, width: number, height: number) => void): void;
 }
@@ -17,7 +17,7 @@ const anchors = new Map<string, Measurable>();
 
 /**
  * Registers a control as the anchor of a popover (`confirm({ anchorKey })`). Spread the returned
- * `ref` on the control's View or Pressable; the popover measures it when it opens.
+ * `ref` on the control's View or Tappable; the popover measures it when it opens.
  */
 export function useAnchor(key: string | undefined) {
   const ref = useCallback(

@@ -1,8 +1,9 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { useContextMenu } from '../overlay/useContextMenu';
 import { Icon, type IconName } from '../primitives/Icon';
 import { MetaChip } from '../primitives/MetaChip';
+import { Tappable } from '../primitives/Tappable';
 import { Text, type TextTone } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -67,7 +68,7 @@ export function ChatUserBubble({
   const context = useContextMenu();
   return (
     <View style={styles.row} testID={testID}>
-      <Pressable
+      <Tappable
         accessibilityLabel={text}
         accessibilityActions={menu?.map((m) => ({ name: m.key, label: m.title }))}
         onAccessibilityAction={(e) =>
@@ -84,7 +85,7 @@ export function ChatUserBubble({
             ))}
           </View>
         ) : null}
-      </Pressable>
+      </Tappable>
       {pending && pendingLabel ? (
         <Text variant="caption2" tone="tertiary" style={styles.sending}>
           {pendingLabel}

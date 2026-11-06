@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { useAnchor } from '../overlay/anchors';
 import { useRowMenu } from '../overlay/useRowMenu';
@@ -7,6 +7,7 @@ import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
 import { type SwipeAction, SwipeRow } from './SwipeRow';
+import { Tappable } from './Tappable';
 import { Text, type TextTone } from './Text';
 
 /** Width of the leading symbol slot of a settings-style row (Swift: 22 pt glyph in a 28 pt slot). */
@@ -123,7 +124,7 @@ export function ListRow({
   const spoken = accessibilityLabel ?? [title, subtitle, value].filter(Boolean).join(', ');
 
   const body = (
-    <Pressable
+    <Tappable
       ref={anchorRef}
       onPress={onPress}
       onLongPress={rowMenu.onLongPress}
@@ -179,7 +180,7 @@ export function ListRow({
         {trailing}
         {chevron ? <Icon name="chevronRight" size={13} color="textTertiary" /> : null}
       </View>
-    </Pressable>
+    </Tappable>
   );
 
   return (

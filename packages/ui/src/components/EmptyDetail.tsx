@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -59,7 +60,7 @@ export function EmptyDetail({
         </Text>
       </View>
       {action ? (
-        <Pressable
+        <Tappable
           accessibilityRole="button"
           accessibilityLabel={action.label}
           onPress={action.onPress}
@@ -81,7 +82,7 @@ export function EmptyDetail({
           ) : (
             (action.shortcut ?? null)
           )}
-        </Pressable>
+        </Tappable>
       ) : null}
     </View>
   );

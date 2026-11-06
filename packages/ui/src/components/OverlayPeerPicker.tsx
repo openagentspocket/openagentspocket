@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Sheet } from '../overlay/Sheet';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import { EmptyState } from '../primitives/EmptyState';
 import { Icon } from '../primitives/Icon';
 import { Segmented } from '../primitives/Segmented';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -179,7 +180,7 @@ export function OverlayPeerPickerBody({
           shown.map((peer, index) => (
             <View key={peer.id}>
               {index > 0 ? <View style={styles.separator} /> : null}
-              <Pressable
+              <Tappable
                 disabled={peer.offline}
                 onPress={() => onPick(peer, mode)}
                 accessibilityRole="button"
@@ -208,7 +209,7 @@ export function OverlayPeerPickerBody({
                   </View>
                 ) : null}
                 {peer.chosen ? <Icon name="check" size={17} color="accent" /> : null}
-              </Pressable>
+              </Tappable>
             </View>
           ))
         )}

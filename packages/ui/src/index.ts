@@ -125,6 +125,7 @@ export { STATUS_GLYPH, StatusDot } from './primitives/StatusDot';
 export { StatusOrb } from './primitives/StatusOrb';
 export { type SwipeAction, SwipeRow } from './primitives/SwipeRow';
 export { SurfaceFillProvider, useSurfaceFill } from './primitives/surfaceFill';
+export { Tappable, type TappableProps } from './primitives/Tappable';
 export {
   monoFamily,
   Text,

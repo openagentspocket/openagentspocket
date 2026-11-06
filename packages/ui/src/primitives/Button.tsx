@@ -1,9 +1,9 @@
-import { Platform, Pressable, type ViewStyle } from 'react-native';
 import { useAnchor } from '../overlay/anchors';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
 import { Icon, type IconName } from './Icon';
 import { Spinner } from './Spinner';
+import { Tappable } from './Tappable';
 import { Text } from './Text';
 
 export type ButtonKind = 'primary' | 'secondary' | 'destructive' | 'text' | 'capsule';
@@ -41,7 +41,6 @@ const useStyles = makeStyles((t) => ({
 }));
 
 /** Web only: the browser's blue focus ring is not part of the Swift look. */
-export const noFocusRing = (Platform.OS === 'web' ? { outlineStyle: 'none' } : {}) as ViewStyle;
 
 const INK_KEY = {
   primary: 'onAccent',
@@ -105,7 +104,7 @@ export function Button({
   const inactive = disabled || loading;
   const iconOnly = title === undefined;
   return (
-    <Pressable
+    <Tappable
       ref={anchorRef}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? title}
@@ -120,7 +119,6 @@ export function Button({
       hitSlop={size === 'small' ? 6 : 0}
       style={({ pressed }) => [
         styles.base,
-        noFocusRing,
         size === 'small' && styles.small,
         size === 'dense' && styles.dense,
         iconOnly && styles.iconOnly,
@@ -147,6 +145,6 @@ export function Button({
           {title}
         </Text>
       ) : null}
-    </Pressable>
+    </Tappable>
   );
 }

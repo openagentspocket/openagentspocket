@@ -1,7 +1,8 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { CopyButton } from '../primitives/CopyButton';
 import { Icon } from '../primitives/Icon';
 import { Section } from '../primitives/Section';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -51,7 +52,7 @@ export function KeyValueGroup({
   return (
     <Section title={title} testID={testID}>
       {rows.map((row) => {
-        const Row = row.onPress ? Pressable : View;
+        const Row = row.onPress ? Tappable : View;
         return (
           <Row
             key={row.label}

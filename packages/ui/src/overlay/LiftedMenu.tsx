@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { Modal, Pressable, useWindowDimensions, View } from 'react-native';
+import { Modal, useWindowDimensions, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -108,7 +109,7 @@ export function LiftedMenu({
   const regular = items.filter((item) => !item.destructive);
   const destructive = items.filter((item) => item.destructive);
   const renderItem = (item: ActionMenuItem) => (
-    <Pressable
+    <Tappable
       key={item.key}
       accessibilityRole="menuitem"
       accessibilityLabel={item.title}
@@ -133,7 +134,7 @@ export function LiftedMenu({
       <Text tone={item.destructive ? 'danger' : 'primary'} numberOfLines={1}>
         {item.title}
       </Text>
-    </Pressable>
+    </Tappable>
   );
   const stage = (
     <View style={inline ? styles.inline : [styles.stage, placed]} pointerEvents="box-none">
@@ -156,7 +157,7 @@ export function LiftedMenu({
   if (inline) return visible ? stage : null;
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable
+      <Tappable
         style={styles.backdrop}
         onPress={onClose}
         accessibilityElementsHidden

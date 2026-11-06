@@ -1,7 +1,6 @@
 import { claudeProgram, comparablePath, type HostReading } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Card, Icon, makeStyles, Text } from '@openagentspocket/ui';
-import { Pressable } from 'react-native';
+import { Card, Icon, makeStyles, Tappable, Text } from '@openagentspocket/ui';
 
 const useStyles = makeStyles((th) => ({
   row: {
@@ -37,7 +36,7 @@ export function UsageAccountsNotice({ title, onPress }: { title: string; onPress
   const styles = useStyles();
   return (
     <Card padded={false} testID="usage-accounts-notice">
-      <Pressable
+      <Tappable
         onPress={onPress}
         accessibilityRole="button"
         accessibilityLabel={title}
@@ -47,7 +46,7 @@ export function UsageAccountsNotice({ title, onPress }: { title: string; onPress
         <Icon name="folder" size={20} color="accent" />
         <Text style={styles.title}>{title}</Text>
         <Icon name="chevronRight" size={12} color="textTertiary" />
-      </Pressable>
+      </Tappable>
     </Card>
   );
 }

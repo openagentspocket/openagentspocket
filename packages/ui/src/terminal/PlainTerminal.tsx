@@ -2,11 +2,11 @@ import { fromBase64 } from 'agentico-ssh';
 import { useImperativeHandle, useRef, useState } from 'react';
 import {
   type LayoutChangeEvent,
-  Pressable,
   ScrollView,
   type ScrollViewInstance,
   type TextInputInstance,
 } from 'react-native';
+import { Tappable } from '../primitives/Tappable';
 import { monoFamily, Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles } from '../theme/theme';
@@ -66,7 +66,7 @@ export function PlainTerminal({
   };
 
   return (
-    <Pressable
+    <Tappable
       style={[styles.root, { backgroundColor: colors.background }]}
       onPress={() => input.current?.focus()}
       onLayout={onLayout}
@@ -103,6 +103,6 @@ export function PlainTerminal({
         accessibilityLabel={accessibilityLabel}
         testID={`${testID}-input`}
       />
-    </Pressable>
+    </Tappable>
   );
 }

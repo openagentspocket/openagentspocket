@@ -1,7 +1,8 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { Modal, Pressable, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { Modal, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -150,7 +151,7 @@ export function ActionMenu({
   }
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable
+      <Tappable
         style={styles.backdrop}
         onPress={onClose}
         accessibilityElementsHidden
@@ -184,7 +185,7 @@ export function ActionMenu({
                 {index > 0 || (groupIndex === 0 && title) ? (
                   <View style={styles.separator} />
                 ) : null}
-                <Pressable
+                <Tappable
                   accessibilityRole="menuitem"
                   accessibilityLabel={item.title}
                   accessibilityState={{
@@ -218,7 +219,7 @@ export function ActionMenu({
                   {item.icon ? (
                     <Icon name={item.icon} color={item.destructive ? 'danger' : 'textSecondary'} />
                   ) : null}
-                </Pressable>
+                </Tappable>
               </View>
             ))}
           </View>

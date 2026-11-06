@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { impact } from '../haptics';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -46,7 +47,7 @@ function ActionCapsule({
   return (
     <GlassCapsule style={styles.capsule}>
       {actions.map((a) => (
-        <Pressable
+        <Tappable
           key={a.label}
           style={styles.action}
           accessibilityRole="button"
@@ -58,7 +59,7 @@ function ActionCapsule({
           testID={`${testID}-${a.label}`}
         >
           {a.node ?? (a.icon ? <Icon name={a.icon} size={20} color="accent" /> : null)}
-        </Pressable>
+        </Tappable>
       ))}
     </GlassCapsule>
   );

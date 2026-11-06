@@ -1,5 +1,6 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { makeStyles } from '../theme/theme';
+import { Tappable } from './Tappable';
 import { Text } from './Text';
 
 const useStyles = makeStyles((t) => ({
@@ -64,7 +65,7 @@ export function Segmented<T extends string>({
       {options.map((option) => {
         const selected = option.value === value;
         return (
-          <Pressable
+          <Tappable
             key={option.value}
             style={[styles.segment, selected && styles.selected]}
             onPress={() => onChange(option.value)}
@@ -83,7 +84,7 @@ export function Segmented<T extends string>({
             >
               {option.label}
             </Text>
-          </Pressable>
+          </Tappable>
         );
       })}
     </View>

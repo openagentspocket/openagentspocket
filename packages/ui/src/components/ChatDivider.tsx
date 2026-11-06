@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -83,7 +84,7 @@ export function ChatDivider({
     );
   }
   return (
-    <Pressable
+    <Tappable
       style={styles.row}
       testID={testID}
       onPress={onToggle}
@@ -96,6 +97,6 @@ export function ChatDivider({
         {label}
       </Text>
       <Icon name={collapsed ? 'chevronRight' : 'chevronDown'} size={11} color="textSecondary" />
-    </Pressable>
+    </Tappable>
   );
 }

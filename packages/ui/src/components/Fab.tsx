@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Pressable } from 'react-native';
 import { impact } from '../haptics';
 import { type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
 import { useSheetHandover } from '../overlay/useSheetHandover';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
 import { ChoiceSheet } from './ChoiceSheet';
@@ -54,7 +54,7 @@ export function Fab({
   if (hidden || isDeadMenuTrigger(items, onPress)) return null;
   return (
     <>
-      <Pressable
+      <Tappable
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
         onPress={() => {
@@ -70,7 +70,7 @@ export function Fab({
         testID={testID}
       >
         <Icon name="add" size={24} tint={theme.colors.onAccent} />
-      </Pressable>
+      </Tappable>
       <ChoiceSheet
         visible={open}
         title={menuTitle ?? accessibilityLabel}

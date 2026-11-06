@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { makeStyles, useTheme } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
+import { Tappable } from './Tappable';
 import { Text } from './Text';
 
 export interface BarDatum {
@@ -51,7 +52,7 @@ function Slot({ height, slotStyle, label, testID, onPress, children }: SlotProps
     );
   }
   return (
-    <Pressable
+    <Tappable
       style={[slotStyle, { height }]}
       accessibilityRole="button"
       accessibilityLabel={label}
@@ -59,7 +60,7 @@ function Slot({ height, slotStyle, label, testID, onPress, children }: SlotProps
       testID={testID}
     >
       {children}
-    </Pressable>
+    </Tappable>
   );
 }
 

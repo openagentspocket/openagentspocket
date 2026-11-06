@@ -1,5 +1,6 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -40,7 +41,7 @@ export function ViewToggle({
       {(['tree', 'agents'] as const).map((mode) => {
         const active = view === mode;
         return (
-          <Pressable
+          <Tappable
             key={mode}
             style={[
               styles.toggle,
@@ -57,7 +58,7 @@ export function ViewToggle({
               size={18}
               tint={active ? theme.colors.accent : undefined}
             />
-          </Pressable>
+          </Tappable>
         );
       })}
     </View>

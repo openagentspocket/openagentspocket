@@ -1,8 +1,7 @@
 import { FakeClock } from '@openagentspocket/core';
-import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
+import { OverlayHost, Tappable, ThemeProvider } from '@openagentspocket/ui';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { useEffect } from 'react';
-import { Pressable } from 'react-native';
 import { InAppBanner, useBannerDemo, useBannerFeed } from './InAppBanner';
 
 jest.mock('react-native-safe-area-context', () => ({
@@ -22,7 +21,7 @@ function Feeder({ steps }: { steps: Agents[] }) {
 
 function Trigger() {
   const demo = useBannerDemo();
-  return <Pressable testID="demo" onPress={demo} />;
+  return <Tappable testID="demo" onPress={demo} />;
 }
 
 const steps: Agents[] = [

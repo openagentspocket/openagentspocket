@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Spinner } from '../primitives/Spinner';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -189,7 +190,7 @@ export function SkillsKeyboardPane({
               {group.title}
             </Text>
             {group.items.map((skill) => (
-              <Pressable
+              <Tappable
                 key={skill.id}
                 onPress={() => onPick(skill)}
                 onLongPress={() => onOpen(skill)}
@@ -207,7 +208,7 @@ export function SkillsKeyboardPane({
                     {skill.description}
                   </Text>
                 ) : null}
-              </Pressable>
+              </Tappable>
             ))}
           </View>
         ))}
@@ -218,7 +219,7 @@ export function SkillsKeyboardPane({
   return (
     <View style={[styles.pane, { height }]} testID={testID}>
       <View style={styles.body}>{body()}</View>
-      <Pressable
+      <Tappable
         onPress={onRefresh}
         disabled={refreshing}
         accessibilityRole="button"
@@ -232,13 +233,13 @@ export function SkillsKeyboardPane({
           {text.refresh}
         </Text>
         {refreshing && skills.length > 0 ? <Spinner size="small" /> : null}
-      </Pressable>
+      </Tappable>
       {panes?.length ? (
         <View style={styles.switcher} accessibilityRole="tablist" testID="skills-pane-switcher">
           {panes.map((pane) => {
             const selected = pane.key === selectedPane;
             return (
-              <Pressable
+              <Tappable
                 key={pane.key}
                 onPress={() => onSelectPane?.(pane.key)}
                 accessibilityRole="tab"
@@ -248,7 +249,7 @@ export function SkillsKeyboardPane({
                 style={[styles.tab, selected ? styles.tabSelected : null]}
               >
                 <Icon name={pane.icon} size={20} color={selected ? 'accent' : 'textSecondary'} />
-              </Pressable>
+              </Tappable>
             );
           })}
         </View>

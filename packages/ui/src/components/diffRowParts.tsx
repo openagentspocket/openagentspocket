@@ -1,4 +1,4 @@
-import { Pressable } from 'react-native';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 
@@ -96,7 +96,7 @@ export function UnifiedLine({ line, spoken, onReference }: UnifiedProps) {
   const sign = SIGNS[line.kind];
   const signInk = line.kind === 'add' ? 'success' : line.kind === 'del' ? 'danger' : 'tertiary';
   return (
-    <Pressable
+    <Tappable
       style={[styles.row, { backgroundColor: lineWash(line.kind, theme) }]}
       onLongPress={onReference ? () => onReference(line) : undefined}
       accessibilityLabel={spoken}
@@ -112,6 +112,6 @@ export function UnifiedLine({ line, spoken, onReference }: UnifiedProps) {
         {sign}
       </Text>
       <LineText line={line} />
-    </Pressable>
+    </Tappable>
   );
 }

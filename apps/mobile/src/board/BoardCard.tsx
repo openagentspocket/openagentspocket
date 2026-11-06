@@ -9,10 +9,11 @@ import {
   makeStyles,
   type Status,
   StatusDot,
+  Tappable,
 } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Animated, Pressable, View } from 'react-native';
+import { Animated, View } from 'react-native';
 import { statusDot } from '../console/agentStatus';
 import { useEntryMenus } from '../navigation/entryMenus';
 import { hrefs } from '../navigation/hrefs';
@@ -68,7 +69,7 @@ export function BoardCard({ entry, onTogglePin, onMove, onDrop, onMeasure }: Boa
     });
   }
   const step = (direction: 'up' | 'down', enabled: boolean) => (
-    <Pressable
+    <Tappable
       style={[styles.step, !enabled && styles.disabled]}
       disabled={!enabled}
       onPress={() => onMove(direction)}
@@ -77,7 +78,7 @@ export function BoardCard({ entry, onTogglePin, onMove, onDrop, onMeasure }: Boa
       testID={`board-${direction}-${pane}`}
     >
       <Icon name={direction === 'up' ? 'arrowUp' : 'arrowDown'} />
-    </Pressable>
+    </Tappable>
   );
   return (
     <Animated.View
@@ -111,7 +112,7 @@ export function BoardCard({ entry, onTogglePin, onMove, onDrop, onMeasure }: Boa
                 {step('down', canMoveDown)}
               </View>
             ) : (
-              <Pressable
+              <Tappable
                 style={styles.step}
                 onPress={onTogglePin}
                 accessibilityRole="button"
@@ -119,7 +120,7 @@ export function BoardCard({ entry, onTogglePin, onMove, onDrop, onMeasure }: Boa
                 testID={`board-pin-${pane}`}
               >
                 <Icon name="pin" />
-              </Pressable>
+              </Tappable>
             )
           }
           testID={`board-row-${pane}`}

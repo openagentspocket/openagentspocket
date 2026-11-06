@@ -1,6 +1,7 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { impact } from '../haptics';
 import { Icon, type IconName } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { toneColorKey } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -84,7 +85,7 @@ export function HostStatusCard({
         </Text>
       </View>
       {onReconnect ? (
-        <Pressable
+        <Tappable
           accessibilityRole="button"
           accessibilityLabel={reconnectLabel}
           hitSlop={4}
@@ -100,7 +101,7 @@ export function HostStatusCard({
           testID={testID ? `${testID}-reconnect` : 'host-status-reconnect'}
         >
           <Icon name="refresh" size={17} tint={ink} />
-        </Pressable>
+        </Tappable>
       ) : null}
     </View>
   );

@@ -1,7 +1,7 @@
 import type { BlockedCardState, BlockedDialog, GenericDialogExcerpt } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, Card, Icon, makeStyles, Text } from '@openagentspocket/ui';
-import { Pressable, View } from 'react-native';
+import { Button, Card, Icon, makeStyles, Tappable, Text } from '@openagentspocket/ui';
+import { View } from 'react-native';
 import { cardTitle, isTappable, optionKind, stopLabel } from './dialogModel';
 import { cardText } from './text';
 
@@ -173,7 +173,7 @@ export function BlockedCard(props: BlockedCardProps) {
         : t('Keys');
   return (
     <Card accent="warning" testID="blocked-card">
-      <Pressable
+      <Tappable
         style={styles.header}
         onPress={() => onCollapsedChange(!state.isCollapsed)}
         accessibilityRole="button"
@@ -186,7 +186,7 @@ export function BlockedCard(props: BlockedCardProps) {
           {heading}
         </Text>
         <Icon name={state.isCollapsed ? 'chevronRight' : 'chevronDown'} color="accent" />
-      </Pressable>
+      </Tappable>
       {state.isCollapsed ? null : (
         <>
           {content.kind === 'card' ? (

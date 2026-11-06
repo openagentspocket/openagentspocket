@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, ScrollView, type ScrollViewInstance, View } from 'react-native';
+import { ScrollView, type ScrollViewInstance, View } from 'react-native';
 import { impact } from '../haptics';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { airy, spacing } from '../theme/metrics';
 import type { Status } from '../theme/status';
@@ -152,7 +153,7 @@ export function AgentSwitcher({
           const current = agent.id === currentId;
           const shrink = compact && !current;
           return (
-            <Pressable
+            <Tappable
               key={agent.id}
               onLayout={(event) => {
                 const layout = event.nativeEvent.layout;
@@ -202,13 +203,13 @@ export function AgentSwitcher({
                   {agent.title}
                 </Text>
               )}
-            </Pressable>
+            </Tappable>
           );
         })}
       </ScrollView>
       <View style={styles.trailing}>
         {trailing.map((item) => (
-          <Pressable
+          <Tappable
             key={item.key}
             style={styles.toggle}
             onPress={item.onPress}
@@ -222,7 +223,7 @@ export function AgentSwitcher({
               size={24}
               tint={item.active ? theme.colors.accent : theme.colors.textPrimary}
             />
-          </Pressable>
+          </Tappable>
         ))}
       </View>
     </GlassCapsule>

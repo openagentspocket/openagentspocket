@@ -1,7 +1,8 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Badge } from '../primitives/Badge';
 import { Icon } from '../primitives/Icon';
 import { DisclosureChevron } from '../primitives/SectionHeader';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import type { Status, Tone } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -145,7 +146,7 @@ export function FoldHeader({
       <View style={style} testID={testID}>
         {heading}
         {onSeeAll ? (
-          <Pressable
+          <Tappable
             onPress={onSeeAll}
             accessibilityRole="button"
             accessibilityLabel={labels.seeAll}
@@ -154,7 +155,7 @@ export function FoldHeader({
             <Text variant="subheadline" semibold tone="accent">
               {labels.seeAll}
             </Text>
-          </Pressable>
+          </Tappable>
         ) : null}
       </View>
     );
@@ -166,7 +167,7 @@ export function FoldHeader({
     </>
   );
   return foldable ? (
-    <Pressable
+    <Tappable
       onPress={onToggle}
       style={style}
       accessibilityRole="header"
@@ -175,7 +176,7 @@ export function FoldHeader({
       testID={testID}
     >
       {content}
-    </Pressable>
+    </Tappable>
   ) : (
     <View style={style} accessible accessibilityRole="header" testID={testID}>
       {content}

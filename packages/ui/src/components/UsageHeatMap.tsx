@@ -1,7 +1,8 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 import { impact } from '../haptics';
 import { Card } from '../primitives/Card';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { withAlpha } from '../theme/color';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
@@ -183,7 +184,7 @@ export function UsageHeatMap({
                 const isToday = day.date === today;
                 const bright = level >= 3;
                 return (
-                  <Pressable
+                  <Tappable
                     key={day.date}
                     disabled={!day.recorded || !onSelect}
                     onPress={() => {
@@ -219,7 +220,7 @@ export function UsageHeatMap({
                     >
                       {day.label}
                     </Text>
-                  </Pressable>
+                  </Tappable>
                 );
               })}
             </View>

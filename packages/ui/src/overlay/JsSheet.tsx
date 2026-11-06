@@ -4,7 +4,6 @@ import {
   KeyboardAvoidingView,
   Modal,
   Platform,
-  Pressable,
   StyleSheet,
   useWindowDimensions,
   View,
@@ -14,6 +13,7 @@ import { quick, useReducedMotion } from '../motion';
 import { Button } from '../primitives/Button';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { ScreenBackground } from '../primitives/ScreenBackground';
+import { Tappable } from '../primitives/Tappable';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
 import { OverlayHost } from './OverlayHost';
@@ -133,7 +133,7 @@ export function JsSheet({
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <Animated.View style={[styles.backdrop, { opacity: progress }]}>
-          <Pressable
+          <Tappable
             style={StyleSheet.absoluteFill}
             onPress={onClose}
             accessibilityElementsHidden

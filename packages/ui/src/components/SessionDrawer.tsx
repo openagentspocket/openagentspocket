@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Modal, Pressable, View } from 'react-native';
+import { Modal, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { useContextMenu } from '../overlay/useContextMenu';
 import { Icon } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { StatusDot } from '../primitives/StatusDot';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { withAlpha } from '../theme/color';
@@ -177,7 +178,7 @@ export function SessionDrawer({
   const renderRow = (item: DrawerItem) => {
     const selected = item.id === selectedId;
     return (
-      <Pressable
+      <Tappable
         key={item.id}
         onPress={() => onSelect(item.id)}
         onLongPress={
@@ -216,7 +217,7 @@ export function SessionDrawer({
             {item.age}
           </Text>
         ) : null}
-      </Pressable>
+      </Tappable>
     );
   };
   const agentSections = AGENT_SECTIONS.map(({ key, pick }) => ({
@@ -268,7 +269,7 @@ export function SessionDrawer({
           </Text>
         </View>
         {onHome ? (
-          <Pressable
+          <Tappable
             style={styles.plus}
             onPress={onHome}
             accessibilityRole="button"
@@ -276,10 +277,10 @@ export function SessionDrawer({
             testID={`${testID}-home`}
           >
             <Icon name="home" size={20} color="textPrimary" />
-          </Pressable>
+          </Tappable>
         ) : null}
         {onAdd ? (
-          <Pressable
+          <Tappable
             style={styles.plus}
             onPress={onAdd}
             accessibilityRole="button"
@@ -287,7 +288,7 @@ export function SessionDrawer({
             testID={`${testID}-add`}
           >
             <Icon name="add" size={20} color="textPrimary" />
-          </Pressable>
+          </Tappable>
         ) : null}
       </View>
       {view === 'agents' ? (
@@ -322,7 +323,7 @@ export function SessionDrawer({
             const open = !folded.has(ws.id) || Boolean(needle);
             return (
               <View key={ws.id} style={styles.group}>
-                <Pressable
+                <Tappable
                   style={styles.groupHead}
                   onPress={() => toggle(ws.id)}
                   accessibilityRole="button"
@@ -337,7 +338,7 @@ export function SessionDrawer({
                   <Text variant="footnote" tone="secondary" tabularNums>
                     {String(ws.items.length)}
                   </Text>
-                </Pressable>
+                </Tappable>
                 {open && ws.branch ? (
                   <View style={styles.branch}>
                     <Icon name="branch" size={12} />
@@ -372,7 +373,7 @@ export function SessionDrawer({
       <View style={styles.scrim}>
         {panel}
         {actionMenu}
-        <Pressable
+        <Tappable
           style={styles.flex}
           onPress={onClose}
           accessibilityRole="button"

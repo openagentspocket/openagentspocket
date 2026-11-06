@@ -1,5 +1,6 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { Icon } from '../primitives/Icon';
+import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -37,7 +38,7 @@ export function ChatThoughtRow({
   const styles = useStyles();
   return (
     <View style={styles.root} testID={testID}>
-      <Pressable
+      <Tappable
         style={styles.head}
         onPress={onToggle}
         accessibilityRole="button"
@@ -49,7 +50,7 @@ export function ChatThoughtRow({
           {label}
         </Text>
         <Icon name={expanded ? 'chevronDown' : 'chevronRight'} size={11} />
-      </Pressable>
+      </Tappable>
       {expanded && text ? (
         <View style={styles.body}>
           <Text variant="subheadline" tone="secondary">

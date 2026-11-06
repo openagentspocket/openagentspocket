@@ -15,13 +15,14 @@ import {
   makeStyles,
   programTint,
   Sheet,
+  Tappable,
   Text,
   UsageBreakdownRow,
   UsageHostGroup,
   UsageTotals,
   useTheme,
 } from '@openagentspocket/ui';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { type BreakdownKind, breakdownTitle } from './BreakdownRows';
 import { programSplit } from './usageModel';
 import { localeTag, metricText, type UsageMetric } from './usageText';
@@ -164,7 +165,7 @@ export function DaySheet({
             {LINKS.map((kind, index) => (
               <View key={kind}>
                 {index > 0 ? <View style={styles.separator} /> : null}
-                <Pressable
+                <Tappable
                   onPress={() => onBreakdown(kind)}
                   accessibilityRole="button"
                   style={styles.link}
@@ -174,7 +175,7 @@ export function DaySheet({
                     {breakdownTitle(kind)}
                   </Text>
                   <Icon name="chevronRight" size={12} color="textTertiary" />
-                </Pressable>
+                </Tappable>
               </View>
             ))}
           </Card>
