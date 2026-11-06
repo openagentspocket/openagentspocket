@@ -4,14 +4,7 @@ import {
   readFailureMessage,
   readFailureTitle,
 } from '@openagentspocket/core';
-import {
-  Banner,
-  EmptyState,
-  ErrorState,
-  makeStyles,
-  SkeletonRows,
-  Text,
-} from '@openagentspocket/ui';
+import { AsyncContent, Banner, EmptyState, makeStyles, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { say } from './say';
 
@@ -42,15 +35,22 @@ export function ChangesBlockedState({
   onRetry: () => void;
 }) {
   const failure = failureCopy(phase);
-  if (!failure) return <SkeletonRows accessibilityLabel={say('Reading Changes…')} />;
   return (
-    <ErrorState
-      summary={failure.title}
-      recovery={failure.message}
-      onRetry={onRetry}
-      retryLabel={say('Try Again')}
-      testID="changes-failure"
-    />
+    <AsyncContent
+      loading={!failure}
+      loadingLabel={say('Reading Changes…')}
+      failure={
+        failure && {
+          summary: failure.title,
+          recovery: failure.message,
+          onRetry,
+          retryLabel: say('Try Again'),
+          testID: 'changes-failure',
+        }
+      }
+    >
+      {null}
+    </AsyncContent>
   );
 }
 

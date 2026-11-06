@@ -1,6 +1,6 @@
 import { type AgentSkill, skillCommand, userFacingDescription } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { CodeBlock, ErrorState, Sheet, SkeletonRows } from '@openagentspocket/ui';
+import { AsyncContent, CodeBlock, Sheet } from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
 
 interface SkillContentSheetProps {
@@ -44,15 +44,21 @@ export function SkillContentSheet({ skill, readFile, onClose }: SkillContentShee
       detent="large"
       testID="skill-content"
     >
-      {load.kind === 'loading' ? <SkeletonRows accessibilityLabel={t('Loading…')} /> : null}
-      {load.kind === 'loaded' ? <CodeBlock code={load.content} /> : null}
-      {load.kind === 'failed' ? (
-        <ErrorState
-          layout="compact"
-          summary={t('Loading the skill failed: %@', load.error)}
-          testID="skill-content-failed"
-        />
-      ) : null}
+      <AsyncContent
+        loading={load.kind === 'loading'}
+        loadingLabel={t('Loading…')}
+        failure={
+          load.kind === 'failed'
+            ? {
+                layout: 'compact',
+                summary: t('Loading the skill failed: %@', load.error),
+                testID: 'skill-content-failed',
+              }
+            : null
+        }
+      >
+        {load.kind === 'loaded' ? <CodeBlock code={load.content} /> : null}
+      </AsyncContent>
     </Sheet>
   );
 }
