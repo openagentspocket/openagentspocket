@@ -1,0 +1,6 @@
+name: agentico
+version: "1.0"
+description: Forwards Hermes' asks and ends of turn to OpenAgentsPocket's notify hook
+provides_hooks:
+  - post_llm_call
+  - pre_approval_request
