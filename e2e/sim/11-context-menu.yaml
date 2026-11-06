@@ -1,0 +1,19 @@
+# Smoke: a long press opens its menu at the touch, and the lifted Agent card too.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- longPressOn:
+    id: inbox-p2
+- extendedWaitUntil:
+    visible:
+      id: agent-row-menu
+    timeout: 4000
+- takeScreenshot: design/atlas/sim/11-context-menu-agent
+- tapOn:
+    point: "50%,8%"
+- scrollUntilVisible:
+    element:
+      id: host-demo
+- longPressOn:
+    id: host-demo
+- takeScreenshot: design/atlas/sim/11-context-menu-host

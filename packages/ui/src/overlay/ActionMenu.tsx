@@ -40,7 +40,7 @@ export interface MenuAnchor {
 
 export { MENU_DISMISS_MS };
 
-const MENU_WIDTH = 250;
+export const MENU_WIDTH = 250;
 
 const useStyles = makeStyles((t) => ({
   backdrop: { flex: 1, backgroundColor: t.backdrop },
@@ -105,6 +105,10 @@ export function ActionMenu({
   const insets = useInsets();
   const window = useWindowDimensions();
   const pending = useRef<(() => void) | null>(null);
+  // A trigger forgets its anchor on close; the menu fades out where it stood, not at the default spot.
+  const lastAnchor = useRef(anchor);
+  if (anchor) lastAnchor.current = anchor;
+  const shown = anchor ?? lastAnchor.current;
 
   useEffect(() => {
     if (visible || !pending.current) return;
@@ -116,15 +120,19 @@ export function ActionMenu({
 
   const estimated = items.length * theme.metrics.minTapSize + (title ? 40 : 0);
   const margin = theme.spacing.xs;
-  const left = anchor
-    ? Math.min(Math.max(margin, anchor.x + anchor.width - width), window.width - width - margin)
+  const left = shown
+    ? Math.min(Math.max(margin, shown.x + shown.width - width), window.width - width - margin)
     : (window.width - width) / 2;
-  const below = anchor ? anchor.y + anchor.height + 4 : 0;
-  const fitsBelow = below + estimated < window.height - insets.bottom - margin;
-  const position = anchor
+  const below = shown ? shown.y + shown.height + 4 : 0;
+  const lowest = window.height - insets.bottom - margin;
+  const fitsBelow = below + estimated < lowest;
+  const fitsAbove = shown ? shown.y - 4 - estimated > insets.top + margin : false;
+  const position = shown
     ? fitsBelow
       ? { left, top: below }
-      : { left, bottom: window.height - anchor.y + 4 }
+      : fitsAbove
+        ? { left, bottom: window.height - shown.y + 4 }
+        : { left, top: Math.max(insets.top + margin, lowest - estimated) }
     : { left, bottom: insets.bottom + theme.spacing.lg };
 
   if (preview) {
@@ -134,6 +142,7 @@ export function ActionMenu({
         items={items}
         visible={visible}
         onClose={onClose}
+        anchor={anchor}
         inline={inline}
         testID={testID}
       />

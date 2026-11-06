@@ -6,8 +6,8 @@ import {
   InboxCard,
   type InboxPresentation,
   SwipeRow,
+  useContextMenu,
 } from '@openagentspocket/ui';
-import { useState } from 'react';
 import { homeLabels } from './homeLabels';
 import { ageSpoken, ageText, inboxAge } from './inboxAge';
 
@@ -40,7 +40,7 @@ interface InboxItemProps {
 
 /** One inbox card with its swipes (Pin leading, Close trailing) and the long-press menu. */
 export function InboxItem({ item, now, pinned, onOpen, onPin, onClose }: InboxItemProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const context = useContextMenu();
   const presentation = presentInbox(item, now);
   const actions = agentRowActions({
     pinned,
@@ -64,7 +64,7 @@ export function InboxItem({ item, now, pinned, onOpen, onPin, onClose }: InboxIt
       accessibilityLabel={label}
       testID={testID}
       onPress={onOpen ? () => onOpen(item) : undefined}
-      onLongPress={() => setMenuOpen(true)}
+      onLongPress={context.open}
     />
   );
   return (
@@ -76,12 +76,7 @@ export function InboxItem({ item, now, pinned, onOpen, onPin, onClose }: InboxIt
       >
         {card(`inbox-${item.row.agent.pane_id}`)}
       </SwipeRow>
-      <AgentRowMenu
-        preview={card('inbox-preview')}
-        items={actions.menu}
-        visible={menuOpen}
-        onClose={() => setMenuOpen(false)}
-      />
+      <AgentRowMenu preview={card('inbox-preview')} items={actions.menu} {...context.menuProps} />
     </>
   );
 }

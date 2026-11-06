@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { useContextMenu } from '../overlay/useContextMenu';
 import { Icon, type IconName } from '../primitives/Icon';
 import { MetaChip } from '../primitives/MetaChip';
 import { Text, type TextTone } from '../primitives/Text';
@@ -64,7 +64,7 @@ export function ChatUserBubble({
   testID = 'chat-user-bubble',
 }: ChatUserBubbleProps) {
   const styles = useStyles();
-  const [open, setOpen] = useState(false);
+  const context = useContextMenu();
   return (
     <View style={styles.row} testID={testID}>
       <Pressable
@@ -73,7 +73,7 @@ export function ChatUserBubble({
         onAccessibilityAction={(e) =>
           menu?.find((m) => m.key === e.nativeEvent.actionName)?.onPress()
         }
-        onLongPress={menu?.length ? () => setOpen(true) : undefined}
+        onLongPress={menu?.length ? context.open : undefined}
         style={[styles.bubble, pending && styles.pending]}
       >
         <Text variant="body">{text}</Text>
@@ -98,9 +98,7 @@ export function ChatUserBubble({
           </Text>
         </View>
       ) : null}
-      {menu?.length ? (
-        <ActionMenu items={menu} visible={open} onClose={() => setOpen(false)} />
-      ) : null}
+      {menu?.length ? <ActionMenu items={menu} {...context.menuProps} /> : null}
     </View>
   );
 }

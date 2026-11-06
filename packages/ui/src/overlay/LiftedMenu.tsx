@@ -1,9 +1,10 @@
-import { type ReactNode, useEffect, useRef } from 'react';
-import { Modal, Pressable, View } from 'react-native';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { Modal, Pressable, useWindowDimensions, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
-import { makeStyles } from '../theme/theme';
-import type { ActionMenuItem } from './ActionMenu';
+import { useInsets } from '../theme/insets';
+import { makeStyles, useTheme } from '../theme/theme';
+import type { ActionMenuItem, MenuAnchor } from './ActionMenu';
 import { MENU_DISMISS_MS } from './dismiss';
 
 const useStyles = makeStyles((t) => ({
@@ -15,6 +16,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.sm,
   },
   inline: { gap: t.spacing.sm, paddingHorizontal: t.spacing.md },
+  lifted: { gap: t.spacing.sm },
   menu: {
     alignSelf: 'flex-start',
     minWidth: 250,
@@ -47,6 +49,8 @@ interface LiftedMenuProps {
   items: readonly ActionMenuItem[];
   visible: boolean;
   onClose: () => void;
+  /** Where the press happened: the card and menu open around it, kept on screen. Centered without one. */
+  anchor?: MenuAnchor;
   /** Draws in place instead of a Modal (the gallery and tests). */
   inline?: boolean;
   /** Runs when the menu appears (the long-press haptic). */
@@ -63,11 +67,30 @@ export function LiftedMenu({
   items,
   visible,
   onClose,
+  anchor,
   inline = false,
   onOpen,
   testID = 'lifted-menu',
 }: LiftedMenuProps) {
   const styles = useStyles();
+  const theme = useTheme();
+  const insets = useInsets();
+  const window = useWindowDimensions();
+  const [height, setHeight] = useState(0);
+  // A trigger forgets its anchor on close; the menu fades out where it stood.
+  const lastAnchor = useRef(anchor);
+  if (anchor) lastAnchor.current = anchor;
+  const point = anchor ?? lastAnchor.current;
+  const margin = theme.spacing.xs;
+  const highest = insets.top + margin;
+  const lowest = window.height - insets.bottom - margin - height;
+  const placed = point
+    ? {
+        justifyContent: 'flex-start' as const,
+        paddingTop: Math.max(highest, Math.min(point.y - height / 2, lowest)),
+        opacity: height > 0 ? 1 : 0,
+      }
+    : undefined;
   const pending = useRef<(() => void) | null>(null);
   const onOpenRef = useRef(onOpen);
   onOpenRef.current = onOpen;
@@ -113,14 +136,20 @@ export function LiftedMenu({
     </Pressable>
   );
   const stage = (
-    <View style={inline ? styles.inline : styles.stage} pointerEvents="box-none">
-      <View testID={`${testID}-preview`} pointerEvents="none">
-        {preview}
-      </View>
-      <View style={styles.menu} accessibilityViewIsModal testID={testID}>
-        {regular.map(renderItem)}
-        {regular.length > 0 && destructive.length > 0 ? <View style={styles.divider} /> : null}
-        {destructive.map(renderItem)}
+    <View style={inline ? styles.inline : [styles.stage, placed]} pointerEvents="box-none">
+      <View
+        style={styles.lifted}
+        pointerEvents="box-none"
+        onLayout={(event) => setHeight(event.nativeEvent.layout.height)}
+      >
+        <View testID={`${testID}-preview`} pointerEvents="none">
+          {preview}
+        </View>
+        <View style={styles.menu} accessibilityViewIsModal testID={testID}>
+          {regular.map(renderItem)}
+          {regular.length > 0 && destructive.length > 0 ? <View style={styles.divider} /> : null}
+          {destructive.map(renderItem)}
+        </View>
       </View>
     </View>
   );

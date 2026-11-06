@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { useContextMenu } from '../overlay/useContextMenu';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
@@ -46,13 +46,13 @@ export function HomeHostCard({
 }: HomeHostCardProps) {
   const styles = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const context = useContextMenu();
   return (
     <>
       <Card
         padded={false}
         onPress={onPress}
-        onLongPress={menu?.length ? () => setOpen(true) : undefined}
+        onLongPress={menu?.length ? context.open : undefined}
         accessibilityLabel={`${host.name}, ${host.address}. ${host.readiness}`}
         testID={testID}
       >
@@ -90,9 +90,7 @@ export function HomeHostCard({
           </View>
         </View>
       </Card>
-      {menu?.length ? (
-        <ActionMenu items={menu} title={host.name} visible={open} onClose={() => setOpen(false)} />
-      ) : null}
+      {menu?.length ? <ActionMenu items={menu} title={host.name} {...context.menuProps} /> : null}
     </>
   );
 }

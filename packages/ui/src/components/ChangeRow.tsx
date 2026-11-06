@@ -1,5 +1,5 @@
 import { Children, Fragment, type ReactNode } from 'react';
-import { Pressable, View } from 'react-native';
+import { type GestureResponderEvent, Pressable, View } from 'react-native';
 import { Badge } from '../primitives/Badge';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
@@ -76,7 +76,7 @@ export type ChangeRowProps = (
   | { file: ChangeFile; summary?: undefined }
 ) & {
   onPress?: () => void;
-  onLongPress?: () => void;
+  onLongPress?: (event: GestureResponderEvent) => void;
   /** A file inside an expanded directory sits one step in. */
   indent?: boolean;
   labels?: AgentBarLabels;

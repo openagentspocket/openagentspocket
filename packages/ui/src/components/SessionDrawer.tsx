@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Modal, Pressable, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { useContextMenu } from '../overlay/useContextMenu';
 import { Icon } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { StatusDot } from '../primitives/StatusDot';
@@ -154,6 +155,7 @@ export function SessionDrawer({
   const theme = useTheme();
   const [query, setQuery] = useState('');
   const [view, setView] = useState<'tree' | 'agents'>('tree');
+  const context = useContextMenu();
   const [menu, setMenu] = useState<readonly ActionMenuItem[] | null>(null);
   const [folded, setFolded] = useState<ReadonlySet<string>>(new Set());
   const needle = query.trim().toLowerCase();
@@ -180,9 +182,11 @@ export function SessionDrawer({
         onPress={() => onSelect(item.id)}
         onLongPress={
           menuFor
-            ? () => {
+            ? (event) => {
                 const items = menuFor(item.id);
-                if (items.length > 0) setMenu(items);
+                if (items.length === 0) return;
+                setMenu(items);
+                context.open(event);
               }
             : undefined
         }
@@ -354,9 +358,7 @@ export function SessionDrawer({
       )}
     </View>
   );
-  const actionMenu = (
-    <ActionMenu items={menu ?? []} visible={menu !== null} onClose={() => setMenu(null)} />
-  );
+  const actionMenu = <ActionMenu items={menu ?? []} {...context.menuProps} />;
   if (!onClose) {
     return (
       <>

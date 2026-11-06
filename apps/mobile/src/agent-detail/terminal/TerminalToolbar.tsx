@@ -12,7 +12,7 @@ import {
 import { t } from '@openagentspocket/i18n';
 import { Icon, type IconName, makeStyles, Text } from '@openagentspocket/ui';
 import { useSyncExternalStore } from 'react';
-import { Pressable, View } from 'react-native';
+import { type GestureResponderEvent, Pressable, View } from 'react-native';
 import { keySpec, spokenName } from './keyTables';
 
 const useStyles = makeStyles((th) => ({
@@ -55,7 +55,7 @@ interface Props {
   /** The full keyboard is up (the entry then offers the system keyboard back). */
   fullKeyboardShown: boolean;
   onToggleKeyboard: () => void;
-  onMore: () => void;
+  onMore: (event: GestureResponderEvent) => void;
   dPadOpen: boolean;
   onToggleDPad: (open: boolean) => void;
 }
@@ -94,11 +94,11 @@ export function TerminalToolbar({
               : quick
                 ? spokenName(quick)
                 : label;
-    const press = () => {
+    const press = (event: GestureResponderEvent) => {
       if (isCtrl) keyboard.toggleModifier('control');
       else if (key === 'dPad') onToggleDPad(!dPadOpen);
       else if (key === 'keyboard') onToggleKeyboard();
-      else if (key === 'more') onMore();
+      else if (key === 'more') onMore(event);
       else if (quick) onKey(quick);
     };
     const glyph = GLYPH[key];

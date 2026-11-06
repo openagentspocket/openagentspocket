@@ -5,8 +5,13 @@ import {
   fileRowDetail,
   kindSymbol,
 } from '@openagentspocket/core';
-import { ActionMenu, type ChangeKind, ChangeRow, copyToClipboard } from '@openagentspocket/ui';
-import { useState } from 'react';
+import {
+  ActionMenu,
+  type ChangeKind,
+  ChangeRow,
+  copyToClipboard,
+  useContextMenu,
+} from '@openagentspocket/ui';
 import { say } from './say';
 
 interface ChangedFileRowProps {
@@ -27,7 +32,7 @@ export function ChangedFileRow({
   onOpen,
   onToggleDirectory,
 }: ChangedFileRowProps) {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const context = useContextMenu();
   const counts = file.lineCounts;
   const lines = counts && file.kind !== 'untracked' && counts.kind === 'lines' ? counts : null;
   const symbol = kindSymbol(file.kind);
@@ -44,13 +49,12 @@ export function ChangedFileRow({
         }}
         indent={depth === 1}
         onPress={() => (expanded === null ? onOpen(file) : onToggleDirectory(file))}
-        onLongPress={() => setMenuOpen(true)}
+        onLongPress={context.open}
         testID={`changes-file-${file.path}`}
       />
       <ActionMenu
         title={fileName(file)}
-        visible={menuOpen}
-        onClose={() => setMenuOpen(false)}
+        {...context.menuProps}
         items={[
           {
             key: 'copy-path',

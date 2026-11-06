@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { type GestureResponderEvent, View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { MetaChip } from '../primitives/MetaChip';
 import { ProgramMark } from '../primitives/ProgramMark';
@@ -46,7 +46,7 @@ interface InboxCardProps {
   selected?: boolean;
   onPress?: () => void;
   /** Opens the quick-detail sheet. */
-  onLongPress?: () => void;
+  onLongPress?: (event: GestureResponderEvent) => void;
   accessibilityLabel?: string;
   testID?: string;
 }

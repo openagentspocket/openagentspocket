@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import {
   type AccessibilityActionEvent,
   type AccessibilityActionInfo,
+  type GestureResponderEvent,
   Pressable,
   View,
 } from 'react-native';
@@ -40,7 +41,7 @@ interface CardProps {
   /** False for a grouped list whose rows pad themselves. */
   padded?: boolean;
   onPress?: () => void;
-  onLongPress?: () => void;
+  onLongPress?: (event: GestureResponderEvent) => void;
   accessibilityLabel?: string;
   accessibilityHint?: string;
   accessibilityActions?: readonly AccessibilityActionInfo[];

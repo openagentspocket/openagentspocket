@@ -8,6 +8,7 @@ import {
   type KeySpec,
   TerminalView,
   useAttachedTerminal,
+  useContextMenu,
 } from '@openagentspocket/ui';
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from 'expo-router';
@@ -44,7 +45,7 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
   const terminal = useAttachedTerminal(store);
   const input = useSyncExternalStore(session.input.subscribe, session.input.getSnapshot);
   const [keys, setKeys] = useState<Keys>('system');
-  const [menu, setMenu] = useState(false);
+  const context = useContextMenu();
   const [dPad, setDPad] = useState(false);
   const { keyboard } = session;
   const configuration = {
@@ -100,7 +101,7 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
         onKey={sendKey}
         fullKeyboardShown={keys === 'full'}
         onToggleKeyboard={() => showKeys(keys === 'full' ? 'system' : 'full')}
-        onMore={() => setMenu(true)}
+        onMore={context.open}
         dPadOpen={dPad}
         onToggleDPad={setDPad}
       />
@@ -124,7 +125,7 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
         <StatusOverlay status={terminal.snapshot.status} onRetry={store.retry.bind(store)} />
       </View>
       {dock ? <KeyboardDock rows={dock.rows} onKey={dockKey(dock)} testID="keys-dock" /> : null}
-      <ActionMenu items={items} visible={menu} onClose={() => setMenu(false)} />
+      <ActionMenu items={items} {...context.menuProps} />
       <PasteReviewSheet
         review={input.pendingPaste}
         onConfirm={() => session.input.confirmPaste()}

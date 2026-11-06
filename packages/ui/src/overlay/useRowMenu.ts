@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import type { AccessibilityActionEvent } from 'react-native';
 import type { ActionMenuItem } from './ActionMenu';
+import { useContextMenu } from './useContextMenu';
 
 interface RowAction {
   readonly key: string;
@@ -16,15 +16,15 @@ export function useRowMenu(
   menu: readonly ActionMenuItem[] | undefined,
   ...extra: readonly (readonly RowAction[] | undefined)[]
 ) {
-  const [open, setOpen] = useState(false);
+  const context = useContextMenu();
   const actions = [...extra.flatMap((list) => list ?? []), ...(menu ?? [])].filter(
     (action, index, all) => all.findIndex((other) => other.key === action.key) === index,
   );
   return {
     /** Spread on the ActionMenu. */
-    menuProps: { visible: open, onClose: () => setOpen(false) },
+    menuProps: context.menuProps,
     /** Undefined without a menu, so the row keeps its own long press. */
-    onLongPress: menu?.length ? () => setOpen(true) : undefined,
+    onLongPress: menu?.length ? context.open : undefined,
     /** Spread on the pressable. */
     a11y: {
       accessibilityActions: actions.map((action) => ({ name: action.key, label: action.title })),
