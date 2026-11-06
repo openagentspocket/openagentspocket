@@ -1,7 +1,7 @@
-import { type ReactNode, useState } from 'react';
-import type { AccessibilityActionEvent } from 'react-native';
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { useRowMenu } from '../overlay/useRowMenu';
 import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
@@ -64,12 +64,7 @@ export function CardRow({
   testID,
 }: CardRowProps) {
   const styles = useStyles();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const extra = [...(swipeActions ?? []), ...(leadingSwipeActions ?? []), ...(menu ?? [])].filter(
-    (action, index, all) => all.findIndex((other) => other.key === action.key) === index,
-  );
-  const onAccessibilityAction = (event: AccessibilityActionEvent) =>
-    extra.find((action) => action.key === event.nativeEvent.actionName)?.onPress();
+  const rowMenu = useRowMenu(menu, swipeActions, leadingSwipeActions);
   const card = (
     <View>
       <Card
@@ -77,11 +72,10 @@ export function CardRow({
         accent={accent}
         padded={padded}
         onPress={onPress}
-        onLongPress={menu?.length ? () => setMenuOpen(true) : undefined}
+        onLongPress={rowMenu.onLongPress}
         accessibilityLabel={accessibilityLabel}
         accessibilityHint={accessibilityHint}
-        accessibilityActions={extra.map((action) => ({ name: action.key, label: action.title }))}
-        onAccessibilityAction={onAccessibilityAction}
+        {...rowMenu.a11y}
         testID={testID}
       >
         {children}
@@ -100,14 +94,7 @@ export function CardRow({
       ) : (
         card
       )}
-      {menu?.length ? (
-        <ActionMenu
-          items={menu}
-          title={menuTitle}
-          visible={menuOpen}
-          onClose={() => setMenuOpen(false)}
-        />
-      ) : null}
+      {menu?.length ? <ActionMenu items={menu} title={menuTitle} {...rowMenu.menuProps} /> : null}
     </View>
   );
 }

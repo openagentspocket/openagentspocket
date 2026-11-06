@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { useRowMenu } from '../overlay/useRowMenu';
 import { Icon } from '../primitives/Icon';
 import { MetaChip } from '../primitives/MetaChip';
 import { Text } from '../primitives/Text';
@@ -60,23 +60,20 @@ export function PortRow({
   testID,
 }: PortRowProps) {
   const styles = useStyles();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const rowMenu = useRowMenu(menu);
   const number = String(port.number);
   return (
     <>
       <Pressable
         onPress={onOpen}
-        onLongPress={menu?.length ? () => setMenuOpen(true) : undefined}
+        onLongPress={rowMenu.onLongPress}
         disabled={!port.reachable && !menu?.length}
         accessible
         accessibilityRole="button"
         accessibilityLabel={`${port.name}, ${number}`}
         accessibilityHint={port.reachable ? accessibilityHint : undefined}
         accessibilityState={{ disabled: !port.reachable }}
-        accessibilityActions={(menu ?? []).map((item) => ({ name: item.key, label: item.title }))}
-        onAccessibilityAction={(event) =>
-          menu?.find((item) => item.key === event.nativeEvent.actionName)?.onPress()
-        }
+        {...rowMenu.a11y}
         style={({ pressed }) => [
           styles.row,
           !port.reachable && styles.unreachable,
@@ -124,14 +121,7 @@ export function PortRow({
         </Text>
         {port.reachable ? <Icon name="chevronRight" size={13} color="textTertiary" /> : null}
       </Pressable>
-      {menu?.length ? (
-        <ActionMenu
-          items={menu}
-          title={port.name}
-          visible={menuOpen}
-          onClose={() => setMenuOpen(false)}
-        />
-      ) : null}
+      {menu?.length ? <ActionMenu items={menu} title={port.name} {...rowMenu.menuProps} /> : null}
     </>
   );
 }

@@ -1,8 +1,7 @@
-import { useState } from 'react';
-import type { AccessibilityActionEvent } from 'react-native';
 import { Pressable, View } from 'react-native';
 import type { ActionMenuItem } from '../overlay/ActionMenu';
 import { loadSwiftUi, NativePreviewMenu, supportsNativePreview } from '../overlay/NativeActionMenu';
+import { useRowMenu } from '../overlay/useRowMenu';
 import { Card } from '../primitives/Card';
 import { type SwipeAction, SwipeRow } from '../primitives/SwipeRow';
 import { airy } from '../theme/metrics';
@@ -77,7 +76,7 @@ export function AgentCard({
   testID = 'agent-card',
 }: AgentCardProps) {
   const styles = useStyles();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const rowMenu = useRowMenu(menu, swipeActions, leadingSwipeActions);
   const body = (
     <AgentCardBody
       agent={agent}
@@ -86,20 +85,15 @@ export function AgentCard({
       labels={labels}
     />
   );
-  const actions = [...(swipeActions ?? []), ...(leadingSwipeActions ?? []), ...(menu ?? [])].filter(
-    (action, index, all) => all.findIndex((other) => other.key === action.key) === index,
-  );
   const a11y = {
     accessible: true,
     accessibilityRole: 'button' as const,
     accessibilityLabel: agentCardLabel(agent, labels),
-    accessibilityActions: actions.map((action) => ({ name: action.key, label: action.title })),
-    onAccessibilityAction: (event: AccessibilityActionEvent) =>
-      actions.find((action) => action.key === event.nativeEvent.actionName)?.onPress(),
+    ...rowMenu.a11y,
   };
   const nativeUi = menuPresentation === 'native' && menu?.length ? loadSwiftUi() : null;
   const native = supportsNativePreview(nativeUi) ? nativeUi : null;
-  const open = menu?.length && !native ? () => setMenuOpen(true) : undefined;
+  const open = native ? undefined : rowMenu.onLongPress;
   const front =
     presentation === 'card' ? (
       <View>
@@ -160,12 +154,7 @@ export function AgentCard({
         <View style={styles.separator} pointerEvents="none" testID={`separator-${testID}`} />
       ) : null}
       {menu?.length && !native ? (
-        <AgentRowMenu
-          preview={lifted}
-          items={menu}
-          visible={menuOpen}
-          onClose={() => setMenuOpen(false)}
-        />
+        <AgentRowMenu preview={lifted} items={menu} {...rowMenu.menuProps} />
       ) : null}
     </View>
   );

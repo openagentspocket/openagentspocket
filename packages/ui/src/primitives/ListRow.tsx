@@ -1,7 +1,8 @@
-import { type ReactNode, useState } from 'react';
-import { type AccessibilityActionEvent, Pressable, View } from 'react-native';
+import type { ReactNode } from 'react';
+import { Pressable, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { useAnchor } from '../overlay/anchors';
+import { useRowMenu } from '../overlay/useRowMenu';
 import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
@@ -118,28 +119,21 @@ export function ListRow({
 }: ListRowProps) {
   const styles = useStyles();
   const anchorRef = useAnchor(anchorKey);
-  const [menuOpen, setMenuOpen] = useState(false);
-  // Swipe and menu actions, once each by key, as screen-reader actions.
-  const extra = [...(swipeActions ?? []), ...(leadingSwipeActions ?? []), ...(menu ?? [])].filter(
-    (action, index, all) => all.findIndex((other) => other.key === action.key) === index,
-  );
-  const onAccessibilityAction = (event: AccessibilityActionEvent) =>
-    extra.find((action) => action.key === event.nativeEvent.actionName)?.onPress();
+  const rowMenu = useRowMenu(menu, swipeActions, leadingSwipeActions);
   const spoken = accessibilityLabel ?? [title, subtitle, value].filter(Boolean).join(', ');
 
   const body = (
     <Pressable
       ref={anchorRef}
       onPress={onPress}
-      onLongPress={menu?.length ? () => setMenuOpen(true) : undefined}
+      onLongPress={rowMenu.onLongPress}
       disabled={disabled || (!onPress && !menu?.length)}
       accessible
       accessibilityRole={onPress ? 'button' : undefined}
       accessibilityLabel={spoken}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled, selected }}
-      accessibilityActions={extra.map((action) => ({ name: action.key, label: action.title }))}
-      onAccessibilityAction={onAccessibilityAction}
+      {...rowMenu.a11y}
       style={({ pressed }) => [
         styles.row,
         selected && styles.selected,
@@ -197,14 +191,7 @@ export function ListRow({
       ) : (
         body
       )}
-      {menu?.length ? (
-        <ActionMenu
-          items={menu}
-          title={menuTitle}
-          visible={menuOpen}
-          onClose={() => setMenuOpen(false)}
-        />
-      ) : null}
+      {menu?.length ? <ActionMenu items={menu} title={menuTitle} {...rowMenu.menuProps} /> : null}
     </>
   );
 }

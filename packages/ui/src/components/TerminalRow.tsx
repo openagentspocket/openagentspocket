@@ -1,7 +1,7 @@
-import { Children, Fragment, type ReactNode, useState } from 'react';
-import type { AccessibilityActionEvent } from 'react-native';
+import { Children, Fragment, type ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
+import { useRowMenu } from '../overlay/useRowMenu';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { type SwipeAction, SwipeRow } from '../primitives/SwipeRow';
@@ -77,20 +77,14 @@ export function TerminalRow({
   testID = 'terminal-row',
 }: TerminalRowProps) {
   const styles = useStyles();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const actions = [...(swipeActions ?? []), ...(menu ?? [])].filter(
-    (action, index, all) => all.findIndex((other) => other.key === action.key) === index,
-  );
+  const rowMenu = useRowMenu(menu, swipeActions);
   const body = (
     <Pressable
       onPress={onPress}
-      onLongPress={menu?.length ? () => setMenuOpen(true) : undefined}
+      onLongPress={rowMenu.onLongPress}
       accessibilityRole="button"
       accessibilityLabel={[terminal.title, terminal.path, terminal.host].filter(Boolean).join(', ')}
-      accessibilityActions={actions.map((action) => ({ name: action.key, label: action.title }))}
-      onAccessibilityAction={(event: AccessibilityActionEvent) =>
-        actions.find((action) => action.key === event.nativeEvent.actionName)?.onPress()
-      }
+      {...rowMenu.a11y}
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}
       testID={testID}
     >
@@ -120,12 +114,7 @@ export function TerminalRow({
         body
       )}
       {menu?.length ? (
-        <ActionMenu
-          items={menu}
-          title={terminal.title}
-          visible={menuOpen}
-          onClose={() => setMenuOpen(false)}
-        />
+        <ActionMenu items={menu} title={terminal.title} {...rowMenu.menuProps} />
       ) : null}
     </>
   );
