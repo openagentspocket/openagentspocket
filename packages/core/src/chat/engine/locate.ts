@@ -1,13 +1,10 @@
 // Finds the transcript file of a conversation (the `locate` step of Swift ChatConversationEngine).
 
-import { ClaudeTranscriptLocator } from '../claude/locator';
-import { type CodexRolloutSegment, CodexTranscriptLocator, liveSegment } from '../codex/locator';
-import { locateGrokTranscript } from '../grok/locate';
+import type { CodexRolloutSegment } from '../codex/locator';
 import type { ConversationReference } from '../model/conversation-reference';
 import type { ChatHostFiles } from '../model/host-files';
 import type { ChatAgentActivity } from '../model/types';
-import { locateOpenCodeTranscript } from '../opencode/locate';
-import { locatePiTranscript } from '../pi/locate';
+import { programDefinition } from '../programs/registry';
 import type { ChatUnavailableReason } from '../timeline/reasons';
 
 export interface LocateState {
@@ -43,82 +40,6 @@ export type Location =
       newConversationActivity: ChatAgentActivity | null;
     };
 
-export async function locateTranscript(state: LocateState): Promise<Location> {
-  const { reference } = state;
-  let remembered = state.newConversationActivity;
-  const unavailable = (reason: ChatUnavailableReason): Location => ({
-    type: 'unavailable',
-    reason,
-    newConversationActivity: remembered,
-  });
-  switch (reference.program) {
-    case 'claude': {
-      const candidates = [...state.directories];
-      if (state.relocatedDirectory !== null) {
-        const at = candidates.indexOf(state.relocatedDirectory);
-        if (at >= 0) candidates.splice(at, 1);
-        candidates.unshift(state.relocatedDirectory);
-      }
-      const isNew = !state.lostAMessage && state.awaitingFirstMessage;
-      const searchesEveryProject = !isNew || state.activity !== remembered;
-      // Once per activity, so a search that fails is not repeated every pass.
-      if (isNew && searchesEveryProject) remembered = state.activity;
-      const result = await new ClaudeTranscriptLocator(state.files).locate({
-        sessionID: reference.sessionID,
-        directories: candidates,
-        searchesEveryProject,
-        accountDirectories: state.accountDirectories,
-      });
-      if (result.ok) {
-        return {
-          type: 'found',
-          path: result.location.transcriptPath,
-          segments: [],
-          newConversationActivity: remembered,
-        };
-      }
-      const why = result.reason;
-      if (why.type === 'notFound') {
-        return unavailable(
-          searchesEveryProject
-            ? { kind: 'notFound', searchedAll: why.searchedAll }
-            : { kind: 'awaitingFirstMessage', program: 'claude' },
-        );
-      }
-      if (why.type === 'mismatched') return unavailable({ kind: 'mismatched' });
-      // notWritten: a file shown before, or saved on the device, that is gone is not a new conversation.
-      if (state.hasHistory || state.lostAMessage) {
-        return unavailable({ kind: 'notFound', searchedAll: true });
-      }
-      remembered = state.activity;
-      return unavailable({ kind: 'awaitingFirstMessage', program: 'claude' });
-    }
-    case 'codex': {
-      const result = await new CodexTranscriptLocator(state.files, state.now).locate(
-        reference.sessionID,
-      );
-      if (!result.ok) {
-        return unavailable(
-          result.reason === 'notFound'
-            ? { kind: 'notFound', searchedAll: true }
-            : { kind: result.reason },
-        );
-      }
-      const live = liveSegment(result.location);
-      if (!live) return unavailable({ kind: 'notFound', searchedAll: true });
-      return {
-        type: 'found',
-        path: live.path,
-        segments: result.location.segments,
-        newConversationActivity: remembered,
-      };
-    }
-    case 'pi':
-    case 'omp':
-      return locatePiTranscript(state);
-    case 'grok':
-      return locateGrokTranscript(state);
-    case 'opencode':
-      return locateOpenCodeTranscript(state);
-  }
+export function locateTranscript(state: LocateState): Promise<Location> {
+  return programDefinition(state.reference.program).locate(state);
 }

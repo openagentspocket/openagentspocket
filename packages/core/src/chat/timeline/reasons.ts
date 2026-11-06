@@ -49,6 +49,8 @@ export type ChatUnavailableReason =
   /** The session record names something other than a session id the program's naming accepts. */
   | { kind: 'unidentifiedSession'; program: ChatProgram }
   | { kind: 'unsupportedSession' }
+  /** A program Chat has no reader for: its terminal is all there is. */
+  | { kind: 'unreadableProgram' }
   /** No transcript was found; `searchedAll` is false when the search was cut short. */
   | { kind: 'notFound'; searchedAll: boolean }
   /** The program writes its file only with the first message or reply: a message starts it. */

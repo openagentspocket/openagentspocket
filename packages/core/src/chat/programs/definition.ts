@@ -1,5 +1,7 @@
 import type { BlockedProgramSupport } from '../../blocked/programs';
+import type { Message } from '../../errors/text';
 import type { ChatTranscriptAdapter } from '../engine/adapter';
+import type { LocateState, Location } from '../engine/locate';
 import type { ChatProgram } from '../model/types';
 import type { ProgramSendPolicy } from '../send/policy';
 
@@ -12,6 +14,8 @@ export interface ProgramDefinition {
   program: ChatProgram;
   /** The program's name in what Chat says about its conversation. */
   chatName: string;
+  /** What Chat says while herdr has reported no session for the Agent. */
+  noSessionMessage: () => Message;
   /** Turns the value herdr reports into the program's session id; null when it is not one. */
   sessionID: (value: string) => string | null;
   /** The session may be named by the absolute path of its `.jsonl` transcript. */
@@ -20,6 +24,8 @@ export interface ProgramDefinition {
   movesFileOnRewrite?: boolean;
   /** Null for a program Chat cannot read in this build. */
   adapter: () => ChatTranscriptAdapter | null;
+  /** Finds the conversation's transcript on the Host. */
+  locate: (state: LocateState) => Promise<Location>;
   sendPolicy: () => ProgramSendPolicy;
   /** What the Blocked card reads and answers; absent for a program with no dialogs to parse. */
   blocked?: () => BlockedProgramSupport | null;

@@ -81,7 +81,7 @@ export class ConversationSends {
     if (this.tracker) return this.tracker;
     const { options, wiring } = { options: this.wiring.options, wiring: this.wiring };
     const view = options.agent();
-    if (!view) return null;
+    if (!view || view.program === null) return null;
     const { program } = view;
     this.tracker = new SendTracker({
       policy: sendPolicyFor(program),

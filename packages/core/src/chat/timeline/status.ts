@@ -4,6 +4,7 @@
 
 import { type Message, message } from '../../errors/text';
 import type { ChatProgram } from '../model/types';
+import { programDefinition } from '../programs/registry';
 import {
   type ChatLaunchNotice,
   type ChatSessionStoreProblem,
@@ -58,6 +59,7 @@ export function reasonTitle(
       return m('No Messages Yet');
     case 'compressed':
       return m('Conversation Compressed');
+    case 'unreadableProgram':
     case 'unsupportedSession':
     case 'unsupportedFormat':
       return m('Conversation Not Readable');
@@ -82,33 +84,6 @@ export function reasonIcon(
       return reason.problem.kind === 'sessionMissing' ? 'notFound' : 'alertBubble';
     default:
       return 'alertBubble';
-  }
-}
-
-function noSessionExplanation(program: ChatProgram): Message {
-  switch (program) {
-    case 'claude':
-      return m(
-        "herdr hasn't reported a Claude Code session ID for this Agent. Chat will keep checking. You can continue in the Agent terminal.",
-      );
-    case 'codex':
-      return m('Codex reports its conversation after a prompt. Send one to show it here.');
-    case 'pi':
-      return m(
-        "herdr hasn't reported a Pi conversation for this Agent yet. Pi reports it once it has started, after you answer whether to trust the project folder. If this lasts, check the Pi integration on the Host. Chat will keep checking, and you can continue in the Agent terminal.",
-      );
-    case 'omp':
-      return m(
-        "herdr hasn't reported an Oh My Pi conversation for this Agent yet. Oh My Pi reports it once it has started. If this lasts, check the OMP integration on the Host. Chat will keep checking, and you can continue in the Agent terminal.",
-      );
-    case 'grok':
-      return m(
-        "herdr hasn't reported a Grok Build session ID for this Agent. Grok Build reports one when a session starts, including after /new or /clear. Chat keeps checking; you can continue in the Agent terminal.",
-      );
-    case 'opencode':
-      return m(
-        "herdr hasn't reported an OpenCode conversation for this Agent yet. OpenCode reports one once a conversation is open: send a first message in the terminal, or open a session there. Chat will keep checking, and you can continue in the Agent terminal.",
-      );
   }
 }
 
@@ -167,7 +142,7 @@ export function reasonExplanation(
   }
   switch (reason.kind) {
     case 'noSession':
-      return noSessionExplanation(reason.program);
+      return programDefinition(reason.program).noSessionMessage();
     case 'unidentifiedSession':
       return reason.program === 'opencode'
         ? m(
@@ -178,6 +153,8 @@ export function reasonExplanation(
           );
     case 'unsupportedSession':
       return m("herdr reports a session Chat doesn't read.");
+    case 'unreadableProgram':
+      return m("Chat doesn't read this program yet. Its terminal works as usual.");
     case 'notFound':
       return reason.searchedAll
         ? m(
@@ -230,6 +207,7 @@ export function reasonBannerText(
         ? m('%@ saves this conversation after its first reply.', chatName(reason.program))
         : m('%@ saves this conversation once it has a first message.', chatName(reason.program));
     case 'unidentifiedSession':
+    case 'unreadableProgram':
     case 'unsupportedSession':
       return saved(
         "Chat can't follow this conversation now. Showing saved messages.",

@@ -29,8 +29,7 @@ export function chatAgentViewOf(agent: herdr.AgentInfo): ChatAgentView {
   const named = agent.agent ?? null;
   const reported = agent.agent_session ?? null;
   const program =
-    CHAT_PROGRAMS.find((candidate) => candidate === named || candidate === reported?.agent) ??
-    'claude';
+    CHAT_PROGRAMS.find((candidate) => candidate === named || candidate === reported?.agent) ?? null;
   return {
     program,
     activity: activityOf(agent.agent_status),

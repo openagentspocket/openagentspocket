@@ -69,7 +69,7 @@ export class SessionWatch {
   async confirmBeforeSend(): Promise<string | null> {
     const { options } = this.host;
     const view = this.view();
-    if (!view) return null;
+    if (!view || view.program === null) return null;
     const policy = sendPolicyFor(view.program);
     if (!policy.confirmsSessionBeforeSend || !options.agentInfo) return null;
     const name = policy.chatName;
@@ -107,6 +107,7 @@ export class SessionWatch {
    * first read after Retry.
    */
   async checkStartScreen(view: ChatAgentView): Promise<void> {
+    if (view.program === null) return;
     const { options } = this.host;
     const policy = sendPolicyFor(view.program);
     const { terminalTitle: title, screenRoute } = policy;

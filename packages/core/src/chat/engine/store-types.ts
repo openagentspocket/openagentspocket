@@ -20,7 +20,8 @@ import type { ChatConversationSnapshot, ChatToolOutputFailure } from './snapshot
 
 /** The slice of herdr's Agent record Chat follows. */
 export interface ChatAgentView {
-  program: ChatProgram;
+  /** Null for a program Chat has no reader for. */
+  program: ChatProgram | null;
   activity: ChatAgentActivity;
   cwd: string | null;
   foregroundCwd: string | null;

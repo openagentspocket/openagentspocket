@@ -26,6 +26,9 @@ export function bindTarget(
   /** The conversation the program left for its home screen: a report of it reads as none. */
   stale: ConversationReference | null = null,
 ): Binding {
+  if (view?.program === null) {
+    return { boundTo: null, continued, target: null, reason: { kind: 'unreadableProgram' } };
+  }
   const resolution = resolveConversation(view?.session);
   const program = view?.program ?? 'claude';
   const staleReport = resolution.type === 'bound' && sameReference(resolution.reference, stale);
