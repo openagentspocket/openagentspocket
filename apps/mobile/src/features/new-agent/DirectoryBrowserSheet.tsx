@@ -1,6 +1,7 @@
 import { DirectoryBrowser, type DirectoryLister, RemoteHostPath } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
+  AsyncContent,
   Banner,
   Button,
   EmptyState,
@@ -9,7 +10,6 @@ import {
   makeStyles,
   Section,
   Sheet,
-  SkeletonRows,
   TextField,
   useStoreState,
 } from '@openagentspocket/ui';
@@ -61,7 +61,11 @@ export function DirectoryBrowserSheet({
   if (currentPath === undefined && error) {
     list = null;
   } else if (currentPath === undefined) {
-    list = <SkeletonRows accessibilityLabel={t('Loading folders…')} />;
+    list = (
+      <AsyncContent loading loadingLabel={t('Loading folders…')}>
+        {null}
+      </AsyncContent>
+    );
   } else if (shown.length === 0 && filter === '') {
     list = (
       <EmptyState

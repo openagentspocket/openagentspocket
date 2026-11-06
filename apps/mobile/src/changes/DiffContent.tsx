@@ -7,16 +7,15 @@ import {
   lineCountsSummary,
 } from '@openagentspocket/core';
 import {
+  AsyncContent,
   Banner,
   Button,
   Chip,
   ChipRow,
   DiffRow,
   EmptyState,
-  ErrorState,
   layoutModeFor,
   makeStyles,
-  SkeletonRows,
   Text,
   useStoreState,
 } from '@openagentspocket/ui';
@@ -66,18 +65,27 @@ export function DiffContent({ diff, width: given }: { diff: FileDiffStore; width
   const files = phase.kind === 'loaded' ? phase.patch.files : null;
   const hunks = useMemo(() => (files ? files.map(diffHunks) : []), [files]);
 
-  if (phase.kind === 'failed') {
+  if (phase.kind === 'failed' || !files) {
     return (
-      <ErrorState
-        summary={say("Couldn't Read Diff")}
-        recovery={phase.message}
-        onRetry={() => void diff.reload()}
-        retryLabel={say('Try Again')}
-        testID="diff-failure"
-      />
+      <AsyncContent
+        loading={phase.kind !== 'failed'}
+        loadingLabel={say('Reading Diff…')}
+        failure={
+          phase.kind === 'failed'
+            ? {
+                summary: say("Couldn't Read Diff"),
+                recovery: phase.message,
+                onRetry: () => void diff.reload(),
+                retryLabel: say('Try Again'),
+                testID: 'diff-failure',
+              }
+            : null
+        }
+      >
+        {null}
+      </AsyncContent>
     );
   }
-  if (!files) return <SkeletonRows accessibilityLabel={say('Reading Diff…')} />;
   const canSplit = layoutModeFor(width) !== 'compact';
   return (
     <View testID="diff-content">
