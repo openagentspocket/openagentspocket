@@ -16,7 +16,7 @@ interface Props {
 /** The Console's Agents in the bottom capsule, with the Chat/Terminal switch pinned at its end. */
 export function AgentSwitcher({ rows, currentKey, onSelect, surface, onSurface }: Props) {
   const agents: SwitcherAgent[] = rows.map((row) => ({
-    id: row.agent.pane_id,
+    id: rowKey(row),
     title: agentDisplayName(row.agent),
     program: row.agent.agent ?? 'unknown',
     status: statusDot(row.agent.agent_status),
@@ -26,9 +26,9 @@ export function AgentSwitcher({ rows, currentKey, onSelect, surface, onSurface }
     <View testID="agent-switcher">
       <Capsule
         agents={agents}
-        currentId={current?.agent.pane_id ?? ''}
+        currentId={current ? rowKey(current) : ''}
         onSelect={(id) => {
-          const row = rows.find((candidate) => candidate.agent.pane_id === id);
+          const row = rows.find((candidate) => rowKey(candidate) === id);
           if (row && rowKey(row) !== currentKey) onSelect(row);
         }}
         trailing={[

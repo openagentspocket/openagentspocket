@@ -49,6 +49,43 @@ export function installCrashRecorder(
   });
 }
 
+/** The slice of React Native's `NativeExceptionsManager` a fatal JS error passes through. */
+export interface ExceptionReporter {
+  reportException(data: {
+    message: string;
+    isFatal: boolean;
+    stack?: readonly { methodName?: string; file?: string | null; lineNumber?: number | null }[];
+  }): void;
+}
+
+/**
+ * The same record for this architecture's error path: with `RN$useAlwaysAvailableJSErrorHandling`
+ * React Native never sets the `ErrorUtils` handler, so a fatal error reaches only this report,
+ * right before native aborts.
+ */
+export function installFatalReportRecorder(
+  reporter: ExceptionReporter | undefined,
+  storage: CrashStorage,
+  now: () => number = Date.now,
+): void {
+  if (!reporter) return;
+  const previous = reporter.reportException.bind(reporter);
+  reporter.reportException = (data) => {
+    if (data.isFatal) {
+      try {
+        const stack = (data.stack ?? [])
+          .map((frame) => `${frame.methodName ?? '?'} ${frame.file ?? ''}:${frame.lineNumber ?? 0}`)
+          .join('\n');
+        const record: CrashRecord = { at: now(), fatal: true, message: data.message, stack };
+        storage.setItemSync(KEY, JSON.stringify(record));
+      } catch {
+        // Recording must never replace the error it records.
+      }
+    }
+    previous(data);
+  };
+}
+
 /** The error recorded before the app last closed, if one was not dismissed. */
 export function readLastCrash(storage: CrashStorage): CrashRecord | undefined {
   try {

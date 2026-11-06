@@ -14,6 +14,7 @@ const useStyles = makeStyles((t) => ({
   base: {
     minHeight: t.metrics.minTapSize,
     paddingHorizontal: t.spacing.md,
+    paddingVertical: t.spacing.xxs,
     borderRadius: t.metrics.cardRadius,
     flexDirection: 'row',
     alignItems: 'center',
@@ -26,15 +27,11 @@ const useStyles = makeStyles((t) => ({
   iconOnly: { paddingHorizontal: 0, minWidth: t.metrics.minTapSize },
   iconOnlySmall: { minWidth: 32 },
   primary: { backgroundColor: t.colors.accent },
-  secondary: {
-    backgroundColor: t.colors.control,
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-  },
+  secondary: { backgroundColor: t.colors.control },
   destructive: { backgroundColor: t.wash(t.colors.danger) },
   text: { paddingHorizontal: t.spacing.xs },
   capsule: { backgroundColor: t.colors.accentContainer, borderRadius: 999 },
-  label: { flexShrink: 1 },
+  label: { flexShrink: 1, textAlign: 'center' },
   pill: { borderRadius: 999 },
   pressed: { opacity: 0.75 },
   disabled: { opacity: 0.4 },
@@ -137,8 +134,9 @@ export function Button({
       {title !== undefined ? (
         <Text
           variant={size === 'regular' ? 'headline' : 'callout'}
-          numberOfLines={1}
-          adjustsFontSizeToFit
+          // Every button reads at one size: a long label wraps, and only a shared row may shrink it.
+          numberOfLines={tight ? 1 : 3}
+          adjustsFontSizeToFit={tight}
           minimumFontScale={0.8}
           style={[styles.label, { color: ink }]}
         >

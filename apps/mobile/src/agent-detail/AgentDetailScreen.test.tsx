@@ -53,8 +53,8 @@ describe('AgentDetailScreen', () => {
 
   it('switches to another Agent from the strip', async () => {
     const { onSwitch } = renderDetail({ paneId: 'p2' });
-    await waitFor(() => expect(screen.getByTestId('switch-p3')).toBeTruthy());
-    fireEvent.press(screen.getByTestId('switch-p3'));
+    await waitFor(() => expect(screen.getByTestId(/^switch-.*p3$/)).toBeTruthy());
+    fireEvent.press(screen.getByTestId(/^switch-.*p3$/));
     expect(onSwitch).toHaveBeenCalledWith(expect.objectContaining({ hostId: 'demo' }));
   });
 

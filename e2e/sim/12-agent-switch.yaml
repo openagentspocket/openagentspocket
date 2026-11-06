@@ -1,0 +1,36 @@
+# Smoke: moving between Agents from the bottom capsule, on chat and terminal.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- tapOn:
+    id: inbox-p2
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 15000
+- tapOn:
+    id: "switch-.*p1"
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 5000
+- tapOn:
+    id: "switch-.*p3"
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 5000
+- tapOn:
+    id: "switch-.*p2"
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 5000
+- tapOn:
+    id: "switch-.*p1"
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 5000
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/12-agent-switch

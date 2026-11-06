@@ -2,6 +2,7 @@ import {
   type BlockedCardState,
   BlockedCardStore,
   blockedSupportFor,
+  CHAT_PROGRAMS,
   type ChatProgram,
   type ConsoleRow,
   type ObservedActivity,
@@ -13,8 +14,9 @@ import { useConsoleStore } from '../console/hooks';
 
 /** The Agent's program as Chat knows it; undefined for programs without a Blocked card. */
 export function chatProgramOf(row: ConsoleRow): ChatProgram | undefined {
-  const kind = programIdentity(row.agent.agent ?? '').kind as ChatProgram | undefined;
-  return kind && blockedSupportFor(kind) ? kind : undefined;
+  const { kind } = programIdentity(row.agent.agent ?? '');
+  const program = CHAT_PROGRAMS.find((candidate) => candidate === kind);
+  return program && blockedSupportFor(program) ? program : undefined;
 }
 
 /** herdr's Agent Status as the card's confirmation rules see it. */
