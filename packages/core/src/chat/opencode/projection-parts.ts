@@ -2,9 +2,8 @@
 // notices a note or a failed compaction shows (Swift OpenCodeTranscriptReducer private helpers).
 
 import { notice } from '../model/factories';
-import { markdownPlainText } from '../model/markdown-plain';
-import { capPreview } from '../model/preview';
 import type { ChatNotice, ChatTurnEnd } from '../model/types';
+import { trimmed } from '../store/text';
 import type {
   OpenCodeError,
   OpenCodeNote,
@@ -46,19 +45,7 @@ export const offsetOf = (seq: number) => Math.max(seq, 0);
 export const dateOf = (milliseconds: number | null | undefined): string | null =>
   milliseconds == null ? null : new Date(milliseconds).toISOString();
 
-export const trimmed = (text: string) => text.trim();
-export const scalarCount = (text: string) => Array.from(text).length;
-/** Whether the source cut `text`: `length` counts what OpenCode stored, in characters as SQLite counts them. */
-export const isCut = (text: string, length: number | null) => (length ?? 0) > scalarCount(text);
-export const shown = (text: string, cut: boolean) =>
-  cut ? `${text}\n\n(truncated in Chat)` : text;
-
-/** A compaction divider's preview: the summary's Markdown as plain lines, capped like a row's output. */
-export function compactionPreview(summary: string | null): string | null {
-  if (summary === null) return null;
-  const preview = capPreview(markdownPlainText(summary)).text;
-  return preview === '' ? null : preview;
-}
+export { compactionPreview, isCut, scalarCount, shown, trimmed } from '../store/text';
 
 export const isDeclined = (tool: OpenCodeTool) =>
   tool.status === 'error' &&

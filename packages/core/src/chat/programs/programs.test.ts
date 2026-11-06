@@ -16,9 +16,9 @@ describe('program definitions', () => {
     }
   });
 
-  it('only Pi has no Blocked dialogs to parse', () => {
+  it('only Pi and Hermes Agent have no Blocked dialogs to parse', () => {
     const without = programDefinitions().filter((definition) => !definition.blocked);
-    expect(without.map((definition) => definition.program)).toEqual(['pi']);
+    expect(without.map((definition) => definition.program)).toEqual(['pi', 'hermes']);
   });
 });
 

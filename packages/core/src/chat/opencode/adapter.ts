@@ -1,33 +1,19 @@
 // How Chat reads OpenCode (Swift ChatTranscriptAdapter.openCode, ADR 0025): its conversations are
 // read by query from its session store. A committed `/undo` deletes rows at or above its boundary,
-// so a saved prefix may hold rows the store no longer has: older pages, cheap point queries, are
-// read instead of joining the cache. Rows keep their ids when OpenCode rewrites them.
+// which is why a store's saved prefix never joins the cache.
 
 import type { ChatTranscriptAdapter } from '../engine/adapter';
-import { OpenCodeRecordSource } from './record-source';
+import { storeAdapter } from '../store/adapter';
+import { openCodeStore } from './probe';
 import { OPENCODE_REVISION, OpenCodeTranscriptReducer } from './reducer';
 import { openCodeSessionID } from './session-id';
 
-const NO_BASE = () => null;
-const NO_SUPPLY = () => undefined;
-
-const openCodeAdapterValue: ChatTranscriptAdapter = {
-  program: 'opencode',
+const openCodeAdapterValue = storeAdapter({
+  store: openCodeStore,
   revision: OPENCODE_REVISION,
-  limits: {},
-  wantsFirstLine: false,
-  joinsCachedHistory: false,
   makeReducer: () => new OpenCodeTranscriptReducer(),
-  // The text as the program records it, which drops what Agentico adds when it sends.
-  echoKey: (text) => text.trim(),
-  identity: null,
-  pendingBase: NO_BASE,
-  supplyBase: NO_SUPPLY,
-  makeRecordSource: (sessionID) => {
-    const id = openCodeSessionID(sessionID);
-    return id === null ? null : new OpenCodeRecordSource(id);
-  },
-};
+  sessionID: openCodeSessionID,
+});
 
 export function openCodeAdapter(): ChatTranscriptAdapter | null {
   return openCodeAdapterValue;

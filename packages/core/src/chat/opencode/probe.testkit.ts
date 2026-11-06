@@ -15,6 +15,7 @@ export const POLL: OpenCodeQuery = {
     kind: 'poll',
     cursor: {
       eventSeq: 12,
+      generation: null,
       lowSeq: 4,
       highSeq: 12,
       knownInWindow: 3,
@@ -34,6 +35,7 @@ export const QUERIES: OpenCodeQuery[] = [
       kind: 'poll',
       cursor: {
         eventSeq: null,
+        generation: null,
         lowSeq: 4,
         highSeq: 12,
         knownInWindow: 3,

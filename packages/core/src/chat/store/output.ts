@@ -1,16 +1,17 @@
-// Parses what an OpenCode store query script prints (Swift OpenCodeProbe.parse): the tagged lines
-// between the request's nonce markers, a store problem when the script says so, or the reader's
-// failure. Throws a `TransportFailure` for a script that went wrong.
+// Parses what a store query script prints (Swift OpenCodeProbe.parse): the tagged lines between the
+// request's nonce markers, a store problem when the script says so, or the reader's failure. Throws a
+// `TransportFailure` for a script that went wrong.
 
 import { randomBytes } from '@noble/hashes/utils';
 import { TransportFailure } from '../../errors';
 import { decodeUtf8, encodeUtf8 } from '../../events/utf8';
 import type {
-  OpenCodeQuery,
-  OpenCodeQueryResponse,
-  OpenCodeRecords,
-  OpenCodeRowLine,
-  OpenCodeStoreProblem,
+  ChatStore,
+  StoreProblem,
+  StoreQuery,
+  StoreQueryResponse,
+  StoreRecords,
+  StoreRowLine,
 } from './query';
 
 /** The reader's output past this many bytes is cut, and its exit line with it. */
@@ -53,18 +54,12 @@ function isBelowFloor(version: string): boolean {
   return major < 3 || (major === 3 && minor < 25);
 }
 
-function isStoreName(name: string): boolean {
-  if (!name.startsWith('opencode-') || !name.endsWith('.db')) return false;
-  const channel = name.slice('opencode-'.length, -'.db'.length);
-  return channel.length >= 1 && channel.length <= 64 && /^[A-Za-z0-9._-]+$/.test(channel);
-}
-
 /** `/Users/<name>` and `/home/<name>` read as `~`, so a reader's message never shows the account name. */
 function homeShownAsTilde(text: string): string {
   return text.replace(/\/(?:Users|home)\/[^/\s]*/g, '~');
 }
 
-const unavailable = (problem: OpenCodeStoreProblem): OpenCodeQueryResponse => ({
+const unavailable = (problem: StoreProblem): StoreQueryResponse => ({
   type: 'unavailable',
   problem,
 });
@@ -75,11 +70,12 @@ const unavailable = (problem: OpenCodeStoreProblem): OpenCodeQueryResponse => ({
  * says nothing, because preparing a statement that names a missing table is a parse error too.
  */
 function readerFailure(
+  name: string,
   stderr: Uint8Array,
   status: number,
   version: string | null,
   walPresent: boolean | null,
-): OpenCodeQueryResponse {
+): StoreQueryResponse {
   const lines = decodeUtf8(stderr)
     .split(/\r\n|[\n\r]/)
     .map((line) => line.trim());
@@ -98,14 +94,14 @@ function readerFailure(
     return unavailable({ kind: 'noReader' });
   }
   if (line.includes('database is locked') || line.includes('database is busy')) {
-    return unreadable("OpenCode's database is busy.");
+    return unreadable(`${name}'s database is busy.`);
   }
   if (line.includes('unable to open')) {
     if (walPresent === false) return unavailable({ kind: 'storeClosed' });
-    return unreadable("OpenCode's database couldn't be opened.");
+    return unreadable(`${name}'s database couldn't be opened.`);
   }
   if (line.includes('not a database')) {
-    return unreadable("OpenCode's database file isn't one Chat can read.");
+    return unreadable(`${name}'s database file isn't one Chat can read.`);
   }
   for (const prefix of ['no such table: ', 'no such column: ']) {
     const at = line.indexOf(prefix);
@@ -129,7 +125,7 @@ function readerFailure(
   }
   const detail = printable(homeShownAsTilde(line), 200);
   return unreadable(
-    detail === '' ? `OpenCode's database reader exited with status ${status}.` : detail,
+    detail === '' ? `${name}'s database reader exited with status ${status}.` : detail,
   );
 }
 
@@ -139,7 +135,7 @@ function optionalInt(text: string): number | null | undefined {
   return /^-?[0-9]+$/.test(text) ? Number.parseInt(text, 10) : undefined;
 }
 
-function rowHead(text: string): Omit<OpenCodeRowLine, 'line'> | null {
+function rowHead(text: string): Omit<StoreRowLine, 'line'> | null {
   try {
     const value = JSON.parse(text) as Record<string, unknown>;
     if (
@@ -161,6 +157,9 @@ function rowHead(text: string): Omit<OpenCodeRowLine, 'line'> | null {
   }
 }
 
+/** It goes back into a statement as a SQL literal, so nothing else passes. */
+const GENERATION = /^[0-9.]+$/;
+
 /** The tagged lines of one output, read in one pass. */
 class Output {
   version: string | null = null;
@@ -168,9 +167,10 @@ class Output {
   olderTables: string | null = null;
   missingColumns: string[] | null = null;
   eventSeq: number | null = null;
+  generation: string | null = null;
   sessionMissing = false;
   sessionLine: Uint8Array | null = null;
-  rows: OpenCodeRowLine[] = [];
+  rows: StoreRowLine[] = [];
   overBudget = false;
   firstSeq: number | null = null;
   windowCount: number | null = null;
@@ -205,7 +205,7 @@ class Output {
   }
 
   /**
-   * False for a line this parse does not know. SQLite turns a lone surrogate escape in OpenCode's
+   * False for a line this parse does not know. SQLite turns a lone surrogate escape in a store's
    * JSON into bytes that are not UTF-8; JSON lines keep them as U+FFFD, so the rest of the line
    * still decodes.
    */
@@ -224,9 +224,12 @@ class Output {
         this.missingColumns = text.split(',').filter((part) => part !== '');
         return true;
       case 'E': {
-        const value = optionalInt(text);
+        const [counter = '', generation] = text.split(' ');
+        const value = optionalInt(counter);
         if (value === undefined) return false;
+        if (generation !== undefined && !GENERATION.test(generation)) return false;
         this.eventSeq = value;
+        this.generation = generation ?? null;
         return true;
       }
       case 'M':
@@ -277,10 +280,11 @@ class Output {
     }
   }
 
-  records(overflow: boolean): OpenCodeRecords {
+  records(overflow: boolean): StoreRecords {
     return {
       sqliteVersion: this.version,
       eventSeq: this.eventSeq,
+      generation: this.generation,
       sessionLine: this.sessionLine,
       inboxLine: this.inboxLine,
       rows: [...this.rows].sort((a, b) => a.seq - b.seq),
@@ -305,13 +309,14 @@ function indexOfBytes(haystack: Uint8Array, needle: Uint8Array, from = 0): numbe
  * noise, is ignored. Throws a `malformedResponse` failure when either marker is missing and
  * `hostStoreUnreadable` for a reader failure Chat cannot explain as a store problem.
  */
-export function parseOpenCodeOutput(
+export function parseStoreOutput(
+  store: Pick<ChatStore, 'name' | 'isStoreName'>,
   stdout: Uint8Array,
   stderr: Uint8Array,
   exitStatus: number,
   nonce: string,
-  query: OpenCodeQuery,
-): OpenCodeQueryResponse {
+  query: StoreQuery,
+): StoreQueryResponse {
   const beginBytes = encodeUtf8(`${beginMarker(nonce)}\n`);
   const begin = indexOfBytes(stdout, beginBytes);
   const end =
@@ -319,7 +324,9 @@ export function parseOpenCodeOutput(
       ? -1
       : indexOfBytes(stdout, encodeUtf8(`\n${endMarker(nonce)}\n`), begin + beginBytes.length);
   if (begin < 0 || end < 0) {
-    return malformed(`OpenCode's store query stopped before its end (exit status ${exitStatus})`);
+    return malformed(
+      `${store.name}'s store query stopped before its end (exit status ${exitStatus})`,
+    );
   }
   const output = new Output(stdout.subarray(begin + beginBytes.length, end));
 
@@ -336,24 +343,27 @@ export function parseOpenCodeOutput(
     return unavailable({ kind: 'layout', missing: output.missingColumns });
   }
   if (output.sessionMissing) {
-    return { type: 'sessionMissing', otherStores: output.otherStores.filter(isStoreName) };
+    return { type: 'sessionMissing', otherStores: output.otherStores.filter(store.isStoreName) };
   }
   if (output.exitLine === null) {
     // `head -c` cut the reader's output, its exit line with it. Short of the cap, a missing exit
     // line is a script that went wrong, not a conversation too large to read.
     if (output.readerBytes < OUTPUT_CAP) {
-      return malformed(`OpenCode's store query printed no exit status (exit status ${exitStatus})`);
+      return malformed(
+        `${store.name}'s store query printed no exit status (exit status ${exitStatus})`,
+      );
     }
     return { type: 'records', records: output.records(true) };
   }
   if (output.exitLine !== 0) {
-    return readerFailure(stderr, output.exitLine, output.version, output.walPresent);
+    return readerFailure(store.name, stderr, output.exitLine, output.version, output.walPresent);
   }
   const kind = query.query;
   if (
     kind.kind === 'poll' &&
     kind.cursor.eventSeq !== null &&
-    output.eventSeq === kind.cursor.eventSeq
+    output.eventSeq === kind.cursor.eventSeq &&
+    output.generation === kind.cursor.generation
   ) {
     return { type: 'unchanged', eventSeq: kind.cursor.eventSeq };
   }

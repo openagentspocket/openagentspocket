@@ -1,6 +1,7 @@
 import {
   type ChatHostFiles,
   type ChatHostScriptRunner,
+  type ChatStore,
   decodeUtf8,
   encodeUtf8,
   type HostFileListing,
@@ -8,9 +9,9 @@ import {
   type HostFileRange,
   type HostFileSlice,
   type HostFileStatus,
-  type OpenCodeQuery,
-  type OpenCodeQueryResponse,
-  openCodeQueryRunner,
+  type StoreQuery,
+  type StoreQueryResponse,
+  storeQueryRunner,
 } from '@openagentspocket/core';
 import {
   ExecLane,
@@ -22,7 +23,7 @@ import {
 /** Runs an operation on the Host's current transport (the connection manager's `withTransport`). */
 export type RunOnTransport = <V>(operation: (transport: SshTransport) => Promise<V>) => Promise<V>;
 
-/** Chat's store queries (OpenCode) run one at a time per Host, each within this budget. */
+/** Chat's store queries run one at a time per Host, each within this budget. */
 const CHAT_QUERY_TIMEOUT_MS = 10_000;
 
 /**
@@ -48,8 +49,8 @@ export class TransportChatFiles implements ChatHostFiles {
     return this.run((transport) => this.filesOf(transport).read(range));
   }
 
-  /** One read-only query of OpenCode's session store: one bounded script over one exec. */
-  queryOpenCode(query: OpenCodeQuery): Promise<OpenCodeQueryResponse> {
+  /** One read-only query of a program's session store: one bounded script over one exec. */
+  queryStore(store: ChatStore, query: StoreQuery): Promise<StoreQueryResponse> {
     const runner: ChatHostScriptRunner = (script) =>
       this.run(async (transport) => {
         const result = await runBoundedScript(transport, decodeUtf8(script), {
@@ -66,7 +67,7 @@ export class TransportChatFiles implements ChatHostFiles {
           exitStatus: result.exitCode,
         };
       });
-    return openCodeQueryRunner(runner)(query);
+    return storeQueryRunner(runner)(store, query);
   }
 
   home(): Promise<string> {

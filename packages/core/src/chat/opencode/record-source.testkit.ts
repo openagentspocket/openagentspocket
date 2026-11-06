@@ -63,7 +63,7 @@ export class ScriptedQueries {
       list: async () => refused(),
       read: async () => refused(),
       home: async () => refused(),
-      queryOpenCode: async (query) => {
+      queryStore: async (_store, query) => {
         this.queries.push(query);
         const next = this.answers.shift();
         if (next === undefined) {
@@ -117,6 +117,7 @@ export function records(
     records: {
       sqliteVersion: '3.51.0',
       eventSeq,
+      generation: null,
       sessionLine: session,
       inboxLine: session === null ? null : INBOX,
       rows,
@@ -147,6 +148,7 @@ export function cursor(
 ): OpenCodePollCursor {
   return {
     eventSeq,
+    generation: null,
     lowSeq,
     highSeq,
     knownInWindow,

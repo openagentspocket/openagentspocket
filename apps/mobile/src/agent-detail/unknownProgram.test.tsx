@@ -12,10 +12,10 @@ jest.mock('expo-clipboard', () => ({ getStringAsync: async () => '' }));
 
 const agent = (status: string) => ({
   pane: 'h1',
-  program: 'hermes',
+  program: 'madeup',
   status,
   workspace: 'home',
-  title: 'Hermes',
+  title: 'Made Up',
   seq: 1,
 });
 

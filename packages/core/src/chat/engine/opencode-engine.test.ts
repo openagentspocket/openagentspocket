@@ -57,6 +57,7 @@ function records(
     records: {
       sqliteVersion: '3.51.0',
       eventSeq,
+      generation: null,
       sessionLine: SESSION_LINE,
       inboxLine: encodeUtf8('{"k":"inbox","items":[],"more":0}'),
       rows,
@@ -82,7 +83,7 @@ function scripted(...answers: (OpenCodeQueryResponse | Error)[]) {
     list: refuse,
     read: refuse,
     home: refuse,
-    queryOpenCode: async (query) => {
+    queryStore: async (_store, query) => {
       asked.push(query);
       const next = queue.shift();
       if (next === undefined) throw new Error('no answer scripted');

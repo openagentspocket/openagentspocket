@@ -1,7 +1,7 @@
 // The port through which Chat reads files on the Host (Swift ChatHostFiles). Core never imports
 // modules/ssh: the app adapts its SFTP client to this interface, tests use FakeHostFiles.
 
-import type { OpenCodeQuery, OpenCodeQueryResponse } from '../opencode/query';
+import type { ChatStore, StoreQuery, StoreQueryResponse } from '../store/query';
 
 export type HostFileKind = 'regular' | 'directory' | 'symlink';
 
@@ -50,10 +50,10 @@ export interface ChatHostFiles {
   read(range: HostFileRange): Promise<HostFileSlice>;
   home(): Promise<string>;
   /**
-   * Runs one read-only query of OpenCode's own session store on the Host (ADR 0025); absent where
-   * nothing can, as in the demo. Build it from a script runner with `openCodeQueryRunner`.
+   * Runs one read-only query of a program's own session store on the Host (ADR 0025); absent where
+   * nothing can, as in the demo. Build it from a script runner with `storeQueryRunner`.
    */
-  queryOpenCode?(query: OpenCodeQuery): Promise<OpenCodeQueryResponse>;
+  queryStore?(store: ChatStore, query: StoreQuery): Promise<StoreQueryResponse>;
 }
 
 export function concatBytes(parts: readonly Uint8Array[]): Uint8Array {

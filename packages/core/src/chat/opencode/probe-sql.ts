@@ -11,7 +11,10 @@
 // crosses such a boundary is wrapped in `json()`. A path that may hold a string or a number is never
 // wrapped: `json()` rejects bare text.
 
-import type { OpenCodePollCursor, OpenCodeQuery } from './query';
+import { OPEN_ROW_LIMIT, type StorePollCursor, type StoreQuery } from '../store/query';
+import { VERSION_STATEMENT } from '../store/script';
+
+export { VERSION_STATEMENT };
 
 /** Slimmed rows larger than this arrive without their data. */
 export const ROW_DATA_LIMIT = 1_048_576;
@@ -20,10 +23,6 @@ export const TOOL_OUTPUT_LIMIT = 16_384;
 /** Inbox items, and the characters of each item's text. */
 export const INBOX_ITEM_LIMIT = 16;
 export const INBOX_TEXT_LIMIT = 16_384;
-/** Open rows a poll reads again by `seq`. */
-export const OPEN_ROW_LIMIT = 64;
-
-export const VERSION_STATEMENT = "SELECT 'V ' || sqlite_version()";
 
 /** OpenCode 1.x tables, printed only when `session_v2` is absent. */
 export const TABLES_STATEMENT = `SELECT 'T ' || m FROM (SELECT group_concat(name, ',') AS m FROM sqlite_master
@@ -45,7 +44,7 @@ SELECT 'L ' || m FROM (SELECT group_concat(t || '.' || c, ',') AS m FROM need
   WHERE NOT EXISTS (SELECT 1 FROM pragma_table_info(need.t) p WHERE p.name = need.c))
  WHERE m IS NOT NULL`;
 
-export function openCodeStatements(query: OpenCodeQuery): string[] {
+export function openCodeStatements(query: StoreQuery): string[] {
   const session = `'${query.session}'`;
   const statements = [
     VERSION_STATEMENT,
@@ -158,7 +157,7 @@ SELECT 'R ' || ${rowObject(ROW_DATA_LIMIT)}
  * The rows a poll reads, oldest first with a running total and where the row before each starts:
  * newer than the window, still open, or updated inside it since the last read.
  */
-function pollWindow(session: string, cursor: OpenCodePollCursor, changed: string): string {
+function pollWindow(session: string, cursor: StorePollCursor, changed: string): string {
   const open = cursor.openRows.slice(0, OPEN_ROW_LIMIT).join(',');
   const rows = `SELECT s.id, s.type, s.seq, s.time_created, s.time_updated, s.data
   FROM session_message s

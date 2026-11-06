@@ -47,6 +47,7 @@ function records(session: string, title: string): OpenCodeQueryResponse {
     records: {
       sqliteVersion: '3.51.0',
       eventSeq: 4,
+      generation: null,
       sessionLine: encodeUtf8(
         `{"k":"session","id":"${session}","parent":null,"title":${JSON.stringify(title)},"version":"2.0.32"}`,
       ),
@@ -80,7 +81,7 @@ function setup(
           list: refuse,
           read: refuse,
           home: refuse,
-          queryOpenCode: async ({ session, query }) => {
+          queryStore: async (_store, { session, query }) => {
             queries += 1;
             return query.kind === 'tail'
               ? records(session, titles[session] ?? '')

@@ -1,158 +1,81 @@
-// Builds the POSIX shell script that reads one OpenCode session from OpenCode's own SQLite database
-// on the Host, and parses what it prints (Swift OpenCodeProbe). Pure: no I/O. ADR 0025 records why
-// Chat reads the store and how.
-//
-// The script finds the default store (`$XDG_DATA_HOME/opencode/opencode.db` when that is absolute,
-// else under `~/.local/share`) and reads it with the `sqlite3` CLI, or with `python3` when the Host
-// has no CLI. Both open the database read-only, ignore the user's settings, set `query_only`, and
-// run every statement after the version inside one transaction, so the lines come from one snapshot.
-// A store whose `-wal` or `-shm` file is missing is closed and never opened, because stock SQLite
-// would create them. Output is cut at `OUTPUT_CAP` bytes. Each line carries a one-letter tag
-// between markers holding a per-request nonce.
-//
-// The only values that reach the script are the nonce, the validated session id inside SQL string
-// literals, and integers. Nothing is interpolated into a shell word. The statements travel once, in
-// one here-document that whichever reader runs reads, because every poll uploads the whole script.
+// The OpenCode store: the shell lines that find its default database (`$XDG_DATA_HOME/opencode/
+// opencode.db` when that is absolute, else under `~/.local/share`), and what a read of it prints
+// (Swift OpenCodeProbe). Pure: no I/O. ADR 0025 records why Chat reads the store and how;
+// `chat/store/script.ts` is the script, `chat/store/output.ts` the parse.
 
-import { encodeUtf8 } from '../../events/utf8';
-import { HERDR_PATH_EXPORT } from '../../hosts/host-path';
-import { OUTPUT_CAP } from './probe-parse';
-import { openCodeStatements, VERSION_STATEMENT } from './probe-sql';
-import type { OpenCodeQuery } from './query';
+import { beginMarker, endMarker, makeNonce, OUTPUT_CAP, parseStoreOutput } from '../store/output';
+import type { ChatStore, StoreQuery, StoreQueryResponse, StoreScriptOptions } from '../store/query';
+import { PYTHON_READER, storeScript, WAL_SIDE_FILES_MISSING } from '../store/script';
+import { openCodeStatements } from './probe-sql';
+import { readOpenCodeLine } from './record';
 
-/** `automatic`: `sqlite3`, else a `python3` that is not Darwin's install shim. `pythonOnly`: Python only, for a test on a Host that has both. */
-export type OpenCodeReader = 'automatic' | 'pythonOnly';
+export type { StoreScriptOptions as ScriptOptions } from '../store/query';
+
+const LOCATE = [
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: shell parameter expansion, not a template
+  'd=${XDG_DATA_HOME:-}',
+  'case $d in /*) ;; *) d=$HOME/.local/share ;; esac',
+  'o=$d/opencode',
+  'db=$o/opencode.db',
+];
 
 /**
- * Python reads the statements the CLI reads, from the same here-document: it runs each text that
- * ends in `;` at a line end and skips the CLI's dot-command lines, so no statement holds a `;` or
- * starts a line with `.`. The program goes in single quotes on the command line, so it holds no `'`
- * itself.
- *
- * It writes the bytes SQLite returns, as the CLI does: text that is not UTF-8 reaches the parse
- * instead of failing the read, and an ASCII stdout under `LC_ALL=C` (Python 3.6) never fails on
- * text. It skips NULL rows, as the CLI's empty lines are skipped, and reports any failure in the
- * CLI's form, a Python built without its `sqlite3` module included.
+ * Stores beside the default one, named for the hint when the session is not in the default store.
+ * Names only, never read.
  */
-export const PYTHON_READER = String.raw`import sys
-from urllib.parse import quote
-out = sys.stdout.buffer
-try:
-    import sqlite3
-    c = sqlite3.connect("file:" + quote(sys.argv[1]) + "?mode=ro", uri=True,
-                        timeout=1.0, isolation_level=None)
-    c.text_factory = bytes
-    c.execute("PRAGMA query_only = 1")
-    for s in sys.stdin.buffer.read().decode("utf-8").split(";\n"):
-        s = "\n".join(l for l in s.split("\n") if not l.startswith("."))
-        if not s.strip():
-            continue
-        for row in c.execute(s):
-            v = row[0]
-            if v is not None:
-                out.write((v if isinstance(v, bytes) else str(v).encode("utf-8")) + b"\n")
-    out.flush()
-except Exception as e:
-    out.flush()
-    sys.stderr.write("Error: " + type(e).__name__ + ": " + str(e) + "\n")
-    sys.exit(1)`;
-
-export interface ScriptOptions {
-  reader?: OpenCodeReader;
-  /** The shell line that extends `PATH` for herdr and its tools; the Host path export by default. */
-  pathExport?: string;
-}
+const OTHER_STORES = [
+  'n=0; names=',
+  'for f in "$o"/opencode-*.db; do',
+  '  [ -f "$f" ] || continue',
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: shell parameter expansion, not a template
+  '  b="${f##*/}"',
+  '  case "$b" in *[!A-Za-z0-9._-]*) continue ;; esac',
+  '  n="$((n + 1))"; [ "$n" -le 8 ] || break',
+  '  names="$names $b"',
+  'done',
+  String.raw`[ -n "$names" ] && printf 'O%s\n' "$names"`,
+];
 
 export function openCodeScript(
-  query: OpenCodeQuery,
+  query: StoreQuery,
   nonce: string,
-  { reader = 'automatic', pathExport = HERDR_PATH_EXPORT }: ScriptOptions = {},
+  options: StoreScriptOptions = {},
 ): Uint8Array {
-  const statements = openCodeStatements(query);
-  const sqlDelimiter = `__AGENTICO_SQL_${nonce}__`;
-  const lines = [
-    `N=${nonce}`,
-    'LC_ALL=C',
-    'export LC_ALL',
-    pathExport,
-    // biome-ignore lint/suspicious/noTemplateCurlyInString: shell parameter expansion, not a template
-    'd=${XDG_DATA_HOME:-}',
-    'case $d in /*) ;; *) d=$HOME/.local/share ;; esac',
-    'o=$d/opencode',
-    'db=$o/opencode.db',
-    'sq=',
-    'py=',
-    'if [ "$(uname -s)" = Darwin ]; then',
-    '  if [ -x /usr/bin/sqlite3 ]; then sq=/usr/bin/sqlite3; else sq=$(command -v sqlite3 2>/dev/null) || sq=; fi',
-    '  py=$(command -v python3 2>/dev/null) || py=',
-    '  [ "$py" = /usr/bin/python3 ] && py=',
-    'else',
-    '  sq=$(command -v sqlite3 2>/dev/null) || sq=',
-    '  py=$(command -v python3 2>/dev/null) || py=',
-    'fi',
-  ];
-  if (reader === 'pythonOnly') lines.push('sq=');
-  lines.push(
-    String.raw`printf '%s\n' "__AGENTICO_OC_BEGIN_$N"`,
-    'if [ ! -f "$db" ]; then',
-    // biome-ignore lint/suspicious/noTemplateCurlyInString: shell parameter expansion, not a template
-    '  case $db in "$HOME"/*) p="~${db#"$HOME"}" ;; *) p=$db ;; esac',
-    // A range rather than `[:print:]`, which BusyBox's `tr -c` reads as its letters, so it mangled
-    // the whole line.
-    String.raw`  printf 'P nodb %s\n' "$p" | tr -c ' -~\n' '?'`,
-    // Stock SQLite opens a WAL database read-only by creating its missing side files; Apple's
-    // refuses. Neither reader starts.
-    'elif [ ! -e "$db-wal" ] || [ ! -e "$db-shm" ]; then',
-    String.raw`  printf 'P closed\n'`,
-    'elif [ -n "$sq$py" ]; then',
-    // The CLI whenever there is one, Python only without it. Both read the statements from the
-    // here-document below.
-    '  { if [ -n "$sq" ]; then',
-    '    "$sq" -init /dev/null -readonly -batch -bail -noheader -list "$db"',
-    '  else',
-    '    "$py" -I -c \'',
-    PYTHON_READER,
-    '\' "$db"',
-    `  fi <<'${sqlDelimiter}'`,
-    '.timeout 1000',
-    'PRAGMA query_only = 1;',
-    `${statements[0] ?? VERSION_STATEMENT};`,
-    'BEGIN;',
-    `${statements.slice(1).join(';\n')};`,
-    'COMMIT;',
-    sqlDelimiter,
-    String.raw`    printf 'Z %s\n' "$?"; } | head -c ${OUTPUT_CAP}`,
-    'else',
-    String.raw`  printf 'P noreader\n'`,
-    'fi',
-    'w=0; [ -e "$db-wal" ] && w=1',
-    's=0; [ -e "$db-shm" ] && s=1',
-    String.raw`printf 'W %s %s\n' "$w" "$s"`,
-  );
-  if (query.query.kind === 'tail') {
-    // Stores beside the default one, named for the hint when the session is not in the default
-    // store. Names only, never read.
-    lines.push(
-      'n=0; names=',
-      'for f in "$o"/opencode-*.db; do',
-      '  [ -f "$f" ] || continue',
-      // biome-ignore lint/suspicious/noTemplateCurlyInString: shell parameter expansion, not a template
-      '  b="${f##*/}"',
-      '  case "$b" in *[!A-Za-z0-9._-]*) continue ;; esac',
-      '  n="$((n + 1))"; [ "$n" -le 8 ] || break',
-      '  names="$names $b"',
-      'done',
-      String.raw`[ -n "$names" ] && printf 'O%s\n' "$names"`,
-    );
-  }
-  lines.push(String.raw`printf '\n%s\n' "__AGENTICO_OC_END_$N"`);
-  return encodeUtf8(`${lines.join('\n')}\n`);
+  return storeScript({
+    ...options,
+    nonce,
+    locate: LOCATE,
+    closedTest: WAL_SIDE_FILES_MISSING,
+    statements: openCodeStatements(query),
+    after: query.query.kind === 'tail' ? OTHER_STORES : [],
+  });
 }
 
-export {
-  beginMarker,
-  endMarker,
-  makeNonce,
-  OUTPUT_CAP,
-  parseOpenCodeOutput,
-} from './probe-parse';
+function isStoreName(name: string): boolean {
+  if (!name.startsWith('opencode-') || !name.endsWith('.db')) return false;
+  const channel = name.slice('opencode-'.length, -'.db'.length);
+  return channel.length >= 1 && channel.length <= 64 && /^[A-Za-z0-9._-]+$/.test(channel);
+}
+
+export const openCodeStore: ChatStore = {
+  program: 'opencode',
+  name: 'OpenCode',
+  script: openCodeScript,
+  isStoreName,
+  isSubagentSession: (sessionLine) => {
+    const line = readOpenCodeLine(sessionLine);
+    return line.kind === 'session' && line.session.parent !== null;
+  },
+};
+
+export function parseOpenCodeOutput(
+  stdout: Uint8Array,
+  stderr: Uint8Array,
+  exitStatus: number,
+  nonce: string,
+  query: StoreQuery,
+): StoreQueryResponse {
+  return parseStoreOutput(openCodeStore, stdout, stderr, exitStatus, nonce, query);
+}
+
+export { beginMarker, endMarker, makeNonce, OUTPUT_CAP, PYTHON_READER };

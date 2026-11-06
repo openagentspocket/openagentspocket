@@ -4,6 +4,7 @@ import type { ChatTranscriptAdapter } from '../engine/adapter';
 import type { LocateState, Location } from '../engine/locate';
 import type { ChatProgram } from '../model/types';
 import type { ProgramSendPolicy } from '../send/policy';
+import type { ChatSessionStoreProblem } from '../timeline/reasons';
 
 /**
  * Everything one Chat program contributes. Adding a program is one more name in `CHAT_PROGRAMS` and
@@ -27,6 +28,8 @@ export interface ProgramDefinition {
   /** Finds the conversation's transcript on the Host. */
   locate: (state: LocateState) => Promise<Location>;
   sendPolicy: () => ProgramSendPolicy;
+  /** What Chat says when the program's session store cannot answer; for a program read by query. */
+  storeProblem?: (problem: ChatSessionStoreProblem) => Message;
   /** What the Blocked card reads and answers; absent for a program with no dialogs to parse. */
   blocked?: () => BlockedProgramSupport | null;
 }
