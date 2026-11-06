@@ -1,3 +1,4 @@
+import { OverlayHost } from '@openagentspocket/ui';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useComposition } from '@/composition/CompositionProvider';
 import { FilesScreen } from '@/files/FilesScreen';
@@ -14,6 +15,7 @@ export default function FilesRoute() {
   return (
     <>
       <FilesScreen source={source} onDone={() => router.back()} />
+      <OverlayHost />
     </>
   );
 }

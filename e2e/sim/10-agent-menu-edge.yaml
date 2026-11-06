@@ -1,0 +1,26 @@
+# Smoke: the header and composer menus answer across surface changes and with the keyboard up.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- tapOn:
+    id: inbox-p2
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 15000
+- tapOn:
+    point: "90%,12%"
+- tapOn: "Show Terminal"
+- tapOn:
+    point: "90%,12%"
+- tapOn: "Show Chat"
+- tapOn:
+    id: composer-input
+- inputText: "hello there, this is a draft that grows"
+- tapOn:
+    id: composer-more
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Close Agent"
+    timeout: 4000
+- takeScreenshot: design/atlas/sim/10-agent-menu

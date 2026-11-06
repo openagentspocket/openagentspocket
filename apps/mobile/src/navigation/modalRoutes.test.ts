@@ -46,6 +46,23 @@ describe('modal routes', () => {
     expect(layout).not.toMatch(/name="add-host"/);
   });
 
+  it('every sheet route presents its own alerts: the root one would open under the sheet', () => {
+    for (const file of [
+      'hosts/_layout.tsx',
+      'ports/_layout.tsx',
+      'settings/_layout.tsx',
+      'files.tsx',
+      'new-agent.tsx',
+      'new-terminal.tsx',
+      'worktree.tsx',
+    ]) {
+      expect({ file, source: read(file) }).toEqual({
+        file,
+        source: expect.stringContaining('<OverlayHost />'),
+      });
+    }
+  });
+
   it('anchors the root stack on Home so a sheet route is never its first screen', () => {
     expect(read('_layout.tsx')).toMatch(/export const unstable_settings = \{ anchor: 'index' \}/);
   });

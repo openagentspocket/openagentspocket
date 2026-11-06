@@ -1,3 +1,4 @@
+import { OverlayHost } from '@openagentspocket/ui';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { useNewAgentServices } from '@/features/new-agent/services';
@@ -31,6 +32,7 @@ export default function WorktreeRoute() {
           onDone={() => router.back()}
         />
       ) : null}
+      <OverlayHost />
     </>
   );
 }

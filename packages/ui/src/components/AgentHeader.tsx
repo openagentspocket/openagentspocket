@@ -1,7 +1,7 @@
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 import { ActionMenuButton, type ActionMenuItem } from '../overlay/ActionMenu';
+import { Button } from '../primitives/Button';
 import { GlassCapsule } from '../primitives/GlassCapsule';
-import { Icon } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
@@ -27,7 +27,6 @@ const useStyles = makeStyles((t) => ({
     height: t.metrics.minTapSize,
     alignItems: 'center',
   },
-  press: { width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' },
 }));
 
 export interface AgentHeaderProps {
@@ -67,25 +66,25 @@ export function AgentHeader({
     <View style={styles.row} testID={testID} accessibilityLabel={surface} pointerEvents="box-none">
       <GlassCapsule style={onHome ? styles.pair : styles.circle} testID={`${testID}-left`}>
         {onHome ? (
-          <Pressable
-            style={styles.circle}
-            onPress={onHome}
-            accessibilityRole="button"
+          <Button
+            kind="text"
+            neutral
+            icon="home"
+            iconSize={20}
             accessibilityLabel={labels.home}
+            onPress={onHome}
             testID={`${testID}-home`}
-          >
-            <Icon name="home" size={20} color="textPrimary" />
-          </Pressable>
+          />
         ) : null}
-        <Pressable
-          style={onHome ? styles.circle : styles.press}
-          onPress={onSidebar}
-          accessibilityRole="button"
+        <Button
+          kind="text"
+          neutral
+          icon="sidebar"
+          iconSize={20}
           accessibilityLabel={labels.sidebar}
+          onPress={onSidebar}
           testID={`${testID}-sidebar`}
-        >
-          <Icon name="sidebar" size={20} color="textPrimary" />
-        </Pressable>
+        />
       </GlassCapsule>
       <View style={styles.titles} pointerEvents="none" testID={`${testID}-titles`}>
         {eyebrow ? (

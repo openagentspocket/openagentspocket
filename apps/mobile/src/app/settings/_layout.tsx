@@ -1,4 +1,5 @@
 import { t } from '@openagentspocket/i18n';
+import { OverlayHost } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
 
@@ -9,14 +10,17 @@ import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
  */
 export default function SettingsLayout() {
   return (
-    <Stack screenOptions={{ ...useStackScreenOptions(), title: t('Settings') }}>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="agent-fields/[host]" options={{ title: '' }} />
-      <Stack.Screen name="notifications" options={{ title: t('Notifications') }} />
-      <Stack.Screen
-        name="notification-privacy"
-        options={{ title: t('How notifications stay private') }}
-      />
-    </Stack>
+    <>
+      <Stack screenOptions={{ ...useStackScreenOptions(), title: t('Settings') }}>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="agent-fields/[host]" options={{ title: '' }} />
+        <Stack.Screen name="notifications" options={{ title: t('Notifications') }} />
+        <Stack.Screen
+          name="notification-privacy"
+          options={{ title: t('How notifications stay private') }}
+        />
+      </Stack>
+      <OverlayHost />
+    </>
   );
 }

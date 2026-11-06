@@ -1,3 +1,4 @@
+import { OverlayHost } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
 
@@ -6,5 +7,10 @@ import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
  * so list, detail, form and scanner push inside the sheet. Each screen draws its sheet bar.
  */
 export default function HostsLayout() {
-  return <Stack screenOptions={{ ...useStackScreenOptions(), headerShown: false }} />;
+  return (
+    <>
+      <Stack screenOptions={{ ...useStackScreenOptions(), headerShown: false }} />
+      <OverlayHost />
+    </>
+  );
 }

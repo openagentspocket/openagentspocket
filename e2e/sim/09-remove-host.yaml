@@ -1,0 +1,37 @@
+# Smoke: a confirmation opened from a sheet route is drawn over that sheet, and removes the Host.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- openLink: openagentspocket:///hosts/form
+- tapOn:
+    id: host-name
+- inputText: Spare
+- tapOn:
+    id: host-user
+- inputText: ada
+- tapOn:
+    id: route-0
+- tapOn:
+    id: route-0-address
+- inputText: spare.local
+- tapOn:
+    id: route-back
+- tapOn:
+    id: host-save
+- extendedWaitUntil:
+    visible: "Trust this Host?"
+    timeout: 8000
+- tapOn: "Don't Trust"
+- scrollUntilVisible:
+    element:
+      id: host-remove
+- tapOn:
+    id: host-remove
+- extendedWaitUntil:
+    visible: "Remove Spare?"
+    timeout: 5000
+- takeScreenshot: design/atlas/sim/09-remove-host
+- tapOn: "Remove Host"
+- extendedWaitUntil:
+    notVisible: "Spare"
+    timeout: 5000

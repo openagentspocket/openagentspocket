@@ -67,6 +67,8 @@ interface CommonProps {
   pill?: boolean;
   /** Minimal side padding, for buttons that share a row (alert actions) so labels stay on one line. */
   tight?: boolean;
+  /** Draws in the text color instead of the kind's: chrome that should not read as an accent. */
+  neutral?: boolean;
   /** Registers the button as a popover anchor (`confirm({ anchorKey })`). */
   anchorKey?: string;
   testID?: string;
@@ -92,13 +94,14 @@ export function Button({
   iconSize,
   pill = false,
   tight = false,
+  neutral = false,
   anchorKey,
   testID,
 }: ButtonProps) {
   const anchorRef = useAnchor(anchorKey);
   const styles = useStyles();
   const theme = useTheme();
-  const ink = inkFor(kind, theme);
+  const ink = neutral ? theme.colors.textPrimary : inkFor(kind, theme);
   const inactive = disabled || loading;
   const iconOnly = title === undefined;
   return (

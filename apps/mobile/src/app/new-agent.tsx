@@ -1,3 +1,4 @@
+import { OverlayHost } from '@openagentspocket/ui';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useMemo } from 'react';
 import { useHostScope } from '@/console/useHostScope';
@@ -30,11 +31,14 @@ export default function NewAgentRoute() {
     [router, services],
   );
   return (
-    <NewAgentScreen
-      origin={origin}
-      preferredHostId={host ?? scope.hostId}
-      onStarted={onStarted}
-      onCancel={() => router.back()}
-    />
+    <>
+      <NewAgentScreen
+        origin={origin}
+        preferredHostId={host ?? scope.hostId}
+        onStarted={onStarted}
+        onCancel={() => router.back()}
+      />
+      <OverlayHost />
+    </>
   );
 }

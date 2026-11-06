@@ -230,6 +230,8 @@ interface ActionMenuButtonProps {
   iconSize?: number;
   /** Use the system menu where available (iOS). Default true; false forces the JS menu. */
   native?: boolean;
+  /** Draws the JS trigger in the text color (see `Button`). */
+  neutral?: boolean;
   testID?: string;
 }
 
@@ -242,6 +244,7 @@ export function ActionMenuButton({
   icon = 'more',
   iconSize,
   native = true,
+  neutral,
   testID = 'menu-button',
 }: ActionMenuButtonProps) {
   const ui = native ? loadSwiftUi() : null;
@@ -280,6 +283,7 @@ export function ActionMenuButton({
           ? { icon, accessibilityLabel }
           : { title: label, icon, accessibilityLabel })}
         iconSize={iconSize}
+        neutral={neutral}
         onPress={open}
         testID={testID}
       />

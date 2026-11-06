@@ -36,7 +36,7 @@ describe('a button that opens a menu never ships dead', () => {
     expect(screen.getByTestId('composer-card-add')).toBeTruthy();
     expect(screen.getByTestId('composer-card-more')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('composer-card-add'));
-    expect(screen.getByTestId('action-menu-one')).toBeTruthy();
+    expect(await screen.findByTestId('action-menu-one')).toBeTruthy();
   });
 
   it('ActionMenuButton draws nothing for an empty menu', async () => {

@@ -1,3 +1,4 @@
+import { OverlayHost } from '@openagentspocket/ui';
 import { useRouter } from 'expo-router';
 import { useHostScope } from '@/console/useHostScope';
 import { NewTerminalScreen } from '@/features/new-agent/NewTerminalScreen';
@@ -7,15 +8,18 @@ export default function NewTerminalRoute() {
   const router = useRouter();
   const scope = useHostScope();
   return (
-    <NewTerminalScreen
-      preferredHostId={scope.hostId}
-      onCancel={() => router.back()}
-      onOpen={({ hostId, workspaceId, cwd, label }) =>
-        router.replace({
-          pathname: '/terminal',
-          params: { host: hostId, workspace: workspaceId, cwd, ...(label ? { label } : {}) },
-        })
-      }
-    />
+    <>
+      <NewTerminalScreen
+        preferredHostId={scope.hostId}
+        onCancel={() => router.back()}
+        onOpen={({ hostId, workspaceId, cwd, label }) =>
+          router.replace({
+            pathname: '/terminal',
+            params: { host: hostId, workspace: workspaceId, cwd, ...(label ? { label } : {}) },
+          })
+        }
+      />
+      <OverlayHost />
+    </>
   );
 }

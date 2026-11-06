@@ -1,6 +1,6 @@
 import { agentKey, type ConsoleRow, type KeyValueStorage } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { type ActionMenuItem, makeStyles } from '@openagentspocket/ui';
+import { type ActionMenuItem, EdgeFade, makeStyles } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
@@ -18,6 +18,9 @@ import { DetailSlot } from './DetailSlot';
 import { DetailUiProvider } from './detailUi';
 import { type Surface, useSurface } from './surface';
 import { useFocusDone } from './useFocusDone';
+
+/** How far past the header the fade runs, so text is gone before it reaches the buttons. */
+const HEADER_FADE = 24;
 
 const useStyles = makeStyles((th) => ({
   fill: { flex: 1 },
@@ -85,6 +88,7 @@ export function AgentDetailScreen({
               headerHeight={headerHeight}
               onShowTerminal={() => setSurface('terminal')}
             />
+            {surface === 'chat' ? <EdgeFade height={headerHeight + HEADER_FADE} /> : null}
             <View
               style={styles.header}
               pointerEvents="box-none"

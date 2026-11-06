@@ -1,8 +1,9 @@
 import { type ReactNode, useState } from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import { composerAction } from '../composer/Composer';
-import { ActionMenu, type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
+import { ActionMenuButton, type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
 import { useAnchor } from '../overlay/anchors';
+import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
@@ -138,23 +139,32 @@ function Circle({
   testID: string;
 }) {
   const styles = useStyles();
-  const [open, setOpen] = useState(false);
   const anchor = useAnchor(anchorKey);
   if (isDeadMenuTrigger(menu, onPress)) return null;
   return (
-    <>
-      <Pressable
-        ref={anchor}
-        style={styles.circle}
-        onPress={menu ? () => setOpen(true) : onPress}
-        accessibilityRole="button"
-        accessibilityLabel={label}
-        testID={testID}
-      >
-        <Icon name={icon} size={18} color="textPrimary" />
-      </Pressable>
-      {menu ? <ActionMenu items={menu} visible={open} onClose={() => setOpen(false)} /> : null}
-    </>
+    <View ref={anchor} style={styles.circle}>
+      {menu ? (
+        <ActionMenuButton
+          items={menu}
+          icon={icon}
+          iconSize={18}
+          accessibilityLabel={label}
+          native={false}
+          neutral
+          testID={testID}
+        />
+      ) : (
+        <Button
+          kind="text"
+          neutral
+          icon={icon}
+          iconSize={18}
+          accessibilityLabel={label}
+          onPress={() => onPress?.()}
+          testID={testID}
+        />
+      )}
+    </View>
   );
 }
 
