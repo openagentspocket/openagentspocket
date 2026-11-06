@@ -11,6 +11,7 @@ import {
   ShellTerminalServicesProvider,
 } from '@/features/terminals/services';
 import { NotificationServicesProvider } from '@/notifications/services';
+import { deviceAuthenticator } from '@/settings/deviceAuthenticator';
 import { deviceServices } from './deviceServices';
 import type { LiveServices } from './liveServices';
 import { isDemoMode, subscribeDemoMode } from './mode';
@@ -41,6 +42,9 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
     liveActivity.start();
     void manager.setActive(AppState.currentState === 'active');
     const subscription = AppState.addEventListener('change', (state) => {
+      // The key prompt makes the app go inactive and active. Reading that as a return would
+      // redial a Host the owner just refused, and prompt again for ever.
+      if (deviceAuthenticator.isPrompting() && state !== 'background') return;
       void manager.setActive(state === 'active');
       deviceServices().conversations.setActive(state === 'active');
       if (state === 'active') void liveActivity.foreground();

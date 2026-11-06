@@ -4,6 +4,8 @@ import {
   fingerprintFromDigest,
   type Host,
   type HostKeyPolicy,
+  hostUsesKey,
+  type KeyAccessGate,
   type PluginStatus,
   PREFLIGHT_ALL_PASSED,
   type PreflightError,
@@ -25,6 +27,7 @@ export interface SshHostProbeOptions {
   readonly keyAlias: string;
   readonly clock: Clock;
   readonly ensureDeviceKey: () => Promise<unknown>;
+  readonly keyAccess?: KeyAccessGate;
   readonly secrets?: HostSecrets;
   readonly connect?: typeof connectTransport;
 }
@@ -99,6 +102,7 @@ export class SshHostProbe implements HostProbe {
         }),
     };
     try {
+      if (hostUsesKey(host)) await options.keyAccess?.authorize();
       await options.ensureDeviceKey();
       const settings = transportSettingsFor(host, {
         keyAlias: options.keyAlias,

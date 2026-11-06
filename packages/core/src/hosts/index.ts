@@ -8,6 +8,7 @@ export * from './host-data';
 export * from './host-draft';
 export * from './host-key-policy';
 export * from './host-path';
+export * from './key-access';
 export * from './known-hosts';
 export * from './plugin-installation';
 export * from './plugin-notice';

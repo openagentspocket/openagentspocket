@@ -83,7 +83,10 @@ export interface World extends LiveServices {
 }
 
 /** A live app on FakeSsh: memory stores, a herdr that answers, and a scripted trust prompt. */
-export async function createWorld(hostKey: HostKey = HOST_KEY): Promise<World> {
+export async function createWorld(
+  hostKey: HostKey = HOST_KEY,
+  overrides: Partial<LiveDeps> = {},
+): Promise<World> {
   const ssh = new FakeSsh({
     hostKey,
     streamLocal: herdrAnswers,
@@ -111,6 +114,7 @@ export async function createWorld(hostKey: HostKey = HOST_KEY): Promise<World> {
       prompts.count += 1;
       return prompts.answer;
     },
+    ...overrides,
   };
   const services = createLiveServices(deps);
   const acked = new WeakSet<object>();

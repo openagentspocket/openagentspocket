@@ -7,6 +7,7 @@ import {
   type HostCatalog,
   type HostKeyCandidate,
   type herdr,
+  type KeyAccessGate,
   type KeyValueStorage,
   type KnownHostsStore,
   ListPreferences,
@@ -57,6 +58,8 @@ export interface LiveDeps {
   readonly hostCatalog: HostCatalog;
   readonly knownHosts: KnownHostsStore;
   readonly deviceKey: DeviceKeyStore;
+  /** Require Face ID for SSH Keys; open when absent (tests). */
+  readonly keyAccess?: KeyAccessGate;
   readonly storage: KeyValueStorage;
   readonly clock: Clock;
   /** The alias the device key is kept under. */
@@ -101,6 +104,7 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
     ssh: deps.ssh,
     keyAlias: deps.keyAlias,
     ensureDeviceKey,
+    keyAccess: deps.keyAccess,
     secrets: deps.hostCatalog,
     knownHosts: deps.knownHosts,
     confirmFirstConnect,
@@ -117,7 +121,11 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
       return { ok: false, reason: 'unavailable' };
     }
   };
-  const connector = createModuleConnector({ ssh: deps.ssh, keyAlias: deps.keyAlias });
+  const connector = createModuleConnector({
+    ssh: deps.ssh,
+    keyAlias: deps.keyAlias,
+    keyAccess: deps.keyAccess,
+  });
   const runtime: HostsRuntime = {
     model,
     probe: new SshHostProbe({
@@ -125,6 +133,7 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
       keyAlias: deps.keyAlias,
       clock: deps.clock,
       ensureDeviceKey,
+      keyAccess: deps.keyAccess,
       secrets: deps.hostCatalog,
     }),
     connector,

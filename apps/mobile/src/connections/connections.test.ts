@@ -1,4 +1,9 @@
-import { fingerprintFromDigest, hostTrustKey } from '@openagentspocket/core';
+import {
+  FakeClock,
+  fingerprintFromDigest,
+  hostTrustKey,
+  KeyAccessGate,
+} from '@openagentspocket/core';
 import { waitFor } from '@testing-library/react-native';
 import { BACKGROUND_GRACE_MS } from './ConnectionManager';
 import { createWorld, HOST_KEY, OTHER_KEY, SAMPLE_HOST, type World } from './testWorld';
@@ -15,6 +20,14 @@ async function untilStatus(world: World, kind: string) {
   await waitFor(() => {
     world.acknowledgeEvents();
     expect(statusOf(world)).toBe(kind);
+  });
+}
+
+function refusingGate(): KeyAccessGate {
+  return new KeyAccessGate({
+    isRequired: () => true,
+    authenticate: async () => 'cancelled',
+    clock: new FakeClock(),
   });
 }
 
@@ -105,6 +118,25 @@ describe('connection manager', () => {
 
     await world.manager.setActive(false, { immediately: true });
     await untilStatus(world, 'suspended');
+    world.manager.stop();
+  });
+
+  it('uses no key when the owner refuses, and says so', async () => {
+    const world = await createWorld(HOST_KEY, { keyAccess: refusingGate() });
+    world.manager.start();
+    await world.runtime.model.add(SAMPLE_HOST, null);
+
+    await untilStatus(world, 'failed');
+    expect(world.ssh.sessions).toHaveLength(0);
+    world.manager.stop();
+  });
+
+  it('asks nothing for a Host that logs in with a password', async () => {
+    const world = await createWorld(HOST_KEY, { keyAccess: refusingGate() });
+    world.manager.start();
+    await world.runtime.model.add({ ...SAMPLE_HOST, authMethod: 'password' }, 'secret');
+
+    await waitFor(() => expect(world.ssh.sessions.length).toBeGreaterThan(0));
     world.manager.stop();
   });
 

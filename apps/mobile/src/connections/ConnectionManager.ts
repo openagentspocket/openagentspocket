@@ -5,6 +5,8 @@ import {
   type EventsSessionStatus,
   type Host,
   type HostKeyPolicy,
+  hostUsesKey,
+  type KeyAccessGate,
   type KnownHostsStore,
   type ReconnectPolicy,
 } from '@openagentspocket/core';
@@ -33,6 +35,8 @@ export interface ConnectionManagerOptions {
   /** Alias of the device key; created on first use through `ensureDeviceKey`. */
   readonly keyAlias: string;
   readonly ensureDeviceKey: () => Promise<unknown>;
+  /** Asks the owner before a key is used, when Settings requires it. */
+  readonly keyAccess?: KeyAccessGate;
   /** Saved passwords and RSA keys, for Hosts that do not use the device key. */
   readonly secrets?: HostSecrets;
   readonly knownHosts: KnownHostsStore;
@@ -255,6 +259,7 @@ export class ConnectionManager {
     confirmFirstConnect: HostKeyPolicy['confirmFirstConnect'] = this.options.confirmFirstConnect,
   ): Promise<SshTransport> {
     const { options } = this;
+    if (hostUsesKey(host)) await options.keyAccess?.authorize();
     await options.ensureDeviceKey();
     const settings = transportSettingsFor(host, {
       keyAlias: options.keyAlias,

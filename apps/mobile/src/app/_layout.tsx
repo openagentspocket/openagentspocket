@@ -1,4 +1,3 @@
-import { SettingsStore } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   OverlayHost,
@@ -26,6 +25,7 @@ import { InAppBanner } from '@/notifications/InAppBanner';
 import { useNotificationTaps } from '@/notifications/useNotificationTaps';
 import { AppLockCover } from '@/settings/AppLockCover';
 import { deviceAuthenticator } from '@/settings/deviceAuthenticator';
+import { settingsStore } from '@/settings/deviceSettings';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { SettingsProvider, useSettings } from '@/settings/SettingsProvider';
 import { useResolvedThemeId } from '@/settings/useSettingsContext';
@@ -39,7 +39,6 @@ recordUncaughtErrors();
  */
 export const unstable_settings = { anchor: 'index' };
 
-const settingsStore = new SettingsStore(deviceStorage);
 bindDemoModeStorage(deviceStorage);
 
 /** The theme in force comes from Settings (chosen, or the Dark/Light pair for the system). */

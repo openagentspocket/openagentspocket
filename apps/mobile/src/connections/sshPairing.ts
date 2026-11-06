@@ -2,6 +2,7 @@ import {
   createSSHPairingConnector,
   fingerprintDisplay,
   fingerprintFromBlob,
+  type KeyAccessGate,
   type PairingConnector,
   type PairingDeviceKey,
   type PairingDial,
@@ -62,6 +63,7 @@ class ModuleConnection implements PairingSSHConnection {
     private readonly offer: (credential: SshCredential) => void,
     private readonly keyAlias: string,
     private readonly connecting: Promise<SshSession>,
+    private readonly keyAccess: KeyAccessGate | undefined,
   ) {}
 
   async authenticate(
@@ -69,6 +71,11 @@ class ModuleConnection implements PairingSSHConnection {
     identity: PairingIdentity,
     _timeoutMs: number,
   ): Promise<void> {
+    if (identity.kind !== 'bootstrap') {
+      await this.keyAccess?.authorize().catch(() => {
+        throw new PairingSSHError('cancelled', 'key access');
+      });
+    }
     this.authenticated = true;
     this.offer(
       identity.kind === 'bootstrap'
@@ -115,6 +122,8 @@ export interface PairingDialOptions {
   readonly keyAlias: string;
   /** The account to log in as: the module needs it at connect, the dial does not receive it. */
   readonly username: () => string;
+  /** Asks the owner before the Device Key is used; a Bootstrap Key is not one of theirs. */
+  readonly keyAccess?: KeyAccessGate;
 }
 
 /**
@@ -152,7 +161,15 @@ export function createModuleDial(options: PairingDialOptions): PairingDial {
     const key = await keyArrived.catch((error: unknown) => {
       throw asPairingError(error);
     });
-    return new ModuleConnection(key.fingerprint, null, decide, offer, options.keyAlias, connecting);
+    return new ModuleConnection(
+      key.fingerprint,
+      null,
+      decide,
+      offer,
+      options.keyAlias,
+      connecting,
+      options.keyAccess,
+    );
   };
 }
 
