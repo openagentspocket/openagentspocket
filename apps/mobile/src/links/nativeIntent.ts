@@ -1,5 +1,5 @@
 import type { AppLink } from './appLink';
-import { LINK_SCHEMES, parseAppLink } from './appLink';
+import { isLinkHead, LINK_SCHEMES, parseAppLink } from './appLink';
 
 /** The in-app route an incoming link opens; null when the link is not one of ours. */
 export function routeForLink(link: AppLink): string {
@@ -22,7 +22,7 @@ export function redirectLink(path: string): string {
   const scheme = /^([a-z][a-z0-9+.-]*):\/\//i.exec(path)?.[1]?.toLowerCase();
   const ours = scheme
     ? (LINK_SCHEMES as readonly string[]).includes(scheme)
-    : /^\/(agent|usage)(\/|\?|$)/.test(path);
+    : isLinkHead(path.split(/[/?]/)[1] ?? '');
   if (!ours) return path;
   const link = parseAppLink(path);
   if (link) return routeForLink(link);
@@ -41,6 +41,6 @@ function plainRoute(url: string): string | null {
   const [, authority = '', path = '', query] = shaped;
   const route = authority === '' ? path : `/${authority}${path}`;
   const head = route.split('/')[1] ?? '';
-  if (head === '' || head === 'agent' || head === 'usage') return null;
+  if (head === '' || isLinkHead(head)) return null;
   return query ? `${route}?${query}` : route;
 }

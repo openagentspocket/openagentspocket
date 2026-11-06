@@ -86,6 +86,18 @@ function usageLink(segments: string[], query: Map<string, string>): AppLink | nu
   return null;
 }
 
+/** Every link kind by its first word; a new kind is one more entry, and every reader follows. */
+const LINK_PARSERS: ReadonlyMap<
+  string,
+  (segments: string[], query: Map<string, string>) => AppLink | null
+> = new Map([
+  ['agent', agentLink],
+  ['usage', usageLink],
+]);
+
+/** Whether a route's first word belongs to a link kind `parseAppLink` reads. */
+export const isLinkHead = (head: string): boolean => LINK_PARSERS.has(head);
+
 /**
  * Reads a deep link: `<scheme>://agent/<hostId>[/<paneId>]`, `<scheme>://agent?host=&session=&pane=`,
  * and the widgets' `<scheme>://usage[/limits][?host=<id>]`. Also takes the path form Expo Router
@@ -114,9 +126,8 @@ export function parseAppLink(url: string): AppLink | null {
   const query = queryItems(queryText);
   if (!segments || !query) return null;
   const head = authority !== '' ? decode(authority) : segments.shift();
-  if (head === 'agent') return agentLink(segments, query);
-  if (head === 'usage') return usageLink(segments, query);
-  return null;
+  const parse = head === undefined || head === null ? undefined : LINK_PARSERS.get(head);
+  return parse ? parse(segments, query) : null;
 }
 
 function encode(part: string): string {
