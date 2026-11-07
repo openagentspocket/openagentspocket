@@ -1,6 +1,7 @@
 import {
   type BlockedCardState,
   type BlockedDialog,
+  type GenericDialogExcerpt,
   makeFocus,
   makeOption,
   makeSubject,
@@ -109,6 +110,52 @@ describe('BlockedCard', () => {
     expect(screen.getByTestId('blocked-notice')).toBeTruthy();
     await fireEvent.press(screen.getByLabelText('↓'));
     expect(props.onKeys).toHaveBeenCalledWith(['down']);
+  });
+
+  it('warns under an option that saves a rule', async () => {
+    await renderCard({ content: { kind: 'card', dialog: bashDialog() } });
+    expect(screen.getByTestId('blocked-warning-2')).toBeTruthy();
+    expect(screen.queryByTestId('blocked-warning-1')).toBeNull();
+  });
+
+  it('sends Stop once an answer went unconfirmed', async () => {
+    const dialog = bashDialog();
+    const props = await renderCard({ content: { kind: 'card', dialog }, progress: 'unconfirmed' });
+    await fireEvent.press(screen.getByTestId('blocked-stop'));
+    expect(props.onStop).toHaveBeenCalledTimes(1);
+  });
+
+  it('numbers the answers of an unknown dialog in order and sends the number', async () => {
+    const excerpt = {
+      rows: [],
+      numbered: new Map([
+        [2, 'Keep'],
+        [1, 'Rebuild'],
+      ]),
+      reason: 'unknown',
+    } as unknown as GenericDialogExcerpt;
+    const props = await renderCard({ content: { kind: 'generic', excerpt } });
+    expect(screen.getAllByTestId(/^blocked-generic-/).map((node) => node.props.testID)).toEqual([
+      'blocked-generic-1',
+      'blocked-generic-2',
+    ]);
+    await fireEvent.press(screen.getByTestId('blocked-generic-2'));
+    expect(props.onPress).toHaveBeenCalledWith(2);
+  });
+
+  it('keeps the raw keys live after an unconfirmed answer, not while keys go out', async () => {
+    const live = await renderCard({ content: { kind: 'unreadable' }, progress: 'unconfirmed' });
+    await fireEvent.press(screen.getByLabelText('↓'));
+    expect(live.onKeys).toHaveBeenCalledTimes(1);
+    const held = await renderCard({ content: { kind: 'unreadable' }, progress: 'acting' });
+    await fireEvent.press(screen.getByLabelText('↓'));
+    expect(held.onKeys).not.toHaveBeenCalled();
+  });
+
+  it('asks the store to fold or unfold from the header', async () => {
+    const props = await renderCard({ content: { kind: 'unreadable' } });
+    await fireEvent.press(screen.getByTestId('blocked-collapse'));
+    expect(props.onCollapsedChange).toHaveBeenCalledWith(true);
   });
 
   it('folds to a bar and hides its choices', async () => {

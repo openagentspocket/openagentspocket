@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { type BackgroundWorkItem, BackgroundWorkStrip } from '../../components/BackgroundWorkStrip';
-import { BlockedCard, type BlockedPrompt } from '../../components/BlockedCard';
+import { type BlockedBody, BlockedCard } from '../../components/BlockedCard';
 import { JumpControl } from '../../components/JumpControl';
 import { agentPadKeys, KeyPad } from '../../components/KeyPad';
 import { NoticeBanner } from '../../components/NoticeBanner';
@@ -18,28 +18,50 @@ const useStyles = makeStyles((t) => ({
   right: { alignItems: 'flex-end' },
 }));
 
-const bashPrompt: BlockedPrompt = {
-  title: 'Bash command',
+const bashBody: BlockedBody = {
+  kind: 'prompt',
   description: 'Run the declined card UI test',
   code: 'swift test --filter CheckoutUITests/testDeclinedPaymentKeepsTheCart',
   options: [
-    { id: 'yes', label: 'Yes', kind: 'primary' },
+    { id: 'yes', label: 'Yes', kind: 'primary', onPress: noop },
     {
       id: 'always',
       label: "Yes, and don't ask again for swift test commands in /workspace/storefront",
       warning: "Saves a rule, so this isn't asked again.",
+      onPress: noop,
     },
-    { id: 'no', label: 'No', kind: 'destructive' },
+    { id: 'no', label: 'No', kind: 'destructive', onPress: noop },
+  ],
+  onNote: noop,
+};
+
+const questionBody: BlockedBody = {
+  kind: 'prompt',
+  options: [
+    { id: 'staging', label: 'Staging', onPress: noop },
+    { id: 'local', label: 'Local', onPress: noop },
+  ],
+  question: { fieldLabel: 'Something else', placeholder: 'Type an answer', onSubmit: noop },
+};
+
+const genericBody: BlockedBody = {
+  kind: 'excerpt',
+  text: 'The build cache is out of date.\n\n  1. Rebuild it\n  2. Keep going',
+  options: [
+    { id: '1', label: '1. Rebuild it', onPress: noop },
+    { id: '2', label: '2. Keep going', onPress: noop },
   ],
 };
 
-const questionPrompt: BlockedPrompt = {
-  title: 'Which database should the migration target?',
-  options: [
-    { id: 'staging', label: 'Staging' },
-    { id: 'local', label: 'Local' },
+const unreadableBody: BlockedBody = {
+  kind: 'keys',
+  message: "The Agent is waiting on something Agentico can't read.",
+  keys: [
+    { id: 'up', label: '↑', onPress: noop },
+    { id: 'down', label: '↓', onPress: noop },
+    { id: 'enter', label: 'Enter', onPress: noop },
+    { id: 'esc', label: 'Escape', onPress: noop },
   ],
-  question: { fieldLabel: 'Something else', placeholder: 'Type an answer' },
 };
 
 const work: readonly BackgroundWorkItem[] = [
@@ -67,16 +89,23 @@ function Padded({ children, lifted }: { children: React.ReactNode; lifted?: bool
   return <View style={[styles.pad, lifted && styles.lifted]}>{children}</View>;
 }
 
-function DemoBlocked({ collapsed, prompt }: { collapsed?: boolean; prompt: BlockedPrompt }) {
+function DemoBlocked({
+  title = 'Bash command',
+  collapsed,
+  body,
+}: {
+  title?: string;
+  collapsed?: boolean;
+  body: BlockedBody;
+}) {
   const [folded, setFolded] = useState(collapsed ?? false);
   return (
     <Padded>
       <BlockedCard
-        prompt={prompt}
+        title={title}
+        body={body}
         collapsed={folded}
         onToggleCollapsed={() => setFolded((value) => !value)}
-        onChoose={noop}
-        onNote={noop}
       />
     </Padded>
   );
@@ -132,9 +161,16 @@ export const blockedTerminalEntries: readonly CatalogEntry[] = [
   {
     name: 'BlockedCard',
     variants: [
-      { id: 'default', render: () => <DemoBlocked prompt={bashPrompt} /> },
-      { id: 'collapsed', render: () => <DemoBlocked prompt={bashPrompt} collapsed /> },
-      { id: 'question', render: () => <DemoBlocked prompt={questionPrompt} /> },
+      { id: 'default', render: () => <DemoBlocked body={bashBody} /> },
+      { id: 'collapsed', render: () => <DemoBlocked body={bashBody} collapsed /> },
+      {
+        id: 'question',
+        render: () => (
+          <DemoBlocked title="Which database should the migration target?" body={questionBody} />
+        ),
+      },
+      { id: 'generic', render: () => <DemoBlocked title="Question" body={genericBody} /> },
+      { id: 'unreadable', render: () => <DemoBlocked title="Keys" body={unreadableBody} /> },
     ],
   },
   {

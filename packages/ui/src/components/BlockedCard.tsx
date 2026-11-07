@@ -1,35 +1,61 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { TextField } from '../form/TextField';
-import { impact } from '../haptics';
 import { BoundedScroll } from '../primitives/BoundedScroll';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
-import { makeStyles, useTheme } from '../theme/theme';
+import { makeStyles } from '../theme/theme';
 
 export type BlockedOptionKind = 'primary' | 'secondary' | 'destructive';
 
-export interface BlockedOption {
+/** One control of the card. */
+export interface BlockedAction {
   id: string;
   label: string;
+  onPress: () => void;
+}
+
+export interface BlockedOption extends BlockedAction {
   kind?: BlockedOptionKind;
   /** Amber line right under this option ("Saves a rule, so this isn't asked again."). */
   warning?: string;
 }
 
-export interface BlockedPrompt {
-  /** "Bash command", "Edit file", a question. */
-  title: string;
+/** A dialog the app read: what it asks about, one button per answer. */
+export interface BlockedPromptBody {
+  kind: 'prompt';
   description?: string;
   /** The command, path or URL the dialog asks about (monospaced box). */
   code?: string;
   options: readonly BlockedOption[];
+  /** A quiet line under the answers ("Type your own answer in the terminal."). */
+  hint?: string;
+  /** The way out when no answer is one; a text button under them. */
+  stop?: BlockedAction & { disabled?: boolean };
   /** A question dialog asks for typed text next to its options. */
-  question?: { fieldLabel: string; placeholder?: string };
+  question?: { fieldLabel: string; placeholder?: string; onSubmit: (text: string) => void };
+  /** Offers Add a Note under the answers. */
+  onNote?: (text: string) => void;
 }
+
+/** A dialog the app does not know: the Agent's screen as it is, and its numbered answers. */
+export interface BlockedExcerptBody {
+  kind: 'excerpt';
+  text: string;
+  options: readonly BlockedAction[];
+}
+
+/** Nothing readable on the Agent's screen: a sentence and raw keys. */
+export interface BlockedKeysBody {
+  kind: 'keys';
+  message: string;
+  keys: readonly BlockedAction[];
+}
+
+export type BlockedBody = BlockedPromptBody | BlockedExcerptBody | BlockedKeysBody;
 
 export interface BlockedCardLabels {
   collapse: string;
@@ -55,200 +81,277 @@ export const defaultBlockedCardLabels: BlockedCardLabels = {
 const useStyles = makeStyles((t) => ({
   header: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   title: { flex: 1 },
-  body: { gap: t.spacing.sm, marginTop: t.spacing.xs },
   code: {
     backgroundColor: t.colors.control,
     borderRadius: t.metrics.cardRadius,
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-    paddingHorizontal: t.spacing.sm,
-    paddingVertical: t.spacing.xs,
+    padding: t.spacing.sm,
   },
-  options: { gap: t.spacing.xs },
-  option: {
-    minHeight: t.metrics.minTapSize + 8,
-    justifyContent: 'center',
-    borderRadius: t.metrics.cardRadius,
-    paddingHorizontal: t.spacing.sm,
-    paddingVertical: t.spacing.xs,
-    backgroundColor: t.colors.control,
-  },
-  primary: { backgroundColor: t.colors.accent },
-  destructive: { backgroundColor: t.wash(t.colors.danger) },
-  pressed: { opacity: 0.7 },
-  warning: { flexDirection: 'row', alignItems: 'flex-start', gap: t.spacing.xxs },
+  choices: { gap: t.spacing.xs },
+  pad: { flexDirection: 'row', gap: t.spacing.xs, flexWrap: 'wrap' },
+  warning: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
   note: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, minHeight: 32 },
 }));
 
-/** One full-width answer: Yes solid accent, others on the control fill, No on a red wash. */
-function OptionButton({ option, onPress }: { option: BlockedOption; onPress: () => void }) {
+/** The typed answer: free text with its send button, cleared once sent. */
+function TextAnswer({
+  field,
+  send,
+  onSubmit,
+  name,
+}: {
+  field: { label: string; placeholder?: string; multiline?: boolean };
+  send: string;
+  onSubmit: (text: string) => void;
+  /** Names the testIDs: `blocked-<name>-field`, `blocked-send-<name>`. */
+  name: string;
+}) {
+  const [draft, setDraft] = useState('');
+  const submit = () => {
+    const value = draft.trim();
+    if (!value) return;
+    onSubmit(value);
+    setDraft('');
+  };
+  return (
+    <>
+      <TextField
+        label={field.label}
+        placeholder={field.placeholder}
+        value={draft}
+        onChangeText={setDraft}
+        onSubmitEditing={field.multiline ? undefined : submit}
+        multiline={field.multiline}
+        testID={`blocked-${name}-field`}
+      />
+      <Button
+        title={send}
+        onPress={submit}
+        disabled={!draft.trim()}
+        testID={`blocked-send-${name}`}
+      />
+    </>
+  );
+}
+
+function AddNote({
+  onNote,
+  labels,
+}: {
+  onNote: (text: string) => void;
+  labels: BlockedCardLabels;
+}) {
   const styles = useStyles();
-  const kind = option.kind ?? 'secondary';
+  const [noting, setNoting] = useState(false);
+  if (noting) {
+    return (
+      <TextAnswer
+        field={{ label: labels.noteField, placeholder: labels.notePlaceholder, multiline: true }}
+        send={labels.sendNote}
+        onSubmit={(text) => {
+          onNote(text);
+          setNoting(false);
+        }}
+        name="note"
+      />
+    );
+  }
   return (
     <Tappable
+      style={styles.note}
+      onPress={() => setNoting(true)}
       accessibilityRole="button"
-      accessibilityLabel={option.label}
-      onPress={() => {
-        impact('light');
-        onPress();
-      }}
-      style={({ pressed }) => [
-        styles.option,
-        kind === 'primary' && styles.primary,
-        kind === 'destructive' && styles.destructive,
-        pressed && styles.pressed,
-      ]}
-      testID={`blocked-option-${option.id}`}
+      accessibilityLabel={labels.addNote}
+      testID="blocked-add-note"
     >
-      <Text
-        variant="body"
-        semibold={kind !== 'secondary'}
-        tone={kind === 'primary' ? 'onAccent' : kind === 'destructive' ? 'danger' : 'primary'}
-      >
-        {option.label}
+      <Icon name="note" color="accent" />
+      <Text variant="subheadline" tone="accent">
+        {labels.addNote}
       </Text>
     </Tappable>
   );
 }
 
+function PromptBody({
+  body,
+  disabled,
+  labels,
+}: {
+  body: BlockedPromptBody;
+  disabled: boolean;
+  labels: BlockedCardLabels;
+}) {
+  const styles = useStyles();
+  const { question, onNote, stop } = body;
+  return (
+    <>
+      <BoundedScroll testID="blocked-subject">
+        {body.description ? (
+          <Text variant="subheadline" tone="secondary">
+            {body.description}
+          </Text>
+        ) : null}
+        {body.code ? (
+          <View style={styles.code} testID="blocked-code">
+            <Text variant="mono">{body.code}</Text>
+          </View>
+        ) : null}
+      </BoundedScroll>
+      <View style={styles.choices}>
+        {body.options.map((option) => (
+          <View key={option.id} style={styles.choices}>
+            <Button
+              title={option.label}
+              kind={option.kind ?? 'secondary'}
+              disabled={disabled}
+              onPress={option.onPress}
+              testID={`blocked-option-${option.id}`}
+            />
+            {option.warning ? (
+              <View style={styles.warning} testID={`blocked-warning-${option.id}`}>
+                <Icon name="warning" size={13} color="warning" />
+                <Text variant="footnote" tone="warning">
+                  {option.warning}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+        ))}
+        {body.hint ? (
+          <Text variant="footnote" tone="secondary">
+            {body.hint}
+          </Text>
+        ) : null}
+        {stop ? (
+          <Button
+            title={stop.label}
+            kind="text"
+            disabled={stop.disabled}
+            onPress={stop.onPress}
+            testID="blocked-stop"
+          />
+        ) : null}
+      </View>
+      {question ? (
+        <TextAnswer
+          field={{ label: question.fieldLabel, placeholder: question.placeholder }}
+          send={labels.send}
+          onSubmit={question.onSubmit}
+          name="question"
+        />
+      ) : null}
+      {onNote && !question ? <AddNote onNote={onNote} labels={labels} /> : null}
+    </>
+  );
+}
+
+function ExcerptBody({ body, disabled }: { body: BlockedExcerptBody; disabled: boolean }) {
+  const styles = useStyles();
+  return (
+    <>
+      <BoundedScroll testID="blocked-excerpt">
+        <View style={styles.code}>
+          <Text variant="mono">{body.text}</Text>
+        </View>
+      </BoundedScroll>
+      <View style={styles.choices}>
+        {body.options.map((option) => (
+          <Button
+            key={option.id}
+            title={option.label}
+            kind="secondary"
+            disabled={disabled}
+            onPress={option.onPress}
+            testID={`blocked-generic-${option.id}`}
+          />
+        ))}
+      </View>
+    </>
+  );
+}
+
+function KeysBody({ body, disabled }: { body: BlockedKeysBody; disabled: boolean }) {
+  const styles = useStyles();
+  return (
+    <>
+      <Text variant="body">{body.message}</Text>
+      <View style={styles.pad} testID="blocked-keypad">
+        {body.keys.map((key) => (
+          <Button
+            key={key.id}
+            title={key.label}
+            kind="secondary"
+            size="small"
+            disabled={disabled}
+            onPress={key.onPress}
+          />
+        ))}
+      </View>
+    </>
+  );
+}
+
 export interface BlockedCardProps {
-  prompt: BlockedPrompt;
+  /** "Bash command", "Question". */
+  title: string;
+  /** What the card shows under its header; `body.kind` is the variant. */
+  body: BlockedBody;
+  /** Every answer waits: keys are going out, or an answer went unconfirmed. */
+  disabled?: boolean;
   /** Collapsed: one bar with the title and a chevron. */
   collapsed?: boolean;
   onToggleCollapsed?: () => void;
-  onChoose: (optionId: string) => void;
-  /** Free text: the Add a Note field, or the answer of a question dialog. */
-  onNote: (text: string) => void;
+  /** Amber line at the foot of the card ("This prompt changed."). */
+  notice?: string;
   labels?: Partial<BlockedCardLabels>;
   testID?: string;
 }
 
 /**
  * The Blocked card over the composer: the Agent's dialog as a card with the answers one tap
- * away. Presentational; the store decides what is offered and what is sent.
+ * away. A long subject scrolls inside its own box, so the answers stay on screen. Presentational;
+ * the store decides what is offered and what is sent.
  */
 export function BlockedCard({
-  prompt,
+  title,
+  body,
+  disabled = false,
   collapsed = false,
   onToggleCollapsed,
-  onChoose,
-  onNote,
+  notice,
   labels,
   testID = 'blocked-card',
 }: BlockedCardProps) {
   const styles = useStyles();
-  const theme = useTheme();
   const text = { ...defaultBlockedCardLabels, ...labels };
-  const [noting, setNoting] = useState(false);
-  const [draft, setDraft] = useState('');
-  const submit = () => {
-    const value = draft.trim();
-    if (!value) return;
-    onNote(value);
-    setDraft('');
-    setNoting(false);
-  };
-  const options = (
-    <View style={styles.options}>
-      {prompt.options.map((option) => (
-        <View key={option.id} style={styles.options}>
-          <OptionButton option={option} onPress={() => onChoose(option.id)} />
-          {option.warning ? (
-            <View style={styles.warning} testID={`blocked-warning-${option.id}`}>
-              <Icon name="warning" size={13} tint={theme.colors.warning} />
-              <Text variant="footnote" tone="warning">
-                {option.warning}
-              </Text>
-            </View>
-          ) : null}
-        </View>
-      ))}
-    </View>
-  );
   return (
     <Card accent="warning" testID={testID}>
       <Tappable
         style={styles.header}
         onPress={onToggleCollapsed}
         accessibilityRole="button"
-        accessibilityLabel={`${prompt.title}, ${collapsed ? text.expand : text.collapse}`}
+        accessibilityLabel={`${title}, ${collapsed ? text.expand : text.collapse}`}
         accessibilityState={{ expanded: !collapsed }}
-        testID="blocked-header"
+        testID="blocked-collapse"
       >
-        <Icon name="hand" size={20} tint={theme.colors.warning} />
-        <Text variant="headline" style={styles.title} numberOfLines={1}>
-          {prompt.title}
+        <Icon name="hand" size={20} color="warning" />
+        <Text variant="headline" style={styles.title} numberOfLines={collapsed ? 1 : 2}>
+          {title}
         </Text>
-        <Icon name={collapsed ? 'chevronRight' : 'chevronDown'} tint={theme.colors.accent} />
+        <Icon name={collapsed ? 'chevronRight' : 'chevronDown'} color="accent" />
       </Tappable>
       {collapsed ? null : (
-        <View style={styles.body}>
-          <BoundedScroll testID="blocked-subject">
-            {prompt.description ? (
-              <Text variant="subheadline" tone="secondary">
-                {prompt.description}
-              </Text>
-            ) : null}
-            {prompt.code ? (
-              <View style={styles.code} testID="blocked-code">
-                <Text variant="mono">{prompt.code}</Text>
-              </View>
-            ) : null}
-          </BoundedScroll>
-          {options}
-          {prompt.question ? (
-            <>
-              <TextField
-                label={prompt.question.fieldLabel}
-                placeholder={prompt.question.placeholder}
-                value={draft}
-                onChangeText={setDraft}
-                onSubmitEditing={submit}
-                testID="blocked-question-field"
-              />
-              <Button
-                title={text.send}
-                onPress={submit}
-                disabled={!draft.trim()}
-                testID="blocked-send"
-              />
-            </>
-          ) : (
-            <>
-              {noting ? (
-                <>
-                  <TextField
-                    label={text.noteField}
-                    placeholder={text.notePlaceholder}
-                    value={draft}
-                    onChangeText={setDraft}
-                    multiline
-                    testID="blocked-note-field"
-                  />
-                  <Button
-                    title={text.sendNote}
-                    onPress={submit}
-                    disabled={!draft.trim()}
-                    testID="blocked-send-note"
-                  />
-                </>
-              ) : (
-                <Tappable
-                  style={styles.note}
-                  onPress={() => setNoting(true)}
-                  accessibilityRole="button"
-                  accessibilityLabel={text.addNote}
-                  testID="blocked-add-note"
-                >
-                  <Icon name="note" tint={theme.colors.accent} />
-                  <Text variant="subheadline" tone="accent">
-                    {text.addNote}
-                  </Text>
-                </Tappable>
-              )}
-            </>
-          )}
-        </View>
+        <>
+          {body.kind === 'prompt' ? (
+            <PromptBody body={body} disabled={disabled} labels={text} />
+          ) : null}
+          {body.kind === 'excerpt' ? <ExcerptBody body={body} disabled={disabled} /> : null}
+          {body.kind === 'keys' ? <KeysBody body={body} disabled={disabled} /> : null}
+          {notice ? (
+            <Text variant="footnote" tone="warning" testID="blocked-notice">
+              {notice}
+            </Text>
+          ) : null}
+        </>
       )}
     </Card>
   );

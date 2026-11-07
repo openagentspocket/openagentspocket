@@ -16,12 +16,16 @@ export {
   defaultBackgroundWorkLabels,
 } from './BackgroundWorkStrip';
 export {
+  type BlockedAction,
+  type BlockedBody,
   BlockedCard,
   type BlockedCardLabels,
   type BlockedCardProps,
+  type BlockedExcerptBody,
+  type BlockedKeysBody,
   type BlockedOption,
   type BlockedOptionKind,
-  type BlockedPrompt,
+  type BlockedPromptBody,
   defaultBlockedCardLabels,
 } from './BlockedCard';
 export {

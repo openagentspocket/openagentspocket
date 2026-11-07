@@ -1,7 +1,7 @@
-import { fireEvent, screen } from '@testing-library/react-native';
+import { fireEvent, screen, within } from '@testing-library/react-native';
 import { renderThemed } from '../test-utils';
 import { BackgroundWorkStrip } from './BackgroundWorkStrip';
-import { BlockedCard, type BlockedPrompt } from './BlockedCard';
+import { type BlockedBody, BlockedCard } from './BlockedCard';
 import { JumpControl } from './JumpControl';
 import { agentPadKeys, KeyPad, swipedPage } from './KeyPad';
 import { NoticeBanner } from './NoticeBanner';
@@ -13,38 +13,105 @@ import {
   TerminalToolbar,
 } from './TerminalToolbar';
 
-const prompt: BlockedPrompt = {
-  title: 'Bash command',
+const onYes = jest.fn();
+const body: BlockedBody = {
+  kind: 'prompt',
   description: 'Run tests',
   code: 'swift test',
   options: [
-    { id: 'yes', label: 'Yes', kind: 'primary' },
-    { id: 'rule', label: 'Always', warning: 'Saves a rule' },
-    { id: 'no', label: 'No', kind: 'destructive' },
+    { id: 'yes', label: 'Yes', kind: 'primary', onPress: onYes },
+    { id: 'rule', label: 'Always', warning: 'Saves a rule', onPress: jest.fn() },
+    { id: 'no', label: 'No', kind: 'destructive', onPress: jest.fn() },
   ],
 };
 
 describe('BlockedCard', () => {
   it('sends the tapped option and shows the rule warning under its option', async () => {
-    const onChoose = jest.fn();
-    await renderThemed(<BlockedCard prompt={prompt} onChoose={onChoose} onNote={jest.fn()} />);
+    await renderThemed(<BlockedCard title="Bash" body={body} />);
     expect(screen.getByTestId('blocked-code')).toBeTruthy();
     expect(screen.getByTestId('blocked-warning-rule')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('blocked-option-no'));
-    expect(onChoose).toHaveBeenCalledWith('no');
+    await fireEvent.press(screen.getByTestId('blocked-option-yes'));
+    expect(onYes).toHaveBeenCalled();
   });
 
-  it('collapses to the header and sends a note', async () => {
+  it('keeps the answers outside the scroll of a long subject', async () => {
+    await renderThemed(<BlockedCard title="Bash" body={body} />);
+    const subject = screen.getByTestId('blocked-subject');
+    expect(within(subject).getByTestId('blocked-code')).toBeTruthy();
+    expect(within(subject).queryByTestId('blocked-option-yes')).toBeNull();
+    expect(screen.getByTestId('blocked-option-yes')).toBeTruthy();
+  });
+
+  it('holds every answer while disabled, and Stop on its own', async () => {
+    const onStop = jest.fn();
+    const onPress = jest.fn();
+    await renderThemed(
+      <BlockedCard
+        title="Bash"
+        disabled
+        body={{
+          kind: 'prompt',
+          options: [{ id: 'yes', label: 'Yes', onPress }],
+          stop: { id: 'stop', label: 'Stop', onPress: onStop },
+        }}
+      />,
+    );
+    await fireEvent.press(screen.getByTestId('blocked-option-yes'));
+    expect(onPress).not.toHaveBeenCalled();
+    await fireEvent.press(screen.getByTestId('blocked-stop'));
+    expect(onStop).toHaveBeenCalled();
+  });
+
+  it('offers a note only when asked to, and sends it trimmed', async () => {
     const onNote = jest.fn();
-    await renderThemed(<BlockedCard prompt={prompt} onChoose={jest.fn()} onNote={onNote} />);
+    await renderThemed(<BlockedCard title="Bash" body={body} />);
+    expect(screen.queryByTestId('blocked-add-note')).toBeNull();
+    await renderThemed(<BlockedCard title="Bash" body={{ ...body, onNote } as BlockedBody} />);
     await fireEvent.press(screen.getByTestId('blocked-add-note'));
     await fireEvent.changeText(screen.getByTestId('blocked-note-field'), ' use bun ');
     await fireEvent.press(screen.getByTestId('blocked-send-note'));
     expect(onNote).toHaveBeenCalledWith('use bun');
+    expect(screen.getByTestId('blocked-add-note')).toBeTruthy();
+  });
+
+  it('answers a question with typed text', async () => {
+    const onSubmit = jest.fn();
     await renderThemed(
-      <BlockedCard prompt={prompt} collapsed onChoose={jest.fn()} onNote={jest.fn()} />,
+      <BlockedCard
+        title="Which one?"
+        body={{ kind: 'prompt', options: [], question: { fieldLabel: 'Answer', onSubmit } }}
+      />,
     );
-    expect(screen.queryAllByTestId('blocked-option-yes')).toHaveLength(0);
+    await fireEvent.changeText(screen.getByTestId('blocked-question-field'), 'staging');
+    await fireEvent.press(screen.getByTestId('blocked-send-question'));
+    expect(onSubmit).toHaveBeenCalledWith('staging');
+  });
+
+  it('shows a screen excerpt with numbered answers, and raw keys', async () => {
+    const onPress = jest.fn();
+    await renderThemed(
+      <BlockedCard
+        title="Question"
+        body={{ kind: 'excerpt', text: 'Pick', options: [{ id: '1', label: '1. A', onPress }] }}
+      />,
+    );
+    expect(screen.getByTestId('blocked-excerpt')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('blocked-generic-1'));
+    expect(onPress).toHaveBeenCalledTimes(1);
+    await renderThemed(
+      <BlockedCard
+        title="Keys"
+        body={{ kind: 'keys', message: 'Unreadable', keys: [{ id: 'up', label: 'Up', onPress }] }}
+      />,
+    );
+    await fireEvent.press(screen.getByLabelText('Up'));
+    expect(onPress).toHaveBeenCalledTimes(2);
+  });
+
+  it('collapses to the header, without its choices or notice', async () => {
+    await renderThemed(<BlockedCard title="Bash" body={body} collapsed notice="Changed" />);
+    expect(screen.queryByTestId('blocked-option-yes')).toBeNull();
+    expect(screen.queryByTestId('blocked-notice')).toBeNull();
   });
 });
 
