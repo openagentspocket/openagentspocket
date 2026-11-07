@@ -61,6 +61,13 @@ export interface ConnectionManagerOptions {
  */
 export const BACKGROUND_GRACE_MS = 15_000;
 
+/**
+ * How long away a connection is still believed on return. iOS freezes the app within seconds, its
+ * timers with it, and the socket may be gone without a word: a message sent on it would wait out
+ * the whole request timeout. Past this the return dials anew. Face ID and the like take less.
+ */
+export const TRUSTED_AWAY_MS = 5_000;
+
 /** The Hosts-list state of a session status. */
 export function connectionFor(status: EventsSessionStatus | undefined): HostConnection {
   switch (status?.kind) {
@@ -92,6 +99,7 @@ export class ConnectionManager {
   private active: boolean;
   private transitions: Promise<void> = Promise.resolve();
   private graceTimer: unknown;
+  private leftAt = 0;
   private stopped = false;
   private unsubscribe: (() => void) | undefined;
   private unsubscribeStore: (() => void) | undefined;
@@ -140,16 +148,26 @@ export class ConnectionManager {
       if (!active && options?.immediately && this.cancelGrace()) await this.transition(false);
       return;
     }
+    if (active && this.graceTimer !== undefined && this.awayTooLong()) {
+      // Still away for what it winds down: a dial held for the return must not go ahead.
+      this.cancelGrace();
+      await this.transition(false);
+    }
     this.active = active;
     this.cancelGrace();
     if (active || options?.immediately) {
       await this.transition(active);
       return;
     }
+    this.leftAt = this.options.clock.monotonicMs();
     this.graceTimer = this.options.clock.setTimeout(() => {
       this.cancelGrace();
       void this.transition(false);
     }, BACKGROUND_GRACE_MS);
+  }
+
+  private awayTooLong(): boolean {
+    return this.options.clock.monotonicMs() - this.leftAt >= TRUSTED_AWAY_MS;
   }
 
   private cancelGrace(): boolean {

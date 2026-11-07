@@ -1,6 +1,6 @@
 import { fingerprintFromDigest, hostTrustKey } from '@openagentspocket/core';
 import { waitFor } from '@testing-library/react-native';
-import { BACKGROUND_GRACE_MS } from './ConnectionManager';
+import { BACKGROUND_GRACE_MS, TRUSTED_AWAY_MS } from './ConnectionManager';
 import { createWorld, HOST_KEY, OTHER_KEY, SAMPLE_HOST, type World } from './testWorld';
 import { TrustPromptQueue } from './trustPrompt';
 
@@ -90,13 +90,32 @@ describe('connection manager', () => {
     const dialed = world.ssh.sessions.length;
 
     await world.manager.setActive(false);
-    await world.clock.advance(BACKGROUND_GRACE_MS - 1);
+    await world.clock.advance(TRUSTED_AWAY_MS - 1);
     expect(statusOf(world)).toBe('connected');
     await world.manager.setActive(true);
     await world.clock.advance(BACKGROUND_GRACE_MS);
 
     await untilStatus(world, 'connected');
     expect(world.ssh.sessions).toHaveLength(dialed);
+    world.manager.stop();
+  });
+
+  it('does not trust a connection iOS may have frozen: a longer trip returns on a new one', async () => {
+    const world = await createWorld();
+    world.manager.start();
+    await world.runtime.model.add(SAMPLE_HOST, null);
+    await untilStatus(world, 'connected');
+    const dialed = world.ssh.sessions.length;
+
+    await world.manager.setActive(false);
+    await world.clock.advance(TRUSTED_AWAY_MS);
+    await world.manager.setActive(true);
+
+    await waitFor(() => {
+      world.acknowledgeEvents();
+      expect(world.ssh.sessions.length).toBeGreaterThan(dialed);
+      expect(statusOf(world)).toBe('connected');
+    });
     world.manager.stop();
   });
 
