@@ -180,7 +180,9 @@ async function main() {
   const runtime = readUsageRuntime(configDir);
   // Only a pane has a screen to answer on; without a runtime there is nowhere to keep an ask.
   const askDir = tmuxPane ? runtime?.stateDir : null;
-  if (askDir && status !== null && status !== "blocked") forgetApprovalAsk(askDir, tmuxPane);
+  // A parallel tool finishing says nothing about the prompt on screen; the reader checks that.
+  const leftBlocked = status !== null && status !== "blocked" && input.hook_event_name !== "PostToolUse";
+  if (askDir && leftBlocked) forgetApprovalAsk(askDir, tmuxPane);
   if (event === null || paneId === null) return;
   const devices = readEligibleDevices(configDir, event.status, "");
   if (devices.length === 0) {
