@@ -23,6 +23,7 @@ const useStyles = makeStyles((th) => ({
     padding: th.spacing.sm,
   },
   choices: { gap: th.spacing.xs },
+  actions: { flexDirection: 'row', justifyContent: 'center', gap: th.spacing.md },
   pad: { flexDirection: 'row', gap: th.spacing.xs, flexWrap: 'wrap' },
   warning: { flexDirection: 'row', alignItems: 'center', gap: th.spacing.xxs },
   toggle: {
@@ -109,6 +110,7 @@ function Generic({
             key={number}
             title={`${number}. ${excerpt.numbered.get(number) ?? ''}`}
             kind="secondary"
+            size="small"
             disabled={disabled}
             onPress={() => onPress(number)}
             testID={`blocked-generic-${number}`}
@@ -171,13 +173,26 @@ function Selection({
   );
 }
 
+function ShowTerminal({ onPress }: { onPress: () => void }) {
+  return (
+    <Button
+      title={t('Show Terminal')}
+      kind="text"
+      size="small"
+      onPress={onPress}
+      testID="blocked-show-terminal"
+    />
+  );
+}
+
 function Known({
   dialog,
   state,
   onChoose,
   onSubmitSelection,
   onStop,
-}: Pick<BlockedCardProps, 'onChoose' | 'onSubmitSelection' | 'onStop'> & {
+  onShowTerminal,
+}: Pick<BlockedCardProps, 'onChoose' | 'onSubmitSelection' | 'onStop' | 'onShowTerminal'> & {
   dialog: BlockedDialog;
   state: BlockedCardState;
 }) {
@@ -212,6 +227,7 @@ function Known({
             <Button
               title={option.label}
               kind={optionKind(option)}
+              size="small"
               disabled={disabled}
               onPress={() => onChoose(option.ordinal)}
               testID={`blocked-option-${option.ordinal}`}
@@ -231,15 +247,19 @@ function Known({
             {t('Type your own answer in the terminal.')}
           </Text>
         ) : null}
-        {stop ? (
-          <Button
-            title={stop}
-            kind="text"
-            disabled={state.progress === 'acting'}
-            onPress={onStop}
-            testID="blocked-stop"
-          />
-        ) : null}
+        <View style={styles.actions}>
+          {stop ? (
+            <Button
+              title={stop}
+              kind="text"
+              size="small"
+              disabled={state.progress === 'acting'}
+              onPress={onStop}
+              testID="blocked-stop"
+            />
+          ) : null}
+          {onShowTerminal ? <ShowTerminal onPress={onShowTerminal} /> : null}
+        </View>
       </View>
     </>
   );
@@ -287,6 +307,7 @@ export function BlockedCard(props: BlockedCardProps) {
               onChoose={props.onChoose}
               onSubmitSelection={props.onSubmitSelection}
               onStop={props.onStop}
+              onShowTerminal={props.onShowTerminal}
             />
           ) : null}
           {content.kind === 'generic' ? (
@@ -311,14 +332,8 @@ export function BlockedCard(props: BlockedCardProps) {
               {cardText(state.notice)}
             </Text>
           ) : null}
-          {props.onShowTerminal ? (
-            <Button
-              title={t('Show Terminal')}
-              kind="text"
-              size="small"
-              onPress={props.onShowTerminal}
-              testID="blocked-show-terminal"
-            />
+          {props.onShowTerminal && content.kind !== 'card' ? (
+            <ShowTerminal onPress={props.onShowTerminal} />
           ) : null}
         </>
       )}
