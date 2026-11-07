@@ -30,7 +30,11 @@ for (const c of catalog.components) {
   if (swiftRepo)
     for (const s of c.swift) {
       const file = s.split(':')[0];
-      if (!existsSync(join(swiftRepo, 'Sources/Agentico', file)))
+      if (
+        !['Agentico', 'AgenticoCore'].some((dir) =>
+          existsSync(join(swiftRepo, 'Sources', dir, file)),
+        )
+      )
         errors.push(`${c.name}: missing Swift file ${file}`);
     }
 }

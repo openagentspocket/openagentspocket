@@ -282,7 +282,13 @@ try {
     const run = spawnSync(
       maestro,
       ['--udid', udid, 'test', '--test-output-dir', runDir, join('e2e/sim', flow)],
-      { cwd: root, encoding: 'utf8', env: process.env },
+      // Maestro's driver starts slowly on a simulator just booted, and past its default wait the
+      // first flow of a run dies with a bare stack trace before any step.
+      {
+        cwd: root,
+        encoding: 'utf8',
+        env: { ...process.env, MAESTRO_DRIVER_STARTUP_TIMEOUT: '240000' },
+      },
     );
     collectScreenshots(runDir);
     // A failed flow keeps Maestro's debug output (hierarchy and screenshots of the failing step).

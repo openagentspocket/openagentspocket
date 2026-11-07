@@ -151,7 +151,6 @@ The owner asked for this work and acts as integrator's approval for native build
 - Hardware ⌘ keys: need a native module.
 - `BlockedCard` and `LimitWindowRow`: unified in an open PR, waiting for the owner's look.
 - Live Activity buttons, on herdr and tmux: both hooks record the ask, but nothing in the app runs `approval-asks.js` or passes `approvalAsks` to the coordinator yet.
-- `sim:verify` failing bare on a first flow: seen once more on 2026-11-07 as a stack trace from Maestro's own runner, not the app; the same flows passed on rerun. Its cause is not found.
 
 **Accounts**
 
