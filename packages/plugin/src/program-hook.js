@@ -68,10 +68,33 @@ export function parseHermesHook(input) {
   return input?.event === "post_llm_call" ? { status: "done", title: null } : null;
 }
 
+/** What Pi's and omp's extension forwards (src/program-hooks/pi-extension.ts). */
+export function parsePiHook(input) {
+  if (input?.event === "tool_approval_requested") {
+    return { status: "blocked", title: optionalText(input.title) };
+  }
+  return input?.event === "done" ? { status: "done", title: null } : null;
+}
+
+/** Grok Build's hooks have Claude Code's events with camelCase fields; `Notification` is its ask. */
+export function parseGrokHook(input) {
+  if (input?.hook_event_name === "Notification") {
+    return { status: "blocked", title: optionalText(input.message) };
+  }
+  return input?.hook_event_name === "Stop" ? { status: "done", title: null } : null;
+}
+
+/** Grok names its fields in camelCase; everything after this reads one shape. */
+export function normalizedInput(program, input) {
+  if (program !== "grok") return input;
+  return { ...input, hook_event_name: input?.hookEventName, session_id: input?.sessionId };
+}
+
 /** The status a hook shows beyond what notifies: tmux has no other way to know it. */
 export function activityOf(input, event) {
   if (event) return event.status;
-  if (input?.hook_event_name === "SessionStart") return "idle";
+  if (input?.hook_event_name === "SessionStart" || input?.event === "session_start") return "idle";
+  if (input?.event === "agent_start") return "working";
   const working = ["UserPromptSubmit", "PostToolUse"];
   return working.includes(input?.hook_event_name) ? "working" : null;
 }
@@ -81,6 +104,9 @@ const PARSERS = {
   codex: parseCodexHook,
   opencode: parseOpenCodeHook,
   hermes: parseHermesHook,
+  pi: parsePiHook,
+  omp: parsePiHook,
+  grok: parseGrokHook,
 };
 
 /** The pane the Agent runs in, or its own session where no multiplexer holds it. */
@@ -106,7 +132,7 @@ async function readStdin() {
 
 async function main() {
   const program = process.argv[2];
-  const input = JSON.parse(await readStdin());
+  const input = normalizedInput(program, JSON.parse(await readStdin()));
   if (!Object.hasOwn(PARSERS, program) || herdrOwnsThisPane(process.env)) return;
   const event = PARSERS[program](input);
   const paneId = hookPaneId(process.env, input);

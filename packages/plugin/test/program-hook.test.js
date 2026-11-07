@@ -12,12 +12,16 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { applyProgramHooks, withHooks, withoutHooks } from "../src/install-program-hooks.js";
 import {
+  activityOf,
   herdrOwnsThisPane,
   hookPaneId,
+  normalizedInput,
   parseClaudeHook,
   parseCodexHook,
+  parseGrokHook,
   parseHermesHook,
   parseOpenCodeHook,
+  parsePiHook,
 } from "../src/program-hook.js";
 
 const HOOK = fileURLToPath(new URL("../src/program-hook.js", import.meta.url));
@@ -25,6 +29,10 @@ const INSTALL = fileURLToPath(new URL("../src/install-program-hooks.js", import.
 const KEY = Buffer.from(Array.from({ length: 32 }, (_, i) => i)).toString("base64url");
 const COMMAND = "'/n' '/x/program-hook.js' claude";
 const GROUPS = { Notification: "permission_prompt", Stop: null };
+
+// A run from inside a herdr pane must behave like one outside it: herdr would own the hooks.
+delete process.env.HERDR_ENV;
+delete process.env.HERDR_SOCKET_PATH;
 
 let home;
 let relay;
@@ -120,6 +128,69 @@ suite("the other programs", () => {
     const ask = { event: "pre_approval_request", command: "rm -rf x" };
     assert.deepEqual(parseHermesHook(ask), { status: "blocked", title: "rm -rf x" });
     assert.equal(parseHermesHook({ event: "post_llm_call" }).status, "done");
+  });
+
+  test("reads Pi, omp and Grok Build events", () => {
+    const ask = { event: "tool_approval_requested", title: "bash" };
+    assert.deepEqual(parsePiHook(ask), { status: "blocked", title: "bash" });
+    assert.equal(parsePiHook({ event: "done" }).status, "done");
+    assert.equal(parsePiHook({ event: "agent_start" }), null);
+    assert.equal(activityOf({ event: "agent_start" }, null), "working");
+
+    const stop = normalizedInput("grok", { hookEventName: "Stop", sessionId: "s1" });
+    assert.equal(stop.session_id, "s1");
+    assert.equal(parseGrokHook(stop).status, "done");
+    const asks = normalizedInput("grok", { hookEventName: "Notification", message: "Run ls?" });
+    assert.deepEqual(parseGrokHook(asks), { status: "blocked", title: "Run ls?" });
+    assert.equal(parseGrokHook(normalizedInput("grok", { hookEventName: "PostToolUse" })), null);
+  });
+
+  test("installs the Pi extension and the Grok hook file, once, and removes them", () => {
+    mkdirSync(join(home, ".pi", "agent"), { recursive: true });
+    mkdirSync(join(home, ".omp", "agent"), { recursive: true });
+    mkdirSync(join(home, ".grok", "hooks"), { recursive: true });
+    const own = join(home, ".grok", "hooks", "mine.json");
+    writeFileSync(own, "{}");
+    const ctx = { node: process.execPath, hook: HOOK };
+    const touched = applyProgramHooks({ env: {}, home, ctx });
+    applyProgramHooks({ env: {}, home, ctx });
+    assert.deepEqual(touched.sort(), ["grok", "omp", "pi"]);
+
+    const pi = readFileSync(join(home, ".pi", "agent", "extensions", "agentico-notify.ts"), "utf8");
+    assert.match(pi, /"agent_settled"/);
+    assert.doesNotMatch(pi, /__[A-Z_]+__/);
+    const omp = readFileSync(join(home, ".omp", "agent", "extensions", "agentico-notify.ts"), "utf8");
+    assert.match(omp, /"agent_end"/);
+    const grok = JSON.parse(readFileSync(join(home, ".grok", "hooks", "agentico-notify.json"), "utf8"));
+    assert.equal(grok.hooks.Stop.length, 1);
+
+    applyProgramHooks({ env: {}, home, ctx, uninstall: true });
+    assert.equal(existsSync(join(home, ".pi", "agent", "extensions", "agentico-notify.ts")), false);
+    assert.equal(readFileSync(own, "utf8"), "{}");
+  });
+
+  test("the Pi extension forwards an ask and stays quiet off the TUI", async () => {
+    await startRelay();
+    register();
+    mkdirSync(join(home, ".pi", "agent"), { recursive: true });
+    const ctx = { node: process.execPath, hook: HOOK };
+    applyProgramHooks({ env: {}, home, ctx });
+    process.env.OAP_CONFIG_DIR = home;
+    const file = join(home, ".pi", "agent", "extensions", "agentico-notify.ts");
+    const { default: extension } = await import(pathToFileURL(file).href);
+    const handlers = new Map();
+    extension({ on: (name, handler) => handlers.set(name, handler) });
+
+    const sessionManager = { getSessionId: () => "s1" };
+    const ask = handlers.get("tool_approval_requested");
+    ask({ toolName: "bash" }, { mode: "rpc", sessionManager });
+    ask({ toolName: "bash" }, { mode: "tui", cwd: "/srv/api", sessionManager });
+    delete process.env.OAP_CONFIG_DIR;
+    for (let i = 0; i < 100 && relay.requests.length === 0; i += 1) {
+      await new Promise((done) => setTimeout(done, 50));
+    }
+    await new Promise((done) => setTimeout(done, 100));
+    assert.equal(relay.requests.length, 1);
   });
 
   test("the OpenCode plugin file runs and reaches the relay", async () => {

@@ -12,7 +12,7 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-const MARKER = /program-hook\.js'? (claude|codex)/;
+const MARKER = /program-hook\.js'? (claude|codex|grok)/;
 const PLUGIN_ID = "agentico";
 
 /** Async: a push may take seconds, and the Agent must never wait for it. */
@@ -81,6 +81,18 @@ const jsonHooks = (file, groups, program) => ({
 const fill = (template, ctx) =>
   template.replaceAll("__NODE__", ctx.node).replaceAll("__HOOK__", ctx.hook);
 
+/** Pi and its fork take the same extension file; only their end-of-turn event differs. */
+const piExtension = (program, doneEvent) => ({
+  install: (ctx, root) =>
+    write(
+      join(root, "extensions", `${PLUGIN_ID}-notify.ts`),
+      fill(template("pi-extension.ts"), ctx)
+        .replaceAll("__PROGRAM__", program)
+        .replaceAll("__DONE_EVENT__", doneEvent),
+    ),
+  uninstall: (_ctx, root) => rmSync(join(root, "extensions", `${PLUGIN_ID}-notify.ts`), { force: true }),
+});
+
 const template = (name) =>
   readFileSync(fileURLToPath(new URL(`./program-hooks/${name}`, import.meta.url)), "utf8");
 
@@ -103,6 +115,13 @@ const PROGRAMS = {
     install: (ctx, root) =>
       write(join(root, "plugins", `${PLUGIN_ID}-notify.js`), fill(template("opencode-plugin.js"), ctx)),
     uninstall: (_ctx, root) => rmSync(join(root, "plugins", `${PLUGIN_ID}-notify.js`), { force: true }),
+  },
+  pi: { root: (_env, home) => join(home, ".pi", "agent"), ...piExtension("pi", "agent_settled") },
+  omp: { root: (_env, home) => join(home, ".omp", "agent"), ...piExtension("omp", "agent_end") },
+  grok: {
+    root: (_env, home) => join(home, ".grok"),
+    // A hook file of its own: Grok Build reads every JSON file in `hooks`.
+    ...jsonHooks(join("hooks", `${PLUGIN_ID}-notify.json`), { ...LIFECYCLE, Notification: null, Stop: null }, "grok"),
   },
   hermes: {
     root: (env, home) => env.HERMES_HOME || join(home, ".hermes"),
