@@ -169,7 +169,9 @@ describe('PortRow', () => {
     );
     expect(screen.getByText('Not safe')).toBeTruthy();
     expect(screen.queryByTestId('icon-chevronRight', HIDDEN)).toBeNull();
-    expect(screen.getByRole('button', { name: 'web, 3000' }).props.accessibilityState).toEqual({
+    expect(
+      screen.getByRole('button', { name: 'web, 3000' }).props.accessibilityState,
+    ).toMatchObject({
       disabled: true,
     });
   });

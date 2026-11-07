@@ -11,11 +11,10 @@ import {
 import { t } from '@openagentspocket/i18n';
 import {
   Card,
-  Icon,
+  ListRow,
   makeStyles,
   programTint,
   Sheet,
-  Tappable,
   Text,
   UsageBreakdownRow,
   UsageHostGroup,
@@ -31,13 +30,6 @@ const useStyles = makeStyles((th) => ({
   section: { gap: th.spacing.xs },
   heading: { paddingHorizontal: th.spacing.xs },
   programs: { gap: th.spacing.md, paddingHorizontal: th.spacing.xs },
-  link: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minHeight: 44,
-    paddingHorizontal: th.spacing.md,
-  },
   separator: { height: th.metrics.hairlineWidth, backgroundColor: th.hairline },
 }));
 
@@ -165,17 +157,13 @@ export function DaySheet({
             {LINKS.map((kind, index) => (
               <View key={kind}>
                 {index > 0 ? <View style={styles.separator} /> : null}
-                <Tappable
+                <ListRow
+                  title={breakdownTitle(kind)}
+                  titleTone="accent"
+                  chevron
                   onPress={() => onBreakdown(kind)}
-                  accessibilityRole="button"
-                  style={styles.link}
                   testID={`usage-day-link-${kind}`}
-                >
-                  <Text variant="subheadline" tone="accent">
-                    {breakdownTitle(kind)}
-                  </Text>
-                  <Icon name="chevronRight" size={12} color="textTertiary" />
-                </Tappable>
+                />
               </View>
             ))}
           </Card>

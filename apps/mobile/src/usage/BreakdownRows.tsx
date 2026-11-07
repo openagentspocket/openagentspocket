@@ -9,15 +9,7 @@ import {
   type UsageScope,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import {
-  Card,
-  Icon,
-  makeStyles,
-  programTint,
-  Tappable,
-  Text,
-  useTheme,
-} from '@openagentspocket/ui';
+import { Card, ListRow, makeStyles, programTint, Text, useTheme } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { localeTag, metricText, metricValue, type UsageMetric } from './usageText';
 
@@ -29,27 +21,10 @@ const ROW_PREFIX = { models: 'model', directories: 'directory', days: 'day' } as
 const DAYS = 30;
 
 const useStyles = makeStyles((th) => ({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: th.spacing.sm,
-    minHeight: 56,
-    paddingVertical: th.spacing.xs,
-    paddingHorizontal: th.spacing.md,
-  },
-  pressed: { backgroundColor: th.colors.surfaceRaised },
   dot: { width: 8, height: 8, borderRadius: 4 },
-  titles: { flex: 1, minWidth: 0, gap: 2 },
   amounts: { alignItems: 'flex-end', gap: 2, flexShrink: 0 },
   separator: { height: th.metrics.hairlineWidth, backgroundColor: th.hairline, marginLeft: 18 },
   empty: { minHeight: 56, justifyContent: 'center', paddingHorizontal: th.spacing.md },
-  showAll: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    minHeight: 44,
-    paddingHorizontal: th.spacing.md,
-  },
 }));
 
 interface Entry {
@@ -163,73 +138,64 @@ export function BreakdownRows({ scope, kind, metric, limit, onDay, onShowAll }: 
             : metricText(entry.summary, 'cost');
         const date = entry.date;
         const press = date !== undefined && onDay ? () => onDay(date) : undefined;
+        const figure = metricText(entry.summary, metric);
+        const detail = `${share} · ${second}`;
         return (
           <View key={entry.key}>
             {index > 0 ? <View style={styles.separator} /> : null}
-            <Tappable
+            <ListRow
+              title={entry.title}
+              titleSemibold
+              titleEllipsize="middle"
+              subtitle={entry.host ? `${entry.host} · ${entry.subtitle}` : entry.subtitle}
+              subtitleMono
+              subtitleLines={1}
+              leading={
+                <View
+                  style={[
+                    styles.dot,
+                    {
+                      backgroundColor: entry.program
+                        ? programTint(programIdentity(entry.program).brand, theme)
+                        : 'transparent',
+                    },
+                  ]}
+                />
+              }
+              trailing={
+                <View style={styles.amounts} testID={`${ROW_PREFIX[kind]}-amount-${entry.key}`}>
+                  <Text variant="subheadline" semibold tabularNums>
+                    {figure}
+                  </Text>
+                  <Text variant="caption" tone="secondary" tabularNums>
+                    {detail}
+                  </Text>
+                  {entry.priced ? null : (
+                    <Text variant="caption" tone="secondary">
+                      {t('Includes unpriced tokens')}
+                    </Text>
+                  )}
+                </View>
+              }
               onPress={press}
-              disabled={!press}
-              accessibilityRole={press ? 'button' : undefined}
-              style={({ pressed }) => [styles.row, pressed && press ? styles.pressed : null]}
+              accessibilityLabel={[entry.title, entry.subtitle, figure, detail]
+                .filter(Boolean)
+                .join(', ')}
               testID={`${ROW_PREFIX[kind]}-${entry.date ?? entry.title}`}
-            >
-              <View
-                style={[
-                  styles.dot,
-                  {
-                    backgroundColor: entry.program
-                      ? programTint(programIdentity(entry.program).brand, theme)
-                      : 'transparent',
-                  },
-                ]}
-              />
-              <View style={styles.titles}>
-                <Text variant="subheadline" semibold numberOfLines={1} ellipsizeMode="middle">
-                  {entry.title}
-                </Text>
-                {entry.subtitle ? (
-                  <Text
-                    variant="caption"
-                    tone="secondary"
-                    monospaced
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >
-                    {entry.host ? `${entry.host} · ${entry.subtitle}` : entry.subtitle}
-                  </Text>
-                ) : null}
-              </View>
-              <View style={styles.amounts} testID={`${ROW_PREFIX[kind]}-amount-${entry.key}`}>
-                <Text variant="subheadline" semibold tabularNums>
-                  {metricText(entry.summary, metric)}
-                </Text>
-                <Text variant="caption" tone="secondary" tabularNums>
-                  {`${share} · ${second}`}
-                </Text>
-                {entry.priced ? null : (
-                  <Text variant="caption" tone="secondary">
-                    {t('Includes unpriced tokens')}
-                  </Text>
-                )}
-              </View>
-            </Tappable>
+            />
           </View>
         );
       })}
       {more ? (
         <View>
           <View style={styles.separator} />
-          <Tappable
+          <ListRow
+            title={showAllTitle(kind, all.length)}
+            titleTone="accent"
+            chevron
             onPress={onShowAll}
-            accessibilityRole="button"
-            style={styles.showAll}
             testID="usage-breakdown-show-all"
-          >
-            <Text variant="subheadline" tone="accent">
-              {showAllTitle(kind, all.length)}
-            </Text>
-            <Icon name="chevronRight" size={12} color="textTertiary" />
-          </Tappable>
+          />
         </View>
       ) : null}
     </Card>

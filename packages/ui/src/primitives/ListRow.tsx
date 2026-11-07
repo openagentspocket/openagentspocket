@@ -45,6 +45,8 @@ export interface ListRowProps {
   subtitleMono?: boolean;
   /** Lines the title may take before it truncates (1 by default). */
   titleLines?: number;
+  /** Where a long title is cut: `middle` keeps a model name's version. */
+  titleEllipsize?: 'tail' | 'middle';
   /** Ink of the title (secondary for a placeholder row). */
   titleTone?: TextTone;
   /** Sets the title in semibold (Host names). */
@@ -53,6 +55,8 @@ export interface ListRowProps {
   subtitleVariant?: 'footnote' | 'subheadline';
   /** Lines the subtitle may take before it truncates (2 by default). */
   subtitleLines?: number;
+  /** Content under the title and subtitle (chips, a second caption). */
+  detail?: ReactNode;
   /** A short value in secondary text before the trailing slot ("Índigo", "3 hosts"). */
   value?: string;
   /** Drawn just before the value (the palette dots of the Theme row). */
@@ -96,10 +100,12 @@ export function ListRow({
   titleSemibold = false,
   titleTone = 'primary',
   titleLines = 1,
+  titleEllipsize,
   subtitleVariant = 'footnote',
   subtitleLines = 2,
   leading,
   icon,
+  detail,
   value,
   valueLeading,
   valueTone = 'secondary',
@@ -153,6 +159,7 @@ export function ListRow({
       <View style={styles.text}>
         <Text
           numberOfLines={titleLines}
+          ellipsizeMode={titleEllipsize}
           monospaced={titleMono}
           semibold={titleSemibold}
           tone={titleTone}
@@ -169,6 +176,7 @@ export function ListRow({
             {subtitle}
           </Text>
         ) : null}
+        {detail}
       </View>
       <View style={styles.trailing}>
         {valueLeading}
