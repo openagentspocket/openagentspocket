@@ -5,12 +5,15 @@ export {
 } from './approval-ask-watch';
 export {
   type ActivityFeedbackDeps,
+  type ActivityLink,
+  type ActivityReview,
   type ActivityTap,
   type ActivityTapGates,
   ActivityTapRunner,
   type ActivityTapRunnerOptions,
   activityResultOf,
   markActivityResult,
+  reviewActivityLink,
   runActivityTap,
 } from './approval-tap';
 export { MAX_CIPHERTEXT_CHARS, sealContent } from './content';

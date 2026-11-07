@@ -4,6 +4,7 @@ import {
   type ApprovalLedger,
   type ApprovalOutcome,
   answerApproval,
+  planApproval,
   type StoredApprovalOptIns,
 } from '../notifications/approval-action';
 import type { ApprovalAskReading } from '../notifications/approval-script';
@@ -14,15 +15,34 @@ import { openActivity } from './envelope';
 import type { ActivityAsk, ActivityDesire, ActivityResult } from './types';
 
 /**
- * A tap on a Live Activity's Approve or Deny, as its link names it. A link can come from anywhere,
- * so this only selects: every word of the answer comes from what the Host reports at that moment.
+ * The prompt a Live Activity button's link names. A link can come from anywhere and answers nothing:
+ * it only selects what the app reads from the Host and asks the owner about.
  */
-export interface ActivityTap {
+export interface ActivityLink {
   readonly hostId: string;
   readonly paneId: string;
   readonly episodeId: string;
-  readonly decision: ApprovalDecision;
 }
+
+/** The owner's answer on the confirmation sheet: the only thing that reaches the Host. */
+export interface ActivityTap extends ActivityLink {
+  readonly decision: ApprovalDecision;
+  /** What the sheet showed: a tap answers that prompt or nothing. */
+  readonly shown: Pick<ActivityAsk, 'prompt' | 'options'>;
+}
+
+/** What a link came to: what to ask the owner, read from the Host just now, or why there is nothing. */
+export type ActivityReview =
+  | {
+      readonly kind: 'ask';
+      readonly ask: ActivityAsk;
+      /** The option each answer would press; null when that answer is not offered. */
+      readonly approve: string | null;
+      readonly deny: string | null;
+      /** Why Approve is not offered. */
+      readonly approveRefusal: ApprovalOutcome | null;
+    }
+  | { readonly kind: 'nothing'; readonly outcome: ApprovalOutcome };
 
 export interface ActivityTapGates {
   /** The Host's Live Activity toggle. */
@@ -50,24 +70,66 @@ function payloadOf(paneId: string, ask: ActivityAsk) {
   };
 }
 
-/** Approve or Deny from an activity: the notification's gates, over a prompt read just now. */
-export async function runActivityTap(
-  tap: ActivityTap,
+/** The prompt a link names as the Host reports it now, or why it cannot be had. */
+async function readAsk(
+  { hostId, paneId, episodeId }: ActivityLink,
   gates: ActivityTapGates,
-): Promise<ApprovalOutcome> {
-  const { hostId, paneId, episodeId, decision } = tap;
-  if (!gates.isActivityOn(hostId) || !gates.optIns.isEnabled(hostId)) return 'optedOut';
+): Promise<{ ask: ActivityAsk } | { refusal: ApprovalOutcome }> {
+  if (!gates.isActivityOn(hostId) || !gates.optIns.isEnabled(hostId)) {
+    return { refusal: 'optedOut' };
+  }
   let reading: ApprovalAskReading;
   try {
     reading = await gates.readAsks(hostId);
   } catch {
-    return 'unreachable';
+    return { refusal: 'unreachable' };
   }
-  if (reading.kind !== 'read') return 'pluginOutdated';
+  if (reading.kind !== 'read') return { refusal: 'pluginOutdated' };
   const ask = reading.asks.get(paneId);
-  if (!ask || ask.episodeId !== episodeId) {
-    return reading.unread.includes(paneId) ? 'unreachable' : 'promptChanged';
+  if (ask?.episodeId === episodeId) return { ask };
+  return { refusal: reading.unread.includes(paneId) ? 'unreachable' : 'promptChanged' };
+}
+
+/** What a link may ask the owner. It reads the Host and changes nothing, here or there. */
+export async function reviewActivityLink(
+  link: ActivityLink,
+  gates: ActivityTapGates,
+): Promise<ActivityReview> {
+  const read = await readAsk(link, gates);
+  if ('refusal' in read) return { kind: 'nothing', outcome: read.refusal };
+  const { ask } = read;
+  const now = gates.nowSeconds();
+  if (gates.ledger.isSpent(link.hostId, link.episodeId, now)) {
+    return { kind: 'nothing', outcome: 'ignored' };
   }
+  const payload = payloadOf(link.paneId, ask);
+  const approve = planApproval(payload, 'approve', now);
+  const deny = planApproval(payload, 'deny', now);
+  if ('refusal' in approve && 'refusal' in deny) {
+    return { kind: 'nothing', outcome: deny.refusal };
+  }
+  return {
+    kind: 'ask',
+    ask,
+    approve: 'request' in approve ? approve.request.label : null,
+    deny: 'request' in deny ? deny.request.label : null,
+    approveRefusal: 'refusal' in approve ? approve.refusal : null,
+  };
+}
+
+const sameTexts = (a: readonly string[], b: readonly string[]) =>
+  a.length === b.length && a.every((text, index) => text === b[index]);
+
+/** Approve or Deny from the sheet: the notification's gates, over a prompt read just now. */
+export async function runActivityTap(
+  tap: ActivityTap,
+  gates: ActivityTapGates,
+): Promise<ApprovalOutcome> {
+  const { hostId, paneId, decision, shown } = tap;
+  const read = await readAsk(tap, gates);
+  if ('refusal' in read) return read.refusal;
+  const { ask } = read;
+  if (ask.prompt !== shown.prompt || !sameTexts(ask.options, shown.options)) return 'promptChanged';
   return answerApproval({
     hostId,
     payload: payloadOf(paneId, ask),
@@ -163,6 +225,11 @@ export class ActivityTapRunner {
 
   isRunning(hostId: string, paneId: string, episodeId: string): boolean {
     return this.running.has(JSON.stringify([hostId, paneId, episodeId]));
+  }
+
+  /** What a link may ask the owner; it writes nothing on the activity. */
+  review(link: ActivityLink): Promise<ActivityReview> {
+    return reviewActivityLink(link, this.o.gates);
   }
 
   /** The outcome; null when the same prompt's tap is still running. */

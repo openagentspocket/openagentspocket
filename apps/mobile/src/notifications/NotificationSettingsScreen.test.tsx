@@ -111,6 +111,7 @@ describe('NotificationPrivacyScreen', () => {
       ...createDemoNotificationServices(),
       liveActivity: {
         activitiesEnabled: true,
+        review: async () => ({ kind: 'nothing', outcome: 'ignored', host: '' }),
         answer: async () => null,
         isEnabled: (hostId) => enabled.has(hostId),
         setEnabled: (on, hostId) => {

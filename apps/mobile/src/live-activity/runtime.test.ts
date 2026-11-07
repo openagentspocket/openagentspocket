@@ -234,10 +234,39 @@ describe('LiveActivityRuntime', () => {
       await world.runtime.stop();
     });
 
+    const LINK = { hostId: HOST.id, paneId: PANE, episodeId: BID };
+    const SHOWN = { prompt: 'Run ls?', options: ['Yes', 'No'] };
+
+    it('a link alone reads the Host: it never asks for Face ID and never applies', async () => {
+      const world = blockedWorld();
+      await showAsk(world);
+      expect(await world.runtime.review(LINK)).toMatchObject({
+        kind: 'ask',
+        ask: SHOWN,
+        approve: 'Yes',
+        deny: 'No',
+      });
+      expect(world.reads).toHaveBeenCalledTimes(1);
+      expect(world.confirmOwner).not.toHaveBeenCalled();
+      expect(world.apply).not.toHaveBeenCalled();
+      expect(world.shownAsk()?.result).toBeUndefined();
+      await world.runtime.stop();
+    });
+
+    it('a link with a stale episode has nothing to answer', async () => {
+      const world = blockedWorld();
+      await showAsk(world);
+      expect(await world.runtime.review({ ...LINK, episodeId: 'zzzzzzzzzzz' })).toMatchObject({
+        kind: 'nothing',
+        outcome: 'promptChanged',
+      });
+      await world.runtime.stop();
+    });
+
     it('a tap reads the Host again, asks the owner, applies and shows the result', async () => {
       const world = blockedWorld();
       await showAsk(world);
-      const tap = { hostId: HOST.id, paneId: PANE, episodeId: BID, decision: 'approve' } as const;
+      const tap = { ...LINK, decision: 'approve', shown: SHOWN } as const;
       expect((await world.runtime.answer(tap))?.outcome).toBe('answered');
       expect(world.reads).toHaveBeenCalledTimes(1);
       expect(world.confirmOwner).toHaveBeenCalledTimes(1);
@@ -252,7 +281,7 @@ describe('LiveActivityRuntime', () => {
     it('an owner who does not confirm sends nothing', async () => {
       const world = blockedWorld({ confirms: false });
       await showAsk(world);
-      const tap = { hostId: HOST.id, paneId: PANE, episodeId: BID, decision: 'approve' } as const;
+      const tap = { ...LINK, decision: 'approve', shown: SHOWN } as const;
       expect((await world.runtime.answer(tap))?.outcome).toBe('notAuthenticated');
       expect(world.apply).not.toHaveBeenCalled();
       await world.runtime.stop();
@@ -260,7 +289,7 @@ describe('LiveActivityRuntime', () => {
 
     it('a link for a Host with the toggles off sends nothing', async () => {
       const world = blockedWorld({ optedIn: false });
-      const tap = { hostId: HOST.id, paneId: PANE, episodeId: BID, decision: 'deny' } as const;
+      const tap = { ...LINK, decision: 'deny', shown: SHOWN } as const;
       expect((await world.runtime.answer(tap))?.outcome).toBe('optedOut');
       expect(world.reads).not.toHaveBeenCalled();
       expect(world.apply).not.toHaveBeenCalled();

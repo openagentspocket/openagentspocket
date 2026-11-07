@@ -219,6 +219,7 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
       },
       isEnabled: (hostId) => liveActivity.isEnabled(hostId),
       setEnabled: (enabled, hostId) => liveActivity.setEnabled(enabled, hostId),
+      review: (link) => liveActivity.review(link),
       answer: (tap) => liveActivity.answer(tap),
     },
   };

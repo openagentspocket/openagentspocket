@@ -4,11 +4,13 @@ import { ApprovalLedger, StoredApprovalOptIns } from '../notifications/approval-
 import type { ApprovalAskReading } from '../notifications/approval-script';
 import { MemoryNotificationKeyStore } from '../notifications/key-store';
 import {
+  type ActivityLink,
   type ActivityTap,
   type ActivityTapGates,
   ActivityTapRunner,
   activityResultOf,
   markActivityResult,
+  reviewActivityLink,
   runActivityTap,
 } from './approval-tap';
 import { sealContent } from './content';
@@ -27,7 +29,8 @@ const ASK: ActivityAsk = {
   options: ['Yes', "Yes, and don't ask again", 'No'],
   timestamp: NOW - 10,
 };
-const APPROVE: ActivityTap = { hostId: 'h1', paneId: PANE, episodeId: BID, decision: 'approve' };
+const LINK: ActivityLink = { hostId: 'h1', paneId: PANE, episodeId: BID };
+const APPROVE: ActivityTap = { ...LINK, decision: 'approve', shown: ASK };
 const DENY: ActivityTap = { ...APPROVE, decision: 'deny' };
 
 const reading = (ask: ActivityAsk = ASK, unread: string[] = []): ApprovalAskReading => ({
@@ -120,6 +123,17 @@ describe('runActivityTap', () => {
     );
   });
 
+  it('a prompt that is not the one on the sheet sends nothing', async () => {
+    const { all, apply, authenticate } = gates({
+      readAsks: async () => reading({ ...ASK, prompt: 'Run rm?' }),
+    });
+    expect(await runActivityTap(APPROVE, all)).toBe('promptChanged');
+    const labels = { ...APPROVE, shown: { ...ASK, options: ['Yes', 'No'] } };
+    expect(await runActivityTap(labels, gates().all)).toBe('promptChanged');
+    expect(authenticate).not.toHaveBeenCalled();
+    expect(apply).not.toHaveBeenCalled();
+  });
+
   it('holds to the Host opt-ins', async () => {
     const off = gates({ isActivityOn: () => false });
     expect(await runActivityTap(APPROVE, off.all)).toBe('optedOut');
@@ -149,7 +163,8 @@ describe('runActivityTap', () => {
     const { all, apply } = gates({
       readAsks: async () => reading({ ...ASK, prompt: 'x'.repeat(121) }),
     });
-    expect(await runActivityTap(APPROVE, all)).toBe('promptCut');
+    const shown = { ...ASK, prompt: 'x'.repeat(121) };
+    expect(await runActivityTap({ ...APPROVE, shown }, all)).toBe('promptCut');
     expect(apply).not.toHaveBeenCalled();
   });
 
@@ -196,6 +211,74 @@ describe('runActivityTap', () => {
     expect(activityResultOf(await runActivityTap(DENY, all))).toBe('may_have_sent');
     await runActivityTap(DENY, all);
     expect(apply).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('reviewActivityLink', () => {
+  it('gives the prompt and the options the Host reports, and answers nothing', async () => {
+    const { all, apply, authenticate, readAsks } = gates();
+    expect(await reviewActivityLink(LINK, all)).toEqual({
+      kind: 'ask',
+      ask: ASK,
+      approve: 'Yes',
+      deny: 'No',
+      approveRefusal: null,
+    });
+    expect(readAsks).toHaveBeenCalledWith('h1');
+    expect(authenticate).not.toHaveBeenCalled();
+    expect(apply).not.toHaveBeenCalled();
+    expect(all.ledger.isSpent('h1', BID, NOW)).toBe(false);
+  });
+
+  it.each([
+    ['a Deny only prompt', { denyOnly: true }, 'denyOnly'],
+    ['a cut prompt', { prompt: 'x'.repeat(121) }, 'promptCut'],
+  ])('offers only Deny for %s', async (_name, change, approveRefusal) => {
+    const { all } = gates({ readAsks: async () => reading({ ...ASK, ...change }) });
+    expect(await reviewActivityLink(LINK, all)).toMatchObject({
+      kind: 'ask',
+      approve: null,
+      deny: 'No',
+      approveRefusal,
+    });
+  });
+
+  it.each([
+    ['an unknown pane', { ...LINK, paneId: 'w1:p9' }],
+    ['a stale episode', { ...LINK, episodeId: 'zzzzzzzzzzz' }],
+  ])('%s has nothing to answer', async (_name, link) => {
+    const { all } = gates();
+    expect(await reviewActivityLink(link, all)).toEqual({
+      kind: 'nothing',
+      outcome: 'promptChanged',
+    });
+  });
+
+  it('an episode already spent here has nothing to answer', async () => {
+    const { all } = gates();
+    all.ledger.claim('h1', BID, NOW);
+    expect(await reviewActivityLink(LINK, all)).toEqual({ kind: 'nothing', outcome: 'ignored' });
+  });
+
+  it('a prompt past its time to live has nothing to answer', async () => {
+    const { all } = gates({ nowSeconds: () => NOW + 31 * 60 });
+    expect(await reviewActivityLink(LINK, all)).toEqual({ kind: 'nothing', outcome: 'expired' });
+  });
+
+  it('keeps the reasons a read failed apart from a prompt that went away', async () => {
+    const { all, readAsks } = gates();
+    readAsks.mockRejectedValueOnce(new Error('offline'));
+    expect(await reviewActivityLink(LINK, all)).toMatchObject({ outcome: 'unreachable' });
+    readAsks.mockResolvedValueOnce({ kind: 'read', asks: new Map(), unread: [PANE] });
+    expect(await reviewActivityLink(LINK, all)).toMatchObject({ outcome: 'unreachable' });
+    readAsks.mockResolvedValueOnce({ kind: 'pluginUnavailable' });
+    expect(await reviewActivityLink(LINK, all)).toMatchObject({ outcome: 'pluginOutdated' });
+  });
+
+  it('reads nothing for a Host with the toggles off', async () => {
+    const { all, readAsks } = gates({ isActivityOn: () => false });
+    expect(await reviewActivityLink(LINK, all)).toMatchObject({ outcome: 'optedOut' });
+    expect(readAsks).not.toHaveBeenCalled();
   });
 });
 
@@ -254,6 +337,13 @@ describe('ActivityTapRunner', () => {
     expect(await running).toBe('answered');
     expect(shown()).toBe('sent');
     expect(runner.isRunning('h1', PANE, BID)).toBe(false);
+  });
+
+  it('a review writes nothing on the activity', async () => {
+    const { controller, keys, randomBytes } = shownActivity();
+    const runner = new ActivityTapRunner({ controller, keys, randomBytes, gates: gates().all });
+    expect(await runner.review(LINK)).toMatchObject({ kind: 'ask' });
+    expect(controller.updates).toHaveLength(0);
   });
 
   it('a second tap while one runs starts nothing', async () => {

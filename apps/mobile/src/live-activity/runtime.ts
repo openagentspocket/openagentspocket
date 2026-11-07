@@ -1,4 +1,6 @@
 import {
+  type ActivityLink,
+  type ActivityReview,
   type ActivityTap,
   ActivityTapRunner,
   type ApprovalApplyRequest,
@@ -49,6 +51,9 @@ export interface LiveActivityApprovals {
   confirmOwner(reason: string): Promise<boolean>;
 }
 
+/** What a link came to, for the confirmation sheet, with the Host's name. */
+export type ActivityLinkReview = ActivityReview & { readonly host: string };
+
 /** What a tap came to, for the toast. Null when the same prompt's tap was already running. */
 export type ActivityTapResult = { readonly outcome: ApprovalOutcome; readonly host: string } | null;
 
@@ -73,7 +78,8 @@ const canReadAsks = (host: Host | undefined) =>
 /**
  * Runs the Live Activity coordinator inside the app: follows the Console store's rows, pins and
  * connection state per Host, forgets Hosts the user removes, and reconciles on foreground. While an
- * Agent of an opted-in Host is Blocked it reads the Host's asks, and it answers the buttons' links.
+ * Agent of an opted-in Host is Blocked it reads the Host's asks. A button's link only gets a review
+ * of the prompt; an answer takes the owner's tap on the sheet that shows it.
  */
 export class LiveActivityRuntime {
   readonly coordinator: HostLiveActivityCoordinator;
@@ -162,12 +168,16 @@ export class LiveActivityRuntime {
     if (this.started) this.asks.rowsDidChange(this.deps.store.getState().rows);
   }
 
-  /** A Live Activity button's link: runs it through the gates and shows the result on the activity. */
+  /** A Live Activity button's link: what to ask the owner, read from the Host now. Answers nothing. */
+  async review(link: ActivityLink): Promise<ActivityLinkReview> {
+    return { ...(await this.taps.review(link)), host: this.hostName(link.hostId) };
+  }
+
+  /** The owner's tap on the sheet: runs it through the gates and shows the result on the activity. */
   async answer(tap: ActivityTap): Promise<ActivityTapResult> {
     const outcome = await this.taps.run(tap);
     if (outcome === null) return null;
-    const host = this.host(tap.hostId);
-    return { outcome, host: host ? hostDisplayName(host) : '' };
+    return { outcome, host: this.hostName(tap.hostId) };
   }
 
   get activitiesEnabled(): boolean {
@@ -176,6 +186,11 @@ export class LiveActivityRuntime {
 
   private host(hostId: string): Host | undefined {
     return this.deps.hosts.getSnapshot().hosts.find((host) => host.id === hostId);
+  }
+
+  private hostName(hostId: string): string {
+    const host = this.host(hostId);
+    return host ? hostDisplayName(host) : '';
   }
 
   /** Whether this device answers from this Host's activity: both toggles, and a readable session. */

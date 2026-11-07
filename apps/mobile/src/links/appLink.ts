@@ -7,7 +7,7 @@ export type HostReference =
   /** A saved Host's address or name as another app knows it; `session` null is the default one. */
   | { readonly kind: 'lookup'; readonly value: string; readonly session: string | null };
 
-/** Which answer to which prompt a Live Activity button means. */
+/** A Live Activity button's link: it opens a confirmation of that prompt, and answers nothing. */
 export interface LinkAnswer {
   readonly decision: 'approve' | 'deny';
   readonly episodeId: string;
@@ -19,7 +19,7 @@ export type AppLink =
       readonly host: HostReference;
       /** null opens the Console. */
       readonly paneId: string | null;
-      /** A Live Activity button's answer; it only selects, the app reads the prompt from the Host. */
+      /** A Live Activity button's prompt; it only selects, the app reads it from the Host. */
       readonly answer?: LinkAnswer;
     }
   | { readonly kind: 'usage'; readonly hostId: string | null; readonly limits: boolean };
