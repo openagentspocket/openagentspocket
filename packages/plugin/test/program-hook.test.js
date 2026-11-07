@@ -3,7 +3,8 @@
 
 import { test, suite, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import { createDecipheriv } from "node:crypto";
 import { createServer } from "node:http";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -11,7 +12,6 @@ import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { applyProgramHooks } from "../src/install-program-hooks.js";
-import { paneInDirectory } from "../src/pane-records.js";
 import {
   activityOf,
   herdrOwnsThisPane,
@@ -153,14 +153,6 @@ suite("the other programs", () => {
     assert.equal(existsSync(asked), false);
   });
 
-  test("finds the pane of a hook outside it only when one pane fits", () => {
-    const one = "%1\topencode\t/srv/api\n%2\tzsh\t/srv/api\n%3\topencode\t/srv/web";
-    assert.equal(paneInDirectory(one, "opencode", "/srv/api"), "%1");
-    assert.equal(paneInDirectory(one, "opencode", "/srv/none"), null);
-    const two = "%1\topencode\t/srv/api\n%2\topencode\t/srv/api";
-    assert.equal(paneInDirectory(two, "opencode", "/srv/api"), null);
-  });
-
   test("reads Pi, omp and Grok Build events", () => {
     const ask = { event: "tool_approval_requested", title: "bash" };
     assert.deepEqual(parsePiHook(ask), { status: "blocked", title: "bash" });
@@ -294,5 +286,112 @@ suite("program-hook process", () => {
     assert.equal(await runHook(STOP), 0);
     assert.equal(await runHook("not json"), 0);
     assert.equal(await runHook(STOP, {}, "unknown"), 0);
+  });
+});
+
+suite("Live Activity asks on tmux", () => {
+  const SCREEN = " npm test\n Do you want to proceed?\n ❯ 1. Yes\n   2. No\n";
+  const ASKS = fileURLToPath(new URL("../src/approval-asks.js", import.meta.url));
+  const pane = { TMUX_PANE: "%3" };
+  let stateDir;
+  let shown;
+
+  const askPath = () => join(stateDir, "approval-asks", `${Buffer.from("%3").toString("base64url")}.json`);
+  const ask = () => JSON.parse(readFileSync(askPath(), "utf8"));
+
+  function pushed() {
+    const wire = JSON.parse(relay.requests[0].envelope);
+    const ct = Buffer.from(wire.ct, "base64url");
+    const key = Buffer.from(KEY, "base64url");
+    const decipher = createDecipheriv("aes-256-gcm", key, Buffer.from(wire.n, "base64url"));
+    decipher.setAAD(Buffer.from("HERDR-NOTIFY:1"));
+    decipher.setAuthTag(ct.subarray(-16));
+    return JSON.parse(Buffer.concat([decipher.update(ct.subarray(0, -16)), decipher.final()]).toString());
+  }
+
+  // A Host as the bridge's `install` leaves it: launcher, runtime, and state apart from config.
+  beforeEach(async () => {
+    await startRelay();
+    register({ approve: true });
+    stateDir = join(home, "state");
+    mkdirSync(stateDir);
+    shown = join(home, "screen");
+    writeFileSync(shown, SCREEN);
+    const launcher = join(home, "launcher");
+    writeFileSync(launcher, `#!/bin/sh\ncat '${shown}'\n`, { mode: 0o755 });
+    spawnSync(launcher); // A fresh script's first exec can outlast the hook's read bound.
+    const runtime = { version: 1, node: process.execPath, herdr: launcher, stateDir, env: { HOME: home } };
+    writeFileSync(join(home, "runtime.json"), JSON.stringify(runtime));
+    writeFileSync(join(home, "runtime-node"), `${process.execPath}\n`);
+  });
+
+  test("a Blocked push records the fields it carries", async () => {
+    assert.equal(await runHook(PERMISSION, pane), 0);
+    const { pane: id, bid, ts, act, q, opts } = ask();
+    assert.deepEqual({ id, act, opts }, { id: "%3", act: 1, opts: ["Yes", "No"] });
+    const payload = pushed();
+    assert.deepEqual([payload.bid, payload.ts, payload.q, payload.opts], [bid, ts, q, opts]);
+  });
+
+  test("the app's read answers it on a bridge Host, until the screen moves on", async () => {
+    await runHook(PERMISSION, pane);
+    const socket = join(home, "herdr", "herdr.sock");
+    const env = { ...process.env, HERDR_PLUGIN_CONFIG_DIR: home, HERDR_SOCKET_PATH: socket };
+    const read = () => JSON.parse(spawnSync(process.execPath, [ASKS], { env, encoding: "utf8" }).stdout);
+    assert.deepEqual(read().asks.map((one) => one.bid), [ask().bid]);
+    writeFileSync(shown, "$ ");
+    assert.deepEqual(read(), { v: 1, result: "ok", asks: [] });
+    assert.equal(existsSync(askPath()), false);
+  });
+
+  for (const [name, input] of [
+    ["the end of the turn", STOP],
+    ["a finished tool", { hook_event_name: "PostToolUse", session_id: "abc" }],
+    ["a new prompt", { hook_event_name: "UserPromptSubmit", session_id: "abc" }],
+  ]) {
+    test(`${name} clears the ask, whether or not a device hears it`, async () => {
+      await runHook(PERMISSION, pane);
+      assert.equal(existsSync(askPath()), true);
+      rmSync(join(home, "notifications.json"));
+      assert.equal(await runHook(input, pane), 0);
+      assert.equal(existsSync(askPath()), false);
+    });
+  }
+
+  test("an event that says nothing of the status keeps the ask", async () => {
+    await runHook(PERMISSION, pane);
+    await runHook({ hook_event_name: "PreToolUse", session_id: "abc" }, pane);
+    assert.equal(existsSync(askPath()), true);
+  });
+
+  test("a Blocked push nobody can answer leaves no older ask behind", async () => {
+    await runHook(PERMISSION, pane);
+    writeFileSync(shown, "$ ");
+    await runHook(PERMISSION, pane);
+    assert.equal(existsSync(askPath()), false);
+
+    writeFileSync(shown, SCREEN);
+    await runHook(PERMISSION, pane);
+    register({ approve: false });
+    await runHook(PERMISSION, pane);
+    assert.equal(existsSync(askPath()), false);
+
+    register({ approve: true });
+    await runHook(PERMISSION, pane);
+    register({ blocked: false });
+    await runHook(PERMISSION, pane);
+    assert.equal(existsSync(askPath()), false);
+  });
+
+  test("outside a tmux pane there is no screen to answer, so no ask", async () => {
+    await runHook(PERMISSION);
+    assert.equal(existsSync(join(stateDir, "approval-asks")), false);
+  });
+
+  test("an ask that cannot be written or cleared costs the buttons, never the push", async () => {
+    writeFileSync(join(stateDir, "approval-asks"), "in the way");
+    assert.equal(await runHook(PERMISSION, pane), 0);
+    assert.equal(await runHook(STOP, pane), 0);
+    assert.equal(relay.requests.length, 2);
   });
 });

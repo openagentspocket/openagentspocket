@@ -1,8 +1,9 @@
 // Approval asks for the Live Activity (spec F5, R5).
 //
 // A Live Activity updated by the app has no Blocked notification to take its
-// prompt from, so the notify hook records, per pane, the approval fields it
-// just sent: the same `bid`, `ts`, `act`, `q` and `opts`. The app reads them
+// prompt from, so the hook that pushes it records, per pane, the approval
+// fields it just sent: the same `bid`, `ts`, `act`, `q` and `opts`. That is
+// the notify hook under herdr and src/program-hook.js on tmux. The app reads them
 // back over SSH exec (src/approval-asks.js) while the Agent stays Blocked,
 // and its Approve or Deny then goes through src/approval-apply.js like a
 // notification's.
@@ -105,6 +106,38 @@ export function writeApprovalAsk(stateDir, record) {
 
 export function clearApprovalAsk(stateDir, paneId) {
   rmSync(recordPath(stateDir, paneId), { force: true });
+}
+
+/**
+ * Records what a Blocked push asks: the fields an opted-in device's push
+ * carries, `bid` included, or no record when there are none. A hook calls it
+ * before the pushes go, since the app reads it over SSH whether or not the
+ * relay delivers. A failed write only costs the activity its buttons, never
+ * the push.
+ *
+ * @param {string} stateDir the session's state directory
+ * @param {string} paneId
+ * @param {number} timestamp unix-seconds of the transition, which `bid` hashes
+ * @param {object | null} approval the hook's approval fields (approvalAskRecord)
+ */
+export function recordApprovalAsk(stateDir, paneId, timestamp, approval) {
+  try {
+    pruneApprovalAsks(stateDir, timestamp);
+    const record = approvalAskRecord(paneId, timestamp, approval);
+    if (record === null) clearApprovalAsk(stateDir, paneId);
+    else writeApprovalAsk(stateDir, record);
+  } catch (error) {
+    console.error(`approval ask not recorded: ${error.message}`);
+  }
+}
+
+/** clearApprovalAsk for a hook that goes on: the reader and the time to live catch a failure. */
+export function forgetApprovalAsk(stateDir, paneId) {
+  try {
+    clearApprovalAsk(stateDir, paneId);
+  } catch (error) {
+    console.error(`approval ask not cleared: ${error.message}`);
+  }
 }
 
 /** Drops every record of the session, as when no device approves any more. */
