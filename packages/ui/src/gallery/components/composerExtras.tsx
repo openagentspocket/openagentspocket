@@ -2,6 +2,7 @@ import {
   ClaudeSubagentTranscript,
   type SubagentRow,
 } from '../../components/ClaudeSubagentTranscript';
+import { ComposerAttachmentStrip } from '../../components/ComposerAttachmentStrip';
 import { ComposerStagingStatusBar } from '../../components/ComposerStagingStatusBar';
 import { SkillContentSheet } from '../../components/SkillContentSheet';
 import {
@@ -121,6 +122,25 @@ export const composerExtrasEntries: readonly CatalogEntry[] = [
             message="The Host is not connected."
             onClose={noop}
             onRetry={noop}
+          />
+        ),
+      },
+    ],
+  },
+  {
+    name: 'ComposerAttachmentStrip',
+    variants: [
+      {
+        id: 'default',
+        render: () => (
+          <ComposerAttachmentStrip
+            items={[
+              { id: 'notes', name: 'notes.md' },
+              { id: 'log', name: 'build.log', state: 'uploading' },
+              { id: 'report', name: 'report.pdf', state: 'failed' },
+            ]}
+            onRemove={noop}
+            removeLabel={(name) => `Remove ${name}`}
           />
         ),
       },

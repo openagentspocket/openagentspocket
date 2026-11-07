@@ -21,6 +21,7 @@ import {
 } from '@openagentspocket/ui';
 import { useState, useSyncExternalStore } from 'react';
 import { View } from 'react-native';
+import { ComposerAttachments } from '@/features/composer-tools/ComposerAttachments';
 import { StagingStatusBar } from '@/features/composer-tools/StagingStatusBar';
 import { useAgentSkills } from '@/features/composer-tools/useAgentSkills';
 import { useSetting } from '@/settings/SettingsProvider';
@@ -114,9 +115,11 @@ export function AgentComposerBar({
           : t('Available once the Agent is idle'),
       }))
     : matches.map((skill) => ({ name: skill.command, description: skill.description ?? '' }));
+  const hasAttachments = snapshot.attachments.length > 0;
   const control = primaryControl({
     status: snapshot.status,
     draft: snapshot.draft,
+    hasAttachments,
     canStop: canStop && !held,
   });
   const notice =
@@ -168,8 +171,14 @@ export function AgentComposerBar({
         <Banner tone="warning" title={stopNotice} testID="composer-stop-notice" />
       ) : null}
       <StagingStatusBar store={menus.staging} />
+      <ComposerAttachments
+        store={store}
+        attachments={snapshot.attachments}
+        staging={menus.staging}
+      />
       <ComposerCard
         value={snapshot.draft}
+        hasAttachments={hasAttachments}
         onChange={(text) => store.applyEditorDraft(text, { start: text.length, end: text.length })}
         onSend={() => void send()}
         onStop={

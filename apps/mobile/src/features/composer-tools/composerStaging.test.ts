@@ -1,7 +1,9 @@
-import type { ComposerDraftPort, ComposerStagingStore } from '@openagentspocket/core';
-import { attachmentActions, stagingFor } from './composerStaging';
-
-jest.mock('expo-clipboard', () => ({ setStringAsync: async () => true }));
+import type {
+  ComposerAttachmentPort,
+  ComposerStagingStore,
+  StagedAttachment,
+} from '@openagentspocket/core';
+import { attachmentActions, releaseAttachmentPreview, stagingFor } from './composerStaging';
 
 const picked = { uri: 'file:///cache/p.jpg', name: 'p.jpg', extension: 'jpg' };
 const files = {
@@ -11,9 +13,9 @@ const files = {
 };
 
 describe('attachment actions', () => {
-  it('picks a photo, stages it and inserts the Host path into the draft', async () => {
-    const draft: string[] = [];
-    const composer: ComposerDraftPort = { insertIntoDraft: (text) => draft.push(text) };
+  it('picks a photo, stages it and hands the Composer the attachment with its preview', async () => {
+    const attached: StagedAttachment[] = [];
+    const composer: ComposerAttachmentPort = { attach: (item) => attached.push(item) };
     const stage = jest.fn(async () => '/tmp/agentico/image.jpg');
     const staging = stagingFor(composer, stage);
     expect(stagingFor(composer, stage)).toBe(staging);
@@ -25,7 +27,14 @@ describe('attachment actions', () => {
     await staging.settled();
     expect(pickPhoto).toHaveBeenCalledTimes(1);
     expect(stage).toHaveBeenCalledTimes(1);
-    expect(draft).toEqual(['/tmp/agentico/image.jpg ']);
+    expect(attached).toEqual([
+      {
+        medium: 'image',
+        name: 'p.jpg',
+        previewUri: picked.uri,
+        hostPath: '/tmp/agentico/image.jpg',
+      },
+    ]);
   });
 
   it('starts nothing when the pick is cancelled or one attachment is already in flight', async () => {
@@ -49,5 +58,17 @@ describe('attachment actions', () => {
     );
     busy.addImage();
     expect(stage).not.toHaveBeenCalled();
+  });
+
+  it("deletes a released preview, and a failed delete is nobody's problem", async () => {
+    const remove = jest.fn(async () => {
+      throw new Error('gone');
+    });
+    const release = releaseAttachmentPreview({ remove });
+    release({ medium: 'file', name: 'a.md', hostPath: '/tmp/a.md' });
+    expect(remove).not.toHaveBeenCalled();
+    release({ medium: 'image', name: 'a', hostPath: '/tmp/a', previewUri: 'file:///a.jpg' });
+    expect(remove).toHaveBeenCalledWith('file:///a.jpg');
+    await new Promise<void>((resolve) => setTimeout(resolve, 0));
   });
 });

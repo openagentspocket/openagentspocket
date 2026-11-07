@@ -6,6 +6,7 @@ export {
   type SubagentRow,
   type SubagentTranscriptLabels,
 } from './ClaudeSubagentTranscript';
+export { type ComposerAttachmentItem, ComposerAttachmentStrip } from './ComposerAttachmentStrip';
 export {
   ComposerStagingStatusBar,
   type StagingCommand,

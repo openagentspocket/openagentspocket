@@ -49,9 +49,31 @@ export interface PreparedAttachment {
   remove(): void | Promise<void>;
 }
 
+/** How the owner recognises an attachment. Never reaches the Host: it stays on the phone. */
+export interface AttachmentLabel {
+  readonly name: string;
+  /** A local picture to show. Who holds it keeps the file until the attachment is done with. */
+  readonly previewUri?: string;
+}
+
+/** An attachment on its way to the Host, or stopped on the way. */
+export interface PendingAttachment extends AttachmentLabel {
+  readonly medium: AttachmentMedium;
+}
+
+/** An attachment on the Host, standing in the Composer until its message goes. */
+export interface StagedAttachment extends PendingAttachment {
+  readonly hostPath: string;
+}
+
+export interface ComposerAttachment extends StagedAttachment {
+  readonly id: string;
+}
+
 /** What the user picked, before it is prepared (a photo selection, a file URI). */
 export interface AttachmentSource {
   readonly medium: AttachmentMedium;
+  readonly label: AttachmentLabel;
   prepare(signal: AbortSignalLike): Promise<PreparedAttachment>;
 }
 
@@ -68,25 +90,15 @@ export type AttachmentStager = (
   options: { onProgress(progress: AttachmentProgress): void; signal: AbortSignalLike },
 ) => Promise<string>;
 
-export interface AttachmentClipboard {
-  copy(text: string): void | Promise<void>;
-}
-
-/** The Composer (or terminal) draft the staged path is inserted into. */
-export interface ComposerDraftPort {
-  insertIntoDraft(text: string): void;
+/** The Composer a staged attachment joins; its path goes with the next message. */
+export interface ComposerAttachmentPort {
+  attach(attachment: StagedAttachment): void;
 }
 
 export interface AttachmentFailure {
   readonly medium: AttachmentMedium;
   readonly message: Text;
   readonly isRetryable: boolean;
-}
-
-export interface AttachmentOutcome {
-  readonly medium: AttachmentMedium;
-  readonly path: string;
-  readonly copied: boolean;
 }
 
 export type AttachmentState =
@@ -98,14 +110,13 @@ export type AttachmentState =
       readonly progress: AttachmentProgress;
     }
   | { readonly kind: 'failed'; readonly failure: AttachmentFailure }
-  | { readonly kind: 'backgroundInterrupted'; readonly failure: AttachmentFailure }
-  | { readonly kind: 'completed'; readonly outcome: AttachmentOutcome };
+  | { readonly kind: 'backgroundInterrupted'; readonly failure: AttachmentFailure };
 
 export function isBusy(state: AttachmentState): boolean {
   return state.kind === 'preparing' || state.kind === 'uploading';
 }
 
-export type AttachmentCommand = 'cancel' | 'retry' | 'copyPath' | 'dismiss';
+export type AttachmentCommand = 'cancel' | 'retry' | 'dismiss';
 
 /** Terminal outcomes of one `begin`; Composer drop uses the id to fulfil a placeholder. */
 export type AttachmentOperationEvent =

@@ -45,6 +45,7 @@
   "Pair a computer with a QR code or add it by hand.": "Emparejá una computadora con un QR o agregala a mano.",
   "Reading Hermes Agent's conversations needs sqlite3 or python3 on the Host. Install one, then tap Check Again.": "Para leer las conversaciones de Hermes Agent hace falta sqlite3 o python3 en el Host. Instala uno y toca Comprobar de nuevo.",
   "Recommended": "Recomendado",
+  "Remove %@": "Quitar {0}",
   "Run one command on your Mac or Linux box and scan the QR. The app installs its key for you.": "Corré un comando en tu Mac o Linux y escaneá el QR. La app instala su clave por vos.",
   "Run this in PowerShell on the machine. It checks the setup and tells you the next step.": "Corré esto en PowerShell en la máquina. Revisa la configuración y te dice el próximo paso.",
   "Run this on the machine. It checks the setup, installs the plugin and shows a QR code.": "Corré esto en la máquina. Revisa la configuración, instala el plugin y muestra un código QR.",

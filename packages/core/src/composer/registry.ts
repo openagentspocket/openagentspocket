@@ -1,12 +1,29 @@
+import type { StagedAttachment } from '../attachments/types';
 import type { Clock } from '../hosts/cancellation';
 import type { KeyValueStorage } from '../hosts/known-hosts';
 import { type ComposerPrompt, ComposerStore } from './store';
 
 const DRAFT_PREFIX = 'composer.draft.';
+const ATTACHMENTS_PREFIX = 'composer.attachments.';
 
 /** The persisted draft of one Agent (`agentKey`); empty when none was kept. */
 export function readDraft(storage: KeyValueStorage, key: string): string {
   return storage.getString(DRAFT_PREFIX + key) ?? '';
+}
+
+const isStaged = (value: Partial<StagedAttachment> | null): value is StagedAttachment =>
+  (value?.medium === 'image' || value?.medium === 'file') &&
+  typeof value.name === 'string' &&
+  typeof value.hostPath === 'string';
+
+/** The attachments an Agent's draft kept; an unreadable record reads as none. */
+function readAttachments(storage: KeyValueStorage, key: string): StagedAttachment[] {
+  try {
+    const stored: unknown = JSON.parse(storage.getString(ATTACHMENTS_PREFIX + key) ?? '[]');
+    return Array.isArray(stored) ? stored.filter(isStaged) : [];
+  } catch {
+    return [];
+  }
 }
 
 export interface ComposerRegistryOptions {
@@ -14,6 +31,8 @@ export interface ComposerRegistryOptions {
   readonly clock: Clock;
   readonly notReadyRetryMs?: number;
   readonly notReadyBudgetMs?: number;
+  /** An attachment is done with; its local preview can go. */
+  readonly releaseAttachment?: (attachment: StagedAttachment) => void;
 }
 
 /**
@@ -42,6 +61,12 @@ export class ComposerRegistry {
       initialStatus: input.status,
       initialDraft: readDraft(storage, input.key),
       onDraft: (draft) => storage.set(DRAFT_PREFIX + input.key, draft),
+      initialAttachments: readAttachments(storage, input.key),
+      onAttachments: (attachments) =>
+        storage.set(ATTACHMENTS_PREFIX + input.key, JSON.stringify(attachments)),
+      ...(this.options.releaseAttachment === undefined
+        ? {}
+        : { releaseAttachment: this.options.releaseAttachment }),
       ...(this.options.notReadyRetryMs === undefined
         ? {}
         : { notReadyRetryMs: this.options.notReadyRetryMs }),
@@ -53,9 +78,11 @@ export class ComposerRegistry {
     return store;
   }
 
-  /** Forgets an Agent that closed, with its saved draft. */
+  /** Forgets an Agent that closed, with its saved draft and attachments. */
   discard(key: string): void {
+    this.stores.get(key)?.releaseAttachments();
     this.stores.delete(key);
     this.options.storage.set(DRAFT_PREFIX + key, '');
+    this.options.storage.set(ATTACHMENTS_PREFIX + key, '[]');
   }
 }

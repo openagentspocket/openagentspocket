@@ -110,6 +110,23 @@ describe('SessionDrawer', () => {
 });
 
 describe('ComposerCard', () => {
+  it('sends with an empty input when an attachment stands, in place of Stop', async () => {
+    const onSend = jest.fn();
+    await renderThemed(
+      <ComposerCard
+        value=""
+        working
+        hasAttachments
+        onChange={jest.fn()}
+        onSend={onSend}
+        onStop={jest.fn()}
+      />,
+    );
+    expect(screen.queryByTestId('composer-card-stop')).toBeNull();
+    await fireEvent.press(screen.getByTestId('composer-card-send'));
+    expect(onSend).toHaveBeenCalledTimes(1);
+  });
+
   it('disables send when empty, sends a draft and stops while working', async () => {
     const onSend = jest.fn();
     const onStop = jest.fn();

@@ -12,13 +12,7 @@ import {
 
 /** The status bar's view of a state (Swift `ComposerStagingStore.Presentation`). */
 export interface AttachmentPresentation {
-  readonly icon:
-    | 'photo'
-    | 'doc'
-    | 'arrow.up.circle'
-    | 'exclamationmark.triangle'
-    | 'checkmark.circle'
-    | 'info.circle';
+  readonly icon: 'photo' | 'doc' | 'arrow.up.circle' | 'exclamationmark.triangle';
   readonly title: Text;
   readonly accessibilityLabel: Text;
   readonly commands: readonly AttachmentCommand[];
@@ -135,25 +129,5 @@ export function attachmentPresentation(state: AttachmentState): AttachmentPresen
         accessibilityLabel: state.failure.message,
         commands: state.failure.isRetryable ? ['retry', 'dismiss'] : ['dismiss'],
       };
-    case 'completed': {
-      const { outcome } = state;
-      const title = outcome.copied
-        ? byMedium(
-            outcome.medium,
-            'Image path inserted and copied.',
-            'File path inserted and copied.',
-          )
-        : byMedium(
-            outcome.medium,
-            "Image path inserted, but couldn't be copied.",
-            "File path inserted, but couldn't be copied.",
-          );
-      return {
-        icon: outcome.copied ? 'checkmark.circle' : 'info.circle',
-        title,
-        accessibilityLabel: title,
-        commands: outcome.copied ? ['dismiss'] : ['copyPath', 'dismiss'],
-      };
-    }
   }
 }

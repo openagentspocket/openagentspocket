@@ -1,11 +1,10 @@
-import type { Clock } from '../hosts/cancellation';
-import type { InputSessionGeneration } from '../terminal/input-port';
+import type { StagedAttachment } from '../attachments/types';
 import { containsOnlySafeScalars } from '../terminal/text-safety';
+import { DraftAttachments, withAttachmentPaths } from './draft-attachments';
 import { deliveryFailureText, isApiCode, refusalFailureText } from './failure';
 import {
   type ComposerDeliveryPolicy,
   type ComposerNotice,
-  type ComposerRefusal,
   type ComposerRoute,
   refusalEndsWhenStatusBecomes,
   terminalPolicy,
@@ -18,58 +17,26 @@ import {
   type Tracking,
 } from './progress';
 import { promptWaitingOutLaunch } from './prompt-launch';
+import { clampSelection, type Selection, sameSelection } from './selection';
 import { ComposerStopStore } from './stop';
-
-/** How Send finished. `deliveredViaAttach` is the view's cue to present the tools keyboard. */
-export type ComposerSendResult =
-  | { readonly kind: 'ignored' }
-  | { readonly kind: 'deliveredViaPrompt' }
-  | { readonly kind: 'deliveredViaAttach' }
-  | { readonly kind: 'failed' }
-  /** The policy declined the draft, which is back in the Composer. */
-  | { readonly kind: 'refused'; readonly refusal: ComposerRefusal };
-
-/** The `agent.prompt` call, already bound to a Host. Resolves when herdr accepted the text. */
-export type ComposerPrompt = (params: { target: string; text: string }) => Promise<void>;
-
-/** The live Attach PTY writer; false when there is no live session to write to. */
-export interface ComposerAttachInput {
-  insertComposerDraft(text: string): boolean;
-}
-
-/** The live terminal's record of messages that went round the PTY, for Message Jump to find. */
-export interface ComposerSubmitRecorder {
-  readonly liveGeneration: InputSessionGeneration | null;
-  recordSubmitted(text: string, generation: InputSessionGeneration): void;
-}
-
-export interface Selection {
-  readonly start: number;
-  readonly end: number;
-}
+import type {
+  ComposerAttachInput,
+  ComposerSendResult,
+  ComposerSnapshot,
+  ComposerStoreOptions,
+  ComposerSubmitRecorder,
+} from './store-types';
 
 export type { ComposerDelivery, ComposerMessage, ComposerProgress } from './progress';
-
-export interface ComposerSnapshot {
-  readonly draft: string;
-  readonly selection: Selection;
-  readonly messages: readonly ComposerMessage[];
-  readonly notice: ComposerNotice | undefined;
-  readonly status: string;
-}
-
-export interface ComposerStoreOptions {
-  readonly target: string;
-  readonly prompt: ComposerPrompt;
-  readonly clock: Clock;
-  readonly initialStatus?: string;
-  readonly initialDraft?: string;
-  /** Called with the draft after every change, to persist it. */
-  readonly onDraft?: (draft: string) => void;
-  /** Pace and budget for waiting out a fresh Agent's launch on `agent_not_ready`. */
-  readonly notReadyRetryMs?: number;
-  readonly notReadyBudgetMs?: number;
-}
+export type { Selection } from './selection';
+export type {
+  ComposerAttachInput,
+  ComposerPrompt,
+  ComposerSendResult,
+  ComposerSnapshot,
+  ComposerStoreOptions,
+  ComposerSubmitRecorder,
+} from './store-types';
 
 const UNSENDABLE = 'The message could not be sent. Check the connection and retry.';
 const UNSAFE = 'The message contains unsafe terminal control characters.';
@@ -84,13 +51,14 @@ export class ComposerStore {
   readonly stop: ComposerStopStore;
   private draft: string;
   private selection: Selection;
+  private readonly attachments: DraftAttachments;
   private messages: ComposerMessage[] = [];
   private notice: ComposerNotice | undefined;
   private status: string;
   private statusRevision = 0;
   private nextId = 1;
   private readonly tracking = new Map<string, Tracking>();
-  private attach: ComposerAttachInput | undefined;
+  private attachInput: ComposerAttachInput | undefined;
   private recorder: ComposerSubmitRecorder | undefined;
   private snapshot: ComposerSnapshot | undefined;
   private readonly listeners = new Set<() => void>();
@@ -99,6 +67,7 @@ export class ComposerStore {
     this.stop = new ComposerStopStore(options.clock);
     this.draft = options.initialDraft ?? '';
     this.selection = { start: this.draft.length, end: this.draft.length };
+    this.attachments = new DraftAttachments(options);
     this.status = options.initialStatus ?? 'idle';
   }
 
@@ -113,6 +82,7 @@ export class ComposerStore {
     this.snapshot ??= {
       draft: this.draft,
       selection: this.selection,
+      attachments: this.attachments.standing,
       messages: this.messages,
       notice: this.notice,
       status: this.status,
@@ -121,12 +91,12 @@ export class ComposerStore {
   };
 
   get canSend(): boolean {
-    return this.draft.trim().length > 0;
+    return this.draft.trim().length > 0 || this.attachments.standing.length > 0;
   }
 
   /** The already-open Attach PTY writer; Blocked Send uses the same pipe as the tools keyboard. */
   bindAttachInput(input: ComposerAttachInput | undefined): void {
-    this.attach = input;
+    this.attachInput = input;
   }
 
   /** Who hears of each accepted `agent.prompt`; the returned function ends that. */
@@ -155,12 +125,29 @@ export class ComposerStore {
     this.changed();
   }
 
-  /** Inserts at the caret or replaces the selection: the Snippet / Skill / path insertion path. */
+  /** Inserts at the caret or replaces the selection: the Snippet / Skill insertion path. */
   insertIntoDraft(text: string): void {
     const { start, end } = clampSelection(this.selection, this.draft.length);
     const next = this.draft.slice(0, start) + text + this.draft.slice(end);
     const caret = start + text.length;
     this.setDraft(next, { start: caret, end: caret });
+  }
+
+  /** A staged attachment stands for the next message; the draft stays as typed. */
+  attach(attachment: StagedAttachment): void {
+    this.attachments.add(attachment);
+    this.attachmentsChanged();
+  }
+
+  /** Takes a standing attachment out of the next message. */
+  removeAttachment(id: string): void {
+    if (this.attachments.remove(id)) this.attachmentsChanged();
+  }
+
+  /** The Agent closed: nothing it held will be sent. */
+  releaseAttachments(): void {
+    this.attachments.releaseAll();
+    this.attachmentsChanged();
   }
 
   /**
@@ -210,10 +197,11 @@ export class ComposerStore {
 
   private async sendDraft(policy: ComposerDeliveryPolicy): Promise<ComposerSendResult> {
     if (!this.canSend) return { kind: 'ignored' };
-    const refusal = policy.validate(this.draft);
+    const text = withAttachmentPaths(this.draft, this.attachments.standing);
+    const refusal = policy.validate(text);
     if (refusal) return { kind: 'refused', refusal };
     const id = `m${this.nextId++}`;
-    const text = this.draft;
+    this.attachments.withhold(id, this.draft);
     this.track(id, true);
     this.messages = [
       ...this.messages,
@@ -276,6 +264,7 @@ export class ComposerStore {
     }
     const message = this.messages.find((candidate) => candidate.id === id);
     if (!message) return { kind: 'ignored' };
+    this.attachments.delivered(id);
     this.update(id, {
       kind: 'delivered',
       progress: progressAfterAck(this.tracking.get(id), this.status, this.statusRevision),
@@ -300,11 +289,12 @@ export class ComposerStore {
       return { kind: 'refused', refusal: { kind: 'agentBlocked' } };
     }
     if (!containsOnlySafeScalars(text)) return this.fail(id, { kind: 'failed', text: UNSAFE });
-    if (!this.attach?.insertComposerDraft(text)) {
+    if (!this.attachInput?.insertComposerDraft(text)) {
       return this.fail(id, { kind: 'failed', text: UNSENDABLE });
     }
     const tracking = this.tracking.get(id);
     if (tracking) tracking.tracksProgress = false;
+    this.attachments.delivered(id);
     this.update(id, { kind: 'delivered', progress: 'acknowledged' });
     return { kind: 'deliveredViaAttach' };
   }
@@ -364,8 +354,14 @@ export class ComposerStore {
     if (!message) return;
     this.messages = this.messages.filter((candidate) => candidate.id !== id);
     this.tracking.delete(id);
-    const next = this.draft === '' ? message.text : `${message.text}\n${this.draft}`;
+    const typed = this.attachments.restore(id) ?? message.text;
+    const next = this.draft === '' || typed === '' ? typed + this.draft : `${typed}\n${this.draft}`;
     this.setDraft(next, { start: next.length, end: next.length });
+  }
+
+  private attachmentsChanged(): void {
+    this.notice = undefined;
+    this.changed();
   }
 
   private setDraft(text: string, selection: Selection): void {
@@ -382,14 +378,4 @@ export class ComposerStore {
     this.snapshot = undefined;
     for (const listener of [...this.listeners]) listener();
   }
-}
-
-function clampSelection(selection: Selection, length: number): Selection {
-  const start = Math.min(Math.max(selection.start, 0), length);
-  const end = Math.min(Math.max(selection.end, start), length);
-  return { start, end };
-}
-
-function sameSelection(a: Selection, b: Selection): boolean {
-  return a.start === b.start && a.end === b.end;
 }

@@ -7,7 +7,6 @@ import { toolsText } from './text';
 const COMMAND_LABEL = {
   cancel: () => t('Cancel'),
   retry: () => t('Retry'),
-  copyPath: () => t('Copy Path'),
   dismiss: () => t('Dismiss'),
 } as const satisfies Record<AttachmentCommand, () => string>;
 
@@ -16,8 +15,6 @@ const ICONS: Record<string, IconName> = {
   doc: 'file',
   'arrow.up.circle': 'arrowUp',
   'exclamationmark.triangle': 'warning',
-  'checkmark.circle': 'success',
-  'info.circle': 'info',
 };
 
 /** staging-status-bar: what the attachment in flight is doing, with the commands that apply. */
@@ -31,7 +28,7 @@ export function StagingStatusBar({ store }: { store: ComposerStagingStore }) {
   if (!shown) return null;
   const { state } = store;
   const failed = state.kind === 'failed' || state.kind === 'backgroundInterrupted';
-  const tone: Tone = failed ? 'warning' : state.kind === 'completed' ? 'success' : 'info';
+  const tone: Tone = failed ? 'warning' : 'info';
   // Banner has one action and one dismiss: the primary command and Dismiss when offered.
   const primary = shown.commands.find((command) => command !== 'dismiss');
   const dismissible = shown.commands.includes('dismiss');

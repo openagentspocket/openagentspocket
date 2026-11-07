@@ -1,33 +1,44 @@
 import {
   type AttachmentSource,
   type AttachmentStager,
-  type ComposerDraftPort,
+  type ComposerAttachmentPort,
   ComposerStagingStore,
+  type LocalFiles,
+  type StagedAttachment,
 } from '@openagentspocket/core';
-import * as Clipboard from 'expo-clipboard';
 import type { Picked } from '@/files/pickers';
 import { type AttachmentLocalFiles, attachmentSource } from './attachmentSources';
 
 /** Where the attachment's bytes go: the Host's transport at upload time (the live app stages over SFTP). */
 export type StageOnHost = AttachmentStager;
 
-const stagings = new WeakMap<ComposerDraftPort, ComposerStagingStore>();
+const stagings = new WeakMap<ComposerAttachmentPort, ComposerStagingStore>();
 
 /**
  * The Agent's staging workflow, kept as long as its Composer: a rebuilt detail finds the same
- * in-flight upload, and the staged Host path lands in the same draft. One store per draft port.
+ * in-flight upload, and the staged attachment joins the same Composer. One store per Composer.
  */
-export function stagingFor(composer: ComposerDraftPort, stage: StageOnHost): ComposerStagingStore {
+export function stagingFor(
+  composer: ComposerAttachmentPort,
+  stage: StageOnHost,
+): ComposerStagingStore {
   let store = stagings.get(composer);
   if (!store) {
     store = new ComposerStagingStore({
       stage: { image: stage, file: stage },
-      clipboard: { copy: (text) => Clipboard.setStringAsync(text).then(() => undefined) },
       composer,
     });
     stagings.set(composer, store);
   }
   return store;
+}
+
+/** Deletes an attachment's local preview once the Composer is done with it. */
+export function releaseAttachmentPreview(files: Pick<LocalFiles, 'remove'>) {
+  return ({ previewUri }: StagedAttachment): void => {
+    // A leftover copy lives in the app's cache, which the system trims.
+    if (previewUri !== undefined) void Promise.resolve(files.remove(previewUri)).catch(() => {});
+  };
 }
 
 export interface AttachmentPickers {

@@ -43,7 +43,7 @@ interface Input {
 
 export interface ComposerMenus {
   addItems: ActionMenuItem[];
-  /** The Agent's attachment in flight; show its status bar above the composer. */
+  /** The Agent's attachment in flight; show its status and its tile above the composer. */
   staging: ComposerStagingStore;
   moreItems: ActionMenuItem[];
   /** The sheets the menus open (Skills, Snippets, Rename Agent); render beside the composer. */
@@ -77,7 +77,7 @@ export function useComposerMenus({
       });
     return stagingFor(store, stage);
   }, [store, consoleStore, hostId]);
-  // Add Image and Add File disable while an attachment is in flight.
+  // Add Image and Add File disable while an attachment is in flight or waits on Retry.
   useSyncExternalStore(
     staging.subscribe.bind(staging),
     () => staging.state,

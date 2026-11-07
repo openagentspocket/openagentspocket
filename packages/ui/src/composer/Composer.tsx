@@ -11,11 +11,16 @@ export interface ComposerSuggestion {
   label: string;
 }
 
-/** What the trailing button does: send a non-empty draft; stop a busy Agent when the draft is empty. */
+/** What the trailing button does: send a draft or attachments; stop a busy Agent when there is neither. */
 export type ComposerAction = 'send' | 'stop' | 'none';
 
-export function composerAction(draft: string, busy: boolean, canStop: boolean): ComposerAction {
-  if (draft.trim().length > 0) return 'send';
+export function composerAction(
+  draft: string,
+  busy: boolean,
+  canStop: boolean,
+  hasAttachments = false,
+): ComposerAction {
+  if (draft.trim().length > 0 || hasAttachments) return 'send';
   return busy && canStop ? 'stop' : 'none';
 }
 

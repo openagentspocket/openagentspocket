@@ -201,6 +201,7 @@ describe('Composer', () => {
     expect(composerAction('   ', true, true)).toBe('stop');
     expect(composerAction('', true, false)).toBe('none');
     expect(composerAction('', false, true)).toBe('none');
+    expect(composerAction('', true, true, true)).toBe('send');
   });
 
   it('disables Send on an empty draft and offers Stop while busy', async () => {
