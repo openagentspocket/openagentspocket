@@ -27,29 +27,27 @@ function attachment(
 }
 
 describe('attachmentStager through the staging store', () => {
-  it('uploads an image over SFTP and inserts its Host path into the draft', async () => {
+  it('uploads an image over SFTP and hands the Composer its Host path', async () => {
     const { transport, ssh } = await connected(
       () => new Uint8Array(),
       {},
       { exec: stageExec, directories: [parent] },
     );
     const removed: string[] = [];
-    const draft: string[] = [];
+    const staged: string[] = [];
     const stage = attachmentStager(transport);
     const store = new ComposerStagingStore({
       stage: { image: stage, file: stage },
-      clipboard: { copy: () => {} },
-      composer: { insertIntoDraft: (text) => draft.push(text) },
+      composer: { attach: (attachment) => staged.push(attachment.hostPath) },
     });
     store.begin({
       medium: 'image',
+      label: { name: 'image.png' },
       prepare: async () => attachment(new Uint8Array([9, 8, 7]), 'image', removed),
     });
     await store.settled();
-    expect(store.state.kind).toBe('completed');
-    const inserted = draft[0] ?? '';
-    expect(inserted.endsWith(' ')).toBe(true);
-    const path = inserted.trimEnd();
+    expect(store.state.kind).toBe('idle');
+    const path = staged[0] ?? '';
     expect(path.startsWith(`${parent}/stage-`)).toBe(true);
     expect(path.endsWith('/image.png')).toBe(true);
     expect((ssh.sessions[0] as FakeSession).files.get(path)).toEqual(new Uint8Array([9, 8, 7]));
