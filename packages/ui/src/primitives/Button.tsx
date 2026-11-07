@@ -4,11 +4,12 @@ import type { ColorKey } from '../theme/tokens.generated';
 import { Icon, type IconName } from './Icon';
 import { Spinner } from './Spinner';
 import { Tappable } from './Tappable';
-import { Text } from './Text';
+import { Text, type TextVariant } from './Text';
 
 export type ButtonKind = 'primary' | 'secondary' | 'destructive' | 'text' | 'capsule';
 /** dense: full tap height with callout text and tight padding (paired buttons in a sheet footer). */
-export type ButtonSize = 'regular' | 'small' | 'dense';
+/** medium: between small and regular. mini: caption text, its tap area kept by the hit slop. */
+export type ButtonSize = 'regular' | 'medium' | 'small' | 'mini' | 'dense';
 
 const useStyles = makeStyles((t) => ({
   base: {
@@ -22,7 +23,9 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xs,
   },
   tight: { paddingHorizontal: t.spacing.xxs },
+  medium: { minHeight: 38, paddingHorizontal: t.spacing.sm },
   small: { minHeight: 32, paddingHorizontal: t.spacing.sm },
+  mini: { minHeight: 24, paddingVertical: 0, paddingHorizontal: t.spacing.xxs },
   dense: { paddingHorizontal: t.spacing.xs, gap: t.spacing.xxs },
   iconOnly: { paddingHorizontal: 0, minWidth: t.metrics.minTapSize },
   iconOnlySmall: { minWidth: 32 },
@@ -46,6 +49,23 @@ const INK_KEY = {
   text: 'accent',
   capsule: 'accent',
 } as const satisfies Record<ButtonKind, ColorKey>;
+
+/** Brings a smaller control back to the minimum tap area. */
+const HIT_SLOP: Record<ButtonSize, number> = {
+  regular: 0,
+  medium: 3,
+  small: 6,
+  mini: 10,
+  dense: 0,
+};
+
+const LABEL_VARIANT = {
+  regular: 'headline',
+  medium: 'callout',
+  small: 'callout',
+  mini: 'caption',
+  dense: 'callout',
+} as const satisfies Record<ButtonSize, TextVariant>;
 
 const inkFor = (kind: ButtonKind, t: Theme) => t.colors[INK_KEY[kind]];
 
@@ -113,10 +133,12 @@ export function Button({
         onPress();
       }}
       testID={testID}
-      hitSlop={size === 'small' ? 6 : 0}
+      hitSlop={HIT_SLOP[size]}
       style={({ pressed }) => [
         styles.base,
+        size === 'medium' && styles.medium,
         size === 'small' && styles.small,
+        size === 'mini' && styles.mini,
         size === 'dense' && styles.dense,
         iconOnly && styles.iconOnly,
         iconOnly && size === 'small' && styles.iconOnlySmall,
@@ -133,7 +155,7 @@ export function Button({
       ) : null}
       {title !== undefined ? (
         <Text
-          variant={size === 'regular' ? 'headline' : 'callout'}
+          variant={LABEL_VARIANT[size]}
           // Every button reads at one size: a long label wraps, and only a shared row may shrink it.
           numberOfLines={tight ? 1 : 3}
           adjustsFontSizeToFit={tight}

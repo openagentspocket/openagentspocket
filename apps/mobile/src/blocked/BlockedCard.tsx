@@ -178,7 +178,7 @@ function ShowTerminal({ onPress }: { onPress: () => void }) {
     <Button
       title={t('Show Terminal')}
       kind="text"
-      size="small"
+      size="mini"
       onPress={onPress}
       testID="blocked-show-terminal"
     />
@@ -227,7 +227,7 @@ function Known({
             <Button
               title={option.label}
               kind={optionKind(option)}
-              size="small"
+              size="medium"
               disabled={disabled}
               onPress={() => onChoose(option.ordinal)}
               testID={`blocked-option-${option.ordinal}`}
@@ -252,7 +252,7 @@ function Known({
             <Button
               title={stop}
               kind="text"
-              size="small"
+              size="mini"
               disabled={state.progress === 'acting'}
               onPress={onStop}
               testID="blocked-stop"
