@@ -1,12 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react-native';
 import {
   Banner,
-  BarChart,
   Button,
-  barShares,
   EmptyState,
   ErrorState,
-  labeledIndexes,
   Meter,
   meterColor,
   ProgramMark,
@@ -109,41 +106,6 @@ describe('Meter', () => {
     expect(screen.getByTestId('meter-pace', { includeHiddenElements: true })).toHaveStyle({
       left: '50%',
     });
-  });
-});
-
-describe('BarChart', () => {
-  const data = [
-    { key: 'mon', label: 'Mon', value: 50 },
-    { key: 'tue', label: 'Tue', value: 100 },
-    { key: 'wed', label: 'Wed', value: 0 },
-  ];
-
-  it('scales bars to the tallest and labels a long range sparsely', () => {
-    expect(barShares(data)).toEqual([0.5, 1, 0]);
-    expect(barShares([{ key: 'a', label: 'a', value: 0 }])).toEqual([0]);
-    expect([...labeledIndexes(7)]).toHaveLength(7);
-    expect([...labeledIndexes(30)]).toEqual([0, 14, 29]);
-  });
-
-  it('makes each bar one spoken element with its formatted value', async () => {
-    await renderThemed(
-      <BarChart data={data} formatValue={(v) => `${v} tokens`} accessibilityLabel="Tokens" />,
-    );
-    expect(screen.getByLabelText('Tue, 100 tokens')).toBeTruthy();
-    expect(screen.getByLabelText('Wed, 0 tokens')).toBeTruthy();
-  });
-
-  it('is plain without onPressBar and makes each bar a button with it', async () => {
-    await renderThemed(<BarChart data={data} accessibilityLabel="Tokens" />);
-    expect(screen.queryByRole('button')).toBeNull();
-    const onPressBar = jest.fn();
-    await renderThemed(
-      <BarChart data={data} accessibilityLabel="Tokens" onPressBar={onPressBar} />,
-    );
-    expect(screen.getAllByRole('button')).toHaveLength(3);
-    fireEvent.press(screen.getByRole('button', { name: 'Tue, 100' }));
-    expect(onPressBar).toHaveBeenCalledWith('tue');
   });
 });
 

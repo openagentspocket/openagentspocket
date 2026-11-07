@@ -23,14 +23,14 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 |---|---|---|
 | UX3-agent-rows | `gallery/components/agentRows.tsx` | AgentCard, FoldHeader, WorkspaceCard, TerminalRow, AgentRowMenu, HostIssueRow |
 | UX3-home-shell | `gallery/components/homeShell.tsx` | InboxCard, SessionsStrip, HomeHostCard, UsageRing, Fab, LargeTitleBar |
-| UX3-nav-sheets | `gallery/components/navSheets.tsx` | ListToolbar, SidebarColumn, EmptyDetail, QuickSheetHeader, SearchBar, TextPromptSheet, ConnectionSheet, ScannerFrame, KeyValueGroup |
-| UX3-agent-bar | `gallery/components/agentBar.tsx` | AgentHeader, SessionDrawer, ComposerCard, StatusLine, ChangeRow |
+| UX3-nav-sheets | `gallery/components/navSheets.tsx` | ListToolbar, QuickSheetHeader, SearchBar, TextPromptSheet, ConnectionSheet, KeyValueGroup |
+| UX3-agent-bar | `gallery/components/agentBar.tsx` | AgentHeader, SessionDrawer, ComposerCard, ChangeRow |
 | UX3-chat-rows | `gallery/components/chatRows.tsx` | ChatUserBubble, ChatDivider, ChatThoughtRow, ChatToolRow, ChatNoticeRow, DiffRow |
-| UX3-blocked-terminal | `gallery/components/blockedTerminal.tsx` | BlockedCard, BackgroundWorkStrip, NoticeBanner, JumpControl, TerminalToolbar, KeyPad |
+| UX3-blocked-terminal | `gallery/components/blockedTerminal.tsx` | BackgroundWorkStrip, NoticeBanner, TerminalToolbar, KeyPad |
 | UX3-usage | `gallery/components/usage.tsx` | UsageLimitChip, ProviderUsageCard, LimitWindowRow, UsageTotals, UsageChart, UsageHeatMap, UsageBreakdownRow |
-| UX3-hosts-settings-files | `gallery/components/hostsSettingsFiles.tsx` | HostRow, HostStatusCard, SettingsGroup, ThemeChoiceCard, FileRow, PortRow, ChoiceSheet, CommandBlock |
-| UX3-settings-pickers | `gallery/components/settingsPickers.tsx` | TerminalThemePicker, TerminalThemePreview, AgentListFieldsEditor, AgentListFieldsPreview, OverlayPeerPicker, OverlayPeerViews, PortPreview |
-| UX3-composer-extras | `gallery/components/composerExtras.tsx` | SkillsKeyboardPane, SkillContentSheet, ComposerStagingStatusBar, ClaudeSubagentTranscript |
+| UX3-hosts-settings-files | `gallery/components/hostsSettingsFiles.tsx` | HostRow, HostStatusCard, ThemeChoiceCard, FileRow, PortRow, ChoiceSheet, CommandBlock |
+| UX3-settings-pickers | `gallery/components/settingsPickers.tsx` | TerminalThemePicker, TerminalThemePreview, AgentListFieldsEditor, AgentListFieldsPreview, OverlayPeerPicker, OverlayPeerViews |
+| UX3-composer-extras | `gallery/components/composerExtras.tsx` | SkillContentSheet, ClaudeSubagentTranscript |
 
 ## Catalog
 
@@ -49,18 +49,14 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [Fab](#fab) | UX3-home-shell | `shell.home`<br>`console.empty-states-agents` | default: [ref](ref/Fab.png) · [light](ref/Fab.light.png) | none | `Console/Home/ConsoleHomeView.swift:340-378` |
 | [LargeTitleBar](#largetitlebar) | UX3-home-shell | `shell.home`<br>`console.agents-list-flat`<br>`hosts.list`<br>`settings.root` | default: [ref](ref/LargeTitleBar.png) · [light](ref/LargeTitleBar.light.png)<br>leading: none | apps/mobile/src/navigation/ (header options only, no capsule) | `Console/ConsoleView+Home.swift:1-188`<br>`Console/ConsoleTabBarBridge.swift:1-169` |
 | [ListToolbar](#listtoolbar) | UX3-nav-sheets | `console.agents-list-flat`<br>`console.agents-list-by-status`<br>`console.terminals-list`<br>`console.presentation-menu` | default: [ref](ref/ListToolbar.png) · [light](ref/ListToolbar.light.png) | `apps/mobile/src/features/agents/AgentsToolbar.tsx` | `Console/TerminalListPresentation.swift:1-120`<br>`Console/ConsoleSidebarChrome.swift:42-134`<br>`Console/ConsoleView+AgentList.swift:1-327` |
-| [SidebarColumn](#sidebarcolumn) | UX3-nav-sheets | `ipad/console.agents-list-flat`<br>`ipad/console.terminals-list`<br>`ipad/shell.hosts-settings-sheets` | default: [ref](ref/SidebarColumn.png) | none (UX1-wide) | `Console/ConsoleView+Sidebar.swift:1-370`<br>`Console/ConsoleSidebarChrome.swift:1-220`<br>`Console/SidebarSearchDrawer.swift:1-163`<br>`Console/ConsoleView+SplitView.swift:1-395` |
-| [EmptyDetail](#emptydetail) | UX3-nav-sheets | `ipad/console.agents-list-flat`<br>`console.no-hosts-empty`<br>`console.empty-states-agents` | default: [ref](ref/EmptyDetail.png) | packages/ui/src/primitives/EmptyState.tsx (no tinted capsule action) | `Console/ConsoleEmptyDetailPresentation.swift:1-114`<br>`DesignSystem/Components/EmptyState.swift:1-183` |
 | [QuickSheetHeader](#quicksheetheader) | UX3-nav-sheets | `usage.quick-sheet`<br>`console.quick-detail-sheet`<br>`usage.day-sheet` | default: [ref](ref/QuickSheetHeader.png) · [light](ref/QuickSheetHeader.light.png)<br>detail: [ref](ref/QuickSheetHeader.detail.png) · [light](ref/QuickSheetHeader.detail.light.png) | packages/ui/src/overlay/Sheet.tsx (bar actions exist, no quick header) | `Usage/UsageQuickSheet.swift:9-142`<br>`Console/ConsoleView+QuickDetail.swift:128-181`<br>`Console/ConsoleSheetPresentation.swift:1-225` |
 | [SearchBar](#searchbar) | UX3-nav-sheets | `console.search` | default: none | packages/ui/src/form/SearchField.tsx (field only) | `Console/SidebarSearchDrawer.swift:1-163` |
 | [TextPromptSheet](#textpromptsheet) | UX3-nav-sheets | `console.rename-sheet` | default: none | packages/ui/src/overlay/Sheet.tsx (bar actions)<br>`packages/ui/src/form/TextField.tsx` | `Console/AgentDetailSheets.swift:100-151` |
 | [ConnectionSheet](#connectionsheet) | UX3-nav-sheets | `console.host-connection-sheet` | default: none | apps/mobile/src/features/hosts/HostConnectionSheet.tsx (wrapper)<br>`apps/mobile/src/features/hosts/HostIssues.tsx` | `Hosts/HostOnboardingView.swift:777-912` |
-| [ScannerFrame](#scannerframe) | UX3-nav-sheets | `hosts.pairing-scanner`<br>`hosts.new-route` | unavailable: [ref](ref/ScannerFrame.unavailable.png) · [light](ref/ScannerFrame.unavailable.light.png) | `packages/ui/src/scanner/QRScanner.tsx`<br>`packages/ui/src/scanner/QRNotice.tsx` | `Pairing/PairingScanView.swift:13-349`<br>`Pairing/PairingScanStore.swift:1-335` |
 | [KeyValueGroup](#keyvaluegroup) | UX3-nav-sheets | `hosts.detail`<br>`console.quick-detail-sheet`<br>`usage.limits-sheet` | default: [ref](ref/KeyValueGroup.png) · [light](ref/KeyValueGroup.light.png) | `apps/mobile/src/features/hosts/HostInfoSections.tsx`<br>`packages/ui/src/primitives/CopyButton.tsx` | `DesignSystem/Components/CopyableValueRow.swift:1-120`<br>`Console/HostConnectionDetailView.swift:113-241`<br>`Hosts/HostListView.swift:206-340` |
 | [AgentHeader](#agentheader) | UX3-agent-bar | `agent-detail.header`<br>`agent-detail.chat`<br>`agent-detail.header-more-menu`<br>`agent-detail.terminal` | default: [ref](ref/AgentHeader.png) · [light](ref/AgentHeader.light.png)<br>chat: none<br>slow-link: none | `apps/mobile/src/agent-detail/AgentHeader.tsx` | `Console/AgentDetailHeader.swift:31-459`<br>`Console/AgentSurfaceToggle.swift:38-120`<br>`Console/MessageJumpControl.swift:577-700` |
 | [SessionDrawer](#sessiondrawer) | UX3-agent-bar | `agent-detail.session-drawer`<br>`agent-detail.session-drawer--agents` | default: [ref](ref/SessionDrawer.png) · [light](ref/SessionDrawer.light.png) | none | `Console/SessionDrawer/SessionDrawerView.swift:22-561` |
 | [ComposerCard](#composercard) | UX3-agent-bar | `agent-detail.chat`<br>`agent-detail.header`<br>`agent-detail.composer-skill-suggestions`<br>`agent-detail.composer-add-menu`<br>`agent-detail.composer-more-menu` | default: [ref](ref/ComposerCard.png) · [light](ref/ComposerCard.light.png)<br>expanded: [ref](ref/ComposerCard.expanded.png) · [light](ref/ComposerCard.expanded.light.png)<br>skills: [ref](ref/ComposerCard.skills.png) · [light](ref/ComposerCard.skills.light.png) | `packages/ui/src/composer/Composer.tsx`<br>`apps/mobile/src/agent-detail/composer/AgentComposer.tsx` | `Console/AgentComposerView.swift:10-623`<br>`Console/AgentComposerButtons.swift:4-90`<br>`Console/AgentComposerStop.swift:1-232`<br>`Console/AgentComposerSkillSuggestions.swift:1-113` |
-| [StatusLine](#statusline) | UX3-agent-bar | `agent-detail.chat`<br>`agent-detail.status-line`<br>`agent-detail.composer-skill-suggestions` | default: [ref](ref/StatusLine.png) · [light](ref/StatusLine.light.png)<br>low-context: [ref](ref/StatusLine.low-context.png) · [light](ref/StatusLine.low-context.light.png) | none | `Console/AgentDetailStatusChrome.swift:6-210`<br>`Console/AgentContextLowBadge.swift:1-60` |
 | [ChangeRow](#changerow) | UX3-agent-bar | `changes.list`<br>`agent-detail.status-line` | summary: [ref](ref/ChangeRow.summary.png) · [light](ref/ChangeRow.summary.light.png)<br>file: [ref](ref/ChangeRow.file.png) · [light](ref/ChangeRow.file.light.png) | `apps/mobile/src/changes/ChangedFileRow.tsx`<br>`apps/mobile/src/changes/ChangesHeader.tsx` | `Changes/ChangesView.swift:147-355`<br>`Changes/ChangesCountsViews.swift:1-119`<br>`Changes/ChangesBadge.swift:1-160` |
 | [ChatUserBubble](#chatuserbubble) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-timeline` | default: [ref](ref/ChatUserBubble.png) · [light](ref/ChatUserBubble.light.png)<br>pending: none | none | `Chat/Timeline/ChatRowView.swift:150-255` |
 | [ChatDivider](#chatdivider) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-timeline` | turn: [ref](ref/ChatDivider.turn.png) · [light](ref/ChatDivider.turn.light.png)<br>working: [ref](ref/ChatDivider.working.png) · [light](ref/ChatDivider.working.light.png)<br>compacted: [ref](ref/ChatDivider.compacted.png) · [light](ref/ChatDivider.compacted.light.png) | none | `Chat/Timeline/ChatRowView.swift:301-387`<br>`Chat/Timeline/ChatRowView.swift:1148-1236` |
@@ -68,10 +64,8 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [ChatToolRow](#chattoolrow) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-blocked-card`<br>`agent-detail.chat-background-strip`<br>`agent-detail.subagent-transcript` | default: [ref](ref/ChatToolRow.png) · [light](ref/ChatToolRow.light.png)<br>waiting: [ref](ref/ChatToolRow.waiting.png) · [light](ref/ChatToolRow.waiting.light.png)<br>subagents: [ref](ref/ChatToolRow.subagents.png) · [light](ref/ChatToolRow.subagents.light.png) | none | `Chat/Timeline/ChatRowView.swift:387-1014`<br>`Chat/Timeline/ChatFileDiffView.swift:139-300` |
 | [ChatNoticeRow](#chatnoticerow) | UX3-chat-rows | `agent-detail.chat-floating-controls`<br>`agent-detail.chat-background-strip` | default: [ref](ref/ChatNoticeRow.png) · [light](ref/ChatNoticeRow.light.png) | none | `Chat/Timeline/ChatRowView.swift:1088-1148` |
 | [DiffRow](#diffrow) | UX3-chat-rows | `changes.file-diff`<br>`agent-detail.chat (inline diff)` | default: [ref](ref/DiffRow.png) · [light](ref/DiffRow.light.png) | `packages/ui/src/diff/DiffView.tsx` | `Changes/DiffLineViews.swift:7-407`<br>`Changes/FileDiffView.swift:5-715`<br>`Changes/FileDiffSideBySideRow.swift:6-111`<br>`Chat/Timeline/ChatFileDiffView.swift:267-456` |
-| [BlockedCard](#blockedcard) | UX3-blocked-terminal | `agent-detail.chat-blocked-card`<br>`agent-detail.chat` | default: [ref](ref/BlockedCard.png) · [light](ref/BlockedCard.light.png)<br>collapsed: none<br>question: none | `apps/mobile/src/blocked/BlockedCard.tsx` | `Chat/Blocked/BlockedCardView.swift:9-1008`<br>`Chat/Blocked/QuestionFormCardView.swift:7-197`<br>`Chat/Blocked/GenericDialogCardView.swift:5-156` |
 | [BackgroundWorkStrip](#backgroundworkstrip) | UX3-blocked-terminal | `agent-detail.chat-blocked-card`<br>`agent-detail.chat-floating-controls`<br>`agent-detail.chat-background-strip`<br>`agent-detail.chat-background-sheet` | default: [ref](ref/BackgroundWorkStrip.png) · [light](ref/BackgroundWorkStrip.light.png)<br>expanded: [ref](ref/BackgroundWorkStrip.expanded.png) · [light](ref/BackgroundWorkStrip.expanded.light.png) | none | `Chat/BackgroundWork/ChatBackgroundWorkStrip.swift:8-266`<br>`Chat/BackgroundWork/ChatBackgroundWorkSheet.swift:7-214` |
 | [NoticeBanner](#noticebanner) | UX3-blocked-terminal | `agent-detail.chat-banners`<br>`agent-detail.chat` | default: [ref](ref/NoticeBanner.png) · [light](ref/NoticeBanner.light.png)<br>locating: [ref](ref/NoticeBanner.locating.png) · [light](ref/NoticeBanner.locating.light.png)<br>inapp: none | `packages/ui/src/primitives/Banner.tsx`<br>`apps/mobile/src/notifications/InAppBanner.tsx` | `Chat/Timeline/ChatConversationStatus.swift:333-420`<br>`Notifications/AgentNotificationBannerView.swift:7-60`<br>`Notifications/AgentNotificationBannerStore.swift:1-190` |
-| [JumpControl](#jumpcontrol) | UX3-blocked-terminal | `agent-detail.chat (appears when scrolled away; no atlas crop)` | default: none | none | `Console/MessageJumpControl.swift:445-576`<br>`Chat/Timeline/ChatTimelineView.swift:75-134` |
 | [TerminalToolbar](#terminaltoolbar) | UX3-blocked-terminal | `agent-detail.terminal-toolbar`<br>`agent-detail.terminal-toolbar-dpad`<br>`agent-detail.terminal-toolbar-more-menu`<br>`agent-detail.shell-keys-dock` | default: [ref](ref/TerminalToolbar.png) · [light](ref/TerminalToolbar.light.png)<br>dock: [ref](ref/TerminalToolbar.dock.png) · [light](ref/TerminalToolbar.dock.light.png)<br>dpad: [ref](ref/TerminalToolbar.dpad.png) · [light](ref/TerminalToolbar.dpad.light.png) | `apps/mobile/src/agent-detail/terminal/TerminalToolbar.tsx` | `Terminal/Toolbar/TerminalToolbarCapsule.swift:1-388`<br>`Terminal/Toolbar/TerminalToolbarDPad.swift:7-65`<br>`Terminal/Toolbar/TerminalToolbarMoreMenu.swift:1-158`<br>`Terminal/Toolbar/TerminalToolbarBand.swift:1-134` |
 | [KeyPad](#keypad) | UX3-blocked-terminal | `agent-detail.control-keys`<br>`agent-detail.tools-keyboard`<br>`agent-detail.chat-tools-keyboard` | default: [ref](ref/KeyPad.png) · [light](ref/KeyPad.light.png) | `packages/ui/src/keys/KeyboardDock.tsx` | `Console/AgentControlKeyboard.swift:6-170`<br>`Console/AgentToolsKeyboard.swift:5-120`<br>`Console/AgentChatToolsKeyboard.swift:6-130`<br>`Terminal/TerminalFullKeyboard.swift:35-250` |
 | [UsageLimitChip](#usagelimitchip) | UX3-usage | `usage.tab`<br>`usage.limits-sheet`<br>`usage.quick-sheet` | default: [ref](ref/UsageLimitChip.png) · [light](ref/UsageLimitChip.light.png) | `apps/mobile/src/usage/QuickCardView.tsx`<br>`apps/mobile/src/usage/LimitWindowRow.tsx` | `Usage/AgentUsageSheets.swift:102-154`<br>`Usage/AgentUsageSection.swift:239-288`<br>`Usage/AgentUsageWide.swift:101-223` |
@@ -83,7 +77,6 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [UsageBreakdownRow](#usagebreakdownrow) | UX3-usage | `usage.day-sheet`<br>`usage.breakdown-list`<br>`usage.host-section` | default: [ref](ref/UsageBreakdownRow.png) · [light](ref/UsageBreakdownRow.light.png)<br>host: [ref](ref/UsageBreakdownRow.host.png) · [light](ref/UsageBreakdownRow.host.light.png) | `apps/mobile/src/usage/BreakdownList.tsx` | `Usage/AgentUsageSheets.swift:154-312`<br>`Usage/AgentUsageCharts.swift:481-528`<br>`Usage/AgentUsageDashboard.swift:851-900` |
 | [HostRow](#hostrow) | UX3-hosts-settings-files | `hosts.list`<br>`console.no-hosts-empty` | default: [ref](ref/HostRow.png) · [light](ref/HostRow.light.png) | apps/mobile/src/features/hosts/HostListScreen.tsx (inline) | `Hosts/HostListView.swift:206-962`<br>`Hosts/HostConnectionTone.swift:36-110` |
 | [HostStatusCard](#hoststatuscard) | UX3-hosts-settings-files | `hosts.detail`<br>`console.host-connection-sheet` | default: [ref](ref/HostStatusCard.png) · [light](ref/HostStatusCard.light.png) | `apps/mobile/src/features/hosts/HostDetailScreen.tsx` | `Console/HostConnectionDetailView.swift:77-241`<br>`Hosts/HostConnectionTone.swift:75-110` |
-| [SettingsGroup](#settingsgroup) | UX3-hosts-settings-files | `settings.root`<br>`settings.appearance`<br>`settings.theme` | default: [ref](ref/SettingsGroup.png) · [light](ref/SettingsGroup.light.png)<br>subtitle: [ref](ref/SettingsGroup.subtitle.png) · [light](ref/SettingsGroup.subtitle.light.png)<br>toggle: [ref](ref/SettingsGroup.toggle.png) · [light](ref/SettingsGroup.toggle.light.png) | `apps/mobile/src/settings/SettingsRowView.tsx` | `Settings/SettingsView.swift:69-430`<br>`Settings/SettingsSections+Row.swift:1-138` |
 | [ThemeChoiceCard](#themechoicecard) | UX3-hosts-settings-files | `settings.theme`<br>`settings.theme--papel`<br>`settings.theme--nord`<br>`settings.appearance` | selected: [ref](ref/ThemeChoiceCard.selected.png) · [light](ref/ThemeChoiceCard.selected.light.png)<br>unselected: [ref](ref/ThemeChoiceCard.unselected.png) · [light](ref/ThemeChoiceCard.unselected.light.png)<br>preview: [ref](ref/ThemeChoiceCard.preview.png) · [light](ref/ThemeChoiceCard.preview.light.png) | `apps/mobile/src/settings/ThemeCards.tsx` | `Settings/ThemeSettingsView.swift:8-209`<br>`Settings/SettingsSections+Row.swift:78-122`<br>`Settings/TerminalAppearancePane.swift:111-180` |
 | [FileRow](#filerow) | UX3-hosts-settings-files | `files.browser`<br>`console.directory-browser` | default: [ref](ref/FileRow.png) · [light](ref/FileRow.light.png)<br>file: [ref](ref/FileRow.file.png) · [light](ref/FileRow.file.light.png) | `apps/mobile/src/files/FileRow.tsx` | `Files/FileBrowserView.swift:207-336`<br>`Files/FileBrowserItem.swift:1-131` |
 | [PortRow](#portrow) | UX3-hosts-settings-files | `(no atlas image for Ports)` | default: none | `apps/mobile/src/ports/PortRow.tsx` | `Browser/PortsView.swift:160-238`<br>`Browser/ListeningPort.swift:1-115` |
@@ -93,10 +86,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [AgentListFieldsPreview](#agentlistfieldspreview) | UX3-settings-pickers | `settings.agent-list-fields-host` | default: [ref](ref/AgentListFieldsPreview.png) · [light](ref/AgentListFieldsPreview.light.png) | none | `Settings/AgentListFieldsPreview.swift:1-61` |
 | [OverlayPeerPicker](#overlaypeerpicker) | UX3-settings-pickers | `hosts.peer-picker`<br>`settings.overlay-network-detail` | default: [ref](ref/OverlayPeerPicker.png) · [light](ref/OverlayPeerPicker.light.png) | none | `Hosts/OverlayPeerPickerView.swift:1-229`<br>`Hosts/OverlayPeerChoice.swift:1-80` |
 | [OverlayPeerViews](#overlaypeerviews) | UX3-settings-pickers | `settings.overlay-network-detail`<br>`hosts.peer-picker` | default: [ref](ref/OverlayPeerViews.png) · [light](ref/OverlayPeerViews.light.png) | none | `Settings/OverlayPeerViews.swift:1-71` |
-| [PortPreview](#portpreview) | UX3-settings-pickers | `(no atlas image for the port preview)` | default: none | `apps/mobile/src/ports/PortPreviewScreen.tsx`<br>`apps/mobile/src/ports/PreviewToolbar.tsx`<br>`apps/mobile/src/ports/PreviewStates.tsx` | `Browser/PortPreviewView.swift:1-171`<br>`Browser/PortPreviewStore.swift:1-200` |
-| [SkillsKeyboardPane](#skillskeyboardpane) | UX3-composer-extras | `agent-detail.skills-pane`<br>`agent-detail.skills-picker` | default: [ref](ref/SkillsKeyboardPane.png) · [light](ref/SkillsKeyboardPane.light.png) | none | `Skills/SkillsKeyboardPane.swift:1-193`<br>`Skills/SkillsPickerView.swift:1-200` |
 | [SkillContentSheet](#skillcontentsheet) | UX3-composer-extras | `(no atlas image for the skill content sheet)` | default: none | none | `Skills/SkillContentSheet.swift:1-93` |
-| [ComposerStagingStatusBar](#composerstagingstatusbar) | UX3-composer-extras | `(no atlas image for staging chips)` | default: none | none | `Attachments/ComposerStagingStatusBar.swift:1-75`<br>`Attachments/ComposerStagingStore.swift:1-200` |
 | [ClaudeSubagentTranscript](#claudesubagenttranscript) | UX3-composer-extras | `agent-detail.subagent-transcript` | default: [ref](ref/ClaudeSubagentTranscript.png) · [light](ref/ClaudeSubagentTranscript.light.png) | none | `Chat/Subagent/ClaudeSubagentTranscriptView.swift:1-196`<br>`Chat/Subagent/ClaudeSubagentRoute.swift:1-80` |
 | [ChoiceSheet](#choicesheet) | UX3-hosts-settings-files | `hosts.add-choice` | default: none<br>open: none | `packages/ui/src/components/ChoiceSheet.tsx` |  |
 | [CommandBlock](#commandblock) | UX3-hosts-settings-files | `hosts.pairing-scanner` | default: none<br>single: none | `packages/ui/src/components/CommandBlock.tsx` |  |
@@ -352,41 +342,6 @@ Acceptance (the judge ticks each on the side-by-side):
 - [ ] the Presentation icon changes with the active mode
 - [ ] no opaque navigation bar; large title below
 
-## SidebarColumn
-
-Task UX3-nav-sheets · target `packages/ui/src/components/SidebarColumn.tsx` · composes GlassCapsule, ActionMenuButton, TextField, Icon
-
-Props sketch: `{ title menu, search, children, footer actions }`
-
-Interactions: title menu switches Agents/Terminals; edge swipe reveals; search field is always visible on iPad; selected row fill
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: floating rounded glass column: title menu 'Agents v', + and hide-sidebar buttons, search field, list, footer with Hosts and Settings at left and Presentation/Host filter at right · crop [ref](ref/SidebarColumn.png)
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] column about 330 wide with radius 24 and a hairline, inset from the screen edges
-- [ ] header row then the search pill then the list, footer icons at the bottom
-- [ ] detail column to the right shows EmptyDetail when nothing is selected
-
-## EmptyDetail
-
-Task UX3-nav-sheets · target `packages/ui/src/components/EmptyDetail.tsx` · composes EmptyState, Button
-
-Props sketch: `{ icon, title, message, action?: { label, shortcut?, onPress } }`
-
-Interactions: button opens New Agent (cmd+N)
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: stacked windows glyph, 'No Agent Selected', explanation, tinted 'New Agent' capsule with the shortcut hint · crop [ref](ref/EmptyDetail.png)
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] icon 48pt secondary, title title3 bold, message callout secondary max width 420
-- [ ] action is an accent-wash capsule, not a solid button
-
 ## QuickSheetHeader
 
 Task UX3-nav-sheets · target `packages/ui/src/components/QuickSheetHeader.tsx` · composes Sheet, GlassCapsule, Icon, Text
@@ -457,24 +412,6 @@ Acceptance (the judge ticks each on the side-by-side):
 - [ ] state line: glyph, semibold label, secondary note
 - [ ] routes and failure detail in mono footnote
 - [ ] primary action pinned at the bottom with the text action under it
-
-## ScannerFrame
-
-Task UX3-nav-sheets · target `packages/ui/src/components/ScannerFrame.tsx` · composes EmptyState, Button, Sheet
-
-Props sketch: `{ state: 'scanning'|'unavailable'|'denied', onCode, onPaste, onManual }`
-
-Interactions: camera preview with corner brackets and a hint; Cancel at left; Paste Pairing Code as a capsule; torch toggle
-
-Variants (gallery variant id = the id before the colon):
-
-- `unavailable`: camera glyph, 'Scanning Unavailable', Paste Pairing Code and Add Manually (the only state the simulator atlas has; the live frame with corner brackets has no crop) · crop [ref](ref/ScannerFrame.unavailable.png) · [light](ref/ScannerFrame.unavailable.light.png)
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] scanning: square viewfinder with four accent corner brackets, dim outside the square
-- [ ] unavailable: icon, title, message, filled capsule primary, plain accent secondary
-- [ ] Cancel in the bar, title 'Scan to Pair' centered
 
 ## KeyValueGroup
 
@@ -551,25 +488,6 @@ Acceptance (the judge ticks each on the side-by-side):
 - [ ] stop is a red filled circle with a white square, send a white circle with a dark arrow
 - [ ] button row circles are 40pt in a secondary fill
 - [ ] skills panel mono names in primary, descriptions secondary, hairlines between
-
-## StatusLine
-
-Task UX3-agent-bar · target `packages/ui/src/components/StatusLine.tsx` · composes StatusOrb, MetaChip, Text
-
-Props sketch: `{ status, branch?, counts?, diff?, contextLeft?, latencyMs?, onOpenChanges }`
-
-Interactions: tap opens Changes; hidden when no data
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: status dot + 'Working' (orange), branch with arrows, ahead/behind counters, +N -N, latency at right · crop [ref](ref/StatusLine.png) · [light](ref/StatusLine.light.png)
-- `low-context`: Idle and the amber '16 % context left' pill · crop [ref](ref/StatusLine.low-context.png) · [light](ref/StatusLine.low-context.light.png)
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] one line caption mono-ish, truncating the branch first
-- [ ] status colors from tokens, +N green and -N red
-- [ ] sits directly above the ComposerCard, 12pt side inset
 
 ## ChangeRow
 
@@ -700,27 +618,6 @@ Acceptance (the judge ticks each on the side-by-side):
 - [ ] line numbers in secondary mono, 2 columns
 - [ ] hunk band caption mono on the surface fill with the gap count at the right
 
-## BlockedCard
-
-Task UX3-blocked-terminal · target `packages/ui/src/components/BlockedCard.tsx` · composes Card, Button, Icon, TextField, Text
-
-Props sketch: `{ prompt: BlockedPrompt (title, description, code?, options[], warning?), onChoose, onNote, collapsed }`
-
-Interactions: option tap sends the key and haptics; chevron collapses; Add a Note opens a text field; rule warning line under rules
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: header (hand glyph, 'Bash command', chevron), description, code box, filled accent 'Yes', secondary option, red 'No', 'Add a Note' · crop [ref](ref/BlockedCard.png) · [light](ref/BlockedCard.light.png)
-- `collapsed`: single bar with the title and a chevron (no atlas crop) · crop none
-- `question`: form card with options and a text field (no atlas crop) · crop none
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] card radius 20 over the composer area, hairline
-- [ ] Yes: solid accent button full width, other options secondary fill, No red wash
-- [ ] warning line amber with a triangle glyph
-- [ ] code box mono footnote on the darker surface
-
 ## BackgroundWorkStrip
 
 Task UX3-blocked-terminal · target `packages/ui/src/components/BackgroundWorkStrip.tsx` · composes Card, StatusOrb, Meter, Icon, Text
@@ -758,23 +655,6 @@ Acceptance (the judge ticks each on the side-by-side):
 
 - [ ] rounded 16 secondary surface, glyph left, message subheadline, action accent semibold at the right
 - [ ] locating: spinner above 17pt secondary text, centered in the free area
-
-## JumpControl
-
-Task UX3-blocked-terminal · target `packages/ui/src/components/JumpControl.tsx` · composes GlassCapsule, Icon
-
-Props sketch: `{ visible, onJumpLatest, onPrevious, onNext }`
-
-Interactions: tap jumps to latest with a haptic; long press expands to previous/next user message; fades after 2 s idle
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: floating glass circle with a chevron-down (jump to latest), up/down message jump pair on long press · crop none
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] 40pt glass circle at the trailing edge above the composer
-- [ ] appears only when more than one screen from the bottom
 
 ## TerminalToolbar
 
@@ -976,26 +856,6 @@ Acceptance (the judge ticks each on the side-by-side):
 - [ ] card fill is the tone wash, tile rounded 10 with the tone glyph
 - [ ] reconnect is an accent-wash circle 36pt on the right
 
-## SettingsGroup
-
-Task UX3-hosts-settings-files · target `packages/ui/src/components/SettingsGroup.tsx` · composes Section, ListRow, Icon, Text
-
-Props sketch: `{ title, rows: { icon, title, subtitle?, value?, toggle?, onPress }[] }`
-
-Interactions: tap pushes the page; toggle with haptic; trailing value truncates
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: section caption, rounded card of icon rows (glyph, title, trailing value, chevron) · crop [ref](ref/SettingsGroup.png) · [light](ref/SettingsGroup.light.png)
-- `subtitle`: row with a caption subtitle under the title · crop [ref](ref/SettingsGroup.subtitle.png) · [light](ref/SettingsGroup.subtitle.light.png)
-- `toggle`: row with a Switch (Follow System) · crop [ref](ref/SettingsGroup.toggle.png) · [light](ref/SettingsGroup.toggle.light.png)
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] section title subheadline secondary above the card, 12pt gap
-- [ ] leading glyph 24pt secondary, title body, value secondary, chevron
-- [ ] hairline inset past the glyph
-
 ## ThemeChoiceCard
 
 Task UX3-hosts-settings-files · target `packages/ui/src/components/ThemeChoiceCard.tsx` · composes Card, Icon, Text
@@ -1159,40 +1019,6 @@ Acceptance (the judge ticks each on the side-by-side):
 - [ ] address in mono caption secondary joined by middle dots
 - [ ] offline name dimmed
 
-## PortPreview
-
-Task UX3-settings-pickers · target `packages/ui/src/components/PortPreview.tsx` · composes GlassCapsule, Banner, Button, Text
-
-Props sketch: `{ title, host, state: "loading" | "ready" | "error", onReload, onClose, children }`
-
-Interactions: reload re-opens the tunnel; close dismisses; failed load shows the page error with retry
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: Full screen web preview through the SSH tunnel: toolbar with title/host, reload and close, progress, error state with Try Again (no crop: read PortPreviewView.swift) · crop none
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] judge against PortPreviewView.swift because there is no crop
-- [ ] toolbar and error state use the shared primitives
-
-## SkillsKeyboardPane
-
-Task UX3-composer-extras · target `packages/ui/src/components/SkillsKeyboardPane.tsx` · composes CardRow, EmptyState, Text
-
-Props sketch: `{ skills, query, onPick, onRefresh, onOpen }`
-
-Interactions: tap a skill inserts /skill into the composer; Refresh re-probes; long press opens the content sheet
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: Keyboard-height pane under the composer: skill list with search, empty state "No skills found for this agent.", Refresh accent row, bottom pane switcher · crop [ref](ref/SkillsKeyboardPane.png) · [light](ref/SkillsKeyboardPane.light.png)
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] same height as the system keyboard
-- [ ] Refresh row sits above the pane switcher with a hairline
-
 ## SkillContentSheet
 
 Task UX3-composer-extras · target `packages/ui/src/components/SkillContentSheet.tsx` · composes Sheet, Text
@@ -1208,22 +1034,6 @@ Variants (gallery variant id = the id before the colon):
 Acceptance (the judge ticks each on the side-by-side):
 
 - [ ] judge against SkillContentSheet.swift because there is no crop
-
-## ComposerStagingStatusBar
-
-Task UX3-composer-extras · target `packages/ui/src/components/ComposerStagingStatusBar.tsx` · composes MetaChip, Button, Text
-
-Props sketch: `{ state: "staging" | "failed", label, commands }`
-
-Interactions: Cancel stops staging; Retry re-sends the failed attachment
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: Capsule status strip above the composer while attachments stage: progress text, command buttons (Cancel, Retry) (no crop: read ComposerStagingStatusBar.swift) · crop none
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] judge against ComposerStagingStatusBar.swift because there is no crop
 
 ## ClaudeSubagentTranscript
 

@@ -1,16 +1,12 @@
 import { type ReactNode, useState } from 'react';
 import { View } from 'react-native';
 import { ConnectionSheet } from '../../components/ConnectionSheet';
-import { EmptyDetail } from '../../components/EmptyDetail';
 import { KeyValueGroup } from '../../components/KeyValueGroup';
 import { ListToolbar } from '../../components/ListToolbar';
 import { QuickSheetHeader } from '../../components/QuickSheetHeader';
-import { ScannerFrame } from '../../components/ScannerFrame';
 import { SearchBar } from '../../components/SearchBar';
-import { SidebarColumn } from '../../components/SidebarColumn';
 import { TextPromptSheet } from '../../components/TextPromptSheet';
 import { Button } from '../../primitives/Button';
-import { ListRow } from '../../primitives/ListRow';
 import { MetaChip } from '../../primitives/MetaChip';
 import { ProgramMark } from '../../primitives/ProgramMark';
 import { Text } from '../../primitives/Text';
@@ -49,51 +45,6 @@ function SheetOpener({
 const items = (keys: readonly string[]) =>
   keys.map((key, index) => ({ key, title: key, checked: index === 0, onPress: noop }));
 
-function SidebarDemo() {
-  const [search, setSearch] = useState('');
-  return (
-    <View style={{ height: 520, alignItems: 'center' }}>
-      <SidebarColumn
-        title="Agents"
-        titleItems={items(['Agents', 'Terminals'])}
-        onNew={noop}
-        onHide={noop}
-        search={search}
-        onSearchChange={setSearch}
-        searchPlaceholder="Search Agents"
-        footerStart={[
-          { key: 'hosts', icon: 'server', label: 'Hosts', onPress: noop },
-          { key: 'settings', icon: 'settings', label: 'Settings', onPress: noop },
-        ]}
-        footerEnd={[
-          { key: 'host', icon: 'filter', label: 'Host filter', items: items(['All Hosts']) },
-          { key: 'presentation', icon: 'list', label: 'Presentation', items: items(['Flat']) },
-        ]}
-      >
-        <ListRow
-          selected
-          leading={<ProgramMark program="claude" status="blocked" size={18} />}
-          title="Checkout"
-          subtitle="/workspace/storefront"
-          value="Blocked"
-        />
-        <ListRow
-          leading={<ProgramMark program="codex" status="working" size={18} />}
-          title="Payments API"
-          subtitle="/workspace/payments-api"
-          value="Working"
-        />
-        <ListRow
-          leading={<ProgramMark program="claude" status="idle" size={18} />}
-          title="Product Docs"
-          subtitle="/workspace/product-docs"
-          value="Idle"
-        />
-      </SidebarColumn>
-    </View>
-  );
-}
-
 export const navSheetsEntries: readonly CatalogEntry[] = [
   {
     name: 'ListToolbar',
@@ -107,22 +58,6 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
             hostItems={items(['All Hosts', 'Studio Mac', 'Build Server'])}
             onHome={noop}
             onNew={noop}
-          />
-        ),
-      },
-    ],
-  },
-  { name: 'SidebarColumn', variants: [{ id: 'default', render: () => <SidebarDemo /> }] },
-  {
-    name: 'EmptyDetail',
-    variants: [
-      {
-        id: 'default',
-        render: () => (
-          <EmptyDetail
-            title="No Agent Selected"
-            message="Choose an Agent or start a new one to view its live terminal."
-            action={{ label: 'New Agent', shortcut: '⌘N', onPress: noop }}
           />
         ),
       },
@@ -163,25 +98,6 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
               }
             />
           </View>
-        ),
-      },
-    ],
-  },
-  {
-    name: 'ScannerFrame',
-    variants: [
-      {
-        id: 'unavailable',
-        render: () => <ScannerFrame state="unavailable" onPaste={noop} onManual={noop} />,
-      },
-      {
-        id: 'scanning',
-        render: () => <ScannerFrame state="scanning" onPaste={noop} onManual={noop} />,
-      },
-      {
-        id: 'denied',
-        render: () => (
-          <ScannerFrame state="denied" onPaste={noop} onManual={noop} onOpenSettings={noop} />
         ),
       },
     ],

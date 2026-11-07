@@ -1,8 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react-native';
 import { renderThemed } from '../test-utils';
 import { BackgroundWorkStrip } from './BackgroundWorkStrip';
-import { BlockedCard, type BlockedPrompt } from './BlockedCard';
-import { JumpControl } from './JumpControl';
 import { agentPadKeys, KeyPad, swipedPage } from './KeyPad';
 import { NoticeBanner } from './NoticeBanner';
 import {
@@ -12,41 +10,6 @@ import {
   nextModifierState,
   TerminalToolbar,
 } from './TerminalToolbar';
-
-const prompt: BlockedPrompt = {
-  title: 'Bash command',
-  description: 'Run tests',
-  code: 'swift test',
-  options: [
-    { id: 'yes', label: 'Yes', kind: 'primary' },
-    { id: 'rule', label: 'Always', warning: 'Saves a rule' },
-    { id: 'no', label: 'No', kind: 'destructive' },
-  ],
-};
-
-describe('BlockedCard', () => {
-  it('sends the tapped option and shows the rule warning under its option', async () => {
-    const onChoose = jest.fn();
-    await renderThemed(<BlockedCard prompt={prompt} onChoose={onChoose} onNote={jest.fn()} />);
-    expect(screen.getByTestId('blocked-code')).toBeTruthy();
-    expect(screen.getByTestId('blocked-warning-rule')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('blocked-option-no'));
-    expect(onChoose).toHaveBeenCalledWith('no');
-  });
-
-  it('collapses to the header and sends a note', async () => {
-    const onNote = jest.fn();
-    await renderThemed(<BlockedCard prompt={prompt} onChoose={jest.fn()} onNote={onNote} />);
-    await fireEvent.press(screen.getByTestId('blocked-add-note'));
-    await fireEvent.changeText(screen.getByTestId('blocked-note-field'), ' use bun ');
-    await fireEvent.press(screen.getByTestId('blocked-send-note'));
-    expect(onNote).toHaveBeenCalledWith('use bun');
-    await renderThemed(
-      <BlockedCard prompt={prompt} collapsed onChoose={jest.fn()} onNote={jest.fn()} />,
-    );
-    expect(screen.queryAllByTestId('blocked-option-yes')).toHaveLength(0);
-  });
-});
 
 describe('BackgroundWorkStrip', () => {
   const items = [
@@ -94,35 +57,6 @@ describe('NoticeBanner', () => {
     expect(screen.getByTestId('notice-locating')).toBeTruthy();
     await renderThemed(<NoticeBanner kind="inapp" title="Agent" message="Needs you" />);
     expect(screen.getByTestId('notice-inapp')).toBeTruthy();
-  });
-});
-
-describe('JumpControl', () => {
-  it('hides when not visible, jumps on tap, expands on long press', async () => {
-    const onJumpLatest = jest.fn();
-    const onPrevious = jest.fn();
-    await renderThemed(
-      <JumpControl
-        visible={false}
-        onJumpLatest={jest.fn()}
-        onPrevious={jest.fn()}
-        onNext={jest.fn()}
-      />,
-    );
-    expect(screen.queryByTestId('jump-control')).toBeNull();
-    await renderThemed(
-      <JumpControl
-        visible
-        onJumpLatest={onJumpLatest}
-        onPrevious={onPrevious}
-        onNext={jest.fn()}
-      />,
-    );
-    await fireEvent.press(screen.getByTestId('jump-latest'));
-    expect(onJumpLatest).toHaveBeenCalled();
-    await fireEvent(screen.getByTestId('jump-latest'), 'longPress');
-    await fireEvent.press(screen.getByTestId('jump-previous'));
-    expect(onPrevious).toHaveBeenCalled();
   });
 });
 

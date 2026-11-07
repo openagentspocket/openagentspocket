@@ -5,20 +5,10 @@ import { DiffView } from '../diff/DiffView';
 import { KeyboardDock } from '../keys/KeyboardDock';
 import { Markdown } from '../markdown/Markdown';
 import { toast } from '../overlay/toast';
-import { ListRow } from '../primitives/ListRow';
-import { ProgramMark } from '../primitives/ProgramMark';
 import { Text } from '../primitives/Text';
-import { VirtualSectionList } from '../primitives/VirtualList';
 import { type TerminalHandle, TerminalView } from '../terminal/TerminalView';
 import { useTheme } from '../theme/theme';
-import {
-  type SampleAgent,
-  sampleAgents,
-  sampleDiff,
-  sampleKeyRows,
-  sampleMarkdown,
-  sampleTerminal,
-} from './galleryData';
+import { sampleDiff, sampleKeyRows, sampleMarkdown, sampleTerminal } from './galleryData';
 import { Specimen, Stack } from './galleryKit';
 
 const said = (title: string) => toast({ title, tone: 'info', durationMs: 1500 });
@@ -106,57 +96,5 @@ export function Content() {
         />
       </Specimen>
     </>
-  );
-}
-
-const SECTIONS = [
-  {
-    key: 'needs',
-    title: 'Needs you',
-    data: sampleAgents.filter((agent) => agent.status === 'blocked'),
-  },
-  {
-    key: 'working',
-    title: 'Working',
-    data: sampleAgents.filter((agent) => agent.status === 'working'),
-  },
-  {
-    key: 'rest',
-    title: 'Done',
-    data: sampleAgents.filter((agent) => agent.status === 'done' || agent.status === 'idle'),
-  },
-];
-
-const keyOf = (agent: SampleAgent) => agent.id;
-
-export function Lists() {
-  const theme = useTheme();
-  return (
-    <Specimen name="VirtualSectionList (FlashList v2)">
-      <View
-        style={{
-          height: 300,
-          borderRadius: theme.metrics.cardRadius,
-          borderWidth: theme.metrics.hairlineWidth,
-          borderColor: theme.hairline,
-          overflow: 'hidden',
-        }}
-      >
-        <VirtualSectionList
-          sections={SECTIONS}
-          keyExtractor={keyOf}
-          stickyHeaders
-          renderItem={(agent) => (
-            <ListRow
-              title={agent.name}
-              subtitle={agent.workspace}
-              leading={<ProgramMark program={agent.program} status={agent.status} size={22} />}
-              chevron
-              onPress={() => said(agent.name)}
-            />
-          )}
-        />
-      </View>
-    </Specimen>
   );
 }

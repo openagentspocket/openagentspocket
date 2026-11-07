@@ -8,13 +8,11 @@ import {
   OverlayPeerPickerBody,
 } from '../../components/OverlayPeerPicker';
 import { OverlayPeerViews } from '../../components/OverlayPeerViews';
-import { PortPreview } from '../../components/PortPreview';
 import {
   type TerminalThemeOption,
   TerminalThemePicker,
 } from '../../components/TerminalThemePicker';
 import { type TerminalPalette, TerminalThemePreview } from '../../components/TerminalThemePreview';
-import { Text } from '../../primitives/Text';
 import { type Theme, useTheme } from '../../theme/theme';
 import type { CatalogEntry } from './types';
 
@@ -173,25 +171,6 @@ function PeerViewsDemo() {
   );
 }
 
-function PortDemo({ state }: { state: 'ready' | 'error' | 'opening' | 'paused' }) {
-  return (
-    <View style={{ height: 420 }}>
-      <PortPreview
-        title="devbox:5173"
-        state={state}
-        progress={state === 'ready' ? 0.6 : undefined}
-        error={{ title: 'Could not open the port', message: 'Nothing is listening on port 5173.' }}
-        canGoBack
-        onReload={noop}
-        onShare={noop}
-        onRetry={noop}
-      >
-        <Text tone="secondary">Page</Text>
-      </PortPreview>
-    </View>
-  );
-}
-
 /** Demos of the UX3 group 'settingsPickers' (owned by its UX3 task): one entry per component, one variant per catalog variant id. */
 export const settingsPickersEntries: readonly CatalogEntry[] = [
   { name: 'TerminalThemePicker', variants: [{ id: 'default', render: () => <PickerDemo /> }] },
@@ -203,5 +182,4 @@ export const settingsPickersEntries: readonly CatalogEntry[] = [
   },
   { name: 'OverlayPeerPicker', variants: [{ id: 'default', render: () => <PeerPickerDemo /> }] },
   { name: 'OverlayPeerViews', variants: [{ id: 'default', render: () => <PeerViewsDemo /> }] },
-  { name: 'PortPreview', variants: [{ id: 'default', render: () => <PortDemo state="ready" /> }] },
 ];

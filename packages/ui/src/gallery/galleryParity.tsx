@@ -5,7 +5,7 @@ import { Sheet } from '../overlay/Sheet';
 import { toast } from '../overlay/toast';
 import { Badge, StatusPill } from '../primitives/Badge';
 import { Button } from '../primitives/Button';
-import { CardRow } from '../primitives/CardRow';
+import { Card } from '../primitives/Card';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon } from '../primitives/Icon';
 import { ListRow } from '../primitives/ListRow';
@@ -50,7 +50,7 @@ const useStyles = makeStyles((t) => ({
     padding: t.metrics.screenInset,
     gap: t.spacing.md,
   },
-  rows: { gap: 0 },
+  rows: { gap: 2 * airy.rowInset },
   titleLine: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   grow: { flex: 1 },
   inline: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexWrap: 'wrap' },
@@ -63,7 +63,6 @@ function ParityScreen() {
   const styles = useStyles();
   const theme = useTheme();
   const [range, setRange] = useState('week');
-  const [selected, setSelected] = useState(sampleAgents[1]?.id);
   const [sheet, setSheet] = useState<'fraction' | 'bar' | 'large' | null>(null);
   return (
     <View style={styles.stage} testID="parity-stage">
@@ -81,26 +80,10 @@ function ParityScreen() {
         />
         <View style={styles.rows}>
           {sampleAgents.slice(0, 3).map((agent) => (
-            <CardRow
+            <Card
               key={agent.id}
-              selected={agent.id === selected}
               accent={agent.status === 'blocked' ? 'statusBlocked' : undefined}
-              onPress={() => setSelected(agent.id)}
-              menu={MENU}
-              menuTitle={agent.name}
-              leadingSwipeActions={[
-                { key: 'pin', title: 'Pin', icon: 'pin', tone: 'warning', onPress: said('Pin') },
-              ]}
-              swipeActions={[
-                {
-                  key: 'close',
-                  title: 'Close',
-                  icon: 'trash',
-                  tone: 'danger',
-                  onPress: said('Close'),
-                },
-              ]}
-              fullSwipe={{ leading: true, trailing: true }}
+              onPress={said(agent.name)}
               testID={`parity-row-${agent.id}`}
             >
               <View style={styles.titleLine}>
@@ -125,7 +108,7 @@ function ParityScreen() {
                 )}
                 <Badge kind="wash" color={theme.colors.warning} label="16 %" />
               </View>
-            </CardRow>
+            </Card>
           ))}
         </View>
       </View>

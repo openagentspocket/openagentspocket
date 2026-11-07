@@ -2,14 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 import type { ReactElement } from 'react';
 import { renderThemed } from '../test-utils';
 import { ThemeProvider } from '../theme/theme';
-import {
-  AgentHeader,
-  ChangeRow,
-  ChangeSection,
-  ComposerCard,
-  SessionDrawer,
-  StatusLine,
-} from './agentBar';
+import { AgentHeader, ChangeRow, ChangeSection, ComposerCard, SessionDrawer } from './agentBar';
 
 const rerenderThemed = (rerender: (ui: ReactElement) => Promise<void>, ui: ReactElement) =>
   rerender(<ThemeProvider themeId="indigo">{ui}</ThemeProvider>);
@@ -248,42 +241,6 @@ describe('ComposerCard layouts', () => {
     await rerenderThemed(rerender, card(true));
     expect(screen.getByTestId('composer-card-more')).toBeTruthy();
     expect(screen.getByTestId('composer-card-bar-toggle')).toBeTruthy();
-  });
-});
-
-describe('StatusLine', () => {
-  it('is hidden with no data and opens Changes on tap', async () => {
-    const { rerender } = await renderThemed(<StatusLine />);
-    expect(screen.queryByTestId('status-line')).toBeNull();
-    const onOpen = jest.fn();
-    await rerenderThemed(
-      rerender,
-      <StatusLine
-        status="working"
-        branch="main"
-        diff={{ added: 2, removed: 1 }}
-        onOpenChanges={onOpen}
-      />,
-    );
-    await fireEvent.press(screen.getByTestId('status-line'));
-    expect(onOpen).toHaveBeenCalled();
-  });
-
-  it('counts behind, ahead, conflicted, staged, modified and untracked in Tide order', async () => {
-    await renderThemed(
-      <StatusLine
-        branch="main"
-        counts={{ behind: 1, ahead: 3, conflicts: 1, staged: 2, changed: 4, untracked: 5 }}
-      />,
-    );
-    expect(screen.getByText('↓1 ↑3 ~1 +2 !4 ?5')).toBeTruthy();
-  });
-
-  it('shows the context pill only when low', async () => {
-    const { rerender } = await renderThemed(<StatusLine status="idle" contextLeft={16} />);
-    expect(screen.getByText(/16/)).toBeTruthy();
-    await rerenderThemed(rerender, <StatusLine status="idle" contextLeft={60} />);
-    expect(screen.queryByText(/60/)).toBeNull();
   });
 });
 

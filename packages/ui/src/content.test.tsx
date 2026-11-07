@@ -1,12 +1,10 @@
 import { act, fireEvent, screen } from '@testing-library/react-native';
 import { createRef } from 'react';
-import { Text } from 'react-native';
 import {
   appendOutput,
   Composer,
   composerAction,
   DiffView,
-  flattenSections,
   gridSize,
   KeyboardDock,
   Markdown,
@@ -16,7 +14,6 @@ import {
   TerminalView,
   ThemeProvider,
   toSideBySide,
-  VirtualList,
 } from './index';
 import { renderThemed } from './test-utils';
 
@@ -240,45 +237,5 @@ describe('Composer', () => {
     expect(onSuggestion).toHaveBeenCalledWith('continue');
     expect(onChangeText).toHaveBeenCalledWith('run tests now');
     expect(onSend).toHaveBeenCalled();
-  });
-});
-
-describe('VirtualList', () => {
-  it('flattens sections into headers and items, skipping empty ones', () => {
-    const { items, headerIndexes } = flattenSections(
-      [
-        { key: 'a', title: 'A', data: [1, 2] },
-        { key: 'b', title: 'B', data: [] },
-        { key: 'c', title: 'C', data: [3] },
-      ],
-      String,
-    );
-    expect(items.map((item) => item.key)).toEqual(['header:a', 'a:1', 'a:2', 'header:c', 'c:3']);
-    expect(headerIndexes).toEqual([0, 3]);
-  });
-
-  it('keeps keys unique when one item sits in two sections', () => {
-    const { items } = flattenSections(
-      [
-        { key: 'pinned', title: 'Pinned', data: ['agent-1'] },
-        { key: 'working', title: 'Working', data: ['agent-1', 'agent-2'] },
-      ],
-      (id) => id,
-    );
-    const keys = items.map((item) => item.key);
-    expect(new Set(keys).size).toBe(keys.length);
-  });
-
-  it('renders its items', async () => {
-    await renderThemed(
-      <VirtualList
-        data={['one', 'two']}
-        keyExtractor={(item) => item}
-        renderItem={(item) => <Text>{item}</Text>}
-      />,
-    );
-    await act(async () => {});
-    expect(screen.getByText('one')).toBeTruthy();
-    expect(screen.getByText('two')).toBeTruthy();
   });
 });

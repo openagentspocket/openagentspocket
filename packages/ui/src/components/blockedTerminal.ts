@@ -16,21 +16,6 @@ export {
   defaultBackgroundWorkLabels,
 } from './BackgroundWorkStrip';
 export {
-  BlockedCard,
-  type BlockedCardLabels,
-  type BlockedCardProps,
-  type BlockedOption,
-  type BlockedOptionKind,
-  type BlockedPrompt,
-  defaultBlockedCardLabels,
-} from './BlockedCard';
-export {
-  defaultJumpLabels,
-  JUMP_IDLE_MS,
-  JumpControl,
-  type JumpControlLabels,
-} from './JumpControl';
-export {
   agentPadKeys,
   KeyPad,
   type KeyPadPage,

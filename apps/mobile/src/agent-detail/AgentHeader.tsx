@@ -7,7 +7,6 @@ import {
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { type ActionMenuItem, AgentHeader as FloatingHeader } from '@openagentspocket/ui';
-import { statusLineGit } from '@/changes/statusLineGit';
 import { useGitStatus } from '@/changes/useGitStatus';
 import { latencyLabel } from '@/features/hosts/hostRows';
 import { useSetting } from '@/settings/SettingsProvider';
@@ -58,7 +57,8 @@ export function AgentHeader({
   showTitle = true,
 }: Props) {
   const git = useGitStatus(row.hostId, rowDirectory(row), row.agent.pane_id);
-  const { branch, diff } = statusLineGit(git);
+  const branch = git?.branch ?? undefined;
+  const diff = git?.diff;
   const [toolbarVisible, setToolbarVisible] = useSetting('terminalToolbarVisible');
   const items: ActionMenuItem[] = [
     {

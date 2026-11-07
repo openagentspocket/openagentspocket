@@ -8,7 +8,7 @@ import { ThemeProvider } from '../theme/theme';
 import { type ThemeId, themeIds, themes } from '../theme/tokens.generated';
 import { ComponentsSection } from './ComponentsSection';
 import { BadgesAndMarks, Buttons, TypeAndColor } from './galleryBasics';
-import { Content, Lists } from './galleryContent';
+import { Content } from './galleryContent';
 import { GalleryDemoContext, type GalleryDemos } from './galleryDemo';
 import { Feedback, Overlays } from './galleryFeedback';
 import { Parity } from './galleryParity';
@@ -31,7 +31,6 @@ export const gallerySections: readonly GallerySection[] = [
   { id: 'feedback', title: 'Feedback', Body: Feedback },
   { id: 'overlays', title: 'Overlays', Body: Overlays },
   { id: 'content', title: 'Content', Body: Content },
-  { id: 'lists', title: 'Lists', Body: Lists },
   { id: 'scanner', title: 'Scanner', Body: Scanner },
   { id: 'parity', title: 'Parity', Body: Parity },
   { id: 'components', title: 'Components', Body: ComponentsSection },

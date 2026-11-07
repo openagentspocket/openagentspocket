@@ -2,8 +2,7 @@ import { FileRow } from '../../components/FileRow';
 import { HostRow } from '../../components/HostRow';
 import { HostStatusCard } from '../../components/HostStatusCard';
 import { PortRow } from '../../components/PortRow';
-import { SettingsGroup } from '../../components/SettingsGroup';
-import { PaletteDots, ThemeChoiceCard, ThemeChoicePreview } from '../../components/ThemeChoiceCard';
+import { ThemeChoiceCard, ThemeChoicePreview } from '../../components/ThemeChoiceCard';
 import { Section } from '../../primitives/Section';
 import type { CatalogEntry } from './types';
 
@@ -80,70 +79,6 @@ export const hostsSettingsFilesEntries: readonly CatalogEntry[] = [
               reconnectLabel="Reconnect"
             />
           </>
-        ),
-      },
-    ],
-  },
-  {
-    name: 'SettingsGroup',
-    variants: [
-      {
-        id: 'default',
-        render: () => (
-          <SettingsGroup
-            title="Appearance"
-            rows={[
-              {
-                key: 'theme',
-                icon: 'sparkles',
-                title: 'Theme',
-                value: 'Índigo',
-                valueAccessory: <PaletteDots themeId="indigo" />,
-                onPress: noop,
-              },
-              {
-                key: 'fonts',
-                icon: 'keyboard',
-                title: 'Fonts & Size',
-                value: 'JetBrains Mono 8',
-                onPress: noop,
-              },
-            ]}
-          />
-        ),
-      },
-      {
-        id: 'subtitle',
-        render: () => (
-          <SettingsGroup
-            rows={[
-              { key: 'n', icon: 'bell', title: 'Notifications', value: 'Off', onPress: noop },
-              {
-                key: 'c',
-                icon: 'info',
-                title: 'Chat',
-                subtitle: 'Finished turns, cache',
-                onPress: noop,
-              },
-              {
-                key: 'a',
-                icon: 'terminal',
-                title: 'Agent Rows',
-                subtitle: 'Fields, order, preview',
-                onPress: noop,
-              },
-            ]}
-          />
-        ),
-      },
-      {
-        id: 'toggle',
-        render: () => (
-          <SettingsGroup
-            rows={[
-              { key: 'follow', title: 'Follow System', toggle: { value: false, onChange: noop } },
-            ]}
-          />
         ),
       },
     ],

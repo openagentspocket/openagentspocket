@@ -4,6 +4,5 @@ export * from './AgentListFieldsPreview';
 export * from './OptionListSheet';
 export * from './OverlayPeerPicker';
 export * from './OverlayPeerViews';
-export * from './PortPreview';
 export * from './TerminalThemePicker';
 export * from './TerminalThemePreview';

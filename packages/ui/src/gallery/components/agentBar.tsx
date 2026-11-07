@@ -8,7 +8,6 @@ import {
   type ComposerCardProps,
   type DrawerWorkspace,
   SessionDrawer,
-  StatusLine,
 } from '../../components/agentBar';
 import type { ActionMenuItem } from '../../overlay/ActionMenu';
 import { ProgramMark } from '../../primitives/ProgramMark';
@@ -163,36 +162,6 @@ export const agentBarEntries: readonly CatalogEntry[] = [
         render: () => <DemoComposer initial="" working expanded moreMenu={menu} />,
       },
       { id: 'skills', render: () => <DemoComposer initial="/" skills={skills} moreMenu={menu} /> },
-    ],
-  },
-  {
-    name: 'StatusLine',
-    variants: [
-      {
-        id: 'default',
-        render: () => (
-          <StatusLine
-            status="working"
-            branch="attach-polish"
-            counts={{ behind: 1, ahead: 3, conflicts: 1, staged: 2, changed: 2 }}
-            diff={{ added: 2, removed: 2 }}
-            latencyMs={0.4}
-          />
-        ),
-      },
-      {
-        id: 'low-context',
-        render: () => (
-          <StatusLine
-            status="idle"
-            branch="attach-polish"
-            counts={{ behind: 2, ahead: 1, untracked: 1, changed: 1 }}
-            diff={{ added: 1, removed: 1 }}
-            contextLeft={16}
-            latencyMs={0.4}
-          />
-        ),
-      },
     ],
   },
   {

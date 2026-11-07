@@ -5,7 +5,6 @@ import {
   HostRow,
   HostStatusCard,
   PortRow,
-  SettingsGroup,
   ThemeChoiceCard,
   ThemeChoicePreview,
 } from './hostsSettingsFiles';
@@ -70,44 +69,6 @@ describe('HostStatusCard', () => {
     await renderThemed(<HostStatusCard tone="danger" title="Down" subtitle="addr" />);
     expect(screen.getByTestId('icon-error', HIDDEN)).toBeTruthy();
     expect(screen.queryByRole('button')).toBeNull();
-  });
-});
-
-describe('SettingsGroup', () => {
-  it('pushes on a row press and shows its value', async () => {
-    const onPress = jest.fn();
-    await renderThemed(
-      <SettingsGroup
-        title="Appearance"
-        rows={[{ key: 'theme', icon: 'sparkles', title: 'Theme', value: 'Índigo', onPress }]}
-      />,
-    );
-    await fireEvent.press(screen.getByRole('button', { name: 'Theme, Índigo' }));
-    expect(onPress).toHaveBeenCalledTimes(1);
-  });
-
-  it('toggles a switch row and has no chevron', async () => {
-    const onChange = jest.fn();
-    await renderThemed(
-      <SettingsGroup
-        rows={[{ key: 'follow', title: 'Follow', toggle: { value: false, onChange } }]}
-      />,
-    );
-    await fireEvent(screen.getByTestId('settings-toggle-follow'), 'valueChange', true);
-    expect(onChange).toHaveBeenCalledWith(true);
-    expect(screen.queryByTestId('icon-chevronRight', HIDDEN)).toBeNull();
-  });
-
-  it('puts a hairline between rows only', async () => {
-    await renderThemed(
-      <SettingsGroup
-        rows={[
-          { key: 'a', title: 'A' },
-          { key: 'b', title: 'B' },
-        ]}
-      />,
-    );
-    expect(screen.getAllByTestId('row-separator')).toHaveLength(1);
   });
 });
 

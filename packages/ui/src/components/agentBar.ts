@@ -16,4 +16,3 @@ export {
   SessionDrawer,
   type SessionDrawerProps,
 } from './SessionDrawer';
-export { StatusLine, type StatusLineProps } from './StatusLine';

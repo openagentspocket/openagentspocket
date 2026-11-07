@@ -5,7 +5,6 @@ import { AgentListFieldsPreview } from './AgentListFieldsPreview';
 import { OptionListSheet } from './OptionListSheet';
 import { OverlayPeerPickerBody } from './OverlayPeerPicker';
 import { OverlayPeerViews } from './OverlayPeerViews';
-import { PortPreview } from './PortPreview';
 import { TerminalThemePicker } from './TerminalThemePicker';
 import { TerminalThemePreview } from './TerminalThemePreview';
 
@@ -119,36 +118,6 @@ describe('OverlayPeerPickerBody', () => {
     );
     await fireEvent.press(screen.getByRole('button'));
     expect(onRetry).toHaveBeenCalled();
-  });
-});
-
-describe('PortPreview', () => {
-  const base = { title: 'h:1', onReload: jest.fn(), onRetry: jest.fn() };
-  it('disables navigation until ready and reloads', async () => {
-    const onReload = jest.fn();
-    await renderThemed(<PortPreview {...base} onReload={onReload} state="opening" />);
-    expect(screen.getByTestId('port-back').props.accessibilityState.disabled).toBe(true);
-    expect(screen.getByTestId('port-reload').props.accessibilityState.disabled).toBe(true);
-  });
-  it('shows the error with retry and the page when ready', async () => {
-    const onRetry = jest.fn();
-    await renderThemed(
-      <PortPreview
-        {...base}
-        onRetry={onRetry}
-        state="error"
-        error={{ title: 'T', message: 'M' }}
-      />,
-    );
-    await fireEvent.press(screen.getAllByRole('button')[0] as never);
-    expect(onRetry).toHaveBeenCalled();
-  });
-  it('reports load progress', async () => {
-    await renderThemed(
-      <PortPreview {...base} state="ready" progress={0.5} canGoBack onShare={jest.fn()} />,
-    );
-    expect(screen.getByTestId('port-progress')).toBeTruthy();
-    expect(screen.getByTestId('port-back').props.accessibilityState.disabled).toBe(false);
   });
 });
 

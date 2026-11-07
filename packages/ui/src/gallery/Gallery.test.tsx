@@ -22,7 +22,6 @@ const SPECIMENS = [
   'ErrorState',
   'Skeleton',
   'Meter',
-  'BarChart',
   'confirm()',
   'Sheet',
   'ActionMenu',
@@ -34,7 +33,6 @@ const SPECIMENS = [
   'KeyboardDock',
   'Composer idle',
   'Composer busy (Stop)',
-  'VirtualSectionList (FlashList v2)',
 ];
 
 describe('Gallery', () => {

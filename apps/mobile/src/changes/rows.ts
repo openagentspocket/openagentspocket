@@ -8,12 +8,17 @@ import {
   limitNoticeText,
   listedSections,
 } from '@openagentspocket/core';
-import type { ListSection } from '@openagentspocket/ui';
 import { say } from './say';
 
 export type ChangesRow =
   | { kind: 'file'; key: string; file: ChangedFile; depth: 0 | 1; expanded: boolean | null }
   | { kind: 'note'; key: string; text: string; busy: boolean };
+
+export interface ChangesSection {
+  key: string;
+  title: string;
+  data: ChangesRow[];
+}
 
 /**
  * The list's sections in Source Control order. An expanded untracked directory shows its files
@@ -22,7 +27,7 @@ export type ChangesRow =
 export function buildSections(
   changes: CheckoutChanges,
   expansions: ReadonlyMap<ByteString, Expansion>,
-): ListSection<ChangesRow>[] {
+): ChangesSection[] {
   return listedSections(changes).map(({ group, files }) => ({
     key: group,
     title: groupTitle(group, say),

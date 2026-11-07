@@ -5,7 +5,6 @@ import { detentShare, settleDetent } from '../overlay/sheetDetents';
 import { renderThemed, setFontScale } from '../test-utils';
 import { themes } from '../theme/tokens.generated';
 import { Badge } from './Badge';
-import { CardRow } from './CardRow';
 import { MetaChip } from './MetaChip';
 import { ScreenBackground } from './ScreenBackground';
 import { Segmented } from './Segmented';
@@ -111,23 +110,6 @@ describe('UX1 primitives', () => {
     expect(screen.getByRole('radio', { name: 'Week' })).toBeSelected();
     await fireEvent.press(screen.getByRole('radio', { name: 'Day' }));
     expect(onChange).toHaveBeenCalledWith('day');
-  });
-
-  it('CardRow shows the selection ring and exposes swipe actions to screen readers', async () => {
-    const onPin = jest.fn();
-    await renderThemed(
-      <CardRow
-        selected
-        accessibilityLabel="Row"
-        onPress={() => {}}
-        leadingSwipeActions={[{ key: 'pin', title: 'Pin', onPress: onPin }]}
-      >
-        <Text>x</Text>
-      </CardRow>,
-    );
-    expect(screen.getByTestId('card-row-selected')).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('swipe-action-pin', { includeHiddenElements: true }));
-    expect(onPin).toHaveBeenCalled();
   });
 
   it('Sheet bar actions replace the close button and run', async () => {

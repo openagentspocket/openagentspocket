@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
 import { type BackgroundWorkItem, BackgroundWorkStrip } from '../../components/BackgroundWorkStrip';
-import { BlockedCard, type BlockedPrompt } from '../../components/BlockedCard';
-import { JumpControl } from '../../components/JumpControl';
 import { agentPadKeys, KeyPad } from '../../components/KeyPad';
 import { NoticeBanner } from '../../components/NoticeBanner';
 import { TerminalToolbar } from '../../components/TerminalToolbar';
@@ -17,30 +15,6 @@ const useStyles = makeStyles((t) => ({
   lifted: { paddingTop: 190 },
   right: { alignItems: 'flex-end' },
 }));
-
-const bashPrompt: BlockedPrompt = {
-  title: 'Bash command',
-  description: 'Run the declined card UI test',
-  code: 'swift test --filter CheckoutUITests/testDeclinedPaymentKeepsTheCart',
-  options: [
-    { id: 'yes', label: 'Yes', kind: 'primary' },
-    {
-      id: 'always',
-      label: "Yes, and don't ask again for swift test commands in /workspace/storefront",
-      warning: "Saves a rule, so this isn't asked again.",
-    },
-    { id: 'no', label: 'No', kind: 'destructive' },
-  ],
-};
-
-const questionPrompt: BlockedPrompt = {
-  title: 'Which database should the migration target?',
-  options: [
-    { id: 'staging', label: 'Staging' },
-    { id: 'local', label: 'Local' },
-  ],
-  question: { fieldLabel: 'Something else', placeholder: 'Type an answer' },
-};
 
 const work: readonly BackgroundWorkItem[] = [
   {
@@ -65,21 +39,6 @@ const work: readonly BackgroundWorkItem[] = [
 function Padded({ children, lifted }: { children: React.ReactNode; lifted?: boolean }) {
   const styles = useStyles();
   return <View style={[styles.pad, lifted && styles.lifted]}>{children}</View>;
-}
-
-function DemoBlocked({ collapsed, prompt }: { collapsed?: boolean; prompt: BlockedPrompt }) {
-  const [folded, setFolded] = useState(collapsed ?? false);
-  return (
-    <Padded>
-      <BlockedCard
-        prompt={prompt}
-        collapsed={folded}
-        onToggleCollapsed={() => setFolded((value) => !value)}
-        onChoose={noop}
-        onNote={noop}
-      />
-    </Padded>
-  );
 }
 
 function DemoKeyPad() {
@@ -129,14 +88,6 @@ function Toolbar({ agent, dpad }: { agent?: boolean; dpad?: boolean }) {
 
 /** Demos of the UX3 group 'blockedTerminal': one entry per component, one variant per catalog variant id. */
 export const blockedTerminalEntries: readonly CatalogEntry[] = [
-  {
-    name: 'BlockedCard',
-    variants: [
-      { id: 'default', render: () => <DemoBlocked prompt={bashPrompt} /> },
-      { id: 'collapsed', render: () => <DemoBlocked prompt={bashPrompt} collapsed /> },
-      { id: 'question', render: () => <DemoBlocked prompt={questionPrompt} /> },
-    ],
-  },
   {
     name: 'BackgroundWorkStrip',
     variants: [
@@ -210,19 +161,6 @@ export const blockedTerminalEntries: readonly CatalogEntry[] = [
               onPress={noop}
               onDismiss={noop}
             />
-          </Padded>
-        ),
-      },
-    ],
-  },
-  {
-    name: 'JumpControl',
-    variants: [
-      {
-        id: 'default',
-        render: () => (
-          <Padded>
-            <JumpControl visible onJumpLatest={noop} onPrevious={noop} onNext={noop} />
           </Padded>
         ),
       },

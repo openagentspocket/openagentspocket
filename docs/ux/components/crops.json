@@ -100,16 +100,6 @@
       "box": [0, 55, 402, 115],
       "light": true
     },
-    "SidebarColumn": {
-      "src": "console.agents-list-flat",
-      "box": [0, 0, 332, 1376],
-      "ipad": true
-    },
-    "EmptyDetail": {
-      "src": "console.agents-list-flat",
-      "box": [440, 610, 920, 830],
-      "ipad": true
-    },
     "QuickSheetHeader": {
       "src": "usage.quick-sheet",
       "box": [0, 415, 402, 500],
@@ -118,11 +108,6 @@
     "QuickSheetHeader.detail": {
       "src": "console.quick-detail-sheet",
       "box": [0, 415, 402, 520],
-      "light": true
-    },
-    "ScannerFrame.unavailable": {
-      "src": "hosts.pairing-scanner",
-      "box": [0, 370, 402, 610],
       "light": true
     },
     "KeyValueGroup": {
@@ -153,16 +138,6 @@
     "ComposerCard.skills": {
       "src": "agent-detail.composer-skill-suggestions",
       "box": [13, 205, 390, 495],
-      "light": true
-    },
-    "StatusLine": {
-      "src": "agent-detail.chat",
-      "box": [0, 712, 402, 735],
-      "light": true
-    },
-    "StatusLine.low-context": {
-      "src": "agent-detail.composer-skill-suggestions",
-      "box": [0, 180, 402, 200],
       "light": true
     },
     "ChangeRow.summary": {
@@ -223,11 +198,6 @@
     "DiffRow": {
       "src": "changes.file-diff",
       "box": [0, 122, 402, 250],
-      "light": true
-    },
-    "BlockedCard": {
-      "src": "agent-detail.chat-blocked-card",
-      "box": [10, 415, 392, 800],
       "light": true
     },
     "BackgroundWorkStrip": {
@@ -320,21 +290,6 @@
       "box": [14, 165, 388, 250],
       "light": true
     },
-    "SettingsGroup": {
-      "src": "settings.root",
-      "box": [14, 195, 388, 330],
-      "light": true
-    },
-    "SettingsGroup.subtitle": {
-      "src": "settings.root",
-      "box": [14, 385, 388, 575],
-      "light": true
-    },
-    "SettingsGroup.toggle": {
-      "src": "settings.theme",
-      "box": [14, 398, 388, 448],
-      "light": true
-    },
     "ThemeChoiceCard.selected": {
       "src": "settings.theme",
       "box": [14, 485, 388, 552],
@@ -388,11 +343,6 @@
     "OverlayPeerViews": {
       "src": "settings.overlay-network-detail",
       "box": [16, 425, 388, 630],
-      "light": true
-    },
-    "SkillsKeyboardPane": {
-      "src": "agent-detail.skills-pane",
-      "box": [0, 640, 402, 874],
       "light": true
     },
     "ClaudeSubagentTranscript": {

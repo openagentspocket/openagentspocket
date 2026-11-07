@@ -3,47 +3,10 @@ import {
   type SubagentRow,
 } from '../../components/ClaudeSubagentTranscript';
 import { ComposerAttachmentStrip } from '../../components/ComposerAttachmentStrip';
-import { ComposerStagingStatusBar } from '../../components/ComposerStagingStatusBar';
 import { SkillContentSheet } from '../../components/SkillContentSheet';
-import {
-  type PaneSwitcherItem,
-  type SkillItem,
-  SkillsKeyboardPane,
-} from '../../components/SkillsKeyboardPane';
 import type { CatalogEntry } from './types';
 
 const noop = () => {};
-
-const PANES: readonly PaneSwitcherItem[] = [
-  { key: 'keys', icon: 'grid', label: 'Keys' },
-  { key: 'skills', icon: 'sparkles', label: 'Skills' },
-  { key: 'snippets', icon: 'quote', label: 'Snippets' },
-  { key: 'themes', icon: 'palette', label: 'Themes' },
-];
-
-const SKILLS: readonly SkillItem[] = [
-  {
-    id: 'review',
-    command: '/review',
-    name: 'Review',
-    description: 'Review the pending changes for bugs and style',
-    scope: 'project',
-  },
-  {
-    id: 'deploy',
-    command: '/deploy-preview',
-    name: 'Deploy preview',
-    description: 'Build and publish a preview of this branch',
-    scope: 'project',
-  },
-  {
-    id: 'init',
-    command: '/init',
-    name: 'Init',
-    description: 'Write a CLAUDE.md for this repository',
-    scope: 'global',
-  },
-];
 
 const ROWS: readonly SubagentRow[] = [
   { id: 'u1', kind: 'user', text: 'Check that every link to the pairing section still resolves.' },
@@ -65,34 +28,8 @@ const ROWS: readonly SubagentRow[] = [
   },
 ];
 
-function pane(extra: Partial<Parameters<typeof SkillsKeyboardPane>[0]> = {}) {
-  return (
-    <SkillsKeyboardPane
-      skills={[]}
-      onPick={noop}
-      onRefresh={noop}
-      onOpen={noop}
-      panes={PANES}
-      selectedPane="skills"
-      {...extra}
-    />
-  );
-}
-
 /** Demos of the UX3 group 'composerExtras': one entry per component, one variant per catalog variant id. */
 export const composerExtrasEntries: readonly CatalogEntry[] = [
-  {
-    name: 'SkillsKeyboardPane',
-    variants: [
-      { id: 'default', render: () => pane() },
-      { id: 'list', render: () => pane({ skills: SKILLS, height: 360 }) },
-      { id: 'loading', render: () => pane({ phase: 'loading' }) },
-      {
-        id: 'failed',
-        render: () => pane({ phase: 'failed', errorMessage: 'The Host did not answer in time.' }),
-      },
-    ],
-  },
   {
     name: 'SkillContentSheet',
     variants: [
@@ -141,41 +78,6 @@ export const composerExtrasEntries: readonly CatalogEntry[] = [
             ]}
             onRemove={noop}
             removeLabel={(name) => `Remove ${name}`}
-          />
-        ),
-      },
-    ],
-  },
-  {
-    name: 'ComposerStagingStatusBar',
-    variants: [
-      {
-        id: 'default',
-        render: () => (
-          <ComposerStagingStatusBar
-            state="staging"
-            label="Uploading photo.png…"
-            commands={['cancel']}
-          />
-        ),
-      },
-      {
-        id: 'failed',
-        render: () => (
-          <ComposerStagingStatusBar
-            state="failed"
-            label="Couldn't send photo.png to the Host."
-            commands={['retry', 'dismiss']}
-          />
-        ),
-      },
-      {
-        id: 'done',
-        render: () => (
-          <ComposerStagingStatusBar
-            state="done"
-            label="Saved photo.png on the Host."
-            commands={['copyPath', 'dismiss']}
           />
         ),
       },

@@ -1,5 +1,4 @@
 import type { KeySpec } from '../keys/KeyboardDock';
-import type { BarDatum } from '../primitives/BarChart';
 
 /** Sample content for the gallery: neutral, no personal hosts or names. */
 
@@ -73,24 +72,6 @@ export const sampleKeyRows: KeySpec[][] = [
     { id: 'tilde', label: '~' },
   ],
 ];
-
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const TOKENS = [42_000, 61_500, 18_200, 77_900, 54_300, 9_800, 31_000];
-
-export const sampleWeek: BarDatum[] = DAYS.map((label, index) => ({
-  key: label.toLowerCase(),
-  label,
-  value: TOKENS[index] ?? 0,
-}));
-
-export const sampleMonth: BarDatum[] = Array.from({ length: 30 }, (_, index) => ({
-  key: `d${index + 1}`,
-  label: String(index + 1),
-  value: Math.round(20_000 + 15_000 * Math.sin(index / 3) + (index % 5) * 4_000),
-}));
-
-export const compactNumber = (value: number) =>
-  value >= 1000 ? `${(value / 1000).toFixed(1)}k tokens` : `${value} tokens`;
 
 export interface SampleAgent {
   id: string;

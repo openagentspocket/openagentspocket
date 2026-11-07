@@ -368,57 +368,6 @@
       ]
     },
     {
-      "name": "SidebarColumn",
-      "group": "nav-sheets",
-      "swift": [
-        "Console/ConsoleView+Sidebar.swift:1-370",
-        "Console/ConsoleSidebarChrome.swift:1-220",
-        "Console/SidebarSearchDrawer.swift:1-163",
-        "Console/ConsoleView+SplitView.swift:1-395"
-      ],
-      "screens": [
-        "ipad/console.agents-list-flat",
-        "ipad/console.terminals-list",
-        "ipad/shell.hosts-settings-sheets"
-      ],
-      "variants": [
-        "default|floating rounded glass column: title menu 'Agents v', + and hide-sidebar buttons, search field, list, footer with Hosts and Settings at left and Presentation/Host filter at right"
-      ],
-      "interactions": "title menu switches Agents/Terminals; edge swipe reveals; search field is always visible on iPad; selected row fill",
-      "rnToday": ["none (UX1-wide)"],
-      "props": "{ title menu, search, children, footer actions }",
-      "composes": ["GlassCapsule", "ActionMenuButton", "TextField", "Icon"],
-      "accept": [
-        "column about 330 wide with radius 24 and a hairline, inset from the screen edges",
-        "header row then the search pill then the list, footer icons at the bottom",
-        "detail column to the right shows EmptyDetail when nothing is selected"
-      ]
-    },
-    {
-      "name": "EmptyDetail",
-      "group": "nav-sheets",
-      "swift": [
-        "Console/ConsoleEmptyDetailPresentation.swift:1-114",
-        "DesignSystem/Components/EmptyState.swift:1-183"
-      ],
-      "screens": [
-        "ipad/console.agents-list-flat",
-        "console.no-hosts-empty",
-        "console.empty-states-agents"
-      ],
-      "variants": [
-        "default|stacked windows glyph, 'No Agent Selected', explanation, tinted 'New Agent' capsule with the shortcut hint"
-      ],
-      "interactions": "button opens New Agent (cmd+N)",
-      "rnToday": ["packages/ui/src/primitives/EmptyState.tsx (no tinted capsule action)"],
-      "props": "{ icon, title, message, action?: { label, shortcut?, onPress } }",
-      "composes": ["EmptyState", "Button"],
-      "accept": [
-        "icon 48pt secondary, title title3 bold, message callout secondary max width 420",
-        "action is an accent-wash capsule, not a solid button"
-      ]
-    },
-    {
       "name": "QuickSheetHeader",
       "group": "nav-sheets",
       "swift": [
@@ -497,24 +446,6 @@
         "state line: glyph, semibold label, secondary note",
         "routes and failure detail in mono footnote",
         "primary action pinned at the bottom with the text action under it"
-      ]
-    },
-    {
-      "name": "ScannerFrame",
-      "group": "nav-sheets",
-      "swift": ["Pairing/PairingScanView.swift:13-349", "Pairing/PairingScanStore.swift:1-335"],
-      "screens": ["hosts.pairing-scanner", "hosts.new-route"],
-      "variants": [
-        "unavailable|camera glyph, 'Scanning Unavailable', Paste Pairing Code and Add Manually (the only state the simulator atlas has; the live frame with corner brackets has no crop)"
-      ],
-      "interactions": "camera preview with corner brackets and a hint; Cancel at left; Paste Pairing Code as a capsule; torch toggle",
-      "rnToday": ["packages/ui/src/scanner/QRScanner.tsx", "packages/ui/src/scanner/QRNotice.tsx"],
-      "props": "{ state: 'scanning'|'unavailable'|'denied', onCode, onPaste, onManual }",
-      "composes": ["EmptyState", "Button", "Sheet"],
-      "accept": [
-        "scanning: square viewfinder with four accent corner brackets, dim outside the square",
-        "unavailable: icon, title, message, filled capsule primary, plain accent secondary",
-        "Cancel in the bar, title 'Scan to Pair' centered"
       ]
     },
     {
@@ -621,32 +552,6 @@
         "stop is a red filled circle with a white square, send a white circle with a dark arrow",
         "button row circles are 40pt in a secondary fill",
         "skills panel mono names in primary, descriptions secondary, hairlines between"
-      ]
-    },
-    {
-      "name": "StatusLine",
-      "group": "agent-bar",
-      "swift": [
-        "Console/AgentDetailStatusChrome.swift:6-210",
-        "Console/AgentContextLowBadge.swift:1-60"
-      ],
-      "screens": [
-        "agent-detail.chat",
-        "agent-detail.status-line",
-        "agent-detail.composer-skill-suggestions"
-      ],
-      "variants": [
-        "default|status dot + 'Working' (orange), branch with arrows, ahead/behind counters, +N -N, latency at right",
-        "low-context|Idle and the amber '16 % context left' pill"
-      ],
-      "interactions": "tap opens Changes; hidden when no data",
-      "rnToday": ["none"],
-      "props": "{ status, branch?, counts?, diff?, contextLeft?, latencyMs?, onOpenChanges }",
-      "composes": ["StatusOrb", "MetaChip", "Text"],
-      "accept": [
-        "one line caption mono-ish, truncating the branch first",
-        "status colors from tokens, +N green and -N red",
-        "sits directly above the ComposerCard, 12pt side inset"
       ]
     },
     {
@@ -800,31 +705,6 @@
       ]
     },
     {
-      "name": "BlockedCard",
-      "group": "blocked-terminal",
-      "swift": [
-        "Chat/Blocked/BlockedCardView.swift:9-1008",
-        "Chat/Blocked/QuestionFormCardView.swift:7-197",
-        "Chat/Blocked/GenericDialogCardView.swift:5-156"
-      ],
-      "screens": ["agent-detail.chat-blocked-card", "agent-detail.chat"],
-      "variants": [
-        "default|header (hand glyph, 'Bash command', chevron), description, code box, filled accent 'Yes', secondary option, red 'No', 'Add a Note'",
-        "collapsed|single bar with the title and a chevron (no atlas crop)",
-        "question|form card with options and a text field (no atlas crop)"
-      ],
-      "interactions": "option tap sends the key and haptics; chevron collapses; Add a Note opens a text field; rule warning line under rules",
-      "rnToday": ["apps/mobile/src/blocked/BlockedCard.tsx"],
-      "props": "{ prompt: BlockedPrompt (title, description, code?, options[], warning?), onChoose, onNote, collapsed }",
-      "composes": ["Card", "Button", "Icon", "TextField", "Text"],
-      "accept": [
-        "card radius 20 over the composer area, hairline",
-        "Yes: solid accent button full width, other options secondary fill, No red wash",
-        "warning line amber with a triangle glyph",
-        "code box mono footnote on the darker surface"
-      ]
-    },
-    {
       "name": "BackgroundWorkStrip",
       "group": "blocked-terminal",
       "swift": [
@@ -875,26 +755,6 @@
       "accept": [
         "rounded 16 secondary surface, glyph left, message subheadline, action accent semibold at the right",
         "locating: spinner above 17pt secondary text, centered in the free area"
-      ]
-    },
-    {
-      "name": "JumpControl",
-      "group": "blocked-terminal",
-      "swift": [
-        "Console/MessageJumpControl.swift:445-576",
-        "Chat/Timeline/ChatTimelineView.swift:75-134"
-      ],
-      "screens": ["agent-detail.chat (appears when scrolled away; no atlas crop)"],
-      "variants": [
-        "default|floating glass circle with a chevron-down (jump to latest), up/down message jump pair on long press"
-      ],
-      "interactions": "tap jumps to latest with a haptic; long press expands to previous/next user message; fades after 2 s idle",
-      "rnToday": ["none"],
-      "props": "{ visible, onJumpLatest, onPrevious, onNext }",
-      "composes": ["GlassCapsule", "Icon"],
-      "accept": [
-        "40pt glass circle at the trailing edge above the composer",
-        "appears only when more than one screen from the bottom"
       ]
     },
     {
@@ -1141,26 +1001,6 @@
       ]
     },
     {
-      "name": "SettingsGroup",
-      "group": "hosts-settings-files",
-      "swift": ["Settings/SettingsView.swift:69-430", "Settings/SettingsSections+Row.swift:1-138"],
-      "screens": ["settings.root", "settings.appearance", "settings.theme"],
-      "variants": [
-        "default|section caption, rounded card of icon rows (glyph, title, trailing value, chevron)",
-        "subtitle|row with a caption subtitle under the title",
-        "toggle|row with a Switch (Follow System)"
-      ],
-      "interactions": "tap pushes the page; toggle with haptic; trailing value truncates",
-      "rnToday": ["apps/mobile/src/settings/SettingsRowView.tsx"],
-      "props": "{ title, rows: { icon, title, subtitle?, value?, toggle?, onPress }[] }",
-      "composes": ["Section", "ListRow", "Icon", "Text"],
-      "accept": [
-        "section title subheadline secondary above the card, 12pt gap",
-        "leading glyph 24pt secondary, title body, value secondary, chevron",
-        "hairline inset past the glyph"
-      ]
-    },
-    {
       "name": "ThemeChoiceCard",
       "group": "hosts-settings-files",
       "swift": [
@@ -1346,44 +1186,6 @@
       ]
     },
     {
-      "name": "PortPreview",
-      "group": "settings-pickers",
-      "swift": ["Browser/PortPreviewView.swift:1-171", "Browser/PortPreviewStore.swift:1-200"],
-      "screens": ["(no atlas image for the port preview)"],
-      "variants": [
-        "default|Full screen web preview through the SSH tunnel: toolbar with title/host, reload and close, progress, error state with Try Again (no crop: read PortPreviewView.swift)"
-      ],
-      "interactions": "reload re-opens the tunnel; close dismisses; failed load shows the page error with retry",
-      "rnToday": [
-        "apps/mobile/src/ports/PortPreviewScreen.tsx",
-        "apps/mobile/src/ports/PreviewToolbar.tsx",
-        "apps/mobile/src/ports/PreviewStates.tsx"
-      ],
-      "props": "{ title, host, state: \"loading\" | \"ready\" | \"error\", onReload, onClose, children }",
-      "composes": ["GlassCapsule", "Banner", "Button", "Text"],
-      "accept": [
-        "judge against PortPreviewView.swift because there is no crop",
-        "toolbar and error state use the shared primitives"
-      ]
-    },
-    {
-      "name": "SkillsKeyboardPane",
-      "group": "composer-extras",
-      "swift": ["Skills/SkillsKeyboardPane.swift:1-193", "Skills/SkillsPickerView.swift:1-200"],
-      "screens": ["agent-detail.skills-pane", "agent-detail.skills-picker"],
-      "variants": [
-        "default|Keyboard-height pane under the composer: skill list with search, empty state \"No skills found for this agent.\", Refresh accent row, bottom pane switcher"
-      ],
-      "interactions": "tap a skill inserts /skill into the composer; Refresh re-probes; long press opens the content sheet",
-      "rnToday": ["none"],
-      "props": "{ skills, query, onPick, onRefresh, onOpen }",
-      "composes": ["CardRow", "EmptyState", "Text"],
-      "accept": [
-        "same height as the system keyboard",
-        "Refresh row sits above the pane switcher with a hairline"
-      ]
-    },
-    {
       "name": "SkillContentSheet",
       "group": "composer-extras",
       "swift": ["Skills/SkillContentSheet.swift:1-93"],
@@ -1396,23 +1198,6 @@
       "props": "{ name, content?, state, onClose }",
       "composes": ["Sheet", "Text"],
       "accept": ["judge against SkillContentSheet.swift because there is no crop"]
-    },
-    {
-      "name": "ComposerStagingStatusBar",
-      "group": "composer-extras",
-      "swift": [
-        "Attachments/ComposerStagingStatusBar.swift:1-75",
-        "Attachments/ComposerStagingStore.swift:1-200"
-      ],
-      "screens": ["(no atlas image for staging chips)"],
-      "variants": [
-        "default|Capsule status strip above the composer while attachments stage: progress text, command buttons (Cancel, Retry) (no crop: read ComposerStagingStatusBar.swift)"
-      ],
-      "interactions": "Cancel stops staging; Retry re-sends the failed attachment",
-      "rnToday": ["none"],
-      "props": "{ state: \"staging\" | \"failed\", label, commands }",
-      "composes": ["MetaChip", "Button", "Text"],
-      "accept": ["judge against ComposerStagingStatusBar.swift because there is no crop"]
     },
     {
       "name": "ClaudeSubagentTranscript",

@@ -4,7 +4,6 @@ import { confirm } from '../overlay/confirm';
 import { Sheet, type SheetDetent } from '../overlay/Sheet';
 import { toast } from '../overlay/toast';
 import { Banner } from '../primitives/Banner';
-import { BarChart } from '../primitives/BarChart';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
 import { EmptyState, ErrorState } from '../primitives/EmptyState';
@@ -13,7 +12,6 @@ import { ProgramMark } from '../primitives/ProgramMark';
 import { SkeletonRows } from '../primitives/Skeleton';
 import { Text } from '../primitives/Text';
 import type { Tone } from '../theme/status';
-import { compactNumber, sampleMonth, sampleWeek } from './galleryData';
 import { useGalleryDemos } from './galleryDemo';
 import { Specimen, Stack, Wrap } from './galleryKit';
 
@@ -84,23 +82,6 @@ export function Feedback() {
             97% (danger)
           </Text>
           <Meter value={0.97} accessibilityLabel="Opus limit" />
-        </Stack>
-      </Specimen>
-      <Specimen name="BarChart">
-        <Stack>
-          <BarChart
-            data={sampleWeek}
-            highlightKey="sun"
-            formatValue={compactNumber}
-            accessibilityLabel="Tokens this week"
-          />
-          <BarChart
-            data={sampleMonth}
-            height={80}
-            tint="info"
-            formatValue={compactNumber}
-            accessibilityLabel="Tokens this month"
-          />
         </Stack>
       </Specimen>
     </>

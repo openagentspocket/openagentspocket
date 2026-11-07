@@ -96,11 +96,9 @@ export { useHandoverSheet, useSheetHandover } from './overlay/useSheetHandover';
 export { AsyncContent } from './primitives/AsyncContent';
 export { Badge, type BadgeKind, StatusPill } from './primitives/Badge';
 export { Banner } from './primitives/Banner';
-export { BarChart, type BarDatum, barShares, labeledIndexes } from './primitives/BarChart';
 export { BoundedScroll } from './primitives/BoundedScroll';
 export { Button, type ButtonKind, type ButtonSize } from './primitives/Button';
 export { CARD_FILL, Card, type CardLevel } from './primitives/Card';
-export { CardRow } from './primitives/CardRow';
 export { Chip, ChipRow } from './primitives/Chip';
 export { COPY_CONFIRMATION_MS, CopyableValueRow, CopyButton } from './primitives/CopyButton';
 export { copyToClipboard } from './primitives/clipboard';
@@ -139,14 +137,6 @@ export { ThemedRefreshControl } from './primitives/ThemedRefreshControl';
 export { ThemedTextInput, type ThemedTextInputProps } from './primitives/ThemedTextInput';
 export { Toggle } from './primitives/Toggle';
 export { useStoreState } from './primitives/useStoreState';
-export {
-  flattenSections,
-  type ListSection,
-  type SectionedItem,
-  VirtualList,
-  type VirtualListProps,
-  VirtualSectionList,
-} from './primitives/VirtualList';
 export { QRScanner, type QRScannerProps } from './scanner/QRScanner';
 export { defaultQRLabels, type QRScannerLabels } from './scanner/qrLabels';
 export { createCodeGate, type QRScannerState, scannerState } from './scanner/qrState';
