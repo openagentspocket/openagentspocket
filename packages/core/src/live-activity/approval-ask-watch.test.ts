@@ -98,6 +98,18 @@ describe('ApprovalAskWatch', () => {
     expect(run).toHaveBeenCalledTimes(1);
   });
 
+  it('a plugin that could not answer retries with the next row change', async () => {
+    const { clock, run, source, watch } = makeWatch();
+    source.mockResolvedValueOnce(null as never);
+    watch.rowsDidChange([row(PANE, 'blocked')]);
+    await clock.advance(FIRST_ASK_READ_MS);
+    await flush();
+    watch.rowsDidChange([row(PANE, 'blocked')]);
+    await clock.advance(FIRST_ASK_READ_MS);
+    await flush();
+    expect(run).toHaveBeenCalledTimes(1);
+  });
+
   it('a failed plugin read retries with the next row change', async () => {
     const { clock, run, source, watch } = makeWatch();
     source.mockRejectedValueOnce(new Error('offline'));

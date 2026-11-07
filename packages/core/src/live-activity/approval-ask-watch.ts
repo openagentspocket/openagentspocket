@@ -63,15 +63,13 @@ export class ApprovalAskWatch {
   }
 
   private async open(hostId: string, watch: Watch): Promise<void> {
-    let source: HostDataSource<ApprovalAsks> | null;
-    try {
-      source = await this.o.source(hostId);
-    } catch {
-      // Unreachable for now: the next row change starts over.
-      if (this.watches.get(hostId) === watch) this.watches.delete(hostId);
+    // Unreachable or no plugin for now: the next row change starts over.
+    const source = await this.o.source(hostId).catch(() => null);
+    if (this.watches.get(hostId) !== watch) return;
+    if (source === null) {
+      this.watches.delete(hostId);
       return;
     }
-    if (source === null || this.watches.get(hostId) !== watch) return;
     const store = new HostDataStore({
       source,
       clock: this.o.clock,
