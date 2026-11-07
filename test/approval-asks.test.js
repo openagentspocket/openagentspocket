@@ -224,6 +224,7 @@ suite("approval asks: reading", () => {
     const result = await runAsks();
 
     assert.deepEqual(result.report.asks, []);
+    assert.deepEqual(result.report.unread, ["w1:p3"]);
     assert.equal(hasApprovalAsk(stateDir, "w1:p2"), false);
     assert.equal(hasApprovalAsk(stateDir, "w1:p3"), true);
   });
