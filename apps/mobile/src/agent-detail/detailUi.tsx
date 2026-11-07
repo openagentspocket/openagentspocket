@@ -13,7 +13,7 @@ import {
 import { View } from 'react-native';
 import { useSubagentTranscript } from '@/conversations/useSubagentTranscript';
 
-/** One node a surface hands the dock (the terminal's key toolbar), drawn between the status line and the composer. */
+/** One node a surface hands the dock (the terminal's key toolbar), drawn over the composer. */
 class DockSlot {
   node: ReactNode = null;
   private readonly listeners = new Set<() => void>();

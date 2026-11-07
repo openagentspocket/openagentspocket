@@ -135,16 +135,6 @@
       "box": [0, 50, 402, 125],
       "light": true
     },
-    "AgentSwitcher": {
-      "src": "agent-detail.agent-switcher",
-      "box": [10, 792, 392, 838],
-      "light": true
-    },
-    "AgentSwitcher.tools": {
-      "src": "agent-detail.composer-skill-suggestions",
-      "box": [8, 492, 393, 530],
-      "light": true
-    },
     "SessionDrawer": {
       "src": "agent-detail.session-drawer",
       "box": [10, 60, 335, 600],

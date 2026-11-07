@@ -16,17 +16,15 @@ function renderDetail(
 ) {
   const storage = props.storage ?? new MemoryStorage();
   const onSwitch = props.onSwitch ?? jest.fn();
+  const settings = new SettingsStore(new MemoryStorage());
   render(
     <ThemeProvider themeId="indigo">
-      <SettingsProvider
-        store={new SettingsStore(new MemoryStorage())}
-        authenticator={fakeAuthenticator(null)}
-      >
+      <SettingsProvider store={settings} authenticator={fakeAuthenticator(null)}>
         <AgentDetailScreen hostId="demo" storage={storage} onSwitch={onSwitch} {...props} />
       </SettingsProvider>
     </ThemeProvider>,
   );
-  return { storage, onSwitch };
+  return { storage, onSwitch, settings };
 }
 
 describe('AgentDetailScreen', () => {
@@ -51,11 +49,81 @@ describe('AgentDetailScreen', () => {
     expect(readSurface(storage)).toBe('chat');
   });
 
-  it('switches to another Agent from the strip', async () => {
-    const { onSwitch } = renderDetail({ paneId: 'p2' });
-    await waitFor(() => expect(screen.getByTestId(/^switch-.*p3$/)).toBeTruthy());
-    fireEvent.press(screen.getByTestId(/^switch-.*p3$/));
-    expect(onSwitch).toHaveBeenCalledWith(expect.objectContaining({ hostId: 'demo' }));
+  it('switches to another Agent from the title', async () => {
+    const { onSwitch } = renderDetail({ paneId: 'p2', surface: 'terminal' });
+    await waitFor(() => expect(screen.getByTestId('agent-header-title')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('agent-header-title'));
+    await waitFor(() => expect(screen.getByTestId('agent-header-agents-p3')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('agent-header-agents-p3'));
+    await waitFor(() =>
+      expect(onSwitch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          hostId: 'demo',
+          agent: expect.objectContaining({ pane_id: 'p3' }),
+        }),
+      ),
+    );
+  });
+
+  it('stays put when the current Agent is picked', async () => {
+    const { onSwitch } = renderDetail({ paneId: 'p2', surface: 'terminal' });
+    await waitFor(() => expect(screen.getByTestId('agent-header-title')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('agent-header-title'));
+    await waitFor(() => expect(screen.getByTestId('agent-header-agents-p2')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('agent-header-agents-p2'));
+    await waitFor(() => expect(screen.queryByTestId('agent-header-agents-p2')).toBeNull());
+    expect(onSwitch).not.toHaveBeenCalled();
+  });
+
+  it('has no status row or Agent capsule on either surface', async () => {
+    renderDetail({ paneId: 'p2' });
+    await waitFor(() => expect(screen.getByTestId('agent-header')).toBeTruthy());
+    expect(screen.queryByTestId('status-line')).toBeNull();
+    expect(screen.queryByTestId('agent-switcher')).toBeNull();
+    fireEvent.press(screen.getByTestId('surface-toggle'));
+    await waitFor(() => expect(screen.getByTestId('slot-terminal')).toBeTruthy());
+    expect(screen.queryByTestId('status-line')).toBeNull();
+    expect(screen.queryByTestId('agent-switcher')).toBeNull();
+  });
+
+  it.each(['chat', 'terminal'] as const)(
+    'opens Changes from the header line on the %s',
+    async (surface) => {
+      const onOpenChanges = jest.fn();
+      renderDetail({ paneId: 'p2', surface, onOpenChanges });
+      await waitFor(() => expect(screen.getByTestId('agent-header-git')).toBeTruthy());
+      fireEvent.press(screen.getByTestId('agent-header-git'));
+      expect(onOpenChanges).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it('dots Sessions for another Blocked Agent', async () => {
+    renderDetail({ paneId: 'p2' });
+    await waitFor(() => expect(screen.getByTestId('agent-header-sidebar-dot')).toBeTruthy());
+  });
+
+  it('draws no dot for the Blocked Agent on screen', async () => {
+    renderDetail({ paneId: 'p1' });
+    await waitFor(() => expect(screen.getByTestId('agent-header')).toBeTruthy());
+    expect(screen.queryByTestId('agent-header-sidebar-dot')).toBeNull();
+  });
+
+  it('turns the terminal toolbar on and off from the header menu', async () => {
+    const { settings } = renderDetail({ paneId: 'p2', surface: 'terminal' });
+    const before = settings.get('terminalToolbarVisible');
+    await waitFor(() => expect(screen.getByTestId('agent-header-more')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('agent-header-more'));
+    await waitFor(() => expect(screen.getByTestId('action-menu-terminal-toolbar')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('action-menu-terminal-toolbar'));
+    await waitFor(() => expect(settings.get('terminalToolbarVisible')).toBe(!before));
+  });
+
+  it('keeps the toolbar item off the Chat menu', async () => {
+    renderDetail({ paneId: 'p2' });
+    await waitFor(() => expect(screen.getByTestId('agent-header-more')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('agent-header-more'));
+    await waitFor(() => expect(screen.getByTestId('action-menu-surface-chat')).toBeTruthy());
+    expect(screen.queryByTestId('action-menu-terminal-toolbar')).toBeNull();
   });
 
   it('says so when the Agent is not listed', async () => {

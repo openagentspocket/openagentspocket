@@ -1,11 +1,5 @@
 // Barrel of the UX3 group 'agentBar'.
 export { AgentHeader, type AgentHeaderProps } from './AgentHeader';
-export {
-  AgentSwitcher,
-  type AgentSwitcherProps,
-  type SwitcherAgent,
-  type SwitcherTrailing,
-} from './AgentSwitcher';
 export { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 export {
   type ChangeFile,

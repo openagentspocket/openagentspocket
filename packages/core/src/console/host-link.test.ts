@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { failures } from '../events/failure';
-import { hostLink, RESUME_ATTEMPTS } from './host-link';
+import { hostLink, linkNote, RESUME_ATTEMPTS, SLOW_LINK_MS } from './host-link';
 
 const reconnecting = (attempt: number) => ({
   kind: 'reconnecting' as const,
@@ -36,5 +36,20 @@ describe('hostLink', () => {
     expect(hostLink({ kind: 'suspended' }, false, true)).toBe('stopped');
     expect(hostLink({ kind: 'suspended' }, true, true)).toBe('stopped');
     expect(hostLink({ kind: 'connecting' }, true, true)).toBe('resuming');
+  });
+});
+
+describe('linkNote', () => {
+  it('says nothing about a healthy or unmeasured link', () => {
+    expect(linkNote(false, undefined)).toBeNull();
+    expect(linkNote(false, SLOW_LINK_MS - 1)).toBeNull();
+  });
+
+  it('reports a slow link with its latency', () => {
+    expect(linkNote(false, SLOW_LINK_MS)).toEqual({ kind: 'slow', ms: SLOW_LINK_MS });
+  });
+
+  it('reads a stale Host as lost, whatever its last latency was', () => {
+    expect(linkNote(true, 12)).toEqual({ kind: 'lost' });
   });
 });

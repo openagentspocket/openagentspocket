@@ -1,5 +1,4 @@
-import { agentKey, type ConsoleRow, type KeyValueStorage } from '@openagentspocket/core';
-import { t } from '@openagentspocket/i18n';
+import type { ConsoleRow, KeyValueStorage } from '@openagentspocket/core';
 import { type ActionMenuItem, EdgeFade, makeStyles } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
@@ -9,8 +8,7 @@ import { activityOf } from '../blocked/useBlockedCard';
 import { useAgentPhase, useConsole, useConsoleState } from '../console/hooks';
 import { AgentHeader } from './AgentHeader';
 import { AgentSessionDrawer } from './AgentSessionDrawer';
-import { AgentSwitcher } from './AgentSwitcher';
-import { AgentUnavailable, ReconnectingHint } from './AgentUnavailable';
+import { AgentUnavailable } from './AgentUnavailable';
 import { AgentComposerBar } from './composer/AgentComposer';
 import { useAgentComposer } from './composer/composerContext';
 import { DetailDock } from './DetailDock';
@@ -54,7 +52,6 @@ export function AgentDetailScreen({
   onHome,
 }: Props) {
   const styles = useStyles();
-  const key = agentKey(hostId, paneId);
   const { row, phase } = useAgentPhase(hostId, paneId);
   const rows = useConsole();
   const latency = useConsoleState().hosts.find((host) => host.id === hostId)?.latencyMs;
@@ -100,24 +97,22 @@ export function AgentDetailScreen({
             >
               <AgentHeader
                 row={row}
+                rows={rows}
+                onSwitch={onSwitch}
                 surface={surface}
                 onSurface={setSurface}
                 onSidebar={() => setDrawer(true)}
                 onHome={onHome}
                 menu={menu}
+                onOpenChanges={onOpenChanges}
+                stale={phase === 'stale'}
+                latencyMs={latency}
                 showTitle={surface === 'terminal'}
               />
             </View>
           </View>
           <View style={styles.dock}>
-            {phase === 'stale' ? <ReconnectingHint /> : null}
-            <DetailDock
-              row={row}
-              surface={surface}
-              status={status}
-              latencyMs={latency}
-              onOpenChanges={onOpenChanges}
-            />
+            <DetailDock row={row} surface={surface} />
             <AgentComposerBar
               composer={composer}
               surface={surface}
@@ -125,13 +120,6 @@ export function AgentDetailScreen({
               projectRoot={row.agent.cwd ?? undefined}
               status={status}
               onToggleSurface={toggle}
-            />
-            <AgentSwitcher
-              rows={rows}
-              currentKey={key}
-              onSelect={onSwitch}
-              surface={surface}
-              onSurface={setSurface}
             />
           </View>
         </AppScreen>

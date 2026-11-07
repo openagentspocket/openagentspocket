@@ -557,38 +557,17 @@
         "agent-detail.terminal"
       ],
       "variants": [
-        "default|two glass circles (sidebar/session drawer at left, more (...) at right) with the mid-bar identity between them: eyebrow HOST · AGENT KIND, bold mono title, mono workspace · branch subtitle (optional props eyebrow, title, subtitle)"
+        "default|two glass circles (sidebar/session drawer at left, more (...) at right) with the mid-bar identity between them: eyebrow HOST · AGENT KIND, bold mono title with a menu of the Host's Agents, small branch and +N -N line that opens Changes",
+        "chat|no title block: only the small branch line, and the dot on Sessions when another Agent is Blocked",
+        "slow-link|the link's note beside the branch line, only while the link is slow or lost"
       ],
-      "interactions": "left opens the SessionDrawer, right opens the header menu (Chat/Terminal toggle, Changes, Files, Ports, Rename, Close); edge swipe back",
+      "interactions": "left opens the SessionDrawer, right opens the header menu (Chat/Terminal toggle, the terminal toolbar, Changes, Files, Ports, Rename, Close); the title opens the Agents menu; the branch line opens Changes; edge swipe back",
       "rnToday": ["apps/mobile/src/agent-detail/AgentHeader.tsx"],
-      "props": "{ onSidebar, menu: ActionMenuItem[], surface: 'chat'|'terminal' }",
+      "props": "{ onSidebar, menu: ActionMenuItem[], surface: 'chat'|'terminal', eyebrow, title, subtitle, branch, diff, onOpenChanges, note, titleMenu, sidebarDot }",
       "composes": ["GlassCapsule", "ActionMenuButton", "Icon"],
       "accept": [
         "circles 44pt, glass fill with hairline, 12pt from the safe area top",
         "content scrolls under them with a top fade"
-      ]
-    },
-    {
-      "name": "AgentSwitcher",
-      "group": "agent-bar",
-      "swift": ["Terminal/TerminalAgentSwitcher.swift:1-900"],
-      "screens": [
-        "agent-detail.agent-switcher",
-        "agent-detail.composer-skill-suggestions",
-        "agent-detail.control-keys"
-      ],
-      "variants": [
-        "default|glass capsule at the bottom: other agents as faded chips, the current one as a filled pill with its mark and orb, trailing surface/keyboard toggles",
-        "tools|extra trailing icons (compose, skills, keyboard)"
-      ],
-      "interactions": "tap a chip switches agent with a haptic; horizontal scroll, current pill stays centered; trailing icons toggle the keys dock and the keyboard",
-      "rnToday": ["apps/mobile/src/agent-detail/AgentSwitcher.tsx"],
-      "props": "{ agents: { id, title, program, status }[], currentId, onSelect, trailing: { icon, onPress, active }[] }",
-      "composes": ["GlassCapsule", "ProgramMark", "StatusOrb", "Icon", "Text"],
-      "accept": [
-        "capsule height 44 over the keyboard dock, 12pt side inset",
-        "current agent is a pill with a lighter fill, mark with status orb, 'Title - Program'",
-        "neighbours are secondary and clipped at the capsule edge"
       ]
     },
     {

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import {
   AgentHeader,
-  AgentSwitcher,
   ChangeRow,
   ChangeSection,
   ComposerCard,
@@ -25,19 +24,6 @@ const addMenu: readonly ActionMenuItem[] = [
   { key: 'file', title: 'Add File', icon: 'file', onPress: noop },
   { key: 'image', title: 'Add Image', icon: 'camera', onPress: noop },
 ];
-
-const agents = [
-  { id: 'a', title: 'Payments API', program: 'codex', status: 'working' },
-  { id: 'b', title: 'iOS App · Codex', program: 'codex', status: 'idle' },
-  { id: 'c', title: 'api', program: 'codex', status: 'done' },
-] as const;
-
-/** The tools variant (three trailing icons) as in Swift's crop: 'Product Docs' with its neighbour clipped. */
-const toolsAgents = [
-  { id: 'a', title: 'iOS App · Codex', program: 'codex', status: 'working' },
-  { id: 'b', title: 'Product Docs', program: 'claude', status: 'idle' },
-  agents[2],
-] as const;
 
 const workspaces: readonly DrawerWorkspace[] = [
   {
@@ -116,41 +102,36 @@ export const agentBarEntries: readonly CatalogEntry[] = [
             menu={menu}
             eyebrow="Studio Mac · Claude Code"
             title="Checkout flow review"
-            subtitle="storefront · checkout:p3"
-          />
-        ),
-      },
-    ],
-  },
-  {
-    name: 'AgentSwitcher',
-    variants: [
-      {
-        id: 'default',
-        render: () => (
-          <AgentSwitcher
-            agents={agents}
-            currentId="b"
-            onSelect={noop}
-            trailing={[
-              { key: 'dock', icon: 'keysDock', label: 'Keys', onPress: noop, active: true },
-              { key: 'kbd', icon: 'keyboard', label: 'Keyboard', onPress: noop },
-            ]}
+            branch="checkout-review"
+            diff={{ added: 12, removed: 3 }}
+            onOpenChanges={noop}
+            titleMenu={menu}
           />
         ),
       },
       {
-        id: 'tools',
+        id: 'chat',
         render: () => (
-          <AgentSwitcher
-            agents={toolsAgents}
-            currentId="b"
-            onSelect={noop}
-            trailing={[
-              { key: 'dock', icon: 'keysDock', label: 'Keys', onPress: noop },
-              { key: 'tools', icon: 'tools', label: 'Tools', onPress: noop },
-              { key: 'kbd', icon: 'keyboard', label: 'Keyboard', onPress: noop },
-            ]}
+          <AgentHeader
+            onSidebar={noop}
+            menu={menu}
+            branch="checkout-review"
+            diff={{ added: 12, removed: 3 }}
+            onOpenChanges={noop}
+            sidebarDot
+          />
+        ),
+      },
+      {
+        id: 'slow-link',
+        render: () => (
+          <AgentHeader
+            onSidebar={noop}
+            menu={menu}
+            eyebrow="Studio Mac · Claude Code"
+            title="Checkout flow review"
+            branch="checkout-review"
+            note="850 ms"
           />
         ),
       },
