@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { loadScreen } from '../blocked/golden-fixtures.testkit';
+import { screenText } from '../blocked/screen';
 import { messageJumpProfile } from '../chat/programs';
 import { FakeClock } from '../hosts/cancellation';
 import { utf8Encode } from '../pairing/bytes';
@@ -18,13 +20,19 @@ import { TerminalMouseModes } from './mouse-modes';
 function setup(
   frames: string[],
   start: number,
-  options: { lag?: number; read?: AgentMessageJumpDeps['readFrame'] } = {},
+  options: {
+    lag?: number;
+    read?: AgentMessageJumpDeps['readFrame'];
+    /** What a working Agent redraws on top of the frame, by how many reads have happened. */
+    paint?: (frame: string, read: number) => string;
+  } = {},
 ) {
   const clock = new FakeClock();
   const modes = new TerminalMouseModes();
   modes.receive(utf8Encode('\u001b[?1000h\u001b[?1006h'));
   let position = start;
   let lag = 0;
+  let reads = 0;
   const scrolls: Array<[string, number]> = [];
   const jump = new AgentMessageJump({
     clock,
@@ -39,11 +47,11 @@ function setup(
     readFrame:
       options.read ??
       (async () => {
-        if (lag > 0) {
-          lag -= 1;
-          return frames[Math.min(frames.length - 1, position + 1)] as string;
-        }
-        return frames[position] as string;
+        reads += 1;
+        const shown = lag > 0 ? Math.min(frames.length - 1, position + 1) : position;
+        lag = Math.max(0, lag - 1);
+        const frame = frames[shown] as string;
+        return options.paint ? options.paint(frame, reads) : frame;
       }),
   });
   /** Runs the clock until `result` settles. */
@@ -55,7 +63,7 @@ function setup(
     for (let i = 0; i < 2000 && !done; i += 1) await clock.advance(SCREEN_POLL_MS);
     return result;
   };
-  return { jump, clock, modes, scrolls, finish, position: () => position };
+  return { jump, clock, modes, scrolls, finish, position: () => position, reads: () => reads };
 }
 
 const FRAMES = ['top', '> first message here', 'filler', 'more filler', '> second message here'];
@@ -170,6 +178,23 @@ describe('AgentMessageJump', () => {
     expect(position()).toBe(0);
   });
 
+  it('recognises a message the Composer sent, with no prompt glyph on screen', async () => {
+    const frames = ['a long message I sent', 'filler one', 'filler two'];
+    const { jump, finish, position } = setup(frames, 2);
+    jump.recordSubmitted('a long message I sent');
+    expect(await finish(jump.jump('older'))).toBe('found');
+    expect(position()).toBe(0);
+  });
+
+  it('keeps walking when the Composer sends mid-walk', async () => {
+    const { jump, finish, clock, position } = setup(FRAMES, 4);
+    const outcome = jump.jump('older');
+    await clock.advance(SCREEN_POLL_MS);
+    jump.recordSubmitted('a message sent meanwhile');
+    expect(await finish(outcome)).toBe('found');
+    expect(position()).toBe(1);
+  });
+
   it('forgets the session on reset, ending a walk in flight', async () => {
     const { jump, clock } = setup(['a', 'b', 'c', 'd', 'e', 'f'], 5);
     const outcome = jump.jump('older');
@@ -183,6 +208,101 @@ describe('AgentMessageJump', () => {
     expect(jump.canJump).toBe(true);
     modes.reset();
     expect(jump.canJump).toBe(false);
+  });
+});
+
+const SPINNER = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
+
+/** The Agent's live rows, each redrawn on every read the way the capture's program draws them. */
+const ANIMATIONS = [
+  {
+    stem: 'grok-03-working',
+    paint: (frame: string, read: number) =>
+      frame.replace(/. Sleep 45 seconds then echo done… [\d.]+s/u, (row) =>
+        row.replace(/^./u, SPINNER[read % 10] as string).replace(/[\d.]+s$/u, `${read / 10}s`),
+      ),
+  },
+  {
+    stem: 'opencode-08-working-180',
+    paint: (frame: string, read: number) =>
+      frame.replace(
+        /[■⬝]+ esc interrupt/u,
+        `${'■'.repeat(read % 8)}${'⬝'.repeat(8 - (read % 8))} esc interrupt`,
+      ),
+  },
+  {
+    stem: 'codex-18-x7-phone-async-countdown',
+    paint: (frame: string, read: number) =>
+      frame
+        .replace(/Working \(\d+s/u, `Working (${12 + read}s`)
+        .replace(/questions · \d+s/u, `questions · ${20 - (read % 20)}s`),
+  },
+];
+
+/** A Claude-style screen: `height` rows of `transcript` from `top`, over a pinned status and box. */
+const claudeFrame = (transcript: string[], top: number, height = 18): string =>
+  [
+    ...transcript.slice(top, top + height),
+    '',
+    '✻ Thinking… (0s · ↑ 0 tokens · esc to interrupt)',
+    '',
+    '╭──────────────────────────────────────────────────────────────────────────╮',
+    '│ >                                                                        │',
+    '╰──────────────────────────────────────────────────────────────────────────╯',
+    '  ? for shortcuts',
+  ].join('\n');
+
+/** Claude's verb, timer and tokens all change, so the row shares nothing with the last read. */
+const claudeTick = (frame: string, read: number): string =>
+  frame.replace(
+    /. Thinking… \(0s · ↑ 0 tokens/u,
+    `${'✻✶✢·'[read % 4]} ${['Thinking', 'Pondering', 'Cogitating'][read % 3]}… (${read}s · ↑ ${read * 40} tokens`,
+  );
+
+const replyRows = (count: number, from: number) =>
+  Array.from({ length: count }, (_, i) => `  line ${from + i} of the reply, about the walk`);
+
+describe('AgentMessageJump with an Agent working', () => {
+  const TRANSCRIPT = [
+    '> first message from the user',
+    ...replyRows(60, 0),
+    '> second message from the user',
+    ...replyRows(20, 60),
+  ];
+  const FRAMES = Array.from({ length: 10 }, (_, i) =>
+    claudeFrame(TRANSCRIPT, Math.min(i * 8, TRANSCRIPT.length - 18)),
+  );
+  const SECOND_MESSAGE_FRAME = 7;
+
+  it.each(ANIMATIONS)('finds the top in a few steps under $stem', async ({ stem, paint }) => {
+    const frame = screenText(loadScreen(stem));
+    expect(paint(frame, 1)).not.toBe(paint(frame, 2));
+    const { jump, finish, scrolls, reads } = setup([frame], 0, { paint });
+    expect(await finish(jump.jump('older'))).toBe('reachedEnd');
+    expect(scrolls.length).toBeLessThanOrEqual(3);
+    expect(reads()).toBeLessThanOrEqual(3 * (SCREEN_READ_SETTLE_MS / SCREEN_POLL_MS + 1));
+  });
+
+  it('finds the live bottom in a few steps while the status row churns', async () => {
+    const { jump, finish, scrolls } = setup(FRAMES, FRAMES.length - 1, { paint: claudeTick });
+    expect(await finish(jump.jump('newer'))).toBe('reachedEnd');
+    expect(scrolls.length).toBeLessThanOrEqual(3);
+  });
+
+  it('keeps walking a long reply to the next message while the status row churns', async () => {
+    const { jump, finish, position } = setup(FRAMES, SECOND_MESSAGE_FRAME, { paint: claudeTick });
+    expect(await finish(jump.jump('older'))).toBe('found');
+    expect(position()).toBe(0);
+  });
+
+  it('waits out reads that show only the spinner before the repaint lands', async () => {
+    const { jump, finish, position, scrolls } = setup(FRAMES, SECOND_MESSAGE_FRAME, {
+      paint: claudeTick,
+      lag: 3,
+    });
+    expect(await finish(jump.jump('older'))).toBe('found');
+    expect(position()).toBe(0);
+    expect(scrolls).toHaveLength(SECOND_MESSAGE_FRAME);
   });
 });
 

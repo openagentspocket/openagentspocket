@@ -20,7 +20,7 @@ import {
 /** Between reads while a step's repaint is awaited. */
 export const SCREEN_POLL_MS = 200;
 /**
- * How long a step may go without a changed read. Longer than the controller's default, which
+ * How long a step may go without a read that moved. Longer than the controller's default, which
  * assumes a local frame: this one covers the paced scroll going out and a read coming back.
  */
 export const SCREEN_READ_SETTLE_MS = 1500;
@@ -125,6 +125,11 @@ export class AgentMessageJump {
     if (this.running) this.cancel();
   }
 
+  /** A message the Composer delivered round the PTY: nothing the user took back, so a walk goes on. */
+  recordSubmitted(text: string): void {
+    this.index.recordSubmitted(text);
+  }
+
   /** The Attach ended or was replaced: what it sent describes a scrollback that is gone. */
   reset(): void {
     this.cancel();
@@ -144,7 +149,7 @@ export class AgentMessageJump {
     void this.poll(this.generation);
   }
 
-  /** Reads until the screen differs; an unchanged screen is left to the controller's timeout. */
+  /** Reads until the conversation moves; a still one is left to the controller's timeout. */
   private async poll(generation: number): Promise<void> {
     while (generation === this.generation) {
       await new Promise<void>((resolve) => this.deps.clock.setTimeout(resolve, SCREEN_POLL_MS));
@@ -156,7 +161,7 @@ export class AgentMessageJump {
         return;
       }
       this.answered = true;
-      if (text !== this.lastFrame) {
+      if (this.controller.frameMoved(this.lastFrame, text)) {
         this.deliver(text);
         return;
       }

@@ -11,7 +11,13 @@ import {
 function setup(
   frames: string[],
   start: number,
-  options: { policy?: MessageJumpPolicy; viewportRows?: number | null; repaint?: boolean } = {},
+  options: {
+    policy?: MessageJumpPolicy;
+    viewportRows?: number | null;
+    repaint?: boolean;
+    /** What a working Agent redraws on a repaint, by step. */
+    paint?: (frame: string, step: number) => string;
+  } = {},
 ) {
   const clock = new FakeClock();
   let position = start;
@@ -25,12 +31,15 @@ function setup(
     step: (direction, rows) => {
       steps.push([direction, rows]);
       const next = position + (direction === 'older' ? -1 : 1);
+      const painted = (frame: string) => options.paint?.(frame, steps.length) ?? frame;
       if (next < 0 || next >= frames.length) {
-        if (options.repaint !== false) controller.frameDidChange(frames[position] as string);
+        if (options.repaint !== false) {
+          controller.frameDidChange(painted(frames[position] as string));
+        }
         return;
       }
       position = next;
-      controller.frameDidChange(frames[position] as string);
+      controller.frameDidChange(painted(frames[position] as string));
     },
   };
   const controller = new TerminalMessageJumpController(deps);
@@ -88,6 +97,23 @@ describe('TerminalMessageJumpController', () => {
     expect([0, 3].map((i) => short.rows(i))).toEqual([8, 10]);
     const tiny = setup(['x'], 0, { viewportRows: 5 }).controller;
     expect(tiny.rows(5)).toBe(8);
+  });
+
+  it('counts a repaint that only animated toward the end', async () => {
+    const screen = 'reply row\nanother row\nyet another\n⠋ Working (0s)';
+    const { controller, steps } = setup([screen], 0, {
+      paint: (frame, step) => frame.replace('⠋ Working (0s)', `⠙ Working (${step}s)`),
+    });
+    expect(await controller.jump('newer')).toBe('reachedEnd');
+    expect(steps).toHaveLength(controller.configuration.unchangedFramesBeforeEnd);
+    expect(controller.lastRunMovedViewport).toBe(false);
+  });
+
+  it('counts a message coming into view as movement, however little else changed', () => {
+    const { controller } = setup(['x'], 0);
+    const chrome = 'status row\nmodel row\nfooter row\nhint row\nmode row\n';
+    expect(controller.frameMoved(`${chrome}reply`, `${chrome}MSG1`)).toBe(true);
+    expect(controller.frameMoved(`${chrome}reply`, `${chrome}other`)).toBe(false);
   });
 
   it('walks newer to the live bottom with returnToLive', async () => {
