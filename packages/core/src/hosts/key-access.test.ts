@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { FakeClock } from './cancellation';
-import { KEY_ACCESS_REUSE_MS, KeyAccessGate, type KeyAccessResult } from './key-access';
+import {
+  KEY_ACCESS_REUSE_MS,
+  KeyAccessGate,
+  type KeyAccessResult,
+  KeyPromptInterrupted,
+} from './key-access';
 
 function gate(results: KeyAccessResult[], required = true) {
   const clock = new FakeClock();
@@ -59,6 +64,13 @@ describe('KeyAccessGate', () => {
     expect(subject.wouldAsk()).toBe(false);
     await clock.advance(KEY_ACCESS_REUSE_MS);
     expect(subject.wouldAsk()).toBe(true);
+  });
+
+  it('tells an interrupted prompt from a refusal, keeping no confirmation', async () => {
+    const { subject, state } = gate(['interrupted']);
+    await expect(subject.authorize()).rejects.toBeInstanceOf(KeyPromptInterrupted);
+    await subject.authorize();
+    expect(state.asked).toBe(2);
   });
 
   it('stands open on a device that cannot ask', async () => {

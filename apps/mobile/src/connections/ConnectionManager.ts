@@ -8,6 +8,7 @@ import {
   type HostKeyPolicy,
   hostUsesKey,
   type KeyAccessGate,
+  KeyPromptInterrupted,
   type KnownHostsStore,
   type ReconnectPolicy,
 } from '@openagentspocket/core';
@@ -307,7 +308,7 @@ export class ConnectionManager {
       } catch (error) {
         // Leaving cuts a prompt short, and that is not the owner's answer.
         if (!this.active) continue;
-        this.keyRefused.add(host.id);
+        if (!(error instanceof KeyPromptInterrupted)) this.keyRefused.add(host.id);
         throw error;
       }
     }

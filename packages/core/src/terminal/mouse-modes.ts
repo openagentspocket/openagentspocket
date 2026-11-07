@@ -105,3 +105,9 @@ export class TerminalMouseModes {
     }
   }
 }
+
+/**
+ * Whether a wheel report can walk this pane's history. tmux takes the wheel itself: it enters
+ * copy-mode, which `agent.read` does not follow and which swallows what is typed next.
+ */
+export const paneTakesWheelJump = (paneId: string): boolean => !paneId.startsWith('%');

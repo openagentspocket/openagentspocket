@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { utf8Decode, utf8Encode } from '../pairing/bytes';
-import { TerminalMouseModes } from './mouse-modes';
+import { paneTakesWheelJump, TerminalMouseModes } from './mouse-modes';
 
 const received = (...chunks: string[]) => {
   const modes = new TerminalMouseModes();
@@ -52,5 +52,12 @@ describe('TerminalMouseModes', () => {
     expect(modes.tracksMouse).toBe(false);
     modes.receive(utf8Encode('00h'));
     expect(modes.tracksMouse).toBe(false);
+  });
+});
+
+describe('where a jump can run', () => {
+  it('leaves tmux panes out: the wheel would put them in copy-mode', () => {
+    expect(paneTakesWheelJump('%3')).toBe(false);
+    expect(paneTakesWheelJump('w1:p1')).toBe(true);
   });
 });

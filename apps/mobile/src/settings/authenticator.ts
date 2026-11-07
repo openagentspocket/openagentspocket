@@ -4,8 +4,10 @@ export type AuthResult =
   | 'success'
   /** The prompt ran and the owner did not pass (or it threw). */
   | 'denied'
-  /** The owner or the system dismissed the prompt; nothing to report. */
+  /** The owner dismissed the prompt; nothing to report. */
   | 'cancelled'
+  /** The system took the prompt away (a call, Control Center): the owner answered nothing. */
+  | 'interrupted'
   /** The device cannot authenticate (no passcode or biometrics set up). */
   | 'unavailable';
 

@@ -346,7 +346,6 @@ suite("Live Activity asks on tmux", () => {
 
   for (const [name, input] of [
     ["the end of the turn", STOP],
-    ["a finished tool", { hook_event_name: "PostToolUse", session_id: "abc" }],
     ["a new prompt", { hook_event_name: "UserPromptSubmit", session_id: "abc" }],
   ]) {
     test(`${name} clears the ask, whether or not a device hears it`, async () => {
@@ -358,11 +357,13 @@ suite("Live Activity asks on tmux", () => {
     });
   }
 
-  test("an event that says nothing of the status keeps the ask", async () => {
-    await runHook(PERMISSION, pane);
-    await runHook({ hook_event_name: "PreToolUse", session_id: "abc" }, pane);
-    assert.equal(existsSync(askPath()), true);
-  });
+  for (const hook_event_name of ["PreToolUse", "PostToolUse"]) {
+    test(`${hook_event_name} keeps the ask: the prompt may still be open`, async () => {
+      await runHook(PERMISSION, pane);
+      await runHook({ hook_event_name, session_id: "abc" }, pane);
+      assert.equal(existsSync(askPath()), true);
+    });
+  }
 
   test("a Blocked push nobody can answer leaves no older ask behind", async () => {
     await runHook(PERMISSION, pane);

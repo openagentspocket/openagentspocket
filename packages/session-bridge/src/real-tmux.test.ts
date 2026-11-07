@@ -54,6 +54,17 @@ describe.skipIf(!BINARY)('the bridge on a real tmux', () => {
     expect((await agentRead(stopped, '%1')).code).toBe(1);
   });
 
+  it('a key reaches the pane even when it was left in copy-mode', async () => {
+    await tmux.run(['new-session', '-d', '-s', 'mode', '-x', '80', '-y', '10', '/bin/sh']);
+    const [pane] = (await listPanes(tmux)).filter((candidate) => candidate.sessionName === 'mode');
+    if (!pane) throw new Error('no pane');
+    await tmux.run(['copy-mode', '-t', pane.paneId]);
+    await typeKeys(tmux, pane.paneId, ['echo mode-', 'mark']);
+    await tmux.run(['send-keys', '-t', pane.paneId, 'Enter']);
+    await eventually(async () => (await visibleScreen(tmux, pane.paneId)).includes('\nmode-mark'));
+    await tmux.run(['kill-session', '-t', 'mode']);
+  });
+
   it('maps live sessions, windows and panes', async () => {
     const shot = await snapshot();
     expect(shot.workspaces.map((w) => w.label).sort()).toEqual(['side', 'work']);

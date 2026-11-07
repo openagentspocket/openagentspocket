@@ -2,6 +2,7 @@ import {
   type AgentJumpResult,
   type JumpDirection,
   messageJumpProfile,
+  paneTakesWheelJump,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { systemClock } from '@openagentspocket/transport';
@@ -38,7 +39,7 @@ export function useTerminalMessageJump(
   const registry = useConversationRegistry();
   const jump = useMemo(
     () =>
-      registry?.canReadScreens
+      registry?.canReadScreens && paneTakesWheelJump(paneId)
         ? session.makeMessageJump({
             clock: systemClock,
             profile: messageJumpProfile(program),

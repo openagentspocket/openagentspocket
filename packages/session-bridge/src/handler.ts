@@ -54,6 +54,8 @@ export async function typeKeys(
   pane: string,
   keys: readonly string[],
 ): Promise<void> {
+  // In copy-mode (a finger scrolled the pane) keys go to its bindings, never to the Agent.
+  await tmux.run(['send-keys', '-t', pane, '-X', 'cancel']).catch(() => '');
   for (const key of keys) await tmux.run(['send-keys', '-t', pane, '-l', '--', key]);
 }
 

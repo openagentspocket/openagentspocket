@@ -1,3 +1,4 @@
+import { TransportFailure } from '../errors/transport-error';
 import { failWith } from '../events/failure';
 import type { Clock } from './cancellation';
 import type { Host } from './host';
@@ -5,7 +6,14 @@ import type { Host } from './host';
 /** How long one confirmation covers further key use, so several Hosts connect on one prompt. */
 export const KEY_ACCESS_REUSE_MS = 10_000;
 
-export type KeyAccessResult = 'success' | 'denied' | 'cancelled' | 'unavailable';
+export type KeyAccessResult = 'success' | 'denied' | 'cancelled' | 'interrupted' | 'unavailable';
+
+/** The system took the prompt away; the owner answered nothing. */
+export class KeyPromptInterrupted extends TransportFailure {
+  constructor() {
+    super({ kind: 'keyAccessNotConfirmed' });
+  }
+}
 
 export interface KeyAccessGateOptions {
   /** The owner turned Require Face ID for SSH Keys on. */
@@ -50,6 +58,7 @@ export class KeyAccessGate {
 
   private async ask(): Promise<void> {
     const result = await this.options.authenticate();
+    if (result === 'interrupted') throw new KeyPromptInterrupted();
     if (result === 'denied' || result === 'cancelled') {
       throw failWith({ kind: 'keyAccessNotConfirmed' });
     }
