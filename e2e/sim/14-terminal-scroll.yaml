@@ -1,0 +1,50 @@
+# A drag on the Agent's terminal reaches the fake TUI as wheel reports: its last line says how far
+# back it stands. Maestro cannot read the Metal surface, so the proof is in the screenshots. The
+# first tap raises the keyboard, which leaves the terminal the band from 17% to 33% of the screen;
+# every drag stays inside it, and the keyboard staying up shows a drag is not read as a tap.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- tapOn:
+    id: inbox-p3
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 15000
+- tapOn:
+    id: agent-header-more
+- tapOn: "Show Terminal"
+- waitForAnimationToEnd
+- runFlow: _guard.yaml
+- extendedWaitUntil:
+    notVisible: "Connecting..."
+    timeout: 15000
+- tapOn:
+    point: "50%,40%"
+- waitForAnimationToEnd
+- takeScreenshot: design/atlas/sim/14-terminal-scroll-start
+- swipe:
+    start: "50%,19%"
+    end: "50%,31%"
+    duration: 1500
+- waitForAnimationToEnd
+- takeScreenshot: design/atlas/sim/14-terminal-scroll-slow-drag
+- swipe:
+    start: "50%,19%"
+    end: "50%,31%"
+    duration: 120
+- extendedWaitUntil:
+    visible: "Message Agent"
+    timeout: 4000
+- takeScreenshot: design/atlas/sim/14-terminal-scroll-flick
+- swipe:
+    start: "50%,31%"
+    end: "50%,19%"
+    duration: 1500
+- waitForAnimationToEnd
+- takeScreenshot: design/atlas/sim/14-terminal-scroll-back
+- tapOn:
+    point: "50%,25%"
+- waitForAnimationToEnd
+- takeScreenshot: design/atlas/sim/14-terminal-scroll-tap
+- runFlow: _guard.yaml

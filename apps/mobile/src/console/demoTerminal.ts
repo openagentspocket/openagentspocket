@@ -25,3 +25,39 @@ export class DemoTerminalSession extends ScriptedTerminalSession {
     if (echo) this.emit(ENCODER_OUT(echo));
   }
 }
+
+const HISTORY_LINES = 200;
+const WHEEL_UP = 64;
+
+/**
+ * The offline Agent: a full-screen TUI like `herdr agent attach`, on the alternate screen and
+ * tracking the mouse, whose history only a wheel report reaches. Each repaint says where it stands.
+ */
+export class DemoAgentTuiSession extends ScriptedTerminalSession {
+  private rows = 0;
+  private offset = 0;
+
+  override resize(cols: number, rows: number): void {
+    super.resize(cols, rows);
+    if (this.rows === 0) this.emit(ENCODER_OUT('\u001b[?1049h\u001b[?1000h\u001b[?1006h'));
+    this.rows = rows;
+    this.paint();
+  }
+
+  override scroll(sequence: Uint8Array, rows: number): void {
+    super.scroll(sequence, rows);
+    const report = String.fromCharCode(...sequence);
+    const older = report.startsWith(`\u001b[<${WHEEL_UP};`);
+    const furthest = Math.max(0, HISTORY_LINES - this.rows);
+    this.offset = Math.min(furthest, Math.max(0, this.offset + (older ? rows : -rows)));
+    this.paint();
+  }
+
+  private paint(): void {
+    const last = HISTORY_LINES - this.offset;
+    const lines: string[] = [];
+    for (let line = last - this.rows + 2; line <= last; line += 1) lines.push(`history ${line}`);
+    lines.push(`scrolled back ${this.offset}`);
+    this.emit(ENCODER_OUT(`\u001b[2J\u001b[H${lines.join('\r\n')}`));
+  }
+}

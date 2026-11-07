@@ -9,12 +9,15 @@ import {
   PinnedAgents,
   ScriptedEventsTransport,
   STATUS_CLOCKS_STORAGE_KEY,
+  type TerminalAttachRequest,
   type TerminalAttachSession,
 } from '@openagentspocket/core';
 import { systemClock } from '@openagentspocket/transport';
-import { DemoTerminalSession } from './demoTerminal';
+import { DemoAgentTuiSession, DemoTerminalSession } from './demoTerminal';
 import { ConsoleStore } from './store';
 
+/** The Agent whose terminal is `DemoAgentTuiSession` (e2e/sim/14-terminal-scroll.yaml). */
+const DEMO_TUI_PANE = 'p3';
 const DEMO_HOST = { id: 'demo', name: 'Demo Host', username: 'demo' };
 /** The second Host of the rich demo (the atlas): same pane ids as the first, as on real Hosts. */
 const LAB_HOST = { id: 'lab', name: 'Lab', username: 'ada' };
@@ -182,9 +185,11 @@ export class DemoConsoleTransport extends ScriptedEventsTransport implements Con
     return { text: 'Run the migration on the staging database?\n1. Yes\n2. No' };
   }
 
-  /** The demo terminal echoes keystrokes; the live Transport opens a PTY attach. */
-  async attachTerminal(): Promise<TerminalAttachSession> {
-    return new DemoTerminalSession();
+  /** One Agent is a fake TUI, the rest echo keys; the live Transport opens a PTY attach. */
+  async attachTerminal(request: TerminalAttachRequest): Promise<TerminalAttachSession> {
+    return request.target.id === DEMO_TUI_PANE
+      ? new DemoAgentTuiSession()
+      : new DemoTerminalSession();
   }
 
   /** The demo has no panes to close; the live Transport sends `pane.close`. */
