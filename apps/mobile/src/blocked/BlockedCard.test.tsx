@@ -49,6 +49,7 @@ async function renderCard(
   const props: BlockedCardProps = {
     state: { ...base, ...state },
     onChoose: jest.fn(),
+    onSubmitSelection: jest.fn(),
     onStop: jest.fn(),
     onPress: jest.fn(),
     onKeys: jest.fn(),
@@ -109,6 +110,53 @@ describe('BlockedCard', () => {
     expect(screen.getByTestId('blocked-notice')).toBeTruthy();
     await fireEvent.press(screen.getByLabelText('↓'));
     expect(props.onKeys).toHaveBeenCalledWith(['down']);
+  });
+
+  it('takes a multi-select question as a set: toggles send nothing, the button sends them', async () => {
+    const dialog: BlockedDialog = {
+      ...bashDialog(),
+      kind: 'claudeQuestion',
+      options: [
+        makeOption({ ordinal: 1, number: 1, label: 'Red', role: 'answer', isChecked: true }),
+        makeOption({ ordinal: 2, number: 2, label: 'Green', role: 'answer', isChecked: false }),
+        makeOption({ ordinal: 3, number: null, label: 'Next', role: 'next' }),
+      ],
+      focus: makeFocus({ focusedOrdinal: 1, checked: [1] }),
+    };
+    const props = await renderCard({ content: { kind: 'card', dialog } });
+    await fireEvent.press(screen.getByTestId('blocked-toggle-2'));
+    expect(props.onChoose).not.toHaveBeenCalled();
+    expect(props.onSubmitSelection).not.toHaveBeenCalled();
+    await fireEvent.press(screen.getByTestId('blocked-submit-selection'));
+    expect(props.onSubmitSelection).toHaveBeenCalledWith([1, 2]);
+  });
+
+  it('draws nothing, and offers no keys, for a question no read shows', async () => {
+    await renderCard({ content: { kind: 'questionUnread' } });
+    expect(screen.queryByTestId('blocked-card')).toBeNull();
+    expect(screen.queryByTestId('blocked-keypad')).toBeNull();
+  });
+
+  it('gives a dialog it cannot name its reason and a way to the terminal', async () => {
+    const onShowTerminal = jest.fn();
+    await renderCard(
+      {
+        content: {
+          kind: 'generic',
+          excerpt: {
+            rows: [],
+            numbered: new Map(),
+            reason: message('Agentico does not handle questions with previews yet.'),
+            fingerprint: { value: 'x', requestLines: null, ruleLines: null },
+            displayLines: null,
+          },
+        },
+      },
+      { onShowTerminal },
+    );
+    expect(screen.getByTestId('blocked-generic-reason')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('blocked-show-terminal'));
+    expect(onShowTerminal).toHaveBeenCalledTimes(1);
   });
 
   it('folds to a bar and hides its choices', async () => {

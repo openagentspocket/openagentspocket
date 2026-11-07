@@ -2,6 +2,7 @@ import { type ConsoleRow, rowDirectory } from '@openagentspocket/core';
 import { type Status, StatusLine } from '@openagentspocket/ui';
 import { statusLineGit } from '@/changes/statusLineGit';
 import { useGitStatus } from '@/changes/useGitStatus';
+import { useShownStatus } from '../blocked/BlockedCardProvider';
 import { BlockedCardSlot } from '../blocked/BlockedCardSlot';
 import { agentBarLabels } from './agentBarLabels';
 import { AgentBackgroundWork } from './background/AgentBackgroundWork';
@@ -23,6 +24,7 @@ interface Props {
 export function DetailDock({ row, surface, status, latencyMs, onOpenChanges }: Props) {
   const { composing } = useDetailUi();
   const chat = surface === 'chat';
+  const shown = useShownStatus(status);
   const git = useGitStatus(row.hostId, rowDirectory(row), row.agent.pane_id);
   return (
     <>
@@ -30,12 +32,12 @@ export function DetailDock({ row, surface, status, latencyMs, onOpenChanges }: P
         <AgentBackgroundWork
           hostId={row.hostId}
           paneId={row.agent.pane_id}
-          condensed={composing || row.agent.agent_status === 'blocked'}
+          condensed={composing || shown === 'blocked'}
         />
       ) : null}
-      {chat ? <BlockedCardSlot row={row} /> : null}
+      {chat ? <BlockedCardSlot /> : null}
       <StatusLine
-        status={status}
+        status={shown}
         {...statusLineGit(git)}
         latencyMs={latencyMs}
         onOpenChanges={onOpenChanges}
