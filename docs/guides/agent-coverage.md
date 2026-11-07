@@ -19,6 +19,7 @@ What each Agent can do in the app, and how far that is proved. Update a cell whe
 
 Notes:
 
+- Live Activity Approve and Deny need Claude Code or Codex prompts, like Approve from a notification, and open a confirmation sheet in the app. Tests only so far.
 - herdr reports status for every program it has an integration for, so notifications through herdr need nothing per program.
 - On tmux, notifications come from the hooks in `packages/plugin/src/install-program-hooks.js`.
 - Grok Build's documentation does not say which `Notification` events exist; every one counts as an ask until a real run shows otherwise.
