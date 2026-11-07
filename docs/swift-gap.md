@@ -8,7 +8,7 @@ Missing or worse here, by user impact:
 
 1. Approve and Deny without opening the app (Swift: own connection, no UI), and from the Live Activity. expo-notifications calls iOS's completion handler at once, so a background SSH cannot finish; the actions open the app.
 2. Chat rows: a tool output cut short shows its start only.
-3. Terminal: Message Jump is unused (no frame source on the attach store); pinch zoom may reset the grid (not checked on a device); no ⌘ commands (needs a native module).
+3. Terminal: Message Jump is in the "..." menu, walking on screen reads, not Swift's floating buttons (a tmux bridge Host is unproven: its read ignores `visible`); pinch zoom may reset the grid (not checked on a device); no ⌘ commands (needs a native module).
 4. iPad: this app is iPhone only and portrait.
 5. Apple Watch, Shortcuts and App Intents, widget refresh in the background.
 6. Embedded overlay networks (removed on purpose).

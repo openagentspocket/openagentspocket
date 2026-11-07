@@ -1,3 +1,7 @@
+import {
+  DEFAULT_MESSAGE_JUMP_PROFILE,
+  type MessageJumpProfile,
+} from '../../terminal/agent-message-jump';
 import { CHAT_PROGRAMS, type ChatProgram } from '../model/types';
 import type { ProgramDefinition } from './definition';
 
@@ -21,3 +25,9 @@ export function programDefinition(program: ChatProgram): ProgramDefinition {
 
 export const programDefinitions = (): readonly ProgramDefinition[] =>
   CHAT_PROGRAMS.map(programDefinition);
+
+/** Any Agent can jump: a program Chat does not know gets the default walk. */
+export function messageJumpProfile(program: string | null | undefined): MessageJumpProfile {
+  const known = CHAT_PROGRAMS.find((name) => name === program);
+  return (known && programDefinition(known).messageJump?.()) ?? DEFAULT_MESSAGE_JUMP_PROFILE;
+}

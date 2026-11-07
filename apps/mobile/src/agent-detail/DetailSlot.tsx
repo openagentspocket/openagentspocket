@@ -10,6 +10,8 @@ const useStyles = makeStyles(() => ({ fill: { flex: 1 } }));
 interface Props {
   hostId: string;
   paneId: string;
+  /** The Agent's program as herdr reports it; shapes how the terminal finds its messages. */
+  program?: string | null;
   surface: Surface;
   activity: Parameters<typeof ChatTimeline>[0]['activity'];
   /** The Composer's messages, echoed in Chat until the transcript records them. */
@@ -23,6 +25,7 @@ interface Props {
 export function DetailSlot({
   hostId,
   paneId,
+  program,
   surface,
   activity,
   messages,
@@ -47,7 +50,7 @@ export function DetailSlot({
   }
   return (
     <View style={[styles.fill, { paddingTop: headerHeight }]}>
-      <TerminalSurface hostId={hostId} paneId={paneId} />
+      <TerminalSurface hostId={hostId} paneId={paneId} program={program} />
     </View>
   );
 }

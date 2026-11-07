@@ -18,4 +18,6 @@ export const grokProgram: ProgramDefinition = {
   adapter: grokAdapter,
   sendPolicy: grokSendPolicy,
   blocked: () => grokSupport,
+  // Grok pins the current turn's prompt at the top, five columns in.
+  messageJump: () => ({ policy: 'stickyPromptOvershoot', maximumPromptIndent: 5 }),
 };

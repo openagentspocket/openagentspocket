@@ -82,6 +82,7 @@ export function AgentDetailScreen({
             <DetailSlot
               hostId={hostId}
               paneId={paneId}
+              program={row.agent.agent}
               surface={surface}
               activity={activityOf(row)}
               messages={composer.snapshot.messages}

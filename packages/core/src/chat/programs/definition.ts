@@ -1,5 +1,6 @@
 import type { BlockedProgramSupport } from '../../blocked/programs';
 import type { Message } from '../../errors/text';
+import type { MessageJumpProfile } from '../../terminal/agent-message-jump';
 import type { ChatTranscriptAdapter } from '../engine/adapter';
 import type { LocateState, Location } from '../engine/locate';
 import type { ChatHostFiles } from '../model/host-files';
@@ -38,4 +39,6 @@ export interface ProgramDefinition {
   storeProblem?: (problem: ChatSessionStoreProblem) => Message;
   /** What the Blocked card reads and answers; absent for a program with no dialogs to parse. */
   blocked?: () => BlockedProgramSupport | null;
+  /** How Message Jump finds the program's prompts; absent for the default walk. */
+  messageJump?: () => MessageJumpProfile;
 }

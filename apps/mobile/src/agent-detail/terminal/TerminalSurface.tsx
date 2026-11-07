@@ -34,21 +34,33 @@ const DOCKS: Record<Exclude<Keys, 'system'>, KeyRows> = {
 };
 
 /** The Agent detail's terminal: attach pipeline, keys and paste, over one session. */
-export function TerminalSurface({ hostId, paneId }: { hostId: string; paneId: string }) {
+export function TerminalSurface({
+  hostId,
+  paneId,
+  program,
+}: {
+  hostId: string;
+  paneId: string;
+  program?: string | null;
+}) {
   const session = useAgentTerminalSession(hostId, paneId);
-  return session ? <LiveTerminal session={session} hostId={hostId} paneId={paneId} /> : null;
+  return session ? (
+    <LiveTerminal session={session} hostId={hostId} paneId={paneId} program={program} />
+  ) : null;
 }
 
 function LiveTerminal({
   session,
   hostId,
   paneId,
+  program,
 }: {
   session: AgentTerminalSession;
   hostId: string;
   paneId: string;
+  program?: string | null;
 }) {
-  const textActions = useTerminalTextActions(hostId, paneId);
+  const textActions = useTerminalTextActions(hostId, paneId, session, program);
   const router = useRouter();
   const settings = useSettings();
   const store = useSyncExternalStore(session.subscribe, session.getStore);

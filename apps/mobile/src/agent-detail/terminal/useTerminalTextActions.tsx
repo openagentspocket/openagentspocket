@@ -11,13 +11,22 @@ import { useRef, useState } from 'react';
 import { Linking } from 'react-native';
 import { useConversationRegistry } from '@/conversations/useConversation';
 import { openLinkLabels, terminalSheetTitles } from '@/terminal/selectionLabels';
+import type { AgentTerminalSession } from './AgentTerminalSession';
+import { useTerminalMessageJump } from './useTerminalMessageJump';
 
 /**
- * Select Text and Attach Links for an Agent's terminal. The terminal surface cannot select across
- * rows, so both read the screen from the Host; links stay listed for the whole visit.
+ * Select Text, Attach Links and Message Jump for an Agent's terminal. The terminal surface cannot
+ * select across rows or show its text, so all of them read the screen from the Host; links stay
+ * listed for the whole visit.
  */
-export function useTerminalTextActions(hostId: string, paneId: string) {
+export function useTerminalTextActions(
+  hostId: string,
+  paneId: string,
+  session: AgentTerminalSession,
+  program: string | null | undefined,
+) {
   const registry = useConversationRegistry();
+  const jumpItems = useTerminalMessageJump(session, hostId, paneId, program);
   const index = useRef(new AttachLinkIndex());
   const [text, setText] = useState<string | null>(null);
   const [links, setLinks] = useState<readonly AttachLink[] | null>(null);
@@ -42,6 +51,7 @@ export function useTerminalTextActions(hostId: string, paneId: string) {
       onPress: () => void read().then(setText),
     },
     { key: 'links', title: titles.attachLinks, icon: 'globe', onPress: () => void showLinks() },
+    ...jumpItems,
   ];
   const sheets = (
     <>
