@@ -69,7 +69,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [ChatToolRow](#chattoolrow) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-blocked-card`<br>`agent-detail.chat-background-strip`<br>`agent-detail.subagent-transcript` | default: [ref](ref/ChatToolRow.png) · [light](ref/ChatToolRow.light.png)<br>waiting: [ref](ref/ChatToolRow.waiting.png) · [light](ref/ChatToolRow.waiting.light.png)<br>subagents: [ref](ref/ChatToolRow.subagents.png) · [light](ref/ChatToolRow.subagents.light.png) | none | `Chat/Timeline/ChatRowView.swift:387-1014`<br>`Chat/Timeline/ChatFileDiffView.swift:139-300` |
 | [ChatNoticeRow](#chatnoticerow) | UX3-chat-rows | `agent-detail.chat-floating-controls`<br>`agent-detail.chat-background-strip` | default: [ref](ref/ChatNoticeRow.png) · [light](ref/ChatNoticeRow.light.png) | none | `Chat/Timeline/ChatRowView.swift:1088-1148` |
 | [DiffRow](#diffrow) | UX3-chat-rows | `changes.file-diff`<br>`agent-detail.chat (inline diff)` | default: [ref](ref/DiffRow.png) · [light](ref/DiffRow.light.png) | `packages/ui/src/diff/DiffView.tsx` | `Changes/DiffLineViews.swift:7-407`<br>`Changes/FileDiffView.swift:5-715`<br>`Changes/FileDiffSideBySideRow.swift:6-111`<br>`Chat/Timeline/ChatFileDiffView.swift:267-456` |
-| [BlockedCard](#blockedcard) | UX3-blocked-terminal | `agent-detail.chat-blocked-card`<br>`agent-detail.chat` | default: [ref](ref/BlockedCard.png) · [light](ref/BlockedCard.light.png)<br>collapsed: none<br>question: none | `apps/mobile/src/blocked/BlockedCard.tsx` | `Chat/Blocked/BlockedCardView.swift:9-1008`<br>`Chat/Blocked/QuestionFormCardView.swift:7-197`<br>`Chat/Blocked/GenericDialogCardView.swift:5-156` |
+| [BlockedCard](#blockedcard) | UX3-blocked-terminal | `agent-detail.chat-blocked-card`<br>`agent-detail.chat` | default: [ref](ref/BlockedCard.png) · [light](ref/BlockedCard.light.png)<br>collapsed: none<br>question: none<br>generic: none<br>unreadable: none | `packages/ui/src/components/BlockedCard.tsx`<br>`apps/mobile/src/blocked/BlockedCard.tsx` | `Chat/Blocked/BlockedCardView.swift:9-1008`<br>`Chat/Blocked/QuestionFormCardView.swift:7-197`<br>`Chat/Blocked/GenericDialogCardView.swift:5-156` |
 | [BackgroundWorkStrip](#backgroundworkstrip) | UX3-blocked-terminal | `agent-detail.chat-blocked-card`<br>`agent-detail.chat-floating-controls`<br>`agent-detail.chat-background-strip`<br>`agent-detail.chat-background-sheet` | default: [ref](ref/BackgroundWorkStrip.png) · [light](ref/BackgroundWorkStrip.light.png)<br>expanded: [ref](ref/BackgroundWorkStrip.expanded.png) · [light](ref/BackgroundWorkStrip.expanded.light.png) | none | `Chat/BackgroundWork/ChatBackgroundWorkStrip.swift:8-266`<br>`Chat/BackgroundWork/ChatBackgroundWorkSheet.swift:7-214` |
 | [NoticeBanner](#noticebanner) | UX3-blocked-terminal | `agent-detail.chat-banners`<br>`agent-detail.chat` | default: [ref](ref/NoticeBanner.png) · [light](ref/NoticeBanner.light.png)<br>locating: [ref](ref/NoticeBanner.locating.png) · [light](ref/NoticeBanner.locating.light.png)<br>inapp: none | `packages/ui/src/primitives/Banner.tsx`<br>`apps/mobile/src/notifications/InAppBanner.tsx` | `Chat/Timeline/ChatConversationStatus.swift:333-420`<br>`Notifications/AgentNotificationBannerView.swift:7-60`<br>`Notifications/AgentNotificationBannerStore.swift:1-190` |
 | [JumpControl](#jumpcontrol) | UX3-blocked-terminal | `agent-detail.chat (appears when scrolled away; no atlas crop)` | default: none | none | `Console/MessageJumpControl.swift:445-576`<br>`Chat/Timeline/ChatTimelineView.swift:75-134` |
@@ -77,7 +77,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [KeyPad](#keypad) | UX3-blocked-terminal | `agent-detail.control-keys`<br>`agent-detail.tools-keyboard`<br>`agent-detail.chat-tools-keyboard` | default: [ref](ref/KeyPad.png) · [light](ref/KeyPad.light.png) | `packages/ui/src/keys/KeyboardDock.tsx` | `Console/AgentControlKeyboard.swift:6-170`<br>`Console/AgentToolsKeyboard.swift:5-120`<br>`Console/AgentChatToolsKeyboard.swift:6-130`<br>`Terminal/TerminalFullKeyboard.swift:35-250` |
 | [UsageLimitChip](#usagelimitchip) | UX3-usage | `usage.tab`<br>`usage.limits-sheet`<br>`usage.quick-sheet` | default: [ref](ref/UsageLimitChip.png) · [light](ref/UsageLimitChip.light.png) | `apps/mobile/src/usage/QuickCardView.tsx`<br>`apps/mobile/src/usage/LimitWindowRow.tsx` | `Usage/AgentUsageSheets.swift:102-154`<br>`Usage/AgentUsageSection.swift:239-288`<br>`Usage/AgentUsageWide.swift:101-223` |
 | [ProviderUsageCard](#providerusagecard) | UX3-usage | `usage.quick-sheet`<br>`shell.home` | default: none | `packages/ui/src/components/ProviderUsageCard.tsx` |  |
-| [LimitWindowRow](#limitwindowrow) | UX3-usage | `usage.quick-sheet` | default: none | `packages/ui/src/components/LimitWindowRow.tsx` |  |
+| [LimitWindowRow](#limitwindowrow) | UX3-usage | `usage.quick-sheet` | default: none<br>meter: none<br>meterInline: none | `packages/ui/src/components/LimitWindowRow.tsx`<br>`apps/mobile/src/usage/LimitWindowRow.tsx` |  |
 | [UsageTotals](#usagetotals) | UX3-usage | `usage.tab`<br>`usage.tab--host`<br>`usage.day-sheet`<br>`usage.scope-menu` | default: [ref](ref/UsageTotals.png) · [light](ref/UsageTotals.light.png)<br>day: [ref](ref/UsageTotals.day.png) · [light](ref/UsageTotals.day.light.png) | `apps/mobile/src/usage/UsageTotals.tsx`<br>`apps/mobile/src/usage/UsageControls.tsx` | `Usage/AgentUsageTab.swift:5-130`<br>`Usage/AgentUsageDashboard.swift:30-300`<br>`Usage/AgentUsageCharts.swift:215-294` |
 | [UsageChart](#usagechart) | UX3-usage | `usage.tab` | default: [ref](ref/UsageChart.png) · [light](ref/UsageChart.light.png) | `apps/mobile/src/usage/DailyChart.tsx`<br>`packages/ui/src/primitives/BarChart.tsx` | `Usage/AgentUsageCharts.swift:7-189`<br>`Usage/AgentUsageCharts.swift:481-528` |
 | [UsageHeatMap](#usageheatmap) | UX3-usage | `usage.tab`<br>`usage.day-sheet` | default: [ref](ref/UsageHeatMap.png) · [light](ref/UsageHeatMap.light.png)<br>full: [ref](ref/UsageHeatMap.full.png) · [light](ref/UsageHeatMap.full.light.png) | none | `Usage/AgentUsageCharts.swift:294-480` |
@@ -722,15 +722,17 @@ Acceptance (the judge ticks each on the side-by-side):
 
 Task UX3-blocked-terminal · target `packages/ui/src/components/BlockedCard.tsx` · composes Card, Button, Icon, TextField, Text
 
-Props sketch: `{ prompt: BlockedPrompt (title, description, code?, options[], warning?), onChoose, onNote, collapsed }`
+Props sketch: `{ title, body: BlockedBody (prompt | excerpt | keys), disabled, collapsed, onToggleCollapsed, notice, labels }`
 
-Interactions: option tap sends the key and haptics; chevron collapses; Add a Note opens a text field; rule warning line under rules
+Interactions: option tap sends the key; chevron collapses; Add a Note opens a text field; rule warning line under rules
 
 Variants (gallery variant id = the id before the colon):
 
 - `default`: header (hand glyph, 'Bash command', chevron), description, code box, filled accent 'Yes', secondary option, red 'No', 'Add a Note' · crop [ref](ref/BlockedCard.png) · [light](ref/BlockedCard.light.png)
 - `collapsed`: single bar with the title and a chevron (no atlas crop) · crop none
 - `question`: form card with options and a text field (no atlas crop) · crop none
+- `generic`: the Agent's screen as a mono box with its numbered answers (no atlas crop) · crop none
+- `unreadable`: a sentence and raw key buttons (no atlas crop) · crop none
 
 Acceptance (the judge ticks each on the side-by-side):
 
@@ -869,15 +871,17 @@ Acceptance (the judge ticks each on the side-by-side):
 
 ## LimitWindowRow
 
-Task UX3-usage · target `packages/ui/src/components/LimitWindowRow.tsx` · composes Text
+Task UX3-usage · target `packages/ui/src/components/LimitWindowRow.tsx` · composes Text, Meter, Icon
 
-Props sketch: `{ label, usedShare, color, percentText, resetText }`
+Props sketch: `{ variant, label, usedShare, percentText, resetText; segmented: color; meter: paceShare, level, unknownText, paceText }`
 
 Interactions: none
 
 Variants (gallery variant id = the id before the colon):
 
 - `default`: label, 10-segment bar with a partial last segment, percent, time to reset · crop none
+- `meter`: stacked: name and percent, Meter with the pace tick, reset and pace line · crop none
+- `meterInline`: one line: name, short Meter, percent, reset clock · crop none
 
 Acceptance (the judge ticks each on the side-by-side):
 

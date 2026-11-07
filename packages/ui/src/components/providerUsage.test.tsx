@@ -17,6 +17,45 @@ describe('segmentFill', () => {
   });
 });
 
+describe('LimitWindowRow meter variants', () => {
+  const window = {
+    label: 'Weekly',
+    usedShare: 0.62,
+    paceShare: 0.4,
+    percentText: '62%',
+    resetText: '2d',
+    paceText: 'Ahead',
+    unknownText: 'Unknown',
+    meterTestID: 'bar',
+    paceTestID: 'pace',
+  };
+
+  it('stacks the bar with its pace tick and the pace line', async () => {
+    await renderThemed(<LimitWindowRow variant="meter" {...window} />);
+    expect(screen.getByLabelText('Weekly, 62%')).toBeTruthy();
+    expect(screen.getByTestId('meter-pace', { includeHiddenElements: true })).toBeTruthy();
+    expect(screen.getByTestId('pace', { includeHiddenElements: true })).toBeTruthy();
+  });
+
+  it('says so instead of a bar while the share is unknown', async () => {
+    await renderThemed(
+      <LimitWindowRow variant="meter" {...window} usedShare={null} percentText="" testID="w" />,
+    );
+    expect(screen.getByLabelText('Weekly')).toBeTruthy();
+    expect(screen.queryByTestId('bar', { includeHiddenElements: true })).toBeNull();
+    expect(screen.getByText('Unknown', { includeHiddenElements: true })).toBeTruthy();
+  });
+
+  it('keeps one line, without the pace line or the unknown text', async () => {
+    await renderThemed(
+      <LimitWindowRow variant="meterInline" {...window} usedShare={null} percentText="" />,
+    );
+    expect(screen.queryByTestId('bar', { includeHiddenElements: true })).toBeNull();
+    expect(screen.queryByTestId('pace', { includeHiddenElements: true })).toBeNull();
+    expect(screen.queryByText('Unknown', { includeHiddenElements: true })).toBeNull();
+  });
+});
+
 describe('ProviderUsageCard', () => {
   it('renders a row per window and opens the detail on press', async () => {
     const onPress = jest.fn();

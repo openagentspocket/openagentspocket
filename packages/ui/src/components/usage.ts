@@ -2,8 +2,11 @@
 
 export {
   LIMIT_SEGMENTS,
+  type LimitWindowLevel,
   LimitWindowRow,
   type LimitWindowRowProps,
+  type MeterLimitWindow,
+  type SegmentedLimitWindow,
   segmentFill,
 } from './LimitWindowRow';
 export {

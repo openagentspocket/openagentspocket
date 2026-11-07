@@ -263,6 +263,7 @@ function WindowRows() {
       {[0, 0.04, 0.37, 0.62, 0.96, 1].map((share) => (
         <LimitWindowRow
           key={share}
+          variant="segmented"
           label="Weekly"
           usedShare={share}
           color={color}
@@ -275,10 +276,52 @@ function WindowRows() {
   );
 }
 
+const METER_WINDOWS = [
+  { share: 0.37, pace: 0.5, level: 'normal', paceText: 'Under pace' },
+  { share: 0.85, pace: 0.6, level: 'warning', paceText: 'Ahead of pace' },
+  { share: 0.97, pace: 0.8, level: 'danger', paceText: 'Ahead of pace' },
+] as const;
+
+function MeterRows({ variant }: { variant: 'meter' | 'meterInline' }) {
+  const styles = useStyles();
+  return (
+    <View style={styles.pad}>
+      {METER_WINDOWS.map(({ share, pace, level, paceText }) => (
+        <LimitWindowRow
+          key={share}
+          variant={variant}
+          label="Weekly"
+          usedShare={share}
+          paceShare={pace}
+          level={level}
+          percentText={`${Math.round(share * 100)}%`}
+          resetText={variant === 'meter' ? 'Resets in 4 days' : '4d 23h'}
+          paceText={paceText}
+        />
+      ))}
+      <LimitWindowRow
+        variant={variant}
+        label="5-hour"
+        usedShare={null}
+        percentText=""
+        resetText=""
+        unknownText="Current usage unknown"
+      />
+    </View>
+  );
+}
+
 /** Demos of the UX3 group 'usage': one entry per component, one variant per catalog variant id. */
 export const usageEntries: readonly CatalogEntry[] = [
   { name: 'ProviderUsageCard', variants: [{ id: 'default', render: () => <ProviderCards /> }] },
-  { name: 'LimitWindowRow', variants: [{ id: 'default', render: () => <WindowRows /> }] },
+  {
+    name: 'LimitWindowRow',
+    variants: [
+      { id: 'default', render: () => <WindowRows /> },
+      { id: 'meter', render: () => <MeterRows variant="meter" /> },
+      { id: 'meterInline', render: () => <MeterRows variant="meterInline" /> },
+    ],
+  },
   { name: 'UsageLimitChip', variants: [{ id: 'default', render: () => <LimitChips /> }] },
   {
     name: 'UsageTotals',
