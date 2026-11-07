@@ -84,6 +84,19 @@ describe('ApprovalAskWatch', () => {
     expect(onChange).toHaveBeenCalledTimes(2);
   });
 
+  it('keeps an ask through a read that could not reach its pane', async () => {
+    let output = reading();
+    const { clock, onChange, watch } = makeWatch(() => output);
+    watch.rowsDidChange([row(PANE, 'blocked')]);
+    await clock.advance(FIRST_ASK_READ_MS);
+    await flush();
+    output = JSON.stringify({ v: 1, result: 'ok', asks: [], unread: [PANE] });
+    await clock.advance(ASK_REFRESH_MS);
+    await flush();
+    expect(watch.asks('h1').get(PANE)?.episodeId).toBe(BID);
+    expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
   it('stays quiet without a plugin, and tries again on the next Blocked turn', async () => {
     const { clock, run, source, watch } = makeWatch();
     source.mockResolvedValueOnce(null as never);

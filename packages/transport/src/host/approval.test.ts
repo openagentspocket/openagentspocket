@@ -32,16 +32,16 @@ describe('readApprovalAsks', () => {
     );
     const source = await approvalAsksSourceOf(transport, null);
     expect(source?.script).toContain('/home/me/plugin/src/approval-asks.js');
-    const asks = await readApprovalAsks(transport, null);
-    expect(asks.get('w1:p1')?.episodeId).toBe('abcdefghijk');
+    const reading = await readApprovalAsks(transport, null);
+    expect(reading.kind === 'read' && reading.asks.get('w1:p1')?.episodeId).toBe('abcdefghijk');
   });
 
   it.each([
     ['a disabled plugin', { plugin_root: '/p', enabled: false }],
     ['no plugin root', {}],
-  ])('reads nothing with %s', async (_name, fields) => {
+  ])('says the plugin cannot answer with %s', async (_name, fields) => {
     const { transport } = await connected(plugin(fields));
     expect(await approvalAsksSourceOf(transport, null)).toBeNull();
-    expect((await readApprovalAsks(transport, null)).size).toBe(0);
+    expect((await readApprovalAsks(transport, null)).kind).toBe('pluginUnavailable');
   });
 });

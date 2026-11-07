@@ -13,6 +13,17 @@ const ASK_OPTIONS_MAX = 4;
 /** The prompts a Host's plugin says its screens still show, by pane id. */
 export type ApprovalAsks = ReadonlyMap<string, ActivityAsk>;
 
+/** One read of a Host's asks: "could not read" is never the same as "gone". */
+export type ApprovalAskReading =
+  | {
+      readonly kind: 'read';
+      readonly asks: ApprovalAsks;
+      /** Panes with a recorded ask whose screen could not be read this time. */
+      readonly unread: readonly string[];
+    }
+  /** The plugin is off, missing, or its hooks never ran: it can say nothing about any pane. */
+  | { readonly kind: 'pluginUnavailable' };
+
 const text64 = (text: string) => encodeBase64Url(utf8Encode(text));
 
 /** Runs one script of the plugin on the Host, with its own node, config dir and session socket. */
@@ -96,25 +107,30 @@ function askEntry(value: unknown): [string, ActivityAsk] | null {
   ];
 }
 
-/** The asks `approval-asks.js` printed; a malformed one drops alone. Throws on unreadable output. */
-export function parseApprovalAsks(stdout: string): ApprovalAsks {
+/** What `approval-asks.js` printed; a malformed ask drops alone. Throws on unreadable output. */
+export function parseApprovalAskReading(stdout: string): ApprovalAskReading {
   const report = lastLine(stdout);
-  if (report?.v === 1 && report.result === 'runtime_missing') return new Map();
+  if (report?.v === 1 && report.result === 'runtime_missing') return { kind: 'pluginUnavailable' };
   if (report?.v !== 1 || report.result !== 'ok' || !Array.isArray(report.asks)) {
     throw new Error('The approval asks are unreadable.');
   }
-  return new Map(report.asks.map(askEntry).filter((entry) => entry !== null));
+  const unread = Array.isArray(report.unread) ? report.unread : [];
+  return {
+    kind: 'read',
+    asks: new Map(report.asks.map(askEntry).filter((entry) => entry !== null)),
+    unread: unread.filter((pane) => typeof pane === 'string' && pane !== ''),
+  };
 }
 
 /** A Host's asks as Host data. It needs the plugin's root, so it is built once that is known. */
 export function approvalAsksSource(
   pluginRoot: string,
   endpoint: HerdrEndpoint | null,
-): HostDataSource<ApprovalAsks> {
+): HostDataSource<ApprovalAskReading> {
   return {
     key: 'approval-asks',
     script: approvalAsksScript(pluginRoot, endpoint),
-    parse: parseApprovalAsks,
+    parse: parseApprovalAskReading,
     refreshMs: ASK_REFRESH_MS,
   };
 }

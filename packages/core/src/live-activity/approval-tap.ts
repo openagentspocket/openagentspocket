@@ -6,7 +6,7 @@ import {
   answerApproval,
   type StoredApprovalOptIns,
 } from '../notifications/approval-action';
-import type { ApprovalAsks } from '../notifications/approval-script';
+import type { ApprovalAskReading } from '../notifications/approval-script';
 import type { NotificationKeyStore, RandomBytes } from '../notifications/key-store';
 import { sealContent } from './content';
 import type { LiveActivityController } from './controller';
@@ -31,7 +31,7 @@ export interface ActivityTapGates {
   readonly ledger: ApprovalLedger;
   readonly nowSeconds: () => number;
   /** Reads the Host now; never an earlier reading. */
-  readonly readAsks: (hostId: string) => Promise<ApprovalAsks>;
+  readonly readAsks: (hostId: string) => Promise<ApprovalAskReading>;
   /** Device owner authentication, for Approve; true only on a fresh success. */
   readonly authenticate: (request: ApprovalApplyRequest) => Promise<boolean>;
   /** Runs the apply on the Host and gives back the result it printed. */
@@ -57,14 +57,17 @@ export async function runActivityTap(
 ): Promise<ApprovalOutcome> {
   const { hostId, paneId, episodeId, decision } = tap;
   if (!gates.isActivityOn(hostId) || !gates.optIns.isEnabled(hostId)) return 'optedOut';
-  let asks: ApprovalAsks;
+  let reading: ApprovalAskReading;
   try {
-    asks = await gates.readAsks(hostId);
+    reading = await gates.readAsks(hostId);
   } catch {
     return 'unreachable';
   }
-  const ask = asks.get(paneId);
-  if (!ask || ask.episodeId !== episodeId) return 'promptChanged';
+  if (reading.kind !== 'read') return 'pluginOutdated';
+  const ask = reading.asks.get(paneId);
+  if (!ask || ask.episodeId !== episodeId) {
+    return reading.unread.includes(paneId) ? 'unreachable' : 'promptChanged';
+  }
   return answerApproval({
     hostId,
     payload: payloadOf(paneId, ask),

@@ -2,7 +2,7 @@ import {
   type ActivityTap,
   ActivityTapRunner,
   type ApprovalApplyRequest,
-  type ApprovalAsks,
+  type ApprovalAskReading,
   ApprovalAskWatch,
   type ApprovalLedger,
   type ApprovalOutcome,
@@ -34,10 +34,10 @@ export interface HostCatalogSource {
 /** What answering from an activity needs of a Host, over its connection. */
 export interface ApprovalHost {
   /** The Host's read of its asks; null when its plugin cannot answer. */
-  source(hostId: string): Promise<HostDataSource<ApprovalAsks> | null>;
+  source(hostId: string): Promise<HostDataSource<ApprovalAskReading> | null>;
   run(hostId: string, script: string): Promise<string>;
   /** Waits for the Host a tap may have launched the app for, and reads it now. */
-  readAsks(hostId: string): Promise<ApprovalAsks>;
+  readAsks(hostId: string): Promise<ApprovalAskReading>;
   apply(hostId: string, request: ApprovalApplyRequest): Promise<string>;
 }
 

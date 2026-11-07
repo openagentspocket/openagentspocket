@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { MemoryStorage } from '../hosts/known-hosts';
 import { ApprovalLedger, StoredApprovalOptIns } from '../notifications/approval-action';
+import type { ApprovalAskReading } from '../notifications/approval-script';
 import { MemoryNotificationKeyStore } from '../notifications/key-store';
 import {
   type ActivityTap,
@@ -29,13 +30,19 @@ const ASK: ActivityAsk = {
 const APPROVE: ActivityTap = { hostId: 'h1', paneId: PANE, episodeId: BID, decision: 'approve' };
 const DENY: ActivityTap = { ...APPROVE, decision: 'deny' };
 
+const reading = (ask: ActivityAsk = ASK, unread: string[] = []): ApprovalAskReading => ({
+  kind: 'read',
+  asks: new Map([[PANE, ask]]),
+  unread,
+});
+
 function gates(overrides: Partial<ActivityTapGates> = {}) {
   const storage = new MemoryStorage();
   const optIns = new StoredApprovalOptIns(storage);
   optIns.setEnabled(true, 'h1');
   const apply = vi.fn(async (): Promise<string> => 'sent');
   const authenticate = vi.fn(async () => true);
-  const readAsks = vi.fn(async () => new Map([[PANE, ASK]]));
+  const readAsks = vi.fn(async (): Promise<ApprovalAskReading> => reading());
   const all: ActivityTapGates = {
     isActivityOn: () => true,
     optIns,
@@ -131,7 +138,7 @@ describe('runActivityTap', () => {
 
   it('never approves a Deny only prompt, and asks no owner for it', async () => {
     const { all, apply, authenticate } = gates({
-      readAsks: async () => new Map([[PANE, { ...ASK, denyOnly: true }]]),
+      readAsks: async () => reading({ ...ASK, denyOnly: true }),
     });
     expect(await runActivityTap(APPROVE, all)).toBe('denyOnly');
     expect(authenticate).not.toHaveBeenCalled();
@@ -140,7 +147,7 @@ describe('runActivityTap', () => {
 
   it('never approves a cut prompt', async () => {
     const { all, apply } = gates({
-      readAsks: async () => new Map([[PANE, { ...ASK, prompt: 'x'.repeat(121) }]]),
+      readAsks: async () => reading({ ...ASK, prompt: 'x'.repeat(121) }),
     });
     expect(await runActivityTap(APPROVE, all)).toBe('promptCut');
     expect(apply).not.toHaveBeenCalled();
@@ -152,6 +159,21 @@ describe('runActivityTap', () => {
     expect(await runActivityTap(DENY, all)).toBe('unreachable');
     expect(apply).not.toHaveBeenCalled();
     expect(await runActivityTap(DENY, all)).toBe('answered');
+  });
+
+  it('a pane the Host could not read is unreachable, not a changed prompt', async () => {
+    const { all, apply, readAsks } = gates();
+    readAsks.mockResolvedValueOnce({ kind: 'read', asks: new Map(), unread: [PANE] });
+    expect(await runActivityTap(DENY, all)).toBe('unreachable');
+    expect(apply).not.toHaveBeenCalled();
+    expect(await runActivityTap(DENY, all)).toBe('answered');
+  });
+
+  it('a plugin that cannot answer asks for an update, not a changed prompt', async () => {
+    const { all, apply, readAsks } = gates();
+    readAsks.mockResolvedValueOnce({ kind: 'pluginUnavailable' });
+    expect(await runActivityTap(DENY, all)).toBe('pluginOutdated');
+    expect(apply).not.toHaveBeenCalled();
   });
 
   it('a failed apply keeps the episode spent: it never answers twice', async () => {

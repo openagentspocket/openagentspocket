@@ -18,13 +18,14 @@ export {
   StoredApprovalOptIns,
 } from './approval-action';
 export {
+  type ApprovalAskReading,
   type ApprovalAsks,
   ASK_REFRESH_MS,
   approvalApplyResult,
   approvalApplyScript,
   approvalAsksScript,
   approvalAsksSource,
-  parseApprovalAsks,
+  parseApprovalAskReading,
 } from './approval-script';
 export { type AgentBannerTarget, bannerBody, bannerTargetKey, bannerTitle } from './banner-copy';
 export { AgentBannerStore, BANNER_DISMISS_MS, BANNER_HOLD_MS } from './banner-store';

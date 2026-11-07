@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { approvalAsksScript, approvalAsksSource, parseApprovalAsks } from './approval-script';
+import {
+  type ApprovalAskReading,
+  approvalAsksScript,
+  approvalAsksSource,
+  parseApprovalAskReading,
+} from './approval-script';
 
 const ENTRY = {
   pane: 'w1:p1',
@@ -9,7 +14,13 @@ const ENTRY = {
   q: 'Run ls?',
   opts: ['Yes', 'No'],
 };
-const output = (asks: unknown[]) => `${JSON.stringify({ v: 1, result: 'ok', asks })}\n`;
+const output = (asks: unknown[], extra = {}) =>
+  `${JSON.stringify({ v: 1, result: 'ok', asks, ...extra })}\n`;
+
+function asksOf(reading: ApprovalAskReading) {
+  if (reading.kind !== 'read') throw new Error('not read');
+  return reading.asks;
+}
 
 describe('approvalAsksScript', () => {
   it('runs the plugin reader with its own node, the config dir and the session socket', () => {
@@ -28,9 +39,9 @@ describe('approvalAsksScript', () => {
   });
 });
 
-describe('parseApprovalAsks', () => {
+describe('parseApprovalAskReading', () => {
   it('maps the Host fields onto the activity ask, by pane', () => {
-    const asks = parseApprovalAsks(`noise\n${output([{ ...ENTRY, act: 2 }])}`);
+    const asks = asksOf(parseApprovalAskReading(`noise\n${output([{ ...ENTRY, act: 2 }])}`));
     expect(asks.get('w1:p1')).toEqual({
       episodeId: 'abcdefghijk',
       denyOnly: true,
@@ -40,8 +51,19 @@ describe('parseApprovalAsks', () => {
     });
   });
 
-  it('reads no asks before the hooks recorded the runtime', () => {
-    expect(parseApprovalAsks('{"v":1,"result":"runtime_missing"}\n').size).toBe(0);
+  it('a Host whose hooks never recorded the runtime is a plugin problem, not an empty screen', () => {
+    expect(parseApprovalAskReading('{"v":1,"result":"runtime_missing"}\n').kind).toBe(
+      'pluginUnavailable',
+    );
+  });
+
+  it('tells a pane it could not read from one with no ask', () => {
+    const reading = parseApprovalAskReading(output([ENTRY], { unread: ['w1:p9', 7, ''] }));
+    expect(reading).toMatchObject({ kind: 'read', unread: ['w1:p9'] });
+  });
+
+  it('an older plugin reports no unread panes', () => {
+    expect(parseApprovalAskReading(output([ENTRY]))).toMatchObject({ unread: [] });
   });
 
   it.each([
@@ -53,11 +75,13 @@ describe('parseApprovalAsks', () => {
     ['labels that are not text', { opts: ['Yes', 1] }],
     ['too many labels', { opts: ['a', 'b', 'c', 'd', 'e'] }],
   ])('drops an ask with %s and keeps the others', (_name, change) => {
-    const asks = parseApprovalAsks(
-      output([
-        { ...ENTRY, ...change },
-        { ...ENTRY, pane: 'w1:p2' },
-      ]),
+    const asks = asksOf(
+      parseApprovalAskReading(
+        output([
+          { ...ENTRY, ...change },
+          { ...ENTRY, pane: 'w1:p2' },
+        ]),
+      ),
     );
     expect([...asks.keys()]).toEqual(['w1:p2']);
   });
@@ -69,7 +93,7 @@ describe('parseApprovalAsks', () => {
     '{"v":2,"result":"ok","asks":[]}',
     '{"v":1,"result":"ok"}',
   ])('throws on %j: a failed read keeps the last good one', (text) => {
-    expect(() => parseApprovalAsks(text)).toThrow();
+    expect(() => parseApprovalAskReading(text)).toThrow();
   });
 });
 
@@ -78,6 +102,6 @@ describe('approvalAsksSource', () => {
     const source = approvalAsksSource('/p', null);
     expect(source.script).toBe(approvalAsksScript('/p', null));
     expect(source.refreshMs).toBeGreaterThan(0);
-    expect(source.parse(output([ENTRY])).size).toBe(1);
+    expect(asksOf(source.parse(output([ENTRY]))).size).toBe(1);
   });
 });

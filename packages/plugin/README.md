@@ -1197,7 +1197,9 @@ answers no asks and clears every record. Otherwise it reads each recorded
 pane once (`herdr agent read`, 1.5 s bound, in parallel, the pane id as an
 argument, never through a shell) and keeps only records whose `q`, labels
 and `act` the screen still shows; the others (prompt changed, Agent gone)
-are cleared. A pane that cannot be read is left out and keeps its record.
+are cleared. A pane that cannot be read is left out, keeps its record and is
+named in `unread`, a list of pane ids next to `asks`, present only when it has
+panes, so the app can tell a failed read from a prompt that went away.
 
 Plugin-side settings live in `notify.json` next to the registration file in
 the plugin config dir:

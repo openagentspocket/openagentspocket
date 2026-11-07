@@ -18,7 +18,9 @@
 // It prints one JSON line, {"v":1,"result":"ok","asks":[...]}, each ask
 // {pane, bid, ts, act, q, opts} as the Blocked push carried it, or
 // {"v":1,"result":"runtime_missing"} before the hooks recorded the runtime.
-// A pane that cannot be read is left out and keeps its record.
+// A pane that cannot be read is left out, keeps its record and is named in
+// `unread`, a list present only when it has panes: the app must not take a
+// failed read for a prompt that went away.
 
 import { spawn } from "node:child_process";
 
@@ -125,13 +127,15 @@ async function main() {
   const herdr = runtime.herdr ?? "herdr";
   const standings = await Promise.all(records.map((record) => standing(herdr, record)));
   const asks = [];
+  const unread = [];
   records.forEach((record, index) => {
     if (standings[index] === "changed") clearApprovalAsk(stateDir, record.pane);
+    if (standings[index] === "unknown") unread.push(record.pane);
     if (standings[index] !== "shown") return;
     const { pane, bid, ts, act, q, opts } = record;
     asks.push({ pane, bid, ts, act, q, opts });
   });
-  return report("ok", { asks });
+  return report("ok", unread.length > 0 ? { asks, unread } : { asks });
 }
 
 main().catch(() => {

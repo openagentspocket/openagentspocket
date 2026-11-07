@@ -10,7 +10,7 @@ import {
   MemoryStorage,
   NotificationRegistrationCeremony,
   openActivity,
-  parseApprovalAsks,
+  parseApprovalAskReading,
   SETTLE_MS,
   StoredApprovalOptIns,
 } from '@openagentspocket/core';
@@ -159,7 +159,7 @@ describe('LiveActivityRuntime', () => {
       keys.save({ hostId: host.id, hostName: 'mbp', key });
       const optIns = new StoredApprovalOptIns(storage);
       optIns.setEnabled(optedIn, host.id);
-      const reads = jest.fn(async () => parseApprovalAsks(REPORT));
+      const reads = jest.fn(async () => parseApprovalAskReading(REPORT));
       const apply = jest.fn<ReturnType<ApprovalHost['apply']>, Parameters<ApprovalHost['apply']>>(
         async () => 'sent',
       );

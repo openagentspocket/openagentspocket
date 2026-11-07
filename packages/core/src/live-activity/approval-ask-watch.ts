@@ -1,19 +1,26 @@
 import type { ConsoleRow } from '../console/row';
 import type { Clock } from '../hosts/cancellation';
 import { type HostDataSource, HostDataStore } from '../hosts/host-data';
-import type { ApprovalAsks } from '../notifications/approval-script';
+import type { ApprovalAskReading, ApprovalAsks } from '../notifications/approval-script';
 
 /** The hook records an ask around the Blocked turn: the first read leaves it this long. */
 export const FIRST_ASK_READ_MS = 7_000;
 
 const NO_ASKS: ApprovalAsks = new Map();
 
+/** The asks after `reading`: a pane it could not read keeps the ask it had, a failed read is no news. */
+function asksAfter(reading: ApprovalAskReading, before: ApprovalAsks): ApprovalAsks {
+  if (reading.kind !== 'read') return NO_ASKS;
+  const kept = [...before].filter(([pane]) => reading.unread.includes(pane));
+  return new Map([...kept, ...reading.asks]);
+}
+
 export interface ApprovalAskWatchOptions {
   readonly clock: Clock;
   /** Whether this device answers from this Host's activity at all. */
   readonly isWatched: (hostId: string) => boolean;
   /** The Host's read, null when its plugin cannot answer. */
-  readonly source: (hostId: string) => Promise<HostDataSource<ApprovalAsks> | null>;
+  readonly source: (hostId: string) => Promise<HostDataSource<ApprovalAskReading> | null>;
   readonly run: (hostId: string, script: string) => Promise<string>;
   readonly onChange: (hostId: string) => void;
 }
@@ -83,10 +90,11 @@ export class ApprovalAskWatch {
     store.start();
   }
 
-  private take(hostId: string, asks: ApprovalAsks | null): void {
-    if (asks === null) return;
-    const before = JSON.stringify([...(this.current.get(hostId) ?? NO_ASKS)]);
-    if (JSON.stringify([...asks]) === before) return;
+  private take(hostId: string, reading: ApprovalAskReading | null): void {
+    if (reading === null) return;
+    const before = this.current.get(hostId) ?? NO_ASKS;
+    const asks = asksAfter(reading, before);
+    if (JSON.stringify([...asks]) === JSON.stringify([...before])) return;
     this.current.set(hostId, asks);
     this.o.onChange(hostId);
   }
