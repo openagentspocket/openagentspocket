@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { decodeResult } from '@openagentspocket/core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { handleLine, typeKeys, visibleScreen } from './handler.js';
+import { agentRead, handleLine, typeKeys, visibleScreen } from './handler.js';
 import { tmuxRunner } from './runner.js';
 import { listPanes } from './tmux.js';
 
@@ -44,6 +44,14 @@ describe.skipIf(!BINARY)('the bridge on a real tmux', () => {
     await tmux.run(['send-keys', '-t', pane.paneId, 'Enter']);
     await eventually(async () => (await visibleScreen(tmux, pane.paneId)).includes('\nask-mark'));
     await tmux.run(['kill-session', '-t', 'ask']);
+  });
+
+  it('answers agent_not_found for a pane that is gone, so its ask is cleared', async () => {
+    const read = await agentRead(tmux, '%9999');
+    expect(read.code).toBe(1);
+    expect(JSON.parse(read.output)).toMatchObject({ error: { code: 'agent_not_found' } });
+    const stopped = tmuxRunner({ binary: BINARY ?? 'tmux', socketName: `${SOCKET}-none` });
+    expect((await agentRead(stopped, '%1')).code).toBe(1);
   });
 
   it('maps live sessions, windows and panes', async () => {

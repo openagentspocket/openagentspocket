@@ -1,6 +1,6 @@
 import { agenticoEntry, decodeResult, parsePluginList } from '@openagentspocket/core';
 import { describe, expect, it } from 'vitest';
-import { handleLine } from './handler.js';
+import { agentRead, handleLine } from './handler.js';
 import { SESSION_PROTOCOL, sessionSnapshot } from './snapshot.js';
 import { parsePanes, type TmuxRunner } from './tmux.js';
 
@@ -24,6 +24,17 @@ function fakeTmux() {
 
 const request = (method: string, params: object = {}) =>
   JSON.stringify({ id: '7', method, params });
+
+describe('agent read', () => {
+  it('prints the screen as it stands', async () => {
+    expect(await agentRead(fakeTmux().tmux, '%1')).toEqual({ code: 0, output: 'screen text' });
+  });
+
+  it('leaves any other tmux failure unexplained: the ask stays until a read can tell', async () => {
+    const tmux: TmuxRunner = { run: () => Promise.reject(new Error('tmux: out of memory')) };
+    await expect(agentRead(tmux, '%1')).rejects.toThrow('out of memory');
+  });
+});
 
 describe('parsePanes', () => {
   it('reads every field, keeps a separator in a title and skips broken lines', () => {

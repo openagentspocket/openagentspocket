@@ -124,6 +124,22 @@ describe('installLauncher', () => {
   });
 });
 
+describe('the launcher and a named tmux socket', () => {
+  const install = (tmuxSocket?: string) => {
+    dir = mkdtempSync(join(tmpdir(), 'oap-'));
+    const options = { configDir: join(dir, 'config'), node: '/n', script: '/s.js', path: '/a' };
+    return readFileSync(installLauncher({ ...options, tmuxSocket }), 'utf8');
+  };
+
+  it('carries it, or an `agent read` over SSH would ask the default server', () => {
+    expect(install("it's")).toContain(`export OAP_TMUX_SOCKET='it'\\''s'`);
+  });
+
+  it('names none when the bridge runs on the default server', () => {
+    expect(install()).not.toContain('OAP_TMUX_SOCKET');
+  });
+});
+
 describe('autostartFor', () => {
   const base = { home: '/h', launcher: '/h/a&b/herdr', uid: 501 };
 

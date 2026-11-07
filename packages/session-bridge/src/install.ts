@@ -20,8 +20,10 @@ export function installLauncher(options: {
   node: string;
   script: string;
   path: string;
+  /** The named server the bridge runs on: an SSH exec of the launcher has no other way to know it. */
+  tmuxSocket?: string;
 }): string {
-  const { configDir, node, script, path } = options;
+  const { configDir, node, script, path, tmuxSocket } = options;
   const bin = join(configDir, 'bin');
   const launcher = join(bin, 'herdr');
   mkdirSync(bin, { recursive: true, mode: 0o700 });
@@ -32,6 +34,7 @@ export function installLauncher(options: {
       '#!/bin/sh',
       `export PATH=${quoted(path)}`,
       `export OAP_CONFIG_DIR=${quoted(configDir)}`,
+      ...(tmuxSocket ? [`export OAP_TMUX_SOCKET=${quoted(tmuxSocket)}`] : []),
       `exec ${quoted(node)} ${quoted(script)} "$@"`,
       '',
     ].join('\n'),

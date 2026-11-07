@@ -92,6 +92,10 @@ export function parsePanes(output: string): TmuxPane[] {
 const isNoServer = (error: unknown) =>
   error instanceof Error && /no server running|error connecting/.test(error.message);
 
+/** A pane that no longer exists, whether it closed or the whole server did. */
+export const isPaneGone = (error: unknown) =>
+  isNoServer(error) || (error instanceof Error && /can't find pane/.test(error.message));
+
 export async function listPanes(tmux: TmuxRunner): Promise<TmuxPane[]> {
   try {
     return parsePanes(await tmux.run(['list-panes', '-a', '-F', PANE_FORMAT]));
