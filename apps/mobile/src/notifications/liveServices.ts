@@ -4,6 +4,7 @@ import {
   type DevicePushTokenSource,
   type KeyValueStorage,
   MemoryNotificationKeyStore,
+  MirroredApprovalOptIns,
   MirroredNotificationKeyStore,
   type NotificationKeyStore,
   NotificationPreferencesStore,
@@ -13,7 +14,6 @@ import {
   type PushDeviceToken,
   type PushRegistrationState,
   type RandomBytes,
-  StoredApprovalOptIns,
   unavailablePushTokenSource,
 } from '@openagentspocket/core';
 import type { AppGroupStore } from 'agentico-app-group';
@@ -33,7 +33,9 @@ export interface LiveNotificationDeps {
 }
 
 export interface LiveNotificationParts {
-  readonly services: Omit<NotificationServices, 'liveActivity'>;
+  readonly services: Omit<NotificationServices, 'liveActivity' | 'approvals'> & {
+    readonly approvals: NonNullable<NotificationServices['approvals']>;
+  };
   readonly keys: MirroredNotificationKeyStore;
   readonly ceremony: NotificationRegistrationCeremony;
   readonly deviceToken: () => PushDeviceToken | null;
@@ -57,7 +59,9 @@ export function createLiveNotificationParts(deps: LiveNotificationDeps): LiveNot
   const source = deps.tokenSource ?? unavailablePushTokenSource;
   let current: PushRegistrationState = { kind: 'unknown' };
   const deviceToken = () => (current.kind === 'registered' ? current.token : null);
-  const approvalOptIns = new StoredApprovalOptIns(deps.storage);
+  const approvalOptIns = new MirroredApprovalOptIns(deps.storage, (name, text) =>
+    deps.appGroup.writeFile(name, text),
+  );
   const store = new NotificationPreferencesStore({
     approvalOptIns,
     transports: deps.transports,
@@ -74,6 +78,7 @@ export function createLiveNotificationParts(deps: LiveNotificationDeps): LiveNot
     enable: async () => (current = await source.enable()),
   };
   void keys.sync();
+  void approvalOptIns.sync();
   return {
     services: {
       store,

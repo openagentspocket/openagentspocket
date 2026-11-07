@@ -4,7 +4,10 @@ iOS widget extension generated at prebuild by `@bacons/apple-targets` (see `expo
 
 ## Provenance
 
-The Swift sources are copied from the native Swift app (Agentico) with no logic changes:
+The Swift sources are copied from the native Swift app (Agentico) with no logic changes, except that
+the Live Activity's Approve and Deny are links here, not intents: a button opens the app, which reads
+the prompt from the Host and answers through the notification's gates (`AgentActivityLink.answerURL`,
+`apps/mobile/src/live-activity/LiveActivityActions.tsx`). Sources:
 `UsageCore`, `Widgets` (Usage widgets, Live Activity UI, island, rows), `ActivityCore`,
 `NotificationCore`, `Theme`, `Support`. They contain no personal identifiers (checked by grep).
 

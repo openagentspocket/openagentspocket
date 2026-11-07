@@ -17,6 +17,7 @@ import { bindDemoModeStorage } from '@/connections/mode';
 import { recordUncaughtErrors } from '@/diagnostics/crashStorage';
 import { useIncomingLinks } from '@/links/useIncomingLinks';
 import { useOpenAgent } from '@/links/useOpenAgent';
+import { LiveActivityActions } from '@/live-activity/LiveActivityActions';
 import { statusBarStyle } from '@/navigation/screenOptions';
 import { sheetOptions } from '@/navigation/sheetOptions';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
@@ -122,6 +123,7 @@ export default function RootLayout() {
             <ThemedStatusBar />
             <ConnectionsProvider>
               <ApprovalActions />
+              <LiveActivityActions />
               <InAppBanner openAgent={openAgent}>
                 <AppStack />
               </InAppBanner>

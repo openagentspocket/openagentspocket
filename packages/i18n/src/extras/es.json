@@ -6,6 +6,7 @@
   "Add another way to reach this Host, such as its LAN address at home and an overlay network or Jump Host elsewhere.": "Agregá otra forma de llegar a este Host, como su dirección de LAN en casa y una red overlay o un Jump Host en otro lado.",
   "Agent view": "Vista del Agent",
   "Agentico couldn't find Hermes Agent's database at %@.": "Agentico no encontró la base de datos de Hermes Agent en {0}.",
+  "Approving needs your Face ID or passcode. Nothing was sent.": "Para aprobar hace falta tu Face ID o código. No se envió nada.",
   "Board": "Tablero",
   "Chat arrives with the conversation engine.": "El Chat llega con el motor de conversaciones.",
   "Chat doesn't read this program yet. Its terminal works as usual.": "Chat todavía no lee este programa. Su terminal funciona como siempre.",

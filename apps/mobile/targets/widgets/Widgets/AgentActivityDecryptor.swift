@@ -188,16 +188,13 @@ enum AgentActivityDecryptor {
 }
 
 /// The Approve and Deny panel a Live Activity draws for one Blocked Agent
-/// (spec F5, R5): its prompt, the buttons it may offer, and the sealed
-/// envelope the buttons hand back to the app, which answers only what that
-/// envelope shows. Drawn only while this device approves from outside the
-/// app for the Host (`ApprovalOptInMirror`), for the first Blocked Agent in
-/// envelope order that carries an `ask`.
+/// (spec F5, R5): its prompt and the buttons it may offer. Drawn only while
+/// this device approves from outside the app for the Host
+/// (`ApprovalOptInMirror`), for the first Blocked Agent in envelope order
+/// that carries an `ask`.
 struct AgentActivityApproval: Equatable, Sendable {
     let agent: AgentActivityDetails.AgentDetail
     let ask: ActivityApprovalAsk
-    /// The content-state envelope as JSON, the intents' `envelope`.
-    let envelope: String
     /// The one-time Yes label; nil hides Approve: the notification rules
     /// would hide it (a cut prompt, Deny only, format characters), or no
     /// label reads as a one-time Yes, which the Host would refuse.
@@ -207,14 +204,12 @@ struct AgentActivityApproval: Equatable, Sendable {
     /// False on a stale activity: its prompt may be gone.
     let isEnabled: Bool
 
-    /// The panel for `state`, or nil when there is nothing to answer here.
+    /// The panel for `presentation`, or nil when there is nothing to answer here.
     static func make(
-        presentation: AgentActivityPresentation, state: AgentActivityAttributes.ContentState, hostID: String,
+        presentation: AgentActivityPresentation, hostID: String,
         isStale: Bool, isOptedIn: (UUID) -> Bool = { ApprovalOptInMirror().isEnabled(for: $0) }
     ) -> AgentActivityApproval? {
         guard case .detailed(let details, _) = presentation, let host = UUID(uuidString: hostID),
-            let frame = state.envelope, let data = try? JSONEncoder().encode(frame),
-            let envelope = String(data: data, encoding: .utf8),
             let agent = details.agents.first(where: { $0.status == "blocked" && $0.ask != nil }),
             let ask = agent.ask, isOptedIn(host)
         else { return nil }
@@ -222,8 +217,7 @@ struct AgentActivityApproval: Equatable, Sendable {
         let denyLabel = label(in: ask.options, role: .decline)
         guard approveLabel != nil || denyLabel != nil || ask.result != nil else { return nil }
         return AgentActivityApproval(
-            agent: agent, ask: ask, envelope: envelope, approveLabel: approveLabel, denyLabel: denyLabel,
-            isEnabled: !isStale)
+            agent: agent, ask: ask, approveLabel: approveLabel, denyLabel: denyLabel, isEnabled: !isStale)
     }
 
     /// The asking Agent as its card draws above the prompt: the first of

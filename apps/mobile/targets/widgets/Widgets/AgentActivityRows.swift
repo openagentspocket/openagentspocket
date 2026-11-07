@@ -80,9 +80,9 @@ struct AgentActivityLinkedRow: View {
 }
 
 /// A Blocked Agent's prompt with Deny and Approve (spec F5, R5), or what
-/// the last tap came to. The buttons run `DenyAgentIntent` and
-/// `ApproveAgentIntent` in the app process; the system keeps Approve from
-/// running on a locked device. Labels are the prompt's own option labels.
+/// the last tap came to. The buttons are links that open the app, which
+/// answers like a notification action (`AgentActivityLink.answerURL`).
+/// Labels are the prompt's own option labels.
 struct AgentActivityApprovalPanel: View {
     let hostID: String
     let approval: AgentActivityApproval
@@ -115,23 +115,15 @@ struct AgentActivityApprovalPanel: View {
 
     private var buttons: some View {
         Group {
-            if let deny = approval.denyLabel {
-                Button(
-                    role: .destructive,
-                    intent: DenyAgentIntent(
-                        hostID: hostID, paneID: approval.agent.paneID, episodeID: approval.ask.episodeID,
-                        envelope: approval.envelope)
-                ) {
+            if let deny = approval.denyLabel, let url = answerURL(.deny) {
+                Link(destination: url) {
                     Text(deny).lineLimit(1)
                 }
+                .tint(.red)
                 .accessibilityLabel("Deny: \(deny)")
             }
-            if let approve = approval.approveLabel {
-                Button(
-                    intent: ApproveAgentIntent(
-                        hostID: hostID, paneID: approval.agent.paneID, episodeID: approval.ask.episodeID,
-                        envelope: approval.envelope)
-                ) {
+            if let approve = approval.approveLabel, let url = answerURL(.approve) {
+                Link(destination: url) {
                     Text(approve).lineLimit(1)
                 }
                 .tint(AgentActivityStatusStyle.ink(for: "blocked", on: surface))
@@ -142,6 +134,11 @@ struct AgentActivityApprovalPanel: View {
         .buttonStyle(.bordered)
         .controlSize(.small)
         .disabled(!approval.isEnabled)
+    }
+
+    private func answerURL(_ answer: AgentActivityLink.Answer) -> URL? {
+        AgentActivityLink.answerURL(
+            hostID: hostID, paneID: approval.agent.paneID, episodeID: approval.ask.episodeID, answer: answer)
     }
 }
 

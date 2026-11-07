@@ -36,6 +36,7 @@ import { TransportChatFiles } from '@/conversations/chatFiles';
 import { HostsModel } from '@/features/hosts/HostsModel';
 import type { HostsRuntime } from '@/features/hosts/hostsRuntime';
 import { ModelPairingCatalog } from '@/features/hosts/pairingAdapters';
+import { approvalHost } from '@/live-activity/approvalHost';
 import { LiveActivityRuntime } from '@/live-activity/runtime';
 import { createLiveNotificationParts } from '@/notifications/liveServices';
 import type { NotificationServices } from '@/notifications/services';
@@ -76,6 +77,8 @@ export interface LiveDeps {
   readonly randomBytes: RandomBytes;
   /** Asks for notification permission and reads the push token; unavailable when absent. */
   readonly pushTokenSource?: DevicePushTokenSource;
+  /** Device owner authentication for a Live Activity Approve; refused when absent. */
+  readonly confirmOwner?: (reason: string) => Promise<boolean>;
 }
 
 export interface LiveServices {
@@ -201,6 +204,12 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
     clock: deps.clock,
     randomBytes: deps.randomBytes,
     deviceToken: parts.deviceToken,
+    approvals: {
+      optIns: parts.services.approvals.optIns,
+      ledger: parts.services.approvals.ledger,
+      host: approvalHost(store, model),
+      confirmOwner: deps.confirmOwner ?? (async () => false),
+    },
   });
   const notifications: NotificationServices = {
     ...parts.services,
@@ -210,6 +219,7 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
       },
       isEnabled: (hostId) => liveActivity.isEnabled(hostId),
       setEnabled: (enabled, hostId) => liveActivity.setEnabled(enabled, hostId),
+      answer: (tap) => liveActivity.answer(tap),
     },
   };
   return { runtime, store, manager, conversations, notifications, liveActivity };

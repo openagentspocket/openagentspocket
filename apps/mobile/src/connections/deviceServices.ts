@@ -48,6 +48,8 @@ export function deviceServices(): LiveServices {
       appGroup: appGroup(),
       liveActivities: liveActivityController(),
       randomBytes: secureRandomBytes,
+      confirmOwner: async (reason) =>
+        (await deviceAuthenticator.authenticate(reason)) === 'success',
       pushTokenSource: createDevicePushTokenSource(lazyNotifications, {
         platform: Platform.OS === 'android' ? 'android' : 'ios',
         sandbox: isApnsSandbox(Constants.expoConfig, __DEV__),

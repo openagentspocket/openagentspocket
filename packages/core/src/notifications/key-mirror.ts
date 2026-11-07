@@ -22,18 +22,42 @@ export function keyMirrorText(records: readonly NotificationKeyRecord[]): string
 /** Writes the mirror file; false when the container is unavailable. */
 export type KeyMirrorSink = (name: string, text: string) => Promise<boolean>;
 
+/** One App Group file kept equal to a value: writes in order, skips what it wrote, retries a failure. */
+export class MirrorFile {
+  private lastWritten: string | null = null;
+  private chain: Promise<void> = Promise.resolve();
+
+  constructor(
+    private readonly name: string,
+    private readonly sink: KeyMirrorSink,
+  ) {}
+
+  write(text: string): Promise<void> {
+    this.chain = this.chain.then(async () => {
+      if (text === this.lastWritten) return;
+      try {
+        if (await this.sink(this.name, text)) this.lastWritten = text;
+      } catch {
+        // Retried by the next write.
+      }
+    });
+    return this.chain;
+  }
+}
+
 /**
  * Wraps the real key store and rewrites the mirror file whenever the key records change. A failed
  * mirror write never fails the key change (the Keychain stays the truth); `sync()` retries it.
  */
 export class MirroredNotificationKeyStore implements NotificationKeyStore {
-  private lastWritten: string | null = null;
-  private chain: Promise<void> = Promise.resolve();
+  private readonly file: MirrorFile;
 
   constructor(
     private readonly inner: NotificationKeyStore,
-    private readonly sink: KeyMirrorSink,
-  ) {}
+    sink: KeyMirrorSink,
+  ) {
+    this.file = new MirrorFile(KEY_MIRROR_FILE_NAME, sink);
+  }
 
   record(hostId: string): NotificationKeyRecord | null {
     return this.inner.record(hostId);
@@ -55,15 +79,6 @@ export class MirroredNotificationKeyStore implements NotificationKeyStore {
 
   /** Rewrites the mirror when the records differ from what was last written. */
   sync(): Promise<void> {
-    const text = keyMirrorText(this.inner.allRecords());
-    this.chain = this.chain.then(async () => {
-      if (text === this.lastWritten) return;
-      try {
-        if (await this.sink(KEY_MIRROR_FILE_NAME, text)) this.lastWritten = text;
-      } catch {
-        // Retried by the next change or sync().
-      }
-    });
-    return this.chain;
+    return this.file.write(keyMirrorText(this.inner.allRecords()));
   }
 }

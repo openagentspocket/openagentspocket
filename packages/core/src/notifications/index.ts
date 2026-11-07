@@ -1,19 +1,31 @@
 export { decodeBase64Url, encodeBase64Url } from '../pairing/bytes';
 export {
+  APPROVAL_OPT_IN_FILE_NAME,
   APPROVAL_TTL_SECONDS,
   type ApprovalActionInput,
+  type ApprovalAnswerInput,
   type ApprovalApplyRequest,
   type ApprovalDecision,
   ApprovalLedger,
   type ApprovalOutcome,
+  answerApproval,
   approvalAnswerRole,
   approvalOutcomeOf,
+  MirroredApprovalOptIns,
   openNotificationEnvelope,
   planApproval,
   runApprovalAction,
   StoredApprovalOptIns,
 } from './approval-action';
-export { approvalApplyResult, approvalApplyScript } from './approval-script';
+export {
+  type ApprovalAsks,
+  ASK_REFRESH_MS,
+  approvalApplyResult,
+  approvalApplyScript,
+  approvalAsksScript,
+  approvalAsksSource,
+  parseApprovalAsks,
+} from './approval-script';
 export { type AgentBannerTarget, bannerBody, bannerTargetKey, bannerTitle } from './banner-copy';
 export { AgentBannerStore, BANNER_DISMISS_MS, BANNER_HOLD_MS } from './banner-store';
 export type { AgentBanner, BannerAgent, BannerStoreOptions } from './banner-types';

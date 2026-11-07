@@ -1,0 +1,252 @@
+import { describe, expect, it, vi } from 'vitest';
+import { MemoryStorage } from '../hosts/known-hosts';
+import { ApprovalLedger, StoredApprovalOptIns } from '../notifications/approval-action';
+import { MemoryNotificationKeyStore } from '../notifications/key-store';
+import {
+  type ActivityTap,
+  type ActivityTapGates,
+  ActivityTapRunner,
+  activityResultOf,
+  markActivityResult,
+  runActivityTap,
+} from './approval-tap';
+import { sealContent } from './content';
+import { openActivity } from './envelope';
+import { FakeLiveActivityController } from './fake-controller';
+import type { ActivityAsk, ActivityDesire } from './types';
+
+const NOW = 1_000_000;
+const PANE = 'w1:p1';
+const BID = 'abcdefghijk';
+const KEY = new Uint8Array(32).fill(7);
+const ASK: ActivityAsk = {
+  episodeId: BID,
+  denyOnly: false,
+  prompt: 'Run ls?',
+  options: ['Yes', "Yes, and don't ask again", 'No'],
+  timestamp: NOW - 10,
+};
+const APPROVE: ActivityTap = { hostId: 'h1', paneId: PANE, episodeId: BID, decision: 'approve' };
+const DENY: ActivityTap = { ...APPROVE, decision: 'deny' };
+
+function gates(overrides: Partial<ActivityTapGates> = {}) {
+  const storage = new MemoryStorage();
+  const optIns = new StoredApprovalOptIns(storage);
+  optIns.setEnabled(true, 'h1');
+  const apply = vi.fn(async (): Promise<string> => 'sent');
+  const authenticate = vi.fn(async () => true);
+  const readAsks = vi.fn(async () => new Map([[PANE, ASK]]));
+  const all: ActivityTapGates = {
+    isActivityOn: () => true,
+    optIns,
+    ledger: new ApprovalLedger(storage),
+    nowSeconds: () => NOW,
+    readAsks,
+    authenticate,
+    apply,
+    ...overrides,
+  };
+  return { all, apply, authenticate, readAsks };
+}
+
+describe('runActivityTap', () => {
+  it('presses the one-time Yes of the prompt the Host reports, after the owner confirmed', async () => {
+    const { all, apply, authenticate } = gates();
+    expect(await runActivityTap(APPROVE, all)).toBe('answered');
+    expect(authenticate).toHaveBeenCalledTimes(1);
+    expect(apply).toHaveBeenCalledWith('h1', {
+      pane: PANE,
+      episodeId: BID,
+      timestamp: ASK.timestamp,
+      decision: 'approve',
+      prompt: 'Run ls?',
+      label: 'Yes',
+      option: 1,
+    });
+  });
+
+  it('Deny presses No and asks the owner nothing, like the notification', async () => {
+    const { all, apply, authenticate } = gates();
+    expect(await runActivityTap(DENY, all)).toBe('answered');
+    expect(authenticate).not.toHaveBeenCalled();
+    expect(apply).toHaveBeenCalledWith('h1', expect.objectContaining({ label: 'No', option: 3 }));
+  });
+
+  it('an owner who does not confirm sends nothing and leaves the episode unspent', async () => {
+    const { all, apply, authenticate } = gates();
+    authenticate.mockResolvedValueOnce(false);
+    expect(await runActivityTap(APPROVE, all)).toBe('notAuthenticated');
+    expect(apply).not.toHaveBeenCalled();
+    expect(await runActivityTap(APPROVE, all)).toBe('answered');
+  });
+
+  it('an authenticator that throws counts as not confirmed', async () => {
+    const { all, apply, authenticate } = gates();
+    authenticate.mockRejectedValueOnce(new Error('no'));
+    expect(await runActivityTap(APPROVE, all)).toBe('notAuthenticated');
+    expect(apply).not.toHaveBeenCalled();
+  });
+
+  it('a tap answers once: the ledger spends the episode', async () => {
+    const { all, apply } = gates();
+    await runActivityTap(APPROVE, all);
+    expect(await runActivityTap(DENY, all)).toBe('ignored');
+    expect(apply).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['a pane the Host does not report', { ...APPROVE, paneId: 'w1:p9' }],
+    ['another episode', { ...APPROVE, episodeId: 'zzzzzzzzzzz' }],
+  ])('a forged link naming %s sends nothing', async (_name, tap) => {
+    const { all, apply, authenticate } = gates();
+    expect(await runActivityTap(tap, all)).toBe('promptChanged');
+    expect(authenticate).not.toHaveBeenCalled();
+    expect(apply).not.toHaveBeenCalled();
+  });
+
+  it('nothing in the link reaches the Host but what the Host itself reported', async () => {
+    const { all, apply } = gates();
+    await runActivityTap({ ...DENY, ...{ prompt: 'forged', option: 1 } }, all);
+    expect(apply).toHaveBeenCalledWith(
+      'h1',
+      expect.objectContaining({ prompt: 'Run ls?', option: 3 }),
+    );
+  });
+
+  it('holds to the Host opt-ins', async () => {
+    const off = gates({ isActivityOn: () => false });
+    expect(await runActivityTap(APPROVE, off.all)).toBe('optedOut');
+    expect(off.readAsks).not.toHaveBeenCalled();
+    const optedOut = gates();
+    optedOut.all.optIns.setEnabled(false, 'h1');
+    expect(await runActivityTap(APPROVE, optedOut.all)).toBe('optedOut');
+    expect(optedOut.apply).not.toHaveBeenCalled();
+  });
+
+  it('holds to the time to live', async () => {
+    const { all, apply } = gates({ nowSeconds: () => NOW + 31 * 60 });
+    expect(await runActivityTap(DENY, all)).toBe('expired');
+    expect(apply).not.toHaveBeenCalled();
+  });
+
+  it('never approves a Deny only prompt, and asks no owner for it', async () => {
+    const { all, apply, authenticate } = gates({
+      readAsks: async () => new Map([[PANE, { ...ASK, denyOnly: true }]]),
+    });
+    expect(await runActivityTap(APPROVE, all)).toBe('denyOnly');
+    expect(authenticate).not.toHaveBeenCalled();
+    expect(apply).not.toHaveBeenCalled();
+  });
+
+  it('never approves a cut prompt', async () => {
+    const { all, apply } = gates({
+      readAsks: async () => new Map([[PANE, { ...ASK, prompt: 'x'.repeat(121) }]]),
+    });
+    expect(await runActivityTap(APPROVE, all)).toBe('promptCut');
+    expect(apply).not.toHaveBeenCalled();
+  });
+
+  it('a Host it cannot read sends nothing and leaves the episode unspent', async () => {
+    const { all, apply, readAsks } = gates();
+    readAsks.mockRejectedValueOnce(new Error('offline'));
+    expect(await runActivityTap(DENY, all)).toBe('unreachable');
+    expect(apply).not.toHaveBeenCalled();
+    expect(await runActivityTap(DENY, all)).toBe('answered');
+  });
+
+  it('a failed apply keeps the episode spent: it never answers twice', async () => {
+    const { all, apply } = gates();
+    apply.mockRejectedValueOnce(new Error('offline'));
+    expect(await runActivityTap(DENY, all)).toBe('unreachable');
+    expect(await runActivityTap(DENY, all)).toBe('ignored');
+    expect(apply).toHaveBeenCalledTimes(1);
+  });
+});
+
+const DESIRE: ActivityDesire = {
+  counts: { working: 0, blocked: 1, done: 0 },
+  hostName: 'mbp',
+  agents: [{ paneId: PANE, kind: 'claude', status: 'blocked', ask: ASK }],
+};
+
+function shownActivity() {
+  const controller = new FakeLiveActivityController();
+  const keys = new MemoryNotificationKeyStore();
+  keys.save({ hostId: 'h1', hostName: 'mbp', key: KEY });
+  const randomBytes = (length: number) => new Uint8Array(length).fill(1);
+  controller.seed('a1', 'h1');
+  const content = sealContent(DESIRE, KEY, randomBytes);
+  if (!content) throw new Error('not sealed');
+  controller.setContent('a1', content);
+  const shown = () => {
+    const update = controller.updates.at(-1)?.content;
+    return openActivity({ ...update?.envelope } as never, KEY).agents[0]?.ask?.result;
+  };
+  return { controller, keys, randomBytes, shown };
+}
+
+describe('markActivityResult', () => {
+  it('writes the result on the prompt the tap answered', async () => {
+    const { controller, keys, randomBytes, shown } = shownActivity();
+    await markActivityResult({ controller, keys, randomBytes }, APPROVE, 'sent');
+    expect(shown()).toBe('sent');
+  });
+
+  it('leaves a newer prompt and another Host alone', async () => {
+    const { controller, keys, randomBytes } = shownActivity();
+    const deps = { controller, keys, randomBytes };
+    await markActivityResult(deps, { ...APPROVE, episodeId: 'zzzzzzzzzzz' }, 'sent');
+    await markActivityResult(deps, { ...APPROVE, hostId: 'h2' }, 'sent');
+    expect(controller.updates).toHaveLength(0);
+  });
+});
+
+describe('ActivityTapRunner', () => {
+  it('shows sending while it runs, then the result, and tracks what is in flight', async () => {
+    const { controller, keys, randomBytes, shown } = shownActivity();
+    let release: (result: string) => void = () => undefined;
+    const { all, apply } = gates();
+    apply.mockImplementation(() => new Promise<string>((resolve) => (release = resolve)));
+    const runner = new ActivityTapRunner({ controller, keys, randomBytes, gates: all });
+
+    const running = runner.run(APPROVE);
+    await vi.waitFor(() => expect(apply).toHaveBeenCalled());
+    expect(shown()).toBe('sending');
+    expect(runner.isRunning('h1', PANE, BID)).toBe(true);
+
+    release('sent');
+    expect(await running).toBe('answered');
+    expect(shown()).toBe('sent');
+    expect(runner.isRunning('h1', PANE, BID)).toBe(false);
+  });
+
+  it('a second tap while one runs starts nothing', async () => {
+    const { controller, keys, randomBytes } = shownActivity();
+    const { all, authenticate } = gates();
+    const runner = new ActivityTapRunner({ controller, keys, randomBytes, gates: all });
+    const first = runner.run(APPROVE);
+    expect(await runner.run(APPROVE)).toBeNull();
+    await first;
+    expect(authenticate).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('activityResultOf', () => {
+  it.each([
+    ['answered', 'sent'],
+    ['ignored', 'answered'],
+    ['expired', 'expired'],
+    ['optedOut', 'opted_out'],
+    ['notAnswerable', 'prompt_changed'],
+    ['promptChanged', 'prompt_changed'],
+    ['promptCut', 'approve_in_app'],
+    ['denyOnly', 'approve_in_app'],
+    ['pluginOutdated', 'update_plugin'],
+    ['unreachable', 'unreachable'],
+    ['sendFailed', 'may_have_sent'],
+    ['timedOut', 'timed_out'],
+    ['notAuthenticated', 'unlock_to_approve'],
+  ] as const)('%s reads as %s', (outcome, result) => {
+    expect(activityResultOf(outcome)).toBe(result);
+  });
+});

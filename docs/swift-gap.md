@@ -6,7 +6,7 @@ Neither app ever had Mosh. Sessions live on the Host; the phone reconnects (back
 
 Missing or worse here, by user impact:
 
-1. Approve and Deny without opening the app (Swift: own connection, no UI), and from the Live Activity. expo-notifications calls iOS's completion handler at once, so a background SSH cannot finish; the actions open the app.
+1. Approve and Deny without opening the app (Swift: own connection, no UI). expo-notifications calls iOS's completion handler at once, so a background SSH cannot finish; the actions open the app. The Live Activity's buttons do too, as links, and show only after the app itself read the ask: a Host push carries none.
 2. Chat rows: a tool output cut short shows its start only.
 3. Terminal: Message Jump is in the "..." menu on herdr, walking on screen reads, not Swift's floating buttons; off on tmux, whose wheel enters copy-mode. Pinch zoom may reset the grid (not checked on a device); no ⌘ commands (needs a native module).
 4. iPad: this app is iPhone only and portrait.
