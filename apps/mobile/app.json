@@ -57,6 +57,13 @@
           "recordAudioAndroid": false
         }
       ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "OpenAgentsPocket uses the microphone to dictate into your Agent's draft.",
+          "speechRecognitionPermission": "OpenAgentsPocket turns what you dictate into text for your Agent's draft."
+        }
+      ],
       "expo-secure-store",
       "expo-notifications",
       "@bacons/apple-targets",

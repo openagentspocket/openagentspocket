@@ -37,6 +37,7 @@ const ICONS = {
   folder: { ios: 'folder', android: 'folder' },
   file: { ios: 'doc', android: 'description' },
   camera: { ios: 'camera', android: 'photo_camera' },
+  mic: { ios: 'mic', android: 'mic' },
   torch: { ios: 'flashlight.on.fill', android: 'flashlight_on' },
   server: { ios: 'server.rack', android: 'dns' },
   model: { ios: 'cpu', android: 'memory' },

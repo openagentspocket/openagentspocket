@@ -7,6 +7,7 @@ export * from './components/chatRows';
 export * from './components/composerExtras';
 export * from './components/homeShell';
 export * from './components/hostsSettingsFiles';
+export { ImageAnnotator } from './components/ImageAnnotator';
 export { KeyboardDismissButton, useKeyboardVisible } from './components/KeyboardDismissButton';
 export * from './components/navSheets';
 export {

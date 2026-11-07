@@ -20,6 +20,8 @@ import {
 } from '@/features/composer-tools/ComposerToolsSheets';
 import { composerAddItems, composerMoreItems } from '@/features/composer-tools/composerMenus';
 import { attachmentActions, stagingFor } from '@/features/composer-tools/composerStaging';
+import { useDictation } from '@/features/composer-tools/useDictation';
+import { useImageReview } from '@/features/composer-tools/useImageReview';
 import { useNewAgentServices } from '@/features/new-agent/services';
 import { ExpoLocalFiles } from '@/files/expoLocalFiles';
 import { pickDocument, pickPhoto } from '@/files/pickers';
@@ -81,6 +83,8 @@ export function useComposerMenus({
     () => staging.state,
     () => staging.state,
   );
+  const images = useImageReview(localFiles);
+  const dictation = useDictation((text) => store.insertIntoDraft(text));
   const actions = useMemo(() => agentActions(consoleStore), [consoleStore]);
   const rename = useRename(actions);
   // The route's own check: Worktree Details exist only for an Agent in a linked worktree.
@@ -90,10 +94,16 @@ export function useComposerMenus({
   const items = useMemo(() => {
     const directory = row ? rowDirectory(row) : undefined;
     const workspaceId = row?.agent.workspace_id;
-    const attach = attachmentActions(staging, { pickPhoto, pickDocument }, localFiles);
+    const attach = attachmentActions(
+      staging,
+      { pickPhoto, pickDocument, reviewImage: images.reviewImage },
+      localFiles,
+    );
     const menuActions = {
       canBegin: staging.canBegin,
       ...attach,
+      dictate: dictation.toggle,
+      dictating: dictation.listening,
       backToConsole: () => router.back(),
       showChat: surface === 'terminal' ? onToggleSurface : undefined,
       showAgentTerminal: surface === 'chat' ? onToggleSurface : undefined,
@@ -122,6 +132,9 @@ export function useComposerMenus({
     row,
     staging,
     staging.canBegin,
+    dictation.toggle,
+    dictation.listening,
+    images.reviewImage,
     router,
     surface,
     onToggleSurface,
@@ -134,6 +147,7 @@ export function useComposerMenus({
 
   const sheets = (
     <>
+      {images.sheet}
       <ComposerToolsSheets
         open={sheet}
         onOpen={setSheet}

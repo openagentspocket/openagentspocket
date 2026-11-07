@@ -3,6 +3,9 @@ import * as ImagePicker from 'expo-image-picker';
 
 /** What a picker returns: a readable local file, its display name and extension. */
 export interface Picked {
+  /** A photo's size in pixels. */
+  width?: number;
+  height?: number;
   uri: string;
   name: string;
   extension: string;
@@ -30,5 +33,11 @@ export async function pickPhoto(): Promise<Picked | null> {
   const asset = result.canceled ? undefined : result.assets[0];
   if (!asset) return null;
   const name = asset.fileName ?? 'photo.jpg';
-  return { uri: asset.uri, name, extension: extensionOf(asset.uri) || extensionOf(name) || 'jpg' };
+  return {
+    width: asset.width,
+    height: asset.height,
+    uri: asset.uri,
+    name,
+    extension: extensionOf(asset.uri) || extensionOf(name) || 'jpg',
+  };
 }

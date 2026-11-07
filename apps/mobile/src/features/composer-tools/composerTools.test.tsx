@@ -11,6 +11,7 @@ import { setLocale } from '@openagentspocket/i18n';
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { attachmentSource, remoteFileName, remoteImageName } from './attachmentSources';
+import { attachmentActions } from './composerStaging';
 import { SkillsPane } from './SkillsPane';
 import { SnippetsManager } from './SnippetsManager';
 import { SnippetsPane } from './SnippetsPane';
@@ -160,5 +161,31 @@ describe('attachment sources and the status bar', () => {
       await store.perform('dismiss');
     });
     expect(screen.queryByTestId('staging-status-bar')).toBeNull();
+  });
+});
+
+describe('Add Image', () => {
+  const picked = { uri: 'file:///a.jpg', name: 'a.jpg', extension: 'jpg' };
+  const files = {
+    size: async () => 1,
+    readAll: async () => new Uint8Array(),
+    remove: async () => {},
+  };
+  const settle = () => new Promise<void>((resolve) => setTimeout(() => resolve(), 0));
+
+  it('stages what the review returns, and nothing when it is dropped', async () => {
+    const begin = jest.fn();
+    const staging = { begin, canBegin: true };
+    const pickers = (reviewed: typeof picked | null) => ({
+      pickPhoto: async () => picked,
+      pickDocument: async () => null,
+      reviewImage: async () => reviewed,
+    });
+    attachmentActions(staging, pickers(null), files).addImage();
+    await settle();
+    expect(begin).not.toHaveBeenCalled();
+    attachmentActions(staging, pickers({ ...picked, name: 'b.png' }), files).addImage();
+    await settle();
+    expect(begin).toHaveBeenCalledTimes(1);
   });
 });

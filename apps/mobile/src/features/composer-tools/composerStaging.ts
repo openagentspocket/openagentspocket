@@ -33,6 +33,8 @@ export function stagingFor(composer: ComposerDraftPort, stage: StageOnHost): Com
 export interface AttachmentPickers {
   pickPhoto(): Promise<Picked | null>;
   pickDocument(): Promise<Picked | null>;
+  /** What the user made of a picked photo; null drops it. Absent: it goes as picked. */
+  reviewImage?(picked: Picked): Promise<Picked | null>;
 }
 
 /** "Add Image" and "Add File": pick, then stage; a cancelled pick starts nothing. */
@@ -48,7 +50,10 @@ export function attachmentActions(
     });
   };
   return {
-    addImage: run('image', pickers.pickPhoto),
+    addImage: run('image', async () => {
+      const picked = await pickers.pickPhoto();
+      return picked && pickers.reviewImage ? pickers.reviewImage(picked) : picked;
+    }),
     addFile: run('file', pickers.pickDocument),
   };
 }

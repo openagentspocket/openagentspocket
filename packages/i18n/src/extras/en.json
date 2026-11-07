@@ -54,6 +54,7 @@
   "The Host's SQLite %@ can't read Hermes Agent's database: Chat needs SQLite 3.25 or newer with JSON support, through sqlite3 or Python 3.6 or newer.": "The Host's SQLite {0} can't read Hermes Agent's database: Chat needs SQLite 3.25 or newer with JSON support, through sqlite3 or Python 3.6 or newer.",
   "The app closed unexpectedly": "The app closed unexpectedly",
   "The app connects": "The app connects",
+  "Undo": "Undo",
   "Updated this minute": "Updated this minute",
   "What happens": "What happens",
   "When you scan it, the app connects with the code's single-use bootstrap key and enrolls this device's key.": "When you scan it, the app connects with the code's single-use bootstrap key and enrolls this device's key.",

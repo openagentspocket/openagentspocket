@@ -11,6 +11,9 @@ export interface ComposerMenuActions {
   canBegin?: boolean;
   addImage?: () => void;
   addFile?: () => void;
+  /** Starts or stops dictating into the draft. */
+  dictate?: () => void;
+  dictating?: boolean;
   backToConsole?: () => void;
   showChat?: () => void;
   showAgentTerminal?: () => void;
@@ -48,6 +51,7 @@ export function composerAddItems(actions: ComposerMenuActions): ActionMenuItem[]
   return items([
     ['add-image', t('Add Image'), 'camera', actions.addImage, { disabled }],
     ['add-file', t('Add File'), 'file', actions.addFile, { disabled }],
+    ['dictate', actions.dictating ? t('Stop') : t('Dictate'), 'mic', actions.dictate],
   ]);
 }
 
