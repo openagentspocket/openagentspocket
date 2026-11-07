@@ -99,7 +99,7 @@ export class ConnectionManager {
   private readonly platforms = new Map<string, HostPlatform>();
   /** Dials holding for the end of the grace before they ask for the key. */
   private waitingForReturn: (() => void)[] = [];
-  /** Hosts whose owner refused the key: they wait for Retry, not for the next foreground. */
+  /** Hosts whose owner refused the key: failed until Retry, whatever the app does meanwhile. */
   private readonly keyRefused = new Set<string>();
 
   constructor(private readonly options: ConnectionManagerOptions) {
@@ -201,7 +201,7 @@ export class ConnectionManager {
   async connectDedicated(hostId: string): Promise<SshSession> {
     const entry = this.entries.get(hostId);
     if (!entry) throw new Error('The Host is not listed.');
-    const transport = await this.dial(entry.host, async () => false);
+    const transport = await this.dial(entry.host, { dedicated: true });
     return transport.session;
   }
 
@@ -210,13 +210,15 @@ export class ConnectionManager {
     const entry = this.entries.get(hostId);
     if (!entry || this.stopped) return;
     if (!this.active) return;
+    this.keyRefused.delete(hostId);
     await this.options.store.retry(hostId);
   }
 
   private async applyActive(entry: Entry, active: boolean): Promise<void> {
     const { store } = this.options;
     if (!active) {
-      await entry.session.suspend();
+      // Nothing of a refused Host is live, and suspended would read as resuming: it stays failed.
+      if (!this.keyRefused.has(entry.host.id)) await entry.session.suspend();
       return;
     }
     const status = store.getState().hosts.find((host) => host.id === entry.host.id)?.status;
@@ -266,12 +268,10 @@ export class ConnectionManager {
     this.options.onConnection?.(id, 'notConnected');
   }
 
-  private async dial(
-    host: Host,
-    confirmFirstConnect: HostKeyPolicy['confirmFirstConnect'] = this.options.confirmFirstConnect,
-  ): Promise<SshTransport> {
+  /** `dedicated`: a side connection, not the Host's session (see `connectDedicated`). */
+  private async dial(host: Host, { dedicated = false } = {}): Promise<SshTransport> {
     const { options } = this;
-    if (hostUsesKey(host)) await this.authorizeKey(host);
+    if (hostUsesKey(host)) await this.authorizeKey(host, dedicated);
     await options.ensureDeviceKey();
     const settings = transportSettingsFor(host, {
       keyAlias: options.keyAlias,
@@ -279,7 +279,7 @@ export class ConnectionManager {
       secrets: options.secrets,
       policy: {
         knownHosts: options.knownHosts,
-        confirmFirstConnect,
+        confirmFirstConnect: dedicated ? async () => false : options.confirmFirstConnect,
       },
     });
     const transport = await (options.connect ?? connectTransport)(options.ssh, settings);
@@ -290,11 +290,12 @@ export class ConnectionManager {
   /**
    * Asks for the key only with a window to ask in: iOS refuses a prompt without one, and nobody
    * saw it. A redial during the grace holds here, still `reconnecting`, until the app returns.
+   * A refusal stands until `reconnect`; one on a side connection says nothing of the session.
    */
-  private async authorizeKey(host: Host): Promise<void> {
+  private async authorizeKey(host: Host, dedicated: boolean): Promise<void> {
     const gate = this.options.keyAccess;
     if (!gate) return;
-    this.keyRefused.delete(host.id);
+    if (this.keyRefused.has(host.id)) throw failWith({ kind: 'keyAccessNotConfirmed' });
     for (;;) {
       while (!this.active && gate.wouldAsk()) {
         // Past the grace the Host is suspended, and its resume dials again.
@@ -308,7 +309,10 @@ export class ConnectionManager {
       } catch (error) {
         // Leaving cuts a prompt short, and that is not the owner's answer.
         if (!this.active) continue;
-        if (!(error instanceof KeyPromptInterrupted)) this.keyRefused.add(host.id);
+        const current = this.entries.get(host.id)?.host === host;
+        if (current && !dedicated && !(error instanceof KeyPromptInterrupted)) {
+          this.keyRefused.add(host.id);
+        }
         throw error;
       }
     }

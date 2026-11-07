@@ -9,12 +9,14 @@ import { hostState } from '@/home/homeModel';
 import { hrefs } from '@/navigation/hrefs';
 import { HostConnectionSheet } from './HostConnectionSheet';
 import { routeLine } from './HostInfoSections';
+import { hostsRuntime } from './hostsRuntime';
 import { useHosts } from './useHosts';
 
 /**
  * The amber "<Host> is offline" lines of a list, and the one connection sheet they open: the
- * reconnect state comes from the Console store (attempt, failure, route), Retry Now and Stop
- * Connecting act on the Host's session. Home and the Agents list both render this.
+ * reconnect state comes from the Console store (attempt, failure, route). Retry Now goes through
+ * the live connections, which forget a refused key there (the demo build has none, so the store);
+ * Stop Connecting acts on the Host's session. Home and the Agents list both render this.
  */
 export function HostIssues() {
   const router = useRouter();
@@ -49,7 +51,7 @@ export function HostIssues() {
           attempt={status?.kind === 'reconnecting' ? status.attempt : undefined}
           routes={savedHost ? routeLine(savedHost, open.routeId ?? null) : ''}
           failure={failure && { title: failure.summary, detail: failure.detail }}
-          onRetry={() => void store.retry(open.id)}
+          onRetry={() => void (hostsRuntime().reconnect?.(open.id) ?? store.retry(open.id))}
           onStop={() => void store.stopConnecting(open.id)}
           onEdit={() => sheet.closeThen(() => router.push(hrefs.hostForm({ edit: open.id })))}
           onClose={sheet.close}
