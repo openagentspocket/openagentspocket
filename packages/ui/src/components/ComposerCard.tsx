@@ -96,6 +96,8 @@ export interface ComposerCardProps {
   value: string;
   onChange: (text: string) => void;
   working?: boolean;
+  /** Attachments stand for the next message, so Send works with an empty input. */
+  hasAttachments?: boolean;
   onSend: () => void;
   onStop?: () => void;
   /** The agent mark circle (a ProgramMark in a 40pt circle; the caller picks the program). */
@@ -176,6 +178,7 @@ export function ComposerCard({
   value,
   onChange,
   working = false,
+  hasAttachments = false,
   onSend,
   onStop,
   leading,
@@ -197,7 +200,7 @@ export function ComposerCard({
   const theme = useTheme();
   const [dismissed, setDismissed] = useState(false);
   const [focused, setFocused] = useState(false);
-  const action = composerAction(value, working, onStop !== undefined);
+  const action = composerAction(value, working, onStop !== undefined, hasAttachments);
   const stacked = expanded ?? (value.includes('\n') || value.length > 36);
   const showSkills = Boolean(skills?.length) && value.startsWith('/') && !dismissed;
   const stopInk = theme.appearance === 'dark' ? 'textPrimary' : 'onAccent';

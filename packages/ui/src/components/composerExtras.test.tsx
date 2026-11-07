@@ -6,6 +6,7 @@ const themed = (ui: React.ReactElement) => <ThemeProvider themeId="indigo">{ui}<
 
 import {
   ClaudeSubagentTranscript,
+  ComposerAttachmentStrip,
   ComposerStagingStatusBar,
   SkillContentSheet,
   type SkillItem,
@@ -114,6 +115,66 @@ describe('SkillContentSheet', () => {
       themed(<SkillContentSheet visible name="/x" state="loading" onClose={jest.fn()} />),
     );
     expect(screen.getByTestId('skill-content-loading')).toBeTruthy();
+  });
+});
+
+describe('ComposerAttachmentStrip', () => {
+  const removeLabel = (name: string) => `Remove ${name}`;
+
+  it('draws nothing without attachments', async () => {
+    await renderThemed(
+      <ComposerAttachmentStrip items={[]} onRemove={jest.fn()} removeLabel={removeLabel} />,
+    );
+    expect(screen.queryByTestId('composer-attachments')).toBeNull();
+  });
+
+  it('shows a thumbnail for a picture and a named chip for a file, each removable', async () => {
+    const onRemove = jest.fn();
+    await renderThemed(
+      <ComposerAttachmentStrip
+        items={[
+          { id: 'a1', name: 'IMG_1.jpg', previewUri: 'file:///cache/IMG_1.jpg' },
+          { id: 'a2', name: 'notes.md' },
+        ]}
+        onRemove={onRemove}
+        removeLabel={removeLabel}
+      />,
+    );
+    expect(screen.getByTestId('composer-attachment-a1-preview').props.source).toEqual({
+      uri: 'file:///cache/IMG_1.jpg',
+    });
+    expect(screen.queryByTestId('composer-attachment-a2-preview')).toBeNull();
+    expect(screen.getByText('notes.md')).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText('Remove notes.md'));
+    expect(onRemove).toHaveBeenCalledWith('a2');
+  });
+
+  it('falls back to the named chip when the picture is gone from the phone', async () => {
+    await renderThemed(
+      <ComposerAttachmentStrip
+        items={[{ id: 'a1', name: 'IMG_1.jpg', previewUri: 'file:///cache/gone.jpg' }]}
+        onRemove={jest.fn()}
+        removeLabel={removeLabel}
+      />,
+    );
+    await fireEvent(screen.getByTestId('composer-attachment-a1-preview'), 'error');
+    expect(screen.queryByTestId('composer-attachment-a1-preview')).toBeNull();
+    expect(screen.getByText('IMG_1.jpg')).toBeTruthy();
+  });
+
+  it('marks an upload in flight and one that failed', async () => {
+    await renderThemed(
+      <ComposerAttachmentStrip
+        items={[
+          { id: 'up', name: 'a.jpg', previewUri: 'file:///a.jpg', state: 'uploading' },
+          { id: 'bad', name: 'b.md', state: 'failed' },
+        ]}
+        onRemove={jest.fn()}
+        removeLabel={removeLabel}
+      />,
+    );
+    expect(screen.getByTestId('composer-attachment-up-uploading')).toBeTruthy();
+    expect(screen.getByTestId('composer-attachment-bad-failed')).toBeTruthy();
   });
 });
 
