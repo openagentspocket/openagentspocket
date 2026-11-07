@@ -44,3 +44,22 @@ export function installLauncher(options: {
   writeFileSync(pairConfig, `${JSON.stringify({ ...existing, launcher })}\n`);
   return launcher;
 }
+
+/**
+ * What the plugin's Host-side scripts read in place of herdr's startup hook: which node runs them,
+ * where their state lives, and that this launcher answers `agent read` and `agent send-keys`.
+ */
+export function recordRuntime(options: {
+  configDir: string;
+  stateDir: string;
+  node: string;
+  launcher: string;
+  home: string;
+  path: string;
+}): void {
+  const { configDir, stateDir, node, launcher, home, path } = options;
+  mkdirSync(stateDir, { recursive: true, mode: 0o700 });
+  const runtime = { version: 1, node, herdr: launcher, stateDir, env: { HOME: home, PATH: path } };
+  writeFileSync(join(configDir, 'runtime.json'), `${JSON.stringify(runtime)}\n`, { mode: 0o600 });
+  writeFileSync(join(configDir, 'runtime-node'), `${node}\n`);
+}

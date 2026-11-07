@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import type { herdr } from '@openagentspocket/core';
 import { actionFor, BridgeError, type Result } from './actions.js';
 import { liveSnapshot, SESSION_PROTOCOL } from './snapshot.js';
@@ -8,7 +9,8 @@ const DEFAULT_READ_LINES = 200;
 /** The app reads this to find where the Notification Registration goes. */
 export const pluginEntry = (version: string) => ({
   plugin_id: 'agentico',
-  plugin_root: '',
+  // Where the app finds the Host-side scripts it runs, Approve among them.
+  plugin_root: fileURLToPath(new URL('../../plugin', import.meta.url)),
   enabled: true,
   version,
 });
@@ -23,6 +25,19 @@ function paneById(panes: readonly TmuxPane[], id: unknown): TmuxPane {
   const pane = panes.find((candidate) => candidate.paneId === id);
   if (!pane) throw new BridgeError('pane_not_found', `No pane ${String(id)}`);
   return pane;
+}
+
+/** The visible screen as `agent read --source visible --format text` prints it. */
+export const visibleScreen = (tmux: TmuxRunner, pane: string): Promise<string> =>
+  tmux.run(['capture-pane', '-p', '-t', pane]);
+
+/** Types `keys` literally, as `agent send-keys` does for Approve's digit. */
+export async function typeKeys(
+  tmux: TmuxRunner,
+  pane: string,
+  keys: readonly string[],
+): Promise<void> {
+  for (const key of keys) await tmux.run(['send-keys', '-t', pane, '-l', '--', key]);
 }
 
 async function readPane(tmux: TmuxRunner, params: Request['params']): Promise<Result> {

@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs';
 import { decodeResult } from '@openagentspocket/core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { handleLine } from './handler.js';
+import { handleLine, typeKeys, visibleScreen } from './handler.js';
 import { tmuxRunner } from './runner.js';
 import { listPanes } from './tmux.js';
 
@@ -34,6 +34,16 @@ describe.skipIf(!BINARY)('the bridge on a real tmux', () => {
   });
   afterAll(async () => {
     await tmux.run(['kill-server']).catch(() => {});
+  });
+
+  it('reads what a pane shows and types into it, for Approve', async () => {
+    await tmux.run(['new-session', '-d', '-s', 'ask', '-x', '80', '-y', '10', '/bin/sh']);
+    const [pane] = (await listPanes(tmux)).filter((candidate) => candidate.sessionName === 'ask');
+    if (!pane) throw new Error('no pane');
+    await typeKeys(tmux, pane.paneId, ['echo a', 'sk-mark']);
+    await tmux.run(['send-keys', '-t', pane.paneId, 'Enter']);
+    await eventually(async () => (await visibleScreen(tmux, pane.paneId)).includes('\nask-mark'));
+    await tmux.run(['kill-session', '-t', 'ask']);
   });
 
   it('maps live sessions, windows and panes', async () => {

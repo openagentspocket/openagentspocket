@@ -128,11 +128,16 @@ for (const dir of ['packages/ui', 'apps/mobile']) {
     );
   }
 }
-for (const dir of ['packages/plugin', 'packages/relay', 'packages/session-bridge', 'apps/site']) {
+for (const dir of ['packages/relay', 'packages/session-bridge', 'apps/site']) {
   if (inPkg(`${dir}/`).length) checks.push(run(`${dir} tests`, 'pnpm', ['test'], dir));
 }
 
 const results = await Promise.all(checks);
+// Alone, after the rest: its Host-side scripts have bounds of a second or two, and tsc and jest
+// running beside them made a real child process miss those bounds.
+if (inPkg('packages/plugin/').length) {
+  results.push(await run('packages/plugin tests', 'pnpm', ['test'], 'packages/plugin'));
+}
 if (results.includes(false)) {
   console.error('verify-fast: FAILED');
   process.exit(1);

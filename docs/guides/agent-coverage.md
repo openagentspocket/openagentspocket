@@ -9,8 +9,8 @@ What each Agent can do in the app, and how far that is proved. Update a cell whe
 
 | Agent | Chat | Send | Blocked card | Notification, herdr | Notification, tmux | Approve from a notification |
 |---|---|---|---|---|---|---|
-| Claude Code | device | device | device | device | device | tests (herdr) |
-| Codex | tests | tests | tests | tests | tests | tests (herdr) |
+| Claude Code | device | device | device | device | device | lab on tmux (real prompt, key sent once); not yet on a phone |
+| Codex | tests | tests | tests | tests | tests | tests |
 | OpenCode | tests | tests | tests | tests | tests | no: its prompt has no numbered options |
 | Hermes Agent | tests | tests | no | tests | tests | no: no Blocked card |
 | Pi | tests | tests | no: Pi has no Blocked dialogs | tests | tests | no: Pi has no Blocked dialogs |

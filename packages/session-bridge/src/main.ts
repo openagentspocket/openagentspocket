@@ -8,8 +8,8 @@ import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { autostartFor } from './autostart.js';
-import { pluginEntry } from './handler.js';
-import { installLauncher } from './install.js';
+import { pluginEntry, typeKeys, visibleScreen } from './handler.js';
+import { installLauncher, recordRuntime } from './install.js';
 import { tmuxRunner } from './runner.js';
 import { startBridge } from './server.js';
 
@@ -24,6 +24,12 @@ const stateDir = () =>
 
 /** In herdr's layout: the app's endpoint rules accept no other shape. */
 export const bridgeSocket = () => join(configDir(), 'herdr', 'herdr.sock');
+
+const tmux = () =>
+  tmuxRunner({
+    recordsDir: join(configDir(), 'panes'),
+    socketName: process.env.OAP_TMUX_SOCKET || undefined,
+  });
 
 const print = (value: unknown) => console.log(JSON.stringify(value));
 
@@ -84,7 +90,7 @@ export async function main(args: readonly string[]): Promise<number> {
     case 'serve':
       await startBridge({
         socketPath: bridgeSocket(),
-        tmux: tmuxRunner({ recordsDir: join(configDir(), 'panes') }),
+        tmux: tmux(),
         version: VERSION,
       });
       return -1;
@@ -93,6 +99,14 @@ export async function main(args: readonly string[]): Promise<number> {
         configDir: configDir(),
         node: process.execPath,
         script: fileURLToPath(import.meta.url),
+        path: process.env.PATH ?? '',
+      });
+      recordRuntime({
+        configDir: configDir(),
+        stateDir: stateDir(),
+        node: process.execPath,
+        launcher,
+        home: homedir(),
         path: process.env.PATH ?? '',
       });
       startInBackground();
@@ -105,6 +119,14 @@ export async function main(args: readonly string[]): Promise<number> {
       return pair();
     case 'remote-client-bridge':
       startInBackground();
+      return 0;
+    case 'agent read':
+      if (!target) return 2;
+      process.stdout.write(await visibleScreen(tmux(), target));
+      return 0;
+    case 'agent send-keys':
+      if (!target) return 2;
+      await typeKeys(tmux(), target, args.slice(3));
       return 0;
     case 'agent attach':
     case 'terminal attach':
@@ -125,7 +147,13 @@ export async function main(args: readonly string[]): Promise<number> {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  void main(process.argv.slice(2)).then((code) => {
-    if (code >= 0) process.exitCode = code;
-  });
+  void main(process.argv.slice(2)).then(
+    (code) => {
+      if (code >= 0) process.exitCode = code;
+    },
+    (error: unknown) => {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exitCode = 1;
+    },
+  );
 }
