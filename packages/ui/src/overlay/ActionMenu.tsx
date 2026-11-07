@@ -86,6 +86,8 @@ interface ActionMenuProps {
   inline?: boolean;
   /** Menu width; a compact popover passes less than the default. */
   width?: number;
+  /** The menu is gone and its chosen item ran: a trigger may unmount now, not before. */
+  onClosed?: () => void;
   testID?: string;
 }
 
@@ -99,6 +101,7 @@ export function ActionMenu({
   preview,
   inline,
   width = MENU_WIDTH,
+  onClosed,
   testID = 'action-menu',
 }: ActionMenuProps) {
   const styles = useStyles();
@@ -106,16 +109,24 @@ export function ActionMenu({
   const insets = useInsets();
   const window = useWindowDimensions();
   const pending = useRef<(() => void) | null>(null);
+  const wasVisible = useRef(false);
+  const closed = useRef(onClosed);
+  closed.current = onClosed;
   // A trigger forgets its anchor on close; the menu fades out where it stood, not at the default spot.
   const lastAnchor = useRef(anchor);
   if (anchor) lastAnchor.current = anchor;
   const shown = anchor ?? lastAnchor.current;
 
   useEffect(() => {
-    if (visible || !pending.current) return;
+    if (visible) wasVisible.current = true;
+    if (visible || !wasVisible.current) return;
+    wasVisible.current = false;
     const run = pending.current;
     pending.current = null;
-    const timer = setTimeout(run, MENU_DISMISS_MS);
+    const timer = setTimeout(() => {
+      run?.();
+      closed.current?.();
+    }, MENU_DISMISS_MS);
     return () => clearTimeout(timer);
   }, [visible]);
 
@@ -245,6 +256,8 @@ interface ActionMenuButtonProps {
   native?: boolean;
   /** Draws the JS trigger in the text color (see `Button`). */
   neutral?: boolean;
+  /** True as the menu opens, false once it is gone and its item ran. JS menu only. */
+  onOpenChange?: (open: boolean) => void;
   testID?: string;
 }
 
@@ -258,12 +271,14 @@ export function ActionMenuButton({
   iconSize,
   native = false,
   neutral,
+  onOpenChange,
   testID = 'menu-button',
 }: ActionMenuButtonProps) {
   const ui = native ? loadSwiftUi() : null;
   const ref = useRef<ViewInstance>(null);
   const [menu, setMenu] = useState<{ anchor?: MenuAnchor } | null>(null);
   const open = () => {
+    onOpenChange?.(true);
     let shown = false;
     const show = (anchor?: MenuAnchor) => {
       if (shown) return;
@@ -306,6 +321,7 @@ export function ActionMenuButton({
         visible={menu !== null}
         anchor={menu?.anchor}
         onClose={() => setMenu(null)}
+        onClosed={() => onOpenChange?.(false)}
       />
     </View>
   );

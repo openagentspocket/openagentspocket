@@ -190,6 +190,28 @@ describe('ComposerCard layouts', () => {
     expect(screen.getByTestId('composer-card-input')).toBe(input);
   });
 
+  it('stays stacked under an open "..." menu, so losing focus cannot take the menu away', async () => {
+    const onPress = jest.fn();
+    const card = (expanded?: boolean) => (
+      <ComposerCard
+        value=""
+        onChange={jest.fn()}
+        onSend={jest.fn()}
+        moreMenu={[{ key: 'p', title: 'Paste', onPress }]}
+        expanded={expanded}
+      />
+    );
+    const { rerender } = await renderThemed(card(true));
+    await fireEvent.press(screen.getByTestId('composer-card-more'));
+    await waitFor(() => expect(screen.getByTestId('action-menu-p')).toBeTruthy());
+    // The menu's Modal takes the first responder: the input blurs and the caller stops expanding.
+    await rerenderThemed(rerender, card(undefined));
+    expect(screen.getByTestId('action-menu-p')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('action-menu-p'));
+    await waitFor(() => expect(onPress).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.queryByTestId('composer-card-more')).toBeNull());
+  });
+
   it('shows the toolbar toggle and "..." only once stacked', async () => {
     const more = [{ key: 'p', title: 'Paste', onPress: jest.fn() }];
     const barToggle = { visible: false, onToggle: jest.fn(), label: 'Toolbar' };

@@ -136,6 +136,7 @@ function Circle({
   onPress,
   menu,
   anchorKey,
+  onMenuOpen,
   testID,
 }: {
   icon: IconName;
@@ -144,6 +145,7 @@ function Circle({
   menu?: readonly ActionMenuItem[];
   /** Registers the circle as a popover anchor (`confirm({ anchorKey })`). */
   anchorKey?: string;
+  onMenuOpen?: (open: boolean) => void;
   testID: string;
 }) {
   const styles = useStyles();
@@ -158,6 +160,7 @@ function Circle({
           iconSize={18}
           accessibilityLabel={label}
           neutral
+          onOpenChange={onMenuOpen}
           testID={testID}
         />
       ) : (
@@ -204,9 +207,12 @@ export function ComposerCard({
   const theme = useTheme();
   const [dismissed, setDismissed] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const action = composerAction(value, working, onStop !== undefined);
   const showSkills = Boolean(skills?.length) && value.startsWith('/') && !dismissed;
-  const stacked = (expanded ?? (value.includes('\n') || value.length > 36)) || showSkills;
+  // An open "..." menu holds the layout: its Modal blurs the input, and folding would unmount it.
+  const stacked =
+    (expanded ?? (value.includes('\n') || value.length > 36)) || showSkills || moreOpen;
   const stopInk = theme.appearance === 'dark' ? 'textPrimary' : 'onAccent';
   const hint = placeholder ?? labels.messagePlaceholder;
   const input = (
@@ -320,6 +326,7 @@ export function ComposerCard({
               label={labels.moreOptions}
               menu={moreMenu}
               anchorKey={moreAnchorKey}
+              onMenuOpen={setMoreOpen}
               testID={`${testID}-more`}
             />
           ) : null}

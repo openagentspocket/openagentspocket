@@ -14,3 +14,19 @@ appId: com.openagentspocket.app
 - waitForAnimationToEnd
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/03-agent-terminal
+- tapOn:
+    id: composer-input
+- extendedWaitUntil:
+    visible:
+      id: composer-more
+    timeout: 4000
+- inputText: "ls"
+- waitForAnimationToEnd
+- takeScreenshot: design/atlas/sim/03-agent-terminal-keyboard
+- tapOn:
+    id: composer-more
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Close Agent"
+    timeout: 4000
+- runFlow: _guard.yaml
