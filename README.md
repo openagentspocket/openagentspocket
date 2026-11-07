@@ -1041,6 +1041,9 @@ hook (`src/notify-delivery.js`). `node src/install-program-hooks.js` installs it
 | Claude Code | `settings.json` hooks | `Notification` `permission_prompt` | `Stop` |
 | Codex | `hooks.json` | `PermissionRequest` | `Stop` |
 | OpenCode | plugin in `plugins/` | `permission.asked` | `session.idle` |
+| Pi | extension in `~/.pi/agent/extensions` | `tool_approval_requested` | `agent_settled` |
+| omp | extension in `~/.omp/agent/extensions` | `tool_approval_requested` | `agent_end` |
+| Grok Build | `~/.grok/hooks/agentico-notify.json` | `Notification` | `Stop` |
 | Hermes | plugin in `~/.hermes/plugins`, then `hermes plugins enable agentico` | `pre_approval_request` | `post_llm_call` |
 
 It reads `notifications.json` and `notify.json` from `OAP_CONFIG_DIR`, by default `~/.config/openagentspocket`, and
