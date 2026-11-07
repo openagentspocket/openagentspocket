@@ -85,6 +85,14 @@ export function makeScreen(rows: readonly ScreenRow[]): AnsiScreen {
   return { rows, columns: rows.reduce((widest, row) => Math.max(widest, row.width), 0) };
 }
 
+/** The screen as plain text: no trailing spaces, no blank rows at the end. */
+export function screenText(screen: AnsiScreen): string {
+  return screen.rows
+    .map((row) => row.text.trimEnd())
+    .join('\n')
+    .trimEnd();
+}
+
 /** A space or a no-break space: Claude draws its prompt with U+00A0 after the pointer. */
 export const isBlankChar = (character: string): boolean => character === ' ' || character === ' ';
 

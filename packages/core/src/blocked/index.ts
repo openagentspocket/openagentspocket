@@ -58,5 +58,6 @@ export {
   registerBlockedProgram,
 } from './programs';
 export type { AnsiScreen, ScreenRow, ScreenRun, ScreenStyle } from './screen';
+export { screenText } from './screen';
 export { digitKey, fieldText, hasTypedText, StepBuilder } from './step-builder';
 export * from './types';

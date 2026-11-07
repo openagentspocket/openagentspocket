@@ -23,6 +23,7 @@ import { PasteReviewSheet } from './PasteReviewSheet';
 import { StatusOverlay } from './StatusOverlay';
 import { TerminalToolbar } from './TerminalToolbar';
 import { useAgentTerminalSession } from './useAgentTerminalSession';
+import { useTerminalTextActions } from './useTerminalTextActions';
 
 /** Which keys sit under the terminal: the system keyboard, or one of the app's docks. */
 type Keys = 'system' | 'controls' | 'full';
@@ -35,10 +36,19 @@ const DOCKS: Record<Exclude<Keys, 'system'>, KeyRows> = {
 /** The Agent detail's terminal: attach pipeline, keys and paste, over one session. */
 export function TerminalSurface({ hostId, paneId }: { hostId: string; paneId: string }) {
   const session = useAgentTerminalSession(hostId, paneId);
-  return session ? <LiveTerminal session={session} /> : null;
+  return session ? <LiveTerminal session={session} hostId={hostId} paneId={paneId} /> : null;
 }
 
-function LiveTerminal({ session }: { session: AgentTerminalSession }) {
+function LiveTerminal({
+  session,
+  hostId,
+  paneId,
+}: {
+  session: AgentTerminalSession;
+  hostId: string;
+  paneId: string;
+}) {
+  const textActions = useTerminalTextActions(hostId, paneId);
   const router = useRouter();
   const settings = useSettings();
   const store = useSyncExternalStore(session.subscribe, session.getStore);
@@ -76,6 +86,7 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
       onPress: () => sendKey(key),
     })),
     { key: 'paste', title: t('Paste'), icon: 'copy', onPress: () => void paste() },
+    ...textActions.items,
     {
       key: 'controls',
       title: t('Control Keys'),
@@ -126,6 +137,7 @@ function LiveTerminal({ session }: { session: AgentTerminalSession }) {
       </View>
       {dock ? <KeyboardDock rows={dock.rows} onKey={dockKey(dock)} testID="keys-dock" /> : null}
       <ActionMenu items={items} {...context.menuProps} />
+      {textActions.sheets}
       <PasteReviewSheet
         review={input.pendingPaste}
         onConfirm={() => session.input.confirmPaste()}

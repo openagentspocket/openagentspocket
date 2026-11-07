@@ -12,6 +12,7 @@ import {
   concatBytes,
   type Host,
   readSubagentTranscript,
+  screenText,
   subagentRoute,
 } from '@openagentspocket/core';
 import { chatAgentView } from './agentView';
@@ -108,6 +109,12 @@ export class ConversationRegistry {
     const route = subagentRoute(agentID, path, snapshot.transcript.entries);
     if (route === null) return { route, outcome: { type: 'missing' } };
     return { route, outcome: await readSubagentTranscript(this.filesOf(hostId), route.path) };
+  }
+
+  /** What the Agent's screen shows now as plain text; null where panes cannot be read. */
+  async readVisibleText(hostId: string, paneId: string): Promise<string | null> {
+    const screen = await this.deps.readScreen?.(hostId, paneId);
+    return screen ? screenText(screen) : null;
   }
 
   /** An image on the Host, whole; null when it is missing or too large to show. */

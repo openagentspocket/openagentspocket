@@ -29,6 +29,7 @@
   "More Options": "Más opciones",
   "Needs host + login": "Necesita host + login",
   "New Agent Here": "Nuevo Agent acá",
+  "No Links Yet": "Todavía no hay links",
   "No open Hermes Agent database has a conversation with this id. If this Hermes runs as another user or with another HERMES_HOME, Chat can't read it.": "Ninguna base de datos abierta de Hermes Agent tiene una conversación con este id. Si este Hermes se ejecuta con otro usuario u otro HERMES_HOME, Chat no puede leerla.",
   "No other settings, files or services are touched.": "No se toca ningún otro ajuste, archivo ni servicio.",
   "Nothing else changes": "No cambia nada más",
