@@ -188,7 +188,7 @@ export class DemoConsoleTransport extends ScriptedEventsTransport implements Con
   /** One Agent is a fake TUI, the rest echo keys; the live Transport opens a PTY attach. */
   async attachTerminal(request: TerminalAttachRequest): Promise<TerminalAttachSession> {
     return request.target.id === DEMO_TUI_PANE
-      ? new DemoAgentTuiSession()
+      ? new DemoAgentTuiSession(request.rows)
       : new DemoTerminalSession();
   }
 

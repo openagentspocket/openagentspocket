@@ -117,8 +117,8 @@ export const paneTakesWheelJump = (paneId: string): boolean => !paneId.startsWit
 const WHEEL_REPORTS = /^(?:\u001b\[<6[4-7];\d+;\d+[Mm]|\u001b\[M[\u0060-\u0063][\s\S]{2})+$/;
 
 /**
- * Whether the renderer's input is only its own wheel reports. Its pan can emit them once something
- * gave it a mouse position, aimed at wherever that was; touch scrolling owns the wheel, so these
- * are dropped: they would double a drag, and put a tmux pane in copy-mode.
+ * Whether the renderer's input is only its own wheel reports. Its pan emits them once a resting
+ * touch gave it a mouse position, aimed at that cell; touch scrolling owns the wheel, so these are
+ * dropped: they would double a drag, and put a tmux pane in copy-mode.
  */
 export const isWheelReport = (text: string): boolean => WHEEL_REPORTS.test(text);

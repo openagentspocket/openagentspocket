@@ -4,12 +4,13 @@ import { paneTakesWheelJump, type TerminalMouseModes } from './mouse-modes';
 
 // Swift `AgenticoTerminalView+Gestures` and `TerminalTouchScrollAccumulator`: a finger on a terminal
 // whose remote tracks the mouse. The renderer's own pan cannot serve it: it turns the drag into a
-// wheel report at the mouse position, a finger never sets one, and Ghostty drops a report from
-// outside the grid. So the app sends the report, aimed at the grid's centre.
+// wheel report at the mouse position, and Ghostty drops a report from outside the grid. Until a
+// touch rests long enough for the context menu to ask, that position is none, so a swipe scrolls
+// nothing (reproduced on the simulator). The app sends the report itself, at the grid's centre.
 
 const MINIMUM_POINTS_PER_ROW = 8;
-/** A terminal row against its text size. A wheel notch is no exact row, so this need not be either. */
-const ROW_HEIGHT_RATIO = 1.25;
+/** A row against the size setting, measured: 14 points at size 8. The view does not report it. */
+const ROW_HEIGHT_RATIO = 1.75;
 const FRAME_MS = 16;
 const MINIMUM_FLICK_SPEED = 80;
 const MAXIMUM_FLICK_SPEED = 4000;

@@ -17,7 +17,8 @@ appId: com.openagentspocket.app
 - waitForAnimationToEnd
 - runFlow: _guard.yaml
 - extendedWaitUntil:
-    notVisible: "Connecting..."
+    notVisible:
+      id: terminal-status
     timeout: 15000
 - tapOn:
     point: "50%,40%"
@@ -33,8 +34,7 @@ appId: com.openagentspocket.app
     start: "50%,19%"
     end: "50%,31%"
     duration: 120
-- extendedWaitUntil:
-    visible: "Message Agent"
+- waitForAnimationToEnd:
     timeout: 4000
 - takeScreenshot: design/atlas/sim/14-terminal-scroll-flick
 - swipe:
@@ -43,8 +43,8 @@ appId: com.openagentspocket.app
     duration: 1500
 - waitForAnimationToEnd
 - takeScreenshot: design/atlas/sim/14-terminal-scroll-back
-- tapOn:
+- longPressOn:
     point: "50%,25%"
 - waitForAnimationToEnd
-- takeScreenshot: design/atlas/sim/14-terminal-scroll-tap
+- takeScreenshot: design/atlas/sim/14-terminal-scroll-long-press
 - runFlow: _guard.yaml

@@ -34,12 +34,17 @@ const WHEEL_UP = 64;
  * tracking the mouse, whose history only a wheel report reaches. Each repaint says where it stands.
  */
 export class DemoAgentTuiSession extends ScriptedTerminalSession {
-  private rows = 0;
   private offset = 0;
+
+  /** `rows` is the grid of the attach; a later change arrives through `resize`. */
+  constructor(private rows: number) {
+    super();
+    this.emit(ENCODER_OUT('\u001b[?1049h\u001b[?1000h\u001b[?1006h'));
+    this.paint();
+  }
 
   override resize(cols: number, rows: number): void {
     super.resize(cols, rows);
-    if (this.rows === 0) this.emit(ENCODER_OUT('\u001b[?1049h\u001b[?1000h\u001b[?1006h'));
     this.rows = rows;
     this.paint();
   }
