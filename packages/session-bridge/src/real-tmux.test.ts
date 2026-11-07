@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { decodeResult } from '@openagentspocket/core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { agentRead, handleLine, typeKeys, visibleScreen } from './handler.js';
-import { tmuxRunner } from './runner.js';
+import { attachArgs, tmuxRunner } from './runner.js';
 import { listPanes } from './tmux.js';
 
 const BINARY = ['/opt/homebrew/bin/tmux', '/usr/local/bin/tmux', '/usr/bin/tmux'].find(existsSync);
@@ -64,6 +64,21 @@ describe.skipIf(!BINARY)('the bridge on a real tmux', () => {
     await eventually(async () => (await visibleScreen(tmux, pane.paneId)).includes('\nmode-mark'));
     await tmux.run(['kill-session', '-t', 'mode']);
   });
+
+  it('attaches to the named server, in UTF-8', async () => {
+    await tmux.run(['new-session', '-d', '-s', 'attach', '-x', '80', '-y', '10', '/bin/sh']);
+    // A client needs a terminal: a pane of a second server is one.
+    const outer = tmuxRunner({ binary: BINARY ?? 'tmux', socketName: `${SOCKET}-outer` });
+    const client = ['env', '-u', 'TMUX', BINARY ?? 'tmux', ...attachArgs('attach', SOCKET)];
+    await outer.run(['new-session', '-d', '-x', '80', '-y', '10', ...client]);
+    const clients = () => tmux.run(['list-clients', '-t', 'attach', '-F', '#{client_utf8}']);
+    try {
+      await eventually(async () => (await clients()).trim() === '1');
+    } finally {
+      await outer.run(['kill-server']).catch(() => {});
+      await tmux.run(['kill-session', '-t', 'attach']);
+    }
+  }, 10_000);
 
   it('maps live sessions, windows and panes', async () => {
     const shot = await snapshot();

@@ -1,4 +1,4 @@
-import { execFile } from 'node:child_process';
+import { execFile, spawnSync } from 'node:child_process';
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
@@ -27,12 +27,35 @@ function readRecords(dir: string): ReadonlyMap<string, PaneRecord> {
   return records;
 }
 
+const socketFlags = (socketName: string | undefined) => (socketName ? ['-L', socketName] : []);
+
+/** `-u`: sshd gives the client no UTF-8 locale, and tmux would draw every non-ASCII cell as `_`. */
+export const attachArgs = (target: string, socketName?: string) => [
+  ...socketFlags(socketName),
+  '-u',
+  'attach-session',
+  '-t',
+  target,
+];
+
+/** Puts this terminal on `target`, in the server the rest of the bridge reads. */
+export function attachClient(
+  target: string,
+  options: { binary?: string; socketName?: string } = {},
+): number {
+  const { binary = 'tmux', socketName } = options;
+  for (const command of ['select-window', 'select-pane']) {
+    spawnSync(binary, [...socketFlags(socketName), command, '-t', target], { stdio: 'ignore' });
+  }
+  return spawnSync(binary, attachArgs(target, socketName), { stdio: 'inherit' }).status ?? 1;
+}
+
 /** The real tmux, on the default server or on the named socket. */
 export function tmuxRunner(
   options: { binary?: string; socketName?: string; recordsDir?: string } = {},
 ): TmuxRunner {
   const { binary = 'tmux', socketName, recordsDir } = options;
-  const flags = socketName ? ['-L', socketName] : [];
+  const flags = socketFlags(socketName);
   return {
     run: async (args) => (await run(binary, [...flags, ...args])).stdout,
     records: () => (recordsDir ? readRecords(recordsDir) : new Map()),

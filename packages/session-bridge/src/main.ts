@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { autostartFor } from './autostart.js';
 import { agentRead, pluginEntry, typeKeys } from './handler.js';
 import { installLauncher, recordRuntime } from './install.js';
-import { tmuxRunner } from './runner.js';
+import { attachClient, tmuxRunner } from './runner.js';
 import { startBridge } from './server.js';
 
 /** `+tmux` tells the app which backend this is (core's `pluginPresentation`). */
@@ -25,26 +25,14 @@ const stateDir = () =>
 /** In herdr's layout: the app's endpoint rules accept no other shape. */
 export const bridgeSocket = () => join(configDir(), 'herdr', 'herdr.sock');
 
-const tmux = () =>
-  tmuxRunner({
-    recordsDir: join(configDir(), 'panes'),
-    socketName: process.env.OAP_TMUX_SOCKET || undefined,
-  });
+const tmuxSocket = () => process.env.OAP_TMUX_SOCKET || undefined;
+
+const tmux = () => tmuxRunner({ recordsDir: join(configDir(), 'panes'), socketName: tmuxSocket() });
 
 const print = (value: unknown) => console.log(JSON.stringify(value));
 
 function attach(target: string | undefined): number {
-  if (!target) return 2;
-  for (const args of [
-    ['select-window', '-t', target],
-    ['select-pane', '-t', target],
-  ]) {
-    spawnSync('tmux', args, { stdio: 'ignore' });
-  }
-  // `-u`: sshd gives the client no UTF-8 locale, and tmux would draw every non-ASCII cell as `_`.
-  return (
-    spawnSync('tmux', ['-u', 'attach-session', '-t', target], { stdio: 'inherit' }).status ?? 1
-  );
+  return target ? attachClient(target, { socketName: tmuxSocket() }) : 2;
 }
 
 /** Pairing is the plugin's own ceremony, run as it runs for a relocated herdr. */
