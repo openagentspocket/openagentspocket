@@ -37,10 +37,7 @@ const NOT_CARDS = new Map([
 /** Cards still drawn by hand: move each to `Card`, then delete its line. Never add one. */
 const PENDING = new Set([
   'packages/ui/src/components/TerminalRow.tsx',
-  'packages/ui/src/diff/DiffView.tsx',
   'packages/ui/src/markdown/CodeBlock.tsx',
-  'packages/ui/src/markdown/Markdown.tsx',
-  'packages/ui/src/terminal/ReviewPasteSheet.tsx',
 ]);
 
 const SKIP = /\.test\.|testkit|\/gallery\/|\/dev\/atlas\//;

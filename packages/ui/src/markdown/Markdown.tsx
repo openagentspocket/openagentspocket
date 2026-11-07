@@ -1,6 +1,7 @@
 import { marked, type Token, type Tokens } from 'marked';
 import { Fragment, memo, type ReactNode, useMemo } from 'react';
 import { Linking, ScrollView, View } from 'react-native';
+import { Card } from '../primitives/Card';
 import { Text, type TextVariant } from '../primitives/Text';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 import { CodeBlock } from './CodeBlock';
@@ -18,11 +19,6 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xs,
   },
   rule: { height: t.metrics.hairlineWidth, backgroundColor: t.hairline },
-  table: {
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-    borderRadius: t.metrics.cardRadius,
-  },
   tableRow: { flexDirection: 'row' },
   tableHead: { backgroundColor: t.colors.surfaceRaised },
   cell: {
@@ -208,10 +204,10 @@ function Table({ token, ctx }: { token: Tokens.Table; ctx: Context }) {
       showsHorizontalScrollIndicator
       testID="markdown-table"
     >
-      <View style={ctx.styles.table}>
+      <Card padded={false}>
         {row(token.header, true, 'head')}
         {token.rows.map((cells, index) => row(cells, false, `${index}`))}
-      </View>
+      </Card>
     </ScrollView>
   );
 }

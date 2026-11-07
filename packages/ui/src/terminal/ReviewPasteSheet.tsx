@@ -1,15 +1,12 @@
 import { View } from 'react-native';
 import { Sheet } from '../overlay/Sheet';
 import { Button } from '../primitives/Button';
+import { Card } from '../primitives/Card';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
-  preview: {
-    backgroundColor: t.colors.control,
-    borderRadius: t.metrics.cardRadius,
-    padding: t.spacing.sm,
-  },
+  preview: { padding: t.spacing.sm },
   actions: { flexDirection: 'row', gap: t.spacing.xs },
   action: { flex: 1 },
 }));
@@ -73,11 +70,11 @@ export function ReviewPasteSheet({
       <Text variant="callout" tone="secondary" testID="review-paste-summary">
         {labels.summary}
       </Text>
-      <View style={styles.preview}>
+      <Card level="control" style={styles.preview}>
         <Text variant="mono" selectable testID="review-paste-preview">
           {preview ?? ''}
         </Text>
-      </View>
+      </Card>
     </Sheet>
   );
 }

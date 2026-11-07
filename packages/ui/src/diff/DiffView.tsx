@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { View } from 'react-native';
+import { Card } from '../primitives/Card';
 import { Text } from '../primitives/Text';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 import {
@@ -14,13 +15,6 @@ import { type DiffLine, parseUnifiedDiff, toSideBySide } from './parseUnifiedDif
 export type DiffLayout = 'unified' | 'split';
 
 const useStyles = makeStyles((t) => ({
-  root: {
-    borderRadius: t.metrics.cardRadius,
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-    backgroundColor: t.colors.surface,
-    overflow: 'hidden',
-  },
   row: { flexDirection: 'row' },
   half: { flex: 1, flexDirection: 'row' },
   divider: { width: t.metrics.hairlineWidth, backgroundColor: t.hairline },
@@ -106,7 +100,7 @@ export function DiffView({
   };
   if (layout === 'split') {
     return (
-      <View style={styles.root} testID={testID}>
+      <Card padded={false} testID={testID}>
         {toSideBySide(lines).map((row, index) =>
           row.left && !row.right && (row.left.kind === 'hunk' || row.left.kind === 'meta') ? (
             <View
@@ -134,11 +128,11 @@ export function DiffView({
             </View>
           ),
         )}
-      </View>
+      </Card>
     );
   }
   return (
-    <View style={styles.root} testID={testID}>
+    <Card padded={false} testID={testID}>
       {lines.map((line, index) => (
         <View
           // biome-ignore lint/suspicious/noArrayIndexKey: diff lines are positional.
@@ -166,6 +160,6 @@ export function DiffView({
           </Text>
         </View>
       ))}
-    </View>
+    </Card>
   );
 }
