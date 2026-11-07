@@ -11,7 +11,7 @@ export { withDeadline } from './deadline';
 export { invalidatesConnection, mapConnectError, mapOperationError } from './error-mapping';
 export { HerdrApi } from './herdr-api';
 export * from './host';
-export { applyApproval } from './host/approval';
+export { applyApproval, approvalAsksSourceOf, readApprovalAsks } from './host/approval';
 export { checkPresentedHostKey, fingerprintFromHostKey, hostKeyFailureError } from './host-key';
 export {
   type AgentLaunch,

@@ -3,6 +3,16 @@ export {
   type ApprovalAskWatchOptions,
   FIRST_ASK_READ_MS,
 } from './approval-ask-watch';
+export {
+  type ActivityFeedbackDeps,
+  type ActivityTap,
+  type ActivityTapGates,
+  ActivityTapRunner,
+  type ActivityTapRunnerOptions,
+  activityResultOf,
+  markActivityResult,
+  runActivityTap,
+} from './approval-tap';
 export { MAX_CIPHERTEXT_CHARS, sealContent } from './content';
 export {
   type ActivityHandle,

@@ -3,9 +3,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { MemoryStorage } from '../hosts/known-hosts';
 import { encodeBase64Url, utf8Encode } from '../pairing/bytes';
 import {
+  APPROVAL_OPT_IN_FILE_NAME,
   ApprovalLedger,
   approvalAnswerRole,
   approvalOutcomeOf,
+  MirroredApprovalOptIns,
   openNotificationEnvelope,
   planApproval,
   runApprovalAction,
@@ -154,5 +156,41 @@ describe('the Host side', () => {
     );
     expect(script).not.toContain('$(rm -rf /)');
     expect(script).not.toContain("--pane 'w1'; rm");
+  });
+});
+
+describe('MirroredApprovalOptIns', () => {
+  it('writes the file the widget reads, in the shape it decodes, also when a Host leaves', async () => {
+    const files = new Map<string, string>();
+    const optIns = new MirroredApprovalOptIns(new MemoryStorage(), async (name, text) => {
+      files.set(name, text);
+      return true;
+    });
+    optIns.setEnabled(true, 'b');
+    optIns.setEnabled(true, 'a');
+    await optIns.sync();
+    expect(JSON.parse(files.get(APPROVAL_OPT_IN_FILE_NAME) ?? '')).toEqual({
+      v: 1,
+      hosts: ['a', 'b'],
+    });
+    optIns.setEnabled(false, 'a');
+    await optIns.sync();
+    expect(JSON.parse(files.get(APPROVAL_OPT_IN_FILE_NAME) ?? '').hosts).toEqual(['b']);
+  });
+
+  it('sync writes what was stored before this launch, and retries a failed write', async () => {
+    const storage = new MemoryStorage();
+    new StoredApprovalOptIns(storage).setEnabled(true, 'a');
+    let accepted = false;
+    const writes: string[] = [];
+    const optIns = new MirroredApprovalOptIns(storage, async (_name, text) => {
+      writes.push(text);
+      return accepted;
+    });
+    await optIns.sync();
+    accepted = true;
+    await optIns.sync();
+    await optIns.sync();
+    expect(writes).toHaveLength(2);
   });
 });

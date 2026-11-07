@@ -1,6 +1,7 @@
 import { gcm } from '@noble/ciphers/aes.js';
 import type { KeyValueStorage } from '../hosts/known-hosts';
 import { decodeBase64Url, encodeBase64Url, utf8Decode, utf8Encode } from '../pairing/bytes';
+import { type KeyMirrorSink, MirrorFile } from './key-mirror';
 import { NOTIFICATION_KEY_BYTES, type NotificationKeyRecord, notificationKeyId } from './key-store';
 
 const AAD = utf8Encode('HERDR-NOTIFY:1');
@@ -55,7 +56,9 @@ export type ApprovalOutcome =
   | 'pluginOutdated'
   | 'unreachable'
   | 'sendFailed'
-  | 'timedOut';
+  | 'timedOut'
+  /** The device owner did not confirm an Approve the app itself had to ask for. */
+  | 'notAuthenticated';
 
 /**
  * Opens a push with this device's keys. Only what authenticates here may be believed: anyone who
@@ -171,6 +174,28 @@ export class StoredApprovalOptIns {
   }
 }
 
+/** The App Group file the widget reads the opt-ins from before it draws Approve and Deny. */
+export const APPROVAL_OPT_IN_FILE_NAME = 'approval-opt-in.json';
+
+/** The stored opt-ins, mirrored for the widget. A failed write leaves it off or stale; `sync` retries. */
+export class MirroredApprovalOptIns extends StoredApprovalOptIns {
+  private readonly file: MirrorFile;
+
+  constructor(storage: KeyValueStorage, sink: KeyMirrorSink) {
+    super(storage);
+    this.file = new MirrorFile(APPROVAL_OPT_IN_FILE_NAME, sink);
+  }
+
+  override setEnabled(enabled: boolean, hostId: string): void {
+    super.setEnabled(enabled, hostId);
+    void this.sync();
+  }
+
+  sync(): Promise<void> {
+    return this.file.write(JSON.stringify({ v: 1, hosts: this.hostIds().sort() }));
+  }
+}
+
 /** Episodes this device already answered, so a double tap sends nothing twice. */
 export class ApprovalLedger {
   constructor(
@@ -234,6 +259,36 @@ export interface ApprovalActionInput {
   readonly apply: (hostId: string, request: ApprovalApplyRequest) => Promise<string>;
 }
 
+export interface ApprovalAnswerInput {
+  readonly hostId: string;
+  readonly payload: ApprovalPayload;
+  readonly decision: ApprovalDecision;
+  readonly ledger: ApprovalLedger;
+  readonly nowSeconds: number;
+  /**
+   * Device owner authentication for Approve, where the OS does not ask first. It runs before the
+   * ledger: an owner who cancels leaves the episode answerable. A throw counts as a refusal.
+   */
+  readonly authenticate?: (request: ApprovalApplyRequest) => Promise<boolean>;
+  readonly apply: ApprovalActionInput['apply'];
+}
+
+/** The gates every answer goes through, wherever it was tapped; the binding one is on the Host. */
+export async function answerApproval(input: ApprovalAnswerInput): Promise<ApprovalOutcome> {
+  const plan = planApproval(input.payload, input.decision, input.nowSeconds);
+  if ('refusal' in plan) return plan.refusal;
+  if (input.decision === 'approve' && input.authenticate) {
+    const confirmed = await input.authenticate(plan.request).catch(() => false);
+    if (confirmed !== true) return 'notAuthenticated';
+  }
+  if (!input.ledger.claim(input.hostId, plan.request.episodeId, input.nowSeconds)) return 'ignored';
+  try {
+    return approvalOutcomeOf(await input.apply(input.hostId, plan.request));
+  } catch {
+    return 'unreachable';
+  }
+}
+
 /** Approve or Deny from a notification: every check here, the binding one on the Host. */
 export async function runApprovalAction(
   input: ApprovalActionInput,
@@ -243,14 +298,7 @@ export async function runApprovalAction(
   const { record, payload } = opened;
   const where = { hostName: record.hostName, hostId: record.hostId, paneId: payload.paneId };
   if (!input.optIns.isEnabled(record.hostId)) return { outcome: 'optedOut', ...where };
-  const plan = planApproval(payload, input.decision, input.nowSeconds);
-  if ('refusal' in plan) return { outcome: plan.refusal, ...where };
-  if (!input.ledger.claim(record.hostId, plan.request.episodeId, input.nowSeconds)) {
-    return { outcome: 'ignored', ...where };
-  }
-  try {
-    return { outcome: approvalOutcomeOf(await input.apply(record.hostId, plan.request)), ...where };
-  } catch {
-    return { outcome: 'unreachable', ...where };
-  }
+  const { decision, ledger, nowSeconds, apply } = input;
+  const answer = { hostId: record.hostId, payload, decision, ledger, nowSeconds, apply };
+  return { outcome: await answerApproval(answer), ...where };
 }
