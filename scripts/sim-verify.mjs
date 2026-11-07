@@ -184,12 +184,26 @@ async function startMetro() {
   });
   for (let i = 0; i < 90; i++) {
     try {
-      if ((await fetch(`http://localhost:${port}/status`)).ok) return { server, logPath };
+      if ((await fetch(`http://localhost:${port}/status`)).ok) {
+        await warmBundle();
+        return { server, logPath };
+      }
     } catch {}
     await sleep(1000);
   }
   server.kill();
   throw new Error(`Metro did not start on ${port} (see ${logPath})`);
+}
+
+/**
+ * Builds the bundle before any flow launches the app: after a code change the first build takes
+ * longer than Maestro waits for its first screen. A failure here only means a slower first launch.
+ */
+async function warmBundle() {
+  const query = 'platform=ios&dev=true&hot=false&lazy=true&transform.routerRoot=src%2Fapp';
+  await fetch(`http://localhost:${port}/.expo/.virtual-metro-entry.bundle?${query}`)
+    .then((response) => response.arrayBuffer())
+    .catch(() => undefined);
 }
 
 const crashDir = join(homedir(), 'Library/Logs/DiagnosticReports');
