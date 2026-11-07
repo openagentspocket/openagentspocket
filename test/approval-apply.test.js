@@ -102,7 +102,8 @@ function writeHerdrStub({ screen = BASH_SCREEN, readDelayMs = 0, sendCode = 0 } 
   writeFileSync(
     join(stubDir, "herdr"),
     [
-      "#!/usr/bin/env node",
+      // This node, by path: a version manager's `node` on PATH is slower than the bounds under test.
+      `#!${process.execPath}`,
       'const fs = require("node:fs");',
       'const path = require("node:path");',
       "const args = process.argv.slice(2);",
