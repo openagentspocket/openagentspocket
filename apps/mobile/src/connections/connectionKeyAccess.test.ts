@@ -69,6 +69,19 @@ async function dropWhileAway(world: World, gateClock: FakeClock) {
 }
 
 describe('the key gate on connections', () => {
+  it('a network change does not ask again for a Host the owner refused', async () => {
+    const { world, gate } = await gatedWorld();
+    gate.answer = 'cancelled';
+    world.manager.start();
+    await world.runtime.model.add(SAMPLE_HOST, null);
+    await untilStatus(world, 'failed');
+
+    await world.manager.networkDidChange();
+    await world.clock.advance(RECONNECT_WAIT_MS);
+    expect(gate.asked).toBe(1);
+    world.manager.stop();
+  });
+
   it('uses no key when the owner refuses, and says so', async () => {
     const world = await createWorld(HOST_KEY, { keyAccess: refusingGate() });
     world.manager.start();

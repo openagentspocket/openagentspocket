@@ -215,6 +215,29 @@ describe('EventsSession.withTransport', () => {
     await session.end();
   });
 
+  it('replaces the link on request, and a send made meanwhile rides the new one', async () => {
+    const connector = new SequencedConnector([scripted('old'), scripted('new')]);
+    const { session, next } = harness(connector.connect);
+    await session.resume();
+    expect(await next()).toEqual(connecting);
+    expect(await next()).toEqual(connected);
+
+    const replacing = session.replaceLink();
+    const answered = await session.withTransportRunningOnce(version);
+    await replacing;
+
+    expect(answered).toBe('new');
+    await session.end();
+  });
+
+  it('has no link to replace while suspended', async () => {
+    const connector = new SequencedConnector([scripted('only')]);
+    const { session } = harness(connector.connect);
+    await session.replaceLink();
+    expect(connector.connectCount).toBe(0);
+    await session.end();
+  });
+
   it('fails at once on a suspended session', async () => {
     const transport = scripted('first');
     const { session, next } = harness(async () => transport);

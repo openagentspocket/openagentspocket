@@ -195,6 +195,23 @@ export class ConnectionManager {
   }
 
   /**
+   * The phone moved to another network. Live Hosts drop a connection that may be dead, and a failed
+   * one tries again; a Host the owner refused stays. Away from the app, the return decides.
+   */
+  async networkDidChange(): Promise<void> {
+    if (this.stopped || !this.active) return;
+    const { store } = this.options;
+    await Promise.all(
+      [...this.entries.values()].map(async ({ host, session }) => {
+        if (this.keyRefused.has(host.id)) return;
+        const status = store.getState().hosts.find((row) => row.id === host.id)?.status;
+        if (status?.kind === 'failed') await store.revalidate(host.id);
+        else await session.replaceLink();
+      }),
+    );
+  }
+
+  /**
    * Runs `operation` on the Host's live transport (waiting for a replacement while it
    * reconnects). Rejects when the Host is not in the catalog.
    */

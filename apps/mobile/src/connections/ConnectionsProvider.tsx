@@ -15,6 +15,7 @@ import { deviceAuthenticator } from '@/settings/deviceAuthenticator';
 import { deviceServices } from './deviceServices';
 import type { LiveServices } from './liveServices';
 import { isDemoMode, subscribeDemoMode } from './mode';
+import { watchNetworkPath } from './networkPath';
 
 let shells: ShellTerminalServices | undefined;
 
@@ -49,8 +50,10 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
       deviceServices().conversations.setActive(state === 'active');
       if (state === 'active') void liveActivity.foreground();
     });
+    const stopWatchingNetwork = watchNetworkPath(() => void manager.networkDidChange());
     return () => {
       subscription.remove();
+      stopWatchingNetwork();
       void manager.setActive(false, { immediately: true });
       deviceServices().conversations.setActive(false);
       void liveActivity.stop();

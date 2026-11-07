@@ -100,6 +100,36 @@ describe('connection manager', () => {
     world.manager.stop();
   });
 
+  it('moves to a new connection when the network changes, with the app open', async () => {
+    const world = await createWorld();
+    world.manager.start();
+    await world.runtime.model.add(SAMPLE_HOST, null);
+    await untilStatus(world, 'connected');
+    const dialed = world.ssh.sessions.length;
+
+    await world.manager.networkDidChange();
+
+    await waitFor(() => {
+      world.acknowledgeEvents();
+      expect(world.ssh.sessions.length).toBeGreaterThan(dialed);
+      expect(statusOf(world)).toBe('connected');
+    });
+    world.manager.stop();
+  });
+
+  it('leaves a network change away from the app to the return', async () => {
+    const world = await createWorld();
+    world.manager.start();
+    await world.runtime.model.add(SAMPLE_HOST, null);
+    await untilStatus(world, 'connected');
+    const dialed = world.ssh.sessions.length;
+
+    await world.manager.setActive(false);
+    await world.manager.networkDidChange();
+    expect(world.ssh.sessions).toHaveLength(dialed);
+    world.manager.stop();
+  });
+
   it('does not trust a connection iOS may have frozen: a longer trip returns on a new one', async () => {
     const world = await createWorld();
     world.manager.start();

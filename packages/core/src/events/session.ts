@@ -93,6 +93,15 @@ export class EventsSession<T extends EventsTransport> extends EventsSessionCore<
   }
 
   /**
+   * The phone moved to another network: the socket may be gone without a word, and the keepalive
+   * would need most of a minute to find out. Drops the Transport now; requests wait for the next.
+   */
+  async replaceLink(): Promise<void> {
+    const transport = this.currentTransport;
+    if (this.phase === 'active' && transport) await this.distrust(transport);
+  }
+
+  /**
    * Replaces the subscription set (pane-scoped kinds come and go with panes).
    * A live channel is ended and re-subscribed at once on the same connection;
    * the fresh `connected` is the consumer's re-snapshot signal. Pane entries
