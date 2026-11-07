@@ -254,7 +254,7 @@ function ProviderCards() {
   );
 }
 
-function WindowRows() {
+function WindowRows({ layout }: { layout?: 'inline' | 'stacked' }) {
   const styles = useStyles();
   const theme = useTheme();
   const color = programTint('claude', theme);
@@ -268,6 +268,10 @@ function WindowRows() {
           color={color}
           percentText={`${Math.round(share * 100)}%`}
           resetText="4d 23h"
+          layout={layout}
+          pace={layout ? 0.5 : undefined}
+          tone={share > 0.95 ? 'danger' : 'primary'}
+          paceText={layout === 'stacked' ? 'On pace' : undefined}
           testID={`window-${share}`}
         />
       ))}
@@ -278,7 +282,14 @@ function WindowRows() {
 /** Demos of the UX3 group 'usage': one entry per component, one variant per catalog variant id. */
 export const usageEntries: readonly CatalogEntry[] = [
   { name: 'ProviderUsageCard', variants: [{ id: 'default', render: () => <ProviderCards /> }] },
-  { name: 'LimitWindowRow', variants: [{ id: 'default', render: () => <WindowRows /> }] },
+  {
+    name: 'LimitWindowRow',
+    variants: [
+      { id: 'default', render: () => <WindowRows /> },
+      { id: 'inline', render: () => <WindowRows layout="inline" /> },
+      { id: 'stacked', render: () => <WindowRows layout="stacked" /> },
+    ],
+  },
   { name: 'UsageLimitChip', variants: [{ id: 'default', render: () => <LimitChips /> }] },
   {
     name: 'UsageTotals',

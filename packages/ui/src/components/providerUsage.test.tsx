@@ -52,4 +52,42 @@ describe('ProviderUsageCard', () => {
     );
     expect(screen.getByTestId('w-segment-0').children).toHaveLength(0);
   });
+
+  it('stacks the Meter and pace, or the unknown note without a share', async () => {
+    const row = (usedShare: number | null) => (
+      <LimitWindowRow
+        layout="stacked"
+        label="Weekly"
+        usedShare={usedShare}
+        percentText={usedShare === null ? '' : '40%'}
+        resetText="Resets in 2 days"
+        unknownText="unknown"
+        paceText="On pace"
+        meterTestID="m"
+        paceTestID="p"
+      />
+    );
+    const view = await renderThemed(row(0.4));
+    expect(screen.getByTestId('m')).toBeTruthy();
+    expect(screen.getByTestId('p')).toBeTruthy();
+    await view.unmount();
+    await renderThemed(row(null));
+    expect(screen.queryByTestId('m')).toBeNull();
+    expect(screen.getByText('unknown')).toBeTruthy();
+  });
+
+  it('draws a Meter on one line when inline', async () => {
+    await renderThemed(
+      <LimitWindowRow
+        layout="inline"
+        label="5-hour"
+        usedShare={0.1}
+        percentText="10%"
+        resetText="2h"
+        meterTestID="m"
+      />,
+    );
+    expect(screen.getByTestId('m')).toBeTruthy();
+    expect(screen.getByLabelText('5-hour, 10%')).toBeTruthy();
+  });
 });
