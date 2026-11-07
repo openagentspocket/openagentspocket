@@ -19,7 +19,7 @@ import { approvalFieldsFromRead, visibleScreenArgs } from "./approval-fields.js"
 import { forDisplay, optionalText } from "./display-text.js";
 import { readNotificationConfig } from "./notification-config.js";
 import { deliverToDevices, readEligibleDevices } from "./notify-delivery.js";
-import { writePaneRecord } from "./pane-records.js";
+import { PANE_LIST_FORMAT, paneInDirectory, writePaneRecord } from "./pane-records.js";
 import { readUsageRuntime } from "./usage-runtime.js";
 
 /** Past this the push goes out without approval fields. The hook runs apart from the Agent. */
@@ -141,6 +141,15 @@ function readApproval(configDir, paneId, timestamp) {
   return read.status === 0 ? approvalFieldsFromRead(read.stdout, paneId, timestamp) : null;
 }
 
+/** The pane of a hook that runs outside it, from what tmux shows; null when it cannot tell. */
+function paneFromTmux(program, directory, env) {
+  if (optionalText(directory) === null) return null;
+  const socket = optionalText(env.OAP_TMUX_SOCKET);
+  const args = [...(socket ? ["-L", socket] : []), "list-panes", "-a", "-F", PANE_LIST_FORMAT];
+  const listed = spawnSync("tmux", args, { encoding: "utf8", timeout: SCREEN_READ_TIMEOUT_MS });
+  return listed.status === 0 ? paneInDirectory(listed.stdout, program, directory) : null;
+}
+
 async function readStdin() {
   let text = "";
   for await (const chunk of process.stdin) text += chunk;
@@ -152,10 +161,12 @@ async function main() {
   const input = normalizedInput(program, JSON.parse(await readStdin()));
   if (!Object.hasOwn(PARSERS, program) || herdrOwnsThisPane(process.env)) return;
   const event = PARSERS[program](input);
-  const paneId = hookPaneId(process.env, input);
+  const tmuxPane =
+    optionalText(process.env.TMUX_PANE) ?? paneFromTmux(program, input.cwd, process.env);
+  const paneId = tmuxPane ?? hookPaneId(process.env, input);
   const configDir = configDirOf(process.env);
-  if (optionalText(process.env.TMUX_PANE)) {
-    writePaneRecord(configDir, process.env.TMUX_PANE, {
+  if (tmuxPane) {
+    writePaneRecord(configDir, tmuxPane, {
       agent: program,
       session: optionalText(input.session_id ?? input.sessionID),
       status: activityOf(input, event),
@@ -171,7 +182,7 @@ async function main() {
     config: readNotificationConfig(configDir),
     devices,
     approval: devices.some((device) => device.approve)
-      ? readApproval(configDir, process.env.TMUX_PANE, timestamp)
+      ? readApproval(configDir, tmuxPane, timestamp)
       : null,
     payload: {
       paneId,
