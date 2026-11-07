@@ -56,9 +56,12 @@ export function NativeSheet({
     }
   }, [visible]);
   if (!TrueSheet) return null;
+  const fill = detent === 'fit' ? undefined : styles.fill;
   return (
     <TrueSheet
       ref={ref}
+      // Its content view is auto-height unless told: the flex surface below would collapse to nothing.
+      style={fill}
       detents={nativeDetents(detent, metrics.sheetMaxShare)}
       backgroundColor={colors.canvas}
       cornerRadius={metrics.sheetRadius}
@@ -75,7 +78,7 @@ export function NativeSheet({
       testID={testID}
     >
       {presented || visible ? (
-        <View style={detent === 'fit' ? undefined : styles.fill} testID={`${testID}-surface`}>
+        <View style={fill} testID={`${testID}-surface`}>
           <ScreenBackground testID={`${testID}-background`} />
           <SheetContent
             onClose={onClose}
