@@ -21,14 +21,7 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: t.spacing.sm,
   },
   pressed: { backgroundColor: t.colors.surfaceRaised },
-  tile: {
-    width: 44,
-    height: 44,
-    borderRadius: t.metrics.cardRadius,
-    backgroundColor: t.colors.control,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  tile: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   text: { flex: 1, gap: 2 },
   separator: {
     height: t.metrics.hairlineWidth,
@@ -43,15 +36,7 @@ const useStyles = makeStyles((t) => ({
     minHeight: t.metrics.rowMinHeight,
   },
   plus: { width: 44, alignItems: 'center' },
-  sessionTile: {
-    width: 168,
-    gap: t.spacing.xxs,
-    padding: t.spacing.sm,
-    borderRadius: t.metrics.cardRadius,
-    backgroundColor: t.colors.surface,
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-  },
+  sessionTile: { width: 168, gap: t.spacing.xxs, padding: t.spacing.sm },
 }));
 
 export interface TerminalModel {
@@ -89,9 +74,9 @@ export function TerminalRow({
       style={({ pressed }) => [styles.row, pressed && styles.pressed]}
       testID={testID}
     >
-      <View style={styles.tile}>
+      <Card level="control" padded={false} style={styles.tile}>
         <Icon name="terminal" size={20} color="textPrimary" />
-      </View>
+      </Card>
       <View style={styles.text}>
         <Text variant="headline" monospaced numberOfLines={1}>
           {terminal.title}
@@ -183,9 +168,9 @@ export function TerminalTile({
 }) {
   const styles = useStyles();
   return (
-    <Tappable
+    <Card
+      padded={false}
       onPress={onPress}
-      accessibilityRole="button"
       accessibilityLabel={[terminal.title, terminal.path].filter(Boolean).join(', ')}
       style={styles.sessionTile}
       testID={testID}
@@ -199,6 +184,6 @@ export function TerminalTile({
           {terminal.path}
         </Text>
       ) : null}
-    </Tappable>
+    </Card>
   );
 }

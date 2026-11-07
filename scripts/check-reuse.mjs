@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 // Reuse rules the linter cannot see:
-// 1. A card starts from `Card`: only the base pieces below draw the card radius themselves. The
-//    pending list may only shrink; a file on it that no longer draws the radius must leave it.
+// 1. A card starts from `Card`: only the base pieces below draw the card radius themselves.
 // 2. Every ui component has a caller: an app screen or another ui component (the gallery, the
 //    atlas and barrels do not count).
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -34,12 +33,6 @@ const NOT_CARDS = new Map([
   ['packages/ui/src/scanner/QRCamera.tsx', 'camera frame'],
 ]);
 
-/** Cards still drawn by hand: move each to `Card`, then delete its line. Never add one. */
-const PENDING = new Set([
-  'packages/ui/src/components/TerminalRow.tsx',
-  'packages/ui/src/markdown/CodeBlock.tsx',
-]);
-
 const SKIP = /\.test\.|testkit|\/gallery\/|\/dev\/atlas\//;
 
 function* walk(dir) {
@@ -61,11 +54,8 @@ for (const top of ['apps/mobile/src', 'packages/ui/src']) {
 const failures = [];
 for (const [path, text] of sources) {
   const draws = RADIUS.test(text);
-  if (draws && !BASES.has(path) && !NOT_CARDS.has(path) && !PENDING.has(path)) {
+  if (draws && !BASES.has(path) && !NOT_CARDS.has(path)) {
     failures.push(`${path}: draws the card radius by hand; start from Card`);
-  }
-  if (!draws && PENDING.has(path)) {
-    failures.push(`${path}: no longer draws the card radius; remove it from PENDING`);
   }
 }
 

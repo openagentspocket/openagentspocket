@@ -13,13 +13,14 @@ import type { ColorKey } from '../theme/tokens.generated';
 import { SurfaceFillProvider } from './surfaceFill';
 import { Tappable } from './Tappable';
 
-export type CardLevel = 'surface' | 'overlay' | 'control';
+export type CardLevel = 'surface' | 'overlay' | 'control' | 'terminal';
 
 /** The color each card level fills with; rows inside read it through `useSurfaceFill()`. */
 export const CARD_FILL: Record<CardLevel, ColorKey> = {
   surface: 'surface',
   overlay: 'surfaceOverlay',
   control: 'control',
+  terminal: 'terminalBackground',
 };
 
 const useStyles = makeStyles((t) => ({
@@ -33,6 +34,7 @@ const useStyles = makeStyles((t) => ({
   padded: { padding: t.spacing.md, gap: t.spacing.xs },
   overlay: { backgroundColor: t.colors.surfaceOverlay },
   control: { backgroundColor: t.colors.control },
+  terminal: { backgroundColor: t.colors.terminalBackground },
   selected: {
     borderWidth: 1,
     borderColor: t.colors.accent,
@@ -43,7 +45,10 @@ const useStyles = makeStyles((t) => ({
 
 interface CardProps {
   children: ReactNode;
-  /** surface: a card on the canvas; overlay: inside a sheet or drawer; control: a code or command box. */
+  /**
+   * surface: a card on the canvas; overlay: inside a sheet or drawer; control: a code or command box;
+   * terminal: a block in the terminal's palette (a fenced code block).
+   */
   level?: CardLevel;
   /** Outlines a card that asks for attention in this color (at 40%). */
   accent?: ColorKey;

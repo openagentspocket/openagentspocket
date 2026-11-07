@@ -91,11 +91,14 @@ describe('Card', () => {
     });
   });
 
-  it('fills the control level, a tint wash, and marks the selected option', async () => {
+  it('fills the control and terminal levels, a tint wash, and marks the selected option', async () => {
     const { colors } = themes.papel;
     await renderThemed(
       <>
         <Card testID="control" level="control">
+          <Text>x</Text>
+        </Card>
+        <Card testID="terminal" level="terminal">
           <Text>x</Text>
         </Card>
         <Card testID="tint" tint="danger">
@@ -108,6 +111,9 @@ describe('Card', () => {
       'papel',
     );
     expect(screen.getByTestId('control')).toHaveStyle({ backgroundColor: colors.control });
+    expect(screen.getByTestId('terminal')).toHaveStyle({
+      backgroundColor: colors.terminalBackground,
+    });
     expect(screen.getByTestId('tint')).not.toHaveStyle({ backgroundColor: colors.surface });
     expect(screen.getByRole('button', { name: 'Papel' })).toBeSelected();
   });

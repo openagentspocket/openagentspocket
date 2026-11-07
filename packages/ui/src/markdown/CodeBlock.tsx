@@ -1,16 +1,10 @@
 import { ScrollView, View } from 'react-native';
+import { Card } from '../primitives/Card';
 import { CopyButton } from '../primitives/CopyButton';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
-  block: {
-    backgroundColor: t.colors.terminalBackground,
-    borderRadius: t.metrics.cardRadius,
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-    overflow: 'hidden',
-  },
   bar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -43,7 +37,7 @@ export function CodeBlock({
 }: CodeBlockProps) {
   const styles = useStyles();
   return (
-    <View style={styles.block} testID={testID}>
+    <Card level="terminal" padded={false} testID={testID}>
       <View style={styles.bar}>
         <Text variant="label" tone="tertiary">
           {language ?? ''}
@@ -55,6 +49,6 @@ export function CodeBlock({
           {code}
         </Text>
       </ScrollView>
-    </View>
+    </Card>
   );
 }
