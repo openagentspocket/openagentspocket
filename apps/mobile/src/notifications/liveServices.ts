@@ -33,7 +33,9 @@ export interface LiveNotificationDeps {
 }
 
 export interface LiveNotificationParts {
-  readonly services: Omit<NotificationServices, 'liveActivity'>;
+  readonly services: Omit<NotificationServices, 'liveActivity' | 'approvals'> & {
+    readonly approvals: NonNullable<NotificationServices['approvals']>;
+  };
   readonly keys: MirroredNotificationKeyStore;
   readonly ceremony: NotificationRegistrationCeremony;
   readonly deviceToken: () => PushDeviceToken | null;

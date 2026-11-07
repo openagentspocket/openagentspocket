@@ -28,6 +28,29 @@ enum AgentActivityLink {
         return components.url
     }
 
+    /// The answer a Live Activity button asks for.
+    enum Answer: String, Sendable {
+        case approve
+        case deny
+    }
+
+    /// A Live Activity button (spec F5, R5): opens that Agent and has the app
+    /// answer, the way a notification action opens it. iOS gives a button no
+    /// safe time for SSH in the background. The link only selects a prompt:
+    /// the app reads it from the Host again, and asks for device owner
+    /// authentication before an Approve.
+    static func answerURL(hostID: String, paneID: String, episodeID: String, answer: Answer) -> URL? {
+        guard
+            let agent = agentURL(hostID: hostID, paneID: paneID),
+            var components = URLComponents(url: agent, resolvingAgainstBaseURL: false)
+        else { return nil }
+        components.queryItems = [
+            URLQueryItem(name: "answer", value: answer.rawValue),
+            URLQueryItem(name: "bid", value: episodeID),
+        ]
+        return components.url
+    }
+
     /// A tap outside any row (compact island, minimal, banner chrome):
     /// opens the Console.
     static func consoleURL(hostID: String) -> URL? {

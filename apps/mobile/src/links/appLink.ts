@@ -7,12 +7,20 @@ export type HostReference =
   /** A saved Host's address or name as another app knows it; `session` null is the default one. */
   | { readonly kind: 'lookup'; readonly value: string; readonly session: string | null };
 
+/** Which answer to which prompt a Live Activity button means. */
+export interface LinkAnswer {
+  readonly decision: 'approve' | 'deny';
+  readonly episodeId: string;
+}
+
 export type AppLink =
   | {
       readonly kind: 'agent';
       readonly host: HostReference;
       /** null opens the Console. */
       readonly paneId: string | null;
+      /** A Live Activity button's answer; it only selects, the app reads the prompt from the Host. */
+      readonly answer?: LinkAnswer;
     }
   | { readonly kind: 'usage'; readonly hostId: string | null; readonly limits: boolean };
 
@@ -73,7 +81,20 @@ function agentLink(segments: string[], query: Map<string, string>): AppLink | nu
   }
   const [id, pane, ...rest] = segments;
   if (!id || !UUID.test(id) || rest.length > 0) return null;
-  return { kind: 'agent', host: { kind: 'id', id }, paneId: pane ?? null };
+  const answer = pane ? linkAnswer(query) : null;
+  return {
+    kind: 'agent',
+    host: { kind: 'id', id },
+    paneId: pane ?? null,
+    ...(answer && { answer }),
+  };
+}
+
+function linkAnswer(query: Map<string, string>): LinkAnswer | null {
+  const decision = query.get('answer');
+  const episodeId = query.get('bid');
+  if ((decision !== 'approve' && decision !== 'deny') || !episodeId) return null;
+  return { decision, episodeId };
 }
 
 function usageLink(segments: string[], query: Map<string, string>): AppLink | null {
@@ -100,6 +121,7 @@ export const isLinkHead = (head: string): boolean => LINK_PARSERS.has(head);
 
 /**
  * Reads a deep link: `<scheme>://agent/<hostId>[/<paneId>]`, `<scheme>://agent?host=&session=&pane=`,
+ * the Live Activity buttons' `<scheme>://agent/<hostId>/<paneId>?answer=approve|deny&bid=<episode>`,
  * and the widgets' `<scheme>://usage[/limits][?host=<id>]`. Also takes the path form Expo Router
  * hands over once the scheme is stripped (`/agent/<hostId>/<paneId>`). Pane ids are opaque
  * percent-encoded strings. null when the link is not ours or malformed; other query items are ignored.

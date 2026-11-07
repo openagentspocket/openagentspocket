@@ -111,6 +111,7 @@ describe('NotificationPrivacyScreen', () => {
       ...createDemoNotificationServices(),
       liveActivity: {
         activitiesEnabled: true,
+        answer: async () => null,
         isEnabled: (hostId) => enabled.has(hostId),
         setEnabled: (on, hostId) => {
           if (on) enabled.add(hostId);

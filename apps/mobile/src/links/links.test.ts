@@ -45,6 +45,33 @@ describe('parseAppLink', () => {
     });
   });
 
+  it('reads a Live Activity answer, and opens the same Agent', () => {
+    const url = `${agentUrl(HOST_ID, 'w1:p1')}?answer=approve&bid=abcdefghijk`;
+    expect(parseAppLink(url)).toEqual({
+      kind: 'agent',
+      host: { kind: 'id', id: HOST_ID },
+      paneId: 'w1:p1',
+      answer: { decision: 'approve', episodeId: 'abcdefghijk' },
+    });
+    expect(redirectLink(url)).toBe(`/agent/${HOST_ID}/w1%3Ap1`);
+  });
+
+  it.each(['answer=press&bid=abcdefghijk', 'answer=approve', 'bid=abcdefghijk'])(
+    'reads no answer from %s',
+    (query) => {
+      expect(parseAppLink(`${agentUrl(HOST_ID, 'w1:p1')}?${query}`)).toEqual({
+        kind: 'agent',
+        host: { kind: 'id', id: HOST_ID },
+        paneId: 'w1:p1',
+      });
+    },
+  );
+
+  it('reads no answer without a pane', () => {
+    const link = parseAppLink(`${consoleUrl(HOST_ID)}?answer=deny&bid=abcdefghijk`);
+    expect(link).toEqual({ kind: 'agent', host: { kind: 'id', id: HOST_ID }, paneId: null });
+  });
+
   it('reads the path form Expo Router hands over', () => {
     expect(parseAppLink(`/agent/${HOST_ID}/w1%3Ap1`)).toEqual({
       kind: 'agent',

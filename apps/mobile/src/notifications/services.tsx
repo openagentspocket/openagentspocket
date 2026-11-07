@@ -1,4 +1,5 @@
 import {
+  type ActivityTap,
   type ApprovalLedger,
   apnsToken,
   type Clock,
@@ -19,6 +20,7 @@ import {
 } from '@openagentspocket/core';
 import { systemClock } from '@openagentspocket/transport';
 import { createContext, type ReactNode, useContext, useMemo } from 'react';
+import type { ActivityTapResult } from '@/live-activity/runtime';
 
 /** What the notification screens need; the app wires real implementations around P5.3/P5.4. */
 export interface NotificationServices {
@@ -43,6 +45,8 @@ export interface LiveActivityToggles {
   readonly activitiesEnabled: boolean;
   isEnabled(hostId: string): boolean;
   setEnabled(enabled: boolean, hostId: string): void;
+  /** Answers a Live Activity button's link. */
+  answer(tap: ActivityTap): Promise<ActivityTapResult>;
 }
 
 /** A token source that is granted on `enable()`; stands in until P5.3/P5.4 land. */
