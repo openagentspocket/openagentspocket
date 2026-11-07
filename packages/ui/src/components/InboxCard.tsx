@@ -28,12 +28,6 @@ const SECTION_STATUS: Record<InboxSection, Status> = {
 };
 
 const useStyles = makeStyles((t) => ({
-  ring: {
-    ...({ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } as const),
-    borderRadius: t.metrics.cardRadius,
-    borderWidth: 2,
-    borderColor: t.colors.accent,
-  },
   body: { gap: t.spacing.xs, padding: airy.card },
   header: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   title: { flex: 1 },
@@ -42,7 +36,7 @@ const useStyles = makeStyles((t) => ({
 
 interface InboxCardProps {
   presentation: InboxPresentation;
-  /** The row open in the detail column (iPad): an accent ring. */
+  /** The row open in the detail column (iPad): Card's selected look. */
   selected?: boolean;
   onPress?: () => void;
   /** Opens the quick-detail sheet. */
@@ -68,44 +62,39 @@ export function InboxCard({
     accessibilityLabel ??
     [p.title, p.subtitle, p.chips.join(', '), p.age].filter(Boolean).join('. ');
   return (
-    <View>
-      <Card
-        accent={p.section === 'needsYou' ? 'statusBlocked' : undefined}
-        padded={false}
-        onPress={onPress}
-        onLongPress={onLongPress}
-        accessibilityLabel={label}
-        testID={testID}
-      >
-        <View style={styles.body}>
-          <View style={styles.header}>
-            <ProgramMark program={p.program} status={SECTION_STATUS[p.section]} size={24} />
-            <Text variant="subheadline" semibold numberOfLines={1} style={styles.title}>
-              {p.title}
-            </Text>
-            {p.age ? (
-              <Text variant="subheadline" tone="secondary" testID={`${testID}-age`}>
-                {p.age}
-              </Text>
-            ) : null}
-          </View>
-          {p.subtitle ? (
-            <Text variant="subheadline" tone="secondary" numberOfLines={3}>
-              {p.subtitle}
-            </Text>
-          ) : null}
-          {p.chips.length > 0 ? (
-            <View style={styles.chips}>
-              {p.chips.map((chip) => (
-                <MetaChip key={chip} label={chip} />
-              ))}
-            </View>
-          ) : null}
-        </View>
-      </Card>
-      {selected ? (
-        <View style={styles.ring} pointerEvents="none" testID={`${testID}-selected`} />
+    <Card
+      selected={selected}
+      accent={p.section === 'needsYou' ? 'statusBlocked' : undefined}
+      padded={false}
+      style={styles.body}
+      onPress={onPress}
+      onLongPress={onLongPress}
+      accessibilityLabel={label}
+      testID={testID}
+    >
+      <View style={styles.header}>
+        <ProgramMark program={p.program} status={SECTION_STATUS[p.section]} size={24} />
+        <Text variant="subheadline" semibold numberOfLines={1} style={styles.title}>
+          {p.title}
+        </Text>
+        {p.age ? (
+          <Text variant="subheadline" tone="secondary" testID={`${testID}-age`}>
+            {p.age}
+          </Text>
+        ) : null}
+      </View>
+      {p.subtitle ? (
+        <Text variant="subheadline" tone="secondary" numberOfLines={3}>
+          {p.subtitle}
+        </Text>
       ) : null}
-    </View>
+      {p.chips.length > 0 ? (
+        <View style={styles.chips}>
+          {p.chips.map((chip) => (
+            <MetaChip key={chip} label={chip} />
+          ))}
+        </View>
+      ) : null}
+    </Card>
   );
 }

@@ -28,18 +28,12 @@ const useStyles = makeStyles((t) => ({
   },
   cardSlot: { paddingVertical: airy.rowInset },
   pressed: { backgroundColor: t.colors.surfaceRaised },
-  ring: {
-    ...({ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 } as const),
-    borderWidth: 2,
-    borderColor: t.colors.accent,
-    borderRadius: t.metrics.cardRadius,
-  },
 }));
 
 export interface AgentCardProps {
   agent: AgentCardModel;
   presentation?: AgentCardPresentation;
-  /** The row open in the detail column (iPad): a 2 pt accent ring. */
+  /** The row open in the detail column (iPad): a card draws Card's selected look, a row the pressed fill. */
   selected?: boolean;
   onPress?: () => void;
   /** Long press lifts the card above these (see `agentRowActions`). */
@@ -97,21 +91,17 @@ export function AgentCard({
   const open = native ? undefined : rowMenu.onLongPress;
   const front =
     presentation === 'card' ? (
-      <View>
-        <Card
-          onPress={onPress}
-          onLongPress={open}
-          accessibilityLabel={a11y.accessibilityLabel}
-          accessibilityActions={a11y.accessibilityActions}
-          onAccessibilityAction={a11y.onAccessibilityAction}
-          testID={testID}
-        >
-          {body}
-        </Card>
-        {selected ? (
-          <View style={styles.ring} pointerEvents="none" testID="agent-card-selected" />
-        ) : null}
-      </View>
+      <Card
+        selected={selected}
+        onPress={onPress}
+        onLongPress={open}
+        accessibilityLabel={a11y.accessibilityLabel}
+        accessibilityActions={a11y.accessibilityActions}
+        onAccessibilityAction={a11y.onAccessibilityAction}
+        testID={testID}
+      >
+        {body}
+      </Card>
     ) : (
       <Tappable
         {...a11y}

@@ -37,14 +37,16 @@ describe('InboxCard', () => {
     expect(card.props.accessibilityLabel).toContain('Checkout review');
   });
 
-  it('shows the selection ring only when selected', async () => {
-    await renderThemed(<InboxCard presentation={presentation} selected />);
-    expect(screen.getByTestId('inbox-card-selected')).toBeTruthy();
+  it('marks the card selected only when selected', async () => {
+    await renderThemed(<InboxCard presentation={presentation} selected onPress={() => {}} />);
+    expect(screen.getByRole('button')).toBeSelected();
   });
 
   it('working cards drop the ring and show no selection', async () => {
-    await renderThemed(<InboxCard presentation={{ ...presentation, section: 'working' }} />);
-    expect(screen.queryByTestId('inbox-card-selected')).toBeNull();
+    await renderThemed(
+      <InboxCard presentation={{ ...presentation, section: 'working' }} onPress={() => {}} />,
+    );
+    expect(screen.getByRole('button')).not.toBeSelected();
   });
 });
 

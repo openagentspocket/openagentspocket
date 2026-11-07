@@ -36,8 +36,6 @@ const NOT_CARDS = new Map([
 
 /** Cards still drawn by hand: move each to `Card`, then delete its line. Never add one. */
 const PENDING = new Set([
-  'packages/ui/src/components/AgentCard.tsx',
-  'packages/ui/src/components/InboxCard.tsx',
   'packages/ui/src/components/TerminalRow.tsx',
   'packages/ui/src/diff/DiffView.tsx',
   'packages/ui/src/markdown/CodeBlock.tsx',
