@@ -2,6 +2,7 @@ import { FakeClock, type TransportError, TransportFailure } from '@openagentspoc
 import { FakeSsh, type HostKey, SshError, type SshModule } from 'agentico-ssh';
 import { describe, expect, it } from 'vitest';
 import { connectTransport } from './connect';
+import { JUMP_LOCAL_HOST } from './jump';
 import { directRoute, fakeSsh, policy, reply, settingsFor, settle } from './test-helpers';
 
 const KEY_A: HostKey = {
@@ -169,6 +170,24 @@ describe('connectTransport through a Jump Host', () => {
 
     await transport.session.disconnect();
     expect(await host.sessions[0]?.isConnected()).toBe(false);
+  });
+
+  it('closes the jump session and its forward even when the Host refuses to disconnect', async () => {
+    const { ssh, bastion } = await machines();
+    const refusing: SshModule = {
+      ...ssh,
+      connect: async (options) => {
+        const session = await ssh.connect(options);
+        if (options.host !== JUMP_LOCAL_HOST) return session;
+        return Object.assign(session, {
+          disconnect: () => Promise.reject(new SshError('closed')),
+        });
+      },
+    };
+    const transport = await connectTransport(refusing, settingsFor({ routes: [route] }));
+
+    await expect(transport.session.disconnect()).rejects.toBeInstanceOf(SshError);
+    expect(await bastion.sessions[0]?.isConnected()).toBe(false);
   });
 });
 

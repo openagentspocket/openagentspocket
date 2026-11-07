@@ -82,8 +82,11 @@ export function sessionThroughHop(session: SshSession, hop: JumpHop): SshSession
   const isConnected = session.isConnected.bind(session);
   return Object.assign(session, {
     disconnect: async () => {
-      await disconnect();
-      await hop.close();
+      try {
+        await disconnect();
+      } finally {
+        await hop.close();
+      }
     },
     isConnected: async () => (await hop.isConnected()) && (await isConnected()),
   });
