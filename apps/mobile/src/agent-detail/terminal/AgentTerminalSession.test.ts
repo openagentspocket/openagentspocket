@@ -1,4 +1,10 @@
-import { ScriptedTerminalSession, scriptedRunner, TransportFailure } from '@openagentspocket/core';
+import {
+  FakeClock,
+  ScriptedTerminalSession,
+  scriptedRunner,
+  TransportFailure,
+} from '@openagentspocket/core';
+import { utf8Encode } from 'agentico-ssh';
 import { AgentTerminalSession } from './AgentTerminalSession';
 
 const settle = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
@@ -80,5 +86,46 @@ describe('AgentTerminalSession', () => {
     await settle();
     expect(session.getStore()).toBe(first);
     await session.dispose();
+  });
+
+  describe('Message Jump', () => {
+    const modes = utf8Encode('\u001b[?1000h\u001b[?1006h');
+    const jumpOn = (session: AgentTerminalSession) => {
+      const jump = session.makeMessageJump({
+        clock: new FakeClock(),
+        readFrame: async () => 'screen',
+      });
+      return { jump, unbind: session.bindMessageJump(jump) };
+    };
+
+    it('learns the mouse modes from the Attach output, and forgets them with the session', async () => {
+      const { session, sessions } = setup([1]);
+      const { jump } = jumpOn(session);
+      session.getStore().viewDidResize(80, 24);
+      await settle();
+      sessions[0]?.emit(modes);
+      await settle();
+      expect(jump.canJump).toBe(true);
+      session.input.detachSessionForReplacement();
+      expect(jump.canJump).toBe(false);
+    });
+
+    it('stops a walk when the user types, and when the jump is unbound', async () => {
+      const { session, sessions } = setup([1]);
+      const { jump, unbind } = jumpOn(session);
+      session.getStore().viewDidResize(80, 24);
+      await settle();
+      sessions[0]?.emit(modes);
+      await settle();
+      const typed = jump.jump('older');
+      await settle();
+      expect(jump.isRunning).toBe(true);
+      session.keyboard.typed('x');
+      expect(await typed).toBe('cancelled');
+      const left = jump.jump('older');
+      await settle();
+      unbind();
+      expect(await left).toBe('cancelled');
+    });
   });
 });

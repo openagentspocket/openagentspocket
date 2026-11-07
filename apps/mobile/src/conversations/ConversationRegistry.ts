@@ -111,6 +111,11 @@ export class ConversationRegistry {
     return { route, outcome: await readSubagentTranscript(this.filesOf(hostId), route.path) };
   }
 
+  /** Whether this build can read panes at all (the demo cannot). */
+  get canReadScreens(): boolean {
+    return this.deps.readScreen !== undefined;
+  }
+
   /** What the Agent's screen shows now as plain text; null where panes cannot be read. */
   async readVisibleText(hostId: string, paneId: string): Promise<string | null> {
     const screen = await this.deps.readScreen?.(hostId, paneId);

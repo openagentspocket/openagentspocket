@@ -137,6 +137,12 @@ export class AttachTerminalStore {
     return this.snapshot.status;
   }
 
+  /** The view's grid, null until its first layout. */
+  get grid(): { cols: number; rows: number } | null {
+    const { cols, rows } = this;
+    return cols === null || rows === null ? null : { cols, rows };
+  }
+
   private setStatus(status: AttachStatus): void {
     this.snapshot = { status, surfaceId: this.surfaceId };
     for (const listener of [...this.listeners]) listener();

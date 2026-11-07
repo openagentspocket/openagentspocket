@@ -1,8 +1,11 @@
 import {
+  AgentMessageJump,
+  type AgentMessageJumpDeps,
   AttachTerminalStore,
   type RecoveryDecision,
   TerminalInputController,
   TerminalKeyboardControl,
+  TerminalMouseModes,
   TerminalRecoveryGenerationLatch,
   type TerminalSessionRunner,
 } from '@openagentspocket/core';
@@ -23,8 +26,16 @@ export interface TerminalHostPort {
  * paste (Swift `AgentAttachStore` composition over `TerminalRecoveryGenerationLatch`).
  */
 export class AgentTerminalSession {
-  readonly input = new TerminalInputController();
+  readonly input = new TerminalInputController({
+    observeOutgoing: (data, source) => this.jump?.observeOutgoing(data, source),
+    sessionDidReset: () => {
+      this.modes.reset();
+      this.jump?.reset();
+    },
+  });
   readonly keyboard = new TerminalKeyboardControl({ send: (bytes) => this.input.send(bytes) });
+  private readonly modes = new TerminalMouseModes();
+  private jump: AgentMessageJump | null = null;
   private current: AttachTerminalStore;
   private readonly latch = new TerminalRecoveryGenerationLatch();
   private readonly listeners = new Set<() => void>();
@@ -51,10 +62,32 @@ export class AgentTerminalSession {
       input: this.input,
       transportGeneration: this.host.transportGeneration(),
       runTerminal: this.host.runner,
+      observeOutput: (bytes) => this.modes.receive(bytes),
       transportReady: (surfaceId, generation) =>
         this.apply(this.latch.recordAcquisition(generation, surfaceId)),
       runDidFinish: (surfaceId) => this.latch.clearBoundTo(surfaceId),
     });
+  }
+
+  /** A Message Jump over this session's scroll path, for whichever store is current. */
+  makeMessageJump(
+    deps: Pick<AgentMessageJumpDeps, 'clock' | 'readFrame' | 'profile'>,
+  ): AgentMessageJump {
+    return new AgentMessageJump({
+      ...deps,
+      modes: this.modes,
+      grid: () => this.current.grid,
+      scroll: (sequence, rows) => this.input.scroll(sequence, rows),
+    });
+  }
+
+  /** Lets `jump` see this session's input and resets; the returned function ends it for good. */
+  bindMessageJump(jump: AgentMessageJump): () => void {
+    this.jump = jump;
+    return () => {
+      jump.cancel();
+      if (this.jump === jump) this.jump = null;
+    };
   }
 
   /** The app returned to the foreground: reconcile the Host's Transport with this pipeline's. */
