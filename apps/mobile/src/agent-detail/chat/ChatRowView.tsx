@@ -12,7 +12,6 @@ import {
   copyToClipboard,
   Markdown,
   makeStyles,
-  Tappable,
   Text,
   useRowMenu,
 } from '@openagentspocket/ui';
@@ -84,17 +83,9 @@ export const ChatRowView = memo(function ChatRowView({
           />
         );
       case 'assistant':
-        return (
-          <Tappable onLongPress={copy.onLongPress} {...copy.a11y}>
-            <Markdown text={content.source} />
-          </Tappable>
-        );
+        return <Markdown text={content.source} onLongPress={copy.onLongPress} />;
       case 'plan':
-        return (
-          <Tappable onLongPress={copy.onLongPress} {...copy.a11y}>
-            <Markdown text={content.plan.text} />
-          </Tappable>
-        );
+        return <Markdown text={content.plan.text} onLongPress={copy.onLongPress} />;
       case 'reasoning':
         return (
           <ChatThoughtRow

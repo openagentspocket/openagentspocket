@@ -4,6 +4,7 @@ import { Linking, ScrollView, View } from 'react-native';
 import { Text, type TextVariant } from '../primitives/Text';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 import { CodeBlock } from './CodeBlock';
+import { tableColumnWidths } from './tableColumns';
 
 const useStyles = makeStyles((t) => ({
   root: { gap: t.spacing.sm },
@@ -25,7 +26,6 @@ const useStyles = makeStyles((t) => ({
   tableRow: { flexDirection: 'row' },
   tableHead: { backgroundColor: t.colors.surfaceRaised },
   cell: {
-    minWidth: 96,
     paddingHorizontal: t.spacing.xs,
     paddingVertical: t.spacing.xxs,
     borderRightWidth: t.metrics.hairlineWidth,
@@ -39,6 +39,7 @@ interface Context {
   styles: Styles;
   theme: Theme;
   onLinkPress: (href: string) => void;
+  onLongPress?: () => void;
 }
 
 const HEADING: Record<number, TextVariant> = { 1: 'title2', 2: 'headline', 3: 'headline' };
@@ -114,14 +115,27 @@ function blocks(tokens: readonly Token[] | undefined, ctx: Context): ReactNode {
         return null;
       case 'heading':
         return (
-          <Text key={key} variant={HEADING[token.depth] ?? 'body'} accessibilityRole="header">
+          <Text
+            key={key}
+            variant={HEADING[token.depth] ?? 'body'}
+            accessibilityRole="header"
+            onLongPress={ctx.onLongPress}
+          >
             {inline(token.tokens, ctx)}
           </Text>
         );
       case 'paragraph':
-        return <Text key={key}>{inline(token.tokens, ctx)}</Text>;
+        return (
+          <Text key={key} onLongPress={ctx.onLongPress}>
+            {inline(token.tokens, ctx)}
+          </Text>
+        );
       case 'text':
-        return <Text key={key}>{inline(token.tokens ?? [token], ctx)}</Text>;
+        return (
+          <Text key={key} onLongPress={ctx.onLongPress}>
+            {inline(token.tokens ?? [token], ctx)}
+          </Text>
+        );
       case 'code':
         return <CodeBlock key={key} code={token.text} language={token.lang || undefined} />;
       case 'blockquote':
@@ -170,11 +184,12 @@ function List({ token, ctx }: { token: Tokens.List; ctx: Context }) {
 }
 
 function Table({ token, ctx }: { token: Tokens.Table; ctx: Context }) {
+  const widths = tableColumnWidths([token.header, ...token.rows]);
   const row = (cells: Tokens.TableCell[], head: boolean, key: string) => (
     <View key={key} style={[ctx.styles.tableRow, head && ctx.styles.tableHead]}>
       {cells.map((cell, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: cells are positional.
-        <View key={index} style={ctx.styles.cell}>
+        <View key={index} style={[ctx.styles.cell, { width: widths[index] }]}>
           <Text
             variant="callout"
             style={[head && { fontWeight: '600' }, { textAlign: cell.align ?? 'left' }]}
@@ -186,7 +201,13 @@ function Table({ token, ctx }: { token: Tokens.Table; ctx: Context }) {
     </View>
   );
   return (
-    <ScrollView horizontal>
+    <ScrollView
+      horizontal
+      directionalLockEnabled
+      nestedScrollEnabled
+      showsHorizontalScrollIndicator
+      testID="markdown-table"
+    >
       <View style={ctx.styles.table}>
         {row(token.header, true, 'head')}
         {token.rows.map((cells, index) => row(cells, false, `${index}`))}
@@ -200,11 +221,18 @@ interface MarkdownProps {
   text: string;
   /** Opens a link; defaults to the system browser. */
   onLinkPress?: (href: string) => void;
+  /** Long press on the text. A wrapper would take the drag from tables and code blocks. */
+  onLongPress?: () => void;
   testID?: string;
 }
 
 /** Renders Markdown with the theme's text styles; parsed once per text (marked's lexer). */
-export const Markdown = memo(function Markdown({ text, onLinkPress, testID }: MarkdownProps) {
+export const Markdown = memo(function Markdown({
+  text,
+  onLinkPress,
+  onLongPress,
+  testID,
+}: MarkdownProps) {
   const styles = useStyles();
   const theme = useTheme();
   const tokens = useMemo(() => marked.lexer(text), [text]);
@@ -212,6 +240,7 @@ export const Markdown = memo(function Markdown({ text, onLinkPress, testID }: Ma
     styles,
     theme,
     onLinkPress: onLinkPress ?? ((href) => void Linking.openURL(href).catch(() => {})),
+    onLongPress,
   };
   return (
     <View style={styles.root} testID={testID ?? 'markdown'}>
