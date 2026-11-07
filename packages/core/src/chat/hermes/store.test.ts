@@ -223,6 +223,50 @@ describe.skipIf(!hasSqlite3())('the Hermes store read through sqlite3', () => {
     expect(output?.type === 'preview' && output.preview?.text.length).toBeGreaterThan(8_000);
   });
 
+  it('reads the segments compression rotated the session out of, oldest first', async () => {
+    const segment = (id: string, parent: string | null, end: string | null) =>
+      `INSERT INTO sessions (id, parent_session_id, end_reason) VALUES
+        (${quoted(id)}, ${quoted(parent)}, ${quoted(end)});`;
+    const home = homeWith(
+      segment('root', null, 'compression'),
+      segment('middle', 'root', 'compression'),
+      `UPDATE sessions SET parent_session_id = 'middle' WHERE id = ${quoted(SESSION)};`,
+      insertMessage({ role: 'user', content: quoted('first'), displayOrder: 1 }, 'root'),
+      insertMessage({ role: 'user', content: quoted('second'), displayOrder: 1 }, 'middle'),
+      insertMessage({ role: 'user', content: quoted('third'), displayOrder: 1 }),
+    );
+    const lines = (await source().open(home.files())) ?? [];
+    expect(textOf(transcriptOf(lines), 'user')).toEqual(['first', 'second', 'third']);
+  });
+
+  it('stops at a parent that did not end in compression, and pages across segments', async () => {
+    const home = homeWith(
+      `INSERT INTO sessions (id, end_reason) VALUES ('forked', 'branched');
+       INSERT INTO sessions (id, parent_session_id, end_reason) VALUES ('old', 'forked', 'compression');`,
+      `UPDATE sessions SET parent_session_id = 'old' WHERE id = ${quoted(SESSION)};`,
+      insertMessage({ role: 'user', content: quoted('not ours'), displayOrder: 1 }, 'forked'),
+      insertMessage({ role: 'user', content: quoted('x'.repeat(30_000)) }, 'old'),
+      insertMessage({ role: 'user', content: quoted('y'.repeat(30_000)), displayOrder: 1 }),
+    );
+    const files = home.files();
+    const followed = new StoreRecordSource(hermesStore, SESSION, {
+      tail: 20_000,
+      poll: 1 << 20,
+      olderPage: 1 << 20,
+      olderMaximumPage: 1 << 20,
+      olderSearch: 1 << 20,
+      outputLimit: 1 << 20,
+    });
+    await followed.open(files);
+    expect(followed.hasOlder).toBe(true);
+    const page = await followed.loadOlder(files);
+    if (page.type !== 'lines') throw new Error(`expected lines, got ${page.type}`);
+    expect(followed.hasOlder).toBe(false);
+    const texts = textOf(transcriptOf(page.lines), 'user');
+    expect(texts).toHaveLength(1);
+    expect(texts[0]?.startsWith('x')).toBe(true);
+  });
+
   it('finds the session in the open store of a profile', async () => {
     const home = homeWith();
     await home.moveToOpenProfile('someone', say('user', 'from a profile'));

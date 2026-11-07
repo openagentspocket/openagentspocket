@@ -30,7 +30,7 @@ export const ARGUMENTS_LIMIT = 8_192;
 /** Every column the queries name, so a changed layout reads as one problem rather than as the first statement that fails. */
 export const LAYOUT_STATEMENT = `WITH need(t, c) AS (VALUES
   ('sessions','id'),('sessions','parent_session_id'),('sessions','title'),('sessions','display_name'),
-  ('sessions','model'),('sessions','transcript_revision'),
+  ('sessions','model'),('sessions','transcript_revision'),('sessions','end_reason'),
   ('messages','id'),('messages','session_id'),('messages','role'),('messages','content'),
   ('messages','tool_call_id'),('messages','tool_calls'),('messages','tool_name'),
   ('messages','timestamp'),('messages','finish_reason'),('messages','reasoning'),
@@ -57,17 +57,34 @@ function changedSince(session: string, cursor: StorePollCursor): string {
 const isForDisplay = (alias: string) =>
   `coalesce(json_extract(CASE WHEN json_valid(${alias}.display_metadata) THEN ${alias}.display_metadata END, '$.model_only'), 0) = 0`;
 
+/** Keeps a segment's slots apart from the next one's: each numbers its own rows. */
+const SEGMENT_SPAN = 1_000_000_000_000;
+
+/** A row's place in the whole conversation; the oldest segment keeps its own numbers. */
+const SLOT = `coalesce(m.display_order, m.id) + ((SELECT max(depth) FROM ln) - ln.depth) * ${SEGMENT_SPAN}`;
+
+/**
+ * The session and the segments compression rotated it out of, as Hermes's own resume walks them:
+ * a parent counts only when it ended in `compression`, not a branch or a fork of it.
+ */
+const lineage = (session: string) => `ln(id, depth) AS (SELECT ${session}, 0
+  UNION ALL SELECT p.id, ln.depth + 1 FROM ln
+    JOIN sessions c ON c.id = ln.id
+    JOIN sessions p ON p.id = c.parent_session_id AND p.end_reason = 'compression'
+   WHERE ln.depth < 100)`;
+
 /**
  * The CTEs `v` and `d`: the session's display rows matching `bound`, one per slot, with what each
  * costs to read. A tool result compaction carried forward as a stub is painted once, as its archived
  * original.
  */
 function displayed(session: string, bound: string): string {
-  return `v AS (SELECT m.id, coalesce(m.display_order, m.id) AS slot, m.active,
+  return `${lineage(session)},
+v AS (SELECT m.id, ${SLOT} AS slot, m.active,
     m._compressed_summary AS summary,
     min(coalesce(length(CAST(m.content AS BLOB)), 0), ${TEXT_LIMIT}) + coalesce(length(m.tool_calls), 0) AS len
-  FROM messages m
- WHERE m.session_id = ${session}${bound}
+  FROM messages m JOIN ln ON ln.id = m.session_id
+ WHERE 1${bound}
    AND (m.active = 1 OR m.compacted = 1)
    AND coalesce(m.display_kind, '') <> 'hidden'
    AND ${isForDisplay('m')}
@@ -122,8 +139,8 @@ function rowObject(toolLimit: number): string {
 
 /** The newest display rows below `below` that fit `budget`, oldest first. */
 function newestRows(session: string, below: number | null, budget: number): string {
-  const bound = below === null ? '' : ` AND coalesce(m.display_order, m.id) < ${below}`;
-  return `WITH ${displayed(session, bound)},
+  const bound = below === null ? '' : ` AND ${SLOT} < ${below}`;
+  return `WITH RECURSIVE ${displayed(session, bound)},
 w AS (SELECT *, sum(len) OVER (ORDER BY slot DESC ROWS UNBOUNDED PRECEDING) AS acc FROM d),
 x AS (SELECT slot, id FROM w WHERE acc - len < ${budget}),
 ${DECODED}
@@ -131,7 +148,7 @@ SELECT 'R ' || ${rowObject(TOOL_OUTPUT_LIMIT)} FROM r ORDER BY slot`;
 }
 
 const firstStatement = (session: string, changed: string) =>
-  `WITH ${displayed(session, '')}
+  `WITH RECURSIVE ${displayed(session, '')}
 SELECT 'F ' || coalesce(min(slot), '') FROM d WHERE ${changed}`;
 
 function sessionStatement(session: string, changed: string): string {
@@ -164,7 +181,7 @@ export function hermesStatements(query: StoreQuery): string[] {
         sessionStatement(session, changed),
         // The rows past the window that start inside the budget, then `X` for the first that does
         // not. Hermes only appends past it: anything else moves the generation or the count.
-        `WITH ${displayed(session, ` AND coalesce(m.display_order, m.id) > ${cursor.highSeq}`)},
+        `WITH RECURSIVE ${displayed(session, ` AND ${SLOT} > ${cursor.highSeq}`)},
 w AS (SELECT *, sum(len) OVER (ORDER BY slot ROWS UNBOUNDED PRECEDING) AS acc,
              sum(len) OVER (ORDER BY slot ROWS BETWEEN UNBOUNDED PRECEDING AND 2 PRECEDING) AS previous_start
         FROM d WHERE ${changed}),
@@ -174,7 +191,7 @@ SELECT CASE WHEN acc - len < ${cursor.budget} THEN 'R ' || ${rowObject(TOOL_OUTP
             ELSE 'X' END
   FROM r ORDER BY slot`,
         firstStatement(session, changed),
-        `WITH ${displayed(session, '')}
+        `WITH RECURSIVE ${displayed(session, '')}
 SELECT 'C ' || count(*) FROM d WHERE slot BETWEEN ${cursor.lowSeq} AND ${cursor.highSeq} AND ${changed}`,
       );
       break;
@@ -183,7 +200,7 @@ SELECT 'C ' || count(*) FROM d WHERE slot BETWEEN ${cursor.lowSeq} AND ${cursor.
       statements.push(newestRows(session, kind.before, kind.budget), firstStatement(session, '1'));
       break;
     case 'row':
-      statements.push(`WITH ${displayed(session, ` AND coalesce(m.display_order, m.id) = ${kind.seq}`)},
+      statements.push(`WITH RECURSIVE ${displayed(session, ` AND ${SLOT} = ${kind.seq}`)},
 x AS (SELECT slot, id FROM d),
 ${DECODED}
 SELECT 'R ' || ${rowObject(Math.max(0, kind.outputLimit))} FROM r`);
