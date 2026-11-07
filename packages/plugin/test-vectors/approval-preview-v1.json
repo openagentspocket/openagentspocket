@@ -190,6 +190,18 @@
         ],
         "act": true
       }
+    },
+    {
+      "name": "claude bash beside a side panel",
+      "screen": "Applying the last review.                                                                                                                                  ││   Bash cat notes.md        ~2.7k   0% │\n                                                                                                                                                           ││   Bash cat notes.md        ~2.7k   0% │\n  ⎿  $ cd /your/project                                                                                                                                    ││   Bash cat notes.md        ~2.7k   0% │\n                                                                                                                                                           │\n───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────││   Bash cat notes.md        ~2.7k   0% │\n Bash command                                                                                                                                              ││   Bash cat notes.md        ~2.7k   0% │\n Stage and commit the review fixes                                                                                                                         ││   Bash cat notes.md        ~2.7k   0% │\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌││   Bash cat notes.md        ~2.7k   0% │\n  │ cd /your/project                                                                                                                                       ││   Bash cat notes.md        ~2.7k   0% │\n  │ F=.scratch/vf.log; git add apps packages && (git commit -m \"Markdown tables line up and scroll sideways; copy lives on the text, not on                ││   Bash cat notes.md        ~2.7k   0% │\n  │ a wrapper around it\" > $F 2>&1 || git status)                                                                                                          │\n╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌│\n Do you want to proceed?                                                                                                                                   │\n ❯ 1. Yes                                                                                                                                                  │──────────────────────────────────────────────\n   2. No                                                                                                                                                   │  ▶ Time to compact · conversation 862.2k\n                                                                                                                                                           │  c: compact  w: handoff\n Esc to cancel · Tab to amend                                                                                                                              │\n\n  ⏺ main\n  ◯ general-purpose  Running flows                                        36m 32s",
+      "expected": {
+        "q": "cd /your/project F=.scratch/vf.log; git add apps packages && (git commit -m \"Markdown tables line up and scroll sideways; copy lives on the text, not on a wrapper around it\" > $F 2>&1 || git status) Do you want to proceed?",
+        "opts": [
+          "Yes",
+          "No"
+        ],
+        "act": true
+      }
     }
   ]
 }

@@ -32,6 +32,7 @@ import {
   sameColor,
   trimBlanks,
 } from './screen';
+import { isFrameRow } from './side-panel';
 
 export interface OptionScan {
   drafts: OptionDraft[];
@@ -92,6 +93,9 @@ export class ClaudeOptionReader {
         sawInnerRule = true;
       } else if (chat && chat.number === lastNumber + 1) {
         drafts.push(this.readNumbered(chat, true, true));
+      } else if (isFrameRow(current)) {
+        // A frame or a rule ends the option above it, however far right it starts.
+        if (numbered[0]?.rowIndex !== row + 1) break;
       } else {
         // Verbatim from Swift: the last draft is taken off the list while the row is tested as
         // its continuation, and put back only when it is one.
@@ -123,6 +127,9 @@ export class ClaudeOptionReader {
   private readFooterRows(scan: OptionScan, from: number): boolean {
     const { rows, fullWidth } = this.tools;
     const footerRows: ScreenRow[] = [];
+    // Only a footer that says how to cancel closes the dialog: what follows it is not the dialog's.
+    const closed = () =>
+      readFooter(footerRows).hints.some((hint) => hint.action.toLowerCase() === 'cancel');
     let index = from;
     let sawSessionRule = false;
     // Claude Code 2.1.301 draws a rule that carries the session's name under the dialog.
@@ -137,13 +144,16 @@ export class ClaudeOptionReader {
       skipSessionRule();
       if (sawSessionRule) break;
       const row = this.tools.at(index);
-      if (!this.tools.isInactiveRow(row)) return false;
+      if (!this.tools.isInactiveRow(row)) {
+        if (closed()) break;
+        return false;
+      }
       footerRows.push(row);
       index += 1;
     }
     while (index < rows.length && rowIsBlank(this.tools.at(index))) index += 1;
     skipSessionRule();
-    if (!rows.slice(index).every(rowIsBlank)) return false;
+    if (!rows.slice(index).every(rowIsBlank) && !closed()) return false;
     if (footerRows.length > 0) {
       const footer = readFooter(footerRows);
       scan.footer = footer;

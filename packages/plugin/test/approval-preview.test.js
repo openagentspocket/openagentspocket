@@ -16,6 +16,26 @@ const vectors = JSON.parse(
   readFileSync(new URL("../test-vectors/approval-preview-v1.json", import.meta.url), "utf8"),
 );
 
+suite("frames", () => {
+  test("a frame row under an option ends its label", () => {
+    const screen = [
+      " Do you want to proceed?",
+      " ❯ 1. Yes",
+      "      │──────────────────",
+      "   2. No",
+      "      │ ▶ Time to compact",
+      "",
+      " Esc to cancel",
+    ].join("\n");
+    assert.deepEqual(extractApprovalPreview(screen)?.opts, ["Yes", "No"]);
+  });
+
+  test("a bar in one option's text is no panel", () => {
+    const screen = [" Pick one", " ❯ 1. a │ b", "   2. c", ""].join("\n");
+    assert.deepEqual(extractApprovalPreview(screen)?.opts, ["a │ b", "c"]);
+  });
+});
+
 suite("shared vectors", () => {
   test("vector file has captured permissions, non-permissions and a screen without options", () => {
     assert.ok(vectors.vectors.filter((v) => v.fixture && v.expected?.act).length >= 6);
