@@ -2,8 +2,8 @@ import { t } from '@openagentspocket/i18n';
 import { Button, Icon, makeStyles, Text } from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { useAppLockState } from './AppLockProvider';
 import { useAuthenticator } from './SettingsProvider';
-import { useAppLock } from './useAppLock';
 
 const useStyles = makeStyles((th) => ({
   cover: {
@@ -52,7 +52,7 @@ export function AppLockView({ kind, locked, message, onUnlock }: AppLockViewProp
 
 /** Covers the app while it is in the switcher or locked, and offers the unlock prompt. */
 export function AppLockCover() {
-  const { covered, locked, message, unlock } = useAppLock();
+  const { covered, locked, message, unlock } = useAppLockState();
   const authenticator = useAuthenticator();
   const [kind, setKind] = useState<string | null>(null);
 

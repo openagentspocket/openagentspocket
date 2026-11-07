@@ -25,6 +25,7 @@ import { ApprovalActions } from '@/notifications/ApprovalActions';
 import { InAppBanner } from '@/notifications/InAppBanner';
 import { useNotificationTaps } from '@/notifications/useNotificationTaps';
 import { AppLockCover } from '@/settings/AppLockCover';
+import { AppLockProvider } from '@/settings/AppLockProvider';
 import { deviceAuthenticator } from '@/settings/deviceAuthenticator';
 import { settingsStore } from '@/settings/deviceSettings';
 import { deviceStorage } from '@/settings/deviceStorage';
@@ -121,14 +122,16 @@ export default function RootLayout() {
         <SettingsTheme>
           <RootCanvas>
             <ThemedStatusBar />
-            <ConnectionsProvider>
-              <ApprovalActions />
-              <LiveActivityActions />
-              <InAppBanner openAgent={openAgent}>
-                <AppStack />
-              </InAppBanner>
-            </ConnectionsProvider>
-            <AppLockCover />
+            <AppLockProvider>
+              <ConnectionsProvider>
+                <ApprovalActions />
+                <LiveActivityActions />
+                <InAppBanner openAgent={openAgent}>
+                  <AppStack />
+                </InAppBanner>
+              </ConnectionsProvider>
+              <AppLockCover />
+            </AppLockProvider>
             <OverlayHost />
           </RootCanvas>
         </SettingsTheme>

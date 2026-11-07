@@ -3,6 +3,7 @@ import { ThemeProvider } from '@openagentspocket/ui';
 import { act, render, screen } from '@testing-library/react-native';
 import { AppState, type AppStateStatus } from 'react-native';
 import { AppLockCover } from './AppLockCover';
+import { AppLockProvider } from './AppLockProvider';
 import { fakeAuthenticator, guardAuthenticator } from './authenticator';
 import { SettingsProvider } from './SettingsProvider';
 
@@ -31,7 +32,9 @@ async function mountLock(
   await render(
     <ThemeProvider themeId="indigo">
       <SettingsProvider store={store} authenticator={authenticator}>
-        <AppLockCover />
+        <AppLockProvider>
+          <AppLockCover />
+        </AppLockProvider>
       </SettingsProvider>
     </ThemeProvider>,
   );
