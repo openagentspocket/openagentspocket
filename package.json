@@ -9,7 +9,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test"
+    "test": "node --test --test-concurrency=4"
   },
   "dependencies": {
     "qrcode": "^1.5.4",

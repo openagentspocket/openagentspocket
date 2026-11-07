@@ -41,7 +41,7 @@ import {
   pruneApprovalAsks,
   writeApprovalAsk,
 } from "./approval-ask-records.js";
-import { approvalEpisodeId, approvalScope, extractApprovalPreview } from "./approval-preview.js";
+import { approvalFieldsFromRead, visibleScreenArgs } from "./approval-fields.js";
 import { readNotificationConfig } from "./notification-config.js";
 import { deliverToDevices, NOTIFY_FLAG_BY_STATUS, readEligibleDevices } from "./notify-delivery.js";
 import { refreshSidebarSnapshotForEvent } from "./sidebar-config.js";
@@ -202,32 +202,11 @@ async function workspaceLabel(binPath, workspaceId) {
 async function approvalFields(binPath, paneId, timestamp) {
   let result;
   try {
-    result = await runHerdr(
-      binPath,
-      ["agent", "read", paneId, "--source", "visible", "--format", "text"],
-      { timeoutMs: SCREEN_READ_TIMEOUT_MS },
-    );
+    result = await runHerdr(binPath, visibleScreenArgs(paneId), { timeoutMs: SCREEN_READ_TIMEOUT_MS });
   } catch {
     return null;
   }
-  if (result.code !== 0) return null;
-  let text = result.stdout;
-  try {
-    const parsed = JSON.parse(result.stdout);
-    text = parsed?.result?.read?.text;
-  } catch {
-    // Not JSON: the screen itself.
-  }
-  const preview = extractApprovalPreview(text);
-  if (preview === null) return null;
-  const scope = approvalScope(preview);
-  return {
-    episodeId: approvalEpisodeId(paneId, timestamp),
-    approvable: scope !== null,
-    denyOnly: scope === "deny",
-    prompt: preview.q,
-    options: preview.opts,
-  };
+  return result.code === 0 ? approvalFieldsFromRead(result.stdout, paneId, timestamp) : null;
 }
 
 /**

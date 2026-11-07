@@ -62,14 +62,14 @@ async function startRelay(status = 200) {
   relay = { server, requests, url: `http://127.0.0.1:${server.address().port}` };
 }
 
-function register({ blocked = true, done = true } = {}) {
+function register({ blocked = true, done = true, approve = false } = {}) {
   mkdirSync(home, { recursive: true });
   writeFileSync(join(home, "notify.json"), JSON.stringify({ relay_url: relay.url, retry_delay_ms: 1 }));
   writeFileSync(
     join(home, "notifications.json"),
     JSON.stringify({
       v: 1,
-      devices: [{ token: "a".repeat(64), env: "sandbox", key: KEY, notify: { blocked, done } }],
+      devices: [{ token: "a".repeat(64), env: "sandbox", key: KEY, notify: { blocked, done, approve } }],
     }),
   );
 }
@@ -128,6 +128,31 @@ suite("the other programs", () => {
     const ask = { event: "pre_approval_request", command: "rm -rf x" };
     assert.deepEqual(parseHermesHook(ask), { status: "blocked", title: "rm -rf x" });
     assert.equal(parseHermesHook({ event: "post_llm_call" }).status, "done");
+  });
+
+  test("an opted-in device's Blocked push reads the screen through the bridge's launcher", async () => {
+    await startRelay();
+    register({ approve: true });
+    const asked = join(home, "asked");
+    const launcher = join(home, "launcher");
+    writeFileSync(launcher, `#!/bin/sh\necho "$@" > '${asked}'\n`, { mode: 0o755 });
+    const runtime = { version: 1, node: process.execPath, herdr: launcher, stateDir: home, env: { HOME: home } };
+    writeFileSync(join(home, "runtime.json"), JSON.stringify(runtime));
+    writeFileSync(join(home, "runtime-node"), `${process.execPath}\n`);
+
+    assert.equal(await runHook(PERMISSION, { TMUX_PANE: "%3" }), 0);
+    assert.equal(readFileSync(asked, "utf8").trim(), "agent read %3 --source visible --format text");
+    assert.equal(relay.requests.length, 1);
+  });
+
+  test("a device that did not opt in costs no screen read", async () => {
+    await startRelay();
+    register();
+    const asked = join(home, "asked");
+    const launcher = join(home, "launcher");
+    writeFileSync(launcher, `#!/bin/sh\ntouch '${asked}'\n`, { mode: 0o755 });
+    assert.equal(await runHook(PERMISSION, { TMUX_PANE: "%3" }), 0);
+    assert.equal(existsSync(asked), false);
   });
 
   test("reads Pi, omp and Grok Build events", () => {

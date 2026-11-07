@@ -10,14 +10,20 @@
 // the collapse key lets a newer push replace an older one for the same pane.
 // A failure never reaches the Agent: this always exits 0.
 
+import { spawnSync } from "node:child_process";
 import { homedir } from "node:os";
 import { basename, join } from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { approvalFieldsFromRead, visibleScreenArgs } from "./approval-fields.js";
 import { forDisplay, optionalText } from "./display-text.js";
 import { readNotificationConfig } from "./notification-config.js";
 import { deliverToDevices, readEligibleDevices } from "./notify-delivery.js";
 import { writePaneRecord } from "./pane-records.js";
+import { readUsageRuntime } from "./usage-runtime.js";
+
+/** Past this the push goes out without approval fields. The hook runs apart from the Agent. */
+const SCREEN_READ_TIMEOUT_MS = 5_000;
 
 /**
  * Claude Code's hook input. `permission_prompt` fires once nobody has typed
@@ -124,6 +130,17 @@ export function configDirOf(env) {
   return env.OAP_CONFIG_DIR || join(homedir(), ".config", "openagentspocket");
 }
 
+/** The screen's approval fields through the tmux bridge's launcher; null keeps a plain push. */
+function readApproval(configDir, paneId, timestamp) {
+  const launcher = readUsageRuntime(configDir)?.herdr;
+  if (!launcher || !optionalText(paneId)) return null;
+  const read = spawnSync(launcher, visibleScreenArgs(paneId), {
+    encoding: "utf8",
+    timeout: SCREEN_READ_TIMEOUT_MS,
+  });
+  return read.status === 0 ? approvalFieldsFromRead(read.stdout, paneId, timestamp) : null;
+}
+
 async function readStdin() {
   let text = "";
   for await (const chunk of process.stdin) text += chunk;
@@ -148,16 +165,19 @@ async function main() {
   const devices = readEligibleDevices(configDir, event.status, "");
   if (devices.length === 0) return;
   const cwd = optionalText(input.cwd);
+  const timestamp = Math.floor(Date.now() / 1000);
   const { failures } = await deliverToDevices({
     configDir,
     config: readNotificationConfig(configDir),
-    // No approval fields yet: the Blocked push only says that it needs you.
-    devices: devices.map((device) => ({ ...device, approve: false })),
+    devices,
+    approval: devices.some((device) => device.approve)
+      ? readApproval(configDir, process.env.TMUX_PANE, timestamp)
+      : null,
     payload: {
       paneId,
       agentKind: program,
       status: event.status,
-      timestamp: Math.floor(Date.now() / 1000),
+      timestamp,
       project: forDisplay(cwd === null ? null : basename(cwd)),
       title: forDisplay(event.title),
     },
