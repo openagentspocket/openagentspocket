@@ -1,0 +1,11 @@
+# A chat opens on its newest row: the reader lands on the last message, not the first.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- openLink: openagentspocket:///__atlas/agent-detail.chat-timeline
+- extendedWaitUntil:
+    visible:
+      id: chat-timeline
+    timeout: 15000
+- waitForAnimationToEnd
+- takeScreenshot: design/atlas/sim/16-chat-opens-at-end

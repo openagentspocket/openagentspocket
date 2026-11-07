@@ -1,6 +1,5 @@
 {
   "packages/plugin/src/activity-hook.js": 554,
-  "packages/plugin/src/notify-hook.js": 464,
   "packages/plugin/src/pair-popup.js": 621,
   "packages/plugin/test/activity-hook.test.js": 872,
   "packages/plugin/test/notify-hook.test.js": 1241,

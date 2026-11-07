@@ -21,6 +21,8 @@ interface Props {
   /** The floating header's height: content starts under it. */
   headerHeight: number;
   onShowTerminal: () => void;
+  /** Counts the screen's visits, for Chat to land on its newest row. */
+  visit?: number;
 }
 
 /** The content surface that fills the detail: the conversation or the live terminal, under the header's fade. */
@@ -34,21 +36,21 @@ export function DetailSlot({
   composer,
   headerHeight,
   onShowTerminal,
+  visit,
 }: Props) {
   const styles = useStyles();
   if (surface === 'chat') {
     return (
-      <>
-        <ChatTimeline
-          hostId={hostId}
-          paneId={paneId}
-          activity={activity}
-          messages={messages}
-          topInset={headerHeight}
-          bottomInset={0}
-          onShowTerminal={onShowTerminal}
-        />
-      </>
+      <ChatTimeline
+        hostId={hostId}
+        paneId={paneId}
+        activity={activity}
+        messages={messages}
+        topInset={headerHeight}
+        bottomInset={0}
+        onShowTerminal={onShowTerminal}
+        visit={visit}
+      />
     );
   }
   return (

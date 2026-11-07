@@ -1,8 +1,7 @@
 import { agentKey, type ConsoleRow, type KeyValueStorage } from '@openagentspocket/core';
-import { t } from '@openagentspocket/i18n';
 import { type ActionMenuItem, EdgeFade, makeStyles } from '@openagentspocket/ui';
 import { useState } from 'react';
-import { type LayoutChangeEvent, View } from 'react-native';
+import { View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
 import { AppScreen } from '@/navigation/AppScreen';
 import { BlockedCardProvider } from '../blocked/BlockedCardProvider';
@@ -41,6 +40,8 @@ interface Props {
   onOpenChanges?: () => void;
   /** Back to the Home screen; draws Home buttons in the header and the drawer. */
   onHome?: () => void;
+  /** Counts the route's visits: coming back lands Chat on its newest row. */
+  visit?: number;
 }
 
 /** The detail: chat or terminal fills the screen; the header floats, the composer dock sits below. */
@@ -53,6 +54,7 @@ export function AgentDetailScreen({
   menu,
   onOpenChanges,
   onHome,
+  visit,
 }: Props) {
   const styles = useStyles();
   const key = agentKey(hostId, paneId);
@@ -95,14 +97,13 @@ export function AgentDetailScreen({
                 composer={composer.store}
                 headerHeight={headerHeight}
                 onShowTerminal={() => setSurface('terminal')}
+                visit={visit}
               />
               {surface === 'chat' ? <EdgeFade height={headerHeight + HEADER_FADE} /> : null}
               <View
                 style={styles.header}
                 pointerEvents="box-none"
-                onLayout={(event: LayoutChangeEvent) =>
-                  setHeaderHeight(event.nativeEvent.layout.height)
-                }
+                onLayout={(event) => setHeaderHeight(event.nativeEvent.layout.height)}
               >
                 <AgentHeader
                   row={row}

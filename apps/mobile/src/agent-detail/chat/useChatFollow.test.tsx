@@ -14,8 +14,16 @@ const scrolled = (fromEnd: number) =>
 
 let follow: ReturnType<typeof useChatFollow>;
 
-function Probe({ list, sent }: { list: RefObject<{ scrollToEnd: jest.Mock }>; sent: number }) {
-  follow = useChatFollow(list, sent);
+function Probe({
+  list,
+  sent,
+  visit,
+}: {
+  list: RefObject<{ scrollToEnd: jest.Mock }>;
+  sent: number;
+  visit?: number;
+}) {
+  follow = useChatFollow(list, sent, visit);
   return null;
 }
 
@@ -24,7 +32,7 @@ async function setup() {
   const list = { current: { scrollToEnd } };
   const view = await render(<Probe list={list} sent={0} />);
   const send = () => view.rerender(<Probe list={list} sent={1} />);
-  return { scrollToEnd, send };
+  return { scrollToEnd, send, list, view };
 }
 
 describe('following the end of a conversation', () => {
@@ -45,6 +53,16 @@ describe('following the end of a conversation', () => {
     follow.onScrollEndDrag(scrolled(600));
     follow.onContentSizeChange();
     expect(scrollToEnd).not.toHaveBeenCalled();
+  });
+
+  it('coming back to the conversation lands a reader who scrolled up on its end', async () => {
+    const { scrollToEnd, list, view } = await setup();
+    follow.onScrollBeginDrag();
+    follow.onScrollEndDrag(scrolled(600));
+    await view.rerender(<Probe list={list} sent={0} visit={1} />);
+    expect(scrollToEnd).toHaveBeenCalledTimes(1);
+    follow.onContentSizeChange();
+    expect(scrollToEnd).toHaveBeenCalledTimes(2);
   });
 
   it('a message sent brings a reader who scrolled up back to the end', async () => {

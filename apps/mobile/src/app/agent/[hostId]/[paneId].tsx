@@ -1,5 +1,6 @@
 import { agentKey } from '@openagentspocket/core';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import { COMPOSER_MORE_ANCHOR } from '@/agent-detail/composer/AgentComposer';
 import { parseSurface } from '@/agent-detail/surface';
@@ -16,6 +17,9 @@ export default function AgentRoute() {
   const row = useAgent(agentKey(params.hostId, params.paneId));
   const entries = useEntryMenus();
   const store = useConsoleStore();
+  // A screen left under another stays mounted: each return to it counts as a visit.
+  const [visit, setVisit] = useState(0);
+  useFocusEffect(useCallback(() => setVisit((count) => count + 1), []));
   // The floating header's menu: Changes, Ports and New Agent here (Open is where the user already is).
   const items = row
     ? [
@@ -35,6 +39,7 @@ export default function AgentRoute() {
         surface={parseSurface(params.surface)}
         menu={items}
         onHome={() => router.navigate('/')}
+        visit={visit}
         onOpenChanges={() => router.push(hrefs.changesForAgent(params.hostId, params.paneId))}
         // Same route, other Agent: swap in place, with no push animation.
         onSwitch={(next) => router.setParams({ hostId: next.hostId, paneId: next.agent.pane_id })}

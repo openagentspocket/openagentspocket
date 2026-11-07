@@ -40,6 +40,8 @@ interface Props {
   topInset: number;
   bottomInset: number;
   onShowTerminal: () => void;
+  /** Counts the screen's visits: each one lands on the newest row. */
+  visit?: number;
 }
 
 /** The conversation as a quiet timeline filling the screen, newest at the bottom. */
@@ -51,6 +53,7 @@ export function ChatTimeline({
   topInset,
   bottomInset,
   onShowTerminal,
+  visit,
 }: Props) {
   const styles = useStyles();
   const conversation = useConversation(hostId, paneId);
@@ -66,7 +69,7 @@ export function ChatTimeline({
   );
   const { rows, toggle } = useChatRows(conversation.state, activity, pending);
   const list = useRef<FlatList<ChatRow>>(null);
-  const follow = useChatFollow(list, messages.length);
+  const follow = useChatFollow(list, messages.length, visit);
   return (
     <View style={styles.list} testID="chat-timeline">
       <FlatList
