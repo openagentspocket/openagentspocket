@@ -1154,7 +1154,7 @@ approvable `q`, so the two cannot drift.
 ### Approval asks
 
 A Live Activity the app updates has no Blocked push to take its prompt from,
-so the notify hook also records each Blocked push's approval fields
+so the hook that pushes also records each Blocked push's approval fields
 (`src/approval-ask-records.js`, spec F5, R5): one file per pane,
 `approval-asks/<base64url pane>.json` under the session's state directory
 (see [herdr sessions](#herdr-sessions)), written 0600 with a temp file and a
@@ -1173,6 +1173,13 @@ record. A departure from Blocked that survives the debounce, or the Agent
 being gone, clears it too; a flap back to Blocked keeps it. Records older
 than 30 minutes, the notifications' time to live, are pruned on every write
 and read.
+
+On tmux, `src/program-hook.js` writes the same record under the runtime's
+`stateDir` for a hook that runs in a pane, with the same rules. A hook event
+is exact, so there is no debounce: the next status the program reports (a
+finished tool, a new prompt, the end of the turn) clears it. A program that
+reports nothing between its ask and the end of the turn leaves that to the
+reader below, which drops the record once the screen moved on.
 
 The app reads them with `src/approval-asks.js`, run over SSH exec like the
 apply, with `HERDR_PLUGIN_CONFIG_DIR` and the session's `HERDR_SOCKET_PATH`
