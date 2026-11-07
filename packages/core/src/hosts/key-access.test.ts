@@ -51,6 +51,16 @@ describe('KeyAccessGate', () => {
     }
   });
 
+  it('says it would ask only when the setting is on and no confirmation covers the key', async () => {
+    expect(gate([], false).subject.wouldAsk()).toBe(false);
+    const { subject, clock } = gate([]);
+    expect(subject.wouldAsk()).toBe(true);
+    await subject.authorize();
+    expect(subject.wouldAsk()).toBe(false);
+    await clock.advance(KEY_ACCESS_REUSE_MS);
+    expect(subject.wouldAsk()).toBe(true);
+  });
+
   it('stands open on a device that cannot ask', async () => {
     const { subject } = gate(['unavailable']);
     await expect(subject.authorize()).resolves.toBeUndefined();

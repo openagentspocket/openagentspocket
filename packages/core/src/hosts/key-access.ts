@@ -38,6 +38,11 @@ export class KeyAccessGate {
     return this.asking;
   }
 
+  /** Whether `authorize` would have to prompt, so a caller without a window can hold it back. */
+  wouldAsk(): boolean {
+    return this.options.isRequired() && !this.isConfirmed();
+  }
+
   private isConfirmed(): boolean {
     if (this.confirmedAt === undefined) return false;
     return this.options.clock.monotonicMs() - this.confirmedAt < KEY_ACCESS_REUSE_MS;

@@ -3,6 +3,7 @@ import {
   consoleSubscriptions,
   EventsSession,
   type EventsSessionStatus,
+  failWith,
   type Host,
   type HostKeyPolicy,
   hostUsesKey,
@@ -95,6 +96,10 @@ export class ConnectionManager {
   private unsubscribeStore: (() => void) | undefined;
   private readonly lastState = new Map<string, HostConnection>();
   private readonly platforms = new Map<string, HostPlatform>();
+  /** Dials holding for the end of the grace before they ask for the key. */
+  private waitingForReturn: (() => void)[] = [];
+  /** Hosts whose owner refused the key: they wait for Retry, not for the next foreground. */
+  private readonly keyRefused = new Set<string>();
 
   constructor(private readonly options: ConnectionManagerOptions) {
     this.active = options.initiallyActive ?? true;
@@ -141,7 +146,7 @@ export class ConnectionManager {
       return;
     }
     this.graceTimer = this.options.clock.setTimeout(() => {
-      this.graceTimer = undefined;
+      this.cancelGrace();
       void this.transition(false);
     }, BACKGROUND_GRACE_MS);
   }
@@ -150,6 +155,9 @@ export class ConnectionManager {
     if (this.graceTimer === undefined) return false;
     this.options.clock.clearTimeout(this.graceTimer);
     this.graceTimer = undefined;
+    const waiting = this.waitingForReturn;
+    this.waitingForReturn = [];
+    for (const wake of waiting) wake();
     return true;
   }
 
@@ -212,7 +220,9 @@ export class ConnectionManager {
     }
     const status = store.getState().hosts.find((host) => host.id === entry.host.id)?.status;
     if (!status || status.kind === 'suspended') await entry.session.resume();
-    else await store.revalidate(entry.host.id);
+    else if (status.kind !== 'failed' || !this.keyRefused.has(entry.host.id)) {
+      await store.revalidate(entry.host.id);
+    }
   }
 
   private signatureOf(host: Host): string {
@@ -249,6 +259,7 @@ export class ConnectionManager {
     this.entries.delete(id);
     this.lastState.delete(id);
     this.platforms.delete(id);
+    this.keyRefused.delete(id);
     // Ends the projection, which ends its session.
     this.options.store.removeHost(id);
     this.options.onConnection?.(id, 'notConnected');
@@ -259,7 +270,7 @@ export class ConnectionManager {
     confirmFirstConnect: HostKeyPolicy['confirmFirstConnect'] = this.options.confirmFirstConnect,
   ): Promise<SshTransport> {
     const { options } = this;
-    if (hostUsesKey(host)) await options.keyAccess?.authorize();
+    if (hostUsesKey(host)) await this.authorizeKey(host);
     await options.ensureDeviceKey();
     const settings = transportSettingsFor(host, {
       keyAlias: options.keyAlias,
@@ -273,6 +284,33 @@ export class ConnectionManager {
     const transport = await (options.connect ?? connectTransport)(options.ssh, settings);
     this.platforms.set(host.id, hostPlatform(transport));
     return transport;
+  }
+
+  /**
+   * Asks for the key only with a window to ask in: iOS refuses a prompt without one, and nobody
+   * saw it. A redial during the grace holds here, still `reconnecting`, until the app returns.
+   */
+  private async authorizeKey(host: Host): Promise<void> {
+    const gate = this.options.keyAccess;
+    if (!gate) return;
+    this.keyRefused.delete(host.id);
+    for (;;) {
+      while (!this.active && gate.wouldAsk()) {
+        // Past the grace the Host is suspended, and its resume dials again.
+        if (this.graceTimer === undefined) throw failWith({ kind: 'cancelled' });
+        await new Promise<void>((wake) => this.waitingForReturn.push(wake));
+      }
+      if (this.entries.get(host.id)?.host !== host) throw failWith({ kind: 'cancelled' });
+      try {
+        await gate.authorize();
+        return;
+      } catch (error) {
+        // Leaving cuts a prompt short, and that is not the owner's answer.
+        if (!this.active) continue;
+        this.keyRefused.add(host.id);
+        throw error;
+      }
+    }
   }
 
   private reportConnections(): void {
