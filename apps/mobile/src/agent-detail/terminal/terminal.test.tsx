@@ -1,4 +1,10 @@
-import { MemoryStorage, SettingsStore } from '@openagentspocket/core';
+import {
+  ComposerStore,
+  FakeClock,
+  MemoryStorage,
+  SettingsStore,
+  TerminalInputController,
+} from '@openagentspocket/core';
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore } from '@/console/demo';
@@ -17,7 +23,7 @@ jest.mock('react-native-safe-area-context', () => ({
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
 
-async function mountLive() {
+async function mountLive(composer?: ComposerStore) {
   const store = createDemoConsoleStore();
   const settings = new SettingsStore(new MemoryStorage());
   await render(
@@ -25,7 +31,7 @@ async function mountLive() {
       <SettingsProvider store={settings} authenticator={fakeAuthenticator(null)}>
         <ConsoleStoreProvider store={store}>
           <DetailUiProvider hostId="demo" paneId="p2">
-            <TerminalSurface hostId="demo" paneId="p2" />
+            <TerminalSurface hostId="demo" paneId="p2" composer={composer} />
             <DockSlotView />
           </DetailUiProvider>
           <OverlayHost />
@@ -42,6 +48,26 @@ async function mountLive() {
 }
 
 const screenText = () => String(screen.getByTestId('terminal-slot-screen').props.children);
+
+describe('Composer messages', () => {
+  it('tells the live terminal what `agent.prompt` delivered, writing nothing to the PTY', async () => {
+    const recorded = jest.spyOn(TerminalInputController.prototype, 'recordSubmitted');
+    const prompts: string[] = [];
+    const composer = new ComposerStore({
+      target: 'p2',
+      clock: new FakeClock(),
+      prompt: async ({ text }) => void prompts.push(text),
+    });
+    await mountLive(composer);
+    const before = screenText();
+    composer.replaceDraft('a message from the Composer');
+    await composer.send();
+    expect(prompts).toEqual(['a message from the Composer']);
+    expect(recorded).toHaveBeenCalledWith('a message from the Composer', expect.any(Number));
+    expect(screenText()).toBe(before);
+    recorded.mockRestore();
+  });
+});
 
 describe('terminal keys', () => {
   it('sends the Esc key as the escape byte', async () => {

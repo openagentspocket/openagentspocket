@@ -180,6 +180,33 @@ describe('TerminalInputController', () => {
     expect(controller.hasWriter).toBe(true);
   });
 
+  describe('recordSubmitted', () => {
+    const recording = () => {
+      const recorded: string[] = [];
+      return { recorded, ...setup({ observeSubmitted: (text) => recorded.push(text) }) };
+    };
+
+    it('passes on a delivery made against the live session, writing nothing', () => {
+      const { controller, recorded, writes, begin } = recording();
+      const generation = begin();
+      expect(controller.liveGeneration).toBe(generation);
+      controller.recordSubmitted('sent through agent.prompt', generation);
+      expect(recorded).toEqual(['sent through agent.prompt']);
+      expect(writes).toEqual([]);
+    });
+
+    it('drops a delivery that outlived its session', () => {
+      const { controller, recorded, begin } = recording();
+      const stale = begin();
+      controller.endSession(stale);
+      expect(controller.liveGeneration).toBeNull();
+      controller.recordSubmitted('sent to the old session', stale);
+      begin();
+      controller.recordSubmitted('sent to the old session', stale);
+      expect(recorded).toEqual([]);
+    });
+  });
+
   describe('held references', () => {
     it('waits for output and flushes once, in order', () => {
       const { controller, writes, begin } = setup();

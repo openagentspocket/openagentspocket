@@ -1,5 +1,6 @@
 import {
   FakeClock,
+  SCREEN_POLL_MS,
   ScriptedTerminalSession,
   scriptedRunner,
   TransportFailure,
@@ -108,6 +109,33 @@ describe('AgentTerminalSession', () => {
       expect(jump.canJump).toBe(true);
       session.input.detachSessionForReplacement();
       expect(jump.canJump).toBe(false);
+    });
+
+    it('knows a Composer message as a target, through the session input', async () => {
+      const { session, sessions } = setup([1]);
+      const sent = 'a message from the Composer';
+      const frames = ['filler one', sent];
+      let shown = 0;
+      const clock = new FakeClock();
+      const jump = session.makeMessageJump({
+        clock,
+        readFrame: async () => frames[shown] as string,
+      });
+      session.bindMessageJump(jump);
+      session.getStore().viewDidResize(80, 24);
+      await settle();
+      sessions[0]?.emit(modes);
+      await settle();
+      const { liveGeneration } = session.input;
+      if (liveGeneration === null) throw new Error('no live session');
+      session.input.recordSubmitted(sent, liveGeneration);
+      const walk = jump.jump('older');
+      await settle();
+      shown = 1;
+      await clock.advance(SCREEN_POLL_MS);
+      expect(await walk).toBe('found');
+      expect(sessions[0]?.sent).toEqual([]);
+      await session.dispose();
     });
 
     it('stops a walk when the user types, and when the jump is unbound', async () => {

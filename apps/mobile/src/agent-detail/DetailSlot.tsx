@@ -1,4 +1,4 @@
-import type { ComposerMessage } from '@openagentspocket/core';
+import type { ComposerMessage, ComposerStore } from '@openagentspocket/core';
 import { makeStyles } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { ChatTimeline } from './chat/ChatTimeline';
@@ -16,6 +16,8 @@ interface Props {
   activity: Parameters<typeof ChatTimeline>[0]['activity'];
   /** The Composer's messages, echoed in Chat until the transcript records them. */
   messages: readonly ComposerMessage[];
+  /** The Composer itself: the terminal learns from it what was sent. */
+  composer: ComposerStore;
   /** The floating header's height: content starts under it. */
   headerHeight: number;
   onShowTerminal: () => void;
@@ -29,6 +31,7 @@ export function DetailSlot({
   surface,
   activity,
   messages,
+  composer,
   headerHeight,
   onShowTerminal,
 }: Props) {
@@ -50,7 +53,7 @@ export function DetailSlot({
   }
   return (
     <View style={[styles.fill, { paddingTop: headerHeight }]}>
-      <TerminalSurface hostId={hostId} paneId={paneId} program={program} />
+      <TerminalSurface hostId={hostId} paneId={paneId} program={program} composer={composer} />
     </View>
   );
 }

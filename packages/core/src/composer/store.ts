@@ -1,4 +1,5 @@
 import type { Clock } from '../hosts/cancellation';
+import type { InputSessionGeneration } from '../terminal/input-port';
 import { containsOnlySafeScalars } from '../terminal/text-safety';
 import { deliveryFailureText, isApiCode, refusalFailureText } from './failure';
 import {
@@ -16,6 +17,7 @@ import {
   progressAfterAck,
   type Tracking,
 } from './progress';
+import { promptWaitingOutLaunch } from './prompt-launch';
 import { ComposerStopStore } from './stop';
 
 /** How Send finished. `deliveredViaAttach` is the view's cue to present the tools keyboard. */
@@ -33,6 +35,12 @@ export type ComposerPrompt = (params: { target: string; text: string }) => Promi
 /** The live Attach PTY writer; false when there is no live session to write to. */
 export interface ComposerAttachInput {
   insertComposerDraft(text: string): boolean;
+}
+
+/** The live terminal's record of messages that went round the PTY, for Message Jump to find. */
+export interface ComposerSubmitRecorder {
+  readonly liveGeneration: InputSessionGeneration | null;
+  recordSubmitted(text: string, generation: InputSessionGeneration): void;
 }
 
 export interface Selection {
@@ -63,8 +71,6 @@ export interface ComposerStoreOptions {
   readonly notReadyBudgetMs?: number;
 }
 
-const DEFAULT_RETRY_MS = 500;
-const DEFAULT_BUDGET_MS = 10_000;
 const UNSENDABLE = 'The message could not be sent. Check the connection and retry.';
 const UNSAFE = 'The message contains unsafe terminal control characters.';
 
@@ -85,6 +91,7 @@ export class ComposerStore {
   private nextId = 1;
   private readonly tracking = new Map<string, Tracking>();
   private attach: ComposerAttachInput | undefined;
+  private recorder: ComposerSubmitRecorder | undefined;
   private snapshot: ComposerSnapshot | undefined;
   private readonly listeners = new Set<() => void>();
 
@@ -120,6 +127,14 @@ export class ComposerStore {
   /** The already-open Attach PTY writer; Blocked Send uses the same pipe as the tools keyboard. */
   bindAttachInput(input: ComposerAttachInput | undefined): void {
     this.attach = input;
+  }
+
+  /** Who hears of each accepted `agent.prompt`; the returned function ends that. */
+  bindSubmitRecorder(recorder: ComposerSubmitRecorder): () => void {
+    this.recorder = recorder;
+    return () => {
+      if (this.recorder === recorder) this.recorder = undefined;
+    };
   }
 
   replaceDraft(text: string): void {
@@ -250,8 +265,11 @@ export class ComposerStore {
   ): Promise<ComposerSendResult> {
     if (this.status === 'blocked') return this.deliverWhileBlocked(id, text, policy);
     const outgoing = policy.outgoingText(text);
+    // Claimed before the wait: the terminal may be a new session by the time herdr answers.
+    const recorder = this.recorder;
+    const generation = recorder?.liveGeneration ?? null;
     try {
-      await this.promptWaitingOutLaunch({ target: this.options.target, text: outgoing });
+      await promptWaitingOutLaunch(this.options, { target: this.options.target, text: outgoing });
     } catch (error) {
       if (isApiCode(error, 'agent_blocked')) return this.deliverWhileBlocked(id, text, policy);
       return this.fail(id, { kind: 'failed', text: deliveryFailureText(error) });
@@ -262,6 +280,7 @@ export class ComposerStore {
       kind: 'delivered',
       progress: progressAfterAck(this.tracking.get(id), this.status, this.statusRevision),
     });
+    if (generation !== null) recorder?.recordSubmitted(outgoing, generation);
     const verify = policy.verify;
     if (verify) {
       void verify(outgoing).then((seen) => {
@@ -288,29 +307,6 @@ export class ComposerStore {
     if (tracking) tracking.tracksProgress = false;
     this.update(id, { kind: 'delivered', progress: 'acknowledged' });
     return { kind: 'deliveredViaAttach' };
-  }
-
-  /**
-   * One `agent.prompt`, waiting out a fresh launch's `agent_not_ready` rejections first: herdr
-   * answers `agent.start` while the agent is still booting, so the first prompt can beat its
-   * registration. Retries that code alone, at a fixed pace inside a bounded budget; a genuinely
-   * absent Agent (`agent_not_found`) still fails at once.
-   */
-  private async promptWaitingOutLaunch(params: { target: string; text: string }): Promise<void> {
-    const { clock } = this.options;
-    const delay = this.options.notReadyRetryMs ?? DEFAULT_RETRY_MS;
-    const deadline = clock.monotonicMs() + (this.options.notReadyBudgetMs ?? DEFAULT_BUDGET_MS);
-    for (;;) {
-      try {
-        await this.options.prompt(params);
-        return;
-      } catch (error) {
-        if (!isApiCode(error, 'agent_not_ready') || clock.monotonicMs() + delay >= deadline) {
-          throw error;
-        }
-        await new Promise<void>((resolve) => clock.setTimeout(resolve, delay));
-      }
-    }
   }
 
   private noting(
