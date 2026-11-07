@@ -57,7 +57,7 @@ changes it everywhere. Judges reject duplication.
 - In a report, list the reusable pieces you created or extended.
 - Screens (`apps/mobile/src/app/**`, `*Screen.tsx`) stay at 150 lines or fewer; any file at 400 or fewer (ratchet:
   `scripts/file-length-baseline.json` may only shrink; run `node scripts/check-file-length.mjs --update` after a split).
-- Every control starts from `Button` (`ActionMenuButton` for a menu); a row or card from `Tappable`, the base `Button` is built on. `scripts/check-raw-pressable.mjs` rejects anything else.
+- Every control starts from `Button` (`ActionMenuButton` for a menu); a row or card from `Tappable`, the base `Button` is built on. `scripts/check-raw-pressable.mjs` rejects anything else. A card starts from `Card` and every ui component needs a caller: `scripts/check-reuse.mjs` rejects a hand-drawn card radius and an unused component (its PENDING list may only shrink).
 - Colors only from theme tokens (`useTheme()`); no hex/rgb literal in app or UI source.
 - Strings through `t()`. A string the Swift catalogs lack goes in `packages/i18n/src/extras/{en,es}.json` (both
   languages); never edit `packages/i18n/src/catalogs/*` (regenerated from Swift, pinned by the sync test).
