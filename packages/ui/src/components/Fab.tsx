@@ -64,7 +64,13 @@ export function Fab({
         }}
         style={({ pressed }) => [
           styles.fab,
-          { shadowColor: withAlpha(theme.colors.accent, GLOW_OPACITY) },
+          // A theme with no glow (its token is the canvas) gets no halo either.
+          {
+            shadowColor: withAlpha(
+              theme.colors.accent,
+              theme.colors.glow === theme.colors.canvas ? 0 : GLOW_OPACITY,
+            ),
+          },
           pressed && styles.pressed,
         ]}
         testID={testID}

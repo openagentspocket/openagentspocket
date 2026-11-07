@@ -1,4 +1,4 @@
-import { type SettingsThemeId, themeSelectionPatch } from '@openagentspocket/core';
+import { SETTINGS_DEFAULTS, themeSelectionPatch } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   makeStyles,
@@ -10,8 +10,6 @@ import {
 import { View } from 'react-native';
 import { useSettingsStore } from './SettingsProvider';
 import type { SettingsContext } from './schema';
-
-const DEFAULT_THEME: SettingsThemeId = 'indigo';
 
 const useStyles = makeStyles((th) => ({ list: { gap: th.spacing.xs } }));
 
@@ -39,7 +37,8 @@ export function ThemeCards({ ctx }: { ctx: SettingsContext }) {
     <View style={styles.list}>
       {themeIds.map((id) => {
         const appearance = themes[id].appearance === 'dark' ? t('Dark') : t('Light');
-        const subtitle = id === DEFAULT_THEME ? t('%@ · Default', appearance) : appearance;
+        const subtitle =
+          id === SETTINGS_DEFAULTS.theme ? t('%@ · Default', appearance) : appearance;
         // One card is marked: the theme in force (with Follow System, the one for the current appearance).
         const selected = ctx.themeId === id;
         return (
