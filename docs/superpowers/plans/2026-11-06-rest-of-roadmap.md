@@ -36,78 +36,78 @@
 
 **Files:** the connection lifecycle in `apps/mobile/src/connections/`, the `appLockForKeys` setting and its SSH key reads, the Jump Host path behind `hostFeatureUnavailable`, a Board entry point. Tests beside each.
 
-- [ ] Background grace: test first, states other than `active` keep connections for 15 s, Face ID included, and return inside the grace resumes without a reconnect.
-- [ ] Key lock: test first, with the setting on, using a key needs the device's authentication, and a failed check connects to nothing.
-- [ ] Jump Host: connect through it, proved in the lab with two user-level `sshd`. If `modules/ssh` needs a native change, move it to Task 10 and leave the form honest about it.
-- [ ] Link Board from where a user would look for it.
-- [ ] Commit and push each one apart.
+- [x] Background grace: test first, states other than `active` keep connections for 15 s, Face ID included, and return inside the grace resumes without a reconnect.
+- [x] Key lock: test first, with the setting on, using a key needs the device's authentication, and a failed check connects to nothing.
+- [x] Jump Host: connect through it, proved in the lab with two user-level `sshd`. If `modules/ssh` needs a native change, move it to Task 10 and leave the form honest about it.
+- [x] Link Board from where a user would look for it.
+- [x] Commit and push each one apart.
 
 ### Task 2: Chat rows
 
 **Files:** `apps/mobile/src/agent-detail/chat/`, `packages/core/src/chat/timeline`, `packages/ui/src/components`.
 
-- [ ] Check whether tool output reaches the row, for each program.
-- [ ] Tool output, diff, image preview and copy, one shared row model for every program. Compare with the approved crops.
-- [ ] Commit, push.
+- [x] Check whether tool output reaches the row, for each program.
+- [x] Tool output, diff, image preview and copy, one shared row model for every program. Compare with the approved crops.
+- [x] Commit, push.
 
 ### Task 3: Terminal gaps
 
 **Files:** `apps/mobile/src/features/terminals/`, the terminal components in `packages/ui`.
 
-- [ ] Wire Select Text, Attach Links and Message Jump, or remove them if unused by design.
-- [ ] Pinch zoom keeps the grid; hardware keyboard ⌘ commands.
-- [ ] Commit, push.
+- [x] Wire Select Text, Attach Links and Message Jump, or remove them if unused by design.
+- [x] Pinch zoom keeps the grid; hardware keyboard ⌘ commands.
+- [x] Commit, push.
 
 ### Task 4: Agent coverage, and notifications for Pi, omp and Grok
 
 **Files:** create `docs/guides/agent-coverage.md`; `packages/plugin/src/install-program-hooks.js` (`PROGRAMS`), `program-hook.js`, `program-hooks/`, `packages/plugin/test/program-hook.test.js`, plugin README table.
 
-- [ ] One table: Claude, Codex, OpenCode, Hermes, Pi, omp, Grok by Chat, Send, Blocked card, Notification, Approve, on herdr and tmux. Each cell says proved on device, proved in lab, tests only or missing, with evidence.
-- [ ] Find each program's hook or plugin mechanism in its own documentation. None: marked missing, with the reason.
-- [ ] Test first: each event shape maps to Blocked or Done; install is idempotent and leaves the user's own hooks alone.
-- [ ] One `PROGRAMS` entry each. Their binaries are not on the development Mac: install one in the lab if it needs no account, otherwise the cell stays "tests only".
-- [ ] Commit, push, refresh `plugin`.
+- [x] One table: Claude, Codex, OpenCode, Hermes, Pi, omp, Grok by Chat, Send, Blocked card, Notification, Approve, on herdr and tmux. Each cell says proved on device, proved in lab, tests only or missing, with evidence.
+- [x] Find each program's hook or plugin mechanism in its own documentation. None: marked missing, with the reason.
+- [x] Test first: each event shape maps to Blocked or Done; install is idempotent and leaves the user's own hooks alone.
+- [x] One `PROGRAMS` entry each. Their binaries are not on the development Mac: install one in the lab if it needs no account, otherwise the cell stays "tests only".
+- [x] Commit, push, refresh `plugin`.
 
 ### Task 5: Approve on tmux
 
 **Files:** `packages/plugin/src/approval-apply.js`, `approval-preview.js`, `program-hook.js`, `packages/session-bridge/src/main.ts`, `actions.ts`, tests beside each.
 
-- [ ] Test first: `approval-apply` reads the pane and presses keys through a small backend interface, herdr and bridge being its implementations; the approval lines of the review focus are pinned on both.
-- [ ] The bridge's `agent read` and `agent send-keys` answer what `approval-apply` calls.
-- [ ] `program-hook.js` drops `approve: false` only for programs whose prompt `approval-preview` parses, and sends the sealed fields the herdr hook sends.
-- [ ] Prove in the lab: real Claude Code in tmux, harmless command, apply run over SSH, the key lands once.
-- [ ] Commit, push, refresh `plugin`.
+- [x] Test first: `approval-apply` reads the pane and presses keys through a small backend interface, herdr and bridge being its implementations; the approval lines of the review focus are pinned on both.
+- [x] The bridge's `agent read` and `agent send-keys` answer what `approval-apply` calls.
+- [x] `program-hook.js` drops `approve: false` only for programs whose prompt `approval-preview` parses, and sends the sealed fields the herdr hook sends.
+- [x] Prove in the lab: real Claude Code in tmux, harmless command, apply run over SSH, the key lands once.
+- [x] Commit, push, refresh `plugin`.
 
 ### Task 6: OpenCode as a service, and Codex for real
 
 **Files:** `packages/plugin/src/program-hooks/opencode-plugin.js`, `pane-records.js`, tests.
 
-- [ ] Reproduce in the lab with a separate OpenCode config and port: a plugin in the service has no `TMUX_PANE`.
-- [ ] Test first: the pane is resolved from the session's directory and the live pane list; an ambiguous match reports no pane, never the wrong one.
-- [ ] Codex: one run in a scratch directory with the account's default model, changing no config. Rejected: record it and move on.
-- [ ] Commit, push, refresh `plugin`.
+- [x] Reproduce in the lab with a separate OpenCode config and port: a plugin in the service has no `TMUX_PANE`.
+- [x] Test first: the pane is resolved from the session's directory and the live pane list; an ambiguous match reports no pane, never the wrong one.
+- [x] Codex: one run in a scratch directory with the account's default model, changing no config. Rejected: record it and move on.
+- [x] Commit, push, refresh `plugin`.
 
 ### Task 7: Hermes compression rotation
 
 **Files:** `packages/core/src/chat/hermes/`, tests.
 
-- [ ] Test first, from a synthetic `state.db`: a compressed session shows its earlier segments in order, through older pages.
-- [ ] A broken chain shows what exists and no error.
-- [ ] Commit, push.
+- [x] Test first, from a synthetic `state.db`: a compressed session shows its earlier segments in order, through older pages.
+- [x] A broken chain shows what exists and no error.
+- [x] Commit, push.
 
 ### Task 8: Why `sim:verify` fails bare on its first run
 
 **Files:** `e2e/sim`, `scripts/`.
 
-- [ ] Reproduce after a code change, find the cause with superpowers:systematic-debugging, fix it. No retry loop that hides it.
-- [ ] Commit, push.
+- [x] Reproduce after a code change, find the cause with superpowers:systematic-debugging, fix it. No retry loop that hides it.
+- [x] Commit, push.
 
 ### Task 9: Component twins
 
 **Files:** `packages/ui/src/components`, `docs/ux/components`.
 
-- [ ] List the catalog components with two implementations and merge each into one, variants as props, compared with the approved crops.
-- [ ] Commit, push, per component group.
+- [x] List the catalog components with two implementations and merge each into one, variants as props, compared with the approved crops.
+- [x] Commit, push, per component group.
 
 ### Task 10: Native batch
 
@@ -115,17 +115,17 @@ The owner asked for this work and acts as integrator's approval for native build
 
 **Files:** a native action handler next to the notification extension, `modules/ssh`, `packages/core/src/notifications/approval-action.ts`, composer tools, `app.json`, `packages/i18n/src/extras/{en,es}.json`.
 
-- [ ] Approve and Deny without opening the app, and from the Live Activity. Design note first: how the action outlives the iOS completion handler and reaches the same gates. No safe way: stop, keep v1, which opens the app.
-- [ ] Every gate of `approval-action.ts` holds on the native path, tested with shared vectors.
-- [ ] Dictation and image annotation in the composer tools, for every program. Check the SDK 58 docs, `npx expo install`, MIT or Apache only, fakes first so both work in demo mode.
-- [ ] Commit, push.
+- [x] Approve and Deny without opening the app, and from the Live Activity. Design note first: how the action outlives the iOS completion handler and reaches the same gates. No safe way: stop, keep v1, which opens the app.
+- [x] Every gate of `approval-action.ts` holds on the native path, tested with shared vectors.
+- [x] Dictation and image annotation in the composer tools, for every program. Check the SDK 58 docs, `npx expo install`, MIT or Apache only, fakes first so both work in demo mode.
+- [x] Commit, push.
 
 ### Task 11: Milestone
 
-- [ ] `pnpm test`.
-- [ ] `npx expo prebuild --clean`, native rebuild, all `pnpm sim:verify` flows.
-- [ ] Release build, installed on the iPhone if it is connected.
-- [ ] Update `docs/roadmap.md`, `docs/swift-gap.md`, the coverage table. Write the owner's checklist below with exact steps. Commit, push.
+- [x] `pnpm test`.
+- [x] `npx expo prebuild --clean`, native rebuild, all `pnpm sim:verify` flows.
+- [x] Release build, installed on the iPhone if it is connected.
+- [x] Update `docs/roadmap.md`, `docs/swift-gap.md`, the coverage table. Write the owner's checklist below with exact steps. Commit, push.
 
 ---
 
@@ -142,7 +142,18 @@ The owner asked for this work and acts as integrator's approval for native build
 
 - Approve and Deny from a real notification, on herdr and on tmux.
 - Hermes Chat against a real Host.
-- Dictation and annotation by hand.
+- Dictation and annotation by hand: drawing on a photo exports through `react-native-svg`, never run on a device.
+- Jump Host against a real one: only unit tests so far.
+- Pinch zoom on a terminal: whether the grid resets.
+
+**Not done, with the reason**
+
+- Approve without opening the app: `expo-notifications` ends the action at once; a native path would repeat every security gate in Swift.
+- Message Jump: needs a frame source on the attach store.
+- Hardware ⌘ keys: need a native module.
+- `BlockedCard` and `LimitWindowRow` twins: merging changes what was approved on the phone.
+- Live Activity buttons on tmux: the ask is recorded only by the herdr hook.
+- `sim:verify` failing bare on a first flow: seen once more on 2026-11-07 as a stack trace from Maestro's own runner, not the app; the same flows passed on rerun. Its cause is not found.
 
 **Accounts**
 
