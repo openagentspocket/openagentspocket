@@ -9,7 +9,7 @@ export const APPROVAL_TTL_SECONDS = 30 * 60;
 const CLOCK_SKEW_SECONDS = 5 * 60;
 /** What the Lock Screen shows of a prompt: longer, and Approve goes with it. */
 const BODY_LIMIT = 120;
-const EPISODE_ID = /^[A-Za-z0-9_-]{11}$/u;
+export const EPISODE_ID = /^[A-Za-z0-9_-]{11}$/u;
 const LEDGER_RETENTION_SECONDS = 24 * 60 * 60;
 const YES_LABEL = /^yes(?:$|[, ])/iu;
 const NO_LABEL = /^no(?:$|[, ])/iu;

@@ -1,3 +1,8 @@
+export {
+  ApprovalAskWatch,
+  type ApprovalAskWatchOptions,
+  FIRST_ASK_READ_MS,
+} from './approval-ask-watch';
 export { MAX_CIPHERTEXT_CHARS, sealContent } from './content';
 export {
   type ActivityHandle,
