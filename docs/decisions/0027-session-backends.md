@@ -1,6 +1,6 @@
 # 0027. Session backends: herdr, tmux and what comes next
 
-Status: proposed (2026-11-05)
+Status: accepted (2026-11-07)
 
 ## Context
 

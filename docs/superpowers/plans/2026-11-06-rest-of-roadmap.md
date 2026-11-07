@@ -136,7 +136,6 @@ The owner asked for this work and acts as integrator's approval for native build
 - Mosh: the reference implementation is GPL-3, which the repo rules forbid, and neither app ever had it. Options: skip it (shells reattach in under 2 s) or write the protocol from scratch, which is large.
 - Hermes on a shared server: it runs under another user and herdr's socket is root's, so it reports no session. Sharing the socket would give that user root. A tmux bridge under that user avoids it, but changes a running server.
 - iPad, Apple Watch, Shortcuts, Windows Hosts, Android push with the app closed: each is a product of its own.
-- Accept ADR 0027.
 
 **On the phone, after Task 11**
 
