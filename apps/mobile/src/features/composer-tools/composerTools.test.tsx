@@ -6,8 +6,9 @@ import {
   makeSnippet,
   SkillsPaneStore,
   SnippetStore,
+  type StagedAttachment,
 } from '@openagentspocket/core';
-import { setLocale } from '@openagentspocket/i18n';
+import { setLocale, t } from '@openagentspocket/i18n';
 import { OverlayHost, ThemeProvider } from '@openagentspocket/ui';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { attachmentSource, remoteFileName, remoteImageName } from './attachmentSources';
@@ -142,12 +143,19 @@ describe('attachment sources and the status bar', () => {
     expect(ready.byteCount).toBe(10);
   });
 
-  it('shows progress then the inserted path, and Dismiss clears it', async () => {
-    const draft: string[] = [];
+  it('labels a photo with its preview and a file with its name alone', () => {
+    expect(attachmentSource('image', picked, files(10)).label).toEqual({
+      name: 'p.jpg',
+      previewUri: picked.uri,
+    });
+    expect(attachmentSource('file', picked, files(10)).label).toEqual({ name: 'p.jpg' });
+  });
+
+  it('says nothing once staged: the attachment stands, no path in the draft, no bar', async () => {
+    const attached: StagedAttachment[] = [];
     const store = new ComposerStagingStore({
       stage: { image: async () => '/tmp/a/image.jpg', file: async () => '/tmp/a/f' },
-      clipboard: { copy: () => {} },
-      composer: { insertIntoDraft: (text) => draft.push(text) },
+      composer: { attach: (attachment) => attached.push(attachment) },
     });
     await wrap(<StagingStatusBar store={store} />);
     expect(screen.queryByTestId('staging-status-bar')).toBeNull();
@@ -155,11 +163,34 @@ describe('attachment sources and the status bar', () => {
       store.begin(attachmentSource('image', picked, files(10)));
       await store.settled();
     });
-    expect(draft).toEqual(['/tmp/a/image.jpg ']);
-    expect(screen.getByTestId('staging-status-bar')).toBeTruthy();
-    await act(async () => {
-      await store.perform('dismiss');
+    expect(attached.map((attachment) => attachment.hostPath)).toEqual(['/tmp/a/image.jpg']);
+    expect(screen.queryByTestId('staging-status-bar')).toBeNull();
+  });
+
+  it('keeps a failed upload on show with its reason and Retry, which stages it', async () => {
+    const attached: StagedAttachment[] = [];
+    let attempts = 0;
+    const stage = async () => {
+      attempts += 1;
+      if (attempts === 1) throw new AttachmentError('transferFailed');
+      return '/tmp/a/image.jpg';
+    };
+    const store = new ComposerStagingStore({
+      stage: { image: stage, file: stage },
+      composer: { attach: (attachment) => attached.push(attachment) },
     });
+    await wrap(<StagingStatusBar store={store} />);
+    await act(async () => {
+      store.begin(attachmentSource('image', picked, files(10)));
+      await store.settled();
+    });
+    expect(screen.getByTestId('staging-status-bar')).toBeTruthy();
+    expect(screen.getByText(t('Image upload failed.'))).toBeTruthy();
+    await act(async () => {
+      await fireEvent.press(screen.getByText(t('Retry')));
+      await store.settled();
+    });
+    expect(attached).toHaveLength(1);
     expect(screen.queryByTestId('staging-status-bar')).toBeNull();
   });
 });

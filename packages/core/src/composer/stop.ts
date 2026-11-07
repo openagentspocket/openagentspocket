@@ -32,8 +32,10 @@ export function primaryControl(input: {
   status: string;
   draft: string;
   canStop: boolean;
+  /** The message has something to send even with a blank draft. */
+  hasAttachments?: boolean;
 }): ComposerPrimaryControl {
-  const blank = input.draft.trim().length === 0;
+  const blank = input.draft.trim().length === 0 && !input.hasAttachments;
   return input.canStop && input.status === 'working' && blank ? 'stop' : 'send';
 }
 

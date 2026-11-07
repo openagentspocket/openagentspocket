@@ -2,47 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { HerdrApiError } from '../errors/herdr-api-error';
 import { FakeClock } from '../hosts/cancellation';
 import { MemoryStorage } from '../hosts/known-hosts';
-import type { ComposerDeliveryPolicy } from './policy';
 import { terminalPolicy } from './policy';
 import { ComposerRegistry } from './registry';
-import { type ComposerAttachInput, ComposerStore } from './store';
-
-interface Rig {
-  store: ComposerStore;
-  clock: FakeClock;
-  calls: { target: string; text: string }[];
-  failures: unknown[];
-  gate?: Promise<void>;
-}
-
-function rig(status = 'idle', extra: { budget?: number } = {}): Rig {
-  const clock = new FakeClock();
-  const state: Rig = { store: undefined as never, clock, calls: [], failures: [] };
-  state.store = new ComposerStore({
-    target: 'w1:p1',
-    clock,
-    initialStatus: status,
-    notReadyRetryMs: 5,
-    ...(extra.budget === undefined ? {} : { notReadyBudgetMs: extra.budget }),
-    prompt: async (params) => {
-      state.calls.push(params);
-      if (state.gate) await state.gate;
-      const failure = state.failures.shift();
-      if (failure) throw failure;
-    },
-  });
-  return state;
-}
-
-const chatPolicy = (over: Partial<ComposerDeliveryPolicy> = {}): ComposerDeliveryPolicy => ({
-  route: 'chat',
-  insertsIntoAttachWhenBlocked: false,
-  outgoingText: (text) => text,
-  validate: () => undefined,
-  ...over,
-});
-
-const states = (store: ComposerStore) => store.getSnapshot().messages.map((m) => m.state);
+import type { ComposerAttachInput } from './store';
+import { chatPolicy, rig, states } from './store.testkit';
 
 describe('ComposerStore send', () => {
   it('keeps typing local and sends one prompt', async () => {

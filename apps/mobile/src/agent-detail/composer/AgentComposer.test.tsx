@@ -1,4 +1,10 @@
-import { ComposerRegistry, FakeClock, MemoryStorage } from '@openagentspocket/core';
+import {
+  type ComposerPrompt,
+  ComposerRegistry,
+  FakeClock,
+  MemoryStorage,
+} from '@openagentspocket/core';
+import { t } from '@openagentspocket/i18n';
 import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore } from '@/console/demo';
@@ -13,8 +19,11 @@ jest.mock('@/files/pickers', () => ({
   pickDocument: jest.fn(async () => null),
 }));
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn(), back: jest.fn() }) }));
-function renderDetail(paneId: string, storage = new MemoryStorage()) {
-  const registry = new ComposerRegistry({ storage, clock: new FakeClock() });
+function renderDetail(
+  paneId: string,
+  storage = new MemoryStorage(),
+  registry = new ComposerRegistry({ storage, clock: new FakeClock() }),
+) {
   const store = createDemoConsoleStore();
   render(
     <ThemeProvider themeId="indigo">
@@ -36,6 +45,44 @@ function renderDetail(paneId: string, storage = new MemoryStorage()) {
 }
 
 describe('AgentComposerBar', () => {
+  describe('an attachment standing in the Composer', () => {
+    const attachment = { medium: 'file', name: 'notes.md', hostPath: '/tmp/a/notes.md' } as const;
+    const seeded = (registry: ComposerRegistry, prompt: ComposerPrompt) =>
+      registry.composerFor({ key: 'demo/p2', target: 'p2', prompt, status: 'working' });
+
+    it('sits above an input that stays empty, and goes alone in place of Stop', async () => {
+      const storage = new MemoryStorage();
+      const registry = new ComposerRegistry({ storage, clock: new FakeClock() });
+      const prompt = jest.fn(async () => {});
+      seeded(registry, prompt).attach(attachment);
+      renderDetail('p2', storage, registry);
+      await waitFor(() => expect(screen.getByText('notes.md')).toBeTruthy());
+      expect(screen.getByTestId('composer-input').props.value).toBe('');
+      expect(screen.queryByTestId('composer-stop')).toBeNull();
+      fireEvent.press(screen.getByTestId('composer-send'));
+      await waitFor(() => expect(prompt).toHaveBeenCalled());
+      expect(prompt.mock.calls[0]).toEqual([{ target: 'p2', text: '/tmp/a/notes.md ' }]);
+      await waitFor(() => expect(screen.queryByText('notes.md')).toBeNull());
+    });
+
+    it('leaves the message when removed, with no text left behind', async () => {
+      const storage = new MemoryStorage();
+      const registry = new ComposerRegistry({ storage, clock: new FakeClock() });
+      const store = seeded(
+        registry,
+        jest.fn(async () => {}),
+      );
+      store.attach(attachment);
+      renderDetail('p2', storage, registry);
+      await waitFor(() => expect(screen.getByText('notes.md')).toBeTruthy());
+      fireEvent.press(screen.getByLabelText(t('Remove %@', 'notes.md')));
+      await waitFor(() => expect(screen.queryByText('notes.md')).toBeNull());
+      expect(store.getSnapshot().attachments).toEqual([]);
+      expect(store.getSnapshot().draft).toBe('');
+      await waitFor(() => expect(screen.getByTestId('composer-stop')).toBeTruthy());
+    });
+  });
+
   it('keeps a typed draft and sends it, clearing the input', async () => {
     renderDetail('p2');
     await waitFor(() => expect(screen.getByTestId('composer-input')).toBeTruthy());

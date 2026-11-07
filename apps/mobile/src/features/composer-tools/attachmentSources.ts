@@ -29,7 +29,8 @@ export function remoteImageName(extension: string): string {
 /**
  * A picked file or photo as a staging source. Preparation checks it is still there and within the
  * medium's limit; the bytes are read at upload time. The picker already copied it into the cache,
- * so `remove` deletes that copy once staged.
+ * so `remove` deletes that copy once staged; a photo's copy is its preview, and stays until the
+ * Composer releases it.
  */
 export function attachmentSource(
   medium: 'image' | 'file',
@@ -38,6 +39,8 @@ export function attachmentSource(
 ): AttachmentSource {
   return {
     medium,
+    label:
+      medium === 'image' ? { name: picked.name, previewUri: picked.uri } : { name: picked.name },
     prepare: async (signal) => {
       const size = await files.size(picked.uri);
       if (signal.aborted) throw new AttachmentError('cancelled');

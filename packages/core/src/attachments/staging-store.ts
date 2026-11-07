@@ -6,7 +6,6 @@ import {
   attachmentPresentation,
 } from './presentation';
 import {
-  type AttachmentClipboard,
   type AttachmentCommand,
   AttachmentError,
   type AttachmentFailure,
@@ -14,16 +13,16 @@ import {
   type AttachmentSource,
   type AttachmentStager,
   type AttachmentState,
-  type ComposerDraftPort,
+  type ComposerAttachmentPort,
   isBusy,
+  type PendingAttachment,
   type PreparedAttachment,
 } from './types';
 
 export interface ComposerStagingOptions {
   /** One uploader per medium; both end in the same SFTP staging. */
   stage: { image: AttachmentStager; file: AttachmentStager };
-  clipboard: AttachmentClipboard;
-  composer: ComposerDraftPort;
+  composer: ComposerAttachmentPort;
   /** Terminal outcomes of each `begin`. */
   onOperationEvent?: (event: AttachmentOperationEvent) => void;
 }
@@ -38,9 +37,10 @@ function isCancellation(thrown: unknown): boolean {
 }
 
 /**
- * Owns one cross-media Composer staging workflow: pick, prepare locally, upload over SFTP, insert
- * the Host path into the draft. Prepared local files belong to this store; completed Host files
- * outlive it (ADR 0005). Port of Swift `ComposerStagingStore`.
+ * Owns one cross-media Composer staging workflow: pick, prepare locally, upload over SFTP, hand the
+ * attachment to the Composer. Prepared local files belong to this store, except a shown preview,
+ * which goes to the Composer with the attachment; completed Host files outlive it (ADR 0005). Port
+ * of Swift `ComposerStagingStore`, which typed the path into the draft instead.
  */
 export class ComposerStagingStore {
   private current: AttachmentState = { kind: 'idle' };
@@ -52,7 +52,7 @@ export class ComposerStagingStore {
   private cancellation: Cancellation | undefined;
   private operationId = 0;
   private disposition: Disposition | undefined;
-  private insertsPath = true;
+  private attachment: PendingAttachment | null = null;
 
   constructor(private readonly options: ComposerStagingOptions) {}
 
@@ -60,8 +60,18 @@ export class ComposerStagingStore {
     return this.current;
   }
 
+  /** A failure that can still be retried stands until Retry or Dismiss: a new pick would drop it. */
   get canBegin(): boolean {
-    return !isBusy(this.current);
+    const failure =
+      this.current.kind === 'failed' || this.current.kind === 'backgroundInterrupted'
+        ? this.current.failure
+        : undefined;
+    return !isBusy(this.current) && !failure?.isRetryable;
+  }
+
+  /** The attachment in flight or stopped by a failure; null once it reached the Composer. */
+  get pending(): PendingAttachment | null {
+    return this.current.kind === 'idle' ? null : this.attachment;
   }
 
   get presentation(): AttachmentPresentation | null {
@@ -74,17 +84,14 @@ export class ComposerStagingStore {
   }
 
   /** Starts one attachment. Returns the operation id, or null when busy. Retry keeps the id. */
-  begin(
-    source: AttachmentSource,
-    options: { insertPathIntoComposer?: boolean } = {},
-  ): number | null {
-    if (isBusy(this.current) || this.running) return null;
+  begin(source: AttachmentSource): number | null {
+    if (!this.canBegin || this.running) return null;
     if (this.current.kind === 'failed' || this.current.kind === 'backgroundInterrupted') {
       this.publish({ kind: 'dismissed', id: this.operationId });
     }
     void this.discardPrepared();
     this.disposition = undefined;
-    this.insertsPath = options.insertPathIntoComposer ?? true;
+    this.attachment = { medium: source.medium, ...source.label };
     this.operationId += 1;
     const id = this.operationId;
     this.cancellation = createCancellation();
@@ -100,8 +107,6 @@ export class ComposerStagingStore {
         return this.cancel();
       case 'retry':
         return this.retry();
-      case 'copyPath':
-        return this.copyPath();
       case 'dismiss':
         return this.dismiss();
     }
@@ -160,19 +165,6 @@ export class ComposerStagingStore {
     this.latest = this.running;
   }
 
-  private async copyPath(): Promise<void> {
-    const state = this.current;
-    if (state.kind !== 'completed' || state.outcome.copied) return;
-    try {
-      await this.options.clipboard.copy(state.outcome.path);
-    } catch {
-      return; // Keep the outcome available for another explicit try.
-    }
-    if (this.current === state) {
-      this.setState({ kind: 'completed', outcome: { ...state.outcome, copied: true } });
-    }
-  }
-
   private async dismiss(): Promise<void> {
     if (isBusy(this.current)) return;
     const previous = this.current;
@@ -222,30 +214,21 @@ export class ComposerStagingStore {
         },
       });
       if (signal.aborted) throw new CancelledError();
-      await this.finishSuccess(prepared, path, id);
+      await this.finishSuccess(path, id);
     } catch (thrown) {
       await this.finishWithError(thrown, prepared.medium, id);
     }
   }
 
-  private async finishSuccess(
-    prepared: PreparedAttachment,
-    path: string,
-    id: number,
-  ): Promise<void> {
+  private async finishSuccess(path: string, id: number): Promise<void> {
     if (id !== this.operationId) return;
     this.running = undefined;
     this.disposition = undefined;
-    await this.discardPrepared();
-    let copied = false;
-    try {
-      await this.options.clipboard.copy(path);
-      copied = true;
-    } catch {
-      // The path is still inserted; the bar offers Copy Path.
-    }
-    if (this.insertsPath) this.options.composer.insertIntoDraft(`${path} `);
-    this.setState({ kind: 'completed', outcome: { medium: prepared.medium, path, copied } });
+    const { attachment } = this;
+    if (attachment?.previewUri === undefined) await this.discardPrepared();
+    else this.prepared = undefined;
+    if (attachment) this.options.composer.attach({ ...attachment, hostPath: path });
+    this.setState({ kind: 'idle' });
     this.publish({ kind: 'completed', id, path });
   }
 

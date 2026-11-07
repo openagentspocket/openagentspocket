@@ -11,6 +11,9 @@ describe('primaryControl', () => {
   it('is Stop only for a working agent with a blank draft', () => {
     expect(primaryControl({ status: 'working', draft: '  ', canStop: true })).toBe('stop');
     expect(primaryControl({ status: 'working', draft: 'text', canStop: true })).toBe('send');
+    expect(
+      primaryControl({ status: 'working', draft: '', canStop: true, hasAttachments: true }),
+    ).toBe('send');
     for (const status of ['idle', 'done', 'blocked', 'unknown']) {
       expect(primaryControl({ status, draft: '', canStop: true })).toBe('send');
     }

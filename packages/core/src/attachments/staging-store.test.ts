@@ -5,12 +5,14 @@ import { ComposerStagingStore } from './staging-store';
 import {
   type AbortSignalLike,
   AttachmentError,
+  type AttachmentLabel,
   type AttachmentMedium,
   type AttachmentOperationEvent,
   type AttachmentProgress,
   type AttachmentSource,
   type AttachmentStager,
   type PreparedAttachment,
+  type StagedAttachment,
 } from './types';
 
 class Gate<T = void> {
@@ -36,10 +38,9 @@ function rejectOnAbort(signal: AbortSignalLike, pending: Promise<never>): Promis
   });
 }
 
-function harness(initial: { copyFails?: boolean } = {}) {
+function harness() {
   const removed: string[] = [];
-  const draft: string[] = [];
-  const copied: string[] = [];
+  const attached: StagedAttachment[] = [];
   const events: AttachmentOperationEvent[] = [];
   const stageCalls: string[] = [];
   const stage = {
@@ -52,58 +53,71 @@ function harness(initial: { copyFails?: boolean } = {}) {
     stageCalls.push(prepared.medium);
     return stage.behavior(prepared, options);
   };
-  const clipboardState = { fails: initial.copyFails ?? false };
   const store = new ComposerStagingStore({
     stage: { image: stager, file: stager },
-    clipboard: {
-      copy: (text) => {
-        if (clipboardState.fails) throw new Error('clipboard');
-        copied.push(text);
-      },
-    },
-    composer: { insertIntoDraft: (text) => draft.push(text) },
+    composer: { attach: (attachment) => attached.push(attachment) },
     onOperationEvent: (event) => events.push(event),
   });
   const source = (
     medium: AttachmentMedium = 'image',
     byteCount = 1000,
     prepare?: (signal: AbortSignalLike) => Promise<void>,
+    label: AttachmentLabel = { name: 'doc.txt' },
   ): AttachmentSource => ({
     medium,
+    label,
     prepare: async (signal) => {
       await prepare?.(signal);
       return { medium, byteCount, remove: () => void removed.push(medium) };
     },
   });
-  return { store, stage, removed, draft, copied, events, stageCalls, source, clipboardState };
+  return { store, stage, removed, attached, events, stageCalls, source };
 }
 
 describe('ComposerStagingStore', () => {
-  it('prepares, uploads, inserts the path with a trailing space and copies it', async () => {
+  it('prepares, uploads and hands the Composer the attachment, leaving nothing on show', async () => {
     const h = harness();
-    const id = h.store.begin(h.source('image'));
+    const id = h.store.begin(h.source('file', 1000, undefined, { name: 'notes.md' }));
     expect(id).toBe(1);
     expect(h.store.state.kind).toBe('preparing');
+    expect(h.store.pending).toEqual({ medium: 'file', name: 'notes.md' });
     await h.store.settled();
-    expect(h.draft).toEqual(['/tmp/agentico.AB/stage-1/image.png ']);
-    expect(h.copied).toEqual(['/tmp/agentico.AB/stage-1/image.png']);
-    expect(h.store.state).toEqual({
-      kind: 'completed',
-      outcome: { medium: 'image', path: '/tmp/agentico.AB/stage-1/image.png', copied: true },
-    });
-    expect(h.removed).toEqual(['image']); // the local copy is discarded after staging
+    expect(h.attached).toEqual([
+      { medium: 'file', name: 'notes.md', hostPath: '/tmp/agentico.AB/stage-1/image.png' },
+    ]);
+    expect(h.store.state.kind).toBe('idle');
+    expect(h.store.presentation).toBeNull();
+    expect(h.store.pending).toBeNull();
+    expect(h.removed).toEqual(['file']); // the local copy is discarded after staging
     expect(h.events).toEqual([
       { kind: 'completed', id: 1, path: '/tmp/agentico.AB/stage-1/image.png' },
     ]);
     expect(h.store.canBegin).toBe(true);
   });
 
-  it('does not touch the draft when the caller opts out of insertion', async () => {
+  it('leaves a shown preview on the phone: the Composer now owns that copy', async () => {
     const h = harness();
-    h.store.begin(h.source('file'), { insertPathIntoComposer: false });
+    const label = { name: 'IMG_1.jpg', previewUri: 'file:///cache/IMG_1.jpg' };
+    h.store.begin(h.source('image', 10, undefined, label));
+    expect(h.store.pending).toEqual({ medium: 'image', ...label });
     await h.store.settled();
-    expect(h.draft).toEqual([]);
-    expect(h.stageCalls).toEqual(['file']);
+    expect(h.attached).toMatchObject([label]);
+    expect(h.removed).toEqual([]);
+  });
+
+  it('keeps a retryable failure standing: another attachment waits for Retry or Dismiss', async () => {
+    const h = harness();
+    h.stage.behavior = async () => {
+      throw new AttachmentError('transferFailed');
+    };
+    h.store.begin(h.source('image', 10, undefined, { name: 'a.jpg' }));
+    await h.store.settled();
+    expect(h.store.pending?.name).toBe('a.jpg');
+    expect(h.store.canBegin).toBe(false);
+    expect(h.store.begin(h.source('file'))).toBeNull();
+    await h.store.perform('dismiss');
+    expect(h.store.pending).toBeNull();
+    expect(h.store.canBegin).toBe(true);
   });
 
   it('refuses a second begin while busy', async () => {
@@ -142,7 +156,7 @@ describe('ComposerStagingStore', () => {
     expect(h.store.state.kind).toBe('idle');
     expect(h.removed).toEqual(['image']);
     expect(h.events).toEqual([{ kind: 'cancelled', id: 1 }]);
-    expect(h.draft).toEqual([]);
+    expect(h.attached).toEqual([]);
   });
 
   it('cancels while preparing and removes the prepared copy', async () => {
@@ -172,7 +186,7 @@ describe('ComposerStagingStore', () => {
     expect(h.removed).toEqual([]);
     await h.store.perform('retry');
     await h.store.settled();
-    expect(h.store.state.kind).toBe('completed');
+    expect(h.attached).toHaveLength(1);
     expect(h.events).toEqual([
       { kind: 'failed', id: id ?? -1, retryable: true },
       { kind: 'completed', id: id ?? -1, path: '/tmp/agentico.AB/stage-2/doc.txt' },
@@ -224,19 +238,7 @@ describe('ComposerStagingStore', () => {
     expect(h.removed).toEqual([]);
     await h.store.perform('retry');
     await h.store.settled();
-    expect(h.store.state.kind).toBe('completed');
-  });
-
-  it('offers Copy Path when the clipboard failed, and copies on request', async () => {
-    const h = harness({ copyFails: true });
-    h.store.begin(h.source('image'));
-    await h.store.settled();
-    expect(h.draft).toHaveLength(1);
-    expect(attachmentPresentation(h.store.state)?.commands).toEqual(['copyPath', 'dismiss']);
-    h.clipboardState.fails = false;
-    await h.store.perform('copyPath');
-    expect(h.copied).toEqual(['/tmp/agentico.AB/stage-1/image.png']);
-    expect(h.store.state).toMatchObject({ kind: 'completed', outcome: { copied: true } });
+    expect(h.attached).toHaveLength(1);
   });
 
   it('leave cancels the work, discards the copy and ignores the late result', async () => {
@@ -250,7 +252,7 @@ describe('ComposerStagingStore', () => {
     await tick();
     await h.store.leave();
     expect(h.store.state.kind).toBe('idle');
-    expect(h.draft).toEqual([]);
+    expect(h.attached).toEqual([]);
     expect(h.events).toEqual([{ kind: 'cancelled', id: 1 }]);
     expect(h.removed).toEqual(['image']);
     expect(h.store.begin(h.source('image'))).toBe(3);
@@ -260,6 +262,7 @@ describe('ComposerStagingStore', () => {
     const h = harness();
     const bad = (kind: AttachmentError['kind']): AttachmentSource => ({
       medium: 'image',
+      label: { name: 'a.jpg' },
       prepare: async () => {
         throw new AttachmentError(kind);
       },

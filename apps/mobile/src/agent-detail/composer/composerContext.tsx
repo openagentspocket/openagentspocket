@@ -18,6 +18,8 @@ import {
   useSyncExternalStore,
 } from 'react';
 import { useConsoleStore } from '@/console/hooks';
+import { releaseAttachmentPreview } from '@/features/composer-tools/composerStaging';
+import { ExpoLocalFiles } from '@/files/expoLocalFiles';
 
 const fallbacks = new WeakMap<KeyValueStorage, ComposerRegistry>();
 
@@ -25,7 +27,11 @@ const fallbacks = new WeakMap<KeyValueStorage, ComposerRegistry>();
 function defaultRegistry(storage: KeyValueStorage): ComposerRegistry {
   let registry = fallbacks.get(storage);
   if (!registry) {
-    registry = new ComposerRegistry({ storage, clock: systemClock });
+    registry = new ComposerRegistry({
+      storage,
+      clock: systemClock,
+      releaseAttachment: releaseAttachmentPreview(new ExpoLocalFiles()),
+    });
     fallbacks.set(storage, registry);
   }
   return registry;
