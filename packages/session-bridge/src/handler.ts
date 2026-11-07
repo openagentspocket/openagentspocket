@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url';
 import type { herdr } from '@openagentspocket/core';
 import { actionFor, BridgeError, type Result } from './actions.js';
 import { liveSnapshot, SESSION_PROTOCOL } from './snapshot.js';
-import { listPanes, type TmuxPane, type TmuxRunner } from './tmux.js';
+import { isPaneGone, listPanes, type TmuxPane, type TmuxRunner } from './tmux.js';
 
 const DEFAULT_READ_LINES = 200;
 
@@ -30,6 +30,23 @@ function paneById(panes: readonly TmuxPane[], id: unknown): TmuxPane {
 /** The visible screen as `agent read --source visible --format text` prints it. */
 export const visibleScreen = (tmux: TmuxRunner, pane: string): Promise<string> =>
   tmux.run(['capture-pane', '-p', '-t', pane]);
+
+/**
+ * `agent read` for the launcher: the screen, or herdr's `agent_not_found` for a pane that is gone,
+ * which tells the plugin's `approval-asks.js` to clear the ask. Any other failure says nothing of the pane.
+ */
+export async function agentRead(
+  tmux: TmuxRunner,
+  pane: string,
+): Promise<{ code: number; output: string }> {
+  try {
+    return { code: 0, output: await visibleScreen(tmux, pane) };
+  } catch (error) {
+    if (!isPaneGone(error)) throw error;
+    const answer = { error: { code: 'agent_not_found', message: `No Agent ${pane}` } };
+    return { code: 1, output: `${JSON.stringify(answer)}\n` };
+  }
+}
 
 /** Types `keys` literally, as `agent send-keys` does for Approve's digit. */
 export async function typeKeys(

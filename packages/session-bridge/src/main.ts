@@ -8,7 +8,7 @@ import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { autostartFor } from './autostart.js';
-import { pluginEntry, typeKeys, visibleScreen } from './handler.js';
+import { agentRead, pluginEntry, typeKeys } from './handler.js';
 import { installLauncher, recordRuntime } from './install.js';
 import { tmuxRunner } from './runner.js';
 import { startBridge } from './server.js';
@@ -100,6 +100,7 @@ export async function main(args: readonly string[]): Promise<number> {
         node: process.execPath,
         script: fileURLToPath(import.meta.url),
         path: process.env.PATH ?? '',
+        tmuxSocket: process.env.OAP_TMUX_SOCKET,
       });
       recordRuntime({
         configDir: configDir(),
@@ -120,10 +121,12 @@ export async function main(args: readonly string[]): Promise<number> {
     case 'remote-client-bridge':
       startInBackground();
       return 0;
-    case 'agent read':
+    case 'agent read': {
       if (!target) return 2;
-      process.stdout.write(await visibleScreen(tmux(), target));
-      return 0;
+      const { code, output } = await agentRead(tmux(), target);
+      process.stdout.write(output);
+      return code;
+    }
     case 'agent send-keys':
       if (!target) return 2;
       await typeKeys(tmux(), target, args.slice(3));

@@ -34,13 +34,7 @@ import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from "node
 import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 
-import {
-  approvalAskRecord,
-  clearApprovalAsk,
-  hasApprovalAsk,
-  pruneApprovalAsks,
-  writeApprovalAsk,
-} from "./approval-ask-records.js";
+import { clearApprovalAsk, hasApprovalAsk, recordApprovalAsk } from "./approval-ask-records.js";
 import { approvalFieldsFromRead, visibleScreenArgs } from "./approval-fields.js";
 import { readNotificationConfig } from "./notification-config.js";
 import { deliverToDevices, NOTIFY_FLAG_BY_STATUS, readEligibleDevices } from "./notify-delivery.js";
@@ -207,24 +201,6 @@ async function approvalFields(binPath, paneId, timestamp) {
     return null;
   }
   return result.code === 0 ? approvalFieldsFromRead(result.stdout, paneId, timestamp) : null;
-}
-
-/**
- * Records what this Blocked push asks for the app's Live Activity (spec F5,
- * R5): the fields an opted-in device's push carries, `bid` included, or no
- * record when there are none. Written before the pushes go, since the app
- * reads it over SSH whether or not the relay delivers. A failed write only
- * costs the activity its buttons, never the push.
- */
-function recordApprovalAsk(stateDir, paneId, timestamp, approval) {
-  try {
-    pruneApprovalAsks(stateDir, timestamp);
-    const record = approvalAskRecord(paneId, timestamp, approval);
-    if (record === null) clearApprovalAsk(stateDir, paneId);
-    else writeApprovalAsk(stateDir, record);
-  } catch (error) {
-    console.error(`notify-hook: approval ask not recorded: ${error.message}`);
-  }
 }
 
 function requireEnv(name) {

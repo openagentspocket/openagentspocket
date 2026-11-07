@@ -151,7 +151,7 @@ The owner asked for this work and acts as integrator's approval for native build
 - Message Jump: needs a frame source on the attach store.
 - Hardware ⌘ keys: need a native module.
 - `BlockedCard` and `LimitWindowRow` twins: merging changes what was approved on the phone.
-- Live Activity buttons on tmux: the ask is recorded only by the herdr hook.
+- Live Activity buttons, on herdr and tmux: both hooks record the ask, but nothing in the app runs `approval-asks.js` or passes `approvalAsks` to the coordinator yet.
 - `sim:verify` failing bare on a first flow: seen once more on 2026-11-07 as a stack trace from Maestro's own runner, not the app; the same flows passed on rerun. Its cause is not found.
 
 **Accounts**

@@ -4,14 +4,14 @@
 import { test, suite, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
+import { createDecipheriv } from "node:crypto";
 import { createServer } from "node:http";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { applyProgramHooks, withHooks, withoutHooks } from "../src/install-program-hooks.js";
-import { paneInDirectory } from "../src/pane-records.js";
+import { applyProgramHooks } from "../src/install-program-hooks.js";
 import {
   activityOf,
   herdrOwnsThisPane,
@@ -26,10 +26,7 @@ import {
 } from "../src/program-hook.js";
 
 const HOOK = fileURLToPath(new URL("../src/program-hook.js", import.meta.url));
-const INSTALL = fileURLToPath(new URL("../src/install-program-hooks.js", import.meta.url));
 const KEY = Buffer.from(Array.from({ length: 32 }, (_, i) => i)).toString("base64url");
-const COMMAND = "'/n' '/x/program-hook.js' claude";
-const GROUPS = { Notification: "permission_prompt", Stop: null };
 
 // A run from inside a herdr pane must behave like one outside it: herdr would own the hooks.
 delete process.env.HERDR_ENV;
@@ -156,14 +153,6 @@ suite("the other programs", () => {
     assert.equal(existsSync(asked), false);
   });
 
-  test("finds the pane of a hook outside it only when one pane fits", () => {
-    const one = "%1\topencode\t/srv/api\n%2\tzsh\t/srv/api\n%3\topencode\t/srv/web";
-    assert.equal(paneInDirectory(one, "opencode", "/srv/api"), "%1");
-    assert.equal(paneInDirectory(one, "opencode", "/srv/none"), null);
-    const two = "%1\topencode\t/srv/api\n%2\topencode\t/srv/api";
-    assert.equal(paneInDirectory(two, "opencode", "/srv/api"), null);
-  });
-
   test("reads Pi, omp and Grok Build events", () => {
     const ask = { event: "tool_approval_requested", title: "bash" };
     assert.deepEqual(parsePiHook(ask), { status: "blocked", title: "bash" });
@@ -177,30 +166,6 @@ suite("the other programs", () => {
     const asks = normalizedInput("grok", { hookEventName: "Notification", message: "Run ls?" });
     assert.deepEqual(parseGrokHook(asks), { status: "blocked", title: "Run ls?" });
     assert.equal(parseGrokHook(normalizedInput("grok", { hookEventName: "PostToolUse" })), null);
-  });
-
-  test("installs the Pi extension and the Grok hook file, once, and removes them", () => {
-    mkdirSync(join(home, ".pi", "agent"), { recursive: true });
-    mkdirSync(join(home, ".omp", "agent"), { recursive: true });
-    mkdirSync(join(home, ".grok", "hooks"), { recursive: true });
-    const own = join(home, ".grok", "hooks", "mine.json");
-    writeFileSync(own, "{}");
-    const ctx = { node: process.execPath, hook: HOOK };
-    const touched = applyProgramHooks({ env: {}, home, ctx });
-    applyProgramHooks({ env: {}, home, ctx });
-    assert.deepEqual(touched.sort(), ["grok", "omp", "pi"]);
-
-    const pi = readFileSync(join(home, ".pi", "agent", "extensions", "agentico-notify.ts"), "utf8");
-    assert.match(pi, /"agent_settled"/);
-    assert.doesNotMatch(pi, /__[A-Z_]+__/);
-    const omp = readFileSync(join(home, ".omp", "agent", "extensions", "agentico-notify.ts"), "utf8");
-    assert.match(omp, /"agent_end"/);
-    const grok = JSON.parse(readFileSync(join(home, ".grok", "hooks", "agentico-notify.json"), "utf8"));
-    assert.equal(grok.hooks.Stop.length, 1);
-
-    applyProgramHooks({ env: {}, home, ctx, uninstall: true });
-    assert.equal(existsSync(join(home, ".pi", "agent", "extensions", "agentico-notify.ts")), false);
-    assert.equal(readFileSync(own, "utf8"), "{}");
   });
 
   test("the Pi extension forwards an ask and stays quiet off the TUI", async () => {
@@ -246,22 +211,6 @@ suite("the other programs", () => {
       await new Promise((done) => setTimeout(done, 50));
     }
     assert.equal(relay.requests.length, 1);
-  });
-
-  test("installs only for the programs found, and removes all of it", () => {
-    const env = { CODEX_HOME: join(home, "codex"), HERMES_HOME: join(home, "hermes") };
-    mkdirSync(env.CODEX_HOME);
-    mkdirSync(env.HERMES_HOME);
-    const ctx = { node: "/n", hook: "/h/program-hook.js" };
-    const none = join(home, "none");
-    assert.deepEqual(applyProgramHooks({ env, home: none, ctx }), ["codex", "hermes"]);
-    const hooks = JSON.parse(readFileSync(join(env.CODEX_HOME, "hooks.json"), "utf8")).hooks;
-    assert.equal(hooks.PermissionRequest[0].hooks[0].command, "'/n' '/h/program-hook.js' codex");
-    const python = readFileSync(join(env.HERMES_HOME, "plugins/agentico/__init__.py"), "utf8");
-    assert.match(python, /"\/n", "\/h\/program-hook\.js", "hermes"/);
-    applyProgramHooks({ env, home: none, ctx, uninstall: true });
-    assert.deepEqual(JSON.parse(readFileSync(join(env.CODEX_HOME, "hooks.json"), "utf8")), {});
-    assert.equal(existsSync(join(env.HERMES_HOME, "plugins/agentico")), false);
   });
 });
 
@@ -340,42 +289,109 @@ suite("program-hook process", () => {
   });
 });
 
-suite("install-program-hooks", () => {
-  test("adds the hooks once and keeps the user's own", () => {
-    const mine = { hooks: [{ type: "command", command: "say done" }] };
-    const start = { model: "opus", hooks: { Stop: [mine], PreToolUse: [mine] } };
-    const once = withHooks(start, COMMAND, GROUPS);
-    assert.deepEqual(withHooks(once, COMMAND, GROUPS), once);
-    assert.equal(once.model, "opus");
-    assert.equal(once.hooks.Stop.length, 2);
-    assert.deepEqual(once.hooks.Stop[0], mine);
-    assert.equal(once.hooks.Notification[0].matcher, "permission_prompt");
-    assert.equal(once.hooks.Stop[1].hooks[0].async, true);
+suite("Live Activity asks on tmux", () => {
+  const SCREEN = " npm test\n Do you want to proceed?\n ❯ 1. Yes\n   2. No\n";
+  const ASKS = fileURLToPath(new URL("../src/approval-asks.js", import.meta.url));
+  const pane = { TMUX_PANE: "%3" };
+  let stateDir;
+  let shown;
+
+  const askPath = () => join(stateDir, "approval-asks", `${Buffer.from("%3").toString("base64url")}.json`);
+  const ask = () => JSON.parse(readFileSync(askPath(), "utf8"));
+
+  function pushed() {
+    const wire = JSON.parse(relay.requests[0].envelope);
+    const ct = Buffer.from(wire.ct, "base64url");
+    const key = Buffer.from(KEY, "base64url");
+    const decipher = createDecipheriv("aes-256-gcm", key, Buffer.from(wire.n, "base64url"));
+    decipher.setAAD(Buffer.from("HERDR-NOTIFY:1"));
+    decipher.setAuthTag(ct.subarray(-16));
+    return JSON.parse(Buffer.concat([decipher.update(ct.subarray(0, -16)), decipher.final()]).toString());
+  }
+
+  // A Host as the bridge's `install` leaves it: launcher, runtime, and state apart from config.
+  beforeEach(async () => {
+    await startRelay();
+    register({ approve: true });
+    stateDir = join(home, "state");
+    mkdirSync(stateDir);
+    shown = join(home, "screen");
+    writeFileSync(shown, SCREEN);
+    const launcher = join(home, "launcher");
+    writeFileSync(launcher, `#!/bin/sh\ncat '${shown}'\n`, { mode: 0o755 });
+    spawnSync(launcher); // A fresh script's first exec can outlast the hook's read bound.
+    const runtime = { version: 1, node: process.execPath, herdr: launcher, stateDir, env: { HOME: home } };
+    writeFileSync(join(home, "runtime.json"), JSON.stringify(runtime));
+    writeFileSync(join(home, "runtime-node"), `${process.execPath}\n`);
   });
 
-  test("uninstalling leaves the file as it was", () => {
-    const mine = { hooks: [{ type: "command", command: "say done" }] };
-    const start = { hooks: { Stop: [mine] } };
-    assert.deepEqual(withoutHooks(withHooks(start, COMMAND, GROUPS)), start);
-    assert.deepEqual(withoutHooks(withHooks({}, COMMAND, GROUPS)), {});
+  test("a Blocked push records the fields it carries", async () => {
+    assert.equal(await runHook(PERMISSION, pane), 0);
+    const { pane: id, bid, ts, act, q, opts } = ask();
+    assert.deepEqual({ id, act, opts }, { id: "%3", act: 1, opts: ["Yes", "No"] });
+    const payload = pushed();
+    assert.deepEqual([payload.bid, payload.ts, payload.q, payload.opts], [bid, ts, q, opts]);
   });
 
-  test("a settings file it cannot read is left alone", () => {
-    const path = join(home, "settings.json");
-    writeFileSync(path, "{ broken");
-    const result = spawnSync(process.execPath, [INSTALL], {
-      env: { ...process.env, CLAUDE_CONFIG_DIR: home, HOME: home },
+  test("the app's read answers it on a bridge Host, until the screen moves on", async () => {
+    await runHook(PERMISSION, pane);
+    const socket = join(home, "herdr", "herdr.sock");
+    const env = { ...process.env, HERDR_PLUGIN_CONFIG_DIR: home, HERDR_SOCKET_PATH: socket };
+    const read = () => JSON.parse(spawnSync(process.execPath, [ASKS], { env, encoding: "utf8" }).stdout);
+    assert.deepEqual(read().asks.map((one) => one.bid), [ask().bid]);
+    writeFileSync(shown, "$ ");
+    assert.deepEqual(read(), { v: 1, result: "ok", asks: [] });
+    assert.equal(existsSync(askPath()), false);
+  });
+
+  for (const [name, input] of [
+    ["the end of the turn", STOP],
+    ["a finished tool", { hook_event_name: "PostToolUse", session_id: "abc" }],
+    ["a new prompt", { hook_event_name: "UserPromptSubmit", session_id: "abc" }],
+  ]) {
+    test(`${name} clears the ask, whether or not a device hears it`, async () => {
+      await runHook(PERMISSION, pane);
+      assert.equal(existsSync(askPath()), true);
+      rmSync(join(home, "notifications.json"));
+      assert.equal(await runHook(input, pane), 0);
+      assert.equal(existsSync(askPath()), false);
     });
-    assert.notEqual(result.status, 0);
-    assert.equal(readFileSync(path, "utf8"), "{ broken");
+  }
+
+  test("an event that says nothing of the status keeps the ask", async () => {
+    await runHook(PERMISSION, pane);
+    await runHook({ hook_event_name: "PreToolUse", session_id: "abc" }, pane);
+    assert.equal(existsSync(askPath()), true);
   });
 
-  test("writes the file a real Claude Code reads", () => {
-    const result = spawnSync(process.execPath, [INSTALL], {
-      env: { ...process.env, CLAUDE_CONFIG_DIR: home, HOME: home },
-    });
-    assert.equal(result.status, 0);
-    const settings = JSON.parse(readFileSync(join(home, "settings.json"), "utf8"));
-    assert.match(settings.hooks.Stop[0].hooks[0].command, /program-hook\.js' claude$/);
+  test("a Blocked push nobody can answer leaves no older ask behind", async () => {
+    await runHook(PERMISSION, pane);
+    writeFileSync(shown, "$ ");
+    await runHook(PERMISSION, pane);
+    assert.equal(existsSync(askPath()), false);
+
+    writeFileSync(shown, SCREEN);
+    await runHook(PERMISSION, pane);
+    register({ approve: false });
+    await runHook(PERMISSION, pane);
+    assert.equal(existsSync(askPath()), false);
+
+    register({ approve: true });
+    await runHook(PERMISSION, pane);
+    register({ blocked: false });
+    await runHook(PERMISSION, pane);
+    assert.equal(existsSync(askPath()), false);
+  });
+
+  test("outside a tmux pane there is no screen to answer, so no ask", async () => {
+    await runHook(PERMISSION);
+    assert.equal(existsSync(join(stateDir, "approval-asks")), false);
+  });
+
+  test("an ask that cannot be written or cleared costs the buttons, never the push", async () => {
+    writeFileSync(join(stateDir, "approval-asks"), "in the way");
+    assert.equal(await runHook(PERMISSION, pane), 0);
+    assert.equal(await runHook(STOP, pane), 0);
+    assert.equal(relay.requests.length, 2);
   });
 });
