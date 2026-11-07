@@ -2,6 +2,7 @@ import { message } from '../errors/text';
 import type { ClaudeContext } from './claude-context';
 import { fieldInputState, type QuestionTabs } from './claude-models';
 import { rowIsBlank, trimmedText } from './screen';
+import { withoutGutter } from './side-panel';
 import {
   type DialogOption,
   type DialogOptionRole,
@@ -30,7 +31,8 @@ export function readClaudeQuestion(
     titleRows.push(at);
     at += 1;
   }
-  const title = tools.joinRows(titleRows.map((index) => tools.at(index)));
+  // Claude Code 2.x draws a dim `│` bar before the question's rows: a frame, not its text.
+  const title = tools.joinRows(withoutGutter(titleRows.map((index) => tools.at(index))));
   const isReview = title === REVIEW_TITLE || tabs.active === 'Submit';
   const scan = reader.scan(firstOption, !isReview);
   if (!scan) {
