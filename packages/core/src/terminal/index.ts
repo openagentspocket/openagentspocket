@@ -1,3 +1,4 @@
+export * from './agent-message-jump';
 export * from './attach-command';
 export * from './attach-session';
 export * from './attach-store';
@@ -13,6 +14,7 @@ export * from './keyboard-control';
 export * from './link-index';
 export * from './link-policy';
 export * from './message-jump';
+export * from './mouse-modes';
 export * from './output-gate';
 export * from './paste-preview';
 export * from './paste-review';
