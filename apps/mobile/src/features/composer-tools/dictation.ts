@@ -36,6 +36,11 @@ export class DictationController {
     return () => this.listeners.delete(listener);
   };
 
+  /** Leaving the Agent: nothing keeps listening with no button left to stop it. */
+  stop(): void {
+    if (this.active) this.engine.stop();
+  }
+
   async toggle(): Promise<void> {
     if (this.active) {
       this.engine.stop();

@@ -111,11 +111,13 @@ export class ShellTerminalStore {
       return;
     }
     const { status } = this.current;
-    if (
-      this.current.transportGeneration === this.transportGeneration &&
-      (status.kind === 'waitingForSize' || status.kind === 'connecting')
-    ) {
-      return;
+    if (this.current.transportGeneration === this.transportGeneration) {
+      if (status.kind === 'waitingForSize' || status.kind === 'connecting') return;
+      // The connection outlived the trip away; a lost one arrives as a new generation.
+      if (status.kind === 'live') {
+        this.current.didBecomeActive();
+        return;
+      }
     }
     this.recovery.begin(this.transportGeneration);
     this.replaceTerminal();

@@ -27,6 +27,7 @@ export class Gate {
 export class PoolProbe {
   readonly requests: TerminalAttachRequest[] = [];
   readonly ended: string[] = [];
+  readonly sessions: ScriptedTerminalSession[] = [];
   private readonly endGates = new Map<string, Gate>();
 
   gateEnd(terminalId: string, gate: Gate) {
@@ -37,6 +38,7 @@ export class PoolProbe {
     return async (request, handler) => {
       this.requests.push(request);
       const session = new ScriptedTerminalSession();
+      this.sessions.push(session);
       const end = session.end.bind(session);
       session.end = async () => {
         const gate = this.endGates.get(request.target.id);

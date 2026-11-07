@@ -30,7 +30,7 @@ export const ARGUMENTS_LIMIT = 8_192;
 /** Every column the queries name, so a changed layout reads as one problem rather than as the first statement that fails. */
 export const LAYOUT_STATEMENT = `WITH need(t, c) AS (VALUES
   ('sessions','id'),('sessions','parent_session_id'),('sessions','title'),('sessions','display_name'),
-  ('sessions','model'),('sessions','transcript_revision'),('sessions','end_reason'),
+  ('sessions','model'),('sessions','transcript_revision'),('sessions','end_reason'),('sessions','source'),('sessions','model_config'),
   ('messages','id'),('messages','session_id'),('messages','role'),('messages','content'),
   ('messages','tool_call_id'),('messages','tool_calls'),('messages','tool_name'),
   ('messages','timestamp'),('messages','finish_reason'),('messages','reasoning'),
@@ -63,6 +63,17 @@ const SEGMENT_SPAN = 1_000_000_000_000;
 /** A row's place in the whole conversation; the oldest segment keeps its own numbers. */
 const SLOT = `coalesce(m.display_order, m.id) + ((SELECT max(depth) FROM ln) - ln.depth) * ${SEGMENT_SPAN}`;
 
+/** A branch, delegate or tool child keeps its own copy of the conversation: it is no continuation. */
+const isContinuation = `c.source IS NOT 'tool' AND NOT (json_valid(c.model_config) AND p.id IN (
+    coalesce(json_extract(c.model_config, '$._branched_from'), ''),
+    coalesce(json_extract(c.model_config, '$._delegate_from'), '')))`;
+
+/** Rotation clones the live tail into the child: a row with a copy in a later segment shows there. */
+const isClonedForward = `ln.depth > 0 AND EXISTS (SELECT 1 FROM messages k
+    JOIN ln l ON l.id = k.session_id AND l.depth < ln.depth
+   WHERE k.message_uid = m.message_uid OR (k.role = m.role AND k.timestamp = m.timestamp
+     AND k.content IS m.content))`;
+
 /**
  * The session and the segments compression rotated it out of, as Hermes's own resume walks them:
  * a parent counts only when it ended in `compression`, not a branch or a fork of it.
@@ -71,7 +82,7 @@ const lineage = (session: string) => `ln(id, depth) AS (SELECT ${session}, 0
   UNION ALL SELECT p.id, ln.depth + 1 FROM ln
     JOIN sessions c ON c.id = ln.id
     JOIN sessions p ON p.id = c.parent_session_id AND p.end_reason = 'compression'
-   WHERE ln.depth < 100)`;
+   WHERE ln.depth < 100 AND ${isContinuation})`;
 
 /**
  * The CTEs `v` and `d`: the session's display rows matching `bound`, one per slot, with what each
@@ -86,6 +97,7 @@ v AS (SELECT m.id, ${SLOT} AS slot, m.active,
   FROM messages m JOIN ln ON ln.id = m.session_id
  WHERE 1${bound}
    AND (m.active = 1 OR m.compacted = 1)
+   AND NOT (${isClonedForward})
    AND coalesce(m.display_kind, '') <> 'hidden'
    AND ${isForDisplay('m')}
    AND NOT (m.role = 'tool' AND m.message_uid IS NOT NULL AND EXISTS (

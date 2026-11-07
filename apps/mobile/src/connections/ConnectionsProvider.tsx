@@ -42,9 +42,9 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
     liveActivity.start();
     void manager.setActive(AppState.currentState === 'active');
     const subscription = AppState.addEventListener('change', (state) => {
-      // The key prompt makes the app go inactive and active. Reading that as a return would
-      // redial a Host the owner just refused, and prompt again for ever.
-      if (deviceAuthenticator.isPrompting() && state !== 'background') return;
+      // The key prompt makes the app go inactive and active. Reading that as leaving would make
+      // its return redial a Host the owner just refused, and prompt again for ever.
+      if (deviceAuthenticator.isPrompting() && state === 'inactive') return;
       void manager.setActive(state === 'active');
       deviceServices().conversations.setActive(state === 'active');
       if (state === 'active') void liveActivity.foreground();

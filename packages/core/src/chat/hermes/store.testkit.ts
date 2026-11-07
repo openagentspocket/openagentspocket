@@ -14,7 +14,8 @@ export const SESSION = 'local-0a1b2c3d';
 
 const SCHEMA = `
 CREATE TABLE sessions (id TEXT PRIMARY KEY, parent_session_id TEXT, title TEXT, display_name TEXT,
-  model TEXT, transcript_revision INTEGER NOT NULL DEFAULT 0, end_reason TEXT);
+  model TEXT, transcript_revision INTEGER NOT NULL DEFAULT 0, end_reason TEXT,
+  source TEXT, model_config TEXT);
 CREATE TABLE messages (id INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT NOT NULL, role TEXT NOT NULL,
   content TEXT, tool_call_id TEXT, tool_calls TEXT, tool_name TEXT, timestamp REAL NOT NULL,
   finish_reason TEXT, reasoning TEXT, reasoning_content TEXT,

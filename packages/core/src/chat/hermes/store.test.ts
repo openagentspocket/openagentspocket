@@ -239,6 +239,31 @@ describe.skipIf(!hasSqlite3())('the Hermes store read through sqlite3', () => {
     expect(textOf(transcriptOf(lines), 'user')).toEqual(['first', 'second', 'third']);
   });
 
+  it('shows once what rotation cloned into the next segment', async () => {
+    const home = homeWith(
+      `INSERT INTO sessions (id, end_reason) VALUES ('old', 'compression');`,
+      `UPDATE sessions SET parent_session_id = 'old' WHERE id = ${quoted(SESSION)};`,
+      insertMessage({ role: 'user', content: quoted('asked'), timestamp: 1 }, 'old'),
+      insertMessage({ role: 'user', content: quoted('cloned'), timestamp: 2 }, 'old'),
+      insertMessage({ role: 'user', content: quoted('cloned'), timestamp: 2 }),
+      insertMessage({ role: 'user', content: quoted('newest'), timestamp: 3 }),
+    );
+    const lines = (await source().open(home.files())) ?? [];
+    expect(textOf(transcriptOf(lines), 'user')).toEqual(['asked', 'cloned', 'newest']);
+  });
+
+  it('a branch of a rotated segment keeps to its own copy', async () => {
+    const home = homeWith(
+      `INSERT INTO sessions (id, end_reason) VALUES ('old', 'compression');`,
+      `UPDATE sessions SET parent_session_id = 'old',
+         model_config = '{"_branched_from":"old"}' WHERE id = ${quoted(SESSION)};`,
+      insertMessage({ role: 'user', content: quoted('parent only') }, 'old'),
+      insertMessage({ role: 'user', content: quoted('branch') }),
+    );
+    const lines = (await source().open(home.files())) ?? [];
+    expect(textOf(transcriptOf(lines), 'user')).toEqual(['branch']);
+  });
+
   it('stops at a parent that did not end in compression, and pages across segments', async () => {
     const home = homeWith(
       `INSERT INTO sessions (id, end_reason) VALUES ('forked', 'branched');

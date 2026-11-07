@@ -162,7 +162,8 @@ async function main() {
   if (!Object.hasOwn(PARSERS, program) || herdrOwnsThisPane(process.env)) return;
   const event = PARSERS[program](input);
   const tmuxPane =
-    optionalText(process.env.TMUX_PANE) ?? paneFromTmux(program, input.cwd, process.env);
+    optionalText(process.env.TMUX_PANE) ??
+    (program === "opencode" ? paneFromTmux(program, input.cwd, process.env) : null);
   const paneId = tmuxPane ?? hookPaneId(process.env, input);
   const configDir = configDirOf(process.env);
   if (tmuxPane) {

@@ -1,4 +1,8 @@
-import { DEFAULT_DEVICE_KEY_ALIAS, KeyAccessGate } from '@openagentspocket/core';
+import {
+  DEFAULT_DEVICE_KEY_ALIAS,
+  KEY_ACCESS_REUSE_MS,
+  KeyAccessGate,
+} from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { systemClock } from '@openagentspocket/transport';
 import { appGroup } from 'agentico-app-group';
@@ -31,7 +35,9 @@ export function deviceServices(): LiveServices {
       keyAccess: new KeyAccessGate({
         isRequired: () => settingsStore.get('appLockForKeys'),
         authenticate: () =>
-          deviceAuthenticator.authenticate(t('Unlock your SSH keys to connect to your Hosts.')),
+          deviceAuthenticator.authenticate(t('Unlock your SSH keys to connect to your Hosts.'), {
+            reuseWithinMs: KEY_ACCESS_REUSE_MS,
+          }),
         clock: systemClock,
       }),
       storage: deviceStorage,

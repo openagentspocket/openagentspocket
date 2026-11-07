@@ -37,6 +37,21 @@ describe('ShellTerminalStore', () => {
     await store.leave();
   });
 
+  it('a return on the same connection keeps a live terminal attached', async () => {
+    const probe = new PoolProbe();
+    const store = make(probe);
+    store.viewDidResize(80, 24);
+    await eventually(() => probe.sessions.length === 1);
+    probe.sessions[0]?.emit(new Uint8Array([104]));
+    await eventually(() => store.terminal.status.kind === 'live');
+    const before = store.terminal;
+    store.didBecomeActive(true);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(store.terminal).toBe(before);
+    expect(probe.ended).toEqual([]);
+    await store.leave();
+  });
+
   it('take over reattaches with the takeover flag', async () => {
     const probe = new PoolProbe();
     const store = make(probe);

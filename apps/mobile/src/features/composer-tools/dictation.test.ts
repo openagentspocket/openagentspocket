@@ -28,6 +28,14 @@ describe('dictation into the draft', () => {
     expect(dictation.listening).toBe(false);
   });
 
+  it('stops when its Agent is left', async () => {
+    const { fake } = engine();
+    const dictation = new DictationController(fake, () => {});
+    await dictation.toggle();
+    dictation.stop();
+    expect(dictation.listening).toBe(false);
+  });
+
   it('never listens without permission, and tells the caller', async () => {
     const { fake } = engine(false);
     const failures: string[] = [];

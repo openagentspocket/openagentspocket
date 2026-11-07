@@ -1,6 +1,6 @@
 import { t } from '@openagentspocket/i18n';
 import { toast } from '@openagentspocket/ui';
-import { useMemo, useRef, useSyncExternalStore } from 'react';
+import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import { DictationController } from './dictation';
 import { systemSpeechEngine } from './speechEngine';
 
@@ -27,6 +27,7 @@ export function useDictation(insert: (text: string) => void) {
         )
       : null;
   }, []);
+  useEffect(() => () => controller?.stop(), [controller]);
   const listening = useSyncExternalStore(
     controller?.subscribe ?? never,
     controller?.getSnapshot ?? idle,
