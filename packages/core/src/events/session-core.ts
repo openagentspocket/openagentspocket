@@ -26,6 +26,9 @@ import {
 export const noop = () => {};
 const closeQuietly = (transport: EventsTransport) => transport.close().catch(noop);
 
+/** How long a redial waits for a goodbye: a connection the network dropped never says it. */
+export const CLOSE_WAIT_MS = 1_500;
+
 /**
  * State, run loop, transport installation, keepalive and teardown of
  * `EventsSession` (the public surface lives there).
@@ -274,7 +277,7 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
     const transport = this.currentTransport;
     if (transport) {
       this.currentTransport = undefined;
-      await closeQuietly(transport);
+      await this.boundedClose(closeQuietly(transport));
     }
     await this.closeRetired();
     await this.permits.waitForIdle();
@@ -305,7 +308,18 @@ export abstract class EventsSessionCore<T extends EventsTransport> {
   private async closeRetired(): Promise<void> {
     const retired = this.retired;
     this.retired = [];
-    for (const transport of retired) await closeQuietly(transport);
+    for (const transport of retired) await this.boundedClose(closeQuietly(transport));
+  }
+
+  /** The close goes on by itself past the wait; nobody needs its answer. */
+  private boundedClose(closing: Promise<unknown>): Promise<void> {
+    return new Promise((resolve) => {
+      const timer = this.clock.setTimeout(resolve, CLOSE_WAIT_MS);
+      void closing.finally(() => {
+        this.clock.clearTimeout(timer);
+        resolve();
+      });
+    });
   }
 
   // MARK: Keepalive and latency

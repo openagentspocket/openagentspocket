@@ -14,13 +14,11 @@ import { useDetailUi } from '../detailUi';
 import { ChatBanners } from './ChatBanners';
 import { ChatEmpty } from './ChatEmpty';
 import { ChatRowView } from './ChatRowView';
+import { useChatFollow } from './useChatFollow';
 import { useChatRows } from './useChatRows';
 
 const NO_MESSAGES: readonly ComposerMessage[] = [];
 const NO_STATUSES = new Map<string, never>();
-
-/** How far from the end still counts as reading the newest row, in points. */
-const NEAR_END = 120;
 
 const useStyles = makeStyles((th) => ({
   list: { flex: 1 },
@@ -68,12 +66,7 @@ export function ChatTimeline({
   );
   const { rows, toggle } = useChatRows(conversation.state, activity, pending);
   const list = useRef<FlatList<ChatRow>>(null);
-  /** Follows new rows only while the reader is at the end. */
-  const nearEnd = useRef(true);
-  const settle = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-    nearEnd.current = contentSize.height - contentOffset.y - layoutMeasurement.height < NEAR_END;
-  };
+  const follow = useChatFollow(list, messages.length);
   return (
     <View style={styles.list} testID="chat-timeline">
       <FlatList
@@ -81,17 +74,7 @@ export function ChatTimeline({
         data={rows}
         keyExtractor={(row) => row.id}
         initialNumToRender={40}
-        onScrollBeginDrag={() => {
-          nearEnd.current = false;
-        }}
-        onScrollEndDrag={settle}
-        onMomentumScrollEnd={settle}
-        onContentSizeChange={() => {
-          if (!nearEnd.current) return;
-          list.current?.scrollToEnd({ animated: false });
-          // Rows below the window are measured as they render: land on the real end.
-          setTimeout(() => nearEnd.current && list.current?.scrollToEnd({ animated: false }), 150);
-        }}
+        {...follow}
         ListHeaderComponent={
           <View style={[styles.banners, { paddingTop: topInset }]}>
             <ChatBanners

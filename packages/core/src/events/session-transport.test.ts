@@ -4,6 +4,7 @@ import { FakeClock } from '../hosts/cancellation';
 import { failures, failWith } from './failure';
 import { CallGate, ScriptedEventsTransport, SequencedConnector } from './scripted-transport';
 import { EventsSession } from './session';
+import { CLOSE_WAIT_MS } from './session-core';
 import type { EventsSessionOptions, EventsTransport } from './session-options';
 import {
   type EventsSessionUpdate,
@@ -227,6 +228,25 @@ describe('EventsSession.withTransport', () => {
     await replacing;
 
     expect(answered).toBe('new');
+    await session.end();
+  });
+
+  it('does not wait on a dead connection that never says goodbye', async () => {
+    const first = scripted('first');
+    const closing = new CallGate();
+    first.gateNextClose(closing);
+    const connector = new SequencedConnector([first, scripted('second')]);
+    const { clock, session, next } = harness(connector.connect);
+    await session.resume();
+    expect(await next()).toEqual(connecting);
+    expect(await next()).toEqual(connected);
+
+    const replacing = session.replaceLink();
+    await settle();
+    await clock.advance(CLOSE_WAIT_MS);
+    await replacing;
+    expect(await session.withTransportRunningOnce(version)).toBe('second');
+    closing.open();
     await session.end();
   });
 
