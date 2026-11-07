@@ -17,7 +17,7 @@ struct AgentLiveActivityWidget: Widget {
                 hostID: context.attributes.hostID,
                 isStale: context.isStale,
                 approval: AgentActivityApproval.make(
-                    presentation: presentation, state: context.state, hostID: context.attributes.hostID,
+                    presentation: presentation, hostID: context.attributes.hostID,
                     isStale: context.isStale)
             )
         } dynamicIsland: { context in
@@ -26,7 +26,7 @@ struct AgentLiveActivityWidget: Widget {
                 presentation: presentation,
                 hostID: context.attributes.hostID,
                 approval: AgentActivityApproval.make(
-                    presentation: presentation, state: context.state, hostID: context.attributes.hostID,
+                    presentation: presentation, hostID: context.attributes.hostID,
                     isStale: context.isStale))
         }
     }

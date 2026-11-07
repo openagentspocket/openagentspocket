@@ -204,9 +204,9 @@ struct AgentActivityApproval: Equatable, Sendable {
     /// False on a stale activity: its prompt may be gone.
     let isEnabled: Bool
 
-    /// The panel for `state`, or nil when there is nothing to answer here.
+    /// The panel for `presentation`, or nil when there is nothing to answer here.
     static func make(
-        presentation: AgentActivityPresentation, state: AgentActivityAttributes.ContentState, hostID: String,
+        presentation: AgentActivityPresentation, hostID: String,
         isStale: Bool, isOptedIn: (UUID) -> Bool = { ApprovalOptInMirror().isEnabled(for: $0) }
     ) -> AgentActivityApproval? {
         guard case .detailed(let details, _) = presentation, let host = UUID(uuidString: hostID),
