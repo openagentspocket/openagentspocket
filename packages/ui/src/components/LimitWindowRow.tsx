@@ -1,4 +1,6 @@
 import { View } from 'react-native';
+import { Icon } from '../primitives/Icon';
+import { Meter } from '../primitives/Meter';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -23,31 +25,69 @@ const useStyles = makeStyles((t) => ({
   },
   percent: { width: 44, textAlign: 'right' },
   reset: { width: 56, textAlign: 'right' },
+  stack: { gap: t.spacing.xxs },
+  line: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    gap: t.spacing.xs,
+  },
+  inlineName: { width: 92 },
+  inlineBar: { flex: 1 },
+  inlineReset: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs, minWidth: 72 },
 }));
 
-export interface LimitWindowRowProps {
+const LEVEL_TONE = { normal: 'primary', warning: 'warning', danger: 'danger' } as const;
+
+export type LimitWindowLevel = keyof typeof LEVEL_TONE;
+
+interface LimitWindowCommon {
   /** "5-hour", "Weekly". */
   label: string;
-  /** 0...1; null draws an empty bar. */
+  /** 0...1; null while unknown. */
   usedShare: number | null;
-  /** Bar color: the provider's brand tint. */
-  color: string;
   /** "62%"; empty while unknown. */
   percentText: string;
-  /** Time until reset ("4d 23h"); empty when unknown. */
+  /** When it resets ("4d 23h", "Resets in 2 days"); empty when unknown. */
   resetText: string;
   testID?: string;
 }
 
-/** One limit window: label, a 10-segment bar (partial last segment), percent and time to reset. */
-export function LimitWindowRow({
+export interface SegmentedLimitWindow extends LimitWindowCommon {
+  variant?: 'segmented';
+  /** Bar color: the provider's brand tint. */
+  color: string;
+}
+
+export interface MeterLimitWindow extends LimitWindowCommon {
+  /** meter: stacked, with the pace line. meterInline: name, bar, percent and reset on one line. */
+  variant: 'meter' | 'meterInline';
+  /** Where an even pace would stand, 0...1: the bar's tick. */
+  paceShare?: number;
+  /** Colors the percent. */
+  level?: LimitWindowLevel;
+  /** Stands in for the bar while the share is unknown (meter only). */
+  unknownText?: string;
+  /** "Ahead of pace" (meter only). */
+  paceText?: string;
+  meterTestID?: string;
+  paceTestID?: string;
+}
+
+export type LimitWindowRowProps = SegmentedLimitWindow | MeterLimitWindow;
+
+const isSegmented = (props: LimitWindowRowProps): props is SegmentedLimitWindow =>
+  props.variant === undefined || props.variant === 'segmented';
+
+/** Label, a 10-segment bar (partial last segment), percent and time to reset. */
+function SegmentedRow({
   label,
   usedShare,
   color,
   percentText,
   resetText,
   testID,
-}: LimitWindowRowProps) {
+}: SegmentedLimitWindow) {
   const styles = useStyles();
   return (
     <View
@@ -80,4 +120,94 @@ export function LimitWindowRow({
       </Text>
     </View>
   );
+}
+
+function WindowMeter({
+  label,
+  usedShare,
+  paceShare,
+  meterTestID,
+}: Pick<MeterLimitWindow, 'label' | 'paceShare' | 'meterTestID'> & { usedShare: number }) {
+  return (
+    <Meter value={usedShare} pace={paceShare} accessibilityLabel={label} testID={meterTestID} />
+  );
+}
+
+/** Name and percent, the bar with its pace tick, then the reset and pace lines. */
+function MeterRow(props: MeterLimitWindow) {
+  const { label, usedShare, percentText, resetText, level, unknownText, paceText } = props;
+  const styles = useStyles();
+  return (
+    <View
+      style={styles.stack}
+      accessible
+      accessibilityLabel={[label, percentText].filter(Boolean).join(', ')}
+      testID={props.testID}
+    >
+      <View style={styles.line}>
+        <Text variant="body">{label}</Text>
+        {percentText ? (
+          <Text variant="headline" tone={LEVEL_TONE[level ?? 'normal']}>
+            {percentText}
+          </Text>
+        ) : null}
+      </View>
+      {usedShare === null ? (
+        <Text variant="callout" tone="secondary">
+          {unknownText}
+        </Text>
+      ) : (
+        <WindowMeter {...props} usedShare={usedShare} />
+      )}
+      <View style={styles.line}>
+        <Text variant="footnote" tone="secondary">
+          {resetText || ' '}
+        </Text>
+        {paceText ? (
+          <Text variant="footnote" tone="secondary" testID={props.paceTestID}>
+            {paceText}
+          </Text>
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
+/** Name, short bar, percent and reset clock on one line. */
+function MeterInlineRow(props: MeterLimitWindow) {
+  const { label, usedShare, percentText, resetText, level } = props;
+  const styles = useStyles();
+  return (
+    <View
+      style={styles.row}
+      accessible
+      accessibilityLabel={[label, percentText].filter(Boolean).join(', ')}
+      testID={props.testID}
+    >
+      <Text style={styles.inlineName} numberOfLines={1}>
+        {label}
+      </Text>
+      <View style={styles.inlineBar}>
+        {usedShare === null ? null : <WindowMeter {...props} usedShare={usedShare} />}
+      </View>
+      <Text variant="headline" tone={LEVEL_TONE[level ?? 'normal']} tabularNums>
+        {percentText || '–'}
+      </Text>
+      <View style={styles.inlineReset}>
+        <Icon name="clock" size={12} color="textSecondary" />
+        <Text variant="footnote" tone="secondary" numberOfLines={1}>
+          {resetText || ' '}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+/**
+ * One limit window. segmented: a provider's card, in its brand tint. meter and meterInline: the
+ * Usage Limits sheets, whose bar turns warning and danger near the limit and carries a pace tick.
+ */
+export function LimitWindowRow(props: LimitWindowRowProps) {
+  if (isSegmented(props)) return <SegmentedRow {...props} />;
+  return props.variant === 'meter' ? <MeterRow {...props} /> : <MeterInlineRow {...props} />;
 }

@@ -7,7 +7,7 @@ import { type Status, StatusDot } from '../primitives/StatusDot';
 import { Text } from '../primitives/Text';
 import { programTint } from '../theme/programTint';
 import { makeStyles, useTheme } from '../theme/theme';
-import { LimitWindowRow, type LimitWindowRowProps } from './LimitWindowRow';
+import { LimitWindowRow, type SegmentedLimitWindow } from './LimitWindowRow';
 
 const useStyles = makeStyles((t) => ({
   head: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
@@ -30,7 +30,7 @@ export interface ProviderUsageCardProps {
   name: string;
   /** The Host the figures come from. */
   hostName: string;
-  windows: readonly Omit<LimitWindowRowProps, 'color' | 'testID'>[];
+  windows: readonly Omit<SegmentedLimitWindow, 'color' | 'testID' | 'variant'>[];
   /** Shown instead of the windows ("Usage Limits are off."). */
   note?: string;
   /** Opens the provider's detail; the chevron shows only with it. */
@@ -78,6 +78,7 @@ export function ProviderUsageCard({
           <LimitWindowRow
             key={window.label}
             {...window}
+            variant="segmented"
             color={color}
             testID={`${testID}-${window.label}`}
           />
