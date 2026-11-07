@@ -9,6 +9,7 @@ import {
   type ConsoleRow,
   ConversationStore,
   chatHerdrSession,
+  concatBytes,
   type Host,
   readSubagentTranscript,
   subagentRoute,
@@ -16,6 +17,9 @@ import {
 import { chatAgentView } from './agentView';
 
 /** The slice of the Console store the registry reads. */
+/** Past this a picture costs more to bring over SSH than a Chat row is worth. */
+const MAX_CHAT_IMAGE_BYTES = 8 * 1024 * 1024;
+
 export interface ConversationConsole {
   getState(): {
     readonly rows: readonly ConsoleRow[];
@@ -104,6 +108,21 @@ export class ConversationRegistry {
     const route = subagentRoute(agentID, path, snapshot.transcript.entries);
     if (route === null) return { route, outcome: { type: 'missing' } };
     return { route, outcome: await readSubagentTranscript(this.filesOf(hostId), route.path) };
+  }
+
+  /** An image on the Host, whole; null when it is missing or too large to show. */
+  async readImage(hostId: string, path: string): Promise<Uint8Array | null> {
+    const files = this.filesOf(hostId);
+    const size = (await files.status(path))?.size ?? null;
+    if (size === null || size > MAX_CHAT_IMAGE_BYTES) return null;
+    const parts: Uint8Array[] = [];
+    for (let offset = 0; offset < size; ) {
+      const { data } = await files.read({ path, offset, maxBytes: size - offset });
+      if (data.length === 0) return null;
+      parts.push(data);
+      offset += data.length;
+    }
+    return concatBytes(parts);
   }
 
   /** Ends the stores of Hosts that are no longer saved and removes their cached transcripts. */

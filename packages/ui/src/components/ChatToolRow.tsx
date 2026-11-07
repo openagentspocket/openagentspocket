@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Icon, type IconName } from '../primitives/Icon';
@@ -48,6 +49,8 @@ interface ChatToolRowProps {
   subagents?: readonly SubagentItem[];
   /** 'Open Subagent Transcript'. */
   openLabel?: string;
+  /** What only an open row shows: output, diff, image. */
+  detail?: ReactNode;
   expanded?: boolean;
   onToggle?: () => void;
   onLongPress?: () => void;
@@ -127,6 +130,7 @@ export function ChatToolRow({
   tool,
   subagents,
   openLabel,
+  detail,
   expanded = false,
   onToggle,
   onLongPress,
@@ -171,6 +175,7 @@ export function ChatToolRow({
             </Text>
           </View>
         ) : null}
+        {expanded && detail ? <View style={styles.output}>{detail}</View> : null}
       </Card>
     </View>
   );

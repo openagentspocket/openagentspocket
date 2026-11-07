@@ -1,4 +1,5 @@
 {
+  "%lld more files": "{0, plural, one {# archivo más} other {# archivos más}}",
   "%lld seconds": "{0, plural, one {# segundo} other {# segundos}}",
   "A QR code in a herdr popup. It works once and expires in two minutes.": "Un código QR en un popup de herdr. Sirve una vez y vence en dos minutos.",
   "A finished turn's steps fold behind one line above its answer; a turn stays open while it runs or while its background work does.": "Los pasos de un turno terminado se pliegan en una línea sobre su respuesta; un turno queda abierto mientras corre o mientras su trabajo en segundo plano sigue.",
@@ -11,6 +12,7 @@
   "Clear": "Borrar",
   "Close Skills": "Cerrar Skills",
   "Connect": "Conectar",
+  "Could not load the image.": "No se pudo cargar la imagen.",
   "Ctrl, the keyboard key and More always show. A key you hide stays one menu away, in More › Commands.": "Ctrl, la tecla de teclado y Más siempre se muestran. Una tecla que ocultás queda a un menú de distancia, en Más › Comandos.",
   "Demo Mode": "Modo demo",
   "Demo mode is set by the EXPO_PUBLIC_DEMO build flag.": "El modo demo lo fija el flag de compilación EXPO_PUBLIC_DEMO.",

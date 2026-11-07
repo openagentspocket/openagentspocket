@@ -109,6 +109,7 @@ export function ChatTimeline({
         contentContainerStyle={styles.content}
         renderItem={({ item }) => (
           <ChatRowView
+            hostId={hostId}
             row={item}
             onToggle={toggle}
             onLoadOlder={() => conversation.loadOlder(false)}

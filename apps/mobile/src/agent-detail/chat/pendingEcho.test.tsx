@@ -12,7 +12,13 @@ const pendingRow = (state: ChatPendingEchoState): ChatRow =>
 async function show(state: ChatPendingEchoState) {
   await render(
     <ThemeProvider themeId="indigo">
-      <ChatRowView row={pendingRow(state)} onToggle={jest.fn()} onLoadOlder={jest.fn()} now={0} />
+      <ChatRowView
+        hostId="h"
+        row={pendingRow(state)}
+        onToggle={jest.fn()}
+        onLoadOlder={jest.fn()}
+        now={0}
+      />
     </ThemeProvider>,
   );
 }

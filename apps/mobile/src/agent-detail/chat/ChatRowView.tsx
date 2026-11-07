@@ -1,19 +1,25 @@
-import type { ChatRow } from '@openagentspocket/core';
+import { type ChatRow, rowCopyText } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
+  ActionMenu,
+  type ActionMenuItem,
   Button,
   ChatDivider,
   ChatNoticeRow,
   ChatThoughtRow,
   ChatToolRow,
   ChatUserBubble,
+  copyToClipboard,
   Markdown,
   makeStyles,
+  Tappable,
   Text,
+  useRowMenu,
 } from '@openagentspocket/ui';
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
+import { ChatToolDetail } from './ChatToolDetail';
 import { durationText, echoStatus, rowToolStatus, toolIcon, toolStatusLabel } from './chatRowModel';
 
 const useStyles = makeStyles((th) => ({
@@ -23,7 +29,17 @@ const useStyles = makeStyles((th) => ({
   center: { alignItems: 'center' },
 }));
 
+/** Copy, for a row that has text to copy. */
+function copyMenu(text: string | null): ActionMenuItem[] | undefined {
+  if (!text) return undefined;
+  const title = t('Copy');
+  return [
+    { key: 'copy', title, icon: 'copy', onPress: () => void copyToClipboard(text, t('Copied')) },
+  ];
+}
+
 interface Props {
+  hostId: string;
   row: ChatRow;
   /** Opens or closes a turn fold or tool group. */
   onToggle: (id: ChatRow['id']) => void;
@@ -35,6 +51,7 @@ interface Props {
 
 /** One timeline row in the Swift app's look: quiet bubbles, flat answers, compact tool rows. */
 export const ChatRowView = memo(function ChatRowView({
+  hostId,
   row,
   onToggle,
   onLoadOlder,
@@ -44,6 +61,8 @@ export const ChatRowView = memo(function ChatRowView({
   const styles = useStyles();
   const [open, setOpen] = useState(false);
   const { content } = row;
+  const menu = useMemo(() => copyMenu(rowCopyText(content)), [content]);
+  const copy = useRowMenu(menu);
   const body = () => {
     switch (content.type) {
       case 'user':
@@ -51,6 +70,7 @@ export const ChatRowView = memo(function ChatRowView({
           <ChatUserBubble
             text={content.message.text}
             attachments={content.message.attachmentLabels}
+            menu={menu}
           />
         );
       case 'pending':
@@ -60,12 +80,21 @@ export const ChatRowView = memo(function ChatRowView({
             pending={content.echo.state.kind === 'sending'}
             pendingLabel={t('Sending…')}
             status={echoStatus(content.echo.state)}
+            menu={menu}
           />
         );
       case 'assistant':
-        return <Markdown text={content.source} />;
+        return (
+          <Tappable onLongPress={copy.onLongPress} {...copy.a11y}>
+            <Markdown text={content.source} />
+          </Tappable>
+        );
       case 'plan':
-        return <Markdown text={content.plan.text} />;
+        return (
+          <Tappable onLongPress={copy.onLongPress} {...copy.a11y}>
+            <Markdown text={content.plan.text} />
+          </Tappable>
+        );
       case 'reasoning':
         return (
           <ChatThoughtRow
@@ -102,11 +131,13 @@ export const ChatRowView = memo(function ChatRowView({
             tool={{
               icon: toolIcon(content.tool.kind),
               title: content.tool.subtitle ?? content.tool.title,
-              status: rowToolStatus(content.tool.status, content.tool.isNotUpdating),
+              status,
               statusLabel: toolStatusLabel(content.tool),
             }}
+            detail={<ChatToolDetail hostId={hostId} tool={content.tool} />}
             expanded={open}
             onToggle={() => setOpen(!open)}
+            onLongPress={copy.onLongPress}
           />
         );
       }
@@ -192,6 +223,9 @@ export const ChatRowView = memo(function ChatRowView({
       testID={`chat-row-${row.id}`}
     >
       {node}
+      {menu && content.type !== 'user' && content.type !== 'pending' ? (
+        <ActionMenu items={menu} {...copy.menuProps} />
+      ) : null}
     </View>
   );
 });
