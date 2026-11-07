@@ -23,3 +23,19 @@ export function writePaneRecord(configDir, paneId, fields) {
   writeFileSync(temp, JSON.stringify({ ...current, ...known, pane: paneId }));
   renameSync(temp, path);
 }
+
+/** What `paneInDirectory` reads: tmux's pane id, foreground command and directory, one per line. */
+export const PANE_LIST_FORMAT = "#{pane_id}\t#{pane_current_command}\t#{pane_current_path}";
+
+/**
+ * The pane running `program` in `directory`, for a hook outside any pane: an OpenCode plugin runs
+ * in its background service, not in the terminal that shows the Agent. Two candidates are no
+ * answer: a wrong pane would send the phone to, and approve in, the wrong Agent.
+ */
+export function paneInDirectory(listing, program, directory) {
+  const matches = listing
+    .split("\n")
+    .map((line) => line.split("\t"))
+    .filter(([, command, path]) => command === program && path === directory);
+  return matches.length === 1 ? matches[0][0] : null;
+}

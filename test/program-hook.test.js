@@ -11,6 +11,7 @@ import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { applyProgramHooks, withHooks, withoutHooks } from "../src/install-program-hooks.js";
+import { paneInDirectory } from "../src/pane-records.js";
 import {
   activityOf,
   herdrOwnsThisPane,
@@ -153,6 +154,14 @@ suite("the other programs", () => {
     writeFileSync(launcher, `#!/bin/sh\ntouch '${asked}'\n`, { mode: 0o755 });
     assert.equal(await runHook(PERMISSION, { TMUX_PANE: "%3" }), 0);
     assert.equal(existsSync(asked), false);
+  });
+
+  test("finds the pane of a hook outside it only when one pane fits", () => {
+    const one = "%1\topencode\t/srv/api\n%2\tzsh\t/srv/api\n%3\topencode\t/srv/web";
+    assert.equal(paneInDirectory(one, "opencode", "/srv/api"), "%1");
+    assert.equal(paneInDirectory(one, "opencode", "/srv/none"), null);
+    const two = "%1\topencode\t/srv/api\n%2\topencode\t/srv/api";
+    assert.equal(paneInDirectory(two, "opencode", "/srv/api"), null);
   });
 
   test("reads Pi, omp and Grok Build events", () => {
