@@ -28,6 +28,7 @@ export interface TerminalHostPort {
 export class AgentTerminalSession {
   readonly input = new TerminalInputController({
     observeOutgoing: (data, source) => this.jump?.observeOutgoing(data, source),
+    observeSubmitted: (text) => this.jump?.recordSubmitted(text),
     sessionDidReset: () => {
       this.modes.reset();
       this.jump?.reset();

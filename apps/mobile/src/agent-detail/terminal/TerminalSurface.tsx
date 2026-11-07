@@ -1,4 +1,4 @@
-import { commandKeys, type QuickKey } from '@openagentspocket/core';
+import { type ComposerStore, commandKeys, type QuickKey } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   ActionMenu,
@@ -12,7 +12,7 @@ import {
 } from '@openagentspocket/ui';
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from 'expo-router';
-import { useCallback, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { View } from 'react-native';
 import { useSettings } from '@/settings/SettingsProvider';
 import { TerminalZoom } from '@/terminal/TerminalZoom';
@@ -38,12 +38,19 @@ export function TerminalSurface({
   hostId,
   paneId,
   program,
+  composer,
 }: {
   hostId: string;
   paneId: string;
   program?: string | null;
+  /** The Agent's Composer: what it delivers round the PTY is told to this session. */
+  composer?: ComposerStore;
 }) {
   const session = useAgentTerminalSession(hostId, paneId);
+  useEffect(
+    () => (session ? composer?.bindSubmitRecorder(session.input) : undefined),
+    [composer, session],
+  );
   return session ? (
     <LiveTerminal session={session} hostId={hostId} paneId={paneId} program={program} />
   ) : null;

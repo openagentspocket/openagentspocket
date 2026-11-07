@@ -86,6 +86,7 @@ export function AgentDetailScreen({
               surface={surface}
               activity={activityOf(row)}
               messages={composer.snapshot.messages}
+              composer={composer.store}
               headerHeight={headerHeight}
               onShowTerminal={() => setSurface('terminal')}
             />

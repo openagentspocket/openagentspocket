@@ -1,4 +1,5 @@
 import type { Clock } from '../hosts/cancellation';
+import { conversationMoved } from './frame-motion';
 
 // Port of Swift `TerminalMessageJumpController`. `herdr terminal attach` puts the surface on the
 // alternate screen, where local scrollback is empty, so conversation history lives only inside the
@@ -12,7 +13,7 @@ export type JumpDirection = 'older' | 'newer';
 export type JumpOutcome =
   /** A frame satisfying the policy was reached. */
   | 'found'
-  /** The frame stopped changing before a match: top of history, or live bottom. */
+  /** The conversation stopped moving before a match: top of history, or live bottom. */
   | 'reachedEnd'
   /** The step budget ran out with the frame still moving. */
   | 'exhausted'
@@ -41,7 +42,7 @@ export interface MessageJumpConfiguration {
   maxSteps: number;
   /** How long to wait for a repainted frame before the step counts as having produced nothing. */
   frameSettleTimeoutMs: number;
-  /** Consecutive identical frames that mean the end was reached. */
+  /** Consecutive frames without movement that mean the end was reached. */
   unchangedFramesBeforeEnd: number;
 }
 
@@ -78,6 +79,8 @@ const STICKY_REVERSE_ROWS = 1;
 const difference = (a: ReadonlySet<string>, b: ReadonlySet<string>) =>
   [...a].filter((k) => !b.has(k));
 const intersects = (a: ReadonlySet<string>, b: ReadonlySet<string>) => [...a].some((k) => b.has(k));
+const sameKeys = (a: ReadonlySet<string>, b: ReadonlySet<string>) =>
+  a.size === b.size && difference(a, b).length === 0;
 
 export class TerminalMessageJumpController {
   readonly configuration: MessageJumpConfiguration;
@@ -120,6 +123,13 @@ export class TerminalMessageJumpController {
       size *= c.stepGrowth;
     }
     return Math.min(size, ceiling);
+  }
+
+  /** Whether a step got anywhere: the conversation moved, or a message came or went. */
+  frameMoved(previous: string, next: string): boolean {
+    if (previous === next) return false;
+    if (conversationMoved(previous, next)) return true;
+    return !sameKeys(this.deps.visibleMessages(previous), this.deps.visibleMessages(next));
   }
 
   /** Fed from the viewport-text tap; legal and cheap while no jump is running. */
@@ -226,7 +236,7 @@ export class TerminalMessageJumpController {
     return 'exhausted';
   }
 
-  /** Pushes one step and classifies the repaint; timeouts and identical frames count toward the end. */
+  /** Pushes one step and classifies the repaint; timeouts and still frames count toward the end. */
   private async observe(
     direction: JumpDirection,
     rows: number,
@@ -238,7 +248,7 @@ export class TerminalMessageJumpController {
     this.deps.step(direction, rows);
     const waited = await this.waitForFrame();
     if (waited.kind === 'cancelled') return { result: { kind: 'cancelled' }, previous, unchanged };
-    const same = waited.kind === 'timedOut' || waited.text === previous;
+    const same = waited.kind === 'timedOut' || !this.frameMoved(previous, waited.text);
     if (same) {
       const count = unchanged + 1;
       const ended = count >= this.configuration.unchangedFramesBeforeEnd;

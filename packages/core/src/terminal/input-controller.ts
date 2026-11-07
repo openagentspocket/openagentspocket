@@ -14,6 +14,8 @@ export interface InputSnapshot {
 export interface TerminalInputControllerOptions {
   /** Sees every write before it leaves, with its source. */
   readonly observeOutgoing?: (data: Uint8Array, source: OutgoingSource) => void;
+  /** Sees each message delivered round the PTY, which `observeOutgoing` never does. */
+  readonly observeSubmitted?: (text: string) => void;
   /** Called when a session begins or ends, so per-session indexes reset with the writer. */
   readonly sessionDidReset?: () => void;
 }
@@ -58,7 +60,7 @@ const hasControlOrNewline = (text: string) => /[\u0000-\u001F\u007F-\u009F\u2028
  */
 export class TerminalInputController implements TerminalInputPort {
   private generation = 0;
-  private liveGeneration: InputSessionGeneration | null = null;
+  private liveSession: InputSessionGeneration | null = null;
   private readyGeneration: InputSessionGeneration | null = null;
   private writer: Writer | null = null;
   private pendingPasteText: string | null = null;
@@ -85,6 +87,10 @@ export class TerminalInputController implements TerminalInputPort {
   get canConfirmPaste(): boolean {
     return this.writer !== null && this.pendingPasteText !== null;
   }
+  /** The session on the input path now, to pair with `recordSubmitted`; null with none. */
+  get liveGeneration(): InputSessionGeneration | null {
+    return this.liveSession;
+  }
   /** Whether a live writer exists (the session may not have painted yet). */
   get hasWriter(): boolean {
     return this.writer !== null;
@@ -97,7 +103,7 @@ export class TerminalInputController implements TerminalInputPort {
 
   beginSession(writer: Writer): InputSessionGeneration {
     this.generation += 1;
-    this.liveGeneration = this.generation;
+    this.liveSession = this.generation;
     this.readyGeneration = null;
     this.writer = writer;
     this.options.sessionDidReset?.();
@@ -109,8 +115,8 @@ export class TerminalInputController implements TerminalInputPort {
     generation: InputSessionGeneration,
     options: { preservingPendingPaste?: boolean } = {},
   ): void {
-    if (generation !== this.liveGeneration) return;
-    this.liveGeneration = null;
+    if (generation !== this.liveSession) return;
+    this.liveSession = null;
     this.readyGeneration = null;
     this.writer = null;
     this.options.sessionDidReset?.();
@@ -123,7 +129,7 @@ export class TerminalInputController implements TerminalInputPort {
    * reviewed Paste belongs to the surrounding interaction, so it stays pending.
    */
   detachSessionForReplacement(): void {
-    this.liveGeneration = null;
+    this.liveSession = null;
     this.readyGeneration = null;
     this.writer = null;
     this.options.sessionDidReset?.();
@@ -131,7 +137,7 @@ export class TerminalInputController implements TerminalInputPort {
   }
 
   sessionDidBecomeLive(generation: InputSessionGeneration): void {
-    if (generation !== this.liveGeneration) return;
+    if (generation !== this.liveSession) return;
     this.readyGeneration = generation;
     const text = this.heldInsertion;
     this.heldInsertion = '';
@@ -141,6 +147,11 @@ export class TerminalInputController implements TerminalInputPort {
   private emit(data: Uint8Array, source: OutgoingSource): void {
     this.options.observeOutgoing?.(data, source);
     this.writer?.write(data);
+  }
+
+  /** A Composer `agent.prompt` delivery; one made against an earlier session is dropped. */
+  recordSubmitted(text: string, generation: InputSessionGeneration): void {
+    if (generation === this.liveSession) this.options.observeSubmitted?.(text);
   }
 
   /** Sends ordinary terminal bytes; false when empty or no live session. */
@@ -186,7 +197,7 @@ export class TerminalInputController implements TerminalInputPort {
    */
   insertReferenceWhenLive(text: string): boolean {
     if (!text || hasControlOrNewline(text)) return false;
-    if (this.readyGeneration !== null && this.readyGeneration === this.liveGeneration) {
+    if (this.readyGeneration !== null && this.readyGeneration === this.liveSession) {
       return this.insertSnippet(text, false);
     }
     this.heldInsertion += text;
