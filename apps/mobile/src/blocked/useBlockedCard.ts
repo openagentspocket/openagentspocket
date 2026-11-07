@@ -7,6 +7,7 @@ import {
   type ConsoleRow,
   type ObservedActivity,
   programIdentity,
+  type TranscriptCalls,
 } from '@openagentspocket/core';
 import { herdrScreenIO, isBlockedPaneApi, systemClock } from '@openagentspocket/transport';
 import { useEffect, useMemo, useSyncExternalStore } from 'react';
@@ -40,16 +41,21 @@ export interface BlockedCardHandle {
 }
 
 /**
- * The Blocked card store for one Agent while its detail shows: watches the pane while the Agent
- * is Blocked, and ends with the view. Null for a program without a card.
+ * The Blocked card store for one Agent while its Chat shows: watches the pane while the Agent is
+ * Blocked or the conversation shows a question open, and ends with the view. Null for a program
+ * without a card.
  */
-export function useBlockedCard(row: ConsoleRow): BlockedCardHandle | null {
+export function useBlockedCard(
+  row: ConsoleRow,
+  active: boolean,
+  calls: TranscriptCalls,
+): BlockedCardHandle | null {
   const consoleStore = useConsoleStore();
   const { hostId } = row;
   const paneId = row.agent.pane_id;
   const program = chatProgramOf(row);
   const store = useMemo(() => {
-    if (!program) return null;
+    if (!program || !active) return null;
     const io = herdrScreenIO(paneId, (operation) =>
       consoleStore.withTransport(hostId, async (transport) => {
         if (!isBlockedPaneApi(transport)) throw new Error('This Host cannot read panes.');
@@ -57,11 +63,14 @@ export function useBlockedCard(row: ConsoleRow): BlockedCardHandle | null {
       }),
     );
     return new BlockedCardStore({ program, io, clock: systemClock });
-  }, [consoleStore, hostId, paneId, program]);
+  }, [consoleStore, hostId, paneId, program, active]);
   const activity = activityOf(row);
   useEffect(() => {
     store?.setActivity(activity);
   }, [store, activity]);
+  useEffect(() => {
+    store?.setCalls(calls);
+  }, [store, calls]);
   useEffect(() => {
     store?.show();
     return () => store?.end();

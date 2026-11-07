@@ -9,5 +9,4 @@ export const claudeSupport: BlockedProgramSupport = {
     refusesWhileCursorInField: true,
     confirmation: { kind: 'fingerprintChange' },
   },
-  readsScreenWhenIdleWithOpenQuestion: true,
 };

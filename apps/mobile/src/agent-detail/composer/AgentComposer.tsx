@@ -6,6 +6,7 @@ import {
   ESCAPE_WAIT,
   matchingSkills,
   primaryControl,
+  refusalSuggestsTerminal,
   refusalText,
   terminalPolicy,
 } from '@openagentspocket/core';
@@ -26,6 +27,7 @@ import { StagingStatusBar } from '@/features/composer-tools/StagingStatusBar';
 import { useAgentSkills } from '@/features/composer-tools/useAgentSkills';
 import { useSetting } from '@/settings/SettingsProvider';
 import { renderMessage } from '@/usage/usageText';
+import { useShownStatus } from '../../blocked/BlockedCardProvider';
 import { agentBarLabels } from '../agentBarLabels';
 import { useDetailUi } from '../detailUi';
 import type { Surface } from '../surface';
@@ -126,6 +128,13 @@ export function AgentComposerBar({
     snapshot.notice && snapshot.notice.route === surface
       ? refusalText(snapshot.notice.refusal)
       : undefined;
+  // Chat refused and only a Terminal can be sure to do it: the way there goes with the words.
+  const refused = snapshot.notice?.refusal;
+  const offersTerminal =
+    surface === 'chat' &&
+    refused !== undefined &&
+    (refused.kind === 'agentBlocked' || refusalSuggestsTerminal(refused));
+  const shownStatus = useShownStatus(status ?? 'idle');
   const stopNotice = store.stop.notice;
   const failed = snapshot.messages.filter(
     (message) => message.state.kind === 'failed' && message.route === surface,
@@ -164,6 +173,8 @@ export function AgentComposerBar({
         <Banner
           tone="warning"
           title={'key' in notice ? renderMessage({ key: notice.key }) : notice.plain}
+          actionLabel={offersTerminal ? t('Show Terminal') : undefined}
+          onAction={offersTerminal ? onToggleSurface : undefined}
           testID="composer-notice"
         />
       ) : null}
@@ -220,7 +231,7 @@ export function AgentComposerBar({
             accessibilityLabel={surface === 'chat' ? t('Show Terminal') : t('Show Chat')}
             testID="surface-toggle"
           >
-            <ProgramMark program={program} status={status} size={26} />
+            <ProgramMark program={program} status={status && shownStatus} size={26} />
           </Tappable>
         }
         surfaceIcon={surface === 'chat' ? 'chat' : 'terminal'}

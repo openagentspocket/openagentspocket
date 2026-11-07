@@ -37,8 +37,6 @@ export interface BlockedProgramSupport {
     /** What shows the press worked. */
     readonly confirmation: ConfirmationRule;
   };
-  /** The card keeps reading the screen while the Agent is idle with a question still open. */
-  readonly readsScreenWhenIdleWithOpenQuestion?: boolean;
 }
 
 /** Programs registered at run time, over their definition (tests). */

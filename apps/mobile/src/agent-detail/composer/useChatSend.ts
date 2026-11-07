@@ -97,6 +97,7 @@ export function useChatSend(input: {
       sendConcern: (outgoing, screen) => conversation?.sendConcern(outgoing, screen) ?? null,
       // The send's witness mark is on its way before the screen read.
       willReadScreen: () => conversation?.updateSends(sentMessages(messagesRef.current, rules)),
+      questionOpen: () => (conversation?.getState().snapshot.openQuestions.length ?? 0) > 0,
     });
     return {
       ...checked,

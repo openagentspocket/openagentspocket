@@ -30,6 +30,7 @@ function setup(
     confirmSession?: () => Promise<string | null>;
     sendConcern?: (text: string, screen: AnsiScreen) => string | null;
     willReadScreen?: () => void;
+    questionOpen?: () => boolean;
   } = {},
 ) {
   const reads = { count: 0 };
@@ -46,6 +47,7 @@ function setup(
     confirmSession: options.confirmSession,
     sendConcern: options.sendConcern,
     willReadScreen: options.willReadScreen,
+    questionOpen: options.questionOpen,
   });
   return { delivery, reads, clock };
 }
@@ -53,6 +55,23 @@ function setup(
 describe('Chat delivery policy', () => {
   it('lets the message go into an empty input box', async () => {
     const { delivery } = setup({ screen: () => loadScreen('codex-00-ready') });
+    expect(await delivery.preflight?.('hello')).toBeUndefined();
+  });
+
+  it('says an open question waits for an answer, even when herdr reports idle', async () => {
+    const { delivery } = setup({
+      program: claude,
+      screen: () => loadScreen('claude-39-c8-phone-question-titled-rule'),
+      questionOpen: () => true,
+    });
+    expect(await delivery.preflight?.('hello')).toEqual({ kind: 'agentBlocked' });
+  });
+
+  it('keeps sending into an empty box when the open question is no longer on screen', async () => {
+    const { delivery } = setup({
+      screen: () => loadScreen('codex-00-ready'),
+      questionOpen: () => true,
+    });
     expect(await delivery.preflight?.('hello')).toBeUndefined();
   });
 

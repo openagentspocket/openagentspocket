@@ -13,6 +13,7 @@ import type { ConversationReference } from '../model/conversation-reference';
 import { sameConversationHeads, TranscriptFollower } from '../model/follower';
 import { type ChatHostFiles, readBytes, readFirstLine } from '../model/host-files';
 import { type ChatLine, frameLines } from '../model/lines';
+import { openQuestions } from '../model/open-questions';
 import type { ChatTranscriptReducer } from '../model/reducer';
 import { ChatSourceUnavailable, type ChatTranscriptSource } from '../model/source';
 import { carryBackgroundWork } from '../model/transcript';
@@ -319,8 +320,12 @@ export abstract class ChatEngineBase {
       reachedStart = true;
     }
     if (transcript.links.relocatedCwd) this.relocatedDirectory = transcript.links.relocatedCwd;
+    const asked = openQuestions(transcript, (activity) =>
+      reducer.transcript({ ...this.context, activity, windowStart }),
+    );
     this.update((next) => {
       next.transcript = transcript;
+      next.openQuestions = asked;
       if (reachedStart) next.older = { type: 'reachedStart' };
       else if (next.older.type !== 'failed') next.older = { type: 'available' };
       next.readOffset = source.readOffset;

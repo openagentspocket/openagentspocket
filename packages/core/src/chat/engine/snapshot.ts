@@ -2,7 +2,7 @@
 // Reasons are data (`timeline/reasons`): the UI words them.
 
 import type { TransportError } from '../../errors';
-import { type ChatTranscript, emptyTranscript } from '../model/types';
+import { type ChatPendingRequest, type ChatTranscript, emptyTranscript } from '../model/types';
 import type { ChatUnavailableReason } from '../timeline/reasons';
 
 export type ChatPhase =
@@ -21,6 +21,8 @@ export type ChatConversationOlder =
 export interface ChatConversationSnapshot {
   phase: ChatPhase;
   transcript: ChatTranscript;
+  /** The questions waiting for the user's answer, also while herdr reports the Agent idle. */
+  openQuestions: ChatPendingRequest[];
   /** Every entry shown comes from the device: the Host has not confirmed them on this visit. */
   isFromCache: boolean;
   older: ChatConversationOlder;
@@ -43,6 +45,7 @@ export function initialSnapshot(): ChatConversationSnapshot {
   return {
     phase: { type: 'locating' },
     transcript: emptyTranscript(),
+    openQuestions: [],
     isFromCache: false,
     older: { type: 'reachedStart' },
     olderAwaitsUser: false,

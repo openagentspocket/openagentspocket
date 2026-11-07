@@ -40,6 +40,12 @@ export function loadScreen(stem: string): AnsiScreen {
   return decodeAnsiScreen(readFileSync(`${GOLDENS}${program}/screens/${stem}.ansi`, 'utf8'));
 }
 
+/** The raw ANSI of one capture by stem. */
+export function goldenAnsi(stem: string): string {
+  const program = PROGRAMS.find((candidate) => stem.startsWith(`${candidate}-`)) ?? 'claude';
+  return readFileSync(`${GOLDENS}${program}/screens/${stem}.ansi`, 'utf8');
+}
+
 export function screenFixtures(program: GoldenProgram): ScreenFixture[] {
   const directory = `${GOLDENS}${program}/screens/`;
   return readdirSync(directory)

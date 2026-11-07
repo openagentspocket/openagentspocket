@@ -75,6 +75,10 @@ export function optionKind(option: DialogOption): 'primary' | 'secondary' | 'des
   return 'secondary';
 }
 
+/** Matches the planner: only Claude's multi-select takes a set; Oh My Pi's stay in the terminal. */
+export const isMultiSelect = (dialog: BlockedDialog): boolean =>
+  dialog.kind === 'claudeQuestion' && dialog.options.some((option) => option.role === 'next');
+
 /** Options a tap can send; a text option needs typing, which the terminal does. */
 export const isTappable = (option: DialogOption): boolean =>
   option.role !== 'otherText' && option.input === null;

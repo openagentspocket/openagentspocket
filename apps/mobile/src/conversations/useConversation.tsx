@@ -64,21 +64,25 @@ export interface ConversationHandle {
 }
 
 /**
- * The conversation of one Agent for the chat UI: follows it while the component is mounted (the
- * store reads the Host, saves on unmount) and re-renders on every change.
+ * The conversation of one Agent for the chat UI: follows it while the component is mounted and
+ * `follows` holds (the store reads the Host, saves on unmount) and re-renders on every change.
  */
-export function useConversation(hostId: string, paneId: string): ConversationHandle {
+export function useConversation(
+  hostId: string,
+  paneId: string,
+  follows = true,
+): ConversationHandle {
   const registry = useContext(RegistryContext);
   const store: ConversationStore | null = useMemo(
     () => registry?.get(hostId, paneId) ?? null,
     [registry, hostId, paneId],
   );
   useEffect(() => {
-    if (!store) return;
+    if (!store || !follows) return;
     const viewer = Symbol('conversation-view');
     store.show(viewer);
     return () => store.hide(viewer);
-  }, [store]);
+  }, [store, follows]);
   const state = useSyncExternalStore(
     store?.subscribe ?? inertSubscribe,
     store?.getState ?? inertState$,

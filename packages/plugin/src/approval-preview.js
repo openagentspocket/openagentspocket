@@ -42,6 +42,10 @@ export const OPTIONS_LIMIT = 4;
 const OPTION_ROW = /^(\s*)(?:[❯›>]\s*)?(\d{1,2})\.\s+(\S.*)$/u;
 // A full-width rule or a box corner: the edge of a dialog or a panel.
 const EDGE_ROW = /^\s*(?:─{3,}|[╭╰┌└].*)\s*$/u;
+// A row a frame opens: never text of the option above it.
+const FRAME_ROW = /^\s*[│┃├┤╭╮╰╯┌┐└┘─╌]/u;
+// A bar down the left of a command, which is no part of it.
+const GUTTER = /^│\s+/u;
 // Claude's dashed separators around a command or a diff.
 const SEPARATOR_ROW = /^\s*╌{3,}\s*$/u;
 // Transcript rows above a dialog: tool calls, results, spinners, Codex's
@@ -69,6 +73,9 @@ const WRITE_PROMPT = /\bDo you want to (?:make this edit to|create|overwrite)\b|
 // Invisible format characters: bidi overrides and isolates, zero-width marks.
 const FORMAT_CHARACTER = /\p{Cf}/u;
 
+// How far left of its column a panel's bar may show, for wide characters before it.
+const WIDE_SLACK = 8;
+
 const graphemes = new Intl.Segmenter("en", { granularity: "grapheme" });
 
 /** Collapse runs of whitespace into single spaces and trim. */
@@ -95,6 +102,47 @@ function cut(text, limit) {
 function labelText(raw) {
   const withoutDetail = collapse(raw).split(" · ")[0];
   return withoutDetail.replace(KEY_HINT, "").trim();
+}
+
+/**
+ * The screen without the panel a program draws beside its dialogs (Claude
+ * Code's context panel), as the app's parsers read it: a `│` that runs through
+ * every option row at one column, which an option's own text never does, ends
+ * every row it runs through. A wide character before it takes one index for
+ * two cells, so a row may show the bar a little to the left.
+ */
+function withoutSidePanel(lines) {
+  let start = lines.length - 1;
+  while (start >= 0 && OPTION_ROW.exec(lines[start])?.[2] !== "1") start -= 1;
+  if (start < 0) return lines;
+  const options = [start];
+  for (let index = start + 1; index < lines.length; index += 1) {
+    if (Number(OPTION_ROW.exec(lines[index])?.[2]) === options.length + 1) options.push(index);
+  }
+  if (options.length < 2) return lines;
+  const barBefore = (line, column) => {
+    const characters = [...line];
+    for (let at = column; at >= Math.max(0, column - WIDE_SLACK); at -= 1) {
+      if (characters[at] === "│") return at;
+    }
+    return -1;
+  };
+  const first = [...lines[start]];
+  const column = first.findIndex(
+    (character, at) =>
+      character === "│" && options.every((index) => barBefore(lines[index], at) >= 0),
+  );
+  if (column < 0) return lines;
+  const cropped = [...lines];
+  const crop = (index) => {
+    const at = barBefore(lines[index] ?? "", column);
+    if (at < 0) return false;
+    cropped[index] = [...lines[index]].slice(0, at).join("").trimEnd();
+    return true;
+  };
+  for (let index = start; index >= 0 && crop(index); index -= 1);
+  for (let index = start + 1; index < lines.length && crop(index); index += 1);
+  return cropped;
 }
 
 /**
@@ -131,12 +179,12 @@ function optionsBlock(lines) {
       // Claude rules off a question's last rows (`Chat about this`); the
       // numbering carries on under the rule.
       const after = OPTION_ROW.exec(lines[index + 1] ?? "");
-      if (EDGE_ROW.test(line) && after !== null && Number(after[2]) === next) continue;
+      if (FRAME_ROW.test(line) && after !== null && Number(after[2]) === next) continue;
       const indent = line.length - line.trimStart().length;
       // A wrapped label continues under its first character and a
       // description sits under it or further right; anything else (a blank
       // row, a rule, the footer) ends the block.
-      if (line.trim() === "" || EDGE_ROW.test(line) || indent < column) break;
+      if (line.trim() === "" || FRAME_ROW.test(line) || indent < column) break;
       if (indent === column && wraps(lines[index - 1], line)) current += ` ${line.trim()}`;
     }
     labels.push(current);
@@ -166,7 +214,10 @@ function promptAbove(lines, start) {
     current.unshift(line.trim());
   }
   if (current.length > 0 && paragraphs.length < 2) paragraphs.push(current);
-  return collapse(paragraphs.reverse().flat().join(" "));
+  const unframed = paragraphs.map((rows) =>
+    rows.every((row) => GUTTER.test(row)) ? rows.map((row) => row.replace(GUTTER, "")) : rows,
+  );
+  return collapse(unframed.reverse().flat().join(" "));
 }
 
 /**
@@ -179,7 +230,7 @@ function promptAbove(lines, start) {
  */
 export function extractApprovalPreview(screenText) {
   if (typeof screenText !== "string") return null;
-  const lines = screenText.split(/\r?\n/u).map((line) => line.trimEnd());
+  const lines = withoutSidePanel(screenText.split(/\r?\n/u).map((line) => line.trimEnd()));
   const block = optionsBlock(lines);
   if (block === null) return null;
   const q = promptAbove(lines, block.start);

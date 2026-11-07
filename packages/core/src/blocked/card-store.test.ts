@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { ChatProgram } from '../chat/model/types';
 import { FakeClock } from '../hosts/cancellation';
 import { BlockedCardStore } from './card-store';
-import type { BlockedScreenIO } from './card-support';
+import { type BlockedScreenIO, DEFAULT_TIMING } from './card-support';
 import { loadScreen } from './golden-fixtures.testkit';
 import type { AnsiScreen } from './screen';
 
@@ -226,6 +226,109 @@ describe('BlockedCardStore', () => {
     store.setCalls({ waiting: new Set(), resolved: new Set(), openQuestion: true });
     await store.refresh();
     expect(store.getState().content.kind).toBe('card');
+  });
+
+  it.each([
+    ['claude', 'claude-39-c8-phone-question-titled-rule'],
+    ['codex', 'codex-16-x7-phone-question-pointed'],
+    ['omp', 'omp-27-ask-a-dialog'],
+    ['grok', 'grok-15-question'],
+    ['opencode', 'opencode-13-question-180'],
+  ] as const)(
+    'stands on an idle %s question the conversation shows open',
+    async (program, stem) => {
+      const { store } = setup(stem, program);
+      store.setActivity('idle');
+      store.setCalls({ waiting: new Set(), resolved: new Set(), openQuestion: true });
+      await store.refresh();
+      expect(store.getState().content.kind).toBe('card');
+    },
+  );
+
+  it('reads no screen for an idle Agent with no question open', async () => {
+    const { store, pane } = setup('claude-39-c8-phone-question-titled-rule');
+    let reads = 0;
+    const read = pane.readScreen.bind(pane);
+    pane.readScreen = () => {
+      reads += 1;
+      return read();
+    };
+    store.setActivity('idle');
+    await store.refresh();
+    expect(reads).toBe(0);
+    expect(store.getState().content.kind).toBe('none');
+  });
+
+  it('says a question it cannot read only after a moment, and offers no keys for it', async () => {
+    const { store, clock } = setup(AFTER);
+    store.setActivity('idle');
+    store.setCalls({ waiting: new Set(), resolved: new Set(), openQuestion: true });
+    await store.refresh();
+    expect(store.getState().content.kind).toBe('none');
+    await clock.advance(DEFAULT_TIMING.unreadableAfterMs + 1);
+    await store.refresh();
+    expect(store.getState().content.kind).toBe('questionUnread');
+    store.setCalls({ waiting: new Set(), resolved: new Set(), openQuestion: false });
+    expect(store.getState().content.kind).toBe('none');
+  });
+
+  it('does not call a question unread while the Agent works', async () => {
+    const { store, clock } = setup(AFTER);
+    store.setActivity('working');
+    store.setCalls({ waiting: new Set(), resolved: new Set(), openQuestion: true });
+    await clock.advance(DEFAULT_TIMING.unreadableAfterMs + 1);
+    await store.refresh();
+    expect(store.getState().content.kind).toBe('none');
+  });
+
+  it('takes no idle status as the effect of an answer that started idle', async () => {
+    const { store, clock, pane } = setup('opencode-13-question-180', 'opencode');
+    store.setActivity('idle');
+    store.setCalls({ waiting: new Set(), resolved: new Set(), openQuestion: true });
+    await store.refresh();
+    await withTime(clock, store.perform({ kind: 'choose', ordinal: 1 }));
+    expect(store.getState().progress).toBe('unconfirmed');
+    const sent = pane.keys.length;
+    await withTime(clock, store.perform({ kind: 'choose', ordinal: 1 }));
+    expect(pane.keys).toHaveLength(sent);
+  });
+
+  it('answers an idle question with the planned key, once, and the card goes', async () => {
+    const stem = 'claude-39-c8-phone-question-titled-rule';
+    const { store, clock, pane } = setup(stem);
+    store.setActivity('idle');
+    store.setCalls({ waiting: new Set(['q']), resolved: new Set(), openQuestion: true });
+    await store.refresh();
+    pane.react('1', AFTER);
+    await withTime(clock, store.perform({ kind: 'choose', ordinal: 1 }));
+    expect(pane.keys).toEqual([['1']]);
+    expect(store.getState().progress).toBe('ready');
+    store.setCalls({ waiting: new Set(), resolved: new Set(['q']) });
+    expect(store.getState().content.kind).toBe('none');
+  });
+
+  it('submits an idle multi-select question as a set and moves on to the next page', async () => {
+    const { store, clock, pane } = setup('claude-10-c4-focus-next');
+    store.setActivity('idle');
+    store.setCalls({ waiting: new Set(), resolved: new Set(), openQuestion: true });
+    await store.refresh();
+    pane.react('enter', 'claude-11-c4-q2');
+    await withTime(clock, store.perform({ kind: 'submitSelection', ordinals: [1, 3] }));
+    expect(pane.keys).toEqual([['enter']]);
+    expect(store.getState().progress).toBe('ready');
+    const { content } = store.getState();
+    if (content.kind !== 'card') throw new Error('expected a card');
+    expect(content.dialog.progress).toBe('Size');
+  });
+
+  it('stops at the first toggle the screen does not show', async () => {
+    const { store, clock, pane } = setup('claude-08-c4-auq-q1');
+    store.setActivity('idle');
+    store.setCalls({ waiting: new Set(), resolved: new Set(), openQuestion: true });
+    await store.refresh();
+    await withTime(clock, store.perform({ kind: 'submitSelection', ordinals: [1, 2] }));
+    expect(pane.keys).toEqual([['1']]);
+    expect(store.getState().notice).not.toBeNull();
   });
 
   it('unfolds a collapsed card when another dialog shows', async () => {

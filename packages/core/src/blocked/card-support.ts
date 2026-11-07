@@ -47,7 +47,9 @@ export type CardContent =
   /** Something dialog-like the parsers could not name or trust: rows verbatim, a button per number. */
   | { readonly kind: 'generic'; readonly excerpt: GenericDialogExcerpt }
   /** The Agent is Blocked but its screen shows no dialog the app recognizes. */
-  | { readonly kind: 'unreadable' };
+  | { readonly kind: 'unreadable' }
+  /** The conversation shows a question while herdr reports idle, and no read shows it: no keys go. */
+  | { readonly kind: 'questionUnread' };
 
 export type CardProgress =
   /** Controls answer. */
@@ -68,6 +70,24 @@ export interface BlockedCardState {
   readonly dialogGeneration: number;
   /** Folded to a bar; a new dialog unfolds it. */
   readonly isCollapsed: boolean;
+}
+
+/** Where an open question gets its answer: nowhere yet, the card, or only the terminal. */
+export type QuestionWait = 'none' | 'card' | 'terminal';
+
+/** `content` is the card's, or null for a program without a card. */
+export function questionWait(openQuestion: boolean, content: CardContent | null): QuestionWait {
+  if (!openQuestion) return 'none';
+  switch (content?.kind) {
+    case 'none':
+      return 'none';
+    case 'card':
+      return 'card';
+    case 'generic':
+      return content.excerpt.numbered.size > 0 ? 'card' : 'terminal';
+    default:
+      return 'terminal';
+  }
 }
 
 export const INITIAL_CARD_STATE: BlockedCardState = {

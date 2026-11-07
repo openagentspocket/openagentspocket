@@ -9,6 +9,7 @@ import {
   trimBlanks,
   trimmedText,
 } from './screen';
+import { withoutGutter } from './side-panel';
 import type { ReviewAnswer } from './types';
 
 export interface TitleRow {
@@ -85,7 +86,7 @@ export class ClaudeRegions {
     for (let at = open + 1; at < close; at += 1) content.push(tools.at(at));
     return {
       before: tools.paragraphs(index, open),
-      content,
+      content: [...withoutGutter(content)],
       after: close < end ? tools.paragraphs(close + 1, end) : [],
     };
   }

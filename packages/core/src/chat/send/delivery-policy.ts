@@ -26,6 +26,8 @@ export interface ChatDeliveryDeps {
   readonly confirmSession?: () => Promise<string | null>;
   /** Gets the text as sent and the screen the box passed on; may hold the message for what Chat knows beyond the box. */
   readonly sendConcern?: (outgoing: string, screen: AnsiScreen) => string | null;
+  /** The conversation shows a question waiting for an answer, whatever herdr reports. */
+  readonly questionOpen?: () => boolean;
   /** Runs just before the first read, once the Agent is not Blocked. */
   readonly willReadScreen?: () => void;
   /** Times the check after the send. */
@@ -71,7 +73,10 @@ export function chatDeliveryPolicy(
         case 'holdBlocked':
           return { kind: 'agentBlocked' };
         case 'hold':
-          return notReady(holdReason(decision.state, policy));
+          // The box is away and a question is open: Chat answers it, the terminal need not.
+          return deps.questionOpen?.()
+            ? { kind: 'agentBlocked' }
+            : notReady(holdReason(decision.state, policy));
       }
     },
     verify: async (sent) => {

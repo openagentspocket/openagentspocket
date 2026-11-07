@@ -1,6 +1,5 @@
 import type { Text } from '../errors/text';
-import { sleep } from '../events/clock';
-import { CardBase, type Watcher } from './card-base';
+import { CardBase } from './card-base';
 import {
   CARD_WORDS,
   type CardContent,
@@ -16,8 +15,14 @@ import {
   expectationMet,
   type ObservedActivity,
 } from './observation';
-import type { DialogAction, DialogActionPlan, DialogStep, PlanResult } from './plan-types';
-import { blockedSupportFor, planDialogAction, planGenericOption } from './programs';
+import type {
+  ConfirmationRule,
+  DialogAction,
+  DialogActionPlan,
+  DialogStep,
+  PlanResult,
+} from './plan-types';
+import { planDialogAction, planGenericOption } from './programs';
 import { type BlockedDialog, resultDialog, resultFingerprint } from './types';
 
 /**
@@ -33,9 +38,6 @@ import { type BlockedDialog, resultDialog, resultFingerprint } from './types';
 export class BlockedCardStore extends CardBase {
   private openQuestion = false;
   private waiting: ReadonlySet<string> = new Set();
-  private visible = false;
-  private suspended = false;
-  private watcher: Watcher | null = null;
   private unconfirmed: DialogFingerprint | null = null;
   private firstSeen: { fingerprint: DialogFingerprint; at: number } | null = null;
   private degraded: { fingerprint: DialogFingerprint; reason: Text } | null = null;
@@ -47,26 +49,6 @@ export class BlockedCardStore extends CardBase {
   }
 
   // Inputs
-
-  show(): void {
-    this.visible = true;
-    this.updateWatching();
-  }
-
-  hide(): void {
-    this.visible = false;
-    this.updateWatching();
-  }
-
-  suspend(): void {
-    this.suspended = true;
-    this.updateWatching();
-  }
-
-  resume(): void {
-    this.suspended = false;
-    this.updateWatching();
-  }
 
   /** The Agent or its Host is gone. */
   end(): void {
@@ -91,7 +73,8 @@ export class BlockedCardStore extends CardBase {
 
   /**
    * The transcript as last read: the ids of calls waiting for approval, those whose results show,
-   * and whether Claude has an open AskUserQuestion call (herdr reports some of its screens idle).
+   * and whether a question is open. herdr can report an Agent idle over one, so an open question
+   * reads the screen as Blocked does; only a dialog read there offers anything.
    */
   setCalls(calls: {
     waiting: ReadonlySet<string>;
@@ -100,7 +83,9 @@ export class BlockedCardStore extends CardBase {
   }): void {
     const before = this.waiting;
     this.waiting = calls.waiting;
-    this.openQuestion = calls.openQuestion ?? false;
+    const openQuestion = calls.openQuestion ?? false;
+    if (openQuestion && !this.openQuestion) this.quietSince = this.now();
+    this.openQuestion = openQuestion;
     // Two identical dialogs in a row look unchanged on screen, so an answer that showed no effect
     // took once a call that waited resolves. A call that only starts waiting proves nothing.
     if (this.state.progress === 'unconfirmed') {
@@ -128,10 +113,8 @@ export class BlockedCardStore extends CardBase {
     return this.state.progress === 'acting';
   }
 
-  private get readsScreen(): boolean {
-    if (this.activity === 'blocked') return true;
-    const watches = blockedSupportFor(this.options.program)?.readsScreenWhenIdleWithOpenQuestion;
-    return watches === true && this.activity === 'idle' && this.openQuestion;
+  protected get readsScreen(): boolean {
+    return this.activity === 'blocked' || this.openQuestion;
   }
 
   // Actions
@@ -186,37 +169,13 @@ export class BlockedCardStore extends CardBase {
 
   // Watching
 
-  private updateWatching(): void {
-    const should = this.visible && !this.suspended && this.readsScreen;
-    if (should && !this.watcher) {
-      const watcher: Watcher = { stopped: false, nap: null };
-      this.watcher = watcher;
-      void this.watch(watcher);
-    } else if (!should && this.watcher) {
-      this.watcher.stopped = true;
-      this.watcher.nap?.cancel();
-      this.watcher = null;
-    }
-  }
-
-  private async watch(watcher: Watcher): Promise<void> {
-    while (!watcher.stopped) {
-      await this.refresh();
-      if (watcher.stopped) return;
-      watcher.nap = sleep(this.options.clock, this.timing.watchMs);
-      await watcher.nap.done;
-    }
-  }
-
   /** One watch read; an action in flight reads for itself. */
   async refresh(): Promise<void> {
     if (this.isActing || !this.readsScreen) return;
     const observation = await this.observe();
     if (this.isActing || !this.readsScreen) return;
     if (!observation) {
-      if (this.activity === 'blocked' && this.state.content.kind === 'none' && !this.isQuiet) {
-        this.patch({ content: { kind: 'unreadable' } });
-      }
+      if (this.state.content.kind === 'none') this.patch({ content: this.noDialogContent });
       return;
     }
     this.releaseIfChanged(observation);
@@ -251,9 +210,10 @@ export class BlockedCardStore extends CardBase {
     if (!now || !fingerprintsMatch(now, shown)) return this.finish(CARD_WORDS.changed);
     const planned = planner(fresh);
     if (!planned.ok) return this.finish(planErrorText(planned.error));
+    const wasBlocked = this.activity === 'blocked';
     await this.waitOutGrace(shown, resultDialog(fresh.result)?.kind);
     if (!(await this.send(planned.plan.steps, shown))) return false;
-    return this.confirm(planned.plan, shown);
+    return this.confirm(planned.plan, shown, wasBlocked);
   }
 
   /** Sends `steps`, checking each expectation before the next step; false when it stopped. */
@@ -285,10 +245,21 @@ export class BlockedCardStore extends CardBase {
     return true;
   }
 
-  /** Watches for the plan's effect on the dialog with `fingerprint`, and says whether it showed. */
-  private async confirm(plan: DialogActionPlan, fingerprint: DialogFingerprint): Promise<boolean> {
+  /**
+   * Watches for the plan's effect on the dialog with `fingerprint`, and says whether it showed.
+   * Leaving Blocked shows nothing for an answer sent while herdr did not report Blocked.
+   */
+  private async confirm(
+    plan: DialogActionPlan,
+    fingerprint: DialogFingerprint,
+    wasBlocked: boolean,
+  ): Promise<boolean> {
+    const rule: ConfirmationRule =
+      !wasBlocked && plan.confirmation.kind === 'fingerprintChangeOrUnblocked'
+        ? { kind: 'fingerprintChange' }
+        : plan.confirmation;
     const confirmation = await this.poll(this.timing.confirmationWindowMs, (observation) =>
-      confirmationMet(plan.confirmation, observation, fingerprint),
+      confirmationMet(rule, observation, fingerprint),
     );
     const confirmed = confirmation.last;
     if (!confirmation.isMet || !confirmed) {
@@ -381,8 +352,15 @@ export class BlockedCardStore extends CardBase {
       return { kind: 'card', dialog: result.dialog };
     }
     if (result.kind === 'unrecognized') return { kind: 'generic', excerpt: result.excerpt };
-    return observation.activity === 'blocked' && !this.isQuiet
-      ? { kind: 'unreadable' }
+    return this.noDialogContent;
+  }
+
+  /** What stands when no read shows a dialog, once the moment it may be drawing has passed. */
+  private get noDialogContent(): CardContent {
+    if (this.isQuiet) return { kind: 'none' };
+    if (this.activity === 'blocked') return { kind: 'unreadable' };
+    return this.activity === 'idle' && this.openQuestion
+      ? { kind: 'questionUnread' }
       : { kind: 'none' };
   }
 

@@ -18,6 +18,8 @@ import {
 import { memo, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
+import { useAgentWait } from '../../blocked/BlockedCardProvider';
+import { ChatQuestionBlock } from './ChatQuestionBlock';
 import { ChatToolDetail } from './ChatToolDetail';
 import { durationText, echoStatus, rowToolStatus, toolIcon, toolStatusLabel } from './chatRowModel';
 
@@ -62,6 +64,7 @@ export const ChatRowView = memo(function ChatRowView({
   const { content } = row;
   const menu = useMemo(() => copyMenu(rowCopyText(content)), [content]);
   const copy = useRowMenu(menu);
+  const { openCalls } = useAgentWait();
   const body = () => {
     switch (content.type) {
       case 'user':
@@ -100,7 +103,11 @@ export const ChatRowView = memo(function ChatRowView({
         );
       case 'tool': {
         const agentId = content.tool.subagentAgentID;
-        const status = rowToolStatus(content.tool.status, content.tool.isNotUpdating);
+        // herdr can say idle over a question, and the row's status follows it: the wait decides.
+        const asking = content.tool.callID !== null && openCalls.has(content.tool.callID);
+        const status = asking
+          ? 'waiting'
+          : rowToolStatus(content.tool.status, content.tool.isNotUpdating);
         if (agentId !== null) {
           return (
             <ChatToolRow
@@ -123,15 +130,28 @@ export const ChatRowView = memo(function ChatRowView({
               icon: toolIcon(content.tool.kind),
               title: content.tool.subtitle ?? content.tool.title,
               status,
-              statusLabel: toolStatusLabel(content.tool),
+              statusLabel: asking ? t('Waiting') : toolStatusLabel(content.tool),
             }}
-            detail={<ChatToolDetail hostId={hostId} tool={content.tool} />}
-            expanded={open}
+            detail={
+              <>
+                {content.tool.questions.length > 0 ? (
+                  <ChatQuestionBlock
+                    questions={content.tool.questions}
+                    asking={asking}
+                    showsText={content.tool.questions.length > 1}
+                  />
+                ) : null}
+                <ChatToolDetail hostId={hostId} tool={content.tool} />
+              </>
+            }
+            expanded={open || asking}
             onToggle={() => setOpen(!open)}
             onLongPress={copy.onLongPress}
           />
         );
       }
+      case 'questions':
+        return <ChatQuestionBlock questions={content.questions} asking />;
       case 'toolGroup':
         return (
           <ChatToolRow
@@ -202,7 +222,7 @@ export const ChatRowView = memo(function ChatRowView({
   const node = body();
   if (!node) return null;
   // Bubbles and prose carry no inset of their own; the cards and disclosure rows do.
-  const inset = ['user', 'pending', 'assistant', 'plan'].includes(content.type);
+  const inset = ['user', 'pending', 'assistant', 'plan', 'questions'].includes(content.type);
   return (
     <View
       style={[
