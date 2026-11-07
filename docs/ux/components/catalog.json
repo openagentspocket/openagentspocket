@@ -832,11 +832,16 @@
       "variants": [
         "default|header (hand glyph, 'Bash command', chevron), description, code box, filled accent 'Yes', secondary option, red 'No', 'Add a Note'",
         "collapsed|single bar with the title and a chevron (no atlas crop)",
-        "question|form card with options and a text field (no atlas crop)"
+        "question|form card with options and a text field (no atlas crop)",
+        "generic|the Agent's screen as a mono box with its numbered answers (no atlas crop)",
+        "unreadable|a sentence and raw key buttons (no atlas crop)"
       ],
-      "interactions": "option tap sends the key and haptics; chevron collapses; Add a Note opens a text field; rule warning line under rules",
-      "rnToday": ["apps/mobile/src/blocked/BlockedCard.tsx"],
-      "props": "{ prompt: BlockedPrompt (title, description, code?, options[], warning?), onChoose, onNote, collapsed }",
+      "interactions": "option tap sends the key; chevron collapses; Add a Note opens a text field; rule warning line under rules",
+      "rnToday": [
+        "packages/ui/src/components/BlockedCard.tsx",
+        "apps/mobile/src/blocked/BlockedCard.tsx"
+      ],
+      "props": "{ title, body: BlockedBody (prompt | excerpt | keys), disabled, collapsed, onToggleCollapsed, notice, labels }",
       "composes": ["Card", "Button", "Icon", "TextField", "Text"],
       "accept": [
         "card radius 20 over the composer area, hairline",
@@ -1023,12 +1028,17 @@
       "swift": [],
       "screens": ["usage.quick-sheet"],
       "variants": [
-        "default|label, 10-segment bar with a partial last segment, percent, time to reset"
+        "default|label, 10-segment bar with a partial last segment, percent, time to reset",
+        "meter|stacked: name and percent, Meter with the pace tick, reset and pace line",
+        "meterInline|one line: name, short Meter, percent, reset clock"
       ],
       "interactions": "none",
-      "rnToday": ["packages/ui/src/components/LimitWindowRow.tsx"],
-      "props": "{ label, usedShare, color, percentText, resetText }",
-      "composes": ["Text"],
+      "rnToday": [
+        "packages/ui/src/components/LimitWindowRow.tsx",
+        "apps/mobile/src/usage/LimitWindowRow.tsx"
+      ],
+      "props": "{ variant, label, usedShare, percentText, resetText; segmented: color; meter: paceShare, level, unknownText, paceText }",
+      "composes": ["Text", "Meter", "Icon"],
       "accept": [
         "segments fill left to right: whole ones, then one partial, track in the control token",
         "percent and reset right-aligned in tabular figures"
