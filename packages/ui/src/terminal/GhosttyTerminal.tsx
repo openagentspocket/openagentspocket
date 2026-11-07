@@ -1,3 +1,4 @@
+import { isWheelReport } from '@openagentspocket/core';
 import { toBase64, utf8Encode } from 'agentico-ssh';
 import { TerminalView as GhosttyView, type TerminalViewRef } from 'expo-libghostty';
 import { useEffect, useImperativeHandle, useMemo, useRef } from 'react';
@@ -51,7 +52,9 @@ export function GhosttyTerminal({ onInput, onResize, fontSize = 13, ref }: Termi
       style={{ flex: 1, backgroundColor: colors.background }}
       fontSize={fontSize}
       theme={colors}
-      onInput={({ nativeEvent }) => onInput?.(nativeEvent.text)}
+      onInput={({ nativeEvent }) => {
+        if (!isWheelReport(nativeEvent.text)) onInput?.(nativeEvent.text);
+      }}
       onResize={({ nativeEvent }) => onResize?.(nativeEvent.cols, nativeEvent.rows)}
     />
   );

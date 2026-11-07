@@ -1,4 +1,4 @@
-import { ScriptedTerminalSession, scriptedRunner } from '@openagentspocket/core';
+import { FakeClock, ScriptedTerminalSession, scriptedRunner } from '@openagentspocket/core';
 import { ThemeProvider, toast } from '@openagentspocket/ui';
 import { act, render, screen } from '@testing-library/react-native';
 import { utf8Encode } from 'agentico-ssh';
@@ -19,6 +19,7 @@ const wired = () => {
   const { runner } = scriptedRunner([async () => ({ session: remote, generation: 1 })]);
   const session = new AgentTerminalSession('p1', {
     runner,
+    clock: new FakeClock(),
     transportGeneration: () => 1,
     subscribe: () => () => undefined,
   });

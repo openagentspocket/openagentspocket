@@ -2,17 +2,20 @@ import {
   AgentMessageJump,
   type AgentMessageJumpDeps,
   AttachTerminalStore,
+  type Clock,
   type RecoveryDecision,
   TerminalInputController,
   TerminalKeyboardControl,
   TerminalMouseModes,
   TerminalRecoveryGenerationLatch,
   type TerminalSessionRunner,
+  TerminalTouchScroll,
 } from '@openagentspocket/core';
 
 /** What one Agent's terminal needs from its Host. */
 export interface TerminalHostPort {
   readonly runner: TerminalSessionRunner;
+  readonly clock: Clock;
   /** The newest ping-proven Transport generation the Host reported. */
   transportGeneration(): number;
   /** Fires whenever the Host's state (and so possibly its generation) changed. */
@@ -27,14 +30,20 @@ export interface TerminalHostPort {
  */
 export class AgentTerminalSession {
   readonly input = new TerminalInputController({
-    observeOutgoing: (data, source) => this.jump?.observeOutgoing(data, source),
+    observeOutgoing: (data, source) => {
+      this.touchScroll.halt();
+      this.jump?.observeOutgoing(data, source);
+    },
     observeSubmitted: (text) => this.jump?.recordSubmitted(text),
     sessionDidReset: () => {
       this.modes.reset();
+      this.touchScroll.modesDidChange();
       this.jump?.reset();
     },
   });
   readonly keyboard = new TerminalKeyboardControl({ send: (bytes) => this.input.send(bytes) });
+  /** A drag on the terminal; a Message Jump in flight gives way to it. */
+  readonly touchScroll: TerminalTouchScroll;
   private readonly modes = new TerminalMouseModes();
   private jump: AgentMessageJump | null = null;
   private current: AttachTerminalStore;
@@ -47,6 +56,14 @@ export class AgentTerminalSession {
     private readonly paneId: string,
     private readonly host: TerminalHostPort,
   ) {
+    this.touchScroll = new TerminalTouchScroll({
+      clock: host.clock,
+      modes: this.modes,
+      paneId,
+      grid: () => this.current.grid,
+      scroll: (sequence, rows) => this.input.scroll(sequence, rows),
+      didScroll: () => this.jump?.cancel(),
+    });
     this.current = this.makeStore();
     this.unsubscribeHost = host.subscribe(() => this.hostChanged());
   }
@@ -63,7 +80,10 @@ export class AgentTerminalSession {
       input: this.input,
       transportGeneration: this.host.transportGeneration(),
       runTerminal: this.host.runner,
-      observeOutput: (bytes) => this.modes.receive(bytes),
+      observeOutput: (bytes) => {
+        this.modes.receive(bytes);
+        this.touchScroll.modesDidChange();
+      },
       transportReady: (surfaceId, generation) =>
         this.apply(this.latch.recordAcquisition(generation, surfaceId)),
       runDidFinish: (surfaceId) => this.latch.clearBoundTo(surfaceId),
@@ -117,6 +137,7 @@ export class AgentTerminalSession {
     this.disposed = true;
     this.unsubscribeHost();
     this.latch.clear();
+    this.touchScroll.halt();
     await this.current.stop();
   }
 }

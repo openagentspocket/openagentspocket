@@ -18,13 +18,21 @@ export interface TerminalInputPort {
   ): void;
   /** Keystrokes from the view; dropped while no session is live. */
   send(data: Uint8Array): void;
+  /** Touch scrolling, lossy: the session coalesces and sheds it. */
+  scroll(sequence: Uint8Array, rows: number): void;
 }
 
 /** The plain input path: forwards to the live writer, drops otherwise. */
 export class PlainTerminalInput implements TerminalInputPort {
   private generation = 0;
-  private writer: { write(data: Uint8Array): void } | null = null;
+  private writer: {
+    write(data: Uint8Array): void;
+    scroll(sequence: Uint8Array, rows: number): void;
+  } | null = null;
   private live = false;
+
+  /** `didSend` sees each keystroke write, for whatever a key should interrupt. */
+  constructor(private readonly didSend?: () => void) {}
 
   beginSession(writer: {
     write(data: Uint8Array): void;
@@ -47,7 +55,12 @@ export class PlainTerminalInput implements TerminalInputPort {
   }
 
   send(data: Uint8Array): void {
+    this.didSend?.();
     if (this.writer) this.writer.write(data);
+  }
+
+  scroll(sequence: Uint8Array, rows: number): void {
+    if (rows > 0) this.writer?.scroll(sequence, rows);
   }
 
   get isLive(): boolean {

@@ -15,7 +15,7 @@ import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { View } from 'react-native';
 import { useSettings } from '@/settings/SettingsProvider';
-import { TerminalZoom } from '@/terminal/TerminalZoom';
+import { TerminalGestures } from '@/terminal/TerminalGestures';
 import { useDockSlot } from '../detailUi';
 import type { AgentTerminalSession } from './AgentTerminalSession';
 import { CONTROL_KEYS, FULL_KEYBOARD, type KeyRows, keyLabel } from './keyTables';
@@ -140,7 +140,7 @@ function LiveTerminal({
   return (
     <View style={{ flex: 1 }} testID="terminal-surface">
       <View style={{ flex: 1 }}>
-        <TerminalZoom>
+        <TerminalGestures touchScroll={session.touchScroll}>
           {(fontSize) => (
             <TerminalView
               key={terminal.snapshot.surfaceId}
@@ -151,7 +151,7 @@ function LiveTerminal({
               testID="terminal-slot"
             />
           )}
-        </TerminalZoom>
+        </TerminalGestures>
         <StatusOverlay status={terminal.snapshot.status} onRetry={store.retry.bind(store)} />
       </View>
       {dock ? <KeyboardDock rows={dock.rows} onKey={dockKey(dock)} testID="keys-dock" /> : null}

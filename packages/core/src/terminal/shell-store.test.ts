@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { FakeClock } from '../hosts/cancellation';
+import { utf8Encode } from '../pairing/bytes';
 import { eventually, identity, PoolProbe } from './pool.testkit';
 import { ShellTerminalStore } from './shell-store';
 
@@ -8,10 +10,26 @@ function make(probe: PoolProbe, generation: number | null = 1) {
     transportGeneration: generation,
     isOnStage: () => true,
     runTerminal: probe.runner(),
+    clock: new FakeClock(),
   });
 }
 
 describe('ShellTerminalStore', () => {
+  it('scrolls by wheel only while what runs in the shell tracks the mouse', async () => {
+    const probe = new PoolProbe();
+    const store = make(probe);
+    store.viewDidResize(80, 24);
+    await eventually(() => probe.sessions.length === 1);
+    expect(store.touchScroll.isActive()).toBe(false);
+    probe.sessions[0]?.emit(utf8Encode('\u001b[?1000h'));
+    await eventually(() => store.touchScroll.isActive());
+    store.touchScroll.drag(40, 16);
+    await eventually(() => probe.sessions[0]?.scrolls.length === 1);
+    expect(probe.sessions[0]?.scrolls).toEqual([2]);
+    store.transportGenerationDidChange(2);
+    await eventually(() => !store.touchScroll.isActive());
+  });
+
   it('attaches the remembered terminal id without takeover, never creating', async () => {
     const probe = new PoolProbe();
     const store = make(probe);

@@ -153,6 +153,7 @@ export class TerminalConnectionPool {
       takeover: false,
       isOnStage: () => lifetime.retained,
       runTerminal: options.runTerminal,
+      clock: this.clock,
     });
     const entry: InternalEntry = {
       store,

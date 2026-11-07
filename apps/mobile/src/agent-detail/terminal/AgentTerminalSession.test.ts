@@ -19,9 +19,11 @@ function setup(generations: number[]) {
     })),
   );
   let projected = generations[0] ?? 0;
+  const clock = new FakeClock();
   const listeners = new Set<() => void>();
   const session = new AgentTerminalSession('pane-1', {
     runner,
+    clock,
     transportGeneration: () => projected,
     subscribe: (listener) => {
       listeners.add(listener);
@@ -29,6 +31,7 @@ function setup(generations: number[]) {
     },
   });
   return {
+    clock,
     session,
     sessions,
     requests,
@@ -50,6 +53,43 @@ describe('AgentTerminalSession', () => {
     session.keyboard.toggleModifier('control');
     session.keyboard.typed('c');
     expect(sessions[0]?.sent.map((bytes) => [...bytes])).toEqual([[0x1b], [0x03]]);
+    await session.dispose();
+  });
+
+  it('sends a drag to a remote that tracks the mouse, and a key ends its flick', async () => {
+    const { clock, session, sessions } = setup([1]);
+    session.getStore().viewDidResize(80, 24);
+    await settle();
+    sessions[0]?.emit(utf8Encode('\u001b[?1000;1006h'));
+    await settle();
+    expect(session.touchScroll.isActive()).toBe(true);
+
+    session.touchScroll.drag(32, 16);
+    await settle();
+    expect(sessions[0]?.scrolls).toEqual([2]);
+
+    session.touchScroll.release(1600, 16);
+    session.keyboard.typed('x');
+    await clock.advance(1000);
+    await settle();
+    expect(sessions[0]?.scrolls).toEqual([2]);
+    await session.dispose();
+  });
+
+  it('stops taking drags when a new session starts', async () => {
+    const { session, sessions, project } = setup([1, 1]);
+    session.getStore().viewDidResize(80, 24);
+    await settle();
+    sessions[0]?.emit(utf8Encode('\u001b[?1000h'));
+    await settle();
+    expect(session.touchScroll.isActive()).toBe(true);
+
+    project(2);
+    session.didBecomeActive();
+    sessions[0]?.finish(new TransportFailure({ kind: 'sshUnreachable', detail: 'dropped' }));
+    await settle();
+    await settle();
+    expect(session.touchScroll.isActive()).toBe(false);
     await session.dispose();
   });
 

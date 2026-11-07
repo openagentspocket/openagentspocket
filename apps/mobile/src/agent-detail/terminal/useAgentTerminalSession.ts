@@ -1,3 +1,4 @@
+import { systemClock } from '@openagentspocket/transport';
 import { useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 import { useConsoleStore } from '@/console/hooks';
@@ -19,6 +20,7 @@ export function useAgentTerminalSession(
   useEffect(() => {
     const created = new AgentTerminalSession(paneId, {
       runner: hostTerminalRunner(console, hostId),
+      clock: systemClock,
       transportGeneration: () => console.transportGeneration(hostId),
       subscribe: console.subscribe,
     });

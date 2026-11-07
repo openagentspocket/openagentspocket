@@ -1,6 +1,9 @@
+import type { Clock } from '../hosts/cancellation';
 import { type AttachStatus, AttachTerminalStore } from './attach-store';
 import { PlainTerminalInput, type TerminalInputPort } from './input-port';
+import { TerminalMouseModes } from './mouse-modes';
 import { type RecoveryDecision, TerminalRecoveryGenerationLatch } from './recovery-latch';
+import { TerminalTouchScroll } from './touch-scroll';
 import { type TerminalSessionRunner, terminalTarget } from './types';
 
 /** Stable remote identity kept after `tab.create` succeeds; attach and retries use `terminalId`. */
@@ -24,6 +27,7 @@ export interface ShellTerminalStoreOptions {
   readonly isOnStage: () => boolean;
   readonly runTerminal: TerminalSessionRunner;
   readonly input?: TerminalInputPort;
+  readonly clock: Clock;
 }
 
 type Lifecycle = 'active' | 'rejoinRequired' | 'left';
@@ -36,6 +40,9 @@ type Lifecycle = 'active' | 'rejoinRequired' | 'left';
 export class ShellTerminalStore {
   readonly identity: ShellTerminalIdentity;
   readonly input: TerminalInputPort;
+  /** A drag on this shell, for as long as what runs in it tracks the mouse. */
+  readonly touchScroll: TerminalTouchScroll;
+  private readonly modes = new TerminalMouseModes();
   private current: AttachTerminalStore;
   private takeover: boolean;
   private transportGeneration: number | null;
@@ -49,7 +56,14 @@ export class ShellTerminalStore {
 
   constructor(private readonly options: ShellTerminalStoreOptions) {
     this.identity = options.identity;
-    this.input = options.input ?? new PlainTerminalInput();
+    this.input = options.input ?? new PlainTerminalInput(() => this.touchScroll.halt());
+    this.touchScroll = new TerminalTouchScroll({
+      clock: options.clock,
+      modes: this.modes,
+      paneId: options.identity.paneId,
+      grid: () => this.current.grid,
+      scroll: (sequence, rows) => this.input.scroll(sequence, rows),
+    });
     this.takeover = options.takeover ?? false;
     this.transportGeneration = options.transportGeneration ?? null;
     this.current = this.makeTerminal();
@@ -214,11 +228,17 @@ export class ShellTerminalStore {
   }
 
   private makeTerminal(): AttachTerminalStore {
+    this.modes.reset();
+    this.touchScroll.modesDidChange();
     return new AttachTerminalStore({
       target: terminalTarget(this.identity.terminalId),
       takeover: this.takeover,
       input: this.input,
       transportGeneration: this.transportGeneration,
+      observeOutput: (bytes) => {
+        this.modes.receive(bytes);
+        this.touchScroll.modesDidChange();
+      },
       transportReady: (surfaceId, generation) => {
         const decision = this.recovery.recordAcquisition(generation, surfaceId);
         if (decision) this.apply(decision);
