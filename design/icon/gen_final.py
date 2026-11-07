@@ -1,6 +1,6 @@
 import math, subprocess, pathlib, tempfile, sys
 CH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-D="#0B0820"; W="#F6F6FC"
+D="#6E6E6E"; W="#FFFFFF"; BLACK="#000000"
 GAP=26
 ANG=float(sys.argv[1]) if len(sys.argv)>1 else 26
 CW,CH_,PIV=(270,520,790)
@@ -30,8 +30,8 @@ def mark(cardfill,pocketfill,opac=True,uid="m"):
     return defs,body
 def wrap(inner,defs,scale=1.0,tx=0,ty=0,bg=""):
     t=f'translate({512+tx} {512+ty}) scale({scale}) translate({-CX} {-CY})'
-    return f'<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9C8CFF"/><stop offset="1" stop-color="#8270F5"/></linearGradient>{defs}</defs>{bg}<g transform="{t}">{inner}</g></svg>'
-BG='<rect width="1024" height="1024" fill="url(#bg)"/>'
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><title>OpenAgentsPocket</title><defs>{defs}</defs>{bg}<g transform="{t}">{inner}</g></svg>'
+BG=f'<rect width="1024" height="1024" fill="{BLACK}"/>'
 def shot(svg,out,size,mask=False,transparent=False,w=None,h=None):
     w=w or size;h=h or size
     p=pathlib.Path(tempfile.mktemp(suffix=".svg"));p.write_text(svg)
@@ -53,15 +53,15 @@ sc_fg=338*0.97/RMAX
 fg=wrap(b,d,sc_fg,0,0)
 (out/"android-foreground.svg").write_text(fg)
 shot(fg,out/"android-foreground-1024.png",1024,transparent=True)
-bgsvg=f'<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024"><defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9C8CFF"/><stop offset="1" stop-color="#8270F5"/></linearGradient></defs><rect width="1024" height="1024" fill="url(#bg)"/></svg>'
+bgsvg=f'<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024"><rect width="1024" height="1024" fill="{BLACK}"/></svg>'
 shot(bgsvg,out/"android-background-1024.png",1024)
 dm,bm=mark("#000","#000",opac=False,uid="k")
 mono=wrap(bm,dm,sc_fg,0,0)
 shot(mono,out/"android-monochrome-1024.png",1024,transparent=True)
-# splash: solid #8E7CFF, mark ~ 40% of width
+# splash: solid black, mark ~ 40% of width
 sc_sp=0.42*1284/(X1-X0)*(1024/1284)  # relative to 1024 viewBox scaled to 1284 wide below
 spl=wrap(b,d,0.5*1024/(X1-X0),0,0)
-spl_full=f'<svg xmlns="http://www.w3.org/2000/svg" width="1284" height="2778" viewBox="0 0 1284 2778"><defs>{d}</defs><rect width="1284" height="2778" fill="#8E7CFF"/><g transform="translate(130 877) scale(1)"><svg width="1024" height="1024" viewBox="0 0 1024 1024">{spl.split("</defs>",1)[1].rsplit("</svg>",1)[0]}</svg></g></svg>'
+spl_full=f'<svg xmlns="http://www.w3.org/2000/svg" width="1284" height="2778" viewBox="0 0 1284 2778"><defs>{d}</defs><rect width="1284" height="2778" fill="{BLACK}"/><g transform="translate(130 877) scale(1)"><svg width="1024" height="1024" viewBox="0 0 1024 1024">{spl.split("</defs>",1)[1].rsplit("</svg>",1)[0]}</svg></g></svg>'
 shot(spl_full,out/"splash-1284x2778.png",0,w=1284,h=2778)
 shot(wrap(b,d,0.9*1024/(X1-X0),0,0),out/"splash-icon-1024.png",1024,transparent=True)  # mark only, transparent
 shot(icon,out/"favicon-48.png",48,mask=True)
