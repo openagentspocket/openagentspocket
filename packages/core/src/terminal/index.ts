@@ -28,5 +28,6 @@ export * from './shell-open';
 export * from './shell-store';
 export * from './text-safety';
 export * from './toolbar';
+export * from './touch-scroll';
 export * from './types';
 export * from './user-message-index';

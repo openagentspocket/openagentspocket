@@ -111,3 +111,14 @@ export class TerminalMouseModes {
  * copy-mode, which `agent.read` does not follow and which swallows what is typed next.
  */
 export const paneTakesWheelJump = (paneId: string): boolean => !paneId.startsWith('%');
+
+/** A run of wheel reports and nothing else, SGR or legacy. Legacy cells may decode to anything. */
+// biome-ignore lint/suspicious/noControlCharactersInRegex: matching control characters is the point.
+const WHEEL_REPORTS = /^(?:\u001b\[<6[4-7];\d+;\d+[Mm]|\u001b\[M[\u0060-\u0063][\s\S]{2})+$/;
+
+/**
+ * Whether the renderer's input is only its own wheel reports. Its pan can emit them once something
+ * gave it a mouse position, aimed at wherever that was; touch scrolling owns the wheel, so these
+ * are dropped: they would double a drag, and put a tmux pane in copy-mode.
+ */
+export const isWheelReport = (text: string): boolean => WHEEL_REPORTS.test(text);

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { utf8Decode, utf8Encode } from '../pairing/bytes';
-import { paneTakesWheelJump, TerminalMouseModes } from './mouse-modes';
+import { isWheelReport, paneTakesWheelJump, TerminalMouseModes } from './mouse-modes';
 
 const received = (...chunks: string[]) => {
   const modes = new TerminalMouseModes();
@@ -59,5 +59,22 @@ describe('where a jump can run', () => {
   it('leaves tmux panes out: the wheel would put them in copy-mode', () => {
     expect(paneTakesWheelJump('%3')).toBe(false);
     expect(paneTakesWheelJump('w1:p1')).toBe(true);
+  });
+});
+
+describe('isWheelReport', () => {
+  it('knows SGR and legacy wheel reports, alone or in a run', () => {
+    expect(isWheelReport('\u001b[<64;40;12M')).toBe(true);
+    expect(isWheelReport('\u001b[<65;1;1M\u001b[<65;1;1M')).toBe(true);
+    expect(isWheelReport('\u001b[M`HL')).toBe(true);
+  });
+
+  it('leaves everything else to the keyboard path', () => {
+    expect(isWheelReport('')).toBe(false);
+    expect(isWheelReport('a')).toBe(false);
+    expect(isWheelReport('\u001b[A')).toBe(false);
+    expect(isWheelReport('\u001b[<0;40;12M')).toBe(false);
+    expect(isWheelReport('\u001b[<64;40;12Mx')).toBe(false);
+    expect(isWheelReport('\u001b[M HL')).toBe(false);
   });
 });
