@@ -31,8 +31,16 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.spacing.xs,
     paddingVertical: t.spacing.xs,
   },
-  stack: { paddingHorizontal: t.spacing.xs, paddingVertical: t.spacing.xs, gap: t.spacing.xs },
+  // The buttons pin under the input, so it never changes parent or position in the tree: a moved
+  // input would remount and lose focus, dropping the keyboard the moment the card expands.
+  stack: {
+    paddingHorizontal: t.spacing.xs,
+    paddingTop: t.spacing.xs,
+    paddingBottom: CIRCLE + 2 * t.spacing.xs,
+  },
   buttons: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
+  pinLeft: { position: 'absolute', left: t.spacing.xs, bottom: t.spacing.xs },
+  pinRight: { position: 'absolute', right: t.spacing.xs, bottom: t.spacing.xs },
   circle: {
     width: CIRCLE,
     height: CIRCLE,
@@ -41,7 +49,6 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     backgroundColor: t.colors.control,
   },
-  spacer: { flex: 1 },
   input: {
     flex: 1,
     minWidth: 0,
@@ -131,6 +138,7 @@ function Circle({
   onPress,
   menu,
   anchorKey,
+  onMenuOpen,
   testID,
 }: {
   icon: IconName;
@@ -139,6 +147,7 @@ function Circle({
   menu?: readonly ActionMenuItem[];
   /** Registers the circle as a popover anchor (`confirm({ anchorKey })`). */
   anchorKey?: string;
+  onMenuOpen?: (open: boolean) => void;
   testID: string;
 }) {
   const styles = useStyles();
@@ -153,6 +162,7 @@ function Circle({
           iconSize={18}
           accessibilityLabel={label}
           neutral
+          onOpenChange={onMenuOpen}
           testID={testID}
         />
       ) : (
@@ -200,9 +210,12 @@ export function ComposerCard({
   const theme = useTheme();
   const [dismissed, setDismissed] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const action = composerAction(value, working, onStop !== undefined, hasAttachments);
-  const stacked = expanded ?? (value.includes('\n') || value.length > 36);
   const showSkills = Boolean(skills?.length) && value.startsWith('/') && !dismissed;
+  // An open "..." menu holds the layout: its Modal blurs the input, and folding would unmount it.
+  const stacked =
+    (expanded ?? (value.includes('\n') || value.length > 36)) || showSkills || moreOpen;
   const stopInk = theme.appearance === 'dark' ? 'textPrimary' : 'onAccent';
   const hint = placeholder ?? labels.messagePlaceholder;
   const input = (
@@ -298,43 +311,35 @@ export function ComposerCard({
           ))}
         </View>
       ) : null}
-      {stacked || showSkills ? (
-        <View style={styles.stack}>
-          {input}
-          <View style={styles.buttons}>
-            {plus}
-            {leadingMark}
-            {barToggle ? (
-              <Circle
-                icon="toolbar"
-                label={barToggle.label}
-                onPress={barToggle.onToggle}
-                testID={`${testID}-bar-toggle`}
-              />
-            ) : null}
-            {moreMenu?.length ? (
-              <Circle
-                icon="more"
-                label={labels.moreOptions}
-                menu={moreMenu}
-                anchorKey={moreAnchorKey}
-                testID={`${testID}-more`}
-              />
-            ) : null}
-            <View style={styles.spacer} />
-            {focused ? <KeyboardDismissButton label={labels.dismissKeyboard} /> : null}
-            {trailing}
-          </View>
-        </View>
-      ) : (
-        <View style={styles.oneLine}>
+      <View style={stacked ? styles.stack : styles.oneLine}>
+        <View style={[styles.buttons, stacked && styles.pinLeft]}>
           {plus}
           {leadingMark}
-          {input}
+          {stacked && barToggle ? (
+            <Circle
+              icon="toolbar"
+              label={barToggle.label}
+              onPress={barToggle.onToggle}
+              testID={`${testID}-bar-toggle`}
+            />
+          ) : null}
+          {stacked && moreMenu?.length ? (
+            <Circle
+              icon="more"
+              label={labels.moreOptions}
+              menu={moreMenu}
+              anchorKey={moreAnchorKey}
+              onMenuOpen={setMoreOpen}
+              testID={`${testID}-more`}
+            />
+          ) : null}
+        </View>
+        {input}
+        <View style={[styles.buttons, stacked && styles.pinRight]}>
           {focused ? <KeyboardDismissButton label={labels.dismissKeyboard} /> : null}
           {trailing}
         </View>
-      )}
+      </View>
     </View>
   );
 }

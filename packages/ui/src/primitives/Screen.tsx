@@ -7,9 +7,15 @@ import {
   View,
 } from 'react-native';
 import { type Edge, SafeAreaView } from 'react-native-safe-area-context';
+import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
 import { ScreenBackground } from './ScreenBackground';
-import { type ScreenHeader, ScreenHeaderBar, useOffscreenBottom } from './screenParts';
+import {
+  type ScreenHeader,
+  ScreenHeaderBar,
+  useKeyboardOffset,
+  useOffscreenBottom,
+} from './screenParts';
 
 export type { ScreenHeader };
 
@@ -73,6 +79,9 @@ export function Screen({
   const styles = useStyles();
   const { hidden, ref, onLayout } = useOffscreenBottom();
   const theme = useTheme();
+  const insets = useInsets();
+  const safeEdges = edges ?? (header?.variant === 'native' ? UNDER_NATIVE_HEADER : ALL_EDGES);
+  const lift = useKeyboardOffset(safeEdges.includes('bottom') ? insets.bottom : 0);
   const nativeInsets = Platform.OS === 'ios' && scroll && !bare;
   const refresh = onRefresh ? (
     <ThemedRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -82,7 +91,7 @@ export function Screen({
       ref={ref}
       onLayout={onLayout}
       style={styles.root}
-      edges={edges ?? (header?.variant === 'native' ? UNDER_NATIVE_HEADER : ALL_EDGES)}
+      edges={safeEdges}
       testID={testID}
     >
       <ScreenBackground />
@@ -91,6 +100,9 @@ export function Screen({
         <KeyboardAvoidingView
           style={styles.fill}
           enabled={keyboardAvoiding && !nativeInsets}
+          // Only the full-bleed screens: a sheet does not start at the top of the window.
+          keyboardVerticalOffset={bare ? lift.offset : 0}
+          onLayout={lift.onLayout}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           testID={`${testID}-keyboard`}
         >

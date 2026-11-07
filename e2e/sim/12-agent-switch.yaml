@@ -1,4 +1,4 @@
-# Smoke: moving between Agents from the bottom capsule, on chat and terminal.
+# Smoke: moving between Agents from the title's menu on the terminal, and from Sessions on Chat.
 appId: com.openagentspocket.app
 ---
 - runFlow: _demo.yaml
@@ -9,28 +9,36 @@ appId: com.openagentspocket.app
       id: agent-header-sidebar
     timeout: 15000
 - tapOn:
-    id: "switch-.*p1"
+    id: agent-header-sidebar
+- tapOn:
+    id: "session-drawer-row-.*p1"
 - extendedWaitUntil:
     visible:
       id: agent-header-sidebar
     timeout: 5000
 - tapOn:
-    id: "switch-.*p3"
+    id: agent-header-more
+- tapOn: "Show Terminal"
 - extendedWaitUntil:
     visible:
-      id: agent-header-sidebar
+      id: agent-header-title
     timeout: 5000
 - tapOn:
-    id: "switch-.*p2"
+    id: agent-header-title
+- takeScreenshot: design/atlas/sim/12-agent-menu
+- tapOn:
+    id: "agent-header-agents-p3"
 - extendedWaitUntil:
     visible:
-      id: agent-header-sidebar
+      id: agent-header-title
     timeout: 5000
 - tapOn:
-    id: "switch-.*p1"
+    id: agent-header-title
+- tapOn:
+    id: "agent-header-agents-p2"
 - extendedWaitUntil:
     visible:
-      id: agent-header-sidebar
+      id: agent-header-title
     timeout: 5000
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/12-agent-switch

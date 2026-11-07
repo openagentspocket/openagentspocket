@@ -2,7 +2,7 @@
 
 export const colorKeys = ["canvas","surface","surfaceRaised","surfaceOverlay","scrim","control","separator","textPrimary","textSecondary","textTertiary","accent","onAccent","accentContainer","accentStrong","glow","statusBlocked","statusWorking","statusDone","statusIdle","success","warning","danger","info","terminalBackground","terminalForeground"] as const;
 export type ColorKey = (typeof colorKeys)[number];
-export type ThemeId = 'indigo' | 'papel' | 'noche';
+export type ThemeId = 'negro' | 'indigo' | 'papel' | 'noche';
 
 export interface ThemeTokens {
   id: ThemeId;
@@ -11,9 +11,41 @@ export interface ThemeTokens {
   colors: Record<ColorKey, string>;
 }
 
-export const themeIds: readonly ThemeId[] = ["indigo","papel","noche"];
+export const themeIds: readonly ThemeId[] = ["negro","indigo","papel","noche"];
 
 export const themes: Record<ThemeId, ThemeTokens> = {
+  negro: {
+    id: 'negro',
+    name: "Negro",
+    appearance: 'dark',
+    colors: {
+      canvas: '#000000',
+      surface: '#0E0E0E',
+      surfaceRaised: '#141414',
+      surfaceOverlay: '#1A1A1A',
+      scrim: '#000000',
+      control: '#262626',
+      separator: '#222222',
+      textPrimary: '#FFFFFF',
+      textSecondary: '#A3A3A3',
+      textTertiary: '#6E6E6E',
+      accent: '#F5F5F5',
+      onAccent: '#000000',
+      accentContainer: '#2A2A2A',
+      accentStrong: '#BDBDBD',
+      glow: '#000000',
+      statusBlocked: '#F0626B',
+      statusWorking: '#F7B750',
+      statusDone: '#2FD08A',
+      statusIdle: '#A3A3A3',
+      success: '#2FD08A',
+      warning: '#F7B750',
+      danger: '#F0626B',
+      info: '#C4C4C4',
+      terminalBackground: '#000000',
+      terminalForeground: '#E5E5E5',
+    },
+  },
   indigo: {
     id: 'indigo',
     name: "Índigo",

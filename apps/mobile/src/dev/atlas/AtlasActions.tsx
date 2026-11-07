@@ -17,6 +17,7 @@ const HOLD_MS = 600;
 /** The few DOM members the web atlas drives; the app has no DOM typings. */
 interface DomElement {
   click(): void;
+  focus(): void;
   dispatchEvent(event: unknown): void;
 }
 interface Dom {
@@ -37,7 +38,14 @@ export function AtlasActions({ script, children }: { script: AtlasScript; childr
     const timers: ReturnType<typeof setTimeout>[] = [];
     let at = SETTLE_MS;
     for (const id of script.press ?? []) {
-      timers.push(setTimeout(() => find(id)?.click(), at));
+      timers.push(
+        setTimeout(() => {
+          const element = find(id);
+          // A click alone does not focus a field: the folded Composer opens on focus.
+          element?.focus();
+          element?.click();
+        }, at),
+      );
       at += 300;
     }
     if (script.longPress) {

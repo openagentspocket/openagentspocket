@@ -1,5 +1,11 @@
 import { type RefObject, useCallback, useRef, useState } from 'react';
-import { useWindowDimensions, View, type ViewInstance } from 'react-native';
+import {
+  Keyboard,
+  type LayoutChangeEvent,
+  useWindowDimensions,
+  View,
+  type ViewInstance,
+} from 'react-native';
 import { LargeTitleBar, type TitleBarAction } from '../components/LargeTitleBar';
 import { SheetBar, type SheetBarItem } from '../components/SheetBar';
 
@@ -47,6 +53,32 @@ export function useOffscreenBottom(): {
     );
   }, [windowHeight]);
   return { hidden, ref, onLayout };
+}
+
+/**
+ * What a full-bleed screen's KeyboardAvoidingView must add to its own frame. The view compares the
+ * keyboard's screen position with a frame relative to its parent, which ends short by whatever sits
+ * above the parent (the status bar area), and the lift ends short with it: the bottom of the screen
+ * stays that far under the keyboard. Neither `measureInWindow` nor a child's layout see that distance
+ * (both read 0 here), so it comes from what is known: where the frame really ends, the window's
+ * height less the gap under the view.
+ */
+export function keyboardOffset(windowHeight: number, gapBelow: number, frameEnd: number): number {
+  return frameEnd > 0 ? Math.max(0, windowHeight - gapBelow - frameEnd) : 0;
+}
+
+/** Feeds `keyboardOffset` the view's resting frame: the 'height' behavior shrinks it under a keyboard. */
+export function useKeyboardOffset(gapBelow: number): {
+  offset: number;
+  onLayout: (event: LayoutChangeEvent) => void;
+} {
+  const { height } = useWindowDimensions();
+  const [frameEnd, setFrameEnd] = useState(0);
+  const onLayout = useCallback((event: LayoutChangeEvent) => {
+    const { y, height: frame } = event.nativeEvent.layout;
+    if (!Keyboard.isVisible()) setFrameEnd(y + frame);
+  }, []);
+  return { offset: keyboardOffset(height, gapBelow, frameEnd), onLayout };
 }
 
 /** Draws the header of a `large` or `sheet` screen; a native header is the navigator's. */

@@ -81,7 +81,7 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.agent-switcher': chat,
   'agent-detail.composer': chat,
   'agent-detail.composer-skill-suggestions': chat,
-  'agent-detail.composer-more-menu': detail('p4', 'terminal', ['composer-more']),
+  'agent-detail.composer-more-menu': detail('p4', 'terminal', ['composer-input', 'composer-more']),
   'agent-detail.composer-add-menu': detail('p2', 'chat', ['composer-add']),
   'agent-detail.header-more-menu': detail('p2', 'chat', ['agent-header-more']),
   'agent-detail.session-drawer': detail('p2', 'chat', ['agent-header-sidebar']),

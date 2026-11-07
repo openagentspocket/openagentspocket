@@ -73,7 +73,7 @@ describe('theme choice', () => {
 
   it('resolves the chosen theme, or the pair slot of the system scheme', () => {
     expect(resolveThemeId({ ...SETTINGS_DEFAULTS, theme: 'papel' }, 'dark')).toBe('papel');
-    expect(resolveThemeId(follow, 'dark')).toBe('indigo');
+    expect(resolveThemeId(follow, 'dark')).toBe('negro');
     expect(resolveThemeId(follow, 'light')).toBe('papel');
   });
 
@@ -81,9 +81,9 @@ describe('theme choice', () => {
     expect(themeSelectionPatch(SETTINGS_DEFAULTS, 'noche')).toEqual({ theme: 'noche' });
     expect(themeSelectionPatch(follow, 'noche')).toEqual({ darkTheme: 'noche' });
     expect(themeSelectionPatch(follow, 'papel')).toEqual({ lightTheme: 'papel' });
-    expect(themeSlot(follow, 'indigo')).toBe('dark');
+    expect(themeSlot(follow, 'negro')).toBe('dark');
     expect(themeSlot(follow, 'noche')).toBeNull();
-    expect(themeSlot(SETTINGS_DEFAULTS, 'indigo')).toBeNull();
+    expect(themeSlot(SETTINGS_DEFAULTS, 'negro')).toBeNull();
   });
 });
 
@@ -138,5 +138,22 @@ describe('formatByteCount', () => {
     expect(formatByteCount(0)).toEqual({ value: 0, unit: 'bytes' });
     expect(formatByteCount(1500)).toEqual({ value: 1.5, unit: 'KB' });
     expect(formatByteCount(12_340_000)).toEqual({ value: 12.3, unit: 'MB' });
+  });
+});
+
+describe('the default theme', () => {
+  it('is Negro with nothing saved, and Papel for the light appearance', () => {
+    const store = new SettingsStore(new MemoryStorage());
+    expect(store.get('theme')).toBe('negro');
+    expect(store.get('darkTheme')).toBe('negro');
+    expect(store.get('lightTheme')).toBe('papel');
+  });
+
+  it('leaves a saved choice as it is', () => {
+    const storage = new MemoryStorage();
+    storage.set(SETTINGS_STORAGE_KEY, JSON.stringify({ theme: 'indigo', darkTheme: 'noche' }));
+    const store = new SettingsStore(storage);
+    expect(store.get('theme')).toBe('indigo');
+    expect(store.get('darkTheme')).toBe('noche');
   });
 });

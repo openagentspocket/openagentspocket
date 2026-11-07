@@ -116,14 +116,6 @@ describe('a question herdr reports idle', () => {
     await waitFor(() => expect(transport.keys).toEqual([['1']]));
   });
 
-  it('reads Blocked on the status line, not Idle', async () => {
-    asking();
-    await waitFor(() => expect(screen.getByTestId('blocked-option-1')).toBeTruthy());
-    const line = within(screen.getByTestId('status-line'));
-    expect(line.getByText('Blocked')).toBeTruthy();
-    expect(line.queryByText('Idle')).toBeNull();
-  });
-
   it('refuses a message by saying an answer waits, with the way to the terminal', async () => {
     const transport = asking();
     await waitFor(() => expect(screen.getByTestId('composer-input')).toBeTruthy());

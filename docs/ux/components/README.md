@@ -24,7 +24,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | UX3-agent-rows | `gallery/components/agentRows.tsx` | AgentCard, FoldHeader, WorkspaceCard, TerminalRow, AgentRowMenu, HostIssueRow |
 | UX3-home-shell | `gallery/components/homeShell.tsx` | InboxCard, SessionsStrip, HomeHostCard, UsageRing, Fab, LargeTitleBar |
 | UX3-nav-sheets | `gallery/components/navSheets.tsx` | ListToolbar, SidebarColumn, EmptyDetail, QuickSheetHeader, SearchBar, TextPromptSheet, ConnectionSheet, ScannerFrame, KeyValueGroup |
-| UX3-agent-bar | `gallery/components/agentBar.tsx` | AgentHeader, AgentSwitcher, SessionDrawer, ComposerCard, StatusLine, ChangeRow |
+| UX3-agent-bar | `gallery/components/agentBar.tsx` | AgentHeader, SessionDrawer, ComposerCard, StatusLine, ChangeRow |
 | UX3-chat-rows | `gallery/components/chatRows.tsx` | ChatUserBubble, ChatDivider, ChatThoughtRow, ChatToolRow, ChatNoticeRow, DiffRow |
 | UX3-blocked-terminal | `gallery/components/blockedTerminal.tsx` | BlockedCard, BackgroundWorkStrip, NoticeBanner, JumpControl, TerminalToolbar, KeyPad |
 | UX3-usage | `gallery/components/usage.tsx` | UsageLimitChip, ProviderUsageCard, LimitWindowRow, UsageTotals, UsageChart, UsageHeatMap, UsageBreakdownRow |
@@ -57,8 +57,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [ConnectionSheet](#connectionsheet) | UX3-nav-sheets | `console.host-connection-sheet` | default: none | apps/mobile/src/features/hosts/HostConnectionSheet.tsx (wrapper)<br>`apps/mobile/src/features/hosts/HostIssues.tsx` | `Hosts/HostOnboardingView.swift:777-912` |
 | [ScannerFrame](#scannerframe) | UX3-nav-sheets | `hosts.pairing-scanner`<br>`hosts.new-route` | unavailable: [ref](ref/ScannerFrame.unavailable.png) · [light](ref/ScannerFrame.unavailable.light.png) | `packages/ui/src/scanner/QRScanner.tsx`<br>`packages/ui/src/scanner/QRNotice.tsx` | `Pairing/PairingScanView.swift:13-349`<br>`Pairing/PairingScanStore.swift:1-335` |
 | [KeyValueGroup](#keyvaluegroup) | UX3-nav-sheets | `hosts.detail`<br>`console.quick-detail-sheet`<br>`usage.limits-sheet` | default: [ref](ref/KeyValueGroup.png) · [light](ref/KeyValueGroup.light.png) | `apps/mobile/src/features/hosts/HostInfoSections.tsx`<br>`packages/ui/src/primitives/CopyButton.tsx` | `DesignSystem/Components/CopyableValueRow.swift:1-120`<br>`Console/HostConnectionDetailView.swift:113-241`<br>`Hosts/HostListView.swift:206-340` |
-| [AgentHeader](#agentheader) | UX3-agent-bar | `agent-detail.header`<br>`agent-detail.chat`<br>`agent-detail.header-more-menu`<br>`agent-detail.terminal` | default: [ref](ref/AgentHeader.png) · [light](ref/AgentHeader.light.png) | `apps/mobile/src/agent-detail/AgentHeader.tsx` | `Console/AgentDetailHeader.swift:31-459`<br>`Console/AgentSurfaceToggle.swift:38-120`<br>`Console/MessageJumpControl.swift:577-700` |
-| [AgentSwitcher](#agentswitcher) | UX3-agent-bar | `agent-detail.agent-switcher`<br>`agent-detail.composer-skill-suggestions`<br>`agent-detail.control-keys` | default: [ref](ref/AgentSwitcher.png) · [light](ref/AgentSwitcher.light.png)<br>tools: [ref](ref/AgentSwitcher.tools.png) · [light](ref/AgentSwitcher.tools.light.png) | `apps/mobile/src/agent-detail/AgentSwitcher.tsx` | `Terminal/TerminalAgentSwitcher.swift:1-900` |
+| [AgentHeader](#agentheader) | UX3-agent-bar | `agent-detail.header`<br>`agent-detail.chat`<br>`agent-detail.header-more-menu`<br>`agent-detail.terminal` | default: [ref](ref/AgentHeader.png) · [light](ref/AgentHeader.light.png)<br>chat: none<br>slow-link: none | `apps/mobile/src/agent-detail/AgentHeader.tsx` | `Console/AgentDetailHeader.swift:31-459`<br>`Console/AgentSurfaceToggle.swift:38-120`<br>`Console/MessageJumpControl.swift:577-700` |
 | [SessionDrawer](#sessiondrawer) | UX3-agent-bar | `agent-detail.session-drawer`<br>`agent-detail.session-drawer--agents` | default: [ref](ref/SessionDrawer.png) · [light](ref/SessionDrawer.light.png) | none | `Console/SessionDrawer/SessionDrawerView.swift:22-561` |
 | [ComposerCard](#composercard) | UX3-agent-bar | `agent-detail.chat`<br>`agent-detail.header`<br>`agent-detail.composer-skill-suggestions`<br>`agent-detail.composer-add-menu`<br>`agent-detail.composer-more-menu` | default: [ref](ref/ComposerCard.png) · [light](ref/ComposerCard.light.png)<br>expanded: [ref](ref/ComposerCard.expanded.png) · [light](ref/ComposerCard.expanded.light.png)<br>skills: [ref](ref/ComposerCard.skills.png) · [light](ref/ComposerCard.skills.light.png) | `packages/ui/src/composer/Composer.tsx`<br>`apps/mobile/src/agent-detail/composer/AgentComposer.tsx` | `Console/AgentComposerView.swift:10-623`<br>`Console/AgentComposerButtons.swift:4-90`<br>`Console/AgentComposerStop.swift:1-232`<br>`Console/AgentComposerSkillSuggestions.swift:1-113` |
 | [StatusLine](#statusline) | UX3-agent-bar | `agent-detail.chat`<br>`agent-detail.status-line`<br>`agent-detail.composer-skill-suggestions` | default: [ref](ref/StatusLine.png) · [light](ref/StatusLine.light.png)<br>low-context: [ref](ref/StatusLine.low-context.png) · [light](ref/StatusLine.low-context.light.png) | none | `Console/AgentDetailStatusChrome.swift:6-210`<br>`Console/AgentContextLowBadge.swift:1-60` |
@@ -499,37 +498,20 @@ Acceptance (the judge ticks each on the side-by-side):
 
 Task UX3-agent-bar · target `packages/ui/src/components/AgentHeader.tsx` · composes GlassCapsule, ActionMenuButton, Icon
 
-Props sketch: `{ onSidebar, menu: ActionMenuItem[], surface: 'chat'|'terminal' }`
+Props sketch: `{ onSidebar, menu: ActionMenuItem[], surface: 'chat'|'terminal', eyebrow, title, subtitle, branch, diff, onOpenChanges, note, titleMenu, sidebarDot }`
 
-Interactions: left opens the SessionDrawer, right opens the header menu (Chat/Terminal toggle, Changes, Files, Ports, Rename, Close); edge swipe back
+Interactions: left opens the SessionDrawer, right opens the header menu (Chat/Terminal toggle, the terminal toolbar, Changes, Files, Ports, Rename, Close); the title opens the Agents menu; the branch line opens Changes; edge swipe back
 
 Variants (gallery variant id = the id before the colon):
 
-- `default`: two glass circles (sidebar/session drawer at left, more (...) at right) with the mid-bar identity between them: eyebrow HOST · AGENT KIND, bold mono title, mono workspace · branch subtitle (optional props eyebrow, title, subtitle) · crop [ref](ref/AgentHeader.png) · [light](ref/AgentHeader.light.png)
+- `default`: two glass circles (sidebar/session drawer at left, more (...) at right) with the mid-bar identity between them: eyebrow HOST · AGENT KIND, bold mono title with a menu of the Host's Agents, small branch and +N -N line that opens Changes · crop [ref](ref/AgentHeader.png) · [light](ref/AgentHeader.light.png)
+- `chat`: no title block: only the small branch line, and the dot on Sessions when another Agent is Blocked · crop none
+- `slow-link`: the link's note beside the branch line, only while the link is slow or lost · crop none
 
 Acceptance (the judge ticks each on the side-by-side):
 
 - [ ] circles 44pt, glass fill with hairline, 12pt from the safe area top
 - [ ] content scrolls under them with a top fade
-
-## AgentSwitcher
-
-Task UX3-agent-bar · target `packages/ui/src/components/AgentSwitcher.tsx` · composes GlassCapsule, ProgramMark, StatusOrb, Icon, Text
-
-Props sketch: `{ agents: { id, title, program, status }[], currentId, onSelect, trailing: { icon, onPress, active }[] }`
-
-Interactions: tap a chip switches agent with a haptic; horizontal scroll, current pill stays centered; trailing icons toggle the keys dock and the keyboard
-
-Variants (gallery variant id = the id before the colon):
-
-- `default`: glass capsule at the bottom: other agents as faded chips, the current one as a filled pill with its mark and orb, trailing surface/keyboard toggles · crop [ref](ref/AgentSwitcher.png) · [light](ref/AgentSwitcher.light.png)
-- `tools`: extra trailing icons (compose, skills, keyboard) · crop [ref](ref/AgentSwitcher.tools.png) · [light](ref/AgentSwitcher.tools.light.png)
-
-Acceptance (the judge ticks each on the side-by-side):
-
-- [ ] capsule height 44 over the keyboard dock, 12pt side inset
-- [ ] current agent is a pill with a lighter fill, mark with status orb, 'Title - Program'
-- [ ] neighbours are secondary and clipped at the capsule edge
 
 ## SessionDrawer
 

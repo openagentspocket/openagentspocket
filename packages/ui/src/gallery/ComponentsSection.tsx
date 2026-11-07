@@ -91,7 +91,8 @@ export function ComponentCapture({ name, theme }: ComponentCaptureProps) {
   const variant = findCatalogEntry(entryName)?.variants.find(
     (candidate) => candidate.id === variantId,
   );
-  const themeId: ThemeId = theme === 'papel' || theme === 'noche' ? theme : 'indigo';
+  const themeId: ThemeId =
+    theme === 'papel' || theme === 'noche' || theme === 'negro' ? theme : 'indigo';
   return (
     <ThemeProvider themeId={themeId}>
       <Screen>

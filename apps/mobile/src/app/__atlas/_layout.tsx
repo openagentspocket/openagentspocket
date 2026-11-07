@@ -10,7 +10,7 @@ freezeAtlasClock();
 // Dev warnings (web-only DOM prop notices) must not draw toasts over a capture.
 LogBox.ignoreAllLogs();
 
-const THEMES: readonly string[] = ['indigo', 'papel', 'noche'];
+const THEMES: readonly string[] = ['negro', 'indigo', 'papel', 'noche'];
 
 function AtlasStack() {
   return <Stack screenOptions={{ ...useStackScreenOptions(), headerShown: false }} />;

@@ -7,7 +7,6 @@ export function agentBarLabels(): AgentBarLabels {
     sidebar: t('Sessions'),
     more: t('More'),
     switcher: t('Agents'),
-    switchTo: t('Switch to'),
     search: t('Search'),
     searchPlaceholder: t('Workspaces, tabs, panes'),
     workspaces: t('Workspaces'),

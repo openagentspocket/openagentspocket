@@ -1,5 +1,5 @@
 import { t } from '@openagentspocket/i18n';
-import { EmptyState, Text } from '@openagentspocket/ui';
+import { EmptyState } from '@openagentspocket/ui';
 import { AppScreen } from '@/navigation/AppScreen';
 
 /**
@@ -15,19 +15,5 @@ export function AgentUnavailable({ gone }: { gone: boolean }) {
         <EmptyState icon="wifi" title={t('Reconnecting…')} />
       )}
     </AppScreen>
-  );
-}
-
-/** The listed Agent is from an earlier snapshot: its Host is reconnecting. */
-export function ReconnectingHint() {
-  return (
-    <Text
-      variant="footnote"
-      tone="warning"
-      style={{ textAlign: 'center' }}
-      testID="agent-reconnecting"
-    >
-      {t('Reconnecting…')}
-    </Text>
   );
 }

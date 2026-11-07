@@ -3,7 +3,6 @@ export interface AgentBarLabels {
   sidebar: string;
   more: string;
   switcher: string;
-  switchTo: string;
   search: string;
   searchPlaceholder: string;
   workspaces: string;
@@ -36,7 +35,6 @@ export const defaultAgentBarLabels: AgentBarLabels = {
   sidebar: 'Sessions',
   more: 'More',
   switcher: 'Agents',
-  switchTo: 'Switch to',
   search: 'Search',
   searchPlaceholder: 'Workspaces, tabs, panes',
   workspaces: 'Workspaces',

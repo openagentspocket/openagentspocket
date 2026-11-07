@@ -1,7 +1,12 @@
 import type { KeyValueStorage } from '../hosts/known-hosts';
 
 /** Built-in theme ids and their appearance (the app's `ThemeId`; a test pins them to the tokens). */
-export const THEME_APPEARANCE = { indigo: 'dark', papel: 'light', noche: 'dark' } as const;
+export const THEME_APPEARANCE = {
+  negro: 'dark',
+  indigo: 'dark',
+  papel: 'light',
+  noche: 'dark',
+} as const;
 export type SettingsThemeId = keyof typeof THEME_APPEARANCE;
 export type Appearance = 'dark' | 'light';
 
@@ -46,8 +51,8 @@ export type SettingKey = keyof SettingsValues;
 
 export const SETTINGS_DEFAULTS: Readonly<SettingsValues> = {
   followSystem: false,
-  theme: 'indigo',
-  darkTheme: 'indigo',
+  theme: 'negro',
+  darkTheme: 'negro',
   lightTheme: 'papel',
   terminalFont: 'jetbrains-mono',
   terminalFontSize: 8,

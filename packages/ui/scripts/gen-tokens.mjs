@@ -9,7 +9,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const themesDir = join(root, 'tokens/themes');
 const outputPath = join(root, 'src/theme/tokens.generated.ts');
 const HEX = /^#[0-9A-F]{6}$/;
-const ORDER = ['indigo', 'papel', 'noche'];
+const ORDER = ['negro', 'indigo', 'papel', 'noche'];
 
 function fail(message) {
   console.error(`gen-tokens: ${message}`);

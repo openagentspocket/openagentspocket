@@ -21,7 +21,7 @@ import {
   Tappable,
 } from '@openagentspocket/ui';
 import { useState, useSyncExternalStore } from 'react';
-import { View } from 'react-native';
+import { Keyboard, View } from 'react-native';
 import { ComposerAttachments } from '@/features/composer-tools/ComposerAttachments';
 import { StagingStatusBar } from '@/features/composer-tools/StagingStatusBar';
 import { useAgentSkills } from '@/features/composer-tools/useAgentSkills';
@@ -141,6 +141,11 @@ export function AgentComposerBar({
   );
 
   const send = async () => {
+    // What the Agent does next is the point: give the terminal its room back at once.
+    if (surface === 'terminal') {
+      setComposing(false);
+      Keyboard.dismiss();
+    }
     const result = await store.send(policy);
     setAttachDraft(result.kind === 'deliveredViaAttach');
   };
@@ -210,7 +215,7 @@ export function AgentComposerBar({
           }
         }}
         // Folded to one line until the Composer is open (Swift): then the "..." menu shows.
-        expanded={surface === 'terminal' || composing ? true : undefined}
+        expanded={composing ? true : undefined}
         moreAnchorKey={COMPOSER_MORE_ANCHOR}
         barToggle={
           surface === 'terminal'

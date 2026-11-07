@@ -1,5 +1,6 @@
 import { withAlpha } from './color';
 import { spacing } from './metrics';
+import { contrast } from './programTint';
 import { buildTheme } from './theme';
 import { colorKeys, themeIds, themes } from './tokens.generated';
 
@@ -11,8 +12,30 @@ describe('tokens', () => {
     }
   });
 
-  it('ships a light theme and two dark ones', () => {
-    expect(themeIds.map((id) => themes[id].appearance)).toEqual(['dark', 'light', 'dark']);
+  it('ships a light theme and three dark ones', () => {
+    expect(themeIds.map((id) => themes[id].appearance)).toEqual(['dark', 'dark', 'light', 'dark']);
+  });
+
+  it('keeps a primary button readable in every theme', () => {
+    for (const id of themeIds) {
+      const { accent, onAccent } = themes[id].colors;
+      expect(contrast(accent, onAccent)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('keeps Negro black, with color only where it means something', () => {
+    const { colors } = themes.negro;
+    const grey = (hex: string) =>
+      hex.slice(1, 3) === hex.slice(3, 5) && hex.slice(3, 5) === hex.slice(5, 7);
+    const { statusBlocked, statusWorking, statusDone, success, warning, danger, ...neutral } =
+      colors;
+    for (const value of Object.values(neutral)) expect(grey(value)).toBe(true);
+    for (const value of [statusBlocked, statusWorking, statusDone, success, warning, danger])
+      expect(grey(value)).toBe(false);
+    expect(colors.canvas).toBe('#000000');
+    expect(colors.glow).toBe(colors.canvas);
+    expect(contrast(colors.textSecondary, colors.canvas)).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(colors.textTertiary, colors.canvas)).toBeGreaterThanOrEqual(3);
   });
 });
 

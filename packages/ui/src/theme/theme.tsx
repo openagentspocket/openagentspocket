@@ -43,14 +43,14 @@ export function buildTheme(id: ThemeId): Theme {
 const ThemeContext = createContext<Theme | null>(null);
 
 interface ThemeProviderProps {
-  /** Forces a theme; omit to follow the system appearance (dark: Índigo, light: Papel). */
+  /** Forces a theme; omit to follow the system appearance (dark: Negro, light: Papel). */
   themeId?: ThemeId;
   children: ReactNode;
 }
 
 export function ThemeProvider({ themeId, children }: ThemeProviderProps) {
   const scheme = useColorScheme();
-  const resolved: ThemeId = themeId ?? (scheme === 'light' ? 'papel' : 'indigo');
+  const resolved: ThemeId = themeId ?? (scheme === 'light' ? 'papel' : 'negro');
   const theme = useMemo(() => buildTheme(resolved), [resolved]);
   return <ThemeContext.Provider value={theme}>{children}</ThemeContext.Provider>;
 }

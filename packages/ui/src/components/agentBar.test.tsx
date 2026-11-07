@@ -1,10 +1,9 @@
-import { fireEvent, screen } from '@testing-library/react-native';
+import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 import type { ReactElement } from 'react';
 import { renderThemed } from '../test-utils';
 import { ThemeProvider } from '../theme/theme';
 import {
   AgentHeader,
-  AgentSwitcher,
   ChangeRow,
   ChangeSection,
   ComposerCard,
@@ -14,11 +13,6 @@ import {
 
 const rerenderThemed = (rerender: (ui: ReactElement) => Promise<void>, ui: ReactElement) =>
   rerender(<ThemeProvider themeId="indigo">{ui}</ThemeProvider>);
-
-const agents = [
-  { id: 'a', title: 'iOS App', program: 'codex', status: 'working' },
-  { id: 'b', title: 'Docs', program: 'claude', status: 'idle' },
-] as const;
 
 describe('AgentHeader', () => {
   it('opens the drawer from the left circle', async () => {
@@ -39,25 +33,57 @@ describe('AgentHeader', () => {
   });
 });
 
-describe('AgentSwitcher', () => {
-  it('selects a neighbour, ignores the current one, and presses trailing toggles', async () => {
-    const onSelect = jest.fn();
-    const toggle = jest.fn();
+describe('AgentHeader line and title', () => {
+  it('opens Changes from the git line, and only from there', async () => {
+    const onOpenChanges = jest.fn();
     await renderThemed(
-      <AgentSwitcher
-        agents={agents}
-        currentId="b"
-        onSelect={onSelect}
-        trailing={[{ key: 'kbd', icon: 'keyboard', label: 'Keyboard', onPress: toggle }]}
+      <AgentHeader
+        onSidebar={jest.fn()}
+        menu={[]}
+        title="Review"
+        branch="main"
+        diff={{ added: 2, removed: 1 }}
+        onOpenChanges={onOpenChanges}
       />,
     );
-    await fireEvent.press(screen.getByTestId('agent-switcher-b'));
-    expect(onSelect).not.toHaveBeenCalled();
-    await fireEvent.press(screen.getByTestId('agent-switcher-a'));
-    expect(onSelect).toHaveBeenCalledWith('a');
-    await fireEvent.press(screen.getByTestId('agent-switcher-kbd'));
-    expect(toggle).toHaveBeenCalled();
-    expect(screen.getByTestId('agent-switcher-b').props.accessibilityState.selected).toBe(true);
+    expect(screen.getByText('main')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('agent-header-git'));
+    expect(onOpenChanges).toHaveBeenCalledTimes(1);
+    expect(screen.queryByTestId('agent-header-title')).toBeNull();
+  });
+
+  it('draws no git line without git, and the link note on its own', async () => {
+    await renderThemed(<AgentHeader onSidebar={jest.fn()} menu={[]} note="850 ms" />);
+    expect(screen.queryByTestId('agent-header-git')).toBeNull();
+    expect(screen.getByTestId('agent-header-note')).toBeTruthy();
+  });
+
+  it('opens the Agents menu from the title', async () => {
+    const onPress = jest.fn();
+    await renderThemed(
+      <AgentHeader
+        onSidebar={jest.fn()}
+        menu={[]}
+        title="Review"
+        titleMenu={[{ key: 'other', title: 'Docs', subtitle: 'Blocked', onPress }]}
+      />,
+    );
+    expect(screen.queryByTestId('agent-header-agents-other')).toBeNull();
+    await fireEvent.press(screen.getByTestId('agent-header-title'));
+    await fireEvent.press(screen.getByTestId('agent-header-agents-other'));
+    await waitFor(() => expect(onPress).toHaveBeenCalledTimes(1));
+  });
+
+  it('marks the Sessions button only when asked, and says so to a screen reader', async () => {
+    const header = (dot: boolean) => (
+      <AgentHeader onSidebar={jest.fn()} menu={[]} sidebarDot={dot} onHome={jest.fn()} />
+    );
+    const { rerender } = await renderThemed(header(false));
+    expect(screen.queryByTestId('agent-header-sidebar-dot')).toBeNull();
+    const quiet = screen.getByTestId('agent-header-sidebar').props.accessibilityLabel;
+    await rerenderThemed(rerender, header(true));
+    expect(screen.getByTestId('agent-header-sidebar-dot')).toBeTruthy();
+    expect(screen.getByTestId('agent-header-sidebar').props.accessibilityLabel).not.toBe(quiet);
   });
 });
 
@@ -165,6 +191,63 @@ describe('ComposerCard', () => {
     expect(onSkill).toHaveBeenCalledWith('/code-review');
     await fireEvent.press(screen.getByTestId('composer-card-skills-close'));
     expect(screen.queryByTestId('composer-card-skills')).toBeNull();
+  });
+});
+
+describe('ComposerCard layouts', () => {
+  it('keeps the same input from one line to stacked, so the keyboard stays up', async () => {
+    const { rerender } = await renderThemed(
+      <ComposerCard value="" onChange={jest.fn()} onSend={jest.fn()} />,
+    );
+    const input = screen.getByTestId('composer-card-input');
+    await rerenderThemed(
+      rerender,
+      <ComposerCard value="" expanded onChange={jest.fn()} onSend={jest.fn()} />,
+    );
+    expect(screen.getByTestId('composer-card-input')).toBe(input);
+  });
+
+  it('stays stacked under an open "..." menu, so losing focus cannot take the menu away', async () => {
+    const onPress = jest.fn();
+    const card = (expanded?: boolean) => (
+      <ComposerCard
+        value=""
+        onChange={jest.fn()}
+        onSend={jest.fn()}
+        moreMenu={[{ key: 'p', title: 'Paste', onPress }]}
+        expanded={expanded}
+      />
+    );
+    const { rerender } = await renderThemed(card(true));
+    await fireEvent.press(screen.getByTestId('composer-card-more'));
+    await waitFor(() => expect(screen.getByTestId('action-menu-p')).toBeTruthy());
+    // The menu's Modal takes the first responder: the input blurs and the caller stops expanding.
+    await rerenderThemed(rerender, card(undefined));
+    expect(screen.getByTestId('action-menu-p')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('action-menu-p'));
+    await waitFor(() => expect(onPress).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(screen.queryByTestId('composer-card-more')).toBeNull());
+  });
+
+  it('shows the toolbar toggle and "..." only once stacked', async () => {
+    const more = [{ key: 'p', title: 'Paste', onPress: jest.fn() }];
+    const barToggle = { visible: false, onToggle: jest.fn(), label: 'Toolbar' };
+    const card = (expanded?: boolean) => (
+      <ComposerCard
+        value=""
+        onChange={jest.fn()}
+        onSend={jest.fn()}
+        moreMenu={more}
+        barToggle={barToggle}
+        expanded={expanded}
+      />
+    );
+    const { rerender } = await renderThemed(card());
+    expect(screen.queryByTestId('composer-card-more')).toBeNull();
+    expect(screen.queryByTestId('composer-card-bar-toggle')).toBeNull();
+    await rerenderThemed(rerender, card(true));
+    expect(screen.getByTestId('composer-card-more')).toBeTruthy();
+    expect(screen.getByTestId('composer-card-bar-toggle')).toBeTruthy();
   });
 });
 

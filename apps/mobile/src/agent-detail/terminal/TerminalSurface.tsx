@@ -122,7 +122,7 @@ function LiveTerminal({
   ];
   const dock = keys === 'system' ? null : DOCKS[keys];
 
-  // The toolbar sits in the detail's dock, under the status line and over the composer.
+  // The toolbar sits in the detail's dock, over the composer.
   useDockSlot(
     settings.terminalToolbarVisible ? (
       <TerminalToolbar

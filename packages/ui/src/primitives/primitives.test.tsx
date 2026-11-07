@@ -18,6 +18,7 @@ import {
   withAlpha,
 } from '../index';
 import { renderThemed } from '../test-utils';
+import { keyboardOffset } from './screenParts';
 
 const mockSetString = jest.fn(async (_value: string) => true);
 jest.mock('expo-clipboard', () => ({ setStringAsync: (value: string) => mockSetString(value) }));
@@ -216,6 +217,13 @@ describe('useTheme', () => {
 });
 
 describe('Screen keyboard avoidance', () => {
+  it('adds what the frame misses above it, so the lift reaches the real bottom', () => {
+    // An 874 pt window, 34 under the screen; the frame ends at 768, relative to its parent.
+    expect(keyboardOffset(874, 34, 768)).toBe(72);
+    expect(keyboardOffset(874, 34, 840)).toBe(0);
+    expect(keyboardOffset(874, 34, 0)).toBe(0);
+  });
+
   it('wraps the content in a keyboard-avoiding view and still renders it', async () => {
     const view = await renderThemed(
       <Screen keyboardAvoiding testID="form">
