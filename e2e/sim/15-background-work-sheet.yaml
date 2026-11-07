@@ -1,0 +1,37 @@
+# The Background Work strip opens its sheet and the sheet's body works. The demo Host has no
+# conversation, so this uses the atlas state with work running. A row in a body collapsed to no
+# height still reads as visible (the accessibility tree ignores the clip), so the proof is a tap:
+# only a body that is really there lets a Workflow open to its agents.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- openLink: openagentspocket:///__atlas/agent-detail.chat-background-strip
+- extendedWaitUntil:
+    visible:
+      id: work-row-w1
+    timeout: 15000
+- tapOn:
+    id: work-row-w1
+- extendedWaitUntil:
+    visible:
+      id: work-done
+    timeout: 8000
+- waitForAnimationToEnd
+- takeScreenshot: design/atlas/sim/15-background-work-sheet
+- tapOn:
+    id: work-sheet-w2
+- extendedWaitUntil:
+    visible:
+      id: work-agent-k1
+    timeout: 4000
+- takeScreenshot: design/atlas/sim/15-background-work-agents
+# A finished Subagent's transcript is the dock's other sheet: it opens after this one has left.
+- tapOn:
+    id: work-open-w3
+- extendedWaitUntil:
+    notVisible:
+      id: work-done
+    timeout: 8000
+- waitForAnimationToEnd
+- takeScreenshot: design/atlas/sim/15-subagent-sheet
+- runFlow: _guard.yaml

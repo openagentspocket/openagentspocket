@@ -53,3 +53,10 @@ import to throw. Both hosts draw the same `SheetContent`.
 Alternatives: `@expo/ui` BottomSheet (beta), route form sheets for state-driven sheets (see above).
 Unverified until a device build: the alert host inside a native sheet (an `OverlayHost` is mounted in the sheet, so it
 covers the sheet only), keyboard behavior with `scrollableRef`, and nested sheets.
+
+## Update: a fixed detent fills through True Sheet's `style` (2026-11-07)
+
+True Sheet's content view is auto-height unless `style` says otherwise, and `style` lands on that view, not on the
+sheet. A `flex: 1` surface inside it collapses to height 0: the bar overflows and still draws, the ScrollView clips
+everything. `NativeSheet` passes `flex: 1` as `style` at every detent but `fit`. Maestro cannot see this collapse (the
+accessibility tree ignores the clip, so rows read as visible): a flow proves a sheet's body with a tap inside it.
