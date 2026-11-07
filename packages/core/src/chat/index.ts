@@ -23,6 +23,7 @@ export * from './model/host-files';
 export * from './model/journal-follower';
 export * from './model/json-prefix';
 export * from './model/lines';
+export * from './model/open-questions';
 export * from './model/paths';
 export * from './model/preview';
 export type { ChatToolOutput, ChatTranscriptReducer } from './model/reducer';

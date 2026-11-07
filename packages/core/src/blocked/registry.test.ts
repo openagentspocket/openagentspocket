@@ -78,9 +78,4 @@ describe('the generic card options', () => {
       error: { kind: 'noSuchOption' },
     });
   });
-
-  it('lets the card watch the screen while idle with a question open only where the program says so', () => {
-    expect(blockedSupportFor('claude')?.readsScreenWhenIdleWithOpenQuestion).toBe(true);
-    expect(blockedSupportFor('codex')?.readsScreenWhenIdleWithOpenQuestion).toBeUndefined();
-  });
 });

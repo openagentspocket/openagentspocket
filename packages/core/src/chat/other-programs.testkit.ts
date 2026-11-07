@@ -6,7 +6,12 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { standardAdapter } from './engine/adapter';
 import { type ChatLine, frameLines } from './model/lines';
-import { type ChatProgram, type ChatTranscript, projectionContext } from './model/types';
+import {
+  type ChatAgentActivity,
+  type ChatProgram,
+  type ChatTranscript,
+  projectionContext,
+} from './model/types';
 
 const GOLDENS = fileURLToPath(new URL('../../goldens/', import.meta.url));
 
@@ -45,19 +50,34 @@ function openCodeLines(path: string, fixture: string): ChatLine[] {
     });
 }
 
-/** The fixture's transcript, projected idle, through the program's registered adapter. */
-export function transcriptThroughAdapter(entry: ProgramFixture): ChatTranscript {
+/**
+ * The fixture read through the program's registered adapter, as a function of herdr's activity.
+ * `through` stops at the first line it accepts, for a conversation still waiting there.
+ */
+export function projectionThroughAdapter(
+  entry: ProgramFixture,
+  through?: (line: string) => boolean,
+): (activity: ChatAgentActivity) => ChatTranscript {
   const adapter = standardAdapter(entry.program);
   if (!adapter) throw new Error(`no adapter registered for ${entry.program}`);
   const path = `${GOLDENS}${entry.directory}/transcripts/`;
-  const lines =
+  const all =
     entry.program === 'opencode'
       ? openCodeLines(path, entry.fixture)
       : frameLines(new Uint8Array(readFileSync(`${path}${entry.fixture}`)));
+  const last = through
+    ? all.findIndex((line) => through(new TextDecoder().decode(line.data)))
+    : all.length - 1;
+  if (last < 0) throw new Error(`no line accepted in ${entry.fixture}`);
+  const lines = all.slice(0, last + 1);
   const reducer = adapter.makeReducer({
     path: `${path}${entry.fixture}`,
     firstLine: lines[0] ?? null,
   });
   reducer.append(adapter.wantsFirstLine && lines[0] ? lines.slice(1) : lines);
-  return reducer.transcript(projectionContext({ activity: 'idle' }));
+  return (activity) => reducer.transcript(projectionContext({ activity }));
 }
+
+/** The fixture's transcript, projected idle, through the program's registered adapter. */
+export const transcriptThroughAdapter = (entry: ProgramFixture): ChatTranscript =>
+  projectionThroughAdapter(entry)('idle');

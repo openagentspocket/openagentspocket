@@ -35,6 +35,9 @@ export abstract class CardBase {
   protected activity: ObservedActivity = 'unknown';
   protected resolved: ReadonlySet<string> = new Set();
   protected ended = false;
+  protected visible = false;
+  private suspended = false;
+  private watcher: Watcher | null = null;
 
   constructor(protected readonly options: BlockedCardOptions) {
     this.timing = { ...DEFAULT_TIMING, ...options.timing };
@@ -48,6 +51,54 @@ export abstract class CardBase {
       this.listeners.delete(listener);
     };
   };
+
+  /** Whether the screen may show a dialog the card answers. */
+  protected abstract get readsScreen(): boolean;
+
+  /** One watch read. */
+  abstract refresh(): Promise<void>;
+
+  show(): void {
+    this.visible = true;
+    this.updateWatching();
+  }
+
+  hide(): void {
+    this.visible = false;
+    this.updateWatching();
+  }
+
+  suspend(): void {
+    this.suspended = true;
+    this.updateWatching();
+  }
+
+  resume(): void {
+    this.suspended = false;
+    this.updateWatching();
+  }
+
+  protected updateWatching(): void {
+    const should = this.visible && !this.suspended && this.readsScreen;
+    if (should && !this.watcher) {
+      const watcher: Watcher = { stopped: false, nap: null };
+      this.watcher = watcher;
+      void this.watch(watcher);
+    } else if (!should && this.watcher) {
+      this.watcher.stopped = true;
+      this.watcher.nap?.cancel();
+      this.watcher = null;
+    }
+  }
+
+  private async watch(watcher: Watcher): Promise<void> {
+    while (!watcher.stopped) {
+      await this.refresh();
+      if (watcher.stopped) return;
+      watcher.nap = sleep(this.options.clock, this.timing.watchMs);
+      await watcher.nap.done;
+    }
+  }
 
   /** Reads until `isMet` holds or the window closes, with the last read. */
   protected async poll(

@@ -10,6 +10,8 @@ export {
   type CardTiming,
   DEFAULT_TIMING,
   planErrorText,
+  type QuestionWait,
+  questionWait,
 } from './card-support';
 export { parseClaudeDialog } from './claude-parser';
 export { codexPlanPromptShows, codexQueuedNoticeShows, locateCodexComposer } from './codex-extras';
