@@ -1,6 +1,6 @@
 import type { AttachStatus } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, makeStyles, Spinner, Text, useTheme, withAlpha } from '@openagentspocket/ui';
+import { Button, Card, makeStyles, Spinner, Text, withAlpha } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
 
@@ -22,19 +22,13 @@ const useStyles = makeStyles((th) => ({
     maxWidth: 320,
     alignItems: 'center',
     gap: th.spacing.sm,
-    paddingHorizontal: th.spacing.lg,
-    paddingVertical: th.spacing.lg,
-    borderRadius: th.metrics.cardRadius + 8,
-    backgroundColor: th.colors.surfaceOverlay,
-    borderWidth: th.metrics.hairlineWidth,
-    borderColor: th.hairline,
+    padding: th.spacing.lg,
   },
 }));
 
 /** What the terminal says about its connection, over the screen; nothing while live. */
 export function StatusOverlay({ status, onRetry }: { status: AttachStatus; onRetry: () => void }) {
   const styles = useStyles();
-  const theme = useTheme();
   if (status.kind === 'live' || status.kind === 'stopped') return null;
   const ended = status.kind === 'ended';
   return (
@@ -43,7 +37,7 @@ export function StatusOverlay({ status, onRetry }: { status: AttachStatus; onRet
       pointerEvents="box-none"
       testID="terminal-status"
     >
-      <View style={styles.card}>
+      <Card level="overlay" style={styles.card}>
         {ended ? null : <Spinner size="large" />}
         <Text variant="headline" accessibilityLiveRegion="polite" style={{ textAlign: 'center' }}>
           {ended
@@ -55,7 +49,7 @@ export function StatusOverlay({ status, onRetry }: { status: AttachStatus; onRet
         {ended ? (
           <Button title={t('Retry')} kind="secondary" onPress={onRetry} testID="terminal-retry" />
         ) : null}
-      </View>
+      </Card>
     </View>
   );
 }

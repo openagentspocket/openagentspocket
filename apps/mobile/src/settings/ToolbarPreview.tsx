@@ -1,16 +1,8 @@
-import { GlassCapsule, Icon, makeStyles, Text } from '@openagentspocket/ui';
-import { View } from 'react-native';
+import { Card, GlassCapsule, Icon, makeStyles, Text } from '@openagentspocket/ui';
 import type { SettingsContext } from './schema';
 
 const useStyles = makeStyles((th) => ({
-  stage: {
-    alignItems: 'center',
-    padding: th.spacing.lg,
-    borderRadius: th.metrics.cardRadius,
-    borderWidth: th.metrics.hairlineWidth,
-    borderColor: th.hairline,
-    backgroundColor: th.colors.surface,
-  },
+  stage: { alignItems: 'center', padding: th.spacing.lg },
   capsule: { gap: th.spacing.md, paddingHorizontal: th.spacing.md },
 }));
 
@@ -20,7 +12,7 @@ export function ToolbarPreview({ ctx }: { ctx: SettingsContext }) {
   const { toolbarEscape, toolbarTab, toolbarDPad } = ctx.values;
   const keys = ['Ctrl', ...(toolbarEscape ? ['Esc'] : []), ...(toolbarTab ? ['Tab'] : [])];
   return (
-    <View style={styles.stage} accessibilityElementsHidden testID="settings.toolbar.preview">
+    <Card decorative style={styles.stage} testID="settings.toolbar.preview">
       <GlassCapsule style={styles.capsule}>
         {keys.map((key) => (
           <Text key={key} variant="mono" semibold>
@@ -31,6 +23,6 @@ export function ToolbarPreview({ ctx }: { ctx: SettingsContext }) {
         <Icon name="keyboard" size={20} />
         <Icon name="more" size={20} />
       </GlassCapsule>
-    </View>
+    </Card>
   );
 }

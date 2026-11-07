@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import { impact } from '../haptics';
+import { Card } from '../primitives/Card';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
@@ -15,16 +16,7 @@ const GLYPH: Record<HostStatusTone, IconName> = {
 };
 
 const useStyles = makeStyles((t) => ({
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.sm,
-    padding: t.spacing.md,
-    borderRadius: t.metrics.cardRadius,
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-    overflow: 'hidden',
-  },
+  card: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm },
   tile: {
     width: 48,
     height: 48,
@@ -68,11 +60,7 @@ export function HostStatusCard({
   const theme = useTheme();
   const ink = theme.colors[toneColorKey[tone]];
   return (
-    <View
-      style={[styles.card, { backgroundColor: theme.wash(ink) }]}
-      accessible={false}
-      testID={testID}
-    >
+    <Card tint={toneColorKey[tone]} style={styles.card} testID={testID}>
       <View style={[styles.tile, { backgroundColor: theme.wash(ink) }]}>
         <Icon name={GLYPH[tone]} size={26} tint={ink} />
       </View>
@@ -103,6 +91,6 @@ export function HostStatusCard({
           <Icon name="refresh" size={17} tint={ink} />
         </Tappable>
       ) : null}
-    </View>
+    </Card>
   );
 }

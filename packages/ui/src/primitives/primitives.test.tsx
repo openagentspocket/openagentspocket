@@ -90,6 +90,27 @@ describe('Card', () => {
       borderRadius: 8,
     });
   });
+
+  it('fills the control level, a tint wash, and marks the selected option', async () => {
+    const { colors } = themes.papel;
+    await renderThemed(
+      <>
+        <Card testID="control" level="control">
+          <Text>x</Text>
+        </Card>
+        <Card testID="tint" tint="danger">
+          <Text>x</Text>
+        </Card>
+        <Card testID="choice" selected onPress={() => {}} accessibilityLabel="Papel">
+          <Text>x</Text>
+        </Card>
+      </>,
+      'papel',
+    );
+    expect(screen.getByTestId('control')).toHaveStyle({ backgroundColor: colors.control });
+    expect(screen.getByTestId('tint')).not.toHaveStyle({ backgroundColor: colors.surface });
+    expect(screen.getByRole('button', { name: 'Papel' })).toBeSelected();
+  });
 });
 
 describe('StatusDot and StatusPill', () => {

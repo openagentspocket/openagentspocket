@@ -1,15 +1,11 @@
 import { View } from 'react-native';
+import { Card } from '../primitives/Card';
 import { CopyButton } from '../primitives/CopyButton';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
-  block: {
-    gap: t.spacing.xs,
-    padding: t.spacing.sm,
-    borderRadius: t.metrics.cardRadius,
-    backgroundColor: t.colors.control,
-  },
+  block: { padding: t.spacing.sm },
   line: { flexDirection: 'row', gap: t.spacing.xs },
   prompt: { width: 12 },
   command: { flex: 1 },
@@ -37,7 +33,7 @@ export function CommandBlock({
 }: CommandBlockProps) {
   const styles = useStyles();
   return (
-    <View style={styles.block} testID={testID}>
+    <Card level="control" style={styles.block} testID={testID}>
       {lines.map((line, index) => (
         <View
           // biome-ignore lint/suspicious/noArrayIndexKey: the same command may repeat
@@ -60,6 +56,6 @@ export function CommandBlock({
           testID={`${testID}-copy`}
         />
       </View>
-    </View>
+    </Card>
   );
 }

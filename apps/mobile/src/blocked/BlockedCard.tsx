@@ -17,11 +17,7 @@ import { cardText } from './text';
 const useStyles = makeStyles((th) => ({
   header: { flexDirection: 'row', alignItems: 'center', gap: th.spacing.xs },
   title: { flex: 1 },
-  code: {
-    backgroundColor: th.colors.control,
-    borderRadius: th.metrics.cardRadius,
-    padding: th.spacing.sm,
-  },
+  code: { padding: th.spacing.sm },
   choices: { gap: th.spacing.xs },
   actions: { flexDirection: 'row', justifyContent: 'center', gap: th.spacing.md },
   pad: { flexDirection: 'row', gap: th.spacing.xs, flexWrap: 'wrap' },
@@ -95,9 +91,9 @@ function Generic({
   return (
     <>
       <BoundedScroll testID="blocked-excerpt">
-        <View style={styles.code}>
+        <Card level="control" style={styles.code}>
           <Text variant="mono">{excerpt.rows.map((row) => row.text.trimEnd()).join('\n')}</Text>
-        </View>
+        </Card>
       </BoundedScroll>
       {reason ? (
         <Text variant="footnote" tone="secondary" testID="blocked-generic-reason">
@@ -213,9 +209,9 @@ function Known({
           </Text>
         ) : null}
         {code ? (
-          <View style={styles.code}>
+          <Card level="control" style={styles.code}>
             <Text variant="mono">{code}</Text>
-          </View>
+          </Card>
         ) : null}
       </BoundedScroll>
       <View style={styles.choices}>

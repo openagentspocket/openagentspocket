@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { impact } from '../haptics';
+import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
-import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { withAlpha } from '../theme/color';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -11,22 +11,7 @@ const DOT = 12;
 const CHECK = 28;
 
 const useStyles = makeStyles((t) => ({
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.sm,
-    padding: t.spacing.md,
-    borderRadius: t.metrics.cardRadius,
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-    backgroundColor: t.colors.surface,
-  },
-  selected: {
-    borderWidth: 1,
-    borderColor: t.colors.accent,
-    backgroundColor: t.wash(t.colors.accent),
-  },
-  pressed: { opacity: 0.8 },
+  card: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm },
   text: { flex: 1, gap: 2 },
   dots: {
     flexDirection: 'row',
@@ -93,15 +78,14 @@ export function ThemeChoiceCard({
   const styles = useStyles();
   const name = themes[themeId].name;
   return (
-    <Tappable
-      accessibilityRole="button"
+    <Card
       accessibilityLabel={`${name}, ${subtitle}`}
-      accessibilityState={{ selected }}
+      selected={selected}
       onPress={() => {
         impact('light');
         onPress();
       }}
-      style={({ pressed }) => [styles.card, selected && styles.selected, pressed && styles.pressed]}
+      style={styles.card}
       testID={testID ?? `theme-choice-${themeId}`}
     >
       <View style={styles.text}>
@@ -116,7 +100,7 @@ export function ThemeChoiceCard({
       <View style={[styles.check, selected ? styles.filled : styles.empty]} testID="theme-check">
         {selected ? <Icon name="check" size={15} color="onAccent" /> : null}
       </View>
-    </Tappable>
+    </Card>
   );
 }
 

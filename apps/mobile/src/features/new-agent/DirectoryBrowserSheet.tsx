@@ -7,28 +7,13 @@ import {
   EmptyState,
   Icon,
   ListRow,
-  makeStyles,
+  SearchField,
   Section,
   Sheet,
-  TextField,
   useStoreState,
 } from '@openagentspocket/ui';
 import { type ReactNode, useEffect, useMemo } from 'react';
-import { View } from 'react-native';
 import { browserErrorText } from './text';
-
-const useStyles = makeStyles((t) => ({
-  filter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: t.spacing.md,
-    borderRadius: t.metrics.cardRadius,
-    borderWidth: t.metrics.hairlineWidth,
-    borderColor: t.hairline,
-    backgroundColor: t.colors.control,
-  },
-  filterInput: { flex: 1 },
-}));
 
 interface DirectoryBrowserSheetProps {
   visible: boolean;
@@ -182,22 +167,15 @@ function FilterField({
   onChange: (text: string) => void;
   hidden: boolean;
 }) {
-  const styles = useStyles();
   if (hidden) return null;
   return (
-    <View style={styles.filter}>
-      <Icon name="search" color="textSecondary" />
-      <View style={styles.filterInput}>
-        <TextField
-          inline
-          label={t('Filter folders')}
-          value={value}
-          onChangeText={onChange}
-          autoCapitalize="none"
-          autoCorrect={false}
-          testID="directory-filter"
-        />
-      </View>
-    </View>
+    <SearchField
+      label={t('Filter folders')}
+      value={value}
+      onChangeText={onChange}
+      autoCapitalize="none"
+      autoCorrect={false}
+      testID="directory-filter"
+    />
   );
 }
