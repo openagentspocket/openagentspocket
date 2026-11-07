@@ -151,6 +151,41 @@ describe('ComposerCard', () => {
   });
 });
 
+describe('ComposerCard layouts', () => {
+  it('keeps the same input from one line to stacked, so the keyboard stays up', async () => {
+    const { rerender } = await renderThemed(
+      <ComposerCard value="" onChange={jest.fn()} onSend={jest.fn()} />,
+    );
+    const input = screen.getByTestId('composer-card-input');
+    await rerenderThemed(
+      rerender,
+      <ComposerCard value="" expanded onChange={jest.fn()} onSend={jest.fn()} />,
+    );
+    expect(screen.getByTestId('composer-card-input')).toBe(input);
+  });
+
+  it('shows the toolbar toggle and "..." only once stacked', async () => {
+    const more = [{ key: 'p', title: 'Paste', onPress: jest.fn() }];
+    const barToggle = { visible: false, onToggle: jest.fn(), label: 'Toolbar' };
+    const card = (expanded?: boolean) => (
+      <ComposerCard
+        value=""
+        onChange={jest.fn()}
+        onSend={jest.fn()}
+        moreMenu={more}
+        barToggle={barToggle}
+        expanded={expanded}
+      />
+    );
+    const { rerender } = await renderThemed(card());
+    expect(screen.queryByTestId('composer-card-more')).toBeNull();
+    expect(screen.queryByTestId('composer-card-bar-toggle')).toBeNull();
+    await rerenderThemed(rerender, card(true));
+    expect(screen.getByTestId('composer-card-more')).toBeTruthy();
+    expect(screen.getByTestId('composer-card-bar-toggle')).toBeTruthy();
+  });
+});
+
 describe('StatusLine', () => {
   it('is hidden with no data and opens Changes on tap', async () => {
     const { rerender } = await renderThemed(<StatusLine />);
