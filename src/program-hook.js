@@ -8,6 +8,9 @@
 // A hook event is exact, unlike herdr's heuristic status, so there is no
 // debounce and no dedupe: every event is a real ask or a real end of turn, and
 // the collapse key lets a newer push replace an older one for the same pane.
+// In a tmux pane a Blocked push also leaves the ask the Live Activity answers
+// (src/approval-ask-records.js), and the next status clears it. tmux runs one
+// session, so the runtime's state directory is the session's.
 // A failure never reaches the Agent: this always exits 0.
 
 import { spawnSync } from "node:child_process";
@@ -15,6 +18,7 @@ import { homedir } from "node:os";
 import { basename, join } from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { forgetApprovalAsk, recordApprovalAsk } from "./approval-ask-records.js";
 import { approvalFieldsFromRead, visibleScreenArgs } from "./approval-fields.js";
 import { forDisplay, optionalText } from "./display-text.js";
 import { readNotificationConfig } from "./notification-config.js";
@@ -131,8 +135,7 @@ export function configDirOf(env) {
 }
 
 /** The screen's approval fields through the tmux bridge's launcher; null keeps a plain push. */
-function readApproval(configDir, paneId, timestamp) {
-  const launcher = readUsageRuntime(configDir)?.herdr;
+function readApproval(launcher, paneId, timestamp) {
   if (!launcher || !optionalText(paneId)) return null;
   const read = spawnSync(launcher, visibleScreenArgs(paneId), {
     encoding: "utf8",
@@ -166,25 +169,36 @@ async function main() {
     (program === "opencode" ? paneFromTmux(program, input.cwd, process.env) : null);
   const paneId = tmuxPane ?? hookPaneId(process.env, input);
   const configDir = configDirOf(process.env);
+  const status = activityOf(input, event);
   if (tmuxPane) {
     writePaneRecord(configDir, tmuxPane, {
       agent: program,
       session: optionalText(input.session_id ?? input.sessionID),
-      status: activityOf(input, event),
+      status,
     });
   }
+  const runtime = readUsageRuntime(configDir);
+  // Only a pane has a screen to answer on; without a runtime there is nowhere to keep an ask.
+  const askDir = tmuxPane ? runtime?.stateDir : null;
+  if (askDir && status !== null && status !== "blocked") forgetApprovalAsk(askDir, tmuxPane);
   if (event === null || paneId === null) return;
   const devices = readEligibleDevices(configDir, event.status, "");
-  if (devices.length === 0) return;
+  if (devices.length === 0) {
+    // No device takes this push, so none answers from an older ask.
+    if (askDir && event.status === "blocked") forgetApprovalAsk(askDir, tmuxPane);
+    return;
+  }
   const cwd = optionalText(input.cwd);
   const timestamp = Math.floor(Date.now() / 1000);
+  const approval = devices.some((device) => device.approve)
+    ? readApproval(runtime?.herdr, tmuxPane, timestamp)
+    : null;
+  if (askDir && event.status === "blocked") recordApprovalAsk(askDir, tmuxPane, timestamp, approval);
   const { failures } = await deliverToDevices({
     configDir,
     config: readNotificationConfig(configDir),
     devices,
-    approval: devices.some((device) => device.approve)
-      ? readApproval(configDir, tmuxPane, timestamp)
-      : null,
+    approval,
     payload: {
       paneId,
       agentKind: program,
