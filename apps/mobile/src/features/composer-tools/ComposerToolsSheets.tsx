@@ -1,10 +1,13 @@
+import type { AgentSkill } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { Sheet, useSheetHandover } from '@openagentspocket/ui';
+import { useState } from 'react';
+import { SkillContentSheet } from './SkillContentSheet';
 import { SkillsPane } from './SkillsPane';
 import { SnippetsManager } from './SnippetsManager';
 import { SnippetsPane } from './SnippetsPane';
 import { snippetStore } from './snippetStore';
-import { useSkillsPaneStore } from './useAgentSkills';
+import { useSkillReader, useSkillsPaneStore } from './useAgentSkills';
 
 /** The tool sheets a composer's "..." menu opens (Swift Skills and Snippets from the Keys tabs). */
 export type ToolsSheet = 'skills' | 'snippets' | 'snippets-manager';
@@ -33,11 +36,17 @@ export function ComposerToolsSheets({
   onInsert,
 }: Props) {
   const skills = useSkillsPaneStore({ hostId, program, projectRoot });
+  const readSkill = useSkillReader(hostId);
+  const [shownSkill, setShownSkill] = useState<AgentSkill>();
   const handover = useSheetHandover();
   const close = () => onOpen(null);
   // One sheet leads to another: the next opens once this one has left.
   const move = (next: ToolsSheet) => {
     handover.after(() => onOpen(next));
+    close();
+  };
+  const viewContent = (skill: AgentSkill) => {
+    handover.after(() => setShownSkill(skill));
     close();
   };
   const insert = (text: string) => {
@@ -53,8 +62,15 @@ export function ComposerToolsSheets({
         title={t('Skills')}
         testID="skills-sheet"
       >
-        {open === 'skills' ? <SkillsPane store={skills} onInsert={insert} /> : null}
+        {open === 'skills' ? (
+          <SkillsPane store={skills} onInsert={insert} onViewContent={viewContent} />
+        ) : null}
       </Sheet>
+      <SkillContentSheet
+        skill={shownSkill}
+        readFile={readSkill}
+        onClose={() => setShownSkill(undefined)}
+      />
       <Sheet
         visible={open === 'snippets'}
         onClose={close}

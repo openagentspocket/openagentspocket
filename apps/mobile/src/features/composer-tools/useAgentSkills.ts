@@ -1,6 +1,6 @@
 import { type AgentSkill, SkillsPaneStore } from '@openagentspocket/core';
-import { listSkills, SshTransport } from '@openagentspocket/transport';
-import { useEffect, useMemo, useSyncExternalStore } from 'react';
+import { listSkills, readSkillFile, SshTransport } from '@openagentspocket/transport';
+import { useCallback, useEffect, useMemo, useSyncExternalStore } from 'react';
 import { useConsoleStore } from '@/console/hooks';
 
 type FetchSkills = (query: {
@@ -44,6 +44,20 @@ export function useSkillsPaneStore({
         },
       }),
     [consoleStore, fetchSkills, hostId, program, projectRoot],
+  );
+}
+
+/** Reads a skill's whole document from the Host; a Host without SSH has none to read. */
+export function useSkillReader(hostId: string): (path: string) => Promise<string> {
+  const consoleStore = useConsoleStore();
+  return useCallback(
+    (path) =>
+      consoleStore.withTransport(hostId, async (transport) => {
+        if (!(transport instanceof SshTransport))
+          throw new Error('This Host has no files to read.');
+        return readSkillFile(transport, path);
+      }),
+    [consoleStore, hostId],
   );
 }
 

@@ -1,6 +1,6 @@
 import { type AgentSkill, skillCommand, userFacingDescription } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { AsyncContent, CodeBlock, Sheet } from '@openagentspocket/ui';
+import { SkillContentSheet as SkillContentView } from '@openagentspocket/ui';
 import { useEffect, useState } from 'react';
 
 interface SkillContentSheetProps {
@@ -36,29 +36,15 @@ export function SkillContentSheet({ skill, readFile, onClose }: SkillContentShee
   }, [path, readFile]);
 
   return (
-    <Sheet
+    <SkillContentView
       visible={skill !== undefined}
+      name={skill ? t('Skill %@', skillCommand(skill)) : ''}
+      state={load.kind}
+      content={load.kind === 'loaded' ? load.content : undefined}
+      message={load.kind === 'failed' ? t('Loading the skill failed: %@', load.error) : undefined}
       onClose={onClose}
-      title={skill ? t('Skill %@', skillCommand(skill)) : undefined}
-      closeLabel={t('Close')}
-      detent="large"
+      doneLabel={t('Close')}
       testID="skill-content"
-    >
-      <AsyncContent
-        loading={load.kind === 'loading'}
-        loadingLabel={t('Loading…')}
-        failure={
-          load.kind === 'failed'
-            ? {
-                layout: 'compact',
-                summary: t('Loading the skill failed: %@', load.error),
-                testID: 'skill-content-failed',
-              }
-            : null
-        }
-      >
-        {load.kind === 'loaded' ? <CodeBlock code={load.content} /> : null}
-      </AsyncContent>
-    </Sheet>
+    />
   );
 }
