@@ -23,9 +23,9 @@ const QUESTIONS: readonly BlockedDialogKind[] = [
   'openCodeQuestion',
 ];
 
-/** The card's heading: the dialog's own title, or a name for the kinds the screen words poorly. */
+/** The card's heading: what a question asks, the dialog's title, or a name for poorly worded kinds. */
 export function cardTitle(dialog: BlockedDialog): string {
-  if (QUESTIONS.includes(dialog.kind)) return t('Question');
+  if (QUESTIONS.includes(dialog.kind)) return dialog.subject.question ?? t('Question');
   if (dialog.kind === 'codexAsyncCollapsed') return t('Questions');
   if (dialog.kind === 'ompApproval') return t('Allow %@', dialog.subject.toolName ?? t('Tool'));
   return dialog.title.endsWith(':') ? dialog.title.slice(0, -1) : dialog.title;

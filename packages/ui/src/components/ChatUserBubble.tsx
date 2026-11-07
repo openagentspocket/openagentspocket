@@ -69,7 +69,7 @@ export function ChatUserBubble({
   return (
     <View style={styles.row} testID={testID}>
       <Tappable
-        accessibilityLabel={text}
+        accessibilityLabel={text || attachments?.join(', ')}
         accessibilityActions={menu?.map((m) => ({ name: m.key, label: m.title }))}
         onAccessibilityAction={(e) =>
           menu?.find((m) => m.key === e.nativeEvent.actionName)?.onPress()
@@ -77,7 +77,7 @@ export function ChatUserBubble({
         onLongPress={menu?.length ? context.open : undefined}
         style={[styles.bubble, pending && styles.pending]}
       >
-        <Text variant="body">{text}</Text>
+        {text ? <Text variant="body">{text}</Text> : null}
         {attachments?.length ? (
           <View style={styles.chips}>
             {attachments.map((name) => (

@@ -243,7 +243,7 @@ function Known({
           </View>
         ))}
         {dialog.options.some((option) => !isTappable(option)) ? (
-          <Text variant="footnote" tone="secondary">
+          <Text variant="caption" tone="secondary">
             {t('Type your own answer in the terminal.')}
           </Text>
         ) : null}
@@ -291,8 +291,13 @@ export function BlockedCard(props: BlockedCardProps) {
         accessibilityState={{ expanded: !state.isCollapsed }}
         testID="blocked-collapse"
       >
-        <Icon name="hand" size={20} color="warning" />
-        <Text variant="headline" style={styles.title} numberOfLines={state.isCollapsed ? 1 : 2}>
+        <Icon name="hand" size={16} color="warning" />
+        <Text
+          variant="subheadline"
+          semibold
+          style={styles.title}
+          numberOfLines={state.isCollapsed ? 1 : 4}
+        >
           {heading}
         </Text>
         <Icon name={state.isCollapsed ? 'chevronRight' : 'chevronDown'} color="accent" />

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { FakeClock } from '../hosts/cancellation';
 import { MemoryStorage } from '../hosts/known-hosts';
+import { withoutAttachmentPaths } from './draft-attachments';
 import { terminalPolicy } from './policy';
 import { ComposerRegistry } from './registry';
 import { ComposerStore } from './store';
@@ -224,5 +225,22 @@ describe('ComposerRegistry attachments', () => {
       const store = new ComposerRegistry({ storage, clock }).composerFor({ ...input, key });
       expect(store.getSnapshot().attachments).toEqual([]);
     }
+  });
+});
+
+describe('withoutAttachmentPaths', () => {
+  const staged = '/var/folders/ab/T//agentico.UVJYsaXb/stage-3963606aec0f/image.png';
+
+  it('takes staged paths out of the text and names their files', () => {
+    expect(withoutAttachmentPaths(`Look at this ${staged} `)).toEqual({
+      text: 'Look at this',
+      names: ['image.png'],
+    });
+    expect(withoutAttachmentPaths(`${staged} ${staged} `).names).toHaveLength(2);
+  });
+
+  it('leaves a message with other paths as it was written', () => {
+    const typed = 'Read /tmp/stage-1/notes.md  please';
+    expect(withoutAttachmentPaths(typed)).toEqual({ text: typed, names: [] });
   });
 });

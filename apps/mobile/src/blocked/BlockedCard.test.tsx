@@ -131,6 +131,16 @@ describe('BlockedCard', () => {
     expect(props.onSubmitSelection).toHaveBeenCalledWith([1, 2]);
   });
 
+  it('heads a question with what it asks', async () => {
+    const dialog: BlockedDialog = {
+      ...bashDialog(),
+      kind: 'claudeQuestion',
+      subject: { ...bashDialog().subject, question: 'Ship it?' },
+    };
+    await renderCard({ content: { kind: 'card', dialog } });
+    expect(screen.getByText('Ship it?')).toBeTruthy();
+  });
+
   it('draws nothing, and offers no keys, for a question no read shows', async () => {
     await renderCard({ content: { kind: 'questionUnread' } });
     expect(screen.queryByTestId('blocked-card')).toBeNull();

@@ -1,4 +1,4 @@
-import { type ChatRow, rowCopyText } from '@openagentspocket/core';
+import { type ChatRow, rowCopyText, withoutAttachmentPaths } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   ActionMenu,
@@ -67,24 +67,29 @@ export const ChatRowView = memo(function ChatRowView({
   const { openCalls } = useAgentWait();
   const body = () => {
     switch (content.type) {
-      case 'user':
+      case 'user': {
+        const { text, names } = withoutAttachmentPaths(content.message.text);
         return (
           <ChatUserBubble
-            text={content.message.text}
-            attachments={content.message.attachmentLabels}
+            text={text}
+            attachments={[...content.message.attachmentLabels, ...names]}
             menu={menu}
           />
         );
-      case 'pending':
+      }
+      case 'pending': {
+        const { text, names } = withoutAttachmentPaths(content.echo.text);
         return (
           <ChatUserBubble
-            text={content.echo.text}
+            text={text}
+            attachments={names}
             pending={content.echo.state.kind === 'sending'}
             pendingLabel={t('Sending…')}
             status={echoStatus(content.echo.state)}
             menu={menu}
           />
         );
+      }
       case 'assistant':
         return <Markdown text={content.source} onLongPress={copy.onLongPress} />;
       case 'plan':

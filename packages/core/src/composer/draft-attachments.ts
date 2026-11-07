@@ -11,6 +11,18 @@ export function withAttachmentPaths(
   return /\s$/u.test(typed) ? typed + paths : `${typed} ${paths}`;
 }
 
+const STAGED_PATH = /(?:^|(?<=\s))\/\S*\/agentico\.[^/\s]+\/stage-[^/\s]+\/([^/\s]+)(?=\s|$)/gu;
+
+/** A sent message as a person reads it: the typed text, and the staged files by name. */
+export function withoutAttachmentPaths(sent: string): { text: string; names: string[] } {
+  const names: string[] = [];
+  const text = sent.replace(STAGED_PATH, (_path, name: string) => {
+    names.push(name);
+    return '';
+  });
+  return names.length === 0 ? { text: sent, names } : { text: text.trim(), names };
+}
+
 export interface DraftAttachmentsOptions {
   readonly initialAttachments?: readonly StagedAttachment[];
   /** Called with the standing attachments after every change, to persist them. */
