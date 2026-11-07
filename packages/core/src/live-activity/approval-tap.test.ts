@@ -176,11 +176,25 @@ describe('runActivityTap', () => {
     expect(apply).not.toHaveBeenCalled();
   });
 
-  it('a failed apply keeps the episode spent: it never answers twice', async () => {
+  it('an apply that never reached the Host keeps the buttons working', async () => {
     const { all, apply } = gates();
     apply.mockRejectedValueOnce(new Error('offline'));
-    expect(await runActivityTap(DENY, all)).toBe('unreachable');
-    expect(await runActivityTap(DENY, all)).toBe('ignored');
+    expect(activityResultOf(await runActivityTap(DENY, all))).toBe('unreachable');
+    expect(activityResultOf(await runActivityTap(DENY, all))).toBe('sent');
+  });
+
+  it('a timed out apply can be tapped again and never reads as answered', async () => {
+    const { all, apply } = gates();
+    apply.mockResolvedValueOnce('too_slow').mockResolvedValueOnce('claimed');
+    expect(activityResultOf(await runActivityTap(DENY, all))).toBe('timed_out');
+    expect(activityResultOf(await runActivityTap(DENY, all))).toBe('prompt_changed');
+  });
+
+  it('an apply that may have sent the key keeps the episode spent', async () => {
+    const { all, apply } = gates();
+    apply.mockResolvedValueOnce('failed');
+    expect(activityResultOf(await runActivityTap(DENY, all))).toBe('may_have_sent');
+    await runActivityTap(DENY, all);
     expect(apply).toHaveBeenCalledTimes(1);
   });
 });

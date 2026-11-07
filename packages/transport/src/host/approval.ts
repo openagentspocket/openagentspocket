@@ -11,7 +11,11 @@ import type { SshTransport } from '../transport';
 import { runHostDataScript } from './host-data';
 import { readPlugin } from './plugin';
 
-/** Asks the Host's plugin to answer: it re-reads the screen and presses the digit only on a match. */
+/**
+ * Asks the Host's plugin to answer: it re-reads the screen and presses the digit only on a match.
+ * Throws only before the script starts. Once it may have run, any failure reads `failed`: past the
+ * Host's claim the key may have gone, and this also keeps a link retry from running it twice.
+ */
 export async function applyApproval(
   transport: SshTransport,
   request: ApprovalApplyRequest,
@@ -20,7 +24,11 @@ export async function applyApproval(
   const plugin = await readPlugin(transport);
   if (!plugin?.isEnabled || !plugin.pluginRoot) return 'plugin_unavailable';
   const script = approvalApplyScript(plugin.pluginRoot, request, endpoint);
-  return approvalApplyResult(await runHostDataScript(transport, 'approval', script));
+  try {
+    return approvalApplyResult(await runHostDataScript(transport, 'approval', script));
+  } catch {
+    return 'failed';
+  }
 }
 
 /** The Host's asks as a `HostDataSource`; null when its plugin cannot answer. */

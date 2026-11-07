@@ -198,31 +198,72 @@ export class MirroredApprovalOptIns extends StoredApprovalOptIns {
 
 /** Episodes this device already answered, so a double tap sends nothing twice. */
 export class ApprovalLedger {
+  private readonly releasedKey: string;
+
   constructor(
     private readonly storage: KeyValueStorage,
     private readonly key = 'notifications.approval-ledger',
-  ) {}
+  ) {
+    this.releasedKey = `${key}.released`;
+  }
 
-  private read(): Record<string, number> {
+  private read(key: string, nowSeconds: number): [string, number][] {
     try {
-      const value: unknown = JSON.parse(this.storage.getString(this.key) ?? '{}');
-      return typeof value === 'object' && value !== null ? (value as Record<string, number>) : {};
+      const value: unknown = JSON.parse(this.storage.getString(key) ?? '{}');
+      if (typeof value !== 'object' || value === null) return [];
+      return Object.entries(value as Record<string, number>).filter(
+        ([, at]) => nowSeconds - at < LEDGER_RETENTION_SECONDS,
+      );
     } catch {
-      return {};
+      return [];
     }
+  }
+
+  private write(key: string, entries: [string, number][]): void {
+    this.storage.set(key, JSON.stringify(Object.fromEntries(entries)));
+  }
+
+  isSpent(hostId: string, episodeId: string, nowSeconds: number): boolean {
+    const entry = `${hostId}/${episodeId}`;
+    return this.read(this.key, nowSeconds).some(([key]) => key === entry);
   }
 
   /** False when spent. Spent before anything goes out: a failure never answers twice. */
   claim(hostId: string, episodeId: string, nowSeconds: number): boolean {
-    const entry = `${hostId}/${episodeId}`;
-    const kept = Object.entries(this.read()).filter(
-      ([, at]) => nowSeconds - at < LEDGER_RETENTION_SECONDS,
-    );
-    if (kept.some(([key]) => key === entry)) return false;
-    this.storage.set(this.key, JSON.stringify(Object.fromEntries([...kept, [entry, nowSeconds]])));
+    if (this.isSpent(hostId, episodeId, nowSeconds)) return false;
+    const entry: [string, number] = [`${hostId}/${episodeId}`, nowSeconds];
+    this.write(this.key, [...this.read(this.key, nowSeconds), entry]);
     return true;
   }
+
+  /** Gives an episode back once it is known nothing went out; it remembers there was a try. */
+  release(hostId: string, episodeId: string, nowSeconds: number): void {
+    const entry = `${hostId}/${episodeId}`;
+    const others = ([key]: [string, number]) => key !== entry;
+    this.write(this.key, this.read(this.key, nowSeconds).filter(others));
+    const released = this.read(this.releasedKey, nowSeconds).filter(others);
+    this.write(this.releasedKey, [...released, [entry, nowSeconds]]);
+  }
+
+  /** Whether this device tried this episode and sent nothing. */
+  wasReleased(hostId: string, episodeId: string, nowSeconds: number): boolean {
+    const entry = `${hostId}/${episodeId}`;
+    return this.read(this.releasedKey, nowSeconds).some(([key]) => key === entry);
+  }
 }
+
+/** What the apply prints when it pressed no key, so the episode is not spent here. */
+const NOTHING_PRESSED: ReadonlySet<string> = new Set([
+  'too_slow',
+  'prompt_changed',
+  'option_changed',
+  'unreadable',
+  'not_approval',
+  'deny_only',
+  'runtime_missing',
+  'plugin_unavailable',
+  'bad_request',
+]);
 
 /** The result `approval-apply.js` printed, as what the user is told. */
 export function approvalOutcomeOf(result: string): ApprovalOutcome {
@@ -242,6 +283,7 @@ export function approvalOutcomeOf(result: string): ApprovalOutcome {
       return 'timedOut';
     case 'send_failed':
     case 'failed':
+    case '':
       return 'sendFailed';
     default:
       return 'pluginOutdated';
@@ -255,7 +297,10 @@ export interface ApprovalActionInput {
   readonly optIns: Pick<StoredApprovalOptIns, 'isEnabled'>;
   readonly ledger: ApprovalLedger;
   readonly nowSeconds: number;
-  /** Runs the apply on the Host and gives back the result it printed. */
+  /**
+   * Runs the apply on the Host and gives back the result it printed. It throws only when the script
+   * never started; a run that broke midway gives `failed`, because the key may have gone.
+   */
   readonly apply: (hostId: string, request: ApprovalApplyRequest) => Promise<string>;
 }
 
@@ -281,12 +326,21 @@ export async function answerApproval(input: ApprovalAnswerInput): Promise<Approv
     const confirmed = await input.authenticate(plan.request).catch(() => false);
     if (confirmed !== true) return 'notAuthenticated';
   }
-  if (!input.ledger.claim(input.hostId, plan.request.episodeId, input.nowSeconds)) return 'ignored';
+  const { hostId, ledger, nowSeconds } = input;
+  const { episodeId } = plan.request;
+  const triedBefore = ledger.wasReleased(hostId, episodeId, nowSeconds);
+  if (!ledger.claim(hostId, episodeId, nowSeconds)) return 'ignored';
+  let result: string;
   try {
-    return approvalOutcomeOf(await input.apply(input.hostId, plan.request));
+    result = await input.apply(hostId, plan.request);
   } catch {
+    ledger.release(hostId, episodeId, nowSeconds);
     return 'unreachable';
   }
+  // A try of ours that pressed nothing can hold the Host's claim: that is no answer.
+  const heldByOwnTry = result === 'claimed' && triedBefore;
+  if (heldByOwnTry || NOTHING_PRESSED.has(result)) ledger.release(hostId, episodeId, nowSeconds);
+  return heldByOwnTry ? 'promptChanged' : approvalOutcomeOf(result);
 }
 
 /** Approve or Deny from a notification: every check here, the binding one on the Host. */

@@ -26,8 +26,9 @@ export function approvalFeedback(outcome: ApprovalOutcome, host: string): string
     case 'unreachable':
       return t("Couldn't reach %@. Nothing was sent.", host);
     case 'sendFailed':
-    case 'timedOut':
       return t("Sent, but the Agent didn't react. Check it.");
+    case 'timedOut':
+      return t('The Host took too long. Nothing was sent.');
     case 'notAuthenticated':
       return t('Approving needs your Face ID or passcode. Nothing was sent.');
   }

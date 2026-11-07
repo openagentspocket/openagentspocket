@@ -123,10 +123,55 @@ describe('runApprovalAction', () => {
     expect(forged.apply).not.toHaveBeenCalled();
   });
 
-  it('reports a Host it cannot reach, and never retries the episode', async () => {
-    const action = input({ apply: vi.fn(() => Promise.reject(new Error('down'))) });
+  it('a Host it never reached leaves the episode answerable', async () => {
+    const apply = vi.fn(async () => 'sent');
+    apply.mockRejectedValueOnce(new Error('down'));
+    const action = input({ apply });
     expect((await runApprovalAction(action)).outcome).toBe('unreachable');
+    expect((await runApprovalAction(action)).outcome).toBe('answered');
+    expect(apply).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([
+    ['too_slow', 'timedOut'],
+    ['prompt_changed', 'promptChanged'],
+    ['option_changed', 'promptChanged'],
+    ['unreadable', 'promptChanged'],
+    ['not_approval', 'promptChanged'],
+    ['deny_only', 'denyOnly'],
+    ['runtime_missing', 'pluginOutdated'],
+    ['plugin_unavailable', 'pluginOutdated'],
+    ['bad_request', 'pluginOutdated'],
+  ])('%s pressed nothing: the episode is not spent here', async (result, outcome) => {
+    const apply = vi.fn(async () => 'sent');
+    apply.mockResolvedValueOnce(result);
+    const action = input({ apply });
+    expect((await runApprovalAction(action)).outcome).toBe(outcome);
+    expect((await runApprovalAction(action)).outcome).toBe('answered');
+  });
+
+  it.each([
+    ['sent', 'answered'],
+    ['claimed', 'ignored'],
+    ['send_failed', 'sendFailed'],
+    ['failed', 'sendFailed'],
+    ['', 'sendFailed'],
+    ['a word from a newer plugin', 'pluginOutdated'],
+  ])('%j may have pressed the key: the episode stays spent', async (result, outcome) => {
+    const apply = vi.fn(async () => result);
+    const action = input({ apply });
+    expect((await runApprovalAction(action)).outcome).toBe(outcome);
     expect((await runApprovalAction(action)).outcome).toBe('ignored');
+    expect(apply).toHaveBeenCalledTimes(1);
+  });
+
+  it('the Host claim still rules: its own spent try never reads as answered', async () => {
+    const apply = vi.fn(async () => 'claimed');
+    apply.mockResolvedValueOnce('too_slow');
+    const action = input({ apply });
+    expect((await runApprovalAction(action)).outcome).toBe('timedOut');
+    expect((await runApprovalAction(action)).outcome).toBe('promptChanged');
+    expect((await runApprovalAction(action)).outcome).toBe('promptChanged');
   });
 });
 
@@ -135,7 +180,7 @@ describe('the Host side', () => {
     expect(approvalOutcomeOf('sent')).toBe('answered');
     expect(approvalOutcomeOf('claimed')).toBe('ignored');
     expect(approvalOutcomeOf('prompt_changed')).toBe('promptChanged');
-    expect(approvalOutcomeOf('')).toBe('pluginOutdated');
+    expect(approvalOutcomeOf('')).toBe('sendFailed');
     expect(approvalApplyResult('noise\n{"v":1,"result":"sent","keys":["1"]}\n')).toBe('sent');
     expect(approvalApplyResult('not json')).toBe('');
   });

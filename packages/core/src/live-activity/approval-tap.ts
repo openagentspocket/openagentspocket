@@ -34,7 +34,7 @@ export interface ActivityTapGates {
   readonly readAsks: (hostId: string) => Promise<ApprovalAskReading>;
   /** Device owner authentication, for Approve; true only on a fresh success. */
   readonly authenticate: (request: ApprovalApplyRequest) => Promise<boolean>;
-  /** Runs the apply on the Host and gives back the result it printed. */
+  /** Runs the apply on the Host: the result it printed, a throw only if it never started. */
   readonly apply: (hostId: string, request: ApprovalApplyRequest) => Promise<string>;
 }
 

@@ -55,6 +55,7 @@
   "Tap Ctrl to apply it to the next key. Touch and hold it to keep it on until you tap it again.": "Tocá Ctrl para aplicarlo a la próxima tecla. Mantenelo apretado para dejarlo activo hasta que lo toques de nuevo.",
   "Teammate @%@": "Compañero @{0}",
   "Terminal attach is not available yet.": "Adjuntar la terminal todavía no está disponible.",
+  "The Host took too long. Nothing was sent.": "El Host tardó demasiado. No se envió nada.",
   "The Host's SQLite %@ can't read Hermes Agent's database: Chat needs SQLite 3.25 or newer with JSON support, through sqlite3 or Python 3.6 or newer.": "SQLite {0} del Host no puede leer la base de datos de Hermes Agent: Chat necesita SQLite 3.25 o posterior con soporte JSON, mediante sqlite3 o Python 3.6 o posterior.",
   "The app closed unexpectedly": "La app se cerró inesperadamente",
   "The app connects": "La app se conecta",
