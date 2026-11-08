@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { Modal, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { Modal, ScrollView, useWindowDimensions, View, type ViewInstance } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
@@ -14,6 +14,8 @@ export type { MenuGroup } from './menuGroups';
 export { groupMenuItems, isDeadMenuTrigger };
 
 const MEASURE_TIMEOUT_MS = 80;
+/** A subtitle's or a section title's line, for placing the menu before it is measured. */
+const LINE_HEIGHT = 20;
 
 export interface ActionMenuItem {
   key: string;
@@ -234,7 +236,10 @@ export function ActionMenu({
     );
     if (inline) return visible ? body : null;
   } else {
-    const estimated = items.length * theme.metrics.minTapSize + (title ? 40 : 0);
+    // A subtitle and a section title each add a line; the panel scrolls past the room it gets.
+    const lines = items.filter((item) => item.subtitle).length + groupMenuItems(items).length;
+    const estimated =
+      items.length * theme.metrics.minTapSize + lines * LINE_HEIGHT + (title ? 40 : 0);
     const left = shown
       ? Math.min(Math.max(margin, shown.x + shown.width - width), window.width - width - margin)
       : (window.width - width) / 2;
@@ -242,13 +247,14 @@ export function ActionMenu({
     const lowest = window.height - insets.bottom - margin;
     const fitsBelow = below + estimated < lowest;
     const fitsAbove = shown ? shown.y - 4 - estimated > insets.top + margin : false;
+    const highest = insets.top + margin;
     const position = shown
       ? fitsBelow
-        ? { left, top: below }
+        ? { left, top: below, maxHeight: lowest - below }
         : fitsAbove
-          ? { left, bottom: window.height - shown.y + 4 }
-          : { left, top: Math.max(insets.top + margin, lowest - estimated) }
-      : { left, bottom: insets.bottom + theme.spacing.lg };
+          ? { left, bottom: window.height - shown.y + 4, maxHeight: shown.y - 4 - highest }
+          : { left, top: Math.max(highest, lowest - estimated), maxHeight: lowest - highest }
+      : { left, bottom: insets.bottom + theme.spacing.lg, maxHeight: lowest - highest };
     body = (
       <View
         style={[styles.panel, styles.popover, { width }, position]}
@@ -260,32 +266,34 @@ export function ActionMenu({
             {title}
           </Text>
         ) : null}
-        {groupMenuItems(items).map((group, groupIndex) => (
-          <View key={group.items[0]?.key}>
-            {groupIndex > 0 ? (
-              <View style={styles.groupGap} testID={`${testID}-group-gap`} />
-            ) : null}
-            {group.title ? (
-              <Text
-                variant="footnote"
-                semibold
-                tone="secondary"
-                style={styles.sectionTitle}
-                accessibilityRole="header"
-              >
-                {group.title}
-              </Text>
-            ) : null}
-            {group.items.map((item, index) => (
-              <View key={item.key}>
-                {index > 0 || (groupIndex === 0 && title) ? (
-                  <View style={styles.separator} />
-                ) : null}
-                {renderItem(item)}
-              </View>
-            ))}
-          </View>
-        ))}
+        <ScrollView bounces={false} testID={`${testID}-scroll`}>
+          {groupMenuItems(items).map((group, groupIndex) => (
+            <View key={group.items[0]?.key}>
+              {groupIndex > 0 ? (
+                <View style={styles.groupGap} testID={`${testID}-group-gap`} />
+              ) : null}
+              {group.title ? (
+                <Text
+                  variant="footnote"
+                  semibold
+                  tone="secondary"
+                  style={styles.sectionTitle}
+                  accessibilityRole="header"
+                >
+                  {group.title}
+                </Text>
+              ) : null}
+              {group.items.map((item, index) => (
+                <View key={item.key}>
+                  {index > 0 || (groupIndex === 0 && title) ? (
+                    <View style={styles.separator} />
+                  ) : null}
+                  {renderItem(item)}
+                </View>
+              ))}
+            </View>
+          ))}
+        </ScrollView>
       </View>
     );
   }

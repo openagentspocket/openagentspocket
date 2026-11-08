@@ -1,5 +1,5 @@
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react-native';
-import { StyleSheet, Text } from 'react-native';
+import { Dimensions, StyleSheet, Text } from 'react-native';
 import {
   ActionMenu,
   ActionMenuButton,
@@ -266,6 +266,20 @@ describe('ActionMenu', () => {
     expect(onOff).not.toHaveBeenCalled();
     await fireEvent.press(screen.getByRole('menuitem', { name: 'Rename' }));
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('keeps a long menu inside the window, scrolling past its room', async () => {
+    const items = Array.from({ length: 30 }, (_, index) => ({
+      key: `k${index}`,
+      title: `Item ${index}`,
+      subtitle: 'Esc',
+      onPress: () => {},
+    }));
+    await renderThemed(<ActionMenu visible onClose={() => {}} items={items} />);
+    expect(screen.getByTestId('action-menu-scroll')).toBeTruthy();
+    const { maxHeight } = StyleSheet.flatten(screen.getByTestId('action-menu').props.style);
+    expect(maxHeight).toBeGreaterThan(0);
+    expect(maxHeight).toBeLessThanOrEqual(Dimensions.get('window').height);
   });
 
   it('presents the system menu on iOS when asked to', async () => {
