@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
+import { SearchField } from '../form/SearchField';
 import { Sheet } from '../overlay/Sheet';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
@@ -8,8 +9,7 @@ import { Icon } from '../primitives/Icon';
 import { Segmented } from '../primitives/Segmented';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
-import { ThemedTextInput } from '../primitives/ThemedTextInput';
-import { makeStyles, useTheme } from '../theme/theme';
+import { makeStyles } from '../theme/theme';
 import { OverlayPeerViews } from './OverlayPeerViews';
 
 export type OverlayPeerMode = 'ip' | 'name';
@@ -84,16 +84,6 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: 3,
   },
   empty: { padding: t.spacing.md },
-  search: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: t.spacing.xs,
-    backgroundColor: t.colors.control,
-    borderRadius: 999,
-    paddingHorizontal: t.spacing.md,
-    minHeight: t.metrics.minTapSize,
-  },
-  input: { flex: 1, color: t.colors.textPrimary, fontSize: 17, paddingVertical: t.spacing.xs },
 }));
 
 interface OverlayPeerPickerBodyProps {
@@ -120,7 +110,6 @@ export function OverlayPeerPickerBody({
   labels,
 }: OverlayPeerPickerBodyProps) {
   const styles = useStyles();
-  const theme = useTheme();
   const text = { ...defaultOverlayPeerPickerLabels, ...labels };
   const [query, setQuery] = useState('');
   if (failure)
@@ -214,17 +203,12 @@ export function OverlayPeerPickerBody({
           ))
         )}
       </Card>
-      <View style={styles.search}>
-        <Icon name="search" size={15} />
-        <ThemedTextInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder={text.searchPlaceholder}
-          accessibilityLabel={text.searchPlaceholder}
-          style={styles.input}
-          testID="peer-search"
-        />
-      </View>
+      <SearchField
+        label={text.searchPlaceholder}
+        value={query}
+        onChangeText={setQuery}
+        testID="peer-search"
+      />
     </View>
   );
 }

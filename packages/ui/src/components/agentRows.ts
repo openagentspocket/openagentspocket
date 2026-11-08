@@ -5,5 +5,5 @@ export { type AgentRowActions, AgentRowMenu, agentRowActions } from './AgentRowM
 export { type AgentRowLabels, defaultAgentRowLabels } from './agentRowLabels';
 export { FoldHeader, type FoldHeaderKind, type FoldPill } from './FoldHeader';
 export { type HostIssue, HostIssueRow } from './HostIssueRow';
-export { TerminalGroup, type TerminalModel, TerminalRow, TerminalTile } from './TerminalRow';
+export { TerminalGroup, type TerminalModel, TerminalRow } from './TerminalRow';
 export { NestedWorktree, WorkspaceCard, type WorkspaceModel } from './WorkspaceCard';

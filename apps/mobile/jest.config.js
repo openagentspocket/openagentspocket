@@ -1,7 +1,7 @@
 const { transformIgnorePatterns } = require('jest-expo/jest-preset');
 
-// jest-expo's allowlist plus the ESM-only libraries @openagentspocket/ui ships (FlashList, marked).
-const ESM_LIBS = ['@shopify/flash-list', 'marked'];
+// jest-expo's allowlist plus the ESM-only libraries @openagentspocket/ui ships (marked).
+const ESM_LIBS = ['marked'];
 
 module.exports = {
   preset: 'jest-expo',

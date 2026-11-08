@@ -2,7 +2,7 @@ import { AgentCard, type AgentCardModel } from '../../components/AgentCard';
 import { AgentRowMenu, agentRowActions } from '../../components/AgentRowMenu';
 import { FoldHeader } from '../../components/FoldHeader';
 import { HostIssueRow } from '../../components/HostIssueRow';
-import { TerminalGroup, TerminalRow, TerminalTile } from '../../components/TerminalRow';
+import { TerminalGroup, TerminalRow } from '../../components/TerminalRow';
 import { WorkspaceCard } from '../../components/WorkspaceCard';
 import { ActionMenu } from '../../overlay/ActionMenu';
 import { Card } from '../../primitives/Card';
@@ -179,12 +179,6 @@ export const agentRowsEntries: readonly CatalogEntry[] = [
             />
             <TerminalRow terminal={{ title: '3', path: '~/workspace/agentico' }} onPress={noop} />
           </TerminalGroup>
-        ),
-      },
-      {
-        id: 'tile',
-        render: () => (
-          <TerminalTile terminal={{ title: 'landing', path: '~/workspace/agentico/landing' }} />
         ),
       },
     ],

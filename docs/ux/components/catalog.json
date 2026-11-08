@@ -153,8 +153,7 @@
       ],
       "screens": ["console.terminals-list", "agent-detail.shell-terminal"],
       "variants": [
-        "default|rounded card per workspace: terminal tile icon, mono title, mono path, chevron, '+ New Terminal' footer row",
-        "tile|session tile used by the Home Sessions strip"
+        "default|rounded card per workspace: terminal tile icon, mono title, mono path, chevron, '+ New Terminal' footer row"
       ],
       "interactions": "tap opens the shell; swipe Close; long press menu; New Terminal row opens the form sheet",
       "rnToday": ["apps/mobile/src/features/terminals/ (no list yet, see ShellTerminalScreen.tsx)"],

@@ -36,7 +36,6 @@ const useStyles = makeStyles((t) => ({
     minHeight: t.metrics.rowMinHeight,
   },
   plus: { width: 44, alignItems: 'center' },
-  sessionTile: { width: 168, gap: t.spacing.xxs, padding: t.spacing.sm },
 }));
 
 export interface TerminalModel {
@@ -153,37 +152,5 @@ export function TerminalGroup({
         ) : null}
       </Card>
     </View>
-  );
-}
-
-/** The session tile of the Home Sessions strip: terminal glyph, title and path. */
-export function TerminalTile({
-  terminal,
-  onPress,
-  testID = 'terminal-tile',
-}: {
-  terminal: TerminalModel;
-  onPress?: () => void;
-  testID?: string;
-}) {
-  const styles = useStyles();
-  return (
-    <Card
-      padded={false}
-      onPress={onPress}
-      accessibilityLabel={[terminal.title, terminal.path].filter(Boolean).join(', ')}
-      style={styles.sessionTile}
-      testID={testID}
-    >
-      <Icon name="terminal" size={18} color="textSecondary" />
-      <Text variant="caption" semibold monospaced numberOfLines={1}>
-        {terminal.title}
-      </Text>
-      {terminal.path ? (
-        <Text variant="caption2" monospaced tone="secondary" numberOfLines={1}>
-          {terminal.path}
-        </Text>
-      ) : null}
-    </Card>
   );
 }

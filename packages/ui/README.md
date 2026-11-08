@@ -20,7 +20,6 @@ The gallery route renders every primitive in every state: open `/__gallery` in t
 | Inline notice with an action | `<Banner tone title message actionLabel onAction>` |
 | A row in a list or settings | `ListRow` (leading, value, trailing, chevron, swipeActions, menu); `ToggleRow`, `PickerRow`, `StepperRow`, `NavRow`, `TextField` |
 | A group of rows | `<Section title footer level>` (one card, hairlines between rows; `level="overlay"` inside a sheet or drawer) |
-| A long list | `VirtualList` / `VirtualSectionList` (FlashList v2; `startAtBottom` for chat) |
 | Nothing to show, a failure, loading | `EmptyState`, `ErrorState`, `SkeletonRows` |
 | An icon | `<Icon name="copy">`: semantic names mapped to SF Symbols and Material Symbols in `Icon.tsx` |
 
