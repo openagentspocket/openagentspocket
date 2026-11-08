@@ -4,8 +4,8 @@ import {
   AsyncContent,
   Banner,
   Button,
+  Chip,
   EmptyState,
-  MetaChip,
   type ScreenHeader,
   Section,
   useHandoverSheet,
@@ -126,7 +126,7 @@ export function PortsScreen({ store, onOpenPreview, onDone }: PortsScreenProps) 
       onRefresh={refresh}
       testID="ports-screen"
     >
-      <MetaChip label={t('Host %@', store.hostName)} icon="server" testID="ports-host" />
+      <Chip size="small" label={t('Host %@', store.hostName)} icon="server" testID="ports-host" />
       {body}
       <OpenPortSheet
         visible={entering.visible}

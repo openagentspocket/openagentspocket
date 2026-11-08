@@ -5,7 +5,7 @@ import { detentShare, settleDetent } from '../overlay/sheetDetents';
 import { renderThemed, setFontScale } from '../test-utils';
 import { themes } from '../theme/tokens.generated';
 import { Badge } from './Badge';
-import { MetaChip } from './MetaChip';
+import { Chip } from './Chip';
 import { ScreenBackground } from './ScreenBackground';
 import { Segmented } from './Segmented';
 import { StatusOrb } from './StatusOrb';
@@ -84,8 +84,8 @@ describe('UX1 primitives', () => {
     expect(screen.getByTestId('b')).toHaveStyle({ backgroundColor: '#FFAA0026' });
   });
 
-  it('MetaChip is one accessible label', async () => {
-    await renderThemed(<MetaChip label="api" testID="m" />);
+  it('a small Chip is one accessible label', async () => {
+    await renderThemed(<Chip size="small" label="api" testID="m" />);
     expect(screen.getByLabelText('api')).toBeTruthy();
   });
 

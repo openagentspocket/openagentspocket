@@ -7,7 +7,7 @@ import { QuickSheetHeader } from '../../components/QuickSheetHeader';
 import { SearchBar } from '../../components/SearchBar';
 import { TextPromptSheet } from '../../components/TextPromptSheet';
 import { Button } from '../../primitives/Button';
-import { MetaChip } from '../../primitives/MetaChip';
+import { Chip } from '../../primitives/Chip';
 import { ProgramMark } from '../../primitives/ProgramMark';
 import { Text } from '../../primitives/Text';
 import type { CatalogEntry } from './types';
@@ -92,8 +92,8 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
               eyebrowTrailing="7m"
               chips={
                 <>
-                  <MetaChip label="Studio Mac" />
-                  <MetaChip label="agentico" />
+                  <Chip size="small" label="Studio Mac" />
+                  <Chip size="small" label="agentico" />
                 </>
               }
             />

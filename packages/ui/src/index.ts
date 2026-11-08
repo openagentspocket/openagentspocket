@@ -107,7 +107,6 @@ export { EmptyState, type EmptyStateLayout, ErrorState } from './primitives/Empt
 export { GLASS_OPACITY, GlassCapsule } from './primitives/GlassCapsule';
 export { Icon, type IconName, iconNames } from './primitives/Icon';
 export { ListRow, type ListRowProps } from './primitives/ListRow';
-export { MetaChip } from './primitives/MetaChip';
 export { METER_DANGER, METER_WARNING, Meter, meterColor } from './primitives/Meter';
 export { ProgramMark } from './primitives/ProgramMark';
 export { Screen, type ScreenHeader } from './primitives/Screen';

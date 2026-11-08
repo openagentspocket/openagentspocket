@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { useContextMenu } from '../overlay/useContextMenu';
+import { Chip } from '../primitives/Chip';
 import { Icon, type IconName } from '../primitives/Icon';
-import { MetaChip } from '../primitives/MetaChip';
 import { Tappable } from '../primitives/Tappable';
 import { Text, type TextTone } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
@@ -81,7 +81,7 @@ export function ChatUserBubble({
         {attachments?.length ? (
           <View style={styles.chips}>
             {attachments.map((name) => (
-              <MetaChip key={name} label={name} icon="attach" />
+              <Chip size="small" key={name} label={name} icon="attach" />
             ))}
           </View>
         ) : null}

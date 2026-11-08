@@ -6,10 +6,10 @@ import { toast } from '../overlay/toast';
 import { Badge, StatusPill } from '../primitives/Badge';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
+import { Chip } from '../primitives/Chip';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon } from '../primitives/Icon';
 import { ListRow } from '../primitives/ListRow';
-import { MetaChip } from '../primitives/MetaChip';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { ScreenBackground } from '../primitives/ScreenBackground';
 import { Section } from '../primitives/Section';
@@ -99,8 +99,8 @@ function ParityScreen() {
                 Run the targeted UI test before commit?
               </Text>
               <View style={styles.inline}>
-                <MetaChip label={agent.workspace} />
-                <MetaChip label={agent.program} />
+                <Chip size="small" label={agent.workspace} />
+                <Chip size="small" label={agent.program} />
                 {agent.status === 'working' ? (
                   <StatusPill status="working" label="Working" leading={<StatusOrb size={12} />} />
                 ) : (

@@ -1,8 +1,8 @@
 import { View } from 'react-native';
 import type { ActionMenuItem } from '../overlay/ActionMenu';
+import { Chip } from '../primitives/Chip';
 import { Icon } from '../primitives/Icon';
 import { ListRow } from '../primitives/ListRow';
-import { MetaChip } from '../primitives/MetaChip';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
 
@@ -69,7 +69,7 @@ export function PortRow({
         detail={
           <>
             <View style={styles.meta}>
-              <MetaChip label={port.addressLabel} />
+              <Chip size="small" label={port.addressLabel} />
               {port.detail ? (
                 <Text
                   variant="caption"

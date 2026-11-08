@@ -1,6 +1,6 @@
 import { type GestureResponderEvent, View } from 'react-native';
 import { Card } from '../primitives/Card';
-import { MetaChip } from '../primitives/MetaChip';
+import { Chip } from '../primitives/Chip';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { Text } from '../primitives/Text';
 import { airy } from '../theme/metrics';
@@ -91,7 +91,7 @@ export function InboxCard({
       {p.chips.length > 0 ? (
         <View style={styles.chips}>
           {p.chips.map((chip) => (
-            <MetaChip key={chip} label={chip} />
+            <Chip size="small" key={chip} label={chip} />
           ))}
         </View>
       ) : null}

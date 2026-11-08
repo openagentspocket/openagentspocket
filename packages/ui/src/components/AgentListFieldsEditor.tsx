@@ -2,8 +2,8 @@ import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
+import { Chip } from '../primitives/Chip';
 import { Icon } from '../primitives/Icon';
-import { MetaChip } from '../primitives/MetaChip';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
@@ -105,7 +105,7 @@ export function AgentListFieldsEditor({
                   style={row.dimmed?.includes(field) ? styles.dimmed : undefined}
                   testID={`field-chip-${row.id}-${field}`}
                 >
-                  <MetaChip label={field} />
+                  <Chip size="small" label={field} />
                 </Tappable>
               ))}
               <Tappable
