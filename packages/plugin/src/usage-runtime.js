@@ -1,7 +1,7 @@
-import { randomUUID } from "node:crypto";
-import { accessSync, constants, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { accessSync, constants, mkdirSync, readFileSync, statSync } from "node:fs";
 import { delimiter, isAbsolute, join, resolve } from "node:path";
 import { isDeepStrictEqual } from "node:util";
+import { writeAtomic } from "./hook-support.js";
 
 // Claude Code uses USER to locate its macOS keychain account. Usage Limits
 // requests need herdr's proxy and CA settings on networks that require them;
@@ -25,15 +25,6 @@ function executableOnPath(name, path) {
   return null;
 }
 
-function writeAtomic(path, contents) {
-  const temporary = `${path}.${randomUUID()}.tmp`;
-  try {
-    writeFileSync(temporary, contents, { mode: 0o600, flag: "wx" });
-    renameSync(temporary, path);
-  } finally {
-    rmSync(temporary, { force: true });
-  }
-}
 
 /** Record only the environment that locates programs, accounts and Transcripts. */
 export function recordUsageRuntime(configDir) {

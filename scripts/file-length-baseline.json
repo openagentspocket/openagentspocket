@@ -1,7 +1,7 @@
 {
-  "packages/plugin/src/activity-hook.js": 554,
+  "packages/plugin/src/activity-hook.js": 548,
   "packages/plugin/src/pair-popup.js": 621,
-  "packages/plugin/test/activity-hook.test.js": 872,
+  "packages/plugin/test/activity-hook.test.js": 606,
   "packages/plugin/test/notify-hook.test.js": 1241,
   "packages/plugin/test/usage-claude-limits.test.js": 410,
   "packages/plugin/test/usage-incremental.test.js": 565,

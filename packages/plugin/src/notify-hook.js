@@ -41,6 +41,7 @@ import { deliverToDevices, NOTIFY_FLAG_BY_STATUS, readEligibleDevices } from "./
 import { refreshSidebarSnapshotForEvent } from "./sidebar-config.js";
 import { forDisplay, optionalText } from "./display-text.js";
 import { hookSession, sessionStateDir } from "./session.js";
+import { requireEnv } from "./hook-support.js";
 
 // The screen read for the approval preview is a nicety: past this bound the
 // push goes without it rather than later.
@@ -203,13 +204,6 @@ async function approvalFields(binPath, paneId, timestamp) {
   return result.code === 0 ? approvalFieldsFromRead(result.stdout, paneId, timestamp) : null;
 }
 
-function requireEnv(name) {
-  const value = process.env[name];
-  if (typeof value !== "string" || value.length === 0) {
-    throw new Error(`${name} is not set; this script must run as a herdr event hook`);
-  }
-  return value;
-}
 
 async function main() {
   const configDir = requireEnv("HERDR_PLUGIN_CONFIG_DIR");
