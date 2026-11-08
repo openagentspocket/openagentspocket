@@ -1,10 +1,8 @@
 import { type ComponentRef, useEffect, useRef, useState } from 'react';
 import { type ScrollView, StyleSheet, View } from 'react-native';
-import { ScreenBackground } from '../primitives/ScreenBackground';
 import { useTheme } from '../theme/theme';
 import { loadTrueSheet, type TrueSheetDetent, type TrueSheetMethods } from './loadTrueSheet';
-import { OverlayHost } from './OverlayHost';
-import { SheetContent } from './SheetContent';
+import { SheetAlertHost, SheetBody } from './SheetBody';
 import type { SheetDetent } from './sheetDetents';
 import type { SheetProps } from './sheetTypes';
 
@@ -21,23 +19,8 @@ export function nativeDetents(detent: SheetDetent, maxShare: number): TrueSheetD
  * token, so it matches the route sheets. `visible` presents and dismisses it; a swipe or scrim tap
  * reports `onClose`.
  */
-export function NativeSheet({
-  visible,
-  onClose,
-  onDismissed,
-  title,
-  detent = 'fit',
-  leading,
-  trailing,
-  largeTitle = false,
-  headerless = false,
-  grabber = true,
-  closeButton = true,
-  closeLabel = 'Close',
-  footer,
-  children,
-  testID = 'sheet',
-}: SheetProps) {
+export function NativeSheet(props: SheetProps) {
+  const { visible, onClose, onDismissed, detent = 'fit', grabber = true, testID = 'sheet' } = props;
   const TrueSheet = loadTrueSheet();
   const { colors, metrics } = useTheme();
   const ref = useRef<TrueSheetMethods>(null);
@@ -79,27 +62,8 @@ export function NativeSheet({
     >
       {presented || visible ? (
         <View style={fill} testID={`${testID}-surface`}>
-          <ScreenBackground testID={`${testID}-background`} />
-          <SheetContent
-            onClose={onClose}
-            title={title}
-            closeLabel={closeLabel}
-            leading={leading}
-            trailing={trailing}
-            largeTitle={largeTitle}
-            closeButton={closeButton}
-            headerless={headerless}
-            footer={footer}
-            fit={detent === 'fit'}
-            scrollRef={scrollRef}
-            testID={testID}
-          >
-            {children}
-          </SheetContent>
-          {/* A native sheet covers the app's own alert host: this one takes over while it is open. */}
-          <View style={StyleSheet.absoluteFill} pointerEvents="box-none" testID={`${testID}-host`}>
-            <OverlayHost />
-          </View>
+          <SheetBody sheet={props} fit={detent === 'fit'} scrollRef={scrollRef} />
+          <SheetAlertHost testID={testID} />
         </View>
       ) : null}
     </TrueSheet>

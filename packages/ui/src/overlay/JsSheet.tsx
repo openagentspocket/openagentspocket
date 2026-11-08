@@ -8,16 +8,11 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
-import { BarAction } from '../components/SheetBar';
 import { quick, useReducedMotion } from '../motion';
-import { Button } from '../primitives/Button';
-import { GlassCapsule } from '../primitives/GlassCapsule';
-import { ScreenBackground } from '../primitives/ScreenBackground';
 import { Tappable } from '../primitives/Tappable';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
-import { OverlayHost } from './OverlayHost';
-import { SheetContent } from './SheetContent';
+import { SheetAlertHost, SheetBody } from './SheetBody';
 import { detentShare, useSheetDrag } from './sheetDetents';
 import type { SheetProps } from './sheetTypes';
 
@@ -55,23 +50,8 @@ const useStyles = makeStyles((t) => ({
 }));
 
 /** The JS host of a sheet (web, tests and where the native one is not available). */
-export function JsSheet({
-  visible,
-  onClose,
-  onDismissed,
-  title,
-  detent = 'fit',
-  leading,
-  trailing,
-  largeTitle = false,
-  headerless = false,
-  grabber = true,
-  closeButton = true,
-  closeLabel = 'Close',
-  footer,
-  children,
-  testID = 'sheet',
-}: SheetProps) {
+export function JsSheet(props: SheetProps) {
+  const { visible, onClose, onDismissed, detent = 'fit', grabber = true, testID = 'sheet' } = props;
   const styles = useStyles();
   const insets = useInsets();
   const { metrics } = useTheme();
@@ -152,33 +132,21 @@ export function JsSheet({
           accessibilityViewIsModal
           testID={testID}
         >
-          <ScreenBackground testID={`${testID}-background`} />
-          {grabber ? (
-            <View style={styles.dragArea} {...drag.handlers} testID={`${testID}-grabber`}>
-              <View style={styles.grabber} />
-            </View>
-          ) : null}
-          <SheetContent
-            onClose={onClose}
-            title={title}
-            closeLabel={closeLabel}
-            leading={leading}
-            trailing={trailing}
-            largeTitle={largeTitle}
-            closeButton={closeButton}
-            headerless={headerless}
-            footer={footer}
+          <SheetBody
+            sheet={props}
             fit={live === 'fit'}
-            testID={testID}
-          >
-            {children}
-          </SheetContent>
+            top={
+              grabber ? (
+                <View style={styles.dragArea} {...drag.handlers} testID={`${testID}-grabber`}>
+                  <View style={styles.grabber} />
+                </View>
+              ) : null
+            }
+          />
         </Animated.View>
       </KeyboardAvoidingView>
       {/* iOS cannot present the app's alert over this modal; its own host takes over while open. */}
-      <View style={StyleSheet.absoluteFill} pointerEvents="box-none" testID={`${testID}-host`}>
-        <OverlayHost />
-      </View>
+      <SheetAlertHost testID={testID} />
     </Modal>
   );
 }
