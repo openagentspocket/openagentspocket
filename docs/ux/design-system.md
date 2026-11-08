@@ -162,8 +162,8 @@ headers use `DisclosureChevron`: `chevron.right` footnote semibold secondary, ro
 - `StatusPill` = wash badge in the status color, ink from the status color for the current appearance; Working shows the
   `SolvingOrbView` (12 pt) before the word. **Gap**: no orb primitive; add `StatusOrb` (animated, reduce-motion = static dot).
 - `MetadataChip`: caption2 monospaced, secondary ink, padding 8x3, `control` fill, radius `chipRadius`, optional leading
-  SF Symbol small. This is the inbox chip (host, workspace, model + context). RN `Chip` is a selectable control chip; add
-  `MetaChip` (non-interactive) instead of overloading it.
+  SF Symbol small. This is the inbox chip (host, workspace, model + context). RN: `Chip size="small"` (the same `Chip`
+  that is also the selectable filter chip).
 - Context-low badge (triangle + "16 %") before the status pill when 20% or less of the context is left.
 
 ### 5.5 Status dots and program marks -> `StatusDot`, `ProgramMark`
