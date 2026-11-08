@@ -7,7 +7,7 @@ import {
   type Clock,
 } from '@openagentspocket/core';
 import { systemClock } from '@openagentspocket/transport';
-import { NoticeBanner, ProgramMark, useInsets, useTheme } from '@openagentspocket/ui';
+import { Banner, ProgramMark, useInsets, useTheme } from '@openagentspocket/ui';
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import { renderMessage } from './renderText';
@@ -52,7 +52,7 @@ interface InAppBannerProps {
 }
 
 /**
- * Mounted once in the app layout. Owns the banner store and draws its banner as a NoticeBanner
+ * Mounted once in the app layout. Owns the banner store and draws its banner as a floating Banner
  * (kind inapp) pinned to the top of the whole app: slides and fades in, a blocked Agent's question
  * in three monospaced lines, tap opens the Agent, swipe up dismisses.
  */
@@ -125,8 +125,8 @@ export function BannerLayer({ banner, animated, ...rest }: BannerLayerProps) {
       testID="in-app-banner-layer"
     >
       <View style={{ width: '100%', paddingHorizontal: theme.spacing.md }}>
-        <NoticeBanner
-          kind="inapp"
+        <Banner
+          look="floating"
           animated={animated}
           title={banner.title}
           message={renderMessage(banner.body)}

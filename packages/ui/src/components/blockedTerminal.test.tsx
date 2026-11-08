@@ -1,8 +1,8 @@
 import { fireEvent, screen } from '@testing-library/react-native';
+import { Banner } from '../primitives/Banner';
 import { renderThemed } from '../test-utils';
 import { BackgroundWorkStrip } from './BackgroundWorkStrip';
 import { agentPadKeys, KeyPad, swipedPage } from './KeyPad';
-import { NoticeBanner } from './NoticeBanner';
 import {
   afterKey,
   dpadDirection,
@@ -47,16 +47,16 @@ describe('BackgroundWorkStrip', () => {
   });
 });
 
-describe('NoticeBanner', () => {
-  it('runs the action and renders the locating and in-app kinds', async () => {
+describe('Banner looks', () => {
+  it('runs the row action and renders the floating look with its question', async () => {
     const onPress = jest.fn();
-    await renderThemed(<NoticeBanner message="Failed" action={{ label: 'Retry', onPress }} />);
-    await fireEvent.press(screen.getByTestId('notice-action'));
+    await renderThemed(
+      <Banner look="row" message="Failed" actionLabel="Retry" onAction={onPress} />,
+    );
+    await fireEvent.press(screen.getByTestId('banner-action'));
     expect(onPress).toHaveBeenCalled();
-    await renderThemed(<NoticeBanner kind="locating" message="Looking" />);
-    expect(screen.getByTestId('notice-locating')).toBeTruthy();
-    await renderThemed(<NoticeBanner kind="inapp" title="Agent" message="Needs you" />);
-    expect(screen.getByTestId('notice-inapp')).toBeTruthy();
+    await renderThemed(<Banner look="floating" title="Agent" message="Blocked" question="Edit?" />);
+    expect(screen.getByTestId('banner-question')).toBeTruthy();
   });
 });
 

@@ -9,7 +9,7 @@ import {
   reasonOffersRetry,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { type IconName, makeStyles, NoticeBanner } from '@openagentspocket/ui';
+import { Banner, type IconName, makeStyles } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { renderMessage } from '@/lib/renderText';
 
@@ -71,12 +71,14 @@ export function ChatBanners({ state, hostStatus, onRetry, onShowTerminal }: Prop
   return (
     <View style={styles.stack} testID="chat-banners">
       {lines.map((line) => (
-        <NoticeBanner
+        <Banner
           key={bannerId(line)}
+          look="row"
           tone={toneOf(line)}
           icon={ICONS[bannerIcon(line)]}
           message={renderMessage(bannerText(line))}
-          action={action(line)}
+          actionLabel={action(line)?.label}
+          onAction={action(line)?.onPress}
           testID={`chat-banner-${bannerId(line)}`}
         />
       ))}

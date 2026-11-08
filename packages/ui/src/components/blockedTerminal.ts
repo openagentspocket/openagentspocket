@@ -24,7 +24,6 @@ export {
   swipedPage,
 } from './KeyPad';
 export { useKeyRepeat } from './keyRepeat';
-export { DISMISS_SWIPE, NoticeBanner } from './NoticeBanner';
 export {
   afterKey,
   type DpadDirection,

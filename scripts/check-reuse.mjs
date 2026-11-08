@@ -25,7 +25,6 @@ const BASES = new Set([
 /** Not cards: a shape drawn with the card radius for its own reason. */
 const NOT_CARDS = new Map([
   ['packages/ui/src/components/ComposerAttachmentStrip.tsx', 'image frame and chip'],
-  ['packages/ui/src/components/NoticeBanner.tsx', 'animated banner with a shadow'],
   ['packages/ui/src/components/SessionDrawer.tsx', 'selected row background'],
   ['packages/ui/src/components/SessionsStrip.tsx', 'terminal thumbnail in its own palette'],
   ['packages/ui/src/components/ThemeChoiceCard.tsx', "a preview in another theme's colors"],

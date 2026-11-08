@@ -638,7 +638,7 @@
   },
   {
     "id": "shell.notification-banner",
-    "rn": "InAppBanner (NoticeBanner kind=inapp)",
+    "rn": "InAppBanner (Banner look=floating)",
     "note": "blocked Agent with a captured question; no Swift shot exists for this id"
   },
   {

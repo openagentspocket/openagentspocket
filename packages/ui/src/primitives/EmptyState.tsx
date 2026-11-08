@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { makeStyles } from '../theme/theme';
 import { Button } from './Button';
 import { Icon, type IconName } from './Icon';
+import { Spinner } from './Spinner';
 import { Text } from './Text';
 
 /** fill: centers in the space it is offered; compact: its own height, for a narrow panel. */
@@ -30,6 +31,8 @@ interface EmptyStateProps {
   /** Buttons under the message. */
   actions?: ReactNode;
   layout?: EmptyStateLayout;
+  /** A wait ("Looking for the conversation..."): an accent spinner, the title in quiet text. */
+  busy?: boolean;
   testID?: string;
 }
 
@@ -40,18 +43,25 @@ export function EmptyState({
   icon = 'emptyTray',
   actions,
   layout = 'fill',
+  busy = false,
   testID = 'empty-state',
 }: EmptyStateProps) {
   const styles = useStyles();
   const fill = layout === 'fill';
   return (
-    <View style={fill ? styles.fill : styles.compact} testID={testID}>
-      <Icon name={icon} size={fill ? 40 : 24} />
+    <View
+      style={fill ? styles.fill : styles.compact}
+      accessibilityRole={busy ? 'progressbar' : undefined}
+      accessibilityLabel={busy ? title : undefined}
+      testID={testID}
+    >
+      {busy ? <Spinner size="large" color="accent" /> : <Icon name={icon} size={fill ? 40 : 24} />}
       <View style={styles.copy}>
         <Text
-          variant={fill ? 'title' : 'headline'}
-          accessibilityRole="header"
-          style={[styles.centered, fill ? { fontSize: 22, lineHeight: 28 } : null]}
+          variant={busy ? 'subheadline' : fill ? 'title2' : 'headline'}
+          tone={busy ? 'secondary' : undefined}
+          accessibilityRole={busy ? undefined : 'header'}
+          style={styles.centered}
         >
           {title}
         </Text>

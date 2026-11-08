@@ -5,7 +5,7 @@ import {
   pendingEchoes,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { makeStyles, metrics, NoticeBanner } from '@openagentspocket/ui';
+import { makeStyles, metrics } from '@openagentspocket/ui';
 import { useMemo, useRef } from 'react';
 import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
 import { useConsoleState } from '@/console/hooks';

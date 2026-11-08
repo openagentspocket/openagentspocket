@@ -73,7 +73,7 @@ describe('InAppBanner', () => {
     expect(await screen.findByTestId('in-app-banner')).toBeTruthy();
   });
 
-  it('pins a NoticeBanner at the top with the three-line mono question', async () => {
+  it('pins a floating Banner at the top with the three-line mono question', async () => {
     const clock = new FakeClock();
     const feed: Agents[] = [
       [{ hostId: 'h', paneId: 'p', status: 'working', kind: 'claude', workspaceLabel: 'Caterm' }],
@@ -97,7 +97,7 @@ describe('InAppBanner', () => {
     );
     await act(() => clock.advance(3000));
     expect(await screen.findByTestId('in-app-banner-layer')).toBeTruthy();
-    const question = await screen.findByTestId('notice-inapp-question');
+    const question = await screen.findByTestId('in-app-banner-question');
     expect(question.props.numberOfLines).toBe(3);
   });
 

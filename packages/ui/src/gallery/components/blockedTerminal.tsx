@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { View } from 'react-native';
 import { type BackgroundWorkItem, BackgroundWorkStrip } from '../../components/BackgroundWorkStrip';
 import { agentPadKeys, KeyPad } from '../../components/KeyPad';
-import { NoticeBanner } from '../../components/NoticeBanner';
+
 import { TerminalToolbar } from '../../components/TerminalToolbar';
+import { Banner } from '../../primitives/Banner';
+import { EmptyState } from '../../primitives/EmptyState';
 import { ProgramMark } from '../../primitives/ProgramMark';
 import { makeStyles } from '../../theme/theme';
 import type { CatalogEntry } from './types';
@@ -114,29 +116,34 @@ export const blockedTerminalEntries: readonly CatalogEntry[] = [
     ],
   },
   {
+    // The catalog key of Swift's notice banners (docs/ux/components/catalog.json).
     name: 'NoticeBanner',
     variants: [
       {
         id: 'default',
         render: () => (
           <Padded>
-            <NoticeBanner
+            <Banner
+              look="row"
+              tone="warning"
+              icon="warning"
               message="Couldn't read the conversation. Connection timed out."
-              action={{ label: 'Retry', onPress: noop }}
+              actionLabel="Retry"
+              onAction={noop}
             />
           </Padded>
         ),
       },
       {
         id: 'locating',
-        render: () => <NoticeBanner kind="locating" message="Looking for the conversation..." />,
+        render: () => <EmptyState busy layout="compact" title="Looking for the conversation..." />,
       },
       {
         id: 'inapp',
         render: () => (
           <Padded>
-            <NoticeBanner
-              kind="inapp"
+            <Banner
+              look="floating"
               title="storefront-claude"
               message="Needs your approval to run a Bash command."
               icon="hand"
@@ -151,8 +158,8 @@ export const blockedTerminalEntries: readonly CatalogEntry[] = [
         id: 'inapp-question',
         render: () => (
           <Padded>
-            <NoticeBanner
-              kind="inapp"
+            <Banner
+              look="floating"
               title="agentico · claude"
               message="Blocked"
               question={'Do you want to make this edit to AgenticoAppModel.swift?'}
