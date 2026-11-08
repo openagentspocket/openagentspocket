@@ -5,6 +5,7 @@ import { ProgramMark } from '../primitives/ProgramMark';
 import { DisclosureChevron } from '../primitives/SectionHeader';
 import { StatusOrb } from '../primitives/StatusOrb';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentRowLabels, defaultAgentRowLabels } from './agentRowLabels';
@@ -34,7 +35,7 @@ export interface AgentCardModel {
 
 const useStyles = makeStyles((t) => ({
   root: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
-  content: { flex: 1, gap: 3 },
+  content: { flex: 1, gap: airy.badgeV },
   line: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   title: { flex: 1, flexShrink: 1 },
   grow: { flex: 1, flexShrink: 1 },
@@ -54,10 +55,10 @@ const useStyles = makeStyles((t) => ({
   contextPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: airy.badgeV,
     borderRadius: 999,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    paddingHorizontal: airy.stack,
+    paddingVertical: airy.badgeV,
   },
 }));
 

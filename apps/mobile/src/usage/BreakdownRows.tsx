@@ -9,7 +9,7 @@ import {
   type UsageScope,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Card, ListRow, makeStyles, programTint, Text, useTheme } from '@openagentspocket/ui';
+import { airy, Card, ListRow, makeStyles, programTint, Text, useTheme } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { localeTag, metricText, metricValue, type UsageMetric } from './usageText';
 
@@ -22,8 +22,12 @@ const DAYS = 30;
 
 const useStyles = makeStyles((th) => ({
   dot: { width: 8, height: 8, borderRadius: 4 },
-  amounts: { alignItems: 'flex-end', gap: 2, flexShrink: 0 },
-  separator: { height: th.metrics.hairlineWidth, backgroundColor: th.hairline, marginLeft: 18 },
+  amounts: { alignItems: 'flex-end', gap: airy.line, flexShrink: 0 },
+  separator: {
+    height: th.metrics.hairlineWidth,
+    backgroundColor: th.hairline,
+    marginLeft: airy.dot + th.spacing.xs,
+  },
   empty: { minHeight: 56, justifyContent: 'center', paddingHorizontal: th.spacing.md },
 }));
 

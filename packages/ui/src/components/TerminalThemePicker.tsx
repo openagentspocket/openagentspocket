@@ -4,6 +4,7 @@ import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 
 /** The thumbnail of a palette: its background and three bars (title, text, dim). */
@@ -47,10 +48,10 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.hairline,
     paddingHorizontal: t.spacing.xs,
     justifyContent: 'center',
-    gap: 4,
+    gap: airy.chipV,
   },
   bar: { height: 4, borderRadius: 2 },
-  text: { flex: 1, gap: 3 },
+  text: { flex: 1, gap: airy.badgeV },
 }));
 
 /** A palette thumbnail; decorative, the row's text names the palette. */

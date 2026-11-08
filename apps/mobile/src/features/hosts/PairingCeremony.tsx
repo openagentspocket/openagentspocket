@@ -1,6 +1,6 @@
 import { needsConfirmation, type PairingScanState, type PairingStep } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Banner, Button, Card, Icon, Text } from '@openagentspocket/ui';
+import { airy, Banner, Button, Card, Icon, Text } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { pairingMessageText, stepTitle } from './pairingText';
 
@@ -37,14 +37,14 @@ export function PairingCeremony({ state, onPair, onRetry, onRescan }: PairingCer
   const waiting =
     needsConfirmation(code) && !state.isPairing && !state.failure && !state.pairedHostId;
   return (
-    <View style={{ gap: 12 }} testID="pairing-ceremony">
+    <View style={{ gap: airy.tile }} testID="pairing-ceremony">
       <Card padded>
         {listed.map((step) => {
           const status = stateOf(step, state.step, state.pairedHostId !== null);
           return (
             <View
               key={step}
-              style={{ flexDirection: 'row', gap: 8 }}
+              style={{ flexDirection: 'row', gap: airy.stack }}
               testID={`pairing-step-${step}-${status}`}
             >
               <Icon

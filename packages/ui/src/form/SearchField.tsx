@@ -3,6 +3,7 @@ import { Icon } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
+import { typography } from '../theme/typography';
 
 const useStyles = makeStyles((t) => ({
   field: {
@@ -14,7 +15,12 @@ const useStyles = makeStyles((t) => ({
     borderRadius: t.metrics.cardRadius,
     backgroundColor: t.colors.control,
   },
-  input: { flex: 1, color: t.colors.textPrimary, fontSize: 17, paddingVertical: 0 },
+  input: {
+    flex: 1,
+    color: t.colors.textPrimary,
+    fontSize: typography.body.fontSize,
+    paddingVertical: 0,
+  },
 }));
 
 export interface SearchFieldProps

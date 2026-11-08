@@ -6,6 +6,7 @@ import { Icon, type IconName } from '../primitives/Icon';
 import { ListRow, type ListRowProps } from '../primitives/ListRow';
 import { Text } from '../primitives/Text';
 import { Toggle } from '../primitives/Toggle';
+import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
@@ -17,7 +18,7 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.xs,
   },
-  text: { flex: 1, gap: 2 },
+  text: { flex: 1, gap: airy.line },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
   value: { minWidth: 36, textAlign: 'center', fontVariant: ['tabular-nums'] },
 }));

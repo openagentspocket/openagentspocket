@@ -4,6 +4,7 @@ import { Meter } from '../primitives/Meter';
 import { Section } from '../primitives/Section';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import { BackgroundWorkGlyph, type BackgroundWorkState } from './BackgroundWorkStrip';
 
@@ -47,15 +48,15 @@ export interface BackgroundWorkListLabels {
 
 const useStyles = makeStyles((t) => ({
   list: { gap: t.spacing.md },
-  row: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, padding: t.spacing.sm },
-  glyph: { paddingTop: 2 },
-  text: { flex: 1, gap: 4 },
-  head: { flexDirection: 'row', alignItems: 'baseline', gap: 8 },
+  row: { flexDirection: 'row', alignItems: 'flex-start', gap: t.spacing.xs, padding: t.spacing.sm },
+  glyph: { paddingTop: airy.line },
+  text: { flex: 1, gap: airy.chipV },
+  head: { flexDirection: 'row', alignItems: 'baseline', gap: airy.stack },
   title: { flex: 1 },
   bar: { alignSelf: 'stretch' },
   agents: { paddingLeft: 38, paddingRight: t.spacing.sm, paddingBottom: t.spacing.xs, gap: 10 },
-  agent: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
-  agentText: { flex: 1, gap: 2 },
+  agent: { flexDirection: 'row', alignItems: 'flex-start', gap: t.spacing.xs },
+  agentText: { flex: 1, gap: airy.line },
 }));
 
 function AgentRow({ agent }: { agent: BackgroundWorkAgentItem }) {

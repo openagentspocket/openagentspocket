@@ -6,7 +6,7 @@ import { LargeTitleBar } from '../../components/LargeTitleBar';
 import { PaneSnapshot } from '../../components/PaneSnapshot';
 import { SessionsStrip, type StripSession } from '../../components/SessionsStrip';
 import { UsageRing } from '../../components/UsageRing';
-import { metrics } from '../../theme/metrics';
+import { metrics, spacing } from '../../theme/metrics';
 import type { CatalogEntry } from './types';
 
 const noop = () => {};
@@ -93,7 +93,7 @@ export const homeShellEntries: readonly CatalogEntry[] = [
       {
         id: 'default',
         render: () => (
-          <View style={[inset, { gap: 10 }]}>
+          <View style={[inset, { gap: spacing.xs }]}>
             <HomeHostCard
               host={{
                 name: 'Quiet Mac',
@@ -121,7 +121,7 @@ export const homeShellEntries: readonly CatalogEntry[] = [
       {
         id: 'default',
         render: () => (
-          <View style={[inset, { flexDirection: 'row', gap: 16 }]}>
+          <View style={[inset, { flexDirection: 'row', gap: spacing.sm }]}>
             <UsageRing percent={48} accessibilityLabel="Usage" />
             <UsageRing percent={86} tone="warn" accessibilityLabel="Usage" />
             <UsageRing percent={97} tone="critical" accessibilityLabel="Usage" />

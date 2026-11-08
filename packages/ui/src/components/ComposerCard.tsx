@@ -10,10 +10,13 @@ import { Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
+import { typography } from '../theme/typography';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 import { KeyboardDismissButton } from './KeyboardDismissButton';
 
 const CIRCLE = 40;
+/** Centres one body line (22 pt) in the circle-high field. */
+const LINE_PAD = (CIRCLE - typography.body.lineHeight) / 2;
 
 const useStyles = makeStyles((t) => ({
   card: {
@@ -53,19 +56,19 @@ const useStyles = makeStyles((t) => ({
     flex: 1,
     minWidth: 0,
     color: t.colors.textPrimary,
-    fontSize: 17,
-    lineHeight: 22,
-    paddingVertical: 9,
+    fontSize: typography.body.fontSize,
+    lineHeight: typography.body.lineHeight,
+    paddingVertical: LINE_PAD,
     maxHeight: 6 * 22 + 18,
     minHeight: CIRCLE,
     textAlignVertical: 'center',
   },
-  // 9 + 22 + 9 = CIRCLE: with explicit padding the multiline native field (UITextView / EditText)
+  // LINE_PAD + 22 + LINE_PAD = CIRCLE: with explicit padding the multiline native field (UITextView / EditText)
   // lands the text and placeholder on the same centre line as the single-line web field.
   inputOneLine: {
     height: CIRCLE,
-    paddingVertical: 9,
-    lineHeight: 22,
+    paddingVertical: LINE_PAD,
+    lineHeight: typography.body.lineHeight,
     textAlignVertical: 'center',
     width: 0,
     flexBasis: 0,
@@ -77,7 +80,7 @@ const useStyles = makeStyles((t) => ({
     paddingVertical: airy.stack,
     borderBottomWidth: t.metrics.hairlineWidth,
     borderBottomColor: t.colors.separator,
-    gap: 2,
+    gap: airy.line,
   },
   badge: {
     position: 'absolute',

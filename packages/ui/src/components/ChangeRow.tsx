@@ -27,7 +27,7 @@ const useStyles = makeStyles((t) => ({
   },
   indented: { paddingLeft: airy.stack * 2 },
   name: { flexShrink: 1 },
-  commitLine: { gap: 6 },
+  commitLine: { gap: t.spacing.xxs },
   title: { flexShrink: 1, minWidth: 0 },
   age: { flexShrink: 0 },
   kind: { width: 14, textAlign: 'center' },

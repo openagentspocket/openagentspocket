@@ -1,5 +1,5 @@
 import { t } from '@openagentspocket/i18n';
-import { Card, ListRow, Section, Segmented, Text } from '@openagentspocket/ui';
+import { airy, Card, ListRow, Section, Segmented, Text } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { Linking, View } from 'react-native';
 import { AppScreen } from '@/navigation/AppScreen';
@@ -24,7 +24,7 @@ export function SetupGuideScreen({ onBack }: SetupGuideScreenProps) {
       }}
       testID="setup-guide"
     >
-      <View style={{ gap: 8 }}>
+      <View style={{ gap: airy.stack }}>
         <Segmented
           options={[
             { value: 'unix', label: t('macOS / Linux') },

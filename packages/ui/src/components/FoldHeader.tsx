@@ -4,6 +4,7 @@ import { Icon } from '../primitives/Icon';
 import { DisclosureChevron } from '../primitives/SectionHeader';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import type { Status, Tone } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentRowLabels, defaultAgentRowLabels } from './agentRowLabels';
@@ -38,7 +39,7 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.colors.canvas,
   },
   pills: { flexDirection: 'row', gap: t.spacing.xxs },
-  pill: { borderRadius: 999, paddingHorizontal: 8, paddingVertical: 3 },
+  pill: { borderRadius: 999, paddingHorizontal: airy.stack, paddingVertical: airy.badgeV },
 }));
 
 interface FoldHeaderProps {

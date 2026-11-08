@@ -17,7 +17,7 @@ const useStyles = makeStyles((th) => ({
   section: { gap: th.spacing.xxs },
   pair: { flexDirection: 'row', gap: th.spacing.xxs },
   cell: { flex: 1 },
-  footer: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 8 },
+  footer: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: airy.stack },
 }));
 
 /** Cards in one column, or in two on a wide phone (Swift `CardPairRow`). */

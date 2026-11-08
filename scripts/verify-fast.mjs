@@ -49,6 +49,7 @@ const checks = [
   run('theme literals', 'node', ['scripts/check-theme-literals.mjs']),
   run('raw pressable', 'node', ['scripts/check-raw-pressable.mjs']),
   run('reuse', 'node', ['scripts/check-reuse.mjs']),
+  run('spacing literals', 'node', ['scripts/check-spacing-literals.mjs']),
   run('intl rule', 'node', ['scripts/check-intl.mjs']),
   run('progress current', 'node', ['scripts/progress.mjs', '--check']),
   run('ux catalog', 'node', ['scripts/ux-catalog.mjs', '--check']),

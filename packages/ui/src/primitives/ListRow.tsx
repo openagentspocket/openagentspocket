@@ -26,7 +26,7 @@ const useStyles = makeStyles((t) => ({
   pressed: { backgroundColor: t.colors.surfaceRaised },
   selected: { backgroundColor: t.colors.control },
   disabled: { opacity: 0.4 },
-  text: { flex: 1, gap: 2 },
+  text: { flex: 1, gap: airy.line },
   trailing: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, flexShrink: 0 },
   // A long value truncates before it can squeeze the title.
   value: { flexShrink: 1, maxWidth: 120 },

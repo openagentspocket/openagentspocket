@@ -8,7 +8,6 @@ import { useUsage } from './useUsage';
 const useStyles = makeStyles((th) => ({
   summary: { gap: th.spacing.xxs, padding: th.spacing.md },
   line: { flexDirection: 'row', alignItems: 'baseline', gap: th.spacing.xs, flexWrap: 'wrap' },
-  figure: { fontSize: 28, lineHeight: 34, fontWeight: '600' },
 }));
 
 interface Props {
@@ -32,7 +31,7 @@ export function HostUsageSection({ hostId, onOpenUsage }: Props) {
           {t('Estimated API cost · Last 30 days')}
         </Text>
         <View style={styles.line}>
-          <Text style={styles.figure} tabularNums testID="host-usage-total">
+          <Text variant="title1" semibold tabularNums testID="host-usage-total">
             {metricText(total, 'cost')}
           </Text>
           <Text variant="footnote" tone="secondary" tabularNums>

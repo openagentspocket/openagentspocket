@@ -8,24 +8,10 @@ import {
 import { useFontScaleOverride } from '../theme/accessibility';
 import { makeStyles, useTheme } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
+import { type TextVariant, typography } from '../theme/typography';
 
-/**
- * The iOS text styles (sizes at the Large setting; they scale with the system text size).
- * `label` stays as an alias of a semibold caption, `mono` as a monospaced footnote.
- */
-export type TextVariant =
-  | 'largeTitle'
-  | 'title'
-  | 'title2'
-  | 'headline'
-  | 'body'
-  | 'callout'
-  | 'subheadline'
-  | 'footnote'
-  | 'caption'
-  | 'caption2'
-  | 'label'
-  | 'mono';
+export type { TextVariant } from '../theme/typography';
+
 export type TextTone =
   | 'primary'
   | 'secondary'
@@ -53,18 +39,8 @@ export const monoFamily = Platform.select({ ios: 'Menlo', default: 'monospace' }
 export const uiMonoFamily = Platform.select({ ios: 'ui-monospace', default: 'monospace' });
 
 const useStyles = makeStyles(() => ({
-  largeTitle: { fontSize: 34, lineHeight: 41, fontWeight: '400' },
-  title: { fontSize: 34, lineHeight: 41, fontWeight: '700' },
-  title2: { fontSize: 22, lineHeight: 28, fontWeight: '700' },
-  headline: { fontSize: 17, lineHeight: 22, fontWeight: '600' },
-  body: { fontSize: 17, lineHeight: 22, fontWeight: '400' },
-  callout: { fontSize: 16, lineHeight: 21, fontWeight: '400' },
-  subheadline: { fontSize: 15, lineHeight: 20, fontWeight: '400' },
-  footnote: { fontSize: 13, lineHeight: 18, fontWeight: '400' },
-  caption: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
-  caption2: { fontSize: 11, lineHeight: 13, fontWeight: '400' },
-  label: { fontSize: 12, lineHeight: 16, fontWeight: '600' },
-  mono: { fontSize: 13, lineHeight: 18, fontFamily: uiMonoFamily },
+  ...typography,
+  mono: { ...typography.mono, fontFamily: uiMonoFamily },
   monoFace: { fontFamily: uiMonoFamily },
   semibold: { fontWeight: '600' },
   digits: { fontVariant: ['tabular-nums'] },

@@ -2,6 +2,7 @@ import { type ReactNode, useRef, useState } from 'react';
 import { Animated, PanResponder, View } from 'react-native';
 import { impact } from '../haptics';
 import { snappy, useReducedMotion } from '../motion';
+import { airy } from '../theme/metrics';
 import type { Tone } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
@@ -31,7 +32,7 @@ const useStyles = makeStyles(() => ({
   root: { overflow: 'hidden' },
   leading: { position: 'absolute', top: 0, bottom: 0, left: 0, flexDirection: 'row' },
   trailing: { position: 'absolute', top: 0, bottom: 0, right: 0, flexDirection: 'row' },
-  action: { alignItems: 'center', justifyContent: 'center', gap: 2 },
+  action: { alignItems: 'center', justifyContent: 'center', gap: airy.line },
 }));
 
 interface SwipeRowProps {

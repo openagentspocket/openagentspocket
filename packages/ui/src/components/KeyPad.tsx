@@ -5,6 +5,7 @@ import type { KeySpec } from '../keys/KeyboardDock';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { useKeyRepeat } from './keyRepeat';
 
@@ -84,7 +85,7 @@ const useStyles = makeStyles((t) => ({
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 2,
+    gap: airy.line,
   },
   tabOn: { backgroundColor: t.colors.accentContainer },
 }));

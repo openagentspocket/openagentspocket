@@ -26,7 +26,7 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     backgroundColor: t.colors.control,
   },
-  text: { flex: 1, gap: 2 },
+  text: { flex: 1, gap: airy.line },
   trailing: { alignItems: 'flex-end', gap: t.spacing.xxs, maxWidth: '40%' },
 }));
 

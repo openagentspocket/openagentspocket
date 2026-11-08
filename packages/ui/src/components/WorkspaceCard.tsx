@@ -10,8 +10,8 @@ import { makeStyles, useTheme } from '../theme/theme';
 const useStyles = makeStyles((t) => ({
   slot: { paddingVertical: airy.rowInset },
   header: { flexDirection: 'row', alignItems: 'flex-start', gap: t.spacing.sm },
-  glyph: { paddingTop: 2 },
-  titles: { flex: 1, gap: 2 },
+  glyph: { paddingTop: airy.line },
+  titles: { flex: 1, gap: airy.line },
   count: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -19,7 +19,7 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.control,
     borderRadius: 999,
     paddingHorizontal: t.spacing.xs,
-    paddingVertical: 2,
+    paddingVertical: airy.line,
     minHeight: 24,
   },
   body: { marginTop: t.spacing.xs, marginLeft: 0 },

@@ -3,6 +3,7 @@ import { type TextInputInstance, type TextInputProps, View } from 'react-native'
 import { monoFamily, Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
+import { typography } from '../theme/typography';
 
 const useStyles = makeStyles((t) => ({
   field: { gap: t.spacing.xxs },
@@ -15,16 +16,16 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.hairline,
     backgroundColor: t.colors.control,
     color: t.colors.textPrimary,
-    fontSize: 15,
+    fontSize: typography.subheadline.fontSize,
   },
   inline: {
     minHeight: t.metrics.rowMinHeight,
     paddingHorizontal: t.spacing.md,
     color: t.colors.textPrimary,
-    fontSize: 17,
+    fontSize: typography.body.fontSize,
   },
   multiline: { minHeight: 88, textAlignVertical: 'top' },
-  mono: { fontFamily: monoFamily, fontSize: 14 },
+  mono: { fontFamily: monoFamily, fontSize: typography.mono.fontSize },
   invalid: { borderColor: t.colors.danger },
 }));
 

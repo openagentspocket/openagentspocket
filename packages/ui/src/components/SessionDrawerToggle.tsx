@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { withAlpha } from '../theme/color';
+import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
@@ -9,7 +10,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     borderRadius: 999,
     backgroundColor: t.colors.control,
-    padding: 3,
+    padding: airy.badgeV,
   },
   toggle: {
     width: 34,

@@ -4,6 +4,7 @@ import { Card } from '../primitives/Card';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { toneColorKey } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 
@@ -24,7 +25,7 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  text: { flex: 1, gap: 2 },
+  text: { flex: 1, gap: airy.line },
   reconnect: {
     width: 36,
     height: 36,

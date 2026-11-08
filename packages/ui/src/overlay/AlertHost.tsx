@@ -13,6 +13,7 @@ import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { useInsets } from '../theme/insets';
 import { spacing } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
+import { typography } from '../theme/typography';
 import { type AnchorRect, measureAnchor } from './anchors';
 import { type AlertRequest, alertQueue, answerAlert } from './confirm';
 import { useActiveHost, useQueue } from './store';
@@ -74,7 +75,7 @@ const useStyles = makeStyles((t) => ({
     borderColor: t.hairline,
     backgroundColor: t.colors.control,
     color: t.colors.textPrimary,
-    fontSize: 15,
+    fontSize: typography.subheadline.fontSize,
     fontFamily: monoFamily,
   },
 }));

@@ -1,5 +1,5 @@
 import { t } from '@openagentspocket/i18n';
-import { CommandBlock, Tappable, Text, useTheme } from '@openagentspocket/ui';
+import { airy, CommandBlock, Tappable, Text, useTheme } from '@openagentspocket/ui';
 import { Linking, View } from 'react-native';
 import type { GuideStep } from './setupGuideSteps';
 
@@ -49,7 +49,7 @@ export function SetupStep({ number, step, divider }: SetupStepProps) {
           </Text>
         </View>
         <View style={{ flex: 1, gap: theme.spacing.xs }}>
-          <View style={{ gap: 2 }}>
+          <View style={{ gap: airy.line }}>
             <Text variant="headline">{step.title}</Text>
             <Text variant="subheadline" tone="secondary">
               {step.detail}

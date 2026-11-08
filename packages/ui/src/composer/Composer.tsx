@@ -5,6 +5,7 @@ import { Button } from '../primitives/Button';
 import { Chip } from '../primitives/Chip';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { makeStyles, useTheme } from '../theme/theme';
+import { typography } from '../theme/typography';
 
 export interface ComposerSuggestion {
   key: string;
@@ -40,14 +41,14 @@ const useStyles = makeStyles((t) => ({
     minHeight: 40,
     maxHeight: 132,
     paddingHorizontal: t.spacing.sm,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: t.spacing.xs,
+    paddingBottom: t.spacing.xs,
     borderRadius: 20,
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     backgroundColor: t.colors.control,
     color: t.colors.textPrimary,
-    fontSize: 15,
+    fontSize: typography.subheadline.fontSize,
   },
 }));
 

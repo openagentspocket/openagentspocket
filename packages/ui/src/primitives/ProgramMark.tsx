@@ -2,6 +2,7 @@ import { programIdentity } from '@openagentspocket/core';
 import { Animated, View } from 'react-native';
 import { usePulse } from '../motion';
 import { useFontScale } from '../theme/accessibility';
+import { airy } from '../theme/metrics';
 import { programTint } from '../theme/programTint';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -12,7 +13,7 @@ import { useSurfaceFill } from './surfaceFill';
 import { Text } from './Text';
 
 const useStyles = makeStyles(() => ({
-  beside: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  beside: { flexDirection: 'row', alignItems: 'center', gap: airy.chipV },
 }));
 
 interface ProgramMarkProps {

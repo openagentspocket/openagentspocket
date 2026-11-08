@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { Meter } from '../primitives/Meter';
 import { Text, type TextTone } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 
 export const LIMIT_SEGMENTS = 10;
@@ -17,7 +18,7 @@ const useStyles = makeStyles((t) => ({
   stacked: { gap: t.spacing.xxs },
   label: { width: 64 },
   inlineLabel: { width: 92 },
-  bar: { flex: 1, flexDirection: 'row', gap: 3 },
+  bar: { flex: 1, flexDirection: 'row', gap: airy.badgeV },
   segment: {
     flex: 1,
     height: 10,

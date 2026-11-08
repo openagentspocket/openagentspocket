@@ -9,6 +9,7 @@ import { Icon, iconNames } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { StatusDot } from '../primitives/StatusDot';
 import { Text, type TextTone, type TextVariant } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { useTheme } from '../theme/theme';
 import { colorKeys } from '../theme/tokens.generated';
@@ -60,7 +61,7 @@ export function TypeAndColor() {
       <Specimen name="Color tokens">
         <Wrap>
           {colorKeys.map((key) => (
-            <View key={key} style={{ alignItems: 'center', width: 64, gap: 2 }}>
+            <View key={key} style={{ alignItems: 'center', width: 64, gap: airy.line }}>
               <View
                 style={{
                   width: 40,
@@ -71,7 +72,7 @@ export function TypeAndColor() {
                   backgroundColor: theme.colors[key],
                 }}
               />
-              <Text variant="footnote" tone="tertiary" numberOfLines={1} style={{ fontSize: 10 }}>
+              <Text variant="caption2" tone="tertiary" numberOfLines={1}>
                 {key}
               </Text>
             </View>

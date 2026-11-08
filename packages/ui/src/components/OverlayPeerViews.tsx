@@ -1,11 +1,12 @@
 import { View } from 'react-native';
 import { StatusDot } from '../primitives/StatusDot';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
   row: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm, flexShrink: 1 },
-  text: { flex: 1, gap: 3 },
+  text: { flex: 1, gap: airy.badgeV },
   dimmed: { opacity: 0.6 },
 }));
 

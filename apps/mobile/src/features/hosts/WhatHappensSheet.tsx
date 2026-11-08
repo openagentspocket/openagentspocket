@@ -1,5 +1,5 @@
 import { t } from '@openagentspocket/i18n';
-import { Sheet, Text, useTheme } from '@openagentspocket/ui';
+import { airy, Sheet, Text, useTheme } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { installerSteps } from './installerSteps';
 import type { SetupPlatform } from './setupGuideSteps';
@@ -27,7 +27,7 @@ export function WhatHappensSheet({ visible, platform, onClose }: WhatHappensShee
             <Text variant="headline" tone="accent" style={{ width: 22 }}>
               {String(index + 1)}
             </Text>
-            <View style={{ flex: 1, gap: 2 }}>
+            <View style={{ flex: 1, gap: airy.line }}>
               <Text variant="headline">{step.title}</Text>
               <Text variant="subheadline" tone="secondary">
                 {step.detail}

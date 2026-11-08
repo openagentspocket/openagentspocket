@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import { Tappable } from './Tappable';
 import { Text } from './Text';
@@ -8,7 +9,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     backgroundColor: t.colors.control,
     borderRadius: t.metrics.chipRadius + 2,
-    padding: 2,
+    padding: airy.line,
   },
   segment: {
     // Natural label width first, spare room shared equally: a label is never clipped.
@@ -19,7 +20,7 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: t.metrics.chipRadius,
-    paddingHorizontal: 4,
+    paddingHorizontal: airy.chipV,
     minWidth: 0,
   },
   selected: {

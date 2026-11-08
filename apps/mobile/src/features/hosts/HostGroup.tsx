@@ -1,6 +1,6 @@
 import type { Host } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { FoldHeader, HostRow, Section } from '@openagentspocket/ui';
+import { airy, FoldHeader, HostRow, Section } from '@openagentspocket/ui';
 import { View } from 'react-native';
 import { useEntryMenus } from '../../navigation/entryMenus';
 import type { HostConnection } from './HostsModel';
@@ -32,7 +32,7 @@ export function HostGroup({
 }: HostGroupProps) {
   const entries = useEntryMenus();
   return (
-    <View style={{ gap: 4 }}>
+    <View style={{ gap: airy.chipV }}>
       <FoldHeader
         kind="status"
         title={groupTitle(group)}

@@ -1,7 +1,16 @@
 import type { PluginNotice, PluginStep } from '@openagentspocket/core';
 import { errorMessage } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, Card, CommandBlock, Icon, Sheet, Text, useTheme } from '@openagentspocket/ui';
+import {
+  airy,
+  Button,
+  Card,
+  CommandBlock,
+  Icon,
+  Sheet,
+  Text,
+  useTheme,
+} from '@openagentspocket/ui';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { pluginActionTitle, pluginMessageText, pluginNoteText } from './pluginText';
@@ -116,7 +125,7 @@ export function PluginNoticeSheet({
                 testID="plugin-notice-run-checks"
               />
             </Card>
-            <Text variant="footnote" tone="secondary" style={{ paddingHorizontal: 4 }}>
+            <Text variant="footnote" tone="secondary" style={{ paddingHorizontal: airy.chipV }}>
               {t('After running the commands on the Host.')}
             </Text>
           </View>

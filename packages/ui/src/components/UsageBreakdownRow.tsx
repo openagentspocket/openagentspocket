@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
@@ -11,7 +12,7 @@ const useStyles = makeStyles((t) => ({
   dot: { width: 10, height: 10, borderRadius: 5 },
   title: { flex: 1 },
   amounts: { flexDirection: 'row', alignItems: 'baseline', gap: t.spacing.xs },
-  bar: { flexDirection: 'row', height: 6, borderRadius: 3, overflow: 'hidden', gap: 2 },
+  bar: { flexDirection: 'row', height: 6, borderRadius: 3, overflow: 'hidden', gap: airy.line },
   legend: { flexDirection: 'row', flexWrap: 'wrap', gap: t.spacing.sm },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
   swatch: { width: 12, height: 12, borderRadius: 3 },

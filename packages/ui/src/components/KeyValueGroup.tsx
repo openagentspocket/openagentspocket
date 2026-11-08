@@ -4,6 +4,7 @@ import { Icon } from '../primitives/Icon';
 import { Section } from '../primitives/Section';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
@@ -15,7 +16,7 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.xs,
   },
-  rowCompact: { minHeight: 36, paddingVertical: 2 },
+  rowCompact: { minHeight: 36, paddingVertical: airy.line },
   label: { flexShrink: 0 },
   value: { flex: 1, textAlign: 'right' },
 }));

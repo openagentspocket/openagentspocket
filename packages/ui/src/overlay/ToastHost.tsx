@@ -4,6 +4,7 @@ import { Icon } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { useInsets } from '../theme/insets';
+import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { useActiveHost, useQueue } from './store';
 import { TOAST_DEFAULT_MS, type ToastRequest, toastQueue } from './toast';
@@ -33,7 +34,7 @@ const useStyles = makeStyles((t) => ({
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
   },
-  text: { flex: 1, gap: 2 },
+  text: { flex: 1, gap: airy.line },
 }));
 
 /** Shows the head of the toast() queue at the top of the screen. Mounted once, by OverlayHost. */

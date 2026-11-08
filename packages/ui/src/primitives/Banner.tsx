@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useRef } from 'react';
 import { Animated, PanResponder, Platform, View } from 'react-native';
 import { quick, useReducedMotion } from '../motion';
+import { airy } from '../theme/metrics';
 import type { Tone } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
 import { Button } from './Button';
@@ -62,8 +63,8 @@ const useStyles = makeStyles((t) => ({
     elevation: 6,
   },
   pin: { width: '100%', maxWidth: INAPP_MAX_WIDTH, alignSelf: 'center' },
-  washIcon: { paddingTop: 2 },
-  text: { flex: 1, gap: 2 },
+  washIcon: { paddingTop: airy.line },
+  text: { flex: 1, gap: airy.line },
   washText: { paddingRight: t.spacing.xs },
   actions: { flexDirection: 'row', alignItems: 'center' },
   washActions: { marginTop: -t.spacing.xs },

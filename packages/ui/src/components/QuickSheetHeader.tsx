@@ -2,11 +2,12 @@ import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 
 const useStyles = makeStyles((t) => ({
   root: { gap: t.spacing.xs, paddingBottom: t.spacing.xs },
-  grabberRow: { alignItems: 'center', paddingTop: 8 },
+  grabberRow: { alignItems: 'center', paddingTop: airy.stack },
   grabber: { width: 36, height: 5, borderRadius: 3, backgroundColor: t.colors.control },
   row: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   fill: { flex: 1 },

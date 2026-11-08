@@ -59,6 +59,8 @@ changes it everywhere. Judges reject duplication.
   `scripts/file-length-baseline.json` may only shrink; run `node scripts/check-file-length.mjs --update` after a split).
 - Every control starts from `Button` (`ActionMenuButton` for a menu); a row or card from `Tappable`, the base `Button` is built on. `scripts/check-raw-pressable.mjs` rejects anything else. A card starts from `Card` and every ui component needs a caller: `scripts/check-reuse.mjs` rejects a hand-drawn card radius and an unused component.
 - Colors only from theme tokens (`useTheme()`); no hex/rgb literal in app or UI source.
+- Spacing and type sizes only from tokens (`t.spacing`, `airy`, a `Text` variant or `typography`); `scripts/check-spacing-literals.mjs`
+  rejects a numeric padding, margin, gap or fontSize, and lists the few allowed design values with their reasons.
 - Strings through `t()`. A string the Swift catalogs lack goes in `packages/i18n/src/extras/{en,es}.json` (both
   languages); never edit `packages/i18n/src/catalogs/*` (regenerated from Swift, pinned by the sync test).
 - Tests pin behavior, not copy: assert a key resolves or a reducer output, never an exact sentence. Snapshots only tiny.

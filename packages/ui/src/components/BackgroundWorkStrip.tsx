@@ -4,6 +4,7 @@ import { Meter } from '../primitives/Meter';
 import { Spinner } from '../primitives/Spinner';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 
 /** How a piece of work stands, as the view says it (the core presentation's statuses). */
@@ -56,6 +57,9 @@ const GLYPHS: Partial<Record<BackgroundWorkState, IconName>> = {
   stopped: 'stop',
 };
 
+/** Width of the leading glyph column. */
+const LEAD = 18;
+
 const useStyles = makeStyles((t) => ({
   // Rounder than a banner, less than the composer card below it.
   card: {
@@ -77,14 +81,25 @@ const useStyles = makeStyles((t) => ({
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
   },
-  row: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs, paddingVertical: 6 },
-  lead: { width: 18, alignItems: 'center' },
-  titles: { flex: 1, flexDirection: 'row', alignItems: 'baseline', gap: 6, overflow: 'hidden' },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: t.spacing.xs,
+    paddingVertical: t.spacing.xxs,
+  },
+  lead: { width: LEAD, alignItems: 'center' },
+  titles: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: t.spacing.xxs,
+    overflow: 'hidden',
+  },
   title: { flexShrink: 1 },
   fixed: { flexShrink: 0 },
-  meta: { flexDirection: 'row', alignItems: 'center', gap: 6, flexShrink: 0 },
+  meta: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs, flexShrink: 0 },
   bar: { width: 36 },
-  more: { paddingLeft: 26, paddingVertical: 6 },
+  more: { paddingLeft: LEAD + airy.stack, paddingVertical: t.spacing.xxs },
   fill: { flex: 1 },
 }));
 

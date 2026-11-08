@@ -9,6 +9,7 @@ import { Icon } from '../primitives/Icon';
 import { Segmented } from '../primitives/Segmented';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import { OverlayPeerViews } from './OverlayPeerViews';
 
@@ -81,7 +82,7 @@ const useStyles = makeStyles((t) => ({
     backgroundColor: t.colors.control,
     borderRadius: 999,
     paddingHorizontal: t.spacing.xs,
-    paddingVertical: 3,
+    paddingVertical: airy.badgeV,
   },
   empty: { padding: t.spacing.md },
 }));

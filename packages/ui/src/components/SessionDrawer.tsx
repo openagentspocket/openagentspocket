@@ -13,6 +13,7 @@ import { useInsets } from '../theme/insets';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
+import { typography } from '../theme/typography';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
 import { ViewToggle } from './SessionDrawerToggle';
 import { AGENT_SECTIONS, type DrawerItem, type DrawerWorkspace } from './sessionDrawerModel';
@@ -54,7 +55,13 @@ const useStyles = makeStyles((t) => ({
     borderRadius: 999,
     backgroundColor: t.colors.control,
   },
-  input: { flex: 1, color: t.colors.textPrimary, fontSize: 14, padding: 0, minWidth: 0 },
+  input: {
+    flex: 1,
+    color: t.colors.textPrimary,
+    fontSize: typography.subheadline.fontSize,
+    padding: 0,
+    minWidth: 0,
+  },
   host: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -82,8 +89,8 @@ const useStyles = makeStyles((t) => ({
   count: {
     backgroundColor: t.colors.control,
     borderRadius: 999,
-    paddingHorizontal: 7,
-    paddingVertical: 1,
+    paddingHorizontal: airy.stack,
+    paddingVertical: airy.line,
   },
   group: { paddingTop: t.spacing.xxs },
   groupHead: {
@@ -97,7 +104,7 @@ const useStyles = makeStyles((t) => ({
   branch: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: airy.chipV,
     marginTop: -t.spacing.xxs - 2,
     paddingLeft: t.spacing.md + 14 + t.spacing.xs,
   },

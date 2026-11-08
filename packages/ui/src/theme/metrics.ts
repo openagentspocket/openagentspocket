@@ -29,6 +29,8 @@ export const airy = {
   chipV: 4,
   /** Badge vertical padding (2). */
   badgeV: 3,
+  /** Title-to-subtitle gap, a glyph's nudge onto the first line, thin insets (1-2). Not scaled. */
+  line: 2,
   /** List row top and bottom inset (4). */
   rowInset: 5,
   /** Status dot diameters: list rows (8) and the status line (7). Not scaled. */

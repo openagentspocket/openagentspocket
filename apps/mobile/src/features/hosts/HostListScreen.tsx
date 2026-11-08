@@ -1,6 +1,6 @@
 import type { Host } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { Button, EmptyState, type ScreenHeader, Tappable, Text } from '@openagentspocket/ui';
+import { airy, Button, EmptyState, type ScreenHeader, Tappable, Text } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { AppScreen } from '@/navigation/AppScreen';
 import { extra } from './extraText';
@@ -106,7 +106,11 @@ export function HostListScreen({
         <Tappable
           accessibilityRole="link"
           onPress={onSetupGuide}
-          style={{ alignSelf: 'flex-start', paddingHorizontal: 4, paddingVertical: 4 }}
+          style={{
+            alignSelf: 'flex-start',
+            paddingHorizontal: airy.chipV,
+            paddingVertical: airy.chipV,
+          }}
           testID="hosts-setup-guide"
         >
           <Text variant="footnote" tone="accent">

@@ -4,6 +4,7 @@ import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { withAlpha } from '../theme/color';
+import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type ThemeId, themes } from '../theme/tokens.generated';
 
@@ -12,7 +13,7 @@ const CHECK = 28;
 
 const useStyles = makeStyles((t) => ({
   card: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.sm },
-  text: { flex: 1, gap: 2 },
+  text: { flex: 1, gap: airy.line },
   dots: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -114,13 +115,13 @@ const usePreviewStyles = makeStyles((t) => ({
     borderColor: t.hairline,
   },
   agent: { flex: 3, padding: t.spacing.sm, gap: t.spacing.xs, borderWidth: 1 },
-  terminal: { flex: 2, padding: t.spacing.sm, gap: 2, borderWidth: 1 },
+  terminal: { flex: 2, padding: t.spacing.sm, gap: airy.line, borderWidth: 1 },
   header: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   dot: { width: 8, height: 8, borderRadius: 4 },
   grow: { flex: 1 },
-  badge: { borderRadius: 999, paddingHorizontal: t.spacing.xs, paddingVertical: 2 },
+  badge: { borderRadius: 999, paddingHorizontal: t.spacing.xs, paddingVertical: airy.line },
   chips: { flexDirection: 'row', gap: t.spacing.xxs },
-  chip: { borderRadius: 6, paddingHorizontal: t.spacing.xs, paddingVertical: 2 },
+  chip: { borderRadius: 6, paddingHorizontal: t.spacing.xs, paddingVertical: airy.line },
 }));
 
 interface ThemeChoicePreviewProps {

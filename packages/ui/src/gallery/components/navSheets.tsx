@@ -10,6 +10,7 @@ import { Button } from '../../primitives/Button';
 import { Chip } from '../../primitives/Chip';
 import { ProgramMark } from '../../primitives/ProgramMark';
 import { Text } from '../../primitives/Text';
+import { spacing } from '../../theme/metrics';
 import type { CatalogEntry } from './types';
 
 const noop = () => {};
@@ -69,7 +70,7 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
       {
         id: 'default',
         render: () => (
-          <View style={{ paddingHorizontal: 21 }}>
+          <View style={{ paddingHorizontal: spacing.md }}>
             <QuickSheetHeader title="Usage" onClose={noop} />
           </View>
         ),
@@ -77,7 +78,7 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
       {
         id: 'detail',
         render: () => (
-          <View style={{ paddingHorizontal: 21 }}>
+          <View style={{ paddingHorizontal: spacing.md }}>
             <QuickSheetHeader
               title="Polish the Attach experience"
               onClose={noop}
@@ -108,7 +109,7 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
       {
         id: 'default',
         render: () => (
-          <View style={{ paddingHorizontal: 21 }}>
+          <View style={{ paddingHorizontal: spacing.md }}>
             <KeyValueGroup
               rows={[
                 { label: 'Account', value: 'developer' },

@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Text } from '../primitives/Text';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
+import { typography } from '../theme/typography';
 import {
   type DiffLabels,
   type DiffLineHead,
@@ -21,7 +22,7 @@ const useStyles = makeStyles((t) => ({
   gutter: { width: 36, textAlign: 'right', paddingRight: t.spacing.xxs },
   sign: { width: 14, textAlign: 'center' },
   text: { flex: 1, paddingRight: t.spacing.xs },
-  small: { fontSize: 12, lineHeight: 17 },
+  small: { fontSize: typography.caption.fontSize, lineHeight: 17 },
 }));
 
 /** Gutters, signs and dividers: the row's label already says them. */

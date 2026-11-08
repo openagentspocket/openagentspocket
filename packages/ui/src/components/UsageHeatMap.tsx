@@ -5,6 +5,7 @@ import { Card } from '../primitives/Card';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { withAlpha } from '../theme/color';
+import { airy } from '../theme/metrics';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 import { HEAT_LEVELS, heatLevel, heatRows } from './usageHeatMath';
 
@@ -45,7 +46,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xs,
     marginTop: t.spacing.sm,
   },
-  swatches: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  swatches: { flexDirection: 'row', alignItems: 'center', gap: airy.chipV },
   swatch: { width: 12, height: 12, borderRadius: 3, overflow: 'hidden' },
   key: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
   spacer: { flex: 1 },

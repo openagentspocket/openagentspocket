@@ -1,5 +1,5 @@
 import { t } from '@openagentspocket/i18n';
-import { Button, confirm, Icon, Text } from '@openagentspocket/ui';
+import { airy, Button, confirm, Icon, spacing, Text } from '@openagentspocket/ui';
 import * as Clipboard from 'expo-clipboard';
 import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
@@ -63,8 +63,8 @@ export function DeviceKeyLine() {
   if (line === undefined) return null;
   if (line === null) {
     return (
-      <View style={{ padding: 16, gap: 8 }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+      <View style={{ padding: spacing.sm, gap: airy.stack }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: airy.stack }}>
           <Icon name="warning" size={18} color="danger" />
           <Text tone="danger" testID="device-key-unavailable">
             {t('Device key unavailable')}
@@ -89,7 +89,7 @@ export function DeviceKeyLine() {
     );
   }
   return (
-    <View style={{ padding: 16, gap: 8 }}>
+    <View style={{ padding: spacing.sm, gap: airy.stack }}>
       <Text variant="mono" selectable numberOfLines={3} testID="device-key-line">
         {line}
       </Text>

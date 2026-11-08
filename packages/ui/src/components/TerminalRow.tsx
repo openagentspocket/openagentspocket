@@ -22,7 +22,7 @@ const useStyles = makeStyles((t) => ({
   },
   pressed: { backgroundColor: t.colors.surfaceRaised },
   tile: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
-  text: { flex: 1, gap: 2 },
+  text: { flex: 1, gap: airy.line },
   separator: {
     height: t.metrics.hairlineWidth,
     backgroundColor: t.hairline,
