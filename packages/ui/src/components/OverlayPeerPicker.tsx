@@ -4,6 +4,7 @@ import { SearchField } from '../form/SearchField';
 import { Sheet } from '../overlay/Sheet';
 import { Button } from '../primitives/Button';
 import { Card } from '../primitives/Card';
+import { Chip } from '../primitives/Chip';
 import { EmptyState } from '../primitives/EmptyState';
 import { Icon } from '../primitives/Icon';
 import { Segmented } from '../primitives/Segmented';
@@ -77,12 +78,6 @@ const useStyles = makeStyles((t) => ({
     height: t.metrics.hairlineWidth,
     backgroundColor: t.hairline,
     marginLeft: t.spacing.md,
-  },
-  tag: {
-    backgroundColor: t.colors.control,
-    borderRadius: 999,
-    paddingHorizontal: t.spacing.xs,
-    paddingVertical: airy.badgeV,
   },
   empty: { padding: t.spacing.md },
 }));
@@ -191,13 +186,7 @@ export function OverlayPeerPickerBody({
                     reachability={peer.reachability}
                   />
                 </View>
-                {peer.isHost ? (
-                  <View style={styles.tag}>
-                    <Text variant="caption" tone="secondary" semibold>
-                      {text.hostTag}
-                    </Text>
-                  </View>
-                ) : null}
+                {peer.isHost ? <Chip label={text.hostTag} /> : null}
                 {peer.chosen ? <Icon name="check" size={17} color="accent" /> : null}
               </Tappable>
             </View>
