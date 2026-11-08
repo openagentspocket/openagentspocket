@@ -1,83 +1,69 @@
 import { render } from '@testing-library/react-native';
 import type { RefObject } from 'react';
-import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { AppState, type AppStateStatus } from 'react-native';
 import { useChatFollow } from './useChatFollow';
 
-const scrolled = (fromEnd: number) =>
-  ({
-    nativeEvent: {
-      contentOffset: { y: 1000 - 500 - fromEnd },
-      contentSize: { height: 1000 },
-      layoutMeasurement: { height: 500 },
-    },
-  }) as NativeSyntheticEvent<NativeScrollEvent>;
-
+type Scroller = { scrollToOffset: jest.Mock };
 let follow: ReturnType<typeof useChatFollow>;
 
-function Probe({
-  list,
-  sent,
-  visit,
-}: {
-  list: RefObject<{ scrollToEnd: jest.Mock }>;
-  sent: number;
-  visit?: number;
-}) {
+function Probe({ list, sent, visit }: { list: RefObject<Scroller>; sent: number; visit: number }) {
   follow = useChatFollow(list, sent, visit);
   return null;
 }
 
 async function setup() {
-  const scrollToEnd = jest.fn();
-  const list = { current: { scrollToEnd } };
-  const view = await render(<Probe list={list} sent={0} />);
-  const send = () => view.rerender(<Probe list={list} sent={1} />);
-  return { scrollToEnd, send, list, view };
+  const scrollToOffset = jest.fn();
+  const list = { current: { scrollToOffset } };
+  const listeners: ((state: AppStateStatus) => void)[] = [];
+  jest.spyOn(AppState, 'addEventListener').mockImplementation((_type, listener) => {
+    listeners.push(listener as (state: AppStateStatus) => void);
+    return { remove: jest.fn() } as never;
+  });
+  const view = await render(<Probe list={list} sent={0} visit={0} />);
+  const props = (sent: number, visit: number) =>
+    view.rerender(<Probe list={list} sent={sent} visit={visit} />);
+  const appState = (state: AppStateStatus) => {
+    for (const listener of listeners) listener(state);
+  };
+  return { scrollToOffset, props, appState };
 }
 
-describe('following the end of a conversation', () => {
-  afterEach(() => jest.useRealTimers());
+const NEWEST = { offset: 0, animated: false };
 
-  it('stays on the end when the list changes size, and lands again once rows are measured', async () => {
-    const { scrollToEnd, send } = await setup();
-    jest.useFakeTimers();
-    follow.onLayout();
-    expect(scrollToEnd).toHaveBeenCalledTimes(1);
-    jest.advanceTimersByTime(400);
-    expect(scrollToEnd).toHaveBeenCalledTimes(3);
+describe('following the newest row of an inverted timeline', () => {
+  afterEach(() => jest.restoreAllMocks());
+
+  it('lets the list hold a reader who scrolled up, and follow one near the newest row', async () => {
+    await setup();
+    expect(follow.maintainVisibleContentPosition).toEqual({
+      minIndexForVisible: 0,
+      autoscrollToTopThreshold: expect.any(Number),
+    });
   });
 
-  it('leaves a reader who scrolled up alone', async () => {
-    const { scrollToEnd, send } = await setup();
-    follow.onScrollBeginDrag();
-    follow.onScrollEndDrag(scrolled(600));
-    follow.onContentSizeChange();
-    expect(scrollToEnd).not.toHaveBeenCalled();
+  it('a message sent brings the reader to the newest row', async () => {
+    const { scrollToOffset, props } = await setup();
+    await props(1, 0);
+    expect(scrollToOffset).toHaveBeenCalledWith(NEWEST);
   });
 
-  it('coming back to the conversation lands a reader who scrolled up on its end', async () => {
-    const { scrollToEnd, list, view } = await setup();
-    follow.onScrollBeginDrag();
-    follow.onScrollEndDrag(scrolled(600));
-    await view.rerender(<Probe list={list} sent={0} visit={1} />);
-    expect(scrollToEnd).toHaveBeenCalledTimes(1);
-    follow.onContentSizeChange();
-    expect(scrollToEnd).toHaveBeenCalledTimes(2);
+  it('coming back to the screen brings the reader to the newest row', async () => {
+    const { scrollToOffset, props } = await setup();
+    await props(0, 1);
+    expect(scrollToOffset).toHaveBeenCalledWith(NEWEST);
   });
 
-  it('a message sent brings a reader who scrolled up back to the end', async () => {
-    const { scrollToEnd, send } = await setup();
-    follow.onScrollBeginDrag();
-    follow.onScrollEndDrag(scrolled(600));
-    await send();
-    expect(scrollToEnd).toHaveBeenCalled();
+  it('coming back from the background brings the reader to the newest row', async () => {
+    const { scrollToOffset, appState } = await setup();
+    appState('background');
+    appState('active');
+    expect(scrollToOffset).toHaveBeenCalledWith(NEWEST);
   });
 
-  it('a drag near the end keeps following', async () => {
-    const { scrollToEnd, send } = await setup();
-    follow.onScrollBeginDrag();
-    follow.onScrollEndDrag(scrolled(50));
-    follow.onContentSizeChange();
-    expect(scrollToEnd).toHaveBeenCalled();
+  it('a Face ID prompt (inactive, then active) leaves the reader where they were', async () => {
+    const { scrollToOffset, appState } = await setup();
+    appState('inactive');
+    appState('active');
+    expect(scrollToOffset).not.toHaveBeenCalled();
   });
 });

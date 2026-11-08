@@ -4,10 +4,9 @@ import {
   type ComposerMessage,
   pendingEchoes,
 } from '@openagentspocket/core';
-import { t } from '@openagentspocket/i18n';
 import { makeStyles, metrics } from '@openagentspocket/ui';
 import { useMemo, useRef } from 'react';
-import { FlatList, type NativeScrollEvent, type NativeSyntheticEvent, View } from 'react-native';
+import { FlatList, View } from 'react-native';
 import { useConsoleState } from '@/console/hooks';
 import { useConversation } from '@/conversations/useConversation';
 import { useDetailUi } from '../detailUi';
@@ -44,7 +43,7 @@ interface Props {
   visit?: number;
 }
 
-/** The conversation as a quiet timeline filling the screen, newest at the bottom. */
+/** The conversation as a quiet timeline filling the screen, newest at the bottom (an inverted list). */
 export function ChatTimeline({
   hostId,
   paneId,
@@ -68,30 +67,40 @@ export function ChatTimeline({
     [messages, sendStatuses],
   );
   const { rows, toggle } = useChatRows(conversation.state, activity, pending);
+  // Inverted: the newest row sits at offset 0, where the list opens and stays.
+  const newestFirst = useMemo(() => [...rows].reverse(), [rows]);
   const list = useRef<FlatList<ChatRow>>(null);
   const follow = useChatFollow(list, messages.length, visit);
+  const banners = (
+    <View style={[styles.banners, { paddingTop: topInset }]}>
+      <ChatBanners
+        state={conversation.state}
+        hostStatus={hostStatus}
+        onRetry={conversation.retry}
+        onShowTerminal={onShowTerminal}
+      />
+    </View>
+  );
+  if (newestFirst.length === 0) {
+    // Outside the list: an inverted list would draw the empty state upside down.
+    return (
+      <View style={[styles.list, { paddingBottom: bottomInset }]} testID="chat-timeline">
+        {banners}
+        <ChatEmpty phase={conversation.state.snapshot.phase} onShowTerminal={onShowTerminal} />
+      </View>
+    );
+  }
   return (
     <View style={styles.list} testID="chat-timeline">
       <FlatList
         ref={list}
-        data={rows}
+        inverted
+        data={newestFirst}
         keyExtractor={(row) => row.id}
         initialNumToRender={40}
         {...follow}
-        ListHeaderComponent={
-          <View style={[styles.banners, { paddingTop: topInset }]}>
-            <ChatBanners
-              state={conversation.state}
-              hostStatus={hostStatus}
-              onRetry={conversation.retry}
-              onShowTerminal={onShowTerminal}
-            />
-          </View>
-        }
-        ListEmptyComponent={
-          <ChatEmpty phase={conversation.state.snapshot.phase} onShowTerminal={onShowTerminal} />
-        }
-        ListFooterComponent={<View style={{ height: bottomInset }} />}
+        ListHeaderComponent={<View style={{ height: bottomInset }} />}
+        ListFooterComponent={banners}
         contentContainerStyle={styles.content}
         renderItem={({ item }) => (
           <ChatRowView

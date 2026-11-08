@@ -1,84 +1,45 @@
 import { type RefObject, useCallback, useEffect, useRef } from 'react';
-import { AppState, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
+import { AppState } from 'react-native';
 
-/** How far from the end still counts as reading the newest row, in points. */
-const NEAR_END = 120;
-/** Rows below the window are measured as they render, so one jump lands short of the real end. */
-const SETTLE_MS = [150, 400] as const;
+/** How close to the newest row still counts as reading it, in points. */
+const NEAR_NEWEST = 120;
 
-interface EndScroller {
-  scrollToEnd(options: { animated: boolean }): void;
+interface OffsetScroller {
+  scrollToOffset(options: { offset: number; animated: boolean }): void;
 }
 
 /**
- * Keeps the timeline on its newest row while the reader is there, whatever moves it: a new row, a
- * row replaced, a smaller list when the keyboard or the composer change, a return to the app. A
- * message the reader sends, or coming back to the screen, brings them back to the end. Only a drag
- * lets go of it.
+ * Keeps an inverted timeline on its newest row. Offset 0 is the newest row, so a list opens there,
+ * and keeps it when the keyboard or the composer shrink it. New rows: the list follows a reader
+ * near the newest row and holds one who scrolled up (`maintainVisibleContentPosition`). A message
+ * sent, a return to the screen or to the app from the background brings the reader back to it.
  */
-export function useChatFollow(list: RefObject<EndScroller | null>, sent: number, visit = 0) {
-  const following = useRef(true);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+export function useChatFollow(list: RefObject<OffsetScroller | null>, sent: number, visit = 0) {
+  const toNewest = useCallback(
+    () => list.current?.scrollToOffset({ offset: 0, animated: false }),
+    [list],
+  );
 
-  const stick = useCallback(() => {
-    if (!following.current) return;
-    list.current?.scrollToEnd({ animated: false });
-    for (const timer of timers.current) clearTimeout(timer);
-    timers.current = SETTLE_MS.map((ms) =>
-      setTimeout(() => following.current && list.current?.scrollToEnd({ animated: false }), ms),
-    );
-  }, [list]);
-
-  /** The reader comes back to the conversation: what the Agent wrote meanwhile is what they read. */
-  const rejoin = useCallback(() => {
-    following.current = true;
-    stick();
-  }, [stick]);
-
-  const lastVisit = useRef(visit);
+  const last = useRef({ sent, visit });
   useEffect(() => {
-    if (visit > lastVisit.current) rejoin();
-    lastVisit.current = visit;
-  }, [visit, rejoin]);
-
-  const lastSent = useRef(sent);
-  useEffect(() => {
-    if (sent > lastSent.current) {
-      following.current = true;
-      stick();
-    }
-    lastSent.current = sent;
-  }, [sent, stick]);
+    if (sent > last.current.sent || visit > last.current.visit) toNewest();
+    last.current = { sent, visit };
+  }, [sent, visit, toNewest]);
 
   useEffect(() => {
     let previous = AppState.currentState;
     const subscription = AppState.addEventListener('change', (state) => {
-      // Back from the background: the reader reads what came meanwhile. A Face ID prompt only
-      // makes the app inactive, and leaves a reader who scrolled up where they were.
-      if (state === 'active') {
-        if (previous === 'background') rejoin();
-        else stick();
-      }
+      // A Face ID prompt only makes the app inactive: the reader stays where they were.
+      if (state === 'active' && previous === 'background') toNewest();
       previous = state;
     });
-    return () => {
-      subscription.remove();
-      for (const timer of timers.current) clearTimeout(timer);
-    };
-  }, [stick, rejoin]);
-
-  const settle = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
-    following.current = contentSize.height - contentOffset.y - layoutMeasurement.height < NEAR_END;
-  }, []);
+    return () => subscription.remove();
+  }, [toNewest]);
 
   return {
-    onScrollBeginDrag: () => {
-      following.current = false;
+    maintainVisibleContentPosition: {
+      minIndexForVisible: 0,
+      autoscrollToTopThreshold: NEAR_NEWEST,
     },
-    onScrollEndDrag: settle,
-    onMomentumScrollEnd: settle,
-    onContentSizeChange: stick,
-    onLayout: stick,
   };
 }
