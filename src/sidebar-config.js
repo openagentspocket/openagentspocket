@@ -1,8 +1,9 @@
-import { mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { isDeepStrictEqual } from "node:util";
 import { parse, TomlError } from "smol-toml";
+import { writeAtomic } from "./hook-support.js";
 
 const BUILTIN_TOKENS = new Set([
   "state_icon", "state_text", "machine", "workspace", "tab", "pane", "agent",
@@ -193,16 +194,6 @@ export function parseSidebarConfig(toml) {
   }
 }
 
-function writeAtomic(path, contents) {
-  const temp = `${path}.tmp-${process.pid}`;
-  // Exclusive creation prevents reusing a stale temporary file with a wider mode.
-  writeFileSync(temp, contents, { mode: 0o600, flag: "wx" });
-  try {
-    renameSync(temp, path);
-  } finally {
-    rmSync(temp, { force: true });
-  }
-}
 
 /**
  * Refresh on source path/existence/mtime changes. Return the current snapshot.

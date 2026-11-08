@@ -234,3 +234,20 @@ export function approvalsOptedIn(configDir, session) {
       deliversToSession(entry, session) && entry?.notify?.blocked === true && entry.notify.approve === true,
   );
 }
+
+/**
+ * The asks recorded for panes still Blocked, when a device of `session` approves from outside the
+ * app: the fields its Blocked notification carried, so a Live Activity pushed by the Host answers
+ * them with the app suspended. `key` changes when an ask comes or goes. The app reads the screen
+ * again before it answers.
+ */
+export function standingApprovalAsks(configDir, session, stateDir, statuses) {
+  const asks = new Map();
+  if (approvalsOptedIn(configDir, session)) {
+    for (const record of readApprovalAsks(stateDir, { nowSeconds: Math.floor(Date.now() / 1000) })) {
+      if (statuses[record.pane] === "blocked") asks.set(record.pane, record);
+    }
+  }
+  const key = [...asks.values()].map((ask) => `${ask.pane}:${ask.bid}`).sort().join(",");
+  return { asks, key };
+}

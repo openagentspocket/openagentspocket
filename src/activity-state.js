@@ -92,6 +92,7 @@ export function buildActivityState({
   rowHostName,
   tabs = new Map(),
   panes = new Map(),
+  asks = new Map(),
 }) {
   const counts = { working: 0, blocked: 0, done: 0 };
   const eligible = [];
@@ -138,6 +139,9 @@ export function buildActivityState({
     const workspaceId = optionalText(entry.agent.workspace_id);
     const workspace = forDisplay(workspaceId === null ? null : workspaceLabels.get(workspaceId));
     if (workspace !== null) wire.workspace = workspace;
+    // The prompt a Blocked agent waits on, so the activity answers it with the app suspended.
+    const ask = entry.status === "blocked" ? asks.get(entry.pane) : undefined;
+    if (ask !== undefined) wire.ask = { act: ask.act, bid: ask.bid, opts: ask.opts, q: ask.q, ts: ask.ts };
     return wire;
   });
   return {

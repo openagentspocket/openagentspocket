@@ -14,7 +14,7 @@
 
 import { createHash } from "node:crypto";
 import { spawn } from "node:child_process";
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 
@@ -28,6 +28,7 @@ import {
   shortHostName,
 } from "./activity-state.js";
 import { parseActivityRowLayout } from "./activity-rows.js";
+import { standingApprovalAsks } from "./approval-ask-records.js";
 import { readNotificationConfig } from "./notification-config.js";
 import { APNS_ENVIRONMENTS, platformOf } from "./notify-platform.js";
 import { readUsageRuntime, recordUsageRuntime } from "./usage-runtime.js";
@@ -35,6 +36,7 @@ import { noteClaudeAgent } from "./usage/claude-agents.js";
 import { refreshSidebarSnapshotForEvent } from "./sidebar-config.js";
 import { optionalText } from "./display-text.js";
 import { deliversToSession, hookSession, sessionStateDir } from "./session.js";
+import { requireEnv, writeAtomic } from "./hook-support.js";
 
 const SEND_ATTEMPTS = 3;
 const REQUEST_TIMEOUT_MS = 10_000;
@@ -177,11 +179,6 @@ function claimSuperseded(ours, latest) {
   return latest.claimed_at_ms !== ours.claimed_at_ms || latest.pid !== ours.pid;
 }
 
-function writeAtomic(path, contents) {
-  const temp = `${path}.tmp-${process.pid}`;
-  writeFileSync(temp, contents);
-  renameSync(temp, path);
-}
 
 function runHerdr(binPath, args) {
   return new Promise((resolve, reject) => {
@@ -402,13 +399,6 @@ function isRelayOrigin413(detail) {
   }
 }
 
-function requireEnv(name) {
-  const value = process.env[name];
-  if (typeof value !== "string" || value.length === 0) {
-    throw new Error(`${name} is not set; this script must run as a herdr event hook`);
-  }
-  return value;
-}
 
 async function deliver(config, device, plaintextObject, request) {
   let { envelope, step } = sealFitting(plaintextObject, device, request);
@@ -465,6 +455,7 @@ async function main() {
   }
 }
 
+
 async function updateLiveActivity(configDir, session, stateDir, binPath, event) {
   const config = readNotificationConfig(configDir);
 
@@ -489,8 +480,9 @@ async function updateLiveActivity(configDir, session, stateDir, binPath, event) 
   const sent = readLastState(stateDir);
   const previous = sent?.statuses ?? null;
   const preferences = devicePreferences(devices);
+  const { asks, key: askKey } = standingApprovalAsks(configDir, session, stateDir, statuses);
   if (previous !== null && sameStatusMap(statuses, previous)
-      && sent?.preferences === preferences) return;
+      && sent?.preferences === preferences && (sent?.asks ?? "") === askKey) return;
 
   const empty = Object.keys(statuses).length === 0;
   if (empty && sent?.ended === true) return;
@@ -513,6 +505,7 @@ async function updateLiveActivity(configDir, session, stateDir, binPath, event) 
       workspaceLabels,
       rowLayout: device.rowLayout,
       rowHostName: device.rowHostName,
+      asks,
       ...rowContext,
     });
     const content =
@@ -542,6 +535,7 @@ async function updateLiveActivity(configDir, session, stateDir, binPath, event) 
       sent_at_ms: Date.now(),
       statuses,
       preferences,
+      asks: askKey,
       ended: pushEvent === "end",
     });
   }

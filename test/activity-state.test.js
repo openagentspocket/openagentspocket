@@ -15,6 +15,18 @@ function agent(pane, status, extra = {}) {
 }
 
 suite("buildActivityState", () => {
+  test("a Blocked agent carries its recorded approval ask; other agents carry none", () => {
+    const ask = { pane: "w1:p2", bid: "b".repeat(22), ts: 1_700_000_000, act: 1, q: "Run ls?", opts: ["Yes", "No"] };
+    const { plaintextObject } = buildActivityState({
+      agents: [agent("w1:p2", "blocked", { agent: "claude" }), agent("w1:p3", "working", { agent: "codex" })],
+      hostName: "studio",
+      asks: new Map([["w1:p2", ask], ["w1:p3", { ...ask, pane: "w1:p3" }]]),
+    });
+    const byPane = new Map(plaintextObject.agents.map((entry) => [entry.pane, entry]));
+    assert.deepEqual(byPane.get("w1:p2").ask, { act: 1, bid: ask.bid, opts: ["Yes", "No"], q: "Run ls?", ts: ask.ts });
+    assert.equal("ask" in byPane.get("w1:p3"), false);
+  });
+
   test("sorts blocked > done > working and tie-breaks by pane ascending", () => {
     const { counts, plaintextObject } = buildActivityState({
       agents: [

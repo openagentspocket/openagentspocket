@@ -9,303 +9,37 @@
 import { test, suite, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
-import { createDecipheriv } from "node:crypto";
-import { createServer } from "node:http";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
-import os, { tmpdir } from "node:os";
+import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import os from "node:os";
 import { join } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
-import { fileURLToPath } from "node:url";
 
 import { shortHostName } from "../src/activity-state.js";
+import {
+  KEY_A,
+  KEY_B,
+  ALERT_TOKEN,
+  ACTIVITY_TOKEN_A,
+  ACTIVITY_TOKEN_B,
+  PANE_ID,
+  h,
+  useActivityHarness,
+  startFakeRelay,
+  writeHerdrStub,
+  stubInvocations,
+  writeConfig,
+  device,
+  writeRegistration,
+  readRegistration,
+  writeLastState,
+  listedAgent,
+  statusEvent,
+  runHook,
+  debounceBarrier,
+  decryptEnvelope,
+} from "./activity-hook.testkit.js";
 
-const ACTIVITY_SCRIPT = fileURLToPath(new URL("../src/activity-hook.js", import.meta.url));
-
-const DEBOUNCE_MS = 120;
-const RETRY_DELAY_MS = 10;
-
-const KEY_A = Buffer.from(Array.from({ length: 32 }, (_, i) => i));
-const KEY_B = Buffer.from(Array.from({ length: 32 }, (_, i) => 255 - i));
-const ALERT_TOKEN = "a".repeat(64);
-const ACTIVITY_TOKEN_A = "c".repeat(64);
-const ACTIVITY_TOKEN_B = "d".repeat(64);
-const PANE_ID = "w1:p2";
-
-let home;
-let stateDir;
-let configDir;
-let stubDir;
-let relay;
-
-beforeEach(() => {
-  home = mkdtempSync(join(tmpdir(), "activity-hook-"));
-  stateDir = join(home, "state");
-  configDir = join(home, "config");
-  stubDir = join(home, "stub");
-  mkdirSync(stateDir, { recursive: true });
-  mkdirSync(configDir, { recursive: true });
-  mkdirSync(stubDir, { recursive: true });
-  relay = null;
-});
-
-afterEach(async () => {
-  if (relay) await relay.close();
-  rmSync(home, { recursive: true, force: true });
-});
-
-async function startFakeRelay(respond = () => ({ status: 200, body: { apnsId: "x" } })) {
-  if (relay) await relay.close();
-  const requests = [];
-  const server = createServer((req, res) => {
-    let raw = "";
-    req.on("data", (chunk) => (raw += chunk));
-    req.on("end", () => {
-      const request = {
-        method: req.method,
-        path: req.url,
-        body: JSON.parse(raw),
-      };
-      const { status, body } = respond(request, requests.length);
-      requests.push(request);
-      res.writeHead(status, { "content-type": "application/json" });
-      res.end(JSON.stringify(body));
-    });
-  });
-  return new Promise((resolve) => {
-    server.listen(0, "127.0.0.1", () => {
-      relay = {
-        url: `http://127.0.0.1:${server.address().port}`,
-        requests,
-        close: () => new Promise((done) => server.close(done)),
-      };
-      resolve(relay);
-    });
-  });
-}
-
-// `processInfo` answers `pane process-info`: an object, "fail" (exit 1),
-// "invalid" (not JSON) or "hang" (never answers).
-function writeHerdrStub(
-  agents,
-  workspaces = [{ workspace_id: "w1", label: "Agentico" }],
-  tabs = [],
-  panes = [],
-  processInfo = undefined,
-) {
-  const binPath = join(stubDir, "herdr");
-  writeFileSync(join(stubDir, "response.json"), JSON.stringify({ agents, workspaces, tabs, panes, processInfo }));
-  writeFileSync(
-    binPath,
-    [
-      "#!/usr/bin/env node",
-      'const fs = require("node:fs");',
-      'const path = require("node:path");',
-      "const dir = __dirname;",
-      "const args = process.argv.slice(2);",
-      "fs.appendFileSync(",
-      '  path.join(dir, "invocations.log"),',
-      '  JSON.stringify({ args, at: Date.now() }) + "\\n",',
-      ");",
-      'const response = JSON.parse(fs.readFileSync(path.join(dir, "response.json"), "utf8"));',
-      'if (args[0] === "agent" && args[1] === "list") {',
-      '  process.stdout.write(JSON.stringify({ id: "cli:agent:list", result: { agents: response.agents, type: "agent_list" } }));',
-      '} else if (args[0] === "workspace" && args[1] === "list") {',
-      '  process.stdout.write(JSON.stringify({ id: "cli:workspace:list", result: { workspaces: response.workspaces, type: "workspace_list" } }));',
-      '} else if (["tab", "pane"].includes(args[0]) && args[1] === "list") {',
-      '  const key = args[0] + "s";',
-      '  process.stdout.write(JSON.stringify({ result: { [key]: response[key] } }));',
-      '} else if (args[0] === "pane" && args[1] === "process-info" && response.processInfo !== undefined) {',
-      '  if (response.processInfo === "fail") process.exit(1);',
-      '  if (response.processInfo === "hang") Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 60_000);',
-      '  process.stdout.write(response.processInfo === "invalid" ? "not json"',
-      '    : JSON.stringify({ id: "cli:pane:process-info", result: { type: "pane_process_info", process_info: response.processInfo } }));',
-      '} else {',
-      '  process.stderr.write(`stub: unexpected subcommand ${args.join(" ")}`);',
-      "  process.exit(64);",
-      "}",
-      "process.exit(0);",
-    ].join("\n"),
-    { mode: 0o755 },
-  );
-  return binPath;
-}
-
-function stubInvocations() {
-  const log = join(stubDir, "invocations.log");
-  if (!existsSync(log)) return [];
-  return readFileSync(log, "utf8")
-    .trimEnd()
-    .split("\n")
-    .map((line) => JSON.parse(line));
-}
-
-function writeConfig(overrides = {}) {
-  writeFileSync(
-    join(configDir, "notify.json"),
-    JSON.stringify({
-      relay_url: relay?.url,
-      activity_debounce_ms: DEBOUNCE_MS,
-      retry_delay_ms: RETRY_DELAY_MS,
-      ...overrides,
-    }),
-  );
-}
-
-function device({
-  token = ALERT_TOKEN,
-  key = KEY_A,
-  env = "sandbox",
-  activityToken = ACTIVITY_TOKEN_A,
-  liveActivity = undefined,
-  ...extra
-} = {}) {
-  const entry = {
-    token,
-    key: key.toString("base64url"),
-    env,
-    notify: { blocked: true, done: true },
-    ...extra,
-  };
-  if (liveActivity === null) return entry;
-  entry.live_activity =
-    liveActivity === undefined
-      ? { token: activityToken, started_at: "2026-01-01T00:00:00Z" }
-      : liveActivity;
-  return entry;
-}
-
-function writeRegistration(devices, extra = {}) {
-  writeFileSync(
-    join(configDir, "notifications.json"),
-    JSON.stringify({ v: 1, devices, ...extra }),
-  );
-}
-
-function readRegistration() {
-  return JSON.parse(readFileSync(join(configDir, "notifications.json"), "utf8"));
-}
-
-function writeLastState(state) {
-  const dir = join(stateDir, "activity");
-  mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "last-state.json"), JSON.stringify(state));
-}
-
-function listedAgent({
-  pane = PANE_ID,
-  status = "working",
-  agent = "claude",
-  title = "implement live activity",
-} = {}) {
-  const info = { agent, agent_status: status, pane_id: pane, workspace_id: "w1" };
-  if (title !== null) {
-    info.terminal_title = `⠂ ${title}`;
-    info.terminal_title_stripped = title;
-  }
-  return info;
-}
-
-function statusEvent(status, { agent = "claude", paneId = PANE_ID, ...dataExtra } = {}) {
-  const data = {
-    type: "pane_agent_status_changed",
-    pane_id: paneId,
-    workspace_id: "w1",
-    agent_status: status,
-    ...dataExtra,
-  };
-  if (agent !== null) data.agent = agent;
-  return { event: "pane_agent_status_changed", data };
-}
-
-function runHook(event, { binPath, env = {}, nodeArgs = [] } = {}) {
-  return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [...nodeArgs, ACTIVITY_SCRIPT], {
-      env: {
-        PATH: process.env.PATH,
-        HERDR_PLUGIN_EVENT_JSON: typeof event === "string" ? event : JSON.stringify(event),
-        HERDR_PLUGIN_STATE_DIR: stateDir,
-        HERDR_PLUGIN_CONFIG_DIR: configDir,
-        HERDR_BIN_PATH: binPath ?? join(stubDir, "herdr"),
-        ...env,
-      },
-    });
-    let stdout = "";
-    let stderr = "";
-    child.stdout.on("data", (chunk) => (stdout += chunk));
-    child.stderr.on("data", (chunk) => (stderr += chunk));
-    child.on("error", reject);
-    child.on("close", (status) => resolve({ status, stdout, stderr }));
-  });
-}
-
-// Holds every hook in its debounce until the test releases them, so overlap
-// no longer depends on two node cold starts landing within DEBOUNCE_MS. A
-// preload swaps the hook's debounce sleep for one that logs the hook's pid
-// and waits for a release file; the hook writes its claim before that sleep,
-// so an arrival means its claim is in. ACTIVITY_TEST_NOW_MS pins Date.now().
-function debounceBarrier() {
-  const dir = join(home, "barrier");
-  const arrivals = join(dir, "arrivals.log");
-  const release = join(dir, "release");
-  const preload = join(dir, "preload.mjs");
-  mkdirSync(dir, { recursive: true });
-  writeFileSync(
-    preload,
-    [
-      'import fs from "node:fs";',
-      'import timers from "node:timers/promises";',
-      'import { syncBuiltinESMExports } from "node:module";',
-      "const wallSleep = timers.setTimeout;",
-      "timers.setTimeout = async (ms, value, options) => {",
-      `  if (ms !== ${DEBOUNCE_MS}) return wallSleep(ms, value, options);`,
-      `  fs.appendFileSync(${JSON.stringify(arrivals)}, process.pid + "\\n");`,
-      `  while (!fs.existsSync(${JSON.stringify(release)})) {`,
-      // The test home is gone: never outlive the test that started us.
-      `    if (!fs.existsSync(${JSON.stringify(dir)})) process.exit(70);`,
-      "    await wallSleep(5);",
-      "  }",
-      "  return value;",
-      "};",
-      "const pinnedNow = Number(process.env.ACTIVITY_TEST_NOW_MS);",
-      "if (Number.isFinite(pinnedNow)) Date.now = () => pinnedNow;",
-      "syncBuiltinESMExports();",
-    ].join("\n"),
-  );
-  return {
-    run(event, { nowMs } = {}) {
-      const env = nowMs === undefined ? {} : { ACTIVITY_TEST_NOW_MS: String(nowMs) };
-      return runHook(event, { env, nodeArgs: ["--import", preload] });
-    },
-    async arrived(count) {
-      const deadline = Date.now() + 30_000;
-      for (;;) {
-        const pids = existsSync(arrivals) ? readFileSync(arrivals, "utf8").split("\n").filter(Boolean) : [];
-        if (pids.length >= count) return pids;
-        if (Date.now() > deadline) throw new Error(`debounce barrier: ${pids.length} of ${count} hooks claimed`);
-        await sleep(5);
-      }
-    },
-    release() {
-      writeFileSync(release, "");
-    },
-  };
-}
-
-function decryptEnvelope(envelope, key) {
-  const wire = JSON.parse(envelope);
-  assert.equal(wire.v, 1);
-  const nonce = Buffer.from(wire.n, "base64url");
-  const ct = Buffer.from(wire.ct, "base64url");
-  const decipher = createDecipheriv("aes-256-gcm", key, nonce);
-  decipher.setAAD(Buffer.from("HERDR-ACTIVITY:1", "utf8"));
-  decipher.setAuthTag(ct.subarray(ct.length - 16));
-  const plaintext = Buffer.concat([
-    decipher.update(ct.subarray(0, ct.length - 16)),
-    decipher.final(),
-  ]);
-  return { kid: wire.kid, payload: JSON.parse(plaintext.toString("utf8")) };
-}
-
+useActivityHarness();
 suite("activity-hook: cheap exits", () => {
   test("no live_activity entries send zero requests", async () => {
     await startFakeRelay();
@@ -316,7 +50,7 @@ suite("activity-hook: cheap exits", () => {
     const result = await runHook(statusEvent("working"));
 
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 0);
+    assert.equal(h.relay.requests.length, 0);
     assert.equal(stubInvocations().length, 0);
   });
 
@@ -330,7 +64,7 @@ suite("activity-hook: cheap exits", () => {
     const result = await runHook(statusEvent("idle"));
 
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 0);
+    assert.equal(h.relay.requests.length, 0);
     assert.equal(stubInvocations().length, 0);
   });
 });
@@ -346,8 +80,8 @@ suite("activity-hook: update and end", () => {
     const result = await runHook(statusEvent("working"));
 
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 2);
-    for (const request of relay.requests) {
+    assert.equal(h.relay.requests.length, 2);
+    for (const request of h.relay.requests) {
       assert.equal(request.method, "POST");
       assert.equal(request.path, "/push");
       assert.equal(request.body.kind, "liveactivity");
@@ -359,7 +93,7 @@ suite("activity-hook: update and end", () => {
       assert.deepEqual(request.body.counts, { working: 1, blocked: 0, done: 0 });
       assert.ok(request.body.timestamp >= before);
     }
-    const byToken = new Map(relay.requests.map((request) => [request.body.token, request.body]));
+    const byToken = new Map(h.relay.requests.map((request) => [request.body.token, request.body]));
     assert.equal(byToken.get(ACTIVITY_TOKEN_A).env, "sandbox");
     assert.equal(byToken.get(ACTIVITY_TOKEN_B).env, "production");
     const opened = decryptEnvelope(byToken.get(ACTIVITY_TOKEN_A).envelope, KEY_A);
@@ -404,8 +138,8 @@ suite("activity-hook: update and end", () => {
     const result = await runHook(statusEvent("working", { paneId: "w1:p2" }));
 
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 2);
-    const byToken = new Map(relay.requests.map((request) => [request.body.token, request.body]));
+    assert.equal(h.relay.requests.length, 2);
+    const byToken = new Map(h.relay.requests.map((request) => [request.body.token, request.body]));
     assert.deepEqual(byToken.get(ACTIVITY_TOKEN_A).counts, { working: 1, blocked: 1, done: 0 });
     assert.deepEqual(byToken.get(ACTIVITY_TOKEN_B).counts, { working: 1, blocked: 1, done: 0 });
     const pinned = decryptEnvelope(byToken.get(ACTIVITY_TOKEN_A).envelope, KEY_A);
@@ -429,8 +163,8 @@ suite("activity-hook: update and end", () => {
     const result = await runHook(statusEvent("idle"));
 
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 1);
-    const body = relay.requests[0].body;
+    assert.equal(h.relay.requests.length, 1);
+    const body = h.relay.requests[0].body;
     assert.equal(body.event, "end");
     assert.equal(body.priority, 5);
     assert.equal(body.dismissal_date, body.timestamp);
@@ -451,13 +185,13 @@ suite("activity-hook: priority and suppression", () => {
     writeHerdrStub([listedAgent({ status: "blocked", title: "need input" })]);
     const first = await runHook(statusEvent("blocked"));
     assert.equal(first.status, 0, first.stderr);
-    assert.equal(relay.requests.length, 1);
-    assert.equal(relay.requests[0].body.priority, 10);
-    assert.equal(relay.requests[0].body.event, "update");
+    assert.equal(h.relay.requests.length, 1);
+    assert.equal(h.relay.requests[0].body.priority, 10);
+    assert.equal(h.relay.requests[0].body.event, "update");
 
     const repeat = await runHook(statusEvent("blocked"));
     assert.equal(repeat.status, 0, repeat.stderr);
-    assert.equal(relay.requests.length, 1);
+    assert.equal(h.relay.requests.length, 1);
 
     writeHerdrStub([
       listedAgent({ status: "blocked", title: "need input" }),
@@ -465,9 +199,9 @@ suite("activity-hook: priority and suppression", () => {
     ]);
     const changed = await runHook(statusEvent("done", { paneId: "w1:p3" }));
     assert.equal(changed.status, 0, changed.stderr);
-    assert.equal(relay.requests.length, 2);
-    assert.equal(relay.requests[1].body.priority, 5);
-    assert.deepEqual(relay.requests[1].body.counts, { working: 0, blocked: 1, done: 1 });
+    assert.equal(h.relay.requests.length, 2);
+    assert.equal(h.relay.requests[1].body.priority, 5);
+    assert.deepEqual(h.relay.requests[1].body.counts, { working: 0, blocked: 1, done: 1 });
   });
 });
 
@@ -486,7 +220,7 @@ suite("activity-hook: debounce", () => {
 
     assert.equal(first.status, 0, first.stderr);
     assert.equal(second.status, 0, second.stderr);
-    assert.equal(relay.requests.length, 1);
+    assert.equal(h.relay.requests.length, 1);
   });
 
   test("a tie on claimed_at_ms still produces one send", async () => {
@@ -506,7 +240,7 @@ suite("activity-hook: debounce", () => {
 
     assert.equal(first.status, 0, first.stderr);
     assert.equal(second.status, 0, second.stderr);
-    assert.equal(relay.requests.length, 1);
+    assert.equal(h.relay.requests.length, 1);
   });
 
   test("the claim written last wins even when its clock reads earlier", async () => {
@@ -526,13 +260,13 @@ suite("activity-hook: debounce", () => {
     const results = await Promise.all([first, second]);
 
     for (const result of results) assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 1);
-    const claim = JSON.parse(readFileSync(join(stateDir, "activity", "claim.json"), "utf8"));
+    assert.equal(h.relay.requests.length, 1);
+    const claim = JSON.parse(readFileSync(join(h.stateDir, "activity", "claim.json"), "utf8"));
     assert.deepEqual(claim, { pid: Number(lastPid), claimed_at_ms: 1_000 });
   });
 });
 
-suite("activity-hook: relay failures", () => {
+suite("activity-hook: h.relay failures", () => {
   test("a 410 Unregistered prunes only live_activity, preserving the rest of the entry", async () => {
     await startFakeRelay(() => ({ status: 410, body: { reason: "Unregistered" } }));
     writeConfig();
@@ -548,7 +282,7 @@ suite("activity-hook: relay failures", () => {
     const result = await runHook(statusEvent("working"));
 
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 2);
+    assert.equal(h.relay.requests.length, 2);
     const file = readRegistration();
     assert.equal(file.v, 1);
     assert.equal(file.future_top_field, "kept");
@@ -561,7 +295,7 @@ suite("activity-hook: relay failures", () => {
     assert.equal("live_activity" in file.devices[1], false);
   });
 
-  test("a relay-origin 413 resends without titles", async () => {
+  test("a h.relay-origin 413 resends without titles", async () => {
     await startFakeRelay((_request, index) =>
       index === 0
         ? { status: 413, body: { error: "payload_too_large" } }
@@ -574,9 +308,9 @@ suite("activity-hook: relay failures", () => {
     const result = await runHook(statusEvent("working"));
 
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 2);
-    const first = decryptEnvelope(relay.requests[0].body.envelope, KEY_A);
-    const second = decryptEnvelope(relay.requests[1].body.envelope, KEY_A);
+    assert.equal(h.relay.requests.length, 2);
+    const first = decryptEnvelope(h.relay.requests[0].body.envelope, KEY_A);
+    const second = decryptEnvelope(h.relay.requests[1].body.envelope, KEY_A);
     assert.equal(first.payload.agents[0].title, "a long enough title to drop");
     assert.equal("title" in second.payload.agents[0], false);
     assert.equal(second.payload.agents[0].workspace, "Agentico");
@@ -595,15 +329,15 @@ suite("activity-hook: registered Agent List Fields", () => {
     writeHerdrStub([{ ...listedAgent(), cwd: "/work/Agentico" }]);
     let result = await runHook(statusEvent("working"));
     assert.equal(result.status, 0, result.stderr);
-    const first = decryptEnvelope(relay.requests[0].body.envelope, KEY_A).payload;
+    const first = decryptEnvelope(h.relay.requests[0].body.envelope, KEY_A).payload;
     assert.deepEqual(first.agents[0].rows, [[{ text: "My Mac" }], [{ dim: true, text: "/work/Agentico" }]]);
-    assert.equal("rows" in decryptEnvelope(relay.requests[1].body.envelope, KEY_B).payload.agents[0], false);
+    assert.equal("rows" in decryptEnvelope(h.relay.requests[1].body.envelope, KEY_B).payload.agents[0], false);
     live.row_layout.rows = [[{ token: "agent" }]];
     writeRegistration([device({ liveActivity: live })]);
     result = await runHook(statusEvent("working"));
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 3);
-    assert.deepEqual(decryptEnvelope(relay.requests[2].body.envelope, KEY_A).payload.agents[0].rows,
+    assert.equal(h.relay.requests.length, 3);
+    assert.deepEqual(decryptEnvelope(h.relay.requests[2].body.envelope, KEY_A).payload.agents[0].rows,
       [[{ text: "claude" }]]);
   });
 
@@ -616,7 +350,7 @@ suite("activity-hook: registered Agent List Fields", () => {
       [{ workspace_id: "w1", tab_id: "tab", pane_id: PANE_ID, label: "pane label" }]);
     const result = await runHook(statusEvent("working"));
     assert.equal(result.status, 0, result.stderr);
-    assert.deepEqual(decryptEnvelope(relay.requests[0].body.envelope, KEY_A).payload.agents[0].rows,
+    assert.deepEqual(decryptEnvelope(h.relay.requests[0].body.envelope, KEY_A).payload.agents[0].rows,
       [[{ text: "review" }, { text: " · " }, { text: "pane label" }]]);
     assert.deepEqual(stubInvocations().filter((entry) => ["tab", "pane"].includes(entry.args[0])).map((entry) => entry.args),
       [["tab", "list", "--workspace", "w1"], ["pane", "list", "--workspace", "w1"]]);
@@ -629,8 +363,8 @@ suite("activity-hook: registered Agent List Fields", () => {
     writeHerdrStub([{ ...listedAgent(), workspace_id: "w1", cwd: "/work/Agentico" }]);
     const result = await runHook(statusEvent("working"));
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 4);
-    const contents = relay.requests.map((request) => decryptEnvelope(request.body.envelope, KEY_A).payload);
+    assert.equal(h.relay.requests.length, 4);
+    const contents = h.relay.requests.map((request) => decryptEnvelope(request.body.envelope, KEY_A).payload);
     assert.ok(contents[0].agents[0].title);
     assert.equal("title" in contents[1].agents[0], false);
     assert.ok(contents[1].agents[0].rows);
@@ -660,7 +394,7 @@ suite("activity-hook: herdr sessions", () => {
 
     assert.equal(result.status, 0, result.stderr);
     assert.deepEqual(
-      relay.requests.map((request) => request.body.token).sort(),
+      h.relay.requests.map((request) => request.body.token).sort(),
       [ACTIVITY_TOKEN_A, "f".repeat(64)],
     );
   });
@@ -676,9 +410,9 @@ suite("activity-hook: herdr sessions", () => {
     });
 
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(relay.requests.length, 0);
+    assert.equal(h.relay.requests.length, 0);
     assert.equal(stubInvocations().length, 0);
-    assert.equal(existsSync(join(stateDir, "activity", "claim.json")), false);
+    assert.equal(existsSync(join(h.stateDir, "activity", "claim.json")), false);
   });
 
   test("overlapping claims of two sessions do not supersede each other", async () => {
@@ -694,10 +428,10 @@ suite("activity-hook: herdr sessions", () => {
 
     assert.equal(first.status, 0, first.stderr);
     assert.equal(second.status, 0, second.stderr);
-    assert.equal(relay.requests.length, 2);
+    assert.equal(h.relay.requests.length, 2);
     // The default session keeps the pre-session state path; named sessions nest.
-    assert.ok(existsSync(join(stateDir, "activity", "last-state.json")));
-    assert.ok(existsSync(join(stateDir, "sessions", "work", "activity", "last-state.json")));
+    assert.ok(existsSync(join(h.stateDir, "activity", "last-state.json")));
+    assert.ok(existsSync(join(h.stateDir, "sessions", "work", "activity", "last-state.json")));
   });
 
   test("one session's ended state does not cheap-exit another session", async () => {
@@ -718,8 +452,8 @@ suite("activity-hook: herdr sessions", () => {
     });
     assert.equal(other.status, 0, other.stderr);
     assert.deepEqual(stubInvocations().map((entry) => entry.args), [["agent", "list"]]);
-    assert.equal(relay.requests.length, 1);
-    assert.equal(relay.requests[0].body.event, "end");
+    assert.equal(h.relay.requests.length, 1);
+    assert.equal(h.relay.requests[0].body.event, "end");
   });
 });
 
@@ -742,12 +476,12 @@ suite("activity-hook: Claude Code Account suggestions", () => {
   const processInfo = (foreground, leader = null) => ({
     pane_id: PANE_ID, tty: "/dev/ttys001", shell_pid: 1, foreground_process_group_id: leader, foreground_processes: foreground,
   });
-  const agentsPath = () => join(stateDir, "usage", "claude-agents.json");
+  const agentsPath = () => join(h.stateDir, "usage", "claude-agents.json");
   const agentsFile = () => JSON.parse(readFileSync(agentsPath(), "utf8"));
   const lookups = () => stubInvocations().filter((entry) => entry.args[0] === "pane" && entry.args[1] === "process-info");
   // Only a directory that exists is kept, so the Agents' directories are real.
   const agentDirectory = (...names) => {
-    const path = join(home, "agents", ...names);
+    const path = join(h.home, "agents", ...names);
     mkdirSync(path, { recursive: true });
     return path;
   };
@@ -775,7 +509,7 @@ suite("activity-hook: Claude Code Account suggestions", () => {
     rmSync(agentsPath());
     writeHerdrStub([listedAgent()], undefined, [], [], processInfo([claudeProcess(other, "node"), claudeProcess(follower, "/opt/claude/bin/claude")]));
     assert.equal((await runHook(statusEvent("working"), { env: usageEnv })).status, 0);
-    assert.deepEqual(Object.keys(agentsFile().directories), [join(home, "agents", "follower")]);
+    assert.deepEqual(Object.keys(agentsFile().directories), [join(h.home, "agents", "follower")]);
   });
 
   test("keeps only the existing directory the variable names, never the variables after it", { skip: environmentReadable }, async () => {
@@ -785,7 +519,7 @@ suite("activity-hook: Claude Code Account suggestions", () => {
       // bash exports a function under a name with `%%`, and its body has no ` NAME=`.
       [{ CLAUDE_CONFIG_DIR: directory, "BASH_FUNC_tok%%": '() {  curl -H "Authorization: Bearer SECRET-XYZ" https://x\n}' }, [directory]],
       [{ CLAUDE_CONFIG_DIR: directory, "my.token": "SECRET-123" }, [directory]],
-      [{ CLAUDE_CONFIG_DIR: join(home, "agents", "gone") }, []],
+      [{ CLAUDE_CONFIG_DIR: join(h.home, "agents", "gone") }, []],
       // An earlier value that names the variable makes `ps -E` ambiguous; `/proc` is not.
       [{ NOTE: `x CLAUDE_CONFIG_DIR=${decoy} y`, CLAUDE_CONFIG_DIR: directory }, process.platform === "linux" ? [directory] : []],
     ]) {
@@ -812,7 +546,7 @@ suite("activity-hook: Claude Code Account suggestions", () => {
 
   test("a pane is looked up at most once every 10 minutes per herdr session, and old directories expire", async () => {
     const now = Date.now();
-    mkdirSync(join(stateDir, "usage"), { recursive: true });
+    mkdirSync(join(h.stateDir, "usage"), { recursive: true });
     writeFileSync(agentsPath(), JSON.stringify({ panes: {}, directories: {
       "/agents/old": now - 31 * 86_400_000, "/agents/recent": now - 86_400_000, "relative": now,
     } }));
@@ -853,14 +587,14 @@ suite("activity-hook: Claude Code Account suggestions", () => {
     writeRegistration([device()]);
     for (const [index, answer] of ["fail", "invalid", "hang"].entries()) {
       writeHerdrStub([listedAgent()], undefined, [], [], answer);
-      rmSync(join(stateDir, "activity"), { recursive: true, force: true });
+      rmSync(join(h.stateDir, "activity"), { recursive: true, force: true });
       const started = Date.now();
 
       const result = await runHook(statusEvent("working", { paneId: `w1:p${index + 10}` }), { env: usageEnv });
 
       assert.equal(result.status, 0, result.stderr);
       assert.equal(result.stderr, "");
-      assert.equal(relay.requests.length, index + 1);
+      assert.equal(h.relay.requests.length, index + 1);
       // A lookup that never answers is given up after 3 seconds.
       assert.ok(Date.now() - started < 8_000);
     }
