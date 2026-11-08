@@ -16,6 +16,7 @@ const ICONS = {
   check: { ios: 'checkmark', android: 'check' },
   copy: { ios: 'doc.on.doc', android: 'content_copy' },
   more: { ios: 'ellipsis', android: 'more_horiz' },
+  shortcuts: { ios: 'command', android: 'keyboard_command_key' },
   chevronLeft: { ios: 'chevron.left', android: 'chevron_left' },
   chevronRight: { ios: 'chevron.right', android: 'chevron_right' },
   chevronDown: { ios: 'chevron.down', android: 'expand_more' },

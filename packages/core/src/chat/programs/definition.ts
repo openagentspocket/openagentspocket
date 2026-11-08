@@ -7,6 +7,7 @@ import type { ChatHostFiles } from '../model/host-files';
 import type { ChatProgram } from '../model/types';
 import type { ProgramSendPolicy } from '../send/policy';
 import type { ChatSessionStoreProblem } from '../timeline/reasons';
+import type { ProgramShortcut } from './shortcuts';
 
 /**
  * Everything one Chat program contributes. Adding a program is one more name in `CHAT_PROGRAMS` and
@@ -41,4 +42,6 @@ export interface ProgramDefinition {
   blocked?: () => BlockedProgramSupport | null;
   /** How Message Jump finds the program's prompts; absent for the default walk. */
   messageJump?: () => MessageJumpProfile;
+  /** The composer's shortcuts menu, from the program's docs; absent for the common keys. */
+  shortcuts?: () => readonly ProgramShortcut[];
 }

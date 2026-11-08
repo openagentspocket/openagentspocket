@@ -4,6 +4,7 @@ import {
 } from '../../terminal/agent-message-jump';
 import { CHAT_PROGRAMS, type ChatProgram } from '../model/types';
 import type { ProgramDefinition } from './definition';
+import { COMMON_SHORTCUTS, type ProgramShortcut } from './shortcuts';
 
 let definitions: Readonly<Record<ChatProgram, ProgramDefinition>> | undefined;
 
@@ -30,4 +31,10 @@ export const programDefinitions = (): readonly ProgramDefinition[] =>
 export function messageJumpProfile(program: string | null | undefined): MessageJumpProfile {
   const known = CHAT_PROGRAMS.find((name) => name === program);
   return (known && programDefinition(known).messageJump?.()) ?? DEFAULT_MESSAGE_JUMP_PROFILE;
+}
+
+/** The composer's shortcuts for an Agent; a program Chat does not know gets the common keys. */
+export function programShortcuts(program: string | null | undefined): readonly ProgramShortcut[] {
+  const known = CHAT_PROGRAMS.find((name) => name === program);
+  return (known && programDefinition(known).shortcuts?.()) ?? COMMON_SHORTCUTS;
 }

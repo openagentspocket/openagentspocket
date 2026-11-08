@@ -2,6 +2,7 @@ import { ompSupport } from '../../blocked/omp-support';
 import { message } from '../../errors/text';
 import { canonicalUUID } from '../model/session-ids';
 import type { ProgramDefinition } from '../programs/definition';
+import { OMP_SHORTCUTS, PI_SHORTCUTS } from '../programs/shortcut-lists';
 import { piAdapter } from './adapter';
 import { locatePiTranscript } from './locate';
 import { piSendPolicy } from './send-policy';
@@ -11,6 +12,7 @@ export function piProgram(program: 'pi' | 'omp', chatName: string): ProgramDefin
   return {
     program,
     chatName,
+    shortcuts: () => (program === 'pi' ? PI_SHORTCUTS : OMP_SHORTCUTS),
     noSessionMessage: () =>
       message(
         program === 'pi'

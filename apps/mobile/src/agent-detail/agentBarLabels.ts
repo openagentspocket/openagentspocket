@@ -18,6 +18,7 @@ export function agentBarLabels(): AgentBarLabels {
     stop: t('Stop'),
     add: t('Add'),
     moreOptions: t('More Options'),
+    shortcuts: t('Shortcuts'),
     working: t('Working'),
     idle: t('Idle'),
     blocked: t('Blocked'),

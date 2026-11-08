@@ -7,7 +7,18 @@ import { piProgram } from '../pi/definition';
 import { provideProgramDefinitions } from './registry';
 
 export type { ProgramDefinition } from './definition';
-export { messageJumpProfile, programDefinition, programDefinitions } from './registry';
+export {
+  messageJumpProfile,
+  programDefinition,
+  programDefinitions,
+  programShortcuts,
+} from './registry';
+export {
+  COMMON_SHORTCUTS,
+  commandShortcut,
+  keysShortcut,
+  type ProgramShortcut,
+} from './shortcuts';
 
 provideProgramDefinitions({
   claude: claudeProgram,

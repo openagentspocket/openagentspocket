@@ -14,6 +14,7 @@ export interface AgentBarLabels {
   stop: string;
   add: string;
   moreOptions: string;
+  shortcuts: string;
   working: string;
   idle: string;
   blocked: string;
@@ -46,6 +47,7 @@ export const defaultAgentBarLabels: AgentBarLabels = {
   stop: 'Stop',
   add: 'Add',
   moreOptions: 'More options',
+  shortcuts: 'Shortcuts',
   working: 'Working',
   idle: 'Idle',
   blocked: 'Blocked',

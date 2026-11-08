@@ -29,6 +29,7 @@ import { hrefs } from '@/navigation/hrefs';
 import type { Surface } from '../surface';
 import { COMPOSER_MORE_ANCHOR } from './composerAnchors';
 import type { AgentComposer } from './composerContext';
+import { useAgentShortcuts } from './useAgentShortcuts';
 
 const localFiles = new ExpoLocalFiles();
 
@@ -46,6 +47,8 @@ export interface ComposerMenus {
   /** The Agent's attachment in flight; show its status and its tile above the composer. */
   staging: ComposerStagingStore;
   moreItems: ActionMenuItem[];
+  /** The program's shortcuts: keys it presses, commands it types. */
+  shortcutItems: ActionMenuItem[];
   /** The sheets the menus open (Skills, Snippets, Rename Agent); render beside the composer. */
   sheets: ReactNode;
 }
@@ -68,6 +71,7 @@ export function useComposerMenus({
   const consoleStore = useConsoleStore();
   const row = useAgent(agentKey(hostId, paneId));
   const [sheet, setSheet] = useState<ToolsSheet | null>(null);
+  const shortcutItems = useAgentShortcuts(composer, program);
   const staging = useMemo(() => {
     // The upload runs on the Host's transport at the time it starts.
     const stage: AttachmentStager = (prepared, options) =>
@@ -159,5 +163,5 @@ export function useComposerMenus({
       {rename.sheet}
     </>
   );
-  return { addItems: items.add, moreItems: items.more, staging, sheets };
+  return { addItems: items.add, moreItems: items.more, shortcutItems, staging, sheets };
 }

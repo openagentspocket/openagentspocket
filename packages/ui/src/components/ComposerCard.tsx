@@ -116,6 +116,8 @@ export interface ComposerCardProps {
   addMenu?: readonly ActionMenuItem[];
   /** Items of the more menu (Paste, Snippets, Clear); shown in the expanded layout. */
   moreMenu?: readonly ActionMenuItem[];
+  /** The Agent's program shortcuts (keys it presses, commands it types); after the more menu. */
+  shortcutsMenu?: readonly ActionMenuItem[];
   /** Slash skills: shown above the input while the draft starts with "/". */
   skills?: readonly ComposerSkill[];
   onSkill?: (name: string) => void;
@@ -197,6 +199,7 @@ export function ComposerCard({
   leading,
   addMenu,
   moreMenu,
+  shortcutsMenu,
   moreAnchorKey,
   barToggle,
   onFocusChange,
@@ -334,6 +337,14 @@ export function ComposerCard({
               anchorKey={moreAnchorKey}
               onMenuOpen={setMoreOpen}
               testID={`${testID}-more`}
+            />
+          ) : null}
+          {stacked && shortcutsMenu?.length ? (
+            <Circle
+              icon="shortcuts"
+              label={labels.shortcuts}
+              menu={shortcutsMenu}
+              testID={`${testID}-shortcuts`}
             />
           ) : null}
         </View>

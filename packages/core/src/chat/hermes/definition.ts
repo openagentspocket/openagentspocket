@@ -1,6 +1,7 @@
 import { message } from '../../errors/text';
 import { hermesID } from '../model/session-ids';
 import type { ProgramDefinition } from '../programs/definition';
+import { HERMES_SHORTCUTS } from '../programs/shortcut-lists';
 import { locateNoTranscriptFile } from '../store/locate';
 import { hermesAdapter } from './adapter';
 import { discoverHermesSession } from './discover';
@@ -8,6 +9,7 @@ import { hermesSendPolicy } from './send-policy';
 import { hermesStoreProblem } from './store-problems';
 
 export const hermesProgram: ProgramDefinition = {
+  shortcuts: () => HERMES_SHORTCUTS,
   program: 'hermes',
   chatName: 'Hermes Agent',
   noSessionMessage: () =>

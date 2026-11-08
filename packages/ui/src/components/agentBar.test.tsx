@@ -187,6 +187,30 @@ describe('ComposerCard', () => {
   });
 });
 
+describe('ComposerCard shortcuts', () => {
+  it("opens the program's shortcuts from their own circle after more", async () => {
+    const onPress = jest.fn();
+    await renderThemed(
+      <ComposerCard
+        value=""
+        expanded
+        onChange={jest.fn()}
+        onSend={jest.fn()}
+        moreMenu={[{ key: 'p', title: 'Paste', onPress: jest.fn() }]}
+        shortcutsMenu={[{ key: 's', title: 'Interrupt', subtitle: 'Esc', onPress }]}
+      />,
+    );
+    await fireEvent.press(screen.getByTestId('composer-card-shortcuts'));
+    await fireEvent.press(await screen.findByText('Interrupt'));
+    await waitFor(() => expect(onPress).toHaveBeenCalled());
+  });
+
+  it('draws no shortcuts circle without shortcuts', async () => {
+    await renderThemed(<ComposerCard value="" expanded onChange={jest.fn()} onSend={jest.fn()} />);
+    expect(screen.queryByTestId('composer-card-shortcuts')).toBeNull();
+  });
+});
+
 describe('ComposerCard layouts', () => {
   it('keeps the same input from one line to stacked, so the keyboard stays up', async () => {
     const { rerender } = await renderThemed(

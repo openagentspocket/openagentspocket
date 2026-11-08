@@ -229,6 +229,7 @@ export function AgentComposerBar({
         onFocusChange={setComposing}
         addMenu={menus.addItems}
         moreMenu={menus.moreItems}
+        shortcutsMenu={menus.shortcutItems}
         leading={
           <Tappable
             onPress={onToggleSurface}

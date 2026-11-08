@@ -24,3 +24,13 @@ appId: com.openagentspocket.app
     visible: "Close Agent"
     timeout: 4000
 - takeScreenshot: design/atlas/sim/10-agent-menu
+# The program's shortcuts open from their own circle, after more.
+- tapOn:
+    point: "50%,30%"
+- tapOn:
+    id: composer-shortcuts
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Interrupt"
+    timeout: 4000
+- takeScreenshot: design/atlas/sim/10-agent-shortcuts

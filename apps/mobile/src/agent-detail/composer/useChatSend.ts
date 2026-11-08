@@ -13,10 +13,11 @@ import {
   sendPolicyForAgent,
   sentMessages,
 } from '@openagentspocket/core';
-import { herdrScreenIO, isBlockedPaneApi, systemClock } from '@openagentspocket/transport';
+import { isBlockedPaneApi, systemClock } from '@openagentspocket/transport';
 import { useEffect, useMemo, useRef } from 'react';
 import { useConsoleStore } from '@/console/hooks';
 import { useConversationRegistry } from '@/conversations/useConversation';
+import { useAgentScreenIO } from '../useAgentScreenIO';
 
 /** Chat's delivery for an Agent whose program Chat has no send rules for: the text goes as typed. */
 const PLAIN_CHAT_DELIVERY: ComposerDeliveryPolicy = {
@@ -57,16 +58,7 @@ export function useChatSend(input: {
   const status = useRef(snapshot.status);
   status.current = snapshot.status;
   const conversation = useMemo(() => registry?.get(hostId, paneId), [registry, hostId, paneId]);
-  const io = useMemo(
-    () =>
-      herdrScreenIO(paneId, (operation) =>
-        consoleStore.withTransport(hostId, async (transport) => {
-          if (!isBlockedPaneApi(transport)) throw new Error('This Host cannot read panes.');
-          return operation(transport);
-        }),
-      ),
-    [consoleStore, hostId, paneId],
-  );
+  const io = useAgentScreenIO(hostId, paneId);
   const isIdle = chatActivityOf(snapshot.status) === 'idle';
   const commands = useMemo(
     () => (policy ? chatCommands(skills ?? [], isIdle, policy) : []),
