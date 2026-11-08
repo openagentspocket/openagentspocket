@@ -18,7 +18,6 @@ const BASES = new Set([
   'packages/ui/src/form/SearchField.tsx',
   'packages/ui/src/form/TextField.tsx',
   'packages/ui/src/overlay/ActionMenu.tsx',
-  'packages/ui/src/overlay/LiftedMenu.tsx',
   'packages/ui/src/overlay/ToastHost.tsx',
 ]);
 

@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react';
 import { impact } from '../haptics';
-import type { ActionMenuItem } from '../overlay/ActionMenu';
-import { LiftedMenu } from '../overlay/LiftedMenu';
+import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import type { SwipeAction } from '../primitives/SwipeRow';
 import { type AgentRowLabels, defaultAgentRowLabels } from './agentRowLabels';
 
@@ -18,7 +17,7 @@ interface AgentRowMenuProps {
 
 /** The long-press menu of an Agent row: the lifted card over a raised menu, with a haptic. */
 export function AgentRowMenu({ testID = 'agent-row-menu', ...props }: AgentRowMenuProps) {
-  return <LiftedMenu {...props} testID={testID} onOpen={() => impact('medium')} />;
+  return <ActionMenu {...props} testID={testID} onOpen={() => impact('medium')} />;
 }
 
 interface AgentRowActionsInput {
