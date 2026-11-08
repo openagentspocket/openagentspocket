@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import type { herdr } from '@openagentspocket/core';
 import { actionFor, BridgeError, type Result } from './actions.js';
+import { tmuxKeyArgs } from './keys.js';
 import { liveSnapshot, SESSION_PROTOCOL } from './snapshot.js';
 import { isPaneGone, listPanes, type TmuxPane, type TmuxRunner } from './tmux.js';
 
@@ -48,7 +49,7 @@ export async function agentRead(
   }
 }
 
-/** Types `keys` literally, as `agent send-keys` does for Approve's digit. */
+/** Presses `keys` as `agent send-keys` does: herdr's key names as keys, anything else (Approve's digit) typed. */
 export async function typeKeys(
   tmux: TmuxRunner,
   pane: string,
@@ -56,7 +57,7 @@ export async function typeKeys(
 ): Promise<void> {
   // In copy-mode (a finger scrolled the pane) keys go to its bindings, never to the Agent.
   await tmux.run(['send-keys', '-t', pane, '-X', 'cancel']).catch(() => '');
-  for (const key of keys) await tmux.run(['send-keys', '-t', pane, '-l', '--', key]);
+  for (const key of keys) await tmux.run(['send-keys', '-t', pane, ...tmuxKeyArgs(key)]);
 }
 
 async function readPane(tmux: TmuxRunner, params: Request['params']): Promise<Result> {
@@ -91,8 +92,9 @@ async function sendInput(tmux: TmuxRunner, params: Request['params']): Promise<R
   if (typeof params.text === 'string' && params.text !== '') {
     await tmux.run(['send-keys', '-t', target, '-l', '--', params.text]);
   }
-  if (Array.isArray(params.keys) && params.keys.length > 0) {
-    await tmux.run(['send-keys', '-t', target, ...params.keys.map(String)]);
+  if (Array.isArray(params.keys)) {
+    for (const key of params.keys)
+      await tmux.run(['send-keys', '-t', target, ...tmuxKeyArgs(String(key))]);
   }
   return { type: 'ok' };
 }
