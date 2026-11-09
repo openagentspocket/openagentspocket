@@ -15,6 +15,7 @@ import { ChatEmpty } from './ChatEmpty';
 import { ChatRowView } from './ChatRowView';
 import { useChatFollow } from './useChatFollow';
 import { useChatRows } from './useChatRows';
+import { useUndetectedProgram } from './useUndetectedProgram';
 
 const NO_MESSAGES: readonly ComposerMessage[] = [];
 const NO_STATUSES = new Map<string, never>();
@@ -66,6 +67,7 @@ export function ChatTimeline({
     () => pendingEchoes(messages, sendStatuses ?? NO_STATUSES),
     [messages, sendStatuses],
   );
+  const undetected = useUndetectedProgram(hostId, paneId);
   const { rows, toggle } = useChatRows(conversation.state, activity, pending);
   // Inverted: the newest row sits at offset 0, where the list opens and stays.
   const newestFirst = useMemo(() => [...rows].reverse(), [rows]);
@@ -86,7 +88,11 @@ export function ChatTimeline({
     return (
       <View style={[styles.list, { paddingBottom: bottomInset }]} testID="chat-timeline">
         {banners}
-        <ChatEmpty phase={conversation.state.snapshot.phase} onShowTerminal={onShowTerminal} />
+        <ChatEmpty
+          phase={conversation.state.snapshot.phase}
+          onShowTerminal={onShowTerminal}
+          undetected={undetected}
+        />
       </View>
     );
   }

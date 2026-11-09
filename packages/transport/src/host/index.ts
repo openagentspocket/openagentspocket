@@ -5,6 +5,7 @@ export * from './commands';
 export * from './config-files';
 export * from './environment';
 export * from './host-data';
+export * from './integrations';
 export * from './node-toolchain';
 export * from './plugin';
 export * from './plugin-step';

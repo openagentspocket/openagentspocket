@@ -1,3 +1,4 @@
+export * from './agent-integrations';
 export * from './cancellation';
 export * from './fingerprint';
 export * from './herdr-command-line';

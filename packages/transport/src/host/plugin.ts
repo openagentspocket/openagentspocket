@@ -42,7 +42,8 @@ export async function readPlugin(transport: SshTransport): Promise<PluginInstall
   return installationFromList(entries);
 }
 
-function sessionName(transport: SshTransport): string {
+/** The herdr session the Host's transport names; empty for the default one. */
+export function sessionName(transport: SshTransport): string {
   const { socket } = transport.settings;
   return socket.kind === 'namedSession' ? socket.name : '';
 }
