@@ -126,5 +126,7 @@
   "herdr hasn't reported a Hermes Agent conversation for this Agent yet. Hermes reports one through herdr's Hermes integration once a conversation is open. If this lasts, run herdr integration install hermes on the Host. Chat will keep checking, and you can continue in the Agent terminal.": "herdr hasn't reported a Hermes Agent conversation for this Agent yet. Hermes reports one through herdr's Hermes integration once a conversation is open. If this lasts, run herdr integration install hermes on the Host. Chat will keep checking, and you can continue in the Agent terminal.",
   "herdr's integration for %@ is installed. Restart %@ in this pane and it reports its conversation.": "herdr's integration for {0} is installed. Restart {1} in this pane and it reports its conversation.",
   "herdr, Node.js 20 or newer and the SSH server. If something is missing it tells you the exact next step and stops; it never installs system software on its own.": "herdr, Node.js 20 or newer and the SSH server. If something is missing it tells you the exact next step and stops; it never installs system software on its own.",
-  "~2 min": "~2 min"
+  "~2 min": "~2 min",
+  "Showing only %@": "Showing only {0}",
+  "This Host has no Agents right now.": "This Host has no Agents right now."
 }

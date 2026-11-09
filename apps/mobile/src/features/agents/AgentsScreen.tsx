@@ -7,6 +7,7 @@ import { View } from 'react-native';
 import { AppScreen } from '@/navigation/AppScreen';
 import { hrefs } from '../../navigation/hrefs';
 import { HostIssues } from '../hosts/HostIssues';
+import { HostScopeNotice } from '../hosts/HostScopeNotice';
 import { AgentGroup } from './AgentGroup';
 import { agentHref } from './AgentRow';
 import { AgentsToolbar } from './AgentsToolbar';
@@ -84,6 +85,7 @@ export function AgentsScreen(props: {
         onBoard={() => router.push(hrefs.board())}
       />
       <HostIssues />
+      <HostScopeNotice />
       <View style={styles.groups}>
         {list.groups.map((group) => (
           <AgentGroup

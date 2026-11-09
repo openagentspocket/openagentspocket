@@ -14,6 +14,7 @@ import {
 import { useState } from 'react';
 import { View } from 'react-native';
 import { AppScreen } from '@/navigation/AppScreen';
+import { HostScopeNotice } from '../hosts/HostScopeNotice';
 
 export interface TerminalsGroupModel {
   id: string;
@@ -77,6 +78,7 @@ export function TerminalsListScreen(props: TerminalsListScreenProps) {
       <Text variant="title" accessibilityRole="header">
         {t('Terminals')}
       </Text>
+      <HostScopeNotice />
       {props.groups.length === 0 ? (
         <EmptyState
           title={t('No Terminals')}

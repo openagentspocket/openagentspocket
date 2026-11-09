@@ -6,6 +6,7 @@ import { ScrollView, View } from 'react-native';
 import type { CrashStorage } from '@/diagnostics/crashRecorder';
 import { LastCrashBanner } from '@/diagnostics/LastCrashBanner';
 import { HostIssues } from '@/features/hosts/HostIssues';
+import { HostScopeNotice } from '@/features/hosts/HostScopeNotice';
 import { AppScreen } from '@/navigation/AppScreen';
 import { useConsoleState, useConsoleStore, useStatusInbox } from '../console/hooks';
 import { useHostScope } from '../console/useHostScope';
@@ -112,6 +113,7 @@ export function HomeScreen(props: HomeScreenProps) {
             onOpenSessions={props.onOpenSessions}
           />
           <HostIssues />
+          <HostScopeNotice />
           {props.crashStorage ? <LastCrashBanner storage={props.crashStorage} /> : null}
           <View style={styles.body}>
             <HomeInbox
