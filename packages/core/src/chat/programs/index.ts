@@ -7,10 +7,12 @@ import { piProgram } from '../pi/definition';
 import { provideProgramDefinitions } from './registry';
 
 export type { ProgramDefinition } from './definition';
+export { modeLabel, type ProgramModes, readProgramMode } from './modes';
 export {
   messageJumpProfile,
   programDefinition,
   programDefinitions,
+  programModes,
   programShortcuts,
 } from './registry';
 export {

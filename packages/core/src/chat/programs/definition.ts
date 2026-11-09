@@ -7,6 +7,7 @@ import type { ChatHostFiles } from '../model/host-files';
 import type { ChatProgram } from '../model/types';
 import type { ProgramSendPolicy } from '../send/policy';
 import type { ChatSessionStoreProblem } from '../timeline/reasons';
+import type { ProgramModes } from './modes';
 import type { ProgramShortcut } from './shortcuts';
 
 /**
@@ -44,4 +45,6 @@ export interface ProgramDefinition {
   messageJump?: () => MessageJumpProfile;
   /** The composer's shortcuts menu, from the program's docs; absent for the common keys. */
   shortcuts?: () => readonly ProgramShortcut[];
+  /** The modes its screen names, from its source; absent for a program that draws none. */
+  modes?: () => ProgramModes;
 }

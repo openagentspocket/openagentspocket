@@ -4,6 +4,7 @@ import {
 } from '../../terminal/agent-message-jump';
 import { CHAT_PROGRAMS, type ChatProgram } from '../model/types';
 import type { ProgramDefinition } from './definition';
+import type { ProgramModes } from './modes';
 import { COMMON_SHORTCUTS, type ProgramShortcut } from './shortcuts';
 
 let definitions: Readonly<Record<ChatProgram, ProgramDefinition>> | undefined;
@@ -37,4 +38,10 @@ export function messageJumpProfile(program: string | null | undefined): MessageJ
 export function programShortcuts(program: string | null | undefined): readonly ProgramShortcut[] {
   const known = CHAT_PROGRAMS.find((name) => name === program);
   return (known && programDefinition(known).shortcuts?.()) ?? COMMON_SHORTCUTS;
+}
+
+/** The modes an Agent's screen names; null for a program that draws none, or one Chat does not know. */
+export function programModes(program: string | null | undefined): ProgramModes | null {
+  const known = CHAT_PROGRAMS.find((name) => name === program);
+  return (known && programDefinition(known).modes?.()) || null;
 }

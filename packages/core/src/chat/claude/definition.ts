@@ -3,11 +3,13 @@ import { message } from '../../errors/text';
 import { claudeAdapter } from '../engine/adapter';
 import { canonicalUUID } from '../model/session-ids';
 import type { ProgramDefinition } from '../programs/definition';
+import { CLAUDE_MODES } from '../programs/mode-lists';
 import { CLAUDE_SHORTCUTS } from '../programs/shortcut-lists';
 import { locateClaudeTranscript } from './locate';
 import { claudeSendPolicy } from './send-policy';
 
 export const claudeProgram: ProgramDefinition = {
+  modes: () => CLAUDE_MODES,
   shortcuts: () => CLAUDE_SHORTCUTS,
   program: 'claude',
   chatName: 'Claude Code',

@@ -13,6 +13,7 @@ import { useSetting } from '@/settings/SettingsProvider';
 import { agentBarLabels } from './agentBarLabels';
 import { hostAgentItems, otherAgentBlocked } from './hostAgents';
 import type { Surface } from './surface';
+import { useAgentMode } from './useAgentMode';
 
 interface Props {
   row: ConsoleRow;
@@ -57,6 +58,7 @@ export function AgentHeader({
   showTitle = true,
 }: Props) {
   const git = useGitStatus(row.hostId, rowDirectory(row), row.agent.pane_id);
+  const mode = useAgentMode(row.hostId, row.agent.pane_id, row.agent.agent, row.agent.agent_status);
   const branch = git?.branch ?? undefined;
   const diff = git?.diff;
   const [toolbarVisible, setToolbarVisible] = useSetting('terminalToolbarVisible');
@@ -106,6 +108,7 @@ export function AgentHeader({
       diff={diff}
       onOpenChanges={onOpenChanges}
       note={noteText(linkNote(stale, latencyMs))}
+      mode={mode ?? undefined}
       titleMenu={showTitle ? hostAgentItems(rows, row, onSwitch) : undefined}
       sidebarDot={otherAgentBlocked(rows, row)}
       labels={agentBarLabels()}

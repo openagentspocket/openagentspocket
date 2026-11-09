@@ -90,10 +90,13 @@ describe('Chat send through the program send policy', () => {
   it('refuses a draft the program rules refuse, before any screen read', async () => {
     const transport = new PaneTransport();
     renderDetail('p5', transport);
+    // The header reads the Agent's mode once it opens; the send itself reads nothing.
+    await waitFor(() => expect(screen.getByTestId('agent-header-mode')).toBeTruthy());
+    const reads = transport.reads;
     await type('!ls');
     fireEvent.press(screen.getByTestId('composer-send'));
     await waitFor(() => expect(screen.getByTestId('composer-notice')).toBeTruthy());
-    expect(transport.reads).toBe(0);
+    expect(transport.reads).toBe(reads);
     expect(transport.prompts).toEqual([]);
   });
 

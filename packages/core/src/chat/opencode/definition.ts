@@ -2,6 +2,7 @@ import { openCodeSupport } from '../../blocked/opencode-support';
 import { message } from '../../errors/text';
 import { openCodeID } from '../model/session-ids';
 import type { ProgramDefinition } from '../programs/definition';
+import { OPENCODE_MODES } from '../programs/mode-lists';
 import { OPENCODE_SHORTCUTS } from '../programs/shortcut-lists';
 import { locateNoTranscriptFile } from '../store/locate';
 import { openCodeAdapter } from './adapter';
@@ -9,6 +10,7 @@ import { openCodeSendPolicy } from './send-policy';
 import { openCodeStoreProblem } from './store-problems';
 
 export const openCodeProgram: ProgramDefinition = {
+  modes: () => OPENCODE_MODES,
   shortcuts: () => OPENCODE_SHORTCUTS,
   program: 'opencode',
   chatName: 'OpenCode',

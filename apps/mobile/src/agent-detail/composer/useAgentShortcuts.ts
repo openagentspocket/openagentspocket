@@ -3,6 +3,7 @@ import { t } from '@openagentspocket/i18n';
 import { type ActionMenuItem, toast } from '@openagentspocket/ui';
 import { useMemo } from 'react';
 import { cardText } from '@/blocked/text';
+import { refreshAgentMode } from '../useAgentMode';
 import { useAgentScreenIO } from '../useAgentScreenIO';
 import type { AgentComposer } from './composerContext';
 
@@ -17,6 +18,7 @@ export function useAgentShortcuts(composer: AgentComposer, program: string): Act
   return useMemo(() => {
     const press = async (shortcut: Extract<ProgramShortcut, { kind: 'keys' }>) => {
       const delivery = await keys.deliver(shortcut.keys);
+      if (delivery.kind === 'sent') refreshAgentMode(hostId, paneId);
       if (delivery.kind === 'failed')
         toast({ title: t("Couldn't reach the Agent, so the key may not have gone.") });
     };
@@ -32,5 +34,5 @@ export function useAgentShortcuts(composer: AgentComposer, program: string): Act
           ? void press(shortcut)
           : store.insertIntoDraft(`${shortcut.command} `),
     }));
-  }, [program, keys, store]);
+  }, [program, keys, store, hostId, paneId]);
 }

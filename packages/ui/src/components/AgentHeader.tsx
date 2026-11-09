@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { ActionMenu, ActionMenuButton, type ActionMenuItem } from '../overlay/ActionMenu';
 import { useContextMenu } from '../overlay/useContextMenu';
 import { Button } from '../primitives/Button';
+import { Chip } from '../primitives/Chip';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon } from '../primitives/Icon';
 import { StatusDot } from '../primitives/StatusDot';
@@ -62,6 +63,8 @@ export interface AgentHeaderProps {
   /** Tapping the branch line opens Changes. */
   onOpenChanges?: () => void;
   /** A short word on the link ("Reconnecting…", "850 ms"), only while it is slow or lost. */
+  /** The Agent's mode as its screen names it (Plan Mode, Auto Mode); a small chip on the checkout line. */
+  mode?: string;
   note?: string;
   /** Tapping the title opens this menu: the Host's Agents. */
   titleMenu?: readonly ActionMenuItem[];
@@ -80,9 +83,10 @@ function CheckoutLine({
   diff,
   onOpenChanges,
   note,
+  mode,
   hint,
   testID,
-}: Pick<AgentHeaderProps, 'branch' | 'diff' | 'onOpenChanges' | 'note'> & {
+}: Pick<AgentHeaderProps, 'branch' | 'diff' | 'onOpenChanges' | 'note' | 'mode'> & {
   hint: string;
   testID: string;
 }) {
@@ -91,7 +95,7 @@ function CheckoutLine({
   const summary = [branch, diff ? `+${diff.added} -${diff.removed}` : null]
     .filter(Boolean)
     .join(', ');
-  if (!summary && !note) return null;
+  if (!summary && !note && !mode) return null;
   return (
     <View style={styles.line} pointerEvents="box-none">
       {summary ? (
@@ -131,6 +135,7 @@ function CheckoutLine({
           ) : null}
         </Tappable>
       ) : null}
+      {mode ? <Chip label={mode} size="small" testID={`${testID}-mode`} /> : null}
       {note ? (
         <View style={styles.note} pointerEvents="none">
           <Text
@@ -166,6 +171,7 @@ export function AgentHeader({
   diff,
   onOpenChanges,
   note,
+  mode,
   titleMenu,
   sidebarDot = false,
   labels = defaultAgentBarLabels,
@@ -246,6 +252,7 @@ export function AgentHeader({
           diff={diff}
           onOpenChanges={onOpenChanges}
           note={note}
+          mode={mode}
           hint={labels.openChanges}
           testID={testID}
         />
