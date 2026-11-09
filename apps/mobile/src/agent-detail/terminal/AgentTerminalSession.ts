@@ -2,8 +2,10 @@ import {
   AgentMessageJump,
   type AgentMessageJumpDeps,
   AttachTerminalStore,
+  agentPaneTarget,
   type Clock,
   type RecoveryDecision,
+  type TerminalAttachTarget,
   TerminalInputController,
   TerminalKeyboardControl,
   TerminalMouseModes,
@@ -55,6 +57,8 @@ export class AgentTerminalSession {
   constructor(
     private readonly paneId: string,
     private readonly host: TerminalHostPort,
+    /** The pane's terminal when herdr detects no Agent to attach through; the Agent's pane otherwise. */
+    private readonly target: TerminalAttachTarget = agentPaneTarget(paneId),
   ) {
     this.touchScroll = new TerminalTouchScroll({
       clock: host.clock,
@@ -76,7 +80,7 @@ export class AgentTerminalSession {
 
   private makeStore(): AttachTerminalStore {
     return new AttachTerminalStore({
-      target: this.paneId,
+      target: this.target,
       input: this.input,
       transportGeneration: this.host.transportGeneration(),
       runTerminal: this.host.runner,

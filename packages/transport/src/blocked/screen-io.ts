@@ -9,8 +9,21 @@ export interface BlockedPaneApi {
     strip_ansi: false;
   }): Promise<{ text: string }>;
   sendAgentKeys(params: { target: string; keys: string[] }): Promise<void>;
-  sendPaneInput(params: { pane_id: string; text: string }): Promise<void>;
+  sendPaneInput(params: { pane_id: string; text?: string; keys?: string[] }): Promise<void>;
+  /** `pane.read`, for a pane herdr detects no Agent in. */
+  readPaneWith?(params: {
+    pane_id: string;
+    source: 'visible';
+    format: 'ansi';
+    strip_ansi: false;
+  }): Promise<{ text: string }>;
 }
+
+/**
+ * How herdr is asked about a pane: through its Agent (`agent.*`), or through the pane itself when
+ * herdr detects no Agent in it (a program it does not know, or one run as another user).
+ */
+export type PaneAddressing = 'agent' | 'pane';
 
 /**
  * The Agent's pane as a Blocked card uses it: the visible screen with its colors through
@@ -20,15 +33,24 @@ export interface BlockedPaneApi {
 export function herdrScreenIO(
   paneId: string,
   withApi: <V>(operation: (api: BlockedPaneApi) => Promise<V>) => Promise<V>,
+  addressing: PaneAddressing = 'agent',
 ): BlockedScreenIO {
+  const visible = { source: 'visible', format: 'ansi', strip_ansi: false } as const;
   return {
     readScreen: async () => {
       const read = await withApi((api) =>
-        api.readAgent({ target: paneId, source: 'visible', format: 'ansi', strip_ansi: false }),
+        addressing === 'pane' && api.readPaneWith
+          ? api.readPaneWith({ pane_id: paneId, ...visible })
+          : api.readAgent({ target: paneId, ...visible }),
       );
       return decodeAnsiScreen(read.text);
     },
-    sendKeys: (keys) => withApi((api) => api.sendAgentKeys({ target: paneId, keys: [...keys] })),
+    sendKeys: (keys) =>
+      withApi((api) =>
+        addressing === 'pane'
+          ? api.sendPaneInput({ pane_id: paneId, keys: [...keys] })
+          : api.sendAgentKeys({ target: paneId, keys: [...keys] }),
+      ),
     paste: (text) => withApi((api) => api.sendPaneInput({ pane_id: paneId, text })),
   };
 }

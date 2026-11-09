@@ -18,10 +18,13 @@ jest.mock('react-native-safe-area-context', () => ({
 const bytes = (text: string) => Uint8Array.from(text, (char) => char.charCodeAt(0));
 const screenText = () => String(screen.getByTestId('terminal-slot-screen').props.children ?? '');
 
+const STATE = { hosts: [], rows: [] };
+
 /** A Console store whose Host hands out one PTY fake, as an idle shell would. */
 function storeWith(pty: ScriptedTerminalSession): ConsoleStore {
   return {
     subscribe: () => () => undefined,
+    getState: () => STATE,
     transportGeneration: () => 1,
     withTerminalTransport: async (
       _hostId: string,

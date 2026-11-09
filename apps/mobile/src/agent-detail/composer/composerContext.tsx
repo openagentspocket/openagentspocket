@@ -20,6 +20,7 @@ import {
 import { useConsoleStore } from '@/console/hooks';
 import { releaseAttachmentPreview } from '@/features/composer-tools/composerStaging';
 import { ExpoLocalFiles } from '@/files/expoLocalFiles';
+import { usePaneAddressing } from '../paneAddressing';
 
 const fallbacks = new WeakMap<KeyValueStorage, ComposerRegistry>();
 
@@ -54,12 +55,19 @@ export function ComposerRegistryProvider({
 interface PromptTransport {
   promptAgent(params: { target: string; text: string }): Promise<unknown>;
 }
+interface PaneInputTransport {
+  sendPaneInput(params: { pane_id: string; text?: string; keys?: string[] }): Promise<void>;
+}
 interface KeysTransport {
   sendAgentKeys(params: { target: string; keys: string[] }): Promise<void>;
 }
 
 function canPrompt(transport: object): transport is PromptTransport {
   return 'promptAgent' in transport && typeof transport.promptAgent === 'function';
+}
+
+function canSendPaneInput(transport: object): transport is PaneInputTransport {
+  return 'sendPaneInput' in transport && typeof transport.sendPaneInput === 'function';
 }
 
 function canSendKeys(transport: object): transport is KeysTransport {
@@ -88,11 +96,21 @@ export function useAgentComposer(
 ): AgentComposer {
   const consoleStore = useConsoleStore();
   const registry = useContext(RegistryContext) ?? defaultRegistry(storage);
+  const addressing = usePaneAddressing(hostId, paneId);
+  const byPane = useRef(addressing === 'pane');
+  byPane.current = addressing === 'pane';
   const initialStatus = useRef(status);
   const store = useMemo(() => {
     const prompt: ComposerPrompt = (params) =>
       consoleStore.mutate(hostId, async (transport) => {
-        if (canPrompt(transport)) await transport.promptAgent(params);
+        // A pane herdr detects no Agent in takes the text and Enter as typed keys.
+        if (byPane.current && canSendPaneInput(transport)) {
+          await transport.sendPaneInput({
+            pane_id: params.target,
+            text: params.text,
+            keys: ['enter'],
+          });
+        } else if (canPrompt(transport)) await transport.promptAgent(params);
       });
     return registry.composerFor({
       key: `${hostId}/${paneId}`,
@@ -107,6 +125,10 @@ export function useAgentComposer(
     () => async (): Promise<AgentInterruptOutcome> => {
       try {
         await consoleStore.mutate(hostId, async (transport) => {
+          if (byPane.current && canSendPaneInput(transport)) {
+            await transport.sendPaneInput({ pane_id: paneId, keys: ['esc'] });
+            return;
+          }
           if (!canSendKeys(transport)) throw new Error('The Host cannot send keys.');
           await transport.sendAgentKeys({ target: paneId, keys: ['esc'] });
         });

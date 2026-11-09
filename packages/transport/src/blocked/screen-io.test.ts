@@ -14,6 +14,10 @@ function fakeApi() {
     sendPaneInput: async (params) => {
       calls.push(['input', params]);
     },
+    readPaneWith: async (params) => {
+      calls.push(['pane-read', params]);
+      return { text: 'shell $' };
+    },
   };
   return { api, calls };
 }
@@ -37,6 +41,17 @@ describe('herdrScreenIO', () => {
     expect(calls).toEqual([
       ['keys', { target: 'p1', keys: ['down', 'enter'] }],
       ['input', { pane_id: 'p1', text: 'note' }],
+    ]);
+  });
+
+  it('addresses a pane herdr detects no Agent in by the pane: pane.read and pane.send_input', async () => {
+    const { api, calls } = fakeApi();
+    const io = herdrScreenIO('p1', (operation) => operation(api), 'pane');
+    await io.readScreen();
+    await io.sendKeys(['esc']);
+    expect(calls).toEqual([
+      ['pane-read', { pane_id: 'p1', source: 'visible', format: 'ansi', strip_ansi: false }],
+      ['input', { pane_id: 'p1', keys: ['esc'] }],
     ]);
   });
 

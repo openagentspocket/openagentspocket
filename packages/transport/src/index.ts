@@ -4,7 +4,12 @@ export {
   type ChannelLease,
   PRODUCTION_LIMITS,
 } from './admission';
-export { type BlockedPaneApi, herdrScreenIO, isBlockedPaneApi } from './blocked/screen-io';
+export {
+  type BlockedPaneApi,
+  herdrScreenIO,
+  isBlockedPaneApi,
+  type PaneAddressing,
+} from './blocked/screen-io';
 export { systemClock } from './clock';
 export { connectTransport } from './connect';
 export { withDeadline } from './deadline';
