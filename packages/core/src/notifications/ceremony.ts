@@ -17,7 +17,7 @@ import {
   type NotificationTriggerPreferences,
   triggerPreferences,
 } from './registration-file';
-import { DEFAULT_RELAY_BASE_URL } from './relay-endpoint';
+import { DEFAULT_RELAY_BASE_URL, RETIRED_DEFAULT_RELAY_BASE_URLS } from './relay-endpoint';
 import type { NotificationTransport } from './transport';
 
 /**
@@ -147,6 +147,20 @@ export class NotificationRegistrationCeremony {
       if (!normalized.equals(file)) await transport.replaceRegistration(normalized.encoded());
       return normalized;
     });
+  }
+
+  /**
+   * Moves a Host whose `notify.json` still names a retired default relay to the relay a
+   * registration would write now, so an older plugin there delivers too. Any other value is left
+   * alone: it is a deliberate choice, possibly another device's.
+   */
+  async migrateRelayURL(
+    relayBaseURL: string | null,
+    transport: NotificationTransport,
+  ): Promise<void> {
+    const current = NotificationConfigFile.decode(await transport.readConfig()).relayURL;
+    if (current !== null && RETIRED_DEFAULT_RELAY_BASE_URLS.includes(current))
+      await applyRelayURL(relayBaseURL, transport);
   }
 
   /**

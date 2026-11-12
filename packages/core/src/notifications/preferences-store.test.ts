@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { FakeClock } from '../hosts/cancellation';
 import type { Host } from '../hosts/host';
+import { utf8Encode } from '../pairing/bytes';
 import { NotificationRegistrationCeremony } from './ceremony';
 import { FakeNotificationTransport, makeHost } from './fake-notification-transport';
 import { MemoryNotificationKeyStore } from './key-store';
@@ -10,6 +11,7 @@ import {
   type NotificationTransportProvider,
 } from './preferences-store';
 import { apnsToken, type PushDeviceToken } from './push-token';
+import { DEFAULT_RELAY_BASE_URL, RETIRED_DEFAULT_RELAY_BASE_URLS } from './relay-endpoint';
 import type { NotificationTransport } from './transport';
 
 let counter = 0;
@@ -92,6 +94,22 @@ describe('refresh', () => {
     await store.refresh();
     store.setHosts([host('a')]);
     expect([...store.states.keys()]).toEqual(['a']);
+  });
+
+  it('moves a registered Host off the retired loopback relay, and leaves a custom one', async () => {
+    const { store, host, transport } = setup();
+    const a = host('a');
+    store.setHosts([a]);
+    await store.refresh();
+    await store.setNotificationsEnabled(true, a);
+    for (const [stored, expected] of [
+      [RETIRED_DEFAULT_RELAY_BASE_URLS[0], DEFAULT_RELAY_BASE_URL],
+      ['http://localhost:8787', 'http://localhost:8787'],
+    ]) {
+      transport('a').config = utf8Encode(JSON.stringify({ relay_url: stored, debounce_ms: 5 }));
+      await store.refresh();
+      expect(transport('a').configJson).toEqual({ relay_url: expected, debounce_ms: 5 });
+    }
   });
 });
 

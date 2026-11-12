@@ -300,6 +300,7 @@ export class NotificationPreferencesStore {
       if (owner && !file.normalized(owner).equals(file))
         file = await this.migrate(host, token, file);
       const preferences = owner ? file.preferences(owner) : null;
+      if (preferences) await this.migrateRelayURL(host);
       this.confirm(
         preferences ? { isRegistered: true, notify: preferences } : UNREGISTERED,
         host.id,
@@ -322,6 +323,14 @@ export class NotificationPreferencesStore {
     } catch {
       return fallback;
     }
+  }
+
+  /** Best effort, like `migrate`: a Host naming a retired default relay gets the current one. */
+  private async migrateRelayURL(host: Host): Promise<void> {
+    const relay = this.relay();
+    await this.options.transports
+      .withTransport(host, (transport) => this.options.ceremony.migrateRelayURL(relay, transport))
+      .catch(() => undefined);
   }
 
   /** Holds the confirmed settings while the ceremony runs, then publishes the new truth or snaps back. */

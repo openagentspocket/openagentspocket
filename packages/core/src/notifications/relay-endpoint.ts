@@ -4,6 +4,13 @@
  */
 export const DEFAULT_RELAY_BASE_URL = 'https://relay.openagentspocket.com';
 
+/**
+ * The default before the hosted relay, which apps wrote into every Host's `notify.json` and nothing
+ * served on a normal Host. A Host still naming it gets the current relay on its next load; the
+ * plugin (0.14.0+) also reads it as unset.
+ */
+export const RETIRED_DEFAULT_RELAY_BASE_URLS: readonly string[] = ['http://127.0.0.1:8787'];
+
 /** The relay a registration writes into `notify.json`: the custom URL, else the default. */
 export function resolveRelayBaseURL(customBaseURL: string | null): string {
   return customBaseURL ?? DEFAULT_RELAY_BASE_URL;
