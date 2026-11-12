@@ -85,6 +85,8 @@ interface ErrorStateProps {
   recovery?: string;
   onRetry?: () => void;
   retryLabel?: string;
+  /** A second way out under the retry, for when retrying alone may land on the same failure. */
+  exitAction?: { title: string; icon?: IconName; onPress: () => void };
   layout?: EmptyStateLayout;
   testID?: string;
 }
@@ -96,6 +98,7 @@ export function ErrorState({
   recovery,
   onRetry,
   retryLabel = 'Try Again',
+  exitAction,
   layout = 'fill',
   testID = 'error-state',
 }: ErrorStateProps) {
@@ -108,7 +111,7 @@ export function ErrorState({
       layout={layout}
       testID={testID}
       actions={
-        detail || onRetry ? (
+        detail || onRetry || exitAction ? (
           <>
             {detail ? (
               <Text variant="mono" tone="tertiary" selectable style={styles.detail}>
@@ -117,6 +120,14 @@ export function ErrorState({
             ) : null}
             {onRetry ? (
               <Button kind="secondary" icon="refresh" title={retryLabel} onPress={onRetry} />
+            ) : null}
+            {exitAction ? (
+              <Button
+                kind="text"
+                icon={exitAction.icon}
+                title={exitAction.title}
+                onPress={exitAction.onPress}
+              />
             ) : null}
           </>
         ) : undefined

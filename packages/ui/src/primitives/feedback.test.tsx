@@ -45,6 +45,15 @@ describe('EmptyState and ErrorState', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Retry' }));
     expect(onRetry).toHaveBeenCalled();
   });
+
+  it('offers a second way out under the retry', async () => {
+    const onPress = jest.fn();
+    await renderThemed(
+      <ErrorState summary="Failed" onRetry={jest.fn()} exitAction={{ title: 'Leave', onPress }} />,
+    );
+    await fireEvent.press(screen.getByRole('button', { name: 'Leave' }));
+    expect(onPress).toHaveBeenCalled();
+  });
 });
 
 describe('SkeletonRows', () => {
