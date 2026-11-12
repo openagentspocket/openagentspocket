@@ -129,6 +129,9 @@ const REQUIRED_USAGE_STRINGS = [
   'NSSpeechRecognitionUsageDescription', // expo-speech-recognition: dictation
   'NSFaceIDUsageDescription', // expo-local-authentication: app lock
   'NSLocalNetworkUsageDescription', // SSH to a Host on the local network
+  // The system picker asks for nothing, but App Store Connect rejects the upload without the string
+  // (error 90683): the linked picker code references the photo library.
+  'NSPhotoLibraryUsageDescription', // expo-image-picker: attach a photo
 ];
 
 describe('Expo config and the iOS purpose strings', () => {

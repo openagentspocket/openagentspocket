@@ -4,6 +4,7 @@
     "NSMicrophoneUsageDescription": "OpenAgentsPocket usa el micrófono para dictar en el borrador de tu Agente.",
     "NSSpeechRecognitionUsageDescription": "OpenAgentsPocket convierte en texto lo que dictas para el borrador de tu Agente.",
     "NSFaceIDUsageDescription": "Desbloquea OpenAgentsPocket con Face ID.",
-    "NSLocalNetworkUsageDescription": "OpenAgentsPocket se conecta por SSH a tu Host cuando está en tu red local."
+    "NSLocalNetworkUsageDescription": "OpenAgentsPocket se conecta por SSH a tu Host cuando está en tu red local.",
+    "NSPhotoLibraryUsageDescription": "OpenAgentsPocket abre tu biblioteca de fotos para que puedas adjuntar una foto a un mensaje para tu Agente."
   }
 }
