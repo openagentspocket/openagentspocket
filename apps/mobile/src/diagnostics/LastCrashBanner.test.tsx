@@ -27,15 +27,15 @@ describe('LastCrashBanner', () => {
   });
 
   it('tells an error a screen recovered from apart from one the app closed on', async () => {
-    const record = (fatal: boolean) =>
-      JSON.stringify({ at: 1, message: 'rows is undefined', stack: '', fatal });
+    const withRecord = (fatal: boolean) =>
+      memoryCrashStorage({ at: 1, message: 'rows is undefined', stack: '', fatal });
     const closed = translate('en', 'app', 'The app closed unexpectedly');
     const caught = translate('en', 'app', 'Something went wrong');
-    await renderBanner(storageWith(record(false)));
+    await renderBanner(withRecord(false));
     expect(screen.getByText(caught)).toBeTruthy();
     expect(screen.queryByText(closed)).toBeNull();
     screen.unmount();
-    await renderBanner(storageWith(record(true)));
+    await renderBanner(withRecord(true));
     expect(screen.getByText(closed)).toBeTruthy();
   });
 
