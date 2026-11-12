@@ -1,5 +1,9 @@
 {
   "ios": {
-    "NSCameraUsageDescription": "OpenAgentsPocket usa la cámara para escanear el código de vinculación que muestra tu computadora, así esa máquina se agrega sin escribir nada."
+    "NSCameraUsageDescription": "OpenAgentsPocket usa la cámara para escanear el código de vinculación que muestra tu computadora, así esa máquina se agrega sin escribir nada.",
+    "NSMicrophoneUsageDescription": "OpenAgentsPocket usa el micrófono para dictar en el borrador de tu Agente.",
+    "NSSpeechRecognitionUsageDescription": "OpenAgentsPocket convierte en texto lo que dictas para el borrador de tu Agente.",
+    "NSFaceIDUsageDescription": "Desbloquea OpenAgentsPocket con Face ID.",
+    "NSLocalNetworkUsageDescription": "OpenAgentsPocket se conecta por SSH a tu Host cuando está en tu red local."
   }
 }

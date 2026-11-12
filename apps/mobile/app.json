@@ -10,12 +10,13 @@
     "ios": {
       "bundleIdentifier": "com.openagentspocket.app",
       "deploymentTarget": "18.0",
+      "buildNumber": "1",
       "entitlements": {
-        "aps-environment": "development",
         "com.apple.security.application-groups": ["group.com.openagentspocket.app"]
       },
       "infoPlist": {
-        "NSSupportsLiveActivities": true
+        "NSSupportsLiveActivities": true,
+        "NSLocalNetworkUsageDescription": "OpenAgentsPocket connects over SSH to your Host when it is on your local network."
       }
     },
     "android": {
@@ -53,7 +54,6 @@
         "expo-camera",
         {
           "cameraPermission": "OpenAgentsPocket uses the camera to scan the Pairing Code shown on your computer, so you can add that machine without typing anything.",
-          "microphonePermission": false,
           "recordAudioAndroid": false
         }
       ],

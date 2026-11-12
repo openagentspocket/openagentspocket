@@ -130,6 +130,18 @@ for (const dir of ['packages/ui', 'apps/mobile']) {
     );
   }
 }
+// The Expo config is JSON and plain JS that no test imports by path: run its suite when it changes.
+const appConfigFiles =
+  /^apps\/mobile\/(app\.json|app\.config\.js|locales\/|plugins\/|package\.json)/;
+if (changed.some((f) => appConfigFiles.test(f)))
+  checks.push(
+    run(
+      'apps/mobile config test',
+      'pnpm',
+      ['exec', 'jest', '--maxWorkers=1', 'src/config/appConfig.test.ts'],
+      'apps/mobile',
+    ),
+  );
 for (const dir of ['packages/relay', 'packages/session-bridge', 'apps/site']) {
   if (inPkg(`${dir}/`).length) checks.push(run(`${dir} tests`, 'pnpm', ['test'], dir));
 }
