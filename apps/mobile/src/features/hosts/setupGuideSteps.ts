@@ -1,7 +1,5 @@
-import { installerCommand, PLUGIN_REPOSITORY } from '@openagentspocket/core';
+import { installerCommand } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-
-export type SetupPlatform = 'unix' | 'windows';
 
 export interface GuideStep {
   title: string;
@@ -12,57 +10,30 @@ export interface GuideStep {
   link?: { label: string; url: string };
 }
 
-/**
- * Where the guide's links and the plugin command point. All derive from `PLUGIN_REPOSITORY`
- * (core), the one place that names the project's GitHub repository.
- */
-export const GUIDE_URL = `https://github.com/${PLUGIN_REPOSITORY}#installation`;
-export const WINDOWS_GUIDE_URL = `https://github.com/${PLUGIN_REPOSITORY}/blob/main/docs/guides/windows-setup.md`;
 export const HERDR_INSTALL_URL = 'https://herdr.dev/docs/install/';
 
 /**
- * The commands a machine runs to show its Pairing Code: the one place the list is defined, so the
+ * The commands a computer runs to show its Pairing Code: the one place the list is defined, so the
  * screens, the Setup Guide and "What happens" never list commands of their own. The installer
- * script (`packages/plugin/install`) does the whole job; Windows has no Pairing Code, so its
- * script only checks the machine.
+ * script (`packages/plugin/install`) does the whole job. Hosts run macOS or Linux.
  */
-export function pairCommandLines(platform: SetupPlatform): readonly string[] {
-  return [installerCommand(platform)];
+export function pairCommandLines(): readonly string[] {
+  return [installerCommand('unix')];
 }
 
-/** How a machine shows its Pairing Code QR: the Setup Guide step, reused by Easy Pair. */
-export function pairingCodeStep(platform: SetupPlatform = 'unix'): GuideStep {
+/** How a computer shows its Pairing Code QR: the Setup Guide step, reused by Easy Pair. */
+export function pairingCodeStep(): GuideStep {
   return {
     title: t('Show a Pairing Code'),
-    detail:
-      platform === 'windows'
-        ? t(
-            'Run this in PowerShell on the machine. It checks the setup and tells you the next step.',
-          )
-        : t(
-            'Run this on the machine. It checks the setup, installs the plugin and shows a QR code.',
-          ),
-    commands: pairCommandLines(platform),
+    detail: t(
+      'Run this on the machine. It checks the setup, installs the plugin and shows a QR code.',
+    ),
+    commands: pairCommandLines(),
   };
 }
 
 /** The numbered steps of the guide, as the Swift Setup Guide lists them (reference-only variant). */
-export function guideSteps(platform: SetupPlatform): readonly GuideStep[] {
-  if (platform === 'windows') {
-    return [
-      {
-        title: t('Set Up herdr on Windows'),
-        detail: t('Native Windows needs herdr 0.9.3 or newer and OpenSSH Server.'),
-        link: { label: t('Windows Setup Guide'), url: WINDOWS_GUIDE_URL },
-      },
-      {
-        title: t('Add the Host'),
-        detail: t(
-          'Windows Hosts are added by hand: in Hosts, tap Add Host and enter the address and login.',
-        ),
-      },
-    ];
-  }
+export function guideSteps(): readonly GuideStep[] {
   return [
     {
       title: t('Install herdr'),

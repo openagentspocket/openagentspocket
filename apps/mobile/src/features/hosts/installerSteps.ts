@@ -1,5 +1,4 @@
 import { t } from '@openagentspocket/i18n';
-import type { SetupPlatform } from './setupGuideSteps';
 
 export interface InstallerStep {
   title: string;
@@ -10,24 +9,7 @@ export interface InstallerStep {
  * What the installer does, in the order `packages/plugin/install` does it: the "What happens"
  * sheet lists exactly this. Change the script and this list together.
  */
-export function installerSteps(platform: SetupPlatform): readonly InstallerStep[] {
-  if (platform === 'windows') {
-    return [
-      {
-        title: t('It checks the machine'),
-        detail: t(
-          'herdr 0.9.3 or newer and the OpenSSH Server. If something is missing it tells you the exact next step and stops; it never installs system software.',
-        ),
-      },
-      {
-        title: t('It tells you how to add it'),
-        detail: t(
-          'Windows has no Pairing Code: you add the Host by hand with its address and login.',
-        ),
-      },
-      nothingElse(),
-    ];
-  }
+export function installerSteps(): readonly InstallerStep[] {
   return [
     {
       title: t('It checks the machine'),
@@ -49,13 +31,9 @@ export function installerSteps(platform: SetupPlatform): readonly InstallerStep[
         "When you scan it, the app connects with the code's single-use bootstrap key and enrolls this device's key.",
       ),
     },
-    nothingElse(),
+    {
+      title: t('Nothing else changes'),
+      detail: t('No other settings, files or services are touched.'),
+    },
   ];
-}
-
-function nothingElse(): InstallerStep {
-  return {
-    title: t('Nothing else changes'),
-    detail: t('No other settings, files or services are touched.'),
-  };
 }

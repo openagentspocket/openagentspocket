@@ -1,19 +1,16 @@
 import { t } from '@openagentspocket/i18n';
-import { airy, Card, ListRow, Section, Segmented, Text } from '@openagentspocket/ui';
-import { useState } from 'react';
-import { Linking, View } from 'react-native';
+import { Card, Text } from '@openagentspocket/ui';
 import { AppScreen } from '@/navigation/AppScreen';
 import { SetupStep } from './SetupStep';
-import { GUIDE_URL, guideSteps, type SetupPlatform } from './setupGuideSteps';
+import { guideSteps } from './setupGuideSteps';
 
 interface SetupGuideScreenProps {
   onBack: () => void;
 }
 
-/** hosts.setup-guide: how to prepare a machine (macOS / Linux or Windows) and add it as a Host. */
+/** hosts.setup-guide: how to prepare a computer (macOS or Linux) and add it as a Host. */
 export function SetupGuideScreen({ onBack }: SetupGuideScreenProps) {
-  const [platform, setPlatform] = useState<SetupPlatform>('unix');
-  const steps = guideSteps(platform);
+  const steps = guideSteps();
   return (
     <AppScreen
       header={{
@@ -24,34 +21,14 @@ export function SetupGuideScreen({ onBack }: SetupGuideScreenProps) {
       }}
       testID="setup-guide"
     >
-      <View style={{ gap: airy.stack }}>
-        <Segmented
-          options={[
-            { value: 'unix', label: t('macOS / Linux') },
-            { value: 'windows', label: t('Windows') },
-          ]}
-          value={platform}
-          onChange={setPlatform}
-          testID="guide-platform"
-        />
-        <Text variant="footnote" tone="secondary">
-          {t('Agentico connects over SSH to a machine that runs herdr.')}
-        </Text>
-      </View>
+      <Text variant="footnote" tone="secondary">
+        {t('Agentico connects over SSH to a machine that runs herdr.')}
+      </Text>
       <Card padded={false}>
         {steps.map((step, index) => (
           <SetupStep key={step.title} number={index + 1} step={step} divider={index > 0} />
         ))}
       </Card>
-      <Section>
-        <ListRow
-          icon="book"
-          title={t('Full Guide on GitHub')}
-          chevron
-          onPress={() => void Linking.openURL(GUIDE_URL)}
-          testID="guide-full"
-        />
-      </Section>
     </AppScreen>
   );
 }

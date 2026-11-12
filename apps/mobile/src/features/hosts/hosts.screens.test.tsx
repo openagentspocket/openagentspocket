@@ -1,3 +1,4 @@
+import { t } from '@openagentspocket/i18n';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react-native';
 import { HostDetailScreen } from './HostDetailScreen';
 import { createDemoRuntime, setHostsRuntime } from './hostsRuntime';
@@ -50,12 +51,12 @@ describe('hosts.plugin-notice', () => {
 });
 
 describe('hosts.setup-guide', () => {
-  it('shows real commands and links, with the Full Guide row', async () => {
+  it('shows real commands and offers no other platform', async () => {
     setup();
     await renderApp(<SetupGuideScreen onBack={jest.fn()} />);
-    expect(screen.getByTestId('guide-full')).toBeTruthy();
     expect(screen.queryByText(/<repository>/)).toBeNull();
-    expect(screen.getByText(pairCommandLines('unix')[0] ?? '')).toBeTruthy();
+    expect(screen.getByText(pairCommandLines()[0] ?? '')).toBeTruthy();
+    expect(screen.queryByText(t('Windows'))).toBeNull();
   });
 });
 

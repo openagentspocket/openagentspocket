@@ -1,3 +1,4 @@
+import { t } from '@openagentspocket/i18n';
 import { act, fireEvent, screen, waitFor, within } from '@testing-library/react-native';
 import { AddHostSheet } from './AddHostSheet';
 import { extraKeys, extraTables } from './extraText';
@@ -7,7 +8,7 @@ import { createDemoRuntime, setHostsRuntime } from './hostsRuntime';
 import { Form, fillRoute, probe, renderApp, SAMPLE, setup } from './hostsTestKit';
 import { installerSteps } from './installerSteps';
 import { PairingScreen } from './PairingScreen';
-import { guideSteps, pairCommandLines } from './setupGuideSteps';
+import { pairCommandLines } from './setupGuideSteps';
 
 const mockCopy = jest.fn();
 jest.mock('expo-clipboard', () => ({ setStringAsync: (text: string) => mockCopy(text) }));
@@ -255,7 +256,7 @@ describe('hosts.pairing', () => {
         onOpenGuide={onOpenGuide}
       />,
     );
-    expect(await screen.findByText(pairCommandLines('unix')[0] ?? '')).toBeTruthy();
+    expect(await screen.findByText(pairCommandLines()[0] ?? '')).toBeTruthy();
     await fireEvent.press(screen.getByTestId('pairing-guide'));
     expect(onOpenGuide).toHaveBeenCalled();
   });
@@ -324,19 +325,16 @@ describe('Easy Pair', () => {
     );
   };
 
-  it('switches the command and guidance with the platform', async () => {
+  it('offers only the macOS and Linux command, with no platform to pick', async () => {
     await renderPairing();
-    expect(await screen.findByText(pairCommandLines('unix')[0] ?? '')).toBeTruthy();
-    await fireEvent.press(screen.getByText('Windows'));
-    expect(await screen.findByText(pairCommandLines('windows')[0] ?? '')).toBeTruthy();
-    expect(screen.getByText(guideSteps('windows')[0]?.title ?? '')).toBeTruthy();
+    expect(await screen.findByText(pairCommandLines()[0] ?? '')).toBeTruthy();
+    expect(screen.queryByText(t('Windows'))).toBeNull();
   });
 
   it('opens What happens with one row per installer step', async () => {
     await renderPairing();
     await fireEvent.press(await screen.findByTestId('pairing-what-happens'));
-    for (const step of installerSteps('unix'))
-      expect(await screen.findByText(step.title)).toBeTruthy();
+    for (const step of installerSteps()) expect(await screen.findByText(step.title)).toBeTruthy();
   });
 
   it('the Add Host sheet offers Easy Pair and Add Manually', async () => {
