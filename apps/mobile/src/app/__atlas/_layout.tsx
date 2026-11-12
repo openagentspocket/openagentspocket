@@ -1,14 +1,18 @@
 import { OverlayHost, type ThemeId, ThemeProvider } from '@openagentspocket/ui';
-import { Stack, useGlobalSearchParams } from 'expo-router';
+import { Redirect, Stack, useGlobalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { LogBox } from 'react-native';
 import { freezeAtlasClock } from '@/dev/atlas/atlasClock';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
 
-freezeAtlasClock();
-// Dev warnings (web-only DOM prop notices) must not draw toasts over a capture.
-LogBox.ignoreAllLogs();
+// Only in a dev build: the router may evaluate this layout in any build, and a store build must
+// keep the real clock (approval expiry, relative times) and its warnings.
+if (__DEV__) {
+  freezeAtlasClock();
+  // Dev warnings (web-only DOM prop notices) must not draw toasts over a capture.
+  LogBox.ignoreAllLogs();
+}
 
 const THEMES: readonly string[] = ['negro', 'indigo', 'papel', 'noche'];
 
@@ -23,6 +27,7 @@ export default function AtlasLayout() {
   const [hostReady, setHostReady] = useState(false);
   useEffect(() => setHostReady(true), []);
   const themeId: ThemeId = THEMES.includes(theme ?? '') ? (theme as ThemeId) : 'indigo';
+  if (!__DEV__) return <Redirect href="/" />;
   return (
     <ThemeProvider themeId={themeId}>
       <StatusBar style={themeId === 'papel' ? 'dark' : 'light'} />
