@@ -130,5 +130,6 @@
   "herdr, Node.js 20 or newer and the SSH server. If something is missing it tells you the exact next step and stops; it never installs system software on its own.": "herdr, Node.js 20 o más nuevo y el servidor SSH. Si falta algo, te dice el próximo paso exacto y se detiene; nunca instala software del sistema por su cuenta.",
   "~2 min": "~2 min",
   "Something went wrong": "Algo salió mal",
-  "This screen hit an error. Try again, or close and reopen the app.": "Esta pantalla tuvo un error. Volvé a intentar, o cerrá la app y abrila de nuevo."
+  "This screen hit an error. Try again, or close and reopen the app.": "Esta pantalla tuvo un error. Volvé a intentar, o cerrá la app y abrila de nuevo.",
+  "Try the Demo": "Probar la demo"
 }

@@ -4,6 +4,7 @@ import { systemClock } from '@openagentspocket/transport';
 import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { Platform } from 'react-native';
+import { bindDemoModeStorage, isDemoMode } from '@/connections/mode';
 import { ConsoleStoreProvider } from '../console/hooks';
 import { ConsoleStore } from '../console/store';
 import { HomeScreen } from './HomeScreen';
@@ -70,21 +71,37 @@ describe('HomeScreen', () => {
     await waitFor(() => expect(onNewAgent).toHaveBeenCalledTimes(1));
   });
 
-  it('leads a first run with no Hosts to adding one', async () => {
-    const onAddHost = jest.fn();
+  const renderEmptyHome = (props: Parameters<typeof HomeScreen>[0] = {}) => {
     const empty = new ConsoleStore({
       pins: new PinnedAgents(new MemoryStorage()),
       clocks: new AgentStatusClocks(new MemoryStorage()),
       clock: systemClock,
     });
-    await render(
+    return render(
       <ThemeProvider themeId="indigo">
         <ConsoleStoreProvider store={empty}>
-          <HomeScreen onAddHost={onAddHost} />
+          <HomeScreen {...props} />
         </ConsoleStoreProvider>
       </ThemeProvider>,
     );
+  };
+
+  it('leads a first run with no Hosts to adding one', async () => {
+    const onAddHost = jest.fn();
+    await renderEmptyHome({ onAddHost });
     fireEvent.press(await screen.findByTestId('home-add-host'));
     expect(onAddHost).toHaveBeenCalledTimes(1);
+  });
+
+  it('turns demo mode on from a first run with no Hosts', async () => {
+    bindDemoModeStorage(new MemoryStorage());
+    try {
+      await renderEmptyHome();
+      expect(isDemoMode()).toBe(false);
+      fireEvent.press(await screen.findByTestId('home-try-demo'));
+      expect(isDemoMode()).toBe(true);
+    } finally {
+      bindDemoModeStorage(undefined);
+    }
   });
 });

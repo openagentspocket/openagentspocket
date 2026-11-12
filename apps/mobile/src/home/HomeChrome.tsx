@@ -11,6 +11,7 @@ import {
   useTheme,
 } from '@openagentspocket/ui';
 import { View } from 'react-native';
+import { isDemoModeForced, setDemoModeSetting } from '@/connections/mode';
 import type { useHostScope } from '../console/useHostScope';
 import type { useUsageRing } from './UsageRingSlot';
 
@@ -78,7 +79,10 @@ export function NewStrip({ items }: { items: readonly ActionMenuItem[] }) {
   );
 }
 
-/** First run: nothing to show until a Host exists. */
+/**
+ * First run: nothing to show until a Host exists. Try the Demo turns on the same remembered switch
+ * as Settings › General › Demo Mode (where it is turned off), for anyone without a Host at hand.
+ */
 export function NoHosts({
   onAddHost,
   onSetupGuide,
@@ -102,6 +106,16 @@ export function NoHosts({
               onPress={() => onAddHost?.()}
               testID="home-add-host"
             />
+            {isDemoModeForced() ? null : (
+              <Button
+                kind="secondary"
+                icon="sparkles"
+                pill
+                title={t('Try the Demo')}
+                onPress={() => setDemoModeSetting(true)}
+                testID="home-try-demo"
+              />
+            )}
             <Button
               kind="text"
               title={t('Setup Guide')}
