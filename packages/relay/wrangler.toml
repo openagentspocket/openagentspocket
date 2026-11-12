@@ -35,3 +35,8 @@ PRIVACY_CONTACT = ""
 # FCM_PROJECT_ID = ""                            # optional; defaults to the service account's project_id
 # RATE_LIMIT_IP_PER_MIN = "120"                  # optional override
 # RATE_LIMIT_TOKEN_PER_MIN = "60"                # optional override
+
+# Workers Logs stay off: the privacy policy says the relay keeps no history, and platform logs
+# would store each request's IP address and timing. Every deploy applies this.
+[observability]
+enabled = false
