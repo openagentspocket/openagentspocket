@@ -1,6 +1,6 @@
 # App Store screenshots
 
-6.9-inch iPhone (1320x2868, portrait), English, dark theme (`negro`), no frames or captions.
+iPhone with Dynamic Island, medium display (1206x2622, portrait: the size App Store Connect asks for first, and the simulator's own), English, dark theme (`negro`), no frames or captions.
 
 ## How they were made
 
@@ -10,7 +10,7 @@ Each one is an atlas screen captured on the project simulator with demo data and
 node scripts/atlas-ios.mjs --udid <simulator udid> --theme negro <atlas id>
 ```
 
-The capture is 1206x2622 and was scaled to 1320x2868 (same aspect ratio) with `sips -z 2868 1320`.
+The files are the captures as taken, not scaled.
 
 | File | Atlas id |
 |---|---|
