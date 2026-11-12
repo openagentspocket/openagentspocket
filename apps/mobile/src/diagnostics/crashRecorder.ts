@@ -39,14 +39,27 @@ export function installCrashRecorder(
   if (!hooks) return;
   const previous = hooks.getGlobalHandler();
   hooks.setGlobalHandler((error, isFatal) => {
-    try {
-      const record: CrashRecord = { at: now(), fatal: isFatal === true, ...describe(error) };
-      storage.setItemSync(KEY, JSON.stringify(record));
-    } catch {
-      // Recording must never replace the error it records.
-    }
+    recordError(storage, error, isFatal === true, now);
     previous(error, isFatal);
   });
+}
+
+/**
+ * Keeps one error as the last record. Also for a render error an error boundary caught (not fatal:
+ * the app stays open), which never reaches the global handler and would otherwise be lost.
+ */
+export function recordError(
+  storage: CrashStorage,
+  error: unknown,
+  fatal: boolean,
+  now: () => number = Date.now,
+): void {
+  try {
+    const record: CrashRecord = { at: now(), fatal, ...describe(error) };
+    storage.setItemSync(KEY, JSON.stringify(record));
+  } catch {
+    // Recording must never replace the error it records.
+  }
 }
 
 /** The slice of React Native's `NativeExceptionsManager` a fatal JS error passes through. */

@@ -128,5 +128,7 @@
   "herdr, Node.js 20 or newer and the SSH server. If something is missing it tells you the exact next step and stops; it never installs system software on its own.": "herdr, Node.js 20 or newer and the SSH server. If something is missing it tells you the exact next step and stops; it never installs system software on its own.",
   "~2 min": "~2 min",
   "Showing only %@": "Showing only {0}",
-  "This Host has no Agents right now.": "This Host has no Agents right now."
+  "This Host has no Agents right now.": "This Host has no Agents right now.",
+  "Something went wrong": "Something went wrong",
+  "This screen hit an error. Try again, or close and reopen the app.": "This screen hit an error. Try again, or close and reopen the app."
 }

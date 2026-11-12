@@ -128,5 +128,7 @@
   "herdr hasn't reported a Hermes Agent conversation for this Agent yet. Hermes reports one through herdr's Hermes integration once a conversation is open. If this lasts, run herdr integration install hermes on the Host. Chat will keep checking, and you can continue in the Agent terminal.": "herdr todavía no informó una conversación de Hermes Agent para este Agente. Hermes la informa mediante la integración de herdr una vez que hay una conversación abierta. Si esto continúa, ejecuta herdr integration install hermes en el Host. Chat seguirá comprobando, y puedes continuar en la terminal del Agente.",
   "herdr's integration for %@ is installed. Restart %@ in this pane and it reports its conversation.": "La integración de herdr para {0} está instalada. Reiniciá {1} en este panel y va a informar su conversación.",
   "herdr, Node.js 20 or newer and the SSH server. If something is missing it tells you the exact next step and stops; it never installs system software on its own.": "herdr, Node.js 20 o más nuevo y el servidor SSH. Si falta algo, te dice el próximo paso exacto y se detiene; nunca instala software del sistema por su cuenta.",
-  "~2 min": "~2 min"
+  "~2 min": "~2 min",
+  "Something went wrong": "Algo salió mal",
+  "This screen hit an error. Try again, or close and reopen the app.": "Esta pantalla tuvo un error. Volvé a intentar, o cerrá la app y abrila de nuevo."
 }

@@ -8,9 +8,7 @@ import {
 } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import * as SystemUI from 'expo-system-ui';
-import { type ReactNode, useEffect } from 'react';
-import { View } from 'react-native';
+import type { ReactNode } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
 import { bindDemoModeStorage } from '@/connections/mode';
@@ -18,6 +16,7 @@ import { recordUncaughtErrors } from '@/diagnostics/crashStorage';
 import { useIncomingLinks } from '@/links/useIncomingLinks';
 import { useOpenAgent } from '@/links/useOpenAgent';
 import { LiveActivityActions } from '@/live-activity/LiveActivityActions';
+import { RootCanvas } from '@/navigation/RootCanvas';
 import { statusBarStyle } from '@/navigation/screenOptions';
 import { sheetOptions } from '@/navigation/sheetOptions';
 import { useStackScreenOptions } from '@/navigation/useStackScreenOptions';
@@ -41,6 +40,12 @@ recordUncaughtErrors();
  */
 export const unstable_settings = { anchor: 'index' };
 
+/**
+ * A render error anywhere under the root layout (every route, sheets and the providers above
+ * them) shows this instead of closing the app; Try Again renders the layout again.
+ */
+export { RenderErrorFallback as ErrorBoundary } from '@/diagnostics/RenderErrorFallback';
+
 bindDemoModeStorage(deviceStorage);
 
 /** The theme in force comes from Settings (chosen, or the Dark/Light pair for the system). */
@@ -54,18 +59,6 @@ function SettingsTheme({ children }: { children: ReactNode }) {
       </TerminalThemeProvider>
     </ThemeProvider>
   );
-}
-
-/**
- * The root canvas: the window and the view under every stack are the theme's canvas, so a push or
- * a sheet transition never shows the system's white behind the moving screens.
- */
-function RootCanvas({ children }: { children: ReactNode }) {
-  const { colors } = useTheme();
-  useEffect(() => {
-    void SystemUI.setBackgroundColorAsync(colors.canvas);
-  }, [colors.canvas]);
-  return <View style={{ flex: 1, backgroundColor: colors.canvas }}>{children}</View>;
 }
 
 /** The status bar ink follows the app theme, not the system appearance. */
