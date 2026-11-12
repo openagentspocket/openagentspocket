@@ -8,7 +8,6 @@ module.exports = {
   testMatch: ['<rootDir>/src/**/*.test.{ts,tsx}'],
   setupFilesAfterEnv: [
     'react-native-gesture-handler/jestSetup',
-    '<rootDir>/jest.setup.js',
     require.resolve('@openagentspocket/ui/jest.setup.js'),
     '<rootDir>/jest.setup.js',
   ],
