@@ -155,6 +155,16 @@ describe('Expo config and the iOS purpose strings', () => {
     },
   );
 
+  it('no purpose string is a plugin default: App Review rejects generic ones', () => {
+    const generic = Object.entries(infoPlist).filter(
+      ([key, value]) =>
+        key.endsWith('UsageDescription') &&
+        typeof value === 'string' &&
+        /^Allow \$\(PRODUCT_NAME\)/.test(value),
+    );
+    expect(generic).toEqual([]);
+  });
+
   it.each(REQUIRED_USAGE_STRINGS)('the Spanish locale translates %s', (key) => {
     const es = JSON.parse(fs.readFileSync(path.join(root, 'locales', 'es.json'), 'utf8'));
     expect(typeof es.ios[key]).toBe('string');

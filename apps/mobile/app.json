@@ -51,6 +51,12 @@
         }
       ],
       [
+        "expo-image-picker",
+        {
+          "photosPermission": false
+        }
+      ],
+      [
         "expo-camera",
         {
           "cameraPermission": "OpenAgentsPocket uses the camera to scan the Pairing Code shown on your computer, so you can add that machine without typing anything.",
