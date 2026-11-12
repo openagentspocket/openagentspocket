@@ -40,3 +40,6 @@ export APNS_ENVIRONMENT=production BUILD_NUMBER=2
 npx expo prebuild --clean
 # then archive from this shell (xcodebuild archive), or from Xcode with app.local.json set as above
 ```
+
+The full store path (bump, archive, checks, upload, App Store Connect) is [guides/release.md](../guides/release.md),
+scripted up to the upload by `scripts/release-ios.mjs`.
