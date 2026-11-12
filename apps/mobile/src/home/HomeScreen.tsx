@@ -3,6 +3,7 @@ import { t } from '@openagentspocket/i18n';
 import { airy, makeStyles, useLayoutMode } from '@openagentspocket/ui';
 import { useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
+import { DemoModeNotice } from '@/connections/DemoModeNotice';
 import type { CrashStorage } from '@/diagnostics/crashRecorder';
 import { LastCrashBanner } from '@/diagnostics/LastCrashBanner';
 import { HostIssues } from '@/features/hosts/HostIssues';
@@ -112,6 +113,7 @@ export function HomeScreen(props: HomeScreenProps) {
             onOpenAgents={props.onOpenAgents}
             onOpenSessions={props.onOpenSessions}
           />
+          <DemoModeNotice />
           <HostIssues />
           <HostScopeNotice />
           {props.crashStorage ? <LastCrashBanner storage={props.crashStorage} /> : null}

@@ -1,16 +1,11 @@
 import { t } from '@openagentspocket/i18n';
 import { ToggleRow } from '@openagentspocket/ui';
-import { useSyncExternalStore } from 'react';
-import {
-  isDemoMode,
-  isDemoModeForced,
-  setDemoModeSetting,
-  subscribeDemoMode,
-} from '@/connections/mode';
+import { isDemoModeForced, setDemoModeSetting } from '@/connections/mode';
+import { useDemoMode } from '@/connections/useDemoMode';
 
 /** The Demo Mode switch: scripted sample data instead of live Hosts. A build flag overrides it. */
 export function DemoModeRow() {
-  const on = useSyncExternalStore(subscribeDemoMode, isDemoMode);
+  const on = useDemoMode();
   const forced = isDemoModeForced();
   return (
     <ToggleRow
