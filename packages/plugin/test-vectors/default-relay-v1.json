@@ -1,0 +1,4 @@
+{
+  "description": "Shared default Push Relay v1 test vector. The base URL a Host's notify hooks POST to when notify.json names no relay, and the one the app writes during Notification Registration without a Custom Push Relay. The Node plugin tests assert DEFAULT_RELAY_URL equals it and the core tests assert DEFAULT_RELAY_BASE_URL does; change all three together.",
+  "relay_url": "https://relay.openagentspocket.com"
+}

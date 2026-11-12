@@ -39,7 +39,7 @@ AgenticoOverlay 3.9k. Plugin 6.6k JS (+42 test files) and relay (~700 JS + 3 tes
    verified by Maestro `assertVisible` on the strings in screens.yml `states:`, plus an eyeball screenshot.
 4. **Push is half-built even on iOS.** fork.md: the personal Apple team cannot sign Push Notifications (no
    `aps-environment`), and the default relay `http://127.0.0.1:8787` "needs a small Node HTTP wrapper that does not
-   exist yet". So Phase 5 on iOS needs a paid team; Android needs a Firebase project + service account on whatever
+   exist yet" (since 2026-11-12 the default is the hosted `https://relay.openagentspocket.com`). So Phase 5 on iOS needs a paid team; Android needs a Firebase project + service account on whatever
    hosts the relay. The in-app banner path (foreground, driven by the events stream) works without any of this.
 5. **Plugin install from the app is already broken in the fork** (the original GitHub repo the install step pointed at does not exist).
    Hosts use `herdr plugin link`. Port the UI, expect the install action to fail until the repo exists.
@@ -302,7 +302,8 @@ Needed for Android push (Phase 5):
    (readers ignore unknown fields); bump plugin version and add an `AgenticoPluginFeature` gate. An old plugin would send
    Android tokens to the APNs path and get `bad_token` 400 (final, harmless but silent), so the app must disable the toggle
    on old plugins. `live_activity` field stays iOS-only.
-3. **Relay hosting**: the default `http://127.0.0.1:8787` relay needs the missing Node HTTP wrapper (fork.md); Android additionally needs a
+3. **Relay hosting**: resolved 2026-11-12: the default relay is the hosted `https://relay.openagentspocket.com` (Cloudflare Worker),
+   not `http://127.0.0.1:8787`, which nothing served (the Node HTTP wrapper fork.md names was never built); Android additionally needs a
    Firebase project and `google-services.json` in the build. Firebase sees token + ciphertext + collapse key (same trust story as APNs; update `PRIVACY.md`).
 4. **iOS** push stays blocked on a paid Apple team (`aps-environment`), unchanged from today.
 5. Docs/versions: relay README table, plugin README registration table (`platform`, `env`), `docs/agents/live-activity-contract.md` unchanged.

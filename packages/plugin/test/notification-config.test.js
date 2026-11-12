@@ -1,6 +1,6 @@
 import { afterEach, suite, test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -24,6 +24,14 @@ function writeConfig(config) {
 }
 
 suite("notification config", () => {
+  test("defaults to the relay the app writes (default-relay-v1.json)", () => {
+    const vector = JSON.parse(
+      readFileSync(new URL("../test-vectors/default-relay-v1.json", import.meta.url), "utf8"),
+    );
+
+    assert.equal(DEFAULT_RELAY_URL, vector.relay_url);
+  });
+
   test("uses the production relay when notify.json is absent", () => {
     configDir = mkdtempSync(join(tmpdir(), "notification-config-"));
 
@@ -45,6 +53,12 @@ suite("notification config", () => {
       assert.equal(readNotificationConfig(configDir).relayUrl, DEFAULT_RELAY_URL);
     });
   }
+
+  test("keeps a self-hosted loopback relay spelled other than the retired default", () => {
+    writeConfig({ relay_url: "http://localhost:8787" });
+
+    assert.equal(readNotificationConfig(configDir).relayUrl, "http://localhost:8787");
+  });
 
   test("uses the documented debounce and retry defaults", () => {
     configDir = mkdtempSync(join(tmpdir(), "notification-config-"));

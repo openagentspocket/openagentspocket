@@ -1,8 +1,8 @@
 /**
- * The default Push Relay: one the Host runs on loopback, so no third party sees device tokens.
- * The plugin carries the same value as its runtime default; change both together.
+ * The default Push Relay: the hosted one the project runs. A Custom Push Relay replaces it. The
+ * plugin carries the same value as its runtime default; `default-relay-v1.json` pins both.
  */
-export const DEFAULT_RELAY_BASE_URL = 'http://127.0.0.1:8787';
+export const DEFAULT_RELAY_BASE_URL = 'https://relay.openagentspocket.com';
 
 /** The relay a registration writes into `notify.json`: the custom URL, else the default. */
 export function resolveRelayBaseURL(customBaseURL: string | null): string {

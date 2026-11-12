@@ -14,10 +14,13 @@ deploy-time service account. It is a dumb pipe on purpose:
   FCM credentials and in-flight device tokens, source IPs, APNs environment,
   collapse identifiers, request metadata, and ciphertext. It still cannot
   decrypt notification content because it never receives Notification Keys.
-- **Default origin**: the app and plugin default to `http://127.0.0.1:8787`,
-  a relay running on the Host itself, so no third party sees device tokens.
-  Both still accept a custom relay base URL whose APNs credentials are
-  authorized for the app's bundle ID.
+- **Default origin**: the app and plugin default to
+  `https://relay.openagentspocket.com`, this Worker as the project hosts it,
+  so the project's Cloudflare deployment sees what crosses it (below). Both
+  still accept a custom relay base URL whose APNs credentials are authorized
+  for the app's bundle ID, including a self-hosted one on loopback (spell it
+  `http://localhost:8787`: the plugin treats `http://127.0.0.1:8787`, the
+  former default, as unset).
 - **What crosses it**: the request carries the device token, APNs environment,
   ciphertext, and (on the alert path) an opaque collapse identifier. Live
   Activity requests also carry the agent **counts**, the **event**
@@ -166,10 +169,9 @@ FCM assertion and access-token cache, and the rate-limit windows.
 
 ## Deploy
 
-OpenAgentsPocket's default relay URL is `http://127.0.0.1:8787`, a relay on the Host
-itself. The hosted relay is the Cloudflare Worker `openagentspocket-relay`, served at
-`https://relay.openagentspocket.com` (a self-hosted copy answers on workers.dev, or on your own domain via
-`domains`); set that origin as the app's custom relay URL. The same Worker serves the app's
+OpenAgentsPocket's default relay URL is `https://relay.openagentspocket.com`, the
+Cloudflare Worker `openagentspocket-relay` the project deploys. A self-hosted copy answers on
+workers.dev, or on your own domain via `domains`; set that origin as the app's Custom Push Relay. The same Worker serves the app's
 privacy policy at `GET /privacy` (`src/privacy.js`, contact from the
 `PRIVACY_CONTACT` var; the App Store listing links there).
 
@@ -184,7 +186,7 @@ privacy policy at `GET /privacy` (`src/privacy.js`, contact from the
    those values as `wrangler deploy --var` and each domain as `--domain`. A Cloudflare account is the only prerequisite; no build step.
 4. `npx wrangler secret put APNS_KEY_P8` and paste the `.p8` PEM contents.
 5. Smoke-test with a sandbox token:
-   `curl -s -X POST http://127.0.0.1:8787/push -d '{"token":"<hex>","env":"sandbox","envelope":"{}","collapse":"smoke"}'`
+   `curl -s -X POST https://<your relay origin>/push -d '{"token":"<hex>","env":"sandbox","envelope":"{}","collapse":"smoke"}'`
    — expect an APNs verdict (`200` or a relayed `400 BadDeviceToken`), not
    `relay_misconfigured`.
 
@@ -198,7 +200,7 @@ For Android (FCM):
 2. `npx wrangler secret put FCM_SERVICE_ACCOUNT_JSON < <key file>.json`. Set
    `FCM_PROJECT_ID` only if the account belongs to another project.
 3. Smoke-test with a device's FCM token:
-   `curl -s -X POST http://127.0.0.1:8787/push -d '{"platform":"android","token":"<fcm token>","env":"fcm","envelope":"{}"}'`
+   `curl -s -X POST https://<your relay origin>/push -d '{"platform":"android","token":"<fcm token>","env":"fcm","envelope":"{}"}'`
    — expect an FCM verdict (`200`, or a relayed `400 INVALID_ARGUMENT` /
    `410 Unregistered`), not `relay_misconfigured`.
 

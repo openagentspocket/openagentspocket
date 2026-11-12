@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
+import defaultRelayVector from '../../../plugin/test-vectors/default-relay-v1.json';
 import { MemoryStorage } from '../hosts/known-hosts';
 import { utf8Decode, utf8Encode } from '../pairing/bytes';
 import { NotificationConfigFile } from './config-file';
 import { NotificationRegistrationError } from './errors';
 import { MemoryNotificationKeyStore } from './key-store';
-import { checkRelayInput } from './relay-endpoint';
+import { checkRelayInput, DEFAULT_RELAY_BASE_URL } from './relay-endpoint';
 import { NotificationRelaySettings } from './relay-settings';
 import {
   type HostCommandRunner,
@@ -43,6 +44,17 @@ describe('NotificationConfigFile', () => {
     const file = new NotificationConfigFile().settingRelayURL('https://r.example/');
     const decoded = NotificationConfigFile.decode(file.encoded());
     expect(decoded.settingRelayURL('https://r.example').equals(decoded)).toBe(true);
+  });
+});
+
+describe('DEFAULT_RELAY_BASE_URL', () => {
+  it('is the HTTPS relay the plugin defaults to (default-relay-v1.json)', () => {
+    expect(DEFAULT_RELAY_BASE_URL).toBe(defaultRelayVector.relay_url);
+    expect(checkRelayInput(DEFAULT_RELAY_BASE_URL)).toEqual({
+      kind: 'valid',
+      url: DEFAULT_RELAY_BASE_URL,
+      isInsecureHTTP: false,
+    });
   });
 });
 
