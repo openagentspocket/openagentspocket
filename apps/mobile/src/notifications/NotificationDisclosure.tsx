@@ -3,10 +3,11 @@ import { Button, Icon, Sheet, spacing, Text } from '@openagentspocket/ui';
 import { Linking, View } from 'react-native';
 
 /**
- * The GitHub-hosted PRIVACY.md the disclosure links to. Null until the port's public repository
- * exists (parity spec, known gaps); the link hides while it is null.
+ * The privacy policy the disclosure links to: the site's /privacy, which redirects to the policy the
+ * hosted relay serves (apps/site/scripts/build.mjs, packages/relay/src/privacy.js). The link hides
+ * while this is null.
  */
-export const NOTIFICATION_PRIVACY_URL: string | null = null;
+export const NOTIFICATION_PRIVACY_URL: string | null = 'https://openagentspocket.com/privacy';
 
 function PrivacyLink({ label }: { label: string }) {
   if (NOTIFICATION_PRIVACY_URL === null) return null;
@@ -46,6 +47,11 @@ export function NotificationDisclosure() {
           'Agent Notifications travel through a push relay: your Host encrypts each notification and the relay forwards it to Apple without ever holding the key to read it.',
         )}
       </Text>
+      <Text>
+        {t(
+          "By default the relay is the one the app's developer runs on Cloudflare Workers. A Custom Push Relay in Notifications settings replaces it with one you run.",
+        )}
+      </Text>
       <DisclosureList
         title={t('What the push relay sees')}
         icon="info"
@@ -80,12 +86,12 @@ export function NotificationDisclosure() {
   );
 }
 
-/** The persistent disclosure body, with the link out to PRIVACY.md. */
+/** The persistent disclosure body, with the link out to the privacy policy. */
 export function NotificationPrivacyContent() {
   return (
     <View style={{ gap: spacing.md }}>
       <NotificationDisclosure />
-      <PrivacyLink label={t('Read PRIVACY.md')} />
+      <PrivacyLink label={t('Read the privacy details')} />
     </View>
   );
 }

@@ -138,5 +138,6 @@
   "Include the Last Crash": "Include the Last Crash",
   "What Will Be Sent": "What Will Be Sent",
   "This opens a new issue on GitHub with the text below. Add what happened and send it from there; you need a GitHub account.": "This opens a new issue on GitHub with the text below. Add what happened and send it from there; you need a GitHub account.",
-  "The crash text can name files or Hosts on your computer. Turn it off to send the report without it.": "The crash text can name files or Hosts on your computer. Turn it off to send the report without it."
+  "The crash text can name files or Hosts on your computer. Turn it off to send the report without it.": "The crash text can name files or Hosts on your computer. Turn it off to send the report without it.",
+  "By default the relay is the one the app's developer runs on Cloudflare Workers. A Custom Push Relay in Notifications settings replaces it with one you run.": "By default the relay is the one the app's developer runs on Cloudflare Workers. A Custom Push Relay in Notifications settings replaces it with one you run."
 }

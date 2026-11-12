@@ -3,7 +3,7 @@
 // source of truth: change the policy here. The contact address comes from
 // the PRIVACY_CONTACT var, so it is set at deploy time, not committed.
 
-const UPDATED = "2026-11-05";
+const UPDATED = "2026-11-12";
 const APP_NAME = "Agents Pocket";
 
 /** @param {string} contact */
@@ -13,7 +13,9 @@ function englishPolicy(contact) {
 <p class="updated">Last updated ${UPDATED}</p>
 <p>${APP_NAME} is an app for watching and answering coding agents that run
 on computers you own. It has no accounts, no ads, no analytics and no
-tracking. The developer does not collect or sell personal data.</p>
+tracking. The developer does not keep or sell personal data. The only app data
+that passes through the developer's servers is what the notification relay
+needs to deliver a notification (see Notifications).</p>
 <h2>What stays on your device</h2>
 <ul>
 <li>Your Hosts, settings and SSH keys. Private keys stay in the device's secure
@@ -31,8 +33,10 @@ notification with a key only your devices hold and sends it through a relay
 to Apple Push Notification service or Firebase Cloud Messaging. The relay keeps no history and cannot read
 the notification. It handles, only to deliver it: your device's push token,
 the encrypted message, the request's IP address and timing, and, for Live
-Activities, agent counts. By default the relay runs on your own Host; the
-hosted relay runs on Cloudflare Workers.</p>
+Activities, agent counts. To limit abuse it counts requests per IP address
+and per push token in memory, for at most a minute. By default the app uses
+the relay the developer runs on Cloudflare Workers; you can set a relay you
+run yourself in the app's notification settings instead.</p>
 <h2>Children</h2>
 <p>The app is a developer tool and is not directed at children.</p>
 <h2>Changes and contact</h2>
@@ -47,8 +51,10 @@ function spanishPolicy(contact) {
 <p class="updated">Última actualización ${UPDATED}</p>
 <p>${APP_NAME} es una app para seguir y responder a agentes de
 programación que corren en computadoras tuyas. No tiene cuentas, publicidad,
-analítica ni rastreo. El desarrollador no recolecta ni vende datos
-personales.</p>
+analítica ni rastreo. El desarrollador no guarda ni vende datos
+personales. De los datos de la app, lo único que pasa por los servidores del desarrollador es lo que
+el relay de notificaciones necesita para entregar una notificación (ver
+Notificaciones).</p>
 <h2>Lo que queda en tu dispositivo</h2>
 <ul>
 <li>Tus Hosts, ajustes y claves SSH. Las claves privadas quedan en el
@@ -68,8 +74,10 @@ través de un relay, al servicio de notificaciones push de Apple o a Firebase Cl
 guarda historial y no puede leer la notificación. Para entregarla maneja
 solamente: el token push de tu dispositivo, el mensaje cifrado, la dirección
 IP y el horario del pedido y, para las Live Activities, la cantidad de
-agentes. Por defecto el relay corre en tu propio Host; el relay alojado
-corre en Cloudflare Workers.</p>
+agentes. Para limitar abusos cuenta los pedidos por dirección IP y por token
+push en memoria, durante un minuto como máximo. Por defecto la app usa el
+relay que el desarrollador corre en Cloudflare Workers; en los ajustes de
+notificaciones de la app podés poner en su lugar un relay que corras vos.</p>
 <h2>Menores</h2>
 <p>La app es una herramienta para desarrolladores y no está dirigida a
 menores.</p>
