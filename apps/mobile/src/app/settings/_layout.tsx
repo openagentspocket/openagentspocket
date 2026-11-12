@@ -19,6 +19,7 @@ export default function SettingsLayout() {
           name="notification-privacy"
           options={{ title: t('How notifications stay private') }}
         />
+        <Stack.Screen name="report-problem" options={{ title: t('Report a Problem') }} />
       </Stack>
       <OverlayHost />
     </>

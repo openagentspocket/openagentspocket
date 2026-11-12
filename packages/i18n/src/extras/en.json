@@ -132,5 +132,11 @@
   "Open herdr": "Open herdr",
   "Start herdr in a terminal on the computer and leave it open: the Pairing Code shows inside herdr.": "Start herdr in a terminal on the computer and leave it open: the Pairing Code shows inside herdr.",
   "Reach It Away from Home": "Reach It Away from Home",
-  "At home, the phone and the computer only need the same Wi-Fi. Away from home, put both on one private network, such as Tailscale: install it on the computer and on this phone and sign in to the same account, before you show the Pairing Code.": "At home, the phone and the computer only need the same Wi-Fi. Away from home, put both on one private network, such as Tailscale: install it on the computer and on this phone and sign in to the same account, before you show the Pairing Code."
+  "At home, the phone and the computer only need the same Wi-Fi. Away from home, put both on one private network, such as Tailscale: install it on the computer and on this phone and sign in to the same account, before you show the Pairing Code.": "At home, the phone and the computer only need the same Wi-Fi. Away from home, put both on one private network, such as Tailscale: install it on the computer and on this phone and sign in to the same account, before you show the Pairing Code.",
+  "Report a Problem": "Report a Problem",
+  "Open GitHub": "Open GitHub",
+  "Include the Last Crash": "Include the Last Crash",
+  "What Will Be Sent": "What Will Be Sent",
+  "This opens a new issue on GitHub with the text below. Add what happened and send it from there; you need a GitHub account.": "This opens a new issue on GitHub with the text below. Add what happened and send it from there; you need a GitHub account.",
+  "The crash text can name files or Hosts on your computer. Turn it off to send the report without it.": "The crash text can name files or Hosts on your computer. Turn it off to send the report without it."
 }

@@ -121,6 +121,16 @@ export function clearLastCrash(storage: CrashStorage): void {
   storage.setItemSync(KEY, '');
 }
 
+/** A crash store in memory, for tests and previews: empty, or holding one recorded error. */
+export function memoryCrashStorage(record?: CrashRecord): CrashStorage {
+  const map = new Map<string, string>();
+  if (record) map.set(KEY, JSON.stringify(record));
+  return {
+    getItemSync: (key) => map.get(key) ?? null,
+    setItemSync: (key, value) => void map.set(key, value),
+  };
+}
+
 /** The text to copy into a report. */
 export function crashReportText(record: CrashRecord): string {
   return [new Date(record.at).toISOString(), record.message, record.stack]

@@ -5,16 +5,9 @@ import {
   type ExceptionReporter,
   installCrashRecorder,
   installFatalReportRecorder,
+  memoryCrashStorage,
   readLastCrash,
 } from './crashRecorder';
-
-function memoryStorage(): CrashStorage {
-  const map = new Map<string, string>();
-  return {
-    getItemSync: (key) => map.get(key) ?? null,
-    setItemSync: (key, value) => void map.set(key, value),
-  };
-}
 
 function hooks(
   previous: jest.Mock,
@@ -32,7 +25,7 @@ function hooks(
 describe('crash recorder', () => {
   it('records the error before handing it to the previous handler unchanged', () => {
     const previous = jest.fn();
-    const storage = memoryStorage();
+    const storage = memoryCrashStorage();
     const target = hooks(previous);
     installCrashRecorder(target, storage, () => 1000);
     const failure = new Error('rows is undefined');
@@ -57,7 +50,7 @@ describe('crash recorder', () => {
     installCrashRecorder(target, broken);
     expect(() => target.fire('boom')).not.toThrow();
     expect(previous).toHaveBeenCalledTimes(1);
-    const storage = memoryStorage();
+    const storage = memoryCrashStorage();
     installCrashRecorder(hooks(jest.fn()), storage);
     clearLastCrash(storage);
     expect(readLastCrash(storage)).toBeUndefined();

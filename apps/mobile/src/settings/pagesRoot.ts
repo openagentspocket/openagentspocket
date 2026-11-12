@@ -6,6 +6,8 @@ import type { SettingsContext, SettingsPage, SettingsRow } from './schema';
 type Text = SettingsRow['title'];
 
 export const REPOSITORY_URL = 'https://github.com/openagentspocket/openagentspocket';
+/** The site's privacy page (apps/site redirects it to the one policy the relay serves). */
+export const PRIVACY_POLICY_URL = 'https://openagentspocket.com/privacy';
 
 /** Routes of screens other tasks own; set a route here when that screen lands. */
 export const SETTINGS_ROUTES = {
@@ -14,6 +16,7 @@ export const SETTINGS_ROUTES = {
   hosts: '/hosts',
   usage: '/usage',
   setupGuide: '/hosts/guide',
+  reportProblem: '/settings/report-problem',
 } as const satisfies Record<string, string | null>;
 
 export const fontOptions = <T extends string>(values: readonly T[], label: (value: T) => string) =>
@@ -201,6 +204,14 @@ export const root: SettingsPage = {
           value: (ctx) => ctx.version,
         },
         route('setupGuide', () => t('Setup Guide'), 'file'),
+        route('reportProblem', () => t('Report a Problem'), 'warning'),
+        {
+          kind: 'external',
+          id: 'settings.about.privacyPolicy',
+          title: () => t('Privacy Policy'),
+          icon: 'lock',
+          url: PRIVACY_POLICY_URL,
+        },
         {
           kind: 'external',
           id: 'settings.about.starOnGitHub',

@@ -1,8 +1,8 @@
 import { resolveThemeId } from '@openagentspocket/core';
 import { themes } from '@openagentspocket/ui';
-import Constants from 'expo-constants';
 import { useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
+import { appBuild } from '@/diagnostics/appBuild';
 import { useAuthenticator, useSettings } from './SettingsProvider';
 import type { SettingsContext } from './schema';
 import { useSettingsSummary } from './useSettingsSummary';
@@ -35,7 +35,7 @@ export function useSettingsContext(): SettingsContext {
   return {
     values,
     authKind,
-    version: Constants.expoConfig?.version ?? '',
+    version: appBuild().version,
     themeName: themes[themeId].name,
     themeId,
     summary,

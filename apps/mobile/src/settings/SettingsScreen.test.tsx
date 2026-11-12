@@ -7,8 +7,10 @@ import {
 } from '@openagentspocket/core';
 import { OverlayHost, ThemeProvider, themeIds, themes } from '@openagentspocket/ui';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import * as WebBrowser from 'expo-web-browser';
 import type { ReactElement } from 'react';
 import { type Authenticator, fakeAuthenticator } from './authenticator';
+import { PRIVACY_POLICY_URL } from './pagesRoot';
 import { SettingsProvider } from './SettingsProvider';
 import { SettingsScreen } from './SettingsScreen';
 import { SETTINGS_PAGES, type SettingsRow } from './schema';
@@ -81,8 +83,16 @@ describe('SettingsScreen', () => {
     // Routes whose screens exist show; the ones that do not stay hidden.
     expect(screen.getByTestId('settings.hosts')).toBeTruthy();
     expect(screen.getByTestId('settings.setupGuide')).toBeTruthy();
+    expect(screen.getByTestId('settings.reportProblem')).toBeTruthy();
+    expect(screen.getByTestId('settings.about.privacyPolicy')).toBeTruthy();
     expect(screen.queryByTestId('settings.snippets')).toBeNull();
     expect(screen.queryByTestId('settings-section-security')).toBeNull();
+  });
+
+  it("opens the site's privacy page from Help", async () => {
+    await setup('root');
+    await fireEvent.press(screen.getByTestId('settings.about.privacyPolicy'));
+    expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith(PRIVACY_POLICY_URL);
   });
 
   it('opens the root as a sheet (Done capsule, large title) and pushed pages without them', async () => {
