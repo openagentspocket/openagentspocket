@@ -4,7 +4,7 @@ import { HostDetailScreen } from './HostDetailScreen';
 import { createDemoRuntime, setHostsRuntime } from './hostsRuntime';
 import { Form, probe, renderApp, SAMPLE, setup } from './hostsTestKit';
 import { SetupGuideScreen } from './SetupGuideScreen';
-import { pairCommandLines } from './setupGuideSteps';
+import { guideSteps, pairCommandLines, pairingCodeStep } from './setupGuideSteps';
 
 const mockCopy = jest.fn();
 jest.mock('expo-clipboard', () => ({ setStringAsync: (text: string) => mockCopy(text) }));
@@ -57,6 +57,19 @@ describe('hosts.setup-guide', () => {
     expect(screen.queryByText(/<repository>/)).toBeNull();
     expect(screen.getByText(pairCommandLines()[0] ?? '')).toBeTruthy();
     expect(screen.queryByText(t('Windows'))).toBeNull();
+  });
+
+  it('opens herdr before the Pairing Code and ends with reaching the Host away from home', () => {
+    const titles = guideSteps().map((step) => step.title);
+    expect(titles.indexOf(t('Open herdr'))).toBeGreaterThanOrEqual(0);
+    expect(titles.indexOf(t('Open herdr'))).toBeLessThan(titles.indexOf(pairingCodeStep().title));
+    expect(titles.at(-1)).toBe(t('Reach It Away from Home'));
+  });
+
+  it('links only to pages written for users, never the developer repository', () => {
+    const links = guideSteps().flatMap((step) => (step.link ? [step.link.url] : []));
+    expect(links.length).toBeGreaterThan(0);
+    for (const url of links) expect(url).not.toMatch(/github\.com/);
   });
 });
 

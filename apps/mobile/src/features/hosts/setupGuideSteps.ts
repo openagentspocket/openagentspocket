@@ -26,18 +26,23 @@ export function pairingCodeStep(): GuideStep {
   return {
     title: t('Show a Pairing Code'),
     detail: t(
-      'Run this on the machine. It checks the setup, installs the plugin and shows a QR code.',
+      'Run this in a terminal on the computer, not on this phone. It checks the setup, installs the plugin and shows a QR code in herdr.',
     ),
     commands: pairCommandLines(),
   };
 }
 
-/** The numbered steps of the guide, as the Swift Setup Guide lists them (reference-only variant). */
+/**
+ * The numbered steps of the guide, complete for someone who has never used herdr: where each
+ * command runs, that herdr stays open to show the code, and how the phone reaches the computer.
+ */
 export function guideSteps(): readonly GuideStep[] {
   return [
     {
       title: t('Install herdr'),
-      detail: t('Version 0.7.5 or newer, with Node 20 or newer.'),
+      detail: t(
+        'On the Mac or Linux computer your Agents run on: herdr 0.7.5 or newer, with Node 20 or newer.',
+      ),
       link: { label: t('herdr Install Guide'), url: HERDR_INSTALL_URL },
     },
     {
@@ -46,10 +51,22 @@ export function guideSteps(): readonly GuideStep[] {
         'On a Mac, turn on Remote Login in System Settings › General › Sharing. On Linux, run the OpenSSH server.',
       ),
     },
+    {
+      title: t('Open herdr'),
+      detail: t(
+        'Start herdr in a terminal on the computer and leave it open: the Pairing Code shows inside herdr.',
+      ),
+    },
     pairingCodeStep(),
     {
       title: t('Scan It'),
       detail: t('In Hosts, tap Scan to Pair and point the camera at the code.'),
+    },
+    {
+      title: t('Reach It Away from Home'),
+      detail: t(
+        'At home, the phone and the computer only need the same Wi-Fi. Away from home, put both on one private network, such as Tailscale: install it on the computer and on this phone and sign in to the same account, before you show the Pairing Code.',
+      ),
     },
   ];
 }

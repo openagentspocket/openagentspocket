@@ -13,7 +13,7 @@ export const SETTINGS_ROUTES = {
   snippets: null,
   hosts: '/hosts',
   usage: '/usage',
-  setupGuide: null,
+  setupGuide: '/hosts/guide',
 } as const satisfies Record<string, string | null>;
 
 export const fontOptions = <T extends string>(values: readonly T[], label: (value: T) => string) =>

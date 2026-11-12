@@ -80,6 +80,7 @@ describe('SettingsScreen', () => {
     expect(screen.getByTestId('settings.about.version')).toBeTruthy();
     // Routes whose screens exist show; the ones that do not stay hidden.
     expect(screen.getByTestId('settings.hosts')).toBeTruthy();
+    expect(screen.getByTestId('settings.setupGuide')).toBeTruthy();
     expect(screen.queryByTestId('settings.snippets')).toBeNull();
     expect(screen.queryByTestId('settings-section-security')).toBeNull();
   });

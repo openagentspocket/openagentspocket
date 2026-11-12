@@ -84,7 +84,6 @@
   "Rewind": "Volver atrás",
   "Run in Background": "Pasar a segundo plano",
   "Run one command on your Mac or Linux box and scan the QR. The app installs its key for you.": "Corré un comando en tu Mac o Linux y escaneá el QR. La app instala su clave por vos.",
-  "Run this on the machine. It checks the setup, installs the plugin and shows a QR code.": "Corré esto en la máquina. Revisa la configuración, instala el plugin y muestra un código QR.",
   "Search": "Buscar",
   "Session Status": "Estado de la sesión",
   "Session Tree": "Árbol de sesiones",
@@ -127,5 +126,11 @@
   "~2 min": "~2 min",
   "Something went wrong": "Algo salió mal",
   "This screen hit an error. Try again, or close and reopen the app.": "Esta pantalla tuvo un error. Volvé a intentar, o cerrá la app y abrila de nuevo.",
-  "Try the Demo": "Probar la demo"
+  "Try the Demo": "Probar la demo",
+  "Run this in a terminal on the computer, not on this phone. It checks the setup, installs the plugin and shows a QR code in herdr.": "Ejecutá esto en una terminal de la computadora, no en este teléfono. Revisa la configuración, instala el plugin y muestra un código QR en herdr.",
+  "On the Mac or Linux computer your Agents run on: herdr 0.7.5 or newer, with Node 20 or newer.": "En la computadora Mac o Linux donde corren tus Agentes: herdr 0.7.5 o posterior, con Node 20 o posterior.",
+  "Open herdr": "Abrir herdr",
+  "Start herdr in a terminal on the computer and leave it open: the Pairing Code shows inside herdr.": "Iniciá herdr en una terminal de la computadora y dejalo abierto: el código de vinculación aparece dentro de herdr.",
+  "Reach It Away from Home": "Conectarte fuera de casa",
+  "At home, the phone and the computer only need the same Wi-Fi. Away from home, put both on one private network, such as Tailscale: install it on the computer and on this phone and sign in to the same account, before you show the Pairing Code.": "En casa, el teléfono y la computadora solo necesitan la misma red Wi-Fi. Fuera de casa, poné los dos en una misma red privada, como Tailscale: instalala en la computadora y en este teléfono e iniciá sesión con la misma cuenta, antes de mostrar el código de vinculación."
 }

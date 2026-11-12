@@ -14,7 +14,7 @@ export default function HostsRoute() {
     <>
       <HostListScreen
         onDone={() => router.dismiss()}
-        onSetupGuide={() => router.push('/hosts/guide')}
+        onSetupGuide={() => router.push(hrefs.setupGuide())}
         onOpen={(host) => router.push({ pathname: '/hosts/[id]', params: { id: host.id } })}
         onAdd={() => router.push(hrefs.hostForm())}
         onScan={addHost.open}

@@ -84,7 +84,6 @@
   "Rewind": "Rewind",
   "Run in Background": "Run in Background",
   "Run one command on your Mac or Linux box and scan the QR. The app installs its key for you.": "Run one command on your Mac or Linux box and scan the QR. The app installs its key for you.",
-  "Run this on the machine. It checks the setup, installs the plugin and shows a QR code.": "Run this on the machine. It checks the setup, installs the plugin and shows a QR code.",
   "Search": "Search",
   "Session Status": "Session Status",
   "Session Tree": "Session Tree",
@@ -127,5 +126,11 @@
   "This Host has no Agents right now.": "This Host has no Agents right now.",
   "Something went wrong": "Something went wrong",
   "This screen hit an error. Try again, or close and reopen the app.": "This screen hit an error. Try again, or close and reopen the app.",
-  "Try the Demo": "Try the Demo"
+  "Try the Demo": "Try the Demo",
+  "Run this in a terminal on the computer, not on this phone. It checks the setup, installs the plugin and shows a QR code in herdr.": "Run this in a terminal on the computer, not on this phone. It checks the setup, installs the plugin and shows a QR code in herdr.",
+  "On the Mac or Linux computer your Agents run on: herdr 0.7.5 or newer, with Node 20 or newer.": "On the Mac or Linux computer your Agents run on: herdr 0.7.5 or newer, with Node 20 or newer.",
+  "Open herdr": "Open herdr",
+  "Start herdr in a terminal on the computer and leave it open: the Pairing Code shows inside herdr.": "Start herdr in a terminal on the computer and leave it open: the Pairing Code shows inside herdr.",
+  "Reach It Away from Home": "Reach It Away from Home",
+  "At home, the phone and the computer only need the same Wi-Fi. Away from home, put both on one private network, such as Tailscale: install it on the computer and on this phone and sign in to the same account, before you show the Pairing Code.": "At home, the phone and the computer only need the same Wi-Fi. Away from home, put both on one private network, such as Tailscale: install it on the computer and on this phone and sign in to the same account, before you show the Pairing Code."
 }
