@@ -18,9 +18,7 @@ deploy-time service account. It is a dumb pipe on purpose:
   `https://relay.openagentspocket.com`, this Worker as the project hosts it,
   so the project's Cloudflare deployment sees what crosses it (below). Both
   still accept a custom relay base URL whose APNs credentials are authorized
-  for the app's bundle ID, including a self-hosted one on loopback (spell it
-  `http://localhost:8787`: the plugin treats `http://127.0.0.1:8787`, the
-  former default, as unset).
+  for the app's bundle ID, including a self-hosted one on loopback.
 - **What crosses it**: the request carries the device token, APNs environment,
   ciphertext, and (on the alert path) an opaque collapse identifier. Live
   Activity requests also carry the agent **counts**, the **event**

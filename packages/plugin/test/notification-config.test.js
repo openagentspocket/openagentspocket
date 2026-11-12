@@ -54,11 +54,14 @@ suite("notification config", () => {
     });
   }
 
-  test("keeps a self-hosted loopback relay spelled other than the retired default", () => {
-    writeConfig({ relay_url: "http://localhost:8787" });
+  // A person who runs their own relay on the Host: their tokens never go to the hosted one unasked.
+  for (const loopback of ["http://127.0.0.1:8787", "http://localhost:8787"]) {
+    test(`keeps a self-hosted relay at ${loopback}`, () => {
+      writeConfig({ relay_url: loopback });
 
-    assert.equal(readNotificationConfig(configDir).relayUrl, "http://localhost:8787");
-  });
+      assert.equal(readNotificationConfig(configDir).relayUrl, loopback);
+    });
+  }
 
   test("uses the documented debounce and retry defaults", () => {
     configDir = mkdtempSync(join(tmpdir(), "notification-config-"));

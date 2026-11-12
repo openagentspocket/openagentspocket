@@ -159,6 +159,7 @@ export class NotificationRegistrationCeremony {
     transport: NotificationTransport,
   ): Promise<void> {
     const current = NotificationConfigFile.decode(await transport.readConfig()).relayURL;
+    // A person whose Custom Push Relay is that address keeps it: `applyRelayURL` writes nothing then.
     if (current !== null && RETIRED_DEFAULT_RELAY_BASE_URLS.includes(current))
       await applyRelayURL(relayBaseURL, transport);
   }

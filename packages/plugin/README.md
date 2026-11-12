@@ -759,11 +759,11 @@ the app's update notice installs from that branch. See
 
 - The default Push Relay is the hosted `https://relay.openagentspocket.com`
   instead of `http://127.0.0.1:8787`, where nothing listened on a normal
-  Host. A `notify.json` without `relay_url`, or with exactly
-  `http://127.0.0.1:8787` (what older apps wrote on every registration), now
-  sends to the hosted relay. A self-hosted relay on loopback keeps working
-  under another spelling, for example `http://localhost:8787`. Any other
-  custom relay is unchanged.
+  Host. A `notify.json` without `relay_url` now sends to the hosted relay.
+  One an older app left on `http://127.0.0.1:8787` is rewritten by the app
+  when it next loads that Host's notification settings. Every explicit
+  `relay_url`, a self-hosted relay on loopback included, is honoured as
+  written.
 
 ## Usage
 
@@ -1216,7 +1216,7 @@ the plugin config dir:
 
 | Field            | Type    | Meaning |
 | ---------------- | ------- | ------- |
-| `relay_url`      | string  | Optional Push Relay base URL override. Defaults to `https://relay.openagentspocket.com`; the app writes the resolved value during Notification Registration. A retired default (`http://127.0.0.1:8787`, or an upstream Heeler relay) counts as unset. |
+| `relay_url`      | string  | Optional Push Relay base URL override. Defaults to `https://relay.openagentspocket.com`; the app writes the resolved value during Notification Registration. A retired upstream Heeler relay counts as unset. |
 | `debounce_ms`    | integer | Debounce sleep override for the alert notify hook. Default 5000. |
 | `activity_debounce_ms` | integer | Latest-wins debounce sleep for the Live Activity hook. Default 1500. |
 | `retry_delay_ms` | integer | Delay between retry attempts. Default 1000. |
