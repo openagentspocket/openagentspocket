@@ -9,7 +9,7 @@ One short ADR per founding decision. Add a new numbered file for any decision th
 - [0005](./0005-delivery-order.md) Seven phases, in this order
 - [0006](./0006-new-screens.md) New screens: Focus mode, overview board, two-line summaries
 - [0007](./0007-visual-direction.md) Visual direction: Índigo, Papel, Noche
-- [0008](./0008-local-builds.md) Local native builds; EAS only for store submission
+- [0008](./0008-local-builds.md) Local native builds, store uploads included
 - [0009](./0009-expo-sdk-58.md) Expo SDK 58, New Architecture only, Expo Router
 - [0010](./0010-pnpm-workspaces.md) pnpm workspaces with isolated installs
 - [0011](./0011-state.md) Zustand per Host, fed by pure reducers; TanStack Query for request/response only

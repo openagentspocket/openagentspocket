@@ -1,10 +1,10 @@
-# 0008. Local native builds; EAS only for store submission
+# 0008. Local native builds, store uploads included
 
 Status: accepted (2026-11-01)
 
 ## Decision
 
-`expo run:ios` / `expo run:android` locally. EAS is used only to submit to the stores.
+`expo run:ios` / `expo run:android` locally. Store uploads are local too: `xcodebuild` archives and uploads (updated 2026-11-12; the first plan was to submit with EAS, which this path never needed).
 
 ## Why
 
