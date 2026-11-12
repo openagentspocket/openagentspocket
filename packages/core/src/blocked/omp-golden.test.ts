@@ -1,3 +1,4 @@
+import '../chat/programs';
 // Oh My Pi and Pi screen captures against the Swift goldens: the decoded screen, the parsed dialog
 // and every card action's plan. Pi has no dialog parser, so every Pi capture must read as none.
 

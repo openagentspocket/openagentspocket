@@ -1,3 +1,4 @@
+import '../programs';
 // The cache document rules (Swift ChatTranscriptCacheTests): stripped entries, revision drop,
 // Host retention, size cap, and the preview and file-change caps the cache depends on.
 

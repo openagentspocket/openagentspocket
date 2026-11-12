@@ -1,3 +1,4 @@
+import '../programs';
 import { describe, expect, it } from 'vitest';
 import { decodeAnsiScreen } from '../../blocked/ansi-decoder';
 import { FakeClock } from '../../hosts/cancellation';

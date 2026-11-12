@@ -1,3 +1,4 @@
+import '../programs';
 // The Codex wiring: the first-line session meta for a tail window, and the history-base loop of a
 // reverted rollout.
 

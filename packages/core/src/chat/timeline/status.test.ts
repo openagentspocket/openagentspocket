@@ -1,3 +1,4 @@
+import '../programs';
 // Ported from Swift ChatConversationStatus behavior (titles, retry, banner lines, surface).
 
 import { describe, expect, it } from 'vitest';

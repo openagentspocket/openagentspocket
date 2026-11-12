@@ -1,3 +1,4 @@
+import '../chat/programs';
 // Oh My Pi's panels as captured live: the tool approval is a known dialog, other titled panels hold
 // sending as excerpts, and tool renderings are not dialogs (Swift OMPDialogParserTests, the cases
 // the goldens do not already pin).

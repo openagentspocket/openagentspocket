@@ -1,3 +1,4 @@
+import '../programs';
 // The Agent directory's machine binding (Swift ChatTranscriptCacheTests, agent directory cases),
 // on the file cache and the volatile one alike.
 

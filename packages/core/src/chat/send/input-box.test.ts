@@ -1,3 +1,4 @@
+import '../programs';
 import { describe, expect, it } from 'vitest';
 import { loadScreen } from '../../blocked/golden-fixtures.testkit';
 import { detectInputBox } from './detect';

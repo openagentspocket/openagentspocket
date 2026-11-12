@@ -1,3 +1,4 @@
+import '../programs';
 // Ports of the Swift reducer tests the goldens cannot state: windows that start mid-file, rewinds
 // across a window, prepended history, diagnostics, cut lines, echo keys and expanded output.
 

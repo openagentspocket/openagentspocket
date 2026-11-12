@@ -1,3 +1,4 @@
+import '../programs';
 import { describe, expect, it } from 'vitest';
 import { encodeUtf8 } from '../../events/utf8';
 import type { LocateState } from '../engine/locate';

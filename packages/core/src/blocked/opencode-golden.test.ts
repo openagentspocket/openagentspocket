@@ -1,3 +1,4 @@
+import '../chat/programs';
 // Differential tests: every OpenCode screen capture in goldens/opencode decodes, parses and plans
 // as the Swift goldens say (goldens/README.md "Screen goldens").
 

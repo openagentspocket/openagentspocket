@@ -1,3 +1,4 @@
+import '../programs';
 import { describe, expect, it } from 'vitest';
 import { FakeClock } from '../../hosts/cancellation';
 import type { AgentSessionInfo } from '../../protocol/herdr-types.generated';

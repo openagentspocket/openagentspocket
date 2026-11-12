@@ -1,3 +1,4 @@
+import '../programs';
 import { describe, expect, it } from 'vitest';
 import { makeSkill } from '../../skills/agent-skill';
 import { detectInputBox } from '../send/detect';

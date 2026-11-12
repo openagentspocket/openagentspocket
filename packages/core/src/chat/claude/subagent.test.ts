@@ -1,3 +1,4 @@
+import '../programs';
 // Ported from Swift ClaudeSubagentTranscriptTests.
 
 import { describe, expect, it } from 'vitest';

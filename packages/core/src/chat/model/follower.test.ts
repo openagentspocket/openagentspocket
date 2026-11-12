@@ -1,3 +1,4 @@
+import '../programs';
 // Ported from Swift TranscriptFollowerTests (small limits so a few hundred bytes hit every boundary).
 
 import { describe, expect, it } from 'vitest';

@@ -1,3 +1,4 @@
+import './programs';
 import { describe, expect, it } from 'vitest';
 import { standardAdapter } from './engine/adapter';
 import { OTHER_PROGRAM_FIXTURES, transcriptThroughAdapter } from './other-programs.testkit';

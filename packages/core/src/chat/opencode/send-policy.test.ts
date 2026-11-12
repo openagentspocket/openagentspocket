@@ -1,3 +1,4 @@
+import '../programs';
 // OpenCode on the send side: rules, menu, stop plan and guard, terminal title and holds (Swift
 // ChatSendRulesTests, ChatStopPlanTests, ChatDeliveryPolicyTests and OpenCodeChatStoreTests'
 // terminal-title test, OpenCode parts).

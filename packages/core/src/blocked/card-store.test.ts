@@ -1,3 +1,4 @@
+import '../chat/programs';
 import { describe, expect, it } from 'vitest';
 import type { ChatProgram } from '../chat/model/types';
 import { FakeClock } from '../hosts/cancellation';

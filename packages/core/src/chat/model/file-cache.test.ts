@@ -1,3 +1,4 @@
+import '../programs';
 // The file-backed cache rules (Swift ChatTranscriptCacheTests): round trip, undecodable and
 // mismatched documents, Host removal, 30-day expiry, LRU eviction, oversize trimming, leftovers.
 

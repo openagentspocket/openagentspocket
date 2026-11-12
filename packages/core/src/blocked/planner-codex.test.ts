@@ -1,3 +1,4 @@
+import '../chat/programs';
 import { describe, expect, it } from 'vitest';
 import { renderText } from '../errors/text';
 import { loadScreen } from './golden-fixtures.testkit';

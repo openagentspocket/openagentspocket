@@ -1,3 +1,4 @@
+import '../programs';
 // Pi and Oh My Pi input boxes and declined compactions as Chat reads them (Swift PiChatTests), over
 // synthetic screens and the captured goldens.
 

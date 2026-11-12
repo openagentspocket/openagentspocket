@@ -1,3 +1,4 @@
+import '../programs';
 // The query-read wiring (Swift ChatConversationEngine with a record source, ADR 0025): the engine
 // follows the source its adapter makes instead of finding a file, stops with the reason a source
 // names, and reads pages and outputs through the same source.

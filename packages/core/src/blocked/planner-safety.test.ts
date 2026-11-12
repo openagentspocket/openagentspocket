@@ -1,3 +1,4 @@
+import '../chat/programs';
 import { describe, expect, it } from 'vitest';
 import { screenFixtures } from './golden-fixtures.testkit';
 import { planImage } from './golden-image.testkit';

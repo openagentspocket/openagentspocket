@@ -1,3 +1,4 @@
+import '../programs';
 // The OpenCode record source over scripted query answers (Swift OpenCodeRecordSourceTests): what it
 // reads on open and poll, and how store problems and a missing session surface.
 

@@ -1,3 +1,4 @@
+import '../programs';
 // The Host script against a real database: what Hermes's rows read as through `sqlite3`, and what a
 // follower sees as they change. Skipped on a machine without the CLI.
 

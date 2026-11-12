@@ -1,3 +1,4 @@
+import '../programs';
 // The Pi and Oh My Pi wiring through the conversation engine: locating the session file, naming the
 // conversation by its header across Oh My Pi's atomic rewrites, and explaining a file it cannot read.
 

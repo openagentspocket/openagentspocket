@@ -1,3 +1,4 @@
+import '../programs';
 // Pi and Oh My Pi send rules and policy: the Swift ChatSendRules tests for `.pi` and `.omp`.
 
 import { describe, expect, it } from 'vitest';

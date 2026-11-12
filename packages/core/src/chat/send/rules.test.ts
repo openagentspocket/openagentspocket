@@ -1,3 +1,4 @@
+import '../programs';
 import { describe, expect, it } from 'vitest';
 import type { ComposerRefusal } from '../../composer/policy';
 import { makeSkill } from '../../skills/agent-skill';

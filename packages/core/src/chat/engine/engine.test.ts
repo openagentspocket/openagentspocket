@@ -1,3 +1,4 @@
+import '../programs';
 import { describe, expect, it } from 'vitest';
 import { FakeHostFiles } from '../model/fake-host-files';
 import type { ChatEntry, ChatToolActivity } from '../model/types';

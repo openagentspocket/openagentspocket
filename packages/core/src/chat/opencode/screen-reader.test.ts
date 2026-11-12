@@ -1,3 +1,4 @@
+import '../programs';
 // OpenCode 2.0.32's input box as captured live at 180 and 62 columns (Swift
 // OpenCodeInputBoxDetectorTests). Only an empty box in a conversation with no turn running takes a
 // message; the home screen, drafts, popups, pickers, shell mode, the subagent panel and a running

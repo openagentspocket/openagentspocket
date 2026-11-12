@@ -1,3 +1,4 @@
+import '../programs';
 // The session half of the conversation store (Swift OpenCodeChatStoreTests, ADR 0025): after `/new`
 // OpenCode's home screen leaves herdr reporting the conversation it left, so the store watches the
 // start screen and checks herdr's record and the terminal title before each send.

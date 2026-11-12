@@ -1,3 +1,4 @@
+import '../chat/programs';
 import { describe, expect, it } from 'vitest';
 import type { DialogFingerprint } from './fingerprint';
 import { loadScreen } from './golden-fixtures.testkit';

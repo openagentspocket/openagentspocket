@@ -1,3 +1,4 @@
+import '../programs';
 // The Grok Build wiring through the shared engine: the locator finds the session's file, the
 // adapter reads it, and rewrites of the tail never join cached history.
 

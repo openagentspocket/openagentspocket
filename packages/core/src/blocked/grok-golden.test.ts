@@ -1,3 +1,4 @@
+import '../chat/programs';
 // Differential test: every Grok Build screen capture in packages/core/goldens/grok/screens decodes,
 // parses and plans as the Swift golden says (goldens/README.md "Screen goldens").
 

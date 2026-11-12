@@ -1,3 +1,4 @@
+import '../programs';
 // Older pages, spent searches, expanded rows and the Host the source needs (Swift
 // OpenCodeRecordSourceTests, second half).
 
