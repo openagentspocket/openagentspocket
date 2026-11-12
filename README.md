@@ -85,8 +85,8 @@ QR screen to copy the Pairing Code and paste it in the app (macOS uses
 `pbcopy`; elsewhere the code is printed for manual selection). Then open the
 Agentico settings, enable Agent Notifications, grant the iOS notification
 permission, and enable Notifications for this Host. Leave **Custom Push
-Relay** empty to use the relay on the Host itself at
-`http://127.0.0.1:8787`.
+Relay** empty to use the hosted relay at
+`https://relay.openagentspocket.com`.
 
 To update an installed GitHub-managed plugin, run the same `plugin install`
 command again. Plugin 0.6.0 scopes notifications to the herdr session they
@@ -755,6 +755,16 @@ the app's update notice installs from that branch. See
   offer Android notifications only on 0.12.0 or newer. iOS deliveries are
   unchanged.
 
+### Updating to 0.14.0
+
+- The default Push Relay is the hosted `https://relay.openagentspocket.com`
+  instead of `http://127.0.0.1:8787`, where nothing listened on a normal
+  Host. A `notify.json` without `relay_url`, or with exactly
+  `http://127.0.0.1:8787` (what older apps wrote on every registration), now
+  sends to the hosted relay. A self-hosted relay on loopback keeps working
+  under another spelling, for example `http://localhost:8787`. Any other
+  custom relay is unchanged.
+
 ## Usage
 
 Plugin 0.7.0 adds Usage for Claude Code and Codex on Linux and macOS Hosts.
@@ -1067,7 +1077,7 @@ Anti-noise, in order:
    nothing. A *different* status that survives its own debounce re-arms the
    pane.
 
-Each eligible device gets one `POST http://127.0.0.1:8787/push` by
+Each eligible device gets one `POST https://relay.openagentspocket.com/push` by
 default (see `relay/README.md`), carrying the encrypted envelope and an opaque
 per-pane `collapse` key (derived from the device's Notification Key and the
 pane id, so the relay cannot guess the pane while newer statuses still replace
@@ -1206,7 +1216,7 @@ the plugin config dir:
 
 | Field            | Type    | Meaning |
 | ---------------- | ------- | ------- |
-| `relay_url`      | string  | Optional Push Relay base URL override. Defaults to `http://127.0.0.1:8787`; the app writes the resolved value during Notification Registration. |
+| `relay_url`      | string  | Optional Push Relay base URL override. Defaults to `https://relay.openagentspocket.com`; the app writes the resolved value during Notification Registration. A retired default (`http://127.0.0.1:8787`, or an upstream Heeler relay) counts as unset. |
 | `debounce_ms`    | integer | Debounce sleep override for the alert notify hook. Default 5000. |
 | `activity_debounce_ms` | integer | Latest-wins debounce sleep for the Live Activity hook. Default 1500. |
 | `retry_delay_ms` | integer | Delay between retry attempts. Default 1000. |

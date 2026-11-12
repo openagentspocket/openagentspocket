@@ -12,7 +12,7 @@ set -eu
 # Kept in sync with herdr-plugin.toml and packages/core (plugin-installation.ts) by
 # packages/plugin/test/install-script.test.js.
 PLUGIN_ID="agentico"
-PLUGIN_VERSION="0.13.0"
+PLUGIN_VERSION="0.14.0"
 MIN_HERDR_VERSION="0.7.5"
 PLUGIN_REPOSITORY="openagentspocket/openagentspocket"
 PLUGIN_REF="plugin"
