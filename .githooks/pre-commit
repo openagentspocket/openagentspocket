@@ -1,2 +1,8 @@
 #!/bin/sh
+# A green `pnpm verify-fast` stamps the tree it checked and HEAD (scripts/verify/stamp.mjs). When
+# this commit records exactly that tree on that HEAD, the check already ran; anything else runs it.
+if node scripts/verify/stamp.mjs --matches-staged; then
+  echo "pre-commit: verify-fast was green on exactly this tree and HEAD, not run again"
+  exit 0
+fi
 exec pnpm verify-fast
