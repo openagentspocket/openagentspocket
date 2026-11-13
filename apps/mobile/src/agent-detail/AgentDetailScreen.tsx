@@ -120,7 +120,6 @@ export function AgentDetailScreen({
                   onOpenChanges={onOpenChanges}
                   stale={phase === 'stale'}
                   latencyMs={latency}
-                  showTitle={surface === 'terminal'}
                 />
               </View>
             </View>

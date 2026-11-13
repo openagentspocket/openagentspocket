@@ -114,9 +114,13 @@ export const agentBarEntries: readonly CatalogEntry[] = [
           <AgentHeader
             onSidebar={noop}
             menu={menu}
+            title="Tighten the Attach toolbar on small phones"
+            subtitle="Claude · Studio Mac"
             branch="checkout-review"
             diff={{ added: 12, removed: 3 }}
             onOpenChanges={noop}
+            mode="Accept Edits"
+            titleMenu={menu}
             sidebarDot
           />
         ),
