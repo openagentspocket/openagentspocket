@@ -25,6 +25,8 @@ const useStyles = makeStyles((t) => ({
   largeHeader: { paddingHorizontal: t.metrics.screenInset, gap: t.spacing.xs },
   largeTitle: { paddingBottom: t.spacing.xs },
   body: { paddingHorizontal: t.metrics.screenInset, paddingTop: t.spacing.xs, gap: t.spacing.md },
+  // Floats over the content on the native host: the canvas under it hides what scrolls behind.
+  hostFooter: { backgroundColor: t.colors.canvas, paddingBottom: t.spacing.sm },
 }));
 
 /** A labeled action in the sheet's bar: `Cancel` / `Done` leading, `Start` / `Save` trailing. */
@@ -47,6 +49,12 @@ export interface SheetContentProps {
   closeButton: boolean;
   headerless: boolean;
   footer?: ReactNode;
+  /**
+   * `inline`: the footer is drawn here under the body and the ScrollView keeps the focused field
+   * above the keyboard (the JS host lifts the whole panel). `host`: the host draws the footer
+   * (`SheetFooter`) above the keyboard and insets the plugged scroll view itself (True Sheet).
+   */
+  footerPlacement?: 'inline' | 'host';
   /** Content-sized: the body shrinks and scrolls past the host's limit; otherwise it fills. */
   fit: boolean;
   scrollRef?: Ref<ComponentRef<typeof ScrollView>>;
@@ -65,6 +73,7 @@ export function SheetContent({
   closeButton,
   headerless,
   footer,
+  footerPlacement = 'inline',
   fit,
   scrollRef,
   children,
@@ -131,18 +140,26 @@ export function SheetContent({
         ref={scrollRef}
         contentContainerStyle={styles.body}
         keyboardShouldPersistTaps="handled"
-        // The panel already lifts with the keyboard; this scrolls the focused field into view.
-        automaticallyAdjustKeyboardInsets
+        // Inline, the JS panel lifts with the keyboard and this scrolls the focused field into
+        // view; on the native host True Sheet insets the plugged scroll view: once, not twice.
+        automaticallyAdjustKeyboardInsets={footerPlacement === 'inline'}
         style={fit ? { flexShrink: 1 } : { flex: 1 }}
+        testID={`${testID}-scroll`}
       >
         <SurfaceFillProvider value="surfaceOverlay">{children}</SurfaceFillProvider>
       </ScrollView>
-      {footer ? (
-        <View style={styles.body}>
-          <SurfaceFillProvider value="surfaceOverlay">{footer}</SurfaceFillProvider>
-        </View>
-      ) : null}
+      {footer && footerPlacement === 'inline' ? <SheetFooter footer={footer} /> : null}
     </>
+  );
+}
+
+/** The pinned footer (a primary action): under the body inline, or given to the native host. */
+export function SheetFooter({ footer, host = false }: { footer: ReactNode; host?: boolean }) {
+  const styles = useStyles();
+  return (
+    <View style={host ? [styles.body, styles.hostFooter] : styles.body}>
+      <SurfaceFillProvider value="surfaceOverlay">{footer}</SurfaceFillProvider>
+    </View>
   );
 }
 

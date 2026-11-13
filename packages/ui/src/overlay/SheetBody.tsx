@@ -12,10 +12,12 @@ interface Props {
   /** Drawn over the background, above the content (the JS host's grabber). */
   top?: ReactNode;
   scrollRef?: Ref<ComponentRef<typeof ScrollView>>;
+  /** Who draws the footer and keeps it above the keyboard (see `SheetContent`). */
+  footerPlacement?: 'inline' | 'host';
 }
 
 /** What every sheet host draws inside its panel: the canvas, the bar, title, body and footer. */
-export function SheetBody({ sheet, fit, top, scrollRef }: Props) {
+export function SheetBody({ sheet, fit, top, scrollRef, footerPlacement }: Props) {
   const testID = sheet.testID ?? 'sheet';
   return (
     <>
@@ -31,6 +33,7 @@ export function SheetBody({ sheet, fit, top, scrollRef }: Props) {
         closeButton={sheet.closeButton ?? true}
         headerless={sheet.headerless ?? false}
         footer={sheet.footer}
+        footerPlacement={footerPlacement}
         fit={fit}
         scrollRef={scrollRef}
         testID={testID}

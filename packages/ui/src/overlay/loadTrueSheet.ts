@@ -1,4 +1,4 @@
-import type { ComponentType, Ref } from 'react';
+import type { ComponentType, ReactElement, Ref } from 'react';
 import type { ViewProps } from 'react-native';
 
 /** The slice of True Sheet this app uses, so `packages/ui` needs no native types. */
@@ -18,6 +18,9 @@ export interface TrueSheetViewProps extends ViewProps {
   dimmed?: boolean;
   dismissible?: boolean;
   scrollableRef?: Ref<unknown>;
+  /** Pinned at the sheet's bottom; an `absolute` one rises above the keyboard while it is up. */
+  footer?: ReactElement;
+  footerOptions?: { position?: 'relative' | 'absolute'; avoidKeyboard?: boolean };
   maxContentHeight?: number;
   onDidDismiss?: () => void;
   onDidPresent?: () => void;

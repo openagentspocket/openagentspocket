@@ -3,6 +3,7 @@ import { type ScrollView, StyleSheet, View } from 'react-native';
 import { useTheme } from '../theme/theme';
 import { loadTrueSheet, type TrueSheetDetent, type TrueSheetMethods } from './loadTrueSheet';
 import { SheetAlertHost, SheetBody } from './SheetBody';
+import { SheetFooter } from './SheetContent';
 import type { SheetDetent } from './sheetDetents';
 import type { SheetProps } from './sheetTypes';
 
@@ -50,6 +51,10 @@ export function NativeSheet(props: SheetProps) {
       cornerRadius={metrics.sheetRadius}
       grabber={grabber}
       scrollableRef={scrollRef}
+      // A footer inside the content stays behind the keyboard; the sheet's own absolute footer
+      // rises above it and goes back down with it, and insets the scroll view by its height.
+      footer={props.footer ? <SheetFooter footer={props.footer} host /> : undefined}
+      footerOptions={props.footer ? FOOTER_OPTIONS : undefined}
       onDidDismiss={() => {
         if (open.current) {
           open.current = false;
@@ -62,7 +67,12 @@ export function NativeSheet(props: SheetProps) {
     >
       {presented || visible ? (
         <View style={fill} testID={`${testID}-surface`}>
-          <SheetBody sheet={props} fit={detent === 'fit'} scrollRef={scrollRef} />
+          <SheetBody
+            sheet={props}
+            fit={detent === 'fit'}
+            scrollRef={scrollRef}
+            footerPlacement="host"
+          />
           <SheetAlertHost testID={testID} />
         </View>
       ) : null}
@@ -71,3 +81,5 @@ export function NativeSheet(props: SheetProps) {
 }
 
 const styles = StyleSheet.create({ fill: { flex: 1 } });
+
+const FOOTER_OPTIONS = { position: 'absolute', avoidKeyboard: true } as const;
