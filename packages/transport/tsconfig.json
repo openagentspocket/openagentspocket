@@ -2,6 +2,6 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": { "outDir": "dist", "rootDir": "src", "types": [] },
   "include": ["src"],
-  "exclude": ["src/**/*.test.ts", "src/test-helpers.ts"],
+  "exclude": ["src/**/*.test.ts", "src/test-helpers.ts", "src/lab/**"],
   "references": [{ "path": "../core" }, { "path": "../../modules/ssh" }]
 }
