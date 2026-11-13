@@ -172,6 +172,19 @@ describe('ChatNoticeRow', () => {
     await renderThemed(<ChatNoticeRow title="Agent done" detail="All links resolve" />);
     expect(screen.getByLabelText('Agent done. All links resolve')).toBeTruthy();
   });
+
+  it('renders a markdown detail as markdown, its table included', async () => {
+    await renderThemed(
+      <ChatNoticeRow
+        title="/context"
+        detailFormat="markdown"
+        detail={'| Category | Tokens |\n|---|---|\n| Messages | 2.4k |'}
+      />,
+    );
+    expect(screen.getByTestId('chat-notice-row-markdown')).toBeTruthy();
+    expect(screen.getByTestId('markdown-table')).toBeTruthy();
+    expect(screen.queryByText(/\|/u)).toBeNull();
+  });
 });
 
 describe('DiffRow', () => {

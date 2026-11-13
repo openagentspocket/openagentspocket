@@ -205,6 +205,8 @@ export interface ChatNotice {
   kind: NoticeKind;
   title: string;
   detail: string | null;
+  /** `markdown` when `detail` is markdown, such as a local command's output the program recorded so; absent for plain text. */
+  detailFormat?: 'markdown';
   rawDetail: string | null;
   questions: ChatQuestion[];
 }

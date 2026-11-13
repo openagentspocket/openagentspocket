@@ -93,7 +93,7 @@ export class Builder extends ToolBuilder {
             value: notice(
               'command',
               commandText(classified.invocation.name, classified.invocation.arguments),
-              { detail: nonEmpty(output) },
+              this.commandOutput(output.text, output.record),
             ),
           });
         } else {
@@ -118,7 +118,7 @@ export class Builder extends ToolBuilder {
         const output = this.takeOutput(record, bashOutput);
         this.add(`notice:${record.uuid}`, record, {
           type: 'notice',
-          value: notice('shellCommand', classified.text, { detail: nonEmpty(output) }),
+          value: notice('shellCommand', classified.text, { detail: nonEmpty(output?.text) }),
         });
         return;
       }
@@ -244,18 +244,22 @@ export class Builder extends ToolBuilder {
       const output = this.takeOutput(record, localOutput);
       this.add(`notice:${record.uuid}`, record, {
         type: 'notice',
-        value: notice('command', commandText(invocation.name, invocation.arguments), {
-          detail: nonEmpty(output),
-        }),
+        value: notice(
+          'command',
+          commandText(invocation.name, invocation.arguments),
+          this.commandOutput(output?.text ?? null, output?.record ?? null),
+        ),
       });
     } else if (classified.type === 'localCommandOutput') {
       const run = record.system?.commandRun;
       if (run) {
         this.add(`notice:${record.uuid}`, record, {
           type: 'notice',
-          value: notice('command', commandText(run.name, run.arguments), {
-            detail: nonEmpty(capPreview(classified.text).text),
-          }),
+          value: notice(
+            'command',
+            commandText(run.name, run.arguments),
+            this.commandOutput(capPreview(classified.text).text, record),
+          ),
         });
       } else {
         this.addOutputNotice('command', classified.text, record);
@@ -263,6 +267,28 @@ export class Builder extends ToolBuilder {
     } else if (classified.type === 'prompt') {
       this.addOutputNotice('command', classified.text, record);
     }
+  }
+
+  /**
+   * What a local command's notice shows: its output `text`, read from `from`. Claude Code also
+   * records some commands' result for the model as markdown, in a meta user record under the
+   * output (`/context`); that reads better than the terminal's text, so it is shown instead.
+   */
+  protected commandOutput(
+    text: string | null,
+    from: ClaudeRecord | null,
+  ): Pick<ChatNotice, 'detail' | 'detailFormat'> {
+    for (const child of from === null ? [] : (this.children.get(from.uuid) ?? [])) {
+      if (this.consumed.has(child.uuid) || child.kind.type !== 'user' || !child.isMeta) continue;
+      if (toolResultsOf(child).length > 0 || child.sourceToolUseID !== null) continue;
+      if (child.originKind !== null) continue;
+      const classified = classifyUserText(textsOf(child).join('\n'));
+      const markdown = classified.type === 'prompt' ? classified.text.trim() : '';
+      if (markdown === '') continue;
+      this.consumed.add(child.uuid);
+      return { detail: capPreview(markdown).text, detailFormat: 'markdown' };
+    }
+    return { detail: nonEmpty(text) };
   }
 
   protected addQueuedCommand(record: ClaudeRecord): void {

@@ -15,7 +15,7 @@ import { decodeClaudeLine, emptyInput } from './record';
 import { type ClaudeRecord, type ClaudeToolUse, toolUsesOf } from './record-types';
 import { toolFileChanges, toolPreview } from './tool-summary';
 
-export const CLAUDE_REVISION = 15;
+export const CLAUDE_REVISION = 16;
 
 export class ClaudeTranscriptReducer implements ChatTranscriptReducer {
   readonly index = new ClaudeTranscriptIndex();

@@ -210,6 +210,18 @@ export const chatRowsEntries: readonly CatalogEntry[] = [
           />
         ),
       },
+      {
+        id: 'markdown',
+        render: () => (
+          <ChatNoticeRow
+            title="/context"
+            detailFormat="markdown"
+            detail={
+              '**Tokens:** 39k / 200k (20%)\n\n| Category | Tokens |\n|---|---|\n| Messages | 2.4k |\n| Free space | 161k |'
+            }
+          />
+        ),
+      },
     ],
   },
   {

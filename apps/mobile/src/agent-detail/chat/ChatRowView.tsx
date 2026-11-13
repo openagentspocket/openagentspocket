@@ -225,7 +225,11 @@ export const ChatRowView = memo(function ChatRowView({
         ) : null;
       case 'notice':
         return (
-          <ChatNoticeRow title={content.notice.title} detail={content.notice.detail ?? undefined} />
+          <ChatNoticeRow
+            title={content.notice.title}
+            detail={content.notice.detail ?? undefined}
+            detailFormat={content.notice.detailFormat}
+          />
         );
       case 'olderHistory':
         return content.older === 'available' ? (

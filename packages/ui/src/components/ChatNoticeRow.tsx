@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { Markdown } from '../markdown/Markdown';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { makeStyles } from '../theme/theme';
@@ -14,6 +15,8 @@ interface ChatNoticeRowProps {
   icon?: IconName;
   title: string;
   detail?: string;
+  /** How `detail` reads: plain secondary text, or markdown (a command's output a program records so). */
+  detailFormat?: 'plain' | 'markdown';
   testID?: string;
 }
 
@@ -22,15 +25,18 @@ export function ChatNoticeRow({
   icon = 'bell',
   title,
   detail,
+  detailFormat = 'plain',
   testID = 'chat-notice-row',
 }: ChatNoticeRowProps) {
   const styles = useStyles();
+  const markdown = detail && detailFormat === 'markdown';
   return (
     <View
       style={styles.root}
       testID={testID}
-      accessible
-      accessibilityLabel={detail ? `${title}. ${detail}` : title}
+      // Markdown keeps its tables' own scroll views reachable.
+      accessible={!markdown}
+      accessibilityLabel={markdown ? undefined : detail ? `${title}. ${detail}` : title}
     >
       <View style={styles.head}>
         <Icon name={icon} size={GLYPH} />
@@ -38,7 +44,9 @@ export function ChatNoticeRow({
           {title}
         </Text>
       </View>
-      {detail ? (
+      {markdown ? (
+        <Markdown text={detail} testID={`${testID}-markdown`} />
+      ) : detail ? (
         <Text variant="caption2" tone="secondary">
           {detail}
         </Text>

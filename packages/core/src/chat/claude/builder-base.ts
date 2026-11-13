@@ -372,10 +372,11 @@ export abstract class BuilderBase {
     });
   }
 
+  /** The first unconsumed child of `record` that `extract` reads as output, and that output capped. */
   protected takeOutput(
     record: ClaudeRecord,
     extract: (text: ClaudeUserText) => string | null,
-  ): string | null {
+  ): { text: string; record: ClaudeRecord } | null {
     for (const child of this.children.get(record.uuid) ?? []) {
       if (this.consumed.has(child.uuid)) continue;
       let text: string;
@@ -386,7 +387,7 @@ export abstract class BuilderBase {
       const output = extract(classifyUserText(text));
       if (output === null) continue;
       this.consumed.add(child.uuid);
-      return capPreview(output).text;
+      return { text: capPreview(output).text, record: child };
     }
     return null;
   }
