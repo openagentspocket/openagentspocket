@@ -10,7 +10,7 @@ import { LINK_CASES, type LinkCase, linkStore } from './hostLinkTestKit';
 import { createDemoRuntime, setHostsRuntime } from './hostsRuntime';
 import { renderApp } from './hostsTestKit';
 
-const mockRouter = { push: jest.fn() };
+const mockRouter = { push: jest.fn(), replace: jest.fn() };
 jest.mock('expo-secure-store', () => ({}));
 jest.mock('expo-sqlite/kv-store', () => ({}));
 jest.mock('expo-router', () => ({ useRouter: () => mockRouter }));
@@ -122,6 +122,21 @@ describe("the Agent screen's actions are the sheet's", () => {
     expect((await pressed('panel', 'pair-again')).push).toEqual([[hrefs.easyPair()]]);
     screen.unmount();
     expect((await pressed('panel', 'edit')).push).toEqual([[hrefs.hostForm({ edit: 'lab' })]]);
+  });
+});
+
+describe('the Agent screen of a Host that was removed', () => {
+  it('says the Host is no longer saved and leads Home instead of waiting', async () => {
+    const env = linkStore();
+    await renderApp(
+      <ConsoleStoreProvider store={env.store}>
+        <AgentUnavailable gone={false} hostId="removed-host" />
+      </ConsoleStoreProvider>,
+    );
+    expect(await screen.findByTestId('agent-host-removed')).toBeTruthy();
+    expect(screen.queryByTestId('agent-loading')).toBeNull();
+    fireEvent.press(screen.getByTestId('agent-host-removed-home'));
+    expect(mockRouter.replace).toHaveBeenCalledWith(hrefs.home());
   });
 });
 

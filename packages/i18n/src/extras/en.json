@@ -175,5 +175,7 @@
   "In %@, removed line %@: %@": "In {0}, removed line {1}: {2}",
   "Commit": "Commit",
   "Commit and PR": "Commit and PR",
-  "Open PR": "Open PR"
+  "Open PR": "Open PR",
+  "Host Not Saved": "Host Not Saved",
+  "This Host is no longer saved, so its Agents are not available.": "This Host is no longer saved, so its Agents are not available."
 }
