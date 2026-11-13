@@ -5,6 +5,11 @@ export {
   REFRESH_DEBOUNCE_MS,
 } from './auto-refresh';
 export { type ByteString, decodeBytes, displayText, encodeText, fromBytes, toBytes } from './bytes';
+export {
+  type CommitRequestKind,
+  commitRequestKinds,
+  commitRequestText,
+} from './commit-request';
 export { describeFailure } from './describe-failure';
 export {
   fileLineCounts,

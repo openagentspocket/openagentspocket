@@ -142,5 +142,19 @@
   "What Will Be Sent": "What Will Be Sent",
   "This opens a new issue on GitHub with the text below. Add what happened and send it from there; you need a GitHub account.": "This opens a new issue on GitHub with the text below. Add what happened and send it from there; you need a GitHub account.",
   "The crash text can name files or Hosts on your computer. Turn it off to send the report without it.": "The crash text can name files or Hosts on your computer. Turn it off to send the report without it.",
-  "By default the relay is the one the app's developer runs on Cloudflare Workers. A Custom Push Relay in Notifications settings replaces it with one you run.": "By default the relay is the one the app's developer runs on Cloudflare Workers. A Custom Push Relay in Notifications settings replaces it with one you run."
+  "By default the relay is the one the app's developer runs on Cloudflare Workers. A Custom Push Relay in Notifications settings replaces it with one you run.": "By default the relay is the one the app's developer runs on Cloudflare Workers. A Custom Push Relay in Notifications settings replaces it with one you run.",
+  "Ask Agent": "Ask Agent",
+  "Writes a request in the Agent's Composer. You review it and send it.": "Writes a request in the Agent's Composer. You review it and send it.",
+  "Commit Changes": "Commit Changes",
+  "Commit and Open Pull Request": "Commit and Open Pull Request",
+  "Open Pull Request": "Open Pull Request",
+  "Please open a pull request for the commits on branch %@.": "Please open a pull request for the commits on branch {0}.",
+  "Please open a pull request for the commits on this detached HEAD.": "Please open a pull request for the commits on this detached HEAD.",
+  "Please look at the uncommitted changes in this repository (%@, branch %@).": "Please look at the uncommitted changes in this repository ({0}, branch {1}).",
+  "Please look at the uncommitted changes in this repository (%@, detached HEAD).": "Please look at the uncommitted changes in this repository ({0}, detached HEAD).",
+  "Some files have merge conflicts: stop and tell me instead of committing.": "Some files have merge conflicts: stop and tell me instead of committing.",
+  "If this is the repository's default branch or a detached HEAD, create a new branch with a descriptive name first.": "If this is the repository's default branch or a detached HEAD, create a new branch with a descriptive name first.",
+  "Commit the changes with a clear message that says what changed and why.": "Commit the changes with a clear message that says what changed and why.",
+  "Push the branch, open a pull request with a short summary, and reply with its link.": "Push the branch, open a pull request with a short summary, and reply with its link.",
+  "Never force-push or rewrite history.": "Never force-push or rewrite history."
 }

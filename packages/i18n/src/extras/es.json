@@ -142,5 +142,19 @@
   "What Will Be Sent": "Qué se va a enviar",
   "This opens a new issue on GitHub with the text below. Add what happened and send it from there; you need a GitHub account.": "Esto abre un issue nuevo en GitHub con el texto de abajo. Agregá qué pasó y envialo desde ahí; necesitás una cuenta de GitHub.",
   "The crash text can name files or Hosts on your computer. Turn it off to send the report without it.": "El texto del cierre puede nombrar archivos o Hosts de tu computadora. Desactivalo para enviar el informe sin él.",
-  "By default the relay is the one the app's developer runs on Cloudflare Workers. A Custom Push Relay in Notifications settings replaces it with one you run.": "Por defecto el relay es el que el desarrollador de la app corre en Cloudflare Workers. Un relay de push personalizado en los ajustes de Notificaciones lo reemplaza por uno que corras vos."
+  "By default the relay is the one the app's developer runs on Cloudflare Workers. A Custom Push Relay in Notifications settings replaces it with one you run.": "Por defecto el relay es el que el desarrollador de la app corre en Cloudflare Workers. Un relay de push personalizado en los ajustes de Notificaciones lo reemplaza por uno que corras vos.",
+  "Ask Agent": "Pedirle al Agent",
+  "Writes a request in the Agent's Composer. You review it and send it.": "Escribe un pedido en el Composer del Agent. Lo revisás y lo enviás vos.",
+  "Commit Changes": "Hacer commit de los cambios",
+  "Commit and Open Pull Request": "Hacer commit y abrir pull request",
+  "Open Pull Request": "Abrir pull request",
+  "Please open a pull request for the commits on branch %@.": "Abrí un pull request con los commits de la rama {0}.",
+  "Please open a pull request for the commits on this detached HEAD.": "Abrí un pull request con los commits de este HEAD separado.",
+  "Please look at the uncommitted changes in this repository (%@, branch %@).": "Revisá los cambios sin commitear de este repositorio ({0}, rama {1}).",
+  "Please look at the uncommitted changes in this repository (%@, detached HEAD).": "Revisá los cambios sin commitear de este repositorio ({0}, HEAD separado).",
+  "Some files have merge conflicts: stop and tell me instead of committing.": "Hay archivos con conflictos de merge: frená y avisame en lugar de hacer commit.",
+  "If this is the repository's default branch or a detached HEAD, create a new branch with a descriptive name first.": "Si es la rama por defecto del repositorio o un HEAD separado, primero creá una rama nueva con un nombre descriptivo.",
+  "Commit the changes with a clear message that says what changed and why.": "Hacé commit de los cambios con un mensaje claro que diga qué cambió y por qué.",
+  "Push the branch, open a pull request with a short summary, and reply with its link.": "Hacé push de la rama, abrí un pull request con un resumen breve y respondé con su link.",
+  "Never force-push or rewrite history.": "Nunca hagas force-push ni reescribas el historial."
 }
