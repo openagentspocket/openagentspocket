@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChangesScreen } from '@/changes/ChangesScreen';
+import { deviceStorage } from '@/settings/deviceStorage';
 
 /** `/changes?agent=<target id>`: the Changes list of an Agent's (or a directory's) Checkout. */
 export default function ChangesRoute() {
@@ -10,6 +11,7 @@ export default function ChangesRoute() {
     <>
       <ChangesScreen
         agentId={agentId}
+        storage={deviceStorage}
         onBack={() => router.back()}
         onOpenFile={() => router.push({ pathname: '/changes/diff', params: { agent: agentId } })}
       />

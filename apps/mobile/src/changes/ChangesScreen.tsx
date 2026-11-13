@@ -1,6 +1,7 @@
 import {
   type ChangedFile,
   isClean,
+  type KeyValueStorage,
   limitNoticeText,
   listLimitNotice,
 } from '@openagentspocket/core';
@@ -8,15 +9,19 @@ import { t } from '@openagentspocket/i18n';
 import { Banner, ChangeSection, type ScreenHeader, useStoreState } from '@openagentspocket/ui';
 import { useCallback, useEffect, useMemo } from 'react';
 import { AppScreen } from '@/navigation/AppScreen';
+import { AskAgentMenu } from './AskAgentMenu';
 import { ChangedFileRow } from './ChangedFileRow';
 import { ChangesHeader } from './ChangesHeader';
 import { ChangesBlockedState, ChangesNote, CleanState, TimedOutBanner } from './ChangesStates';
 import { changesStoreFor, releaseChangesStore } from './registry';
 import { buildSections } from './rows';
 import { say } from './say';
+import { parseChangesTarget } from './target';
 
 interface ChangesScreenProps {
   agentId: string;
+  /** The app's storage, where an Agent's Composer keeps the draft Ask Agent writes into. */
+  storage: KeyValueStorage;
   /** Pushes the file diff over the list. */
   onOpenFile: (file: ChangedFile) => void;
   /** The circular back button of the bar. */
@@ -25,7 +30,13 @@ interface ChangesScreenProps {
 }
 
 /** changes.list: the Checkout an Agent works in, its uncommitted files in Source Control groups. */
-export function ChangesScreen({ agentId, onOpenFile, onBack, now = Date.now }: ChangesScreenProps) {
+export function ChangesScreen({
+  agentId,
+  storage,
+  onOpenFile,
+  onBack,
+  now = Date.now,
+}: ChangesScreenProps) {
   const store = changesStoreFor(agentId);
   const state = useStoreState(store);
   const { expansions } = useStoreState(store.untrackedDirectories);
@@ -76,6 +87,7 @@ export function ChangesScreen({ agentId, onOpenFile, onBack, now = Date.now }: C
       testID="changes-screen"
     >
       <ChangesHeader changes={changes} now={now()} possiblyIncompleteSince={state.freshness} />
+      <AskAgentMenu target={parseChangesTarget(agentId)} changes={changes} storage={storage} />
       {state.timedOutKeepingContent ? <TimedOutBanner onRetry={refresh} /> : null}
       {notice ? <Banner tone="info" title={limitNoticeText(notice, say)} /> : null}
       {isClean(changes) ? <CleanState /> : null}

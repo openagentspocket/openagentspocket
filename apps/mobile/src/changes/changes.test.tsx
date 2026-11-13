@@ -5,6 +5,7 @@ import {
   ChangesStore,
   type Clock,
   type FilePatch,
+  MemoryStorage,
   parsePatchFiles,
 } from '@openagentspocket/core';
 import { message, setLocale } from '@openagentspocket/i18n';
@@ -97,7 +98,7 @@ describe('Changes catalog keys', () => {
 describe('ChangesScreen', () => {
   it('shows the Checkout header and the files in Source Control groups', async () => {
     install();
-    await wrap(<ChangesScreen agentId="a1" onOpenFile={() => {}} />);
+    await wrap(<ChangesScreen agentId="a1" storage={new MemoryStorage()} onOpenFile={() => {}} />);
     await waitFor(() => expect(screen.getByTestId('changes-header')).toBeTruthy());
     expect(screen.getAllByTestId('change-section')).toHaveLength(4);
     expect(screen.getByTestId('changes-file-src/cart/Cart.ts')).toBeTruthy();
@@ -107,7 +108,11 @@ describe('ChangesScreen', () => {
     const opened: string[] = [];
     const { store } = install();
     await wrap(
-      <ChangesScreen agentId="a1" onOpenFile={(file: ChangedFile) => opened.push(file.path)} />,
+      <ChangesScreen
+        agentId="a1"
+        storage={new MemoryStorage()}
+        onOpenFile={(file: ChangedFile) => opened.push(file.path)}
+      />,
     );
     await waitFor(() => expect(screen.getByTestId('changes-file-README.md')).toBeTruthy());
     fireEvent.press(screen.getByTestId('changes-file-README.md'));
@@ -117,7 +122,7 @@ describe('ChangesScreen', () => {
 
   it('expands an untracked directory in place', async () => {
     install();
-    await wrap(<ChangesScreen agentId="a1" onOpenFile={() => {}} />);
+    await wrap(<ChangesScreen agentId="a1" storage={new MemoryStorage()} onOpenFile={() => {}} />);
     await waitFor(() => expect(screen.getByTestId('changes-file-scratch/')).toBeTruthy());
     fireEvent.press(screen.getByTestId('changes-file-scratch/'));
     await waitFor(() => expect(screen.getByTestId('changes-file-scratch/a.txt')).toBeTruthy());
@@ -134,7 +139,7 @@ describe('ChangesScreen', () => {
         },
       }),
     });
-    await wrap(<ChangesScreen agentId="a1" onOpenFile={() => {}} />);
+    await wrap(<ChangesScreen agentId="a1" storage={new MemoryStorage()} onOpenFile={() => {}} />);
     await waitFor(() => expect(screen.getByTestId('changes-clean')).toBeTruthy());
   });
 
@@ -147,7 +152,7 @@ describe('ChangesScreen', () => {
         return DEMO_READ;
       },
     });
-    await wrap(<ChangesScreen agentId="a1" onOpenFile={() => {}} />);
+    await wrap(<ChangesScreen agentId="a1" storage={new MemoryStorage()} onOpenFile={() => {}} />);
     await waitFor(() => expect(screen.getByTestId('changes-failure')).toBeTruthy());
     fireEvent.press(screen.getByText(say('Try Again')));
     await waitFor(() => expect(screen.getByTestId('changes-header')).toBeTruthy());
