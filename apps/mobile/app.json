@@ -2,7 +2,7 @@
   "expo": {
     "name": "Agents Pocket",
     "slug": "openagentspocket",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": ["openagentspocket", "agentico"],
@@ -10,7 +10,7 @@
     "ios": {
       "bundleIdentifier": "com.openagentspocket.app",
       "deploymentTarget": "18.0",
-      "buildNumber": "2",
+      "buildNumber": "3",
       "entitlements": {
         "com.apple.security.application-groups": ["group.com.openagentspocket.app"]
       },
