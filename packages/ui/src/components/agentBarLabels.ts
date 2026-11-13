@@ -9,6 +9,8 @@ export interface AgentBarLabels {
   newItem: string;
   closeSkills: string;
   skills: string;
+  /** The `/` panel's heading over the program's own commands. */
+  commands: string;
   messagePlaceholder: string;
   send: string;
   stop: string;
@@ -44,6 +46,7 @@ export const defaultAgentBarLabels: AgentBarLabels = {
   newItem: 'New',
   closeSkills: 'Close skills',
   skills: 'Skills',
+  commands: 'Commands',
   messagePlaceholder: 'Message Agent',
   send: 'Send',
   stop: 'Stop',

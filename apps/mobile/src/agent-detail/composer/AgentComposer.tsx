@@ -1,12 +1,8 @@
 import {
   type AgentSkill,
-  type ComposerSkill,
   chatActivityOf,
-  commandSuggestions,
   composerPlaceholder,
-  detectSkillTrigger,
   ESCAPE_WAIT,
-  matchingSkills,
   message,
   primaryControl,
   refusalAction,
@@ -38,6 +34,7 @@ import { COMPOSER_MORE_ANCHOR } from './composerAnchors';
 import type { AgentComposer } from './composerContext';
 import { useChatSend } from './useChatSend';
 import { useComposerMenus } from './useComposerMenus';
+import { useSlashPanel } from './useSlashPanel';
 
 export { COMPOSER_MORE_ANCHOR };
 
@@ -52,10 +49,7 @@ const ATTACH_KEYS: readonly (readonly KeySpec[])[] = [
 interface Props {
   composer: AgentComposer;
   surface: Surface;
-  /** Commands or Skills the draft's trailing token can complete; empty when the source is unknown. */
-  skills?: readonly ComposerSkill[];
-  skillPrefixes?: readonly string[];
-  /** The Host's skills the Chat `/` menu offers (the program's send policy picks which). */
+  /** The Host's skills the `/` panel offers (on Chat, the program's send policy picks which). */
   agentSkills?: readonly AgentSkill[];
   /** The Agent's launch directory: its project skills are listed in the menu too. */
   projectRoot?: string;
@@ -71,8 +65,6 @@ interface Props {
 export function AgentComposerBar({
   composer,
   surface,
-  skills = [],
-  skillPrefixes = ['/'],
   agentSkills,
   projectRoot,
   onAttachKey,
@@ -82,12 +74,13 @@ export function AgentComposerBar({
 }: Props) {
   const { store, snapshot, interrupt } = composer;
   const { composing, setComposing } = useDetailUi();
-  // The Host's skills, unless the caller brings its own.
+  // The Host's skills, unless the caller brings its own: Chat's menu needs them at once, the
+  // terminal only once a `/` opens the panel.
   const hostSkills = useAgentSkills({
     hostId: composer.hostId,
     program,
     projectRoot,
-    enabled: surface === 'chat' && agentSkills === undefined,
+    enabled: agentSkills === undefined && (surface === 'chat' || snapshot.draft.startsWith('/')),
   });
   const chatSend = useChatSend({
     hostId: composer.hostId,
@@ -105,21 +98,15 @@ export function AgentComposerBar({
   useSyncExternalStore(store.stop.subscribe, () => store.stop.phase);
   const held = useSyncExternalStore(store.stop.subscribe, () => store.stop.isHeldAfterSend);
   const [attachDraft, setAttachDraft] = useState(false);
-  const trigger = detectSkillTrigger(snapshot.draft, skillPrefixes);
-  const matches = trigger ? matchingSkills(trigger, skills) : [];
-  // Chat's `/` menu: the commands a leading `/` matches, which complete in the draft and send nothing.
-  const menu =
-    surface === 'chat' && chatSend.policy
-      ? commandSuggestions(snapshot.draft, chatSend.commands)
-      : null;
-  const suggestions = menu
-    ? menu.map((command) => ({
-        name: `/${command.name}`,
-        description: command.isEnabled
-          ? (command.summary ?? '')
-          : t('Available once the Agent is idle'),
-      }))
-    : matches.map((skill) => ({ name: skill.command, description: skill.description ?? '' }));
+  const slash = useSlashPanel({
+    composer,
+    surface,
+    program,
+    chatPolicy: chatSend.policy,
+    chatMenu: chatSend.commands,
+    skills: agentSkills ?? hostSkills,
+    onToggleSurface,
+  });
   const hasAttachments = snapshot.attachments.length > 0;
   const control = primaryControl({
     status: snapshot.status,
@@ -228,15 +215,10 @@ export function AgentComposerBar({
             chatActivityOf(snapshot.status),
           ),
         )}
-        skills={suggestions}
-        onSkill={(command) => {
-          if (menu) {
-            const entry = menu.find((candidate) => `/${candidate.name}` === command);
-            if (entry?.isEnabled) store.replaceDraft(`${command} `);
-          } else if (trigger) {
-            store.replaceTrailingToken(trigger.token, `${command} `);
-          }
-        }}
+        commands={slash.commands}
+        onCommand={slash.onCommand}
+        skills={slash.skills}
+        onSkill={slash.onSkill}
         // Folded to one line until the Composer is open (Swift): then the "..." menu shows.
         expanded={composing ? true : undefined}
         moreAnchorKey={COMPOSER_MORE_ANCHOR}

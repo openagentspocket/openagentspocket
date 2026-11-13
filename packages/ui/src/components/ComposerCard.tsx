@@ -3,27 +3,19 @@ import { Platform, View } from 'react-native';
 import { composerAction } from '../composer/Composer';
 import { ActionMenuButton, type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
 import { useAnchor } from '../overlay/anchors';
-import { BoundedScroll } from '../primitives/BoundedScroll';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
-import { Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
-import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { typography } from '../theme/typography';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
+import { type ComposerSkill, ComposerSuggestions } from './ComposerSuggestions';
 import { KeyboardDismissButton } from './KeyboardDismissButton';
 
 const CIRCLE = 40;
 /** Centres one body line (22 pt) in the circle-high field. */
 const LINE_PAD = (CIRCLE - typography.body.lineHeight) / 2;
-
-/**
- * The suggestions panel takes at most this share of the window, so the input and the keyboard stay
- * usable over a list of dozens; its rows scroll inside it.
- */
-const SKILLS_MAX_SHARE = 0.3;
 
 const useStyles = makeStyles((t) => ({
   card: {
@@ -81,14 +73,6 @@ const useStyles = makeStyles((t) => ({
     flexBasis: 0,
   },
   inputStack: { paddingHorizontal: t.spacing.xs },
-  skills: { paddingHorizontal: t.spacing.sm, paddingTop: t.spacing.sm },
-  skillsHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  skill: {
-    paddingVertical: airy.stack,
-    borderBottomWidth: t.metrics.hairlineWidth,
-    borderBottomColor: t.colors.separator,
-    gap: airy.line,
-  },
   badge: {
     position: 'absolute',
     right: -2,
@@ -100,14 +84,9 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
     backgroundColor: t.colors.surfaceRaised,
   },
-  close: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
 }));
 
-export interface ComposerSkill {
-  /** "/code-review". */
-  name: string;
-  description: string;
-}
+export type { ComposerSkill };
 
 export interface ComposerCardProps {
   value: string;
@@ -125,7 +104,10 @@ export interface ComposerCardProps {
   moreMenu?: readonly ActionMenuItem[];
   /** The Agent's program shortcuts (keys it presses, commands it types); after the more menu. */
   shortcutsMenu?: readonly ActionMenuItem[];
-  /** Slash skills: shown above the input while the draft starts with "/". */
+  /** The program's commands: listed first in the `/` panel, while the draft starts with "/". */
+  commands?: readonly ComposerSkill[];
+  onCommand?: (name: string) => void;
+  /** Slash skills: listed under the commands in the same panel. */
   skills?: readonly ComposerSkill[];
   onSkill?: (name: string) => void;
   /** Forces the stacked layout; otherwise it grows once the draft has a line break or is long. */
@@ -216,6 +198,8 @@ export function ComposerCard({
   barToggle,
   onFocusChange,
   dictation,
+  commands,
+  onCommand,
   skills,
   onSkill,
   expanded,
@@ -231,7 +215,8 @@ export function ComposerCard({
   const [focused, setFocused] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
   const action = composerAction(value, working, onStop !== undefined, hasAttachments);
-  const showSkills = Boolean(skills?.length) && value.startsWith('/') && !dismissed;
+  const showSkills =
+    Boolean(skills?.length || commands?.length) && value.startsWith('/') && !dismissed;
   // An open "..." menu holds the layout: its Modal blurs the input, and folding would unmount it.
   const stacked =
     (expanded ?? (value.includes('\n') || value.length > 36)) || showSkills || moreOpen;
@@ -311,46 +296,16 @@ export function ComposerCard({
   return (
     <View style={styles.card} testID={testID}>
       {showSkills ? (
-        <View style={styles.skills} testID={`${testID}-skills`}>
-          <View style={styles.skillsHead}>
-            <Text variant="caption" tone="secondary" semibold>
-              {labels.skills.toUpperCase()}
-            </Text>
-            <Tappable
-              style={styles.close}
-              onPress={() => setDismissed(true)}
-              accessibilityRole="button"
-              accessibilityLabel={labels.closeSkills}
-              testID={`${testID}-skills-close`}
-            >
-              <Icon name="close" size={16} />
-            </Tappable>
-          </View>
-          <BoundedScroll
-            share={SKILLS_MAX_SHARE}
-            resetKey={value}
-            spaced={false}
-            testID={`${testID}-skills-list`}
-          >
-            {skills?.map((skill, index) => (
-              <Tappable
-                key={skill.name}
-                onPress={() => onSkill?.(skill.name)}
-                accessibilityRole="button"
-                accessibilityLabel={`${skill.name}. ${skill.description}`}
-                style={styles.skill}
-                testID={`${testID}-skill-${skill.name}`}
-              >
-                <Text variant="body" monospaced>
-                  {skill.name}
-                </Text>
-                <Text variant="caption" tone="secondary" numberOfLines={1}>
-                  {skill.description}
-                </Text>
-              </Tappable>
-            ))}
-          </BoundedScroll>
-        </View>
+        <ComposerSuggestions
+          sections={[
+            { key: 'command', title: labels.commands, rows: commands ?? [], onPick: onCommand },
+            { key: 'skill', title: labels.skills, rows: skills ?? [], onPick: onSkill },
+          ]}
+          query={value}
+          closeLabel={labels.closeSkills}
+          onClose={() => setDismissed(true)}
+          testID={testID}
+        />
       ) : null}
       <View style={stacked ? styles.stack : styles.oneLine}>
         <View style={[styles.buttons, stacked && styles.pinLeft]}>

@@ -217,5 +217,20 @@ describe('AgentComposerBar', () => {
       await waitFor(() => expect(screen.queryByTestId('composer-more')).toBeNull());
       expect(dismiss).toHaveBeenCalled();
     });
+
+    it("lists the program's commands for a slash and types a pick into the terminal's draft", async () => {
+      await openTerminal();
+      await fireEvent.changeText(screen.getByTestId('composer-input'), '/res');
+      await waitFor(() => expect(screen.getByTestId('composer-command-/resume')).toBeTruthy());
+      // It runs where the user is: no hint, and the surface stays.
+      expect(screen.getByTestId('composer-command-/resume').props.accessibilityLabel).not.toContain(
+        t('Terminal'),
+      );
+      await fireEvent.press(screen.getByTestId('composer-command-/resume'));
+      await waitFor(() =>
+        expect(screen.getByTestId('composer-input').props.value).toMatch(/^\/resume/),
+      );
+      expect(screen.getByLabelText(t('Show Chat'))).toBeTruthy();
+    });
   });
 });

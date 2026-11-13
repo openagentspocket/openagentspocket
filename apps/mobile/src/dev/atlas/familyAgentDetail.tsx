@@ -1,8 +1,10 @@
 // Atlas entries of the agent detail family (agent-detail.*). Owned by its UX family task, so parallel tasks never edit the same registry file.
+import { chatCommands, makeSkill, sendPolicyFor, slashPanel } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { ComposerCard } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
+import { slashRows } from '@/agent-detail/composer/useSlashPanel';
 import { closeTerminalConfirmation } from '@/features/terminals/closeConfirmation';
 import { SHELL_CLOSE_ANCHOR, ShellTerminalScreen } from '@/features/terminals/ShellTerminalScreen';
 import { deviceStorage } from '@/settings/deviceStorage';
@@ -77,6 +79,43 @@ const longSkillList: AtlasEntry = {
   ),
 };
 
+/** Chat with `/` typed: the live panel, Claude Code's own commands from its definition. */
+const slashTyped: AtlasEntry = {
+  render: () => {
+    deviceStorage.set('composer.draft.demo/p5', '/');
+    return detail('p5', 'chat').render();
+  },
+};
+
+/** The `/` panel with both sections: Claude Code's commands for `/rel`, then the Host's skills. */
+const slashPanelGallery: AtlasEntry = {
+  render: () => {
+    const policy = sendPolicyFor('claude');
+    const skills = [
+      makeSkill({ scope: 'project', name: 'release-notes-draft', description: 'Draft the notes' }),
+      makeSkill({ scope: 'global', name: 'refactor', description: 'Refactor a module safely' }),
+    ];
+    const rows = slashRows(
+      slashPanel({
+        draft: '/rel',
+        surface: 'chat',
+        program: 'claude',
+        policy,
+        chatMenu: chatCommands(skills, true, policy),
+        skills,
+        terminalReachable: true,
+      }),
+      'chat',
+    );
+    return (
+      <AtlasChat>
+        <Stack.Screen options={{ headerShown: false }} />
+        <ComposerCard value="/rel" onChange={noop} onSend={noop} {...rows} />
+      </AtlasChat>
+    );
+  },
+};
+
 const chat = detail('p2', 'chat');
 const terminal = detail('p2', 'terminal');
 
@@ -115,7 +154,8 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.status-line': chat,
   'agent-detail.agent-switcher': chat,
   'agent-detail.composer': chat,
-  'agent-detail.composer-skill-suggestions': chat,
+  'agent-detail.composer-skill-suggestions': slashTyped,
+  'rn.composer-slash-panel': slashPanelGallery,
   'rn.composer-command-notice': refusedCommand,
   'rn.composer-skill-list': longSkillList,
   'agent-detail.composer-more-menu': detail('p4', 'terminal', ['composer-input', 'composer-more']),

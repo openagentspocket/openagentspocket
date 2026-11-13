@@ -105,9 +105,25 @@ describe('Chat send through the program send policy', () => {
     const transport = new PaneTransport();
     renderDetail('p5', transport);
     await type('/co');
-    await waitFor(() => expect(screen.getByTestId('composer-skill-/compact')).toBeTruthy());
-    fireEvent.press(screen.getByTestId('composer-skill-/compact'));
+    await waitFor(() => expect(screen.getByTestId('composer-command-/compact')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('composer-command-/compact'));
     await waitFor(() => expect(screen.getByTestId('composer-input').props.value).toBe('/compact '));
+    expect(screen.queryByLabelText(t('Show Chat'))).toBeNull();
+    expect(transport.prompts).toEqual([]);
+  });
+
+  it("lists the program's own commands, and takes one that runs in the terminal there", async () => {
+    const transport = new PaneTransport();
+    renderDetail('p5', transport);
+    await type('/mod');
+    await waitFor(() => expect(screen.getByTestId('composer-command-/model')).toBeTruthy());
+    // The row says where it runs, since that is not Chat.
+    expect(screen.getByTestId('composer-command-/model').props.accessibilityLabel).toContain(
+      t('Terminal'),
+    );
+    fireEvent.press(screen.getByTestId('composer-command-/model'));
+    await waitFor(() => expect(screen.getByLabelText(t('Show Chat'))).toBeTruthy());
+    expect(screen.getByTestId('composer-input').props.value).toBe('/model ');
     expect(transport.prompts).toEqual([]);
   });
 

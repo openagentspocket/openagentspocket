@@ -13,6 +13,7 @@ export function agentBarLabels(): AgentBarLabels {
     newItem: t('New'),
     closeSkills: t('Close Skills'),
     skills: t('Skills'),
+    commands: t('Commands'),
     messagePlaceholder: t('Message Agent'),
     send: t('Send'),
     stop: t('Stop'),

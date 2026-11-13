@@ -312,6 +312,11 @@
     "note": "RN-only state: thirty suggestions, the panel scrolls inside its height limit"
   },
   {
+    "id": "rn.composer-slash-panel",
+    "rn": "ComposerCard (slash panel)",
+    "note": "RN-only state: Claude Code commands for /rel, Terminal hints, then the Host's skills"
+  },
+  {
     "id": "rn.board",
     "rn": "app/board.tsx (BoardScreen)",
     "note": "RN-only screen, no Swift id"
@@ -468,8 +473,8 @@
   },
   {
     "id": "agent-detail.composer-skill-suggestions",
-    "rn": "AgentDetailScreen",
-    "note": "KNOWN GAP: no RN state for this yet, renders the nearest Agent detail screen"
+    "rn": "AgentComposerBar (slash panel)",
+    "note": "Chat with / typed: the program's own commands; the demo Host lists no skills"
   },
   {
     "id": "agent-detail.composer-more-menu",
