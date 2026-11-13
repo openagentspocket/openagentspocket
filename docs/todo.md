@@ -28,16 +28,16 @@ so no program-specific branches.
   approval, a diff). Done when: a turn with five tool calls takes one row, and the atlas shows it.
 - [x] **The command's description, not its text.** When the program records what a command is for, the row
   shows that; the raw command shows on opening it. Done when: a long shell line no longer fills a row.
-- [ ] **One status line above the Composer.** Elapsed time, what the Agent is doing, and how much Background
+- [x] **One status line above the Composer.** Elapsed time, what the Agent is doing, and how much Background
   Work runs, as one line; finished work folds into it. The "Working for" row leaves the transcript. Done
   when: the line is the only live indicator and opens the Background Work sheet.
-- [ ] **Harness notices out of the conversation.** Records such as "Background command completed" are not
+- [x] **Harness notices out of the conversation.** Records such as "Background command completed" are not
   messages. Done when: they show in the Background Work sheet and not as Chat rows.
-- [ ] **The Composer says what Send does.** While the Agent works and the program queues input, the
+- [x] **The Composer says what Send does.** While the Agent works and the program queues input, the
   placeholder says the message is queued for after this turn. A property of the program's send policy.
-- [ ] **Conversation title in the header**, with the program and Host under it; the mode chip moves next to
+- [x] **Conversation title in the header**, with the program and Host under it; the mode chip moves next to
   the Composer.
-- [ ] **Dictation in reach.** The microphone shows in the Composer when the draft is empty.
+- [x] **Dictation in reach.** The microphone shows in the Composer when the draft is empty.
 - [x] **Message actions in sight.** Copy (and read aloud where the platform gives it) under the latest
   answer, not only on long press.
 

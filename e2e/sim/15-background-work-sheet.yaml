@@ -8,10 +8,10 @@ appId: com.openagentspocket.app
 - openLink: openagentspocket:///__atlas/agent-detail.chat-background-strip
 - extendedWaitUntil:
     visible:
-      id: work-row-w1
+      id: background-work-strip-summary
     timeout: 15000
 - tapOn:
-    id: work-row-w1
+    id: background-work-strip-summary
 - extendedWaitUntil:
     visible:
       id: work-done
