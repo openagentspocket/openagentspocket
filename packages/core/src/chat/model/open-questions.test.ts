@@ -99,6 +99,18 @@ describe('transcriptCalls', () => {
     expect(calls.resolved.has(open[0]?.callID ?? '')).toBe(false);
   });
 
+  it('says whether a subagent call runs, and lists what waits for a card to match', () => {
+    const spawning = projectionThroughAdapter(GROK, has('spawn_subagent'))('working');
+    expect(transcriptCalls(spawning, []).subagentRunning).toBe(true);
+    const project = projectionThroughAdapter(CLAUDE, has('tool_use', 'AskUserQuestion'));
+    const open = openQuestions(project('idle'), project);
+    const calls = transcriptCalls(project('idle'), open);
+    expect(calls.subagentRunning).toBe(false);
+    expect(calls.requests.map((request) => request.callID)).toEqual(
+      expect.arrayContaining(open.map((q) => q.callID)),
+    );
+  });
+
   it('counts a finished call as resolved', () => {
     const calls = transcriptCalls(projectionThroughAdapter(CLAUDE)('idle'), []);
     expect(calls.openQuestion).toBe(false);

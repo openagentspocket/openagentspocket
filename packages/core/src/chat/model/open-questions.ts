@@ -39,6 +39,10 @@ export interface TranscriptCalls {
   /** Calls whose outcome the transcript shows. */
   readonly resolved: ReadonlySet<string>;
   readonly openQuestion: boolean;
+  /** The waiting calls, oldest first, that a dialog on screen is matched against. */
+  readonly requests: readonly ChatPendingRequest[];
+  /** A subagent call is running, whose own requests the screen may show. */
+  readonly subagentRunning: boolean;
 }
 
 const isOpen = (status: ToolStatus): boolean =>
@@ -49,16 +53,21 @@ export function transcriptCalls(
   questions: readonly ChatPendingRequest[],
 ): TranscriptCalls {
   const waiting = new Set<string>();
-  for (const request of [...transcript.pendingRequests, ...questions]) {
+  const requests = [...transcript.pendingRequests, ...questions];
+  for (const request of requests) {
     if (request.callID !== null) waiting.add(request.callID);
   }
   const resolved = new Set<string>();
+  let subagentRunning = false;
   for (const { content } of transcript.entries) {
+    if (content.type === 'tool' && content.value.kind === 'agent' && isOpen(content.value.status)) {
+      subagentRunning = true;
+    }
     const call =
       content.type === 'tool' || content.type === 'plan'
         ? { id: content.value.callID, status: content.value.status }
         : null;
     if (call?.id && !isOpen(call.status) && !waiting.has(call.id)) resolved.add(call.id);
   }
-  return { waiting, resolved, openQuestion: questions.length > 0 };
+  return { waiting, resolved, openQuestion: questions.length > 0, requests, subagentRunning };
 }

@@ -3,6 +3,7 @@ import '../chat/programs';
 // screens (goldens/opencode/lab, `agent.read` captures from scripts/agent-lab.py).
 
 import { describe, expect, it } from 'vitest';
+import { type TranscriptCalls, transcriptCalls } from '../chat/model/open-questions';
 import { OPENCODE_MODES } from '../chat/programs/mode-lists';
 import { readProgramMode } from '../chat/programs/modes';
 import { programShortcuts } from '../chat/programs/registry';
@@ -10,7 +11,7 @@ import { detectInputBox } from '../chat/send/detect';
 import { sendPolicyFor } from '../chat/send/registry';
 import { renderText } from '../errors/text';
 import { FakeClock } from '../hosts/cancellation';
-import { labScreen, labScreenText } from '../lab-captures.testkit';
+import { labScreen, labScreenText, labTranscript } from '../lab-captures.testkit';
 import { BlockedCardStore } from './card-store';
 import type { BlockedScreenIO } from './card-support';
 import { parseBlockedDialog, planDialogAction } from './programs';
@@ -71,11 +72,8 @@ describe('OpenCode 2.1.3 Blocked card, live captures', () => {
     expect(keysOf(dialog, 3)).toEqual({ refused: 'unsupported' });
   });
 
-  // Finding (agent lab, 2026-11-13): apps/mobile useBlockedCard builds the card without
-  // `toolUseIdFor`, so Reject on OpenCode's own permission is refused ("Reject this in the
-  // terminal") and sends nothing, although Chat's transcript holds the running call's id. Wiring
-  // it needs the card to match the dialog to the conversation's awaiting call; not done here.
-  it.skip('rejects from a card built as the app builds it', async () => {
+  /** Reject on a card built as the app builds it: pane reads, then the calls Chat reads. */
+  async function rejectWith(calls: TranscriptCalls | null): Promise<string[][]> {
     const keys: string[][] = [];
     const io: BlockedScreenIO = {
       readScreen: async () => screen('permission-shell'),
@@ -87,11 +85,30 @@ describe('OpenCode 2.1.3 Blocked card, live captures', () => {
     const clock = new FakeClock();
     const card = new BlockedCardStore({ program: 'opencode', io, clock });
     card.setActivity('blocked');
+    if (calls) card.setCalls(calls);
     await card.refresh();
     const run = card.perform({ kind: 'choose', ordinal: 3 });
-    for (let tick = 0; tick < 100 && keys.length === 0; tick += 1) await clock.advance(50);
+    for (let tick = 0; tick < 100 && card.getState().progress === 'acting'; tick += 1) {
+      await clock.advance(50);
+    }
     await run;
-    expect(keys).toEqual([['esc']]);
+    return keys;
+  }
+
+  const shellCalls = async () =>
+    transcriptCalls(await labTranscript('store-permission-shell', 'blocked'), []);
+
+  // Found by the agent lab (2026-11-13): the card was built without the conversation's calls, so
+  // Reject on OpenCode's own permission was refused and sent nothing.
+  it("rejects the main session's permission by the call Chat reads", async () => {
+    const calls = await shellCalls();
+    expect(calls.requests.map((request) => request.callID)).toEqual([SHELL_CALL]);
+    expect(await rejectWith(calls)).toEqual([['esc']]);
+  });
+
+  it('sends nothing without the conversation, or while a subagent runs', async () => {
+    expect(await rejectWith(null)).toEqual([]);
+    expect(await rejectWith({ ...(await shellCalls()), subagentRunning: true })).toEqual([]);
   });
 });
 

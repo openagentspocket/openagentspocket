@@ -17,7 +17,10 @@ export interface BlockedCardOptions {
   readonly io: BlockedScreenIO;
   readonly clock: Clock;
   readonly timing?: Partial<CardTiming>;
-  /** The transcript request's `tool_use` id for a dialog, when the transcript shows it. */
+  /**
+   * The transcript request's `tool_use` id for a dialog, ahead of the request `setCalls` matches
+   * it to (`matchedRequest`); null falls back to that match. For tests that script the id.
+   */
   readonly toolUseIdFor?: (dialog: BlockedDialog) => string | null;
 }
 

@@ -23,6 +23,7 @@ import type {
   PlanResult,
 } from './plan-types';
 import { planDialogAction, planGenericOption } from './programs';
+import { matchedRequest, NO_REQUESTS, type RequestContext } from './request-match';
 import { type BlockedDialog, resultDialog, resultFingerprint } from './types';
 
 /**
@@ -38,6 +39,7 @@ import { type BlockedDialog, resultDialog, resultFingerprint } from './types';
 export class BlockedCardStore extends CardBase {
   private openQuestion = false;
   private waiting: ReadonlySet<string> = new Set();
+  private requests: RequestContext = NO_REQUESTS;
   private unconfirmed: DialogFingerprint | null = null;
   private firstSeen: { fingerprint: DialogFingerprint; at: number } | null = null;
   private degraded: { fingerprint: DialogFingerprint; reason: Text } | null = null;
@@ -74,15 +76,22 @@ export class BlockedCardStore extends CardBase {
   /**
    * The transcript as last read: the ids of calls waiting for approval, those whose results show,
    * and whether a question is open. herdr can report an Agent idle over one, so an open question
-   * reads the screen as Blocked does; only a dialog read there offers anything.
+   * reads the screen as Blocked does; only a dialog read there offers anything. The waiting
+   * requests are what an action matches its dialog against (`matchedRequest`).
    */
   setCalls(calls: {
     waiting: ReadonlySet<string>;
     resolved: ReadonlySet<string>;
     openQuestion?: boolean;
+    requests?: RequestContext['requests'];
+    subagentRunning?: boolean;
   }): void {
     const before = this.waiting;
     this.waiting = calls.waiting;
+    this.requests = {
+      requests: calls.requests ?? [],
+      subagentRunning: calls.subagentRunning ?? false,
+    };
     const openQuestion = calls.openQuestion ?? false;
     if (openQuestion && !this.openQuestion) this.quietSince = this.now();
     this.openQuestion = openQuestion;
@@ -127,7 +136,10 @@ export class BlockedCardStore extends CardBase {
     await this.act(content.dialog.fingerprint, (observation): PlanResult => {
       const dialog = resultDialog(observation.result);
       if (!dialog) return refusedAsChanged;
-      const toolUseID = this.options.toolUseIdFor?.(dialog) ?? null;
+      const toolUseID =
+        this.options.toolUseIdFor?.(dialog) ??
+        matchedRequest(dialog, this.requests)?.callID ??
+        null;
       return planDialogAction(dialog, action, toolUseID);
     });
   }

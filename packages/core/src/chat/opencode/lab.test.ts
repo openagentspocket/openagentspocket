@@ -4,22 +4,8 @@ import '../programs';
 // source and the reducer the app uses.
 
 import { describe, expect, it } from 'vitest';
-import { labStoreFiles } from '../../lab-captures.testkit';
-import { type ChatAgentActivity, type ChatTranscript, projectionContext } from '../model/types';
-import { openCodeAdapter } from './adapter';
-import { OpenCodeRecordSource } from './record-source';
-
-const SESSION = 'ses_e2d0145c0ffeFUENCuCYVJcvJF';
-
-async function transcriptOf(capture: string, activity: ChatAgentActivity): Promise<ChatTranscript> {
-  const lines = await new OpenCodeRecordSource(SESSION).open(labStoreFiles('opencode', capture));
-  const adapter = openCodeAdapter();
-  if (!adapter || !lines) throw new Error('OpenCode is not readable');
-  const reducer = adapter.makeReducer({ path: '', firstLine: null });
-  reducer.append(lines);
-  expect(reducer.unsupportedFormat).toBeNull();
-  return reducer.transcript(projectionContext({ activity }));
-}
+import { labTranscript as transcriptOf } from '../../lab-captures.testkit';
+import type { ChatTranscript } from '../model/types';
 
 const kinds = (transcript: ChatTranscript) => transcript.entries.map((entry) => entry.content.type);
 

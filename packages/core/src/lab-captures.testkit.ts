@@ -8,6 +8,9 @@ import { fileURLToPath } from 'node:url';
 import { decodeAnsiScreen } from './blocked/ansi-decoder';
 import type { AnsiScreen } from './blocked/screen';
 import type { ChatHostFiles } from './chat/model/host-files';
+import { type ChatAgentActivity, type ChatTranscript, projectionContext } from './chat/model/types';
+import { openCodeAdapter } from './chat/opencode/adapter';
+import { OpenCodeRecordSource } from './chat/opencode/record-source';
 import { parseStoreOutput } from './chat/store/output';
 import type { ChatStore, StoreQuery } from './chat/store/query';
 
@@ -27,6 +30,25 @@ export function labScreenText(program: LabProgram, name: string): string {
   return labScreen(program, name)
     .rows.map((row) => row.text)
     .join('\n');
+}
+
+/** The OpenCode session the lab's store captures read. */
+export const LAB_OPENCODE_SESSION = 'ses_e2d0145c0ffeFUENCuCYVJcvJF';
+
+/** One OpenCode store capture read through the record source and the reducer the app uses. */
+export async function labTranscript(
+  capture: string,
+  activity: ChatAgentActivity,
+): Promise<ChatTranscript> {
+  const lines = await new OpenCodeRecordSource(LAB_OPENCODE_SESSION).open(
+    labStoreFiles('opencode', capture),
+  );
+  const adapter = openCodeAdapter();
+  if (!adapter || !lines) throw new Error('OpenCode is not readable');
+  const reducer = adapter.makeReducer({ path: '', firstLine: null });
+  reducer.append(lines);
+  if (reducer.unsupportedFormat !== null) throw new Error(`${capture} reads as unsupported`);
+  return reducer.transcript(projectionContext({ activity }));
 }
 
 /**
