@@ -156,5 +156,18 @@
   "If this is the repository's default branch or a detached HEAD, create a new branch with a descriptive name first.": "Si es la rama por defecto del repositorio o un HEAD separado, primero creá una rama nueva con un nombre descriptivo.",
   "Commit the changes with a clear message that says what changed and why.": "Hacé commit de los cambios con un mensaje claro que diga qué cambió y por qué.",
   "Push the branch, open a pull request with a short summary, and reply with its link.": "Hacé push de la rama, abrí un pull request con un resumen breve y respondé con su link.",
-  "Never force-push or rewrite history.": "Nunca hagas force-push ni reescribas el historial."
+  "Never force-push or rewrite history.": "Nunca hagas force-push ni reescribas el historial.",
+  "Comment on Line": "Comentar la línea",
+  "Add to Composer": "Agregar al Composer",
+  "Line %@": "Línea {0}",
+  "Removed line %@": "Línea eliminada {0}",
+  "Comment": "Comentario",
+  "Added to the Composer with the line it points at. You send it from Chat.": "Se agrega al Composer con la línea a la que apunta. Lo enviás desde el Chat.",
+  "Added to the Composer": "Agregado al Composer",
+  "Tap to open the Agent's Chat.": "Tocá para abrir el Chat del Agent.",
+  "Opens the Agent's Chat": "Abre el Chat del Agent",
+  "In %@, line %@ (`%@`): %@": "En {0}, línea {1} (`{2}`): {3}",
+  "In %@, removed line %@ (`%@`): %@": "En {0}, línea eliminada {1} (`{2}`): {3}",
+  "In %@, line %@: %@": "En {0}, línea {1}: {2}",
+  "In %@, removed line %@: %@": "En {0}, línea eliminada {1}: {2}"
 }

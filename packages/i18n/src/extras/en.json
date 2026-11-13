@@ -156,5 +156,18 @@
   "If this is the repository's default branch or a detached HEAD, create a new branch with a descriptive name first.": "If this is the repository's default branch or a detached HEAD, create a new branch with a descriptive name first.",
   "Commit the changes with a clear message that says what changed and why.": "Commit the changes with a clear message that says what changed and why.",
   "Push the branch, open a pull request with a short summary, and reply with its link.": "Push the branch, open a pull request with a short summary, and reply with its link.",
-  "Never force-push or rewrite history.": "Never force-push or rewrite history."
+  "Never force-push or rewrite history.": "Never force-push or rewrite history.",
+  "Comment on Line": "Comment on Line",
+  "Add to Composer": "Add to Composer",
+  "Line %@": "Line {0}",
+  "Removed line %@": "Removed line {0}",
+  "Comment": "Comment",
+  "Added to the Composer with the line it points at. You send it from Chat.": "Added to the Composer with the line it points at. You send it from Chat.",
+  "Added to the Composer": "Added to the Composer",
+  "Tap to open the Agent's Chat.": "Tap to open the Agent's Chat.",
+  "Opens the Agent's Chat": "Opens the Agent's Chat",
+  "In %@, line %@ (`%@`): %@": "In {0}, line {1} (`{2}`): {3}",
+  "In %@, removed line %@ (`%@`): %@": "In {0}, removed line {1} (`{2}`): {3}",
+  "In %@, line %@: %@": "In {0}, line {1}: {2}",
+  "In %@, removed line %@: %@": "In {0}, removed line {1}: {2}"
 }

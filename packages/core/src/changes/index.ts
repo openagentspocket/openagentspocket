@@ -29,6 +29,12 @@ export {
   type Truncation,
 } from './file-diff-store';
 export * from './git-status';
+export {
+  type CommentedLine,
+  LINE_QUOTE_LIMIT,
+  lineCommentText,
+  quotedLine,
+} from './line-comment';
 export { ExecGate, Observable } from './observable';
 export { parseChanges, parseLatestCommit } from './parse-changes';
 export { filePatchRequest, parsePatch } from './patch';
