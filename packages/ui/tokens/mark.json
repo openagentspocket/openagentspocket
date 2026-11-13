@@ -1,0 +1,43 @@
+{
+  "$comment": "The app mark (three cards fanned out of a pocket): its one definition. Read by design/icon/gen_final.py (the app icon) and by scripts/gen-mark.mjs (src/brand/mark.generated.ts, the in-app mark and launch). Coordinates are in a 1024 x 1024 canvas. Brand colors of the mark, not theme colors.",
+  "geometry": {
+    "canvas": 1024,
+    "card": { "x": 377, "y": 270, "width": 270, "height": 520, "rx": 64 },
+    "pocket": "M222 690 Q222 650 262 650 H762 Q802 650 802 690 V725 A95 95 0 0 1 707 820 H317 A95 95 0 0 1 222 725 Z",
+    "pivot": [512, 790],
+    "cardCenter": [512, 530],
+    "fanAngle": 26,
+    "gap": 26,
+    "rimWidth": 12,
+    "lift": -30,
+    "prompt": "M300 470 L360 530 L300 590",
+    "promptWidth": 24
+  },
+  "background": "#000000",
+  "metal": {
+    "left": ["#3B3F46", "#17191C"],
+    "right": ["#4D525A", "#1E2024"],
+    "center": ["#747A84", "#2B2E33"],
+    "pocket": ["#454950", "#141518"]
+  },
+  "rim": {
+    "color": "#FFFFFF",
+    "stops": [
+      { "offset": 0, "opacity": 1 },
+      { "offset": 0.55, "opacity": 0.08 },
+      { "offset": 1, "opacity": 0 }
+    ]
+  },
+  "spectrum": [
+    { "offset": 0, "color": "#6D28FF" },
+    { "offset": 0.4, "color": "#D21FE0" },
+    { "offset": 0.75, "color": "#FF2D55" },
+    { "offset": 1, "color": "#FF7A18" }
+  ],
+  "hueDrift": [-45, 40],
+  "flat": {
+    "card": "#FFFFFF",
+    "cardOpacity": [0.55, 0.8, 1],
+    "pocket": "#6E6E6E"
+  }
+}
