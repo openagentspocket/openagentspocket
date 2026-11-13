@@ -32,6 +32,8 @@ interface DemoAgent {
   /** Agents with the same workspace id share one workspace (default: their own). */
   workspaceId?: string;
   session?: string;
+  /** What its screen shows, which a Session thumbnail previews (default: blank). */
+  screen?: string;
   /** Shell panes (no Agent) in this Agent's workspace. */
   shells?: readonly { pane: string; label?: string; cwd: string }[];
 }
@@ -43,6 +45,7 @@ const AGENTS: readonly DemoAgent[] = [
     status: 'blocked',
     workspace: 'api-server',
     title: 'Migration',
+    screen: 'Run the migration on the staging database?\n1. Yes\n2. No',
     seq: 9,
     shells: [{ pane: 's1', label: 'logs', cwd: '/work/api-server/logs' }],
   },
@@ -52,6 +55,8 @@ const AGENTS: readonly DemoAgent[] = [
     status: 'working',
     workspace: 'mobile',
     title: 'Settings refactor',
+    screen:
+      'Splitting SettingsScreen into one file per section.\nEdited src/settings/Appearance.tsx',
     seq: 7,
     session: '01a1108c-69c0-7a5e-8d2c-4f6b1e3a9c70',
     shells: [
@@ -65,6 +70,7 @@ const AGENTS: readonly DemoAgent[] = [
     status: 'working',
     workspace: 'docs',
     title: 'Install guide',
+    screen: 'Drafting the install guide.\nWrote docs/install/macos.md',
     seq: 4,
   },
   {
@@ -73,6 +79,7 @@ const AGENTS: readonly DemoAgent[] = [
     status: 'done',
     workspace: 'infra',
     title: 'Lint cleanup',
+    screen: 'Lint cleanup finished: 14 files fixed, no warnings left.',
     seq: 2,
   },
   {
@@ -81,6 +88,7 @@ const AGENTS: readonly DemoAgent[] = [
     status: 'idle',
     workspace: 'scratch',
     title: 'Scratch pad',
+    screen: 'Ready for your next task.',
     seq: 1,
   },
 ];
@@ -93,6 +101,7 @@ const EXTRA_AGENTS: readonly DemoAgent[] = [
     status: 'idle',
     workspace: 'mobile',
     title: 'Dark mode pass',
+    screen: 'Dark mode pass is ready for your review.',
     seq: 1,
     workspaceId: 'w1',
   },
@@ -106,6 +115,7 @@ const LAB_AGENTS: readonly DemoAgent[] = [
     status: 'working',
     workspace: 'render-farm',
     title: 'Cache warmup',
+    screen: 'Warming the render cache.\nShard 3 of 8 done',
     seq: 5,
   },
   {
@@ -114,6 +124,7 @@ const LAB_AGENTS: readonly DemoAgent[] = [
     status: 'done',
     workspace: 'render-farm',
     title: 'Queue review',
+    screen: 'Queue review finished: no stuck jobs found.',
     seq: 3,
     workspaceId: 'w0',
   },
@@ -181,8 +192,10 @@ export class DemoConsoleTransport extends ScriptedEventsTransport implements Con
     return demoSnapshot(this.agents);
   }
 
-  async readPane(): Promise<{ text: string }> {
-    return { text: 'Run the migration on the staging database?\n1. Yes\n2. No' };
+  /** Each Agent's own screen, so the Sessions row previews different Agents differently. */
+  async readPane(params: { paneId: string }): Promise<{ text: string }> {
+    const agent = this.agents.find((candidate) => candidate.pane === params.paneId);
+    return { text: agent?.screen ?? '' };
   }
 
   /** One Agent is a fake TUI, the rest echo keys; the live Transport opens a PTY attach. */
