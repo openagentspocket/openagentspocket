@@ -210,7 +210,9 @@ function Known({
         ) : null}
         {code ? (
           <Card level="control" style={styles.code}>
-            <Text variant="mono">{code}</Text>
+            <Text variant="mono" testID="blocked-subject-code">
+              {code}
+            </Text>
           </Card>
         ) : null}
       </BoundedScroll>

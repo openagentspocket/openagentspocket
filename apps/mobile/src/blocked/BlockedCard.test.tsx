@@ -80,6 +80,13 @@ describe('BlockedCard', () => {
     expect(props.onChoose).toHaveBeenCalledWith(1);
   });
 
+  // The agent lab's approve flow (e2e/live/08) reads the command by this id before it taps.
+  it('shows the command alone in its own element', async () => {
+    const dialog = bashDialog();
+    await renderCard({ content: { kind: 'card', dialog } });
+    expect(screen.getByTestId('blocked-subject-code').props.children).toBe(dialog.subject.command);
+  });
+
   it('disables every answer while keys go out or after an unconfirmed answer', async () => {
     const dialog = bashDialog();
     const props = await renderCard({ content: { kind: 'card', dialog }, progress: 'unconfirmed' });
