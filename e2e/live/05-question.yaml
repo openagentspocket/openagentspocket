@@ -1,0 +1,31 @@
+# Agent lab: OpenCode's question tool as a Blocked card, answered from the card. The answer is
+# matched by id AND exact label after the card's question and options are asserted.
+appId: com.openagentspocket.app
+---
+- runFlow: _open-agent.yaml
+- tapOn:
+    id: composer-input
+- inputText: "Use your question tool to ask me which of two colors I prefer, red or blue, with options. Do not run any command."
+- tapOn:
+    id: composer-send
+- extendedWaitUntil:
+    visible:
+      id: blocked-card
+    timeout: 180000
+- assertVisible: "(?i).*red.*blue.*"
+- assertVisible:
+    id: blocked-option-1
+    text: "Red"
+- assertVisible:
+    id: blocked-option-2
+    text: "Blue"
+- takeScreenshot: design/atlas/sim/live-05-question
+- tapOn:
+    id: blocked-option-2
+    text: "Blue"
+- extendedWaitUntil:
+    notVisible:
+      id: blocked-card
+    timeout: 20000
+- runFlow: ../sim/_guard.yaml
+- takeScreenshot: design/atlas/sim/live-05-answered

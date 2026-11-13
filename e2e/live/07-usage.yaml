@@ -1,0 +1,17 @@
+# Agent lab: Usage reads the lab's plugin. OpenCode has no Usage card (its collector reports nothing).
+appId: com.openagentspocket.app
+---
+- launchApp
+- openLink: openagentspocket:///
+- tapOn:
+    id: home-usage-ring
+- waitForAnimationToEnd
+- tapOn:
+    id: open-full-usage
+- extendedWaitUntil:
+    visible:
+      id: usage-screen
+    timeout: 15000
+- assertNotVisible: "OpenCode.*"
+- runFlow: ../sim/_guard.yaml
+- takeScreenshot: design/atlas/sim/live-07-usage

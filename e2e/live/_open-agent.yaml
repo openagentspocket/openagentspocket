@@ -1,0 +1,16 @@
+# Opens the lab's OpenCode Agent (pane w1:p1) from Home, on its Chat.
+appId: com.openagentspocket.app
+---
+- launchApp
+- openLink: openagentspocket:///
+- extendedWaitUntil:
+    visible:
+      id: "inbox-w1:p1"
+    timeout: 30000
+- tapOn:
+    id: "inbox-w1:p1"
+- extendedWaitUntil:
+    visible:
+      id: agent-header
+    timeout: 20000
+- runFlow: ../sim/_guard.yaml

@@ -1,0 +1,47 @@
+# Agent lab: a real OpenCode shell permission as a Blocked card. Never approves: the card's kind and
+# its option order are asserted first, and the only option tapped is matched by id AND exact label.
+appId: com.openagentspocket.app
+---
+- runFlow: _open-agent.yaml
+- tapOn:
+    id: composer-input
+- inputText: "Run the shell command ls in this directory and tell me what you see."
+- tapOn:
+    id: composer-send
+- extendedWaitUntil:
+    visible:
+      id: blocked-card
+    timeout: 180000
+- assertVisible: "Permission required"
+- assertVisible:
+    id: blocked-option-1
+    text: "Allow once"
+- assertVisible:
+    id: blocked-option-3
+    text: "Reject"
+- takeScreenshot: design/atlas/sim/live-04-blocked
+- tapOn:
+    id: blocked-option-3
+    text: "Reject"
+# Known gap (agent lab finding): the app builds the card without the matched call, so OpenCode's
+# Reject is refused and nothing is sent.
+- extendedWaitUntil:
+    visible:
+      id: blocked-notice
+    timeout: 10000
+- assertVisible: "Reject this in the terminal.*"
+- takeScreenshot: design/atlas/sim/live-04-reject-refused
+# Interrupt (Esc) from the shortcuts menu rejects OpenCode's own permission and ends the turn.
+- tapOn:
+    id: composer-shortcuts
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Interrupt"
+    timeout: 4000
+- tapOn: "Interrupt"
+- extendedWaitUntil:
+    notVisible:
+      id: blocked-card
+    timeout: 20000
+- runFlow: ../sim/_guard.yaml
+- takeScreenshot: design/atlas/sim/live-04-rejected

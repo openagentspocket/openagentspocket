@@ -1,0 +1,17 @@
+# Agent lab, step 1: a fresh app copies its Device Key line, which the lab authorizes in its own
+# authorized_keys (scripts/agent-lab.py sim reads it from the simulator's pasteboard).
+appId: com.openagentspocket.app
+---
+- launchApp:
+    clearState: true
+- openLink: openagentspocket:///hosts
+- assertVisible: "No Hosts"
+- tapOn:
+    id: hosts-add
+- scrollUntilVisible:
+    element:
+      id: device-key-copy
+- tapOn:
+    id: device-key-copy
+- runFlow: ../sim/_guard.yaml
+- takeScreenshot: design/atlas/sim/live-01-device-key

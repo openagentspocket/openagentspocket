@@ -1,0 +1,54 @@
+# Agent lab: add the lab as a Host (127.0.0.1, the lab's sshd port, Device Key), trust its own host
+# key, and see the OpenCode Agent on Home. HOST, PORT and USER come from the lab (no defaults here).
+appId: com.openagentspocket.app
+---
+- launchApp
+- openLink: openagentspocket:///hosts
+- tapOn:
+    id: hosts-add
+- tapOn:
+    id: host-user
+- inputText: ${USER}
+- tapOn:
+    id: route-0
+- tapOn:
+    id: route-0-address
+- inputText: ${HOST}
+- tapOn:
+    id: route-0-port
+- eraseText: 6
+- inputText: ${PORT}
+- tapOn:
+    id: route-back
+- tapOn:
+    id: host-save
+# Finding (agent lab): on the Host's sheet that opens after Save, "Trust this Host?" never shows
+# (it is drawn under the sheet) and the check fails after 60 s with "The host key was not
+# confirmed", and the redials that follow close without asking. Back in the foreground the app
+# asks, on the Hosts list where the alert can be seen.
+- openLink: openagentspocket:///hosts
+- pressKey: home
+- launchApp:
+    stopApp: false
+- extendedWaitUntil:
+    visible:
+      id: alert-alert
+    timeout: 120000
+- assertVisible: "Trust this Host?"
+# Trust only the lab's own host key: the fingerprint the lab printed.
+- assertVisible: ".*${FINGERPRINT}.*"
+- takeScreenshot: design/atlas/sim/live-02-trust
+- tapOn:
+    id: alert-action-confirm
+- extendedWaitUntil:
+    visible: "Connected.*"
+    timeout: 30000
+- takeScreenshot: design/atlas/sim/live-02-host
+- openLink: openagentspocket:///
+- extendedWaitUntil:
+    visible:
+      id: "inbox-w1:p1"
+    timeout: 30000
+- assertNotVisible: "Demo Host"
+- runFlow: ../sim/_guard.yaml
+- takeScreenshot: design/atlas/sim/live-02-home

@@ -17,6 +17,8 @@ write the account's real configuration:
   ssh        a command over the lab's sshd, as the app runs it
   authorize  append a public key (the app's Device Key) to the lab's authorized_keys
   probe      run the app's own code against the running Agents (packages/transport/src/lab)
+  run        a program's own command in the lab environment (`agent-lab.py run -- codex login status`)
+  sim        the app in the iOS simulator against the lab: Maestro flows of e2e/live
   stop       stop everything the lab started and remove the root
 
 `start --plugin` links this repository's herdr plugin (packages/plugin) into the lab's herdr, as
@@ -37,6 +39,7 @@ import argparse
 import json
 import os
 import pwd
+import re
 import shutil
 import signal
 import socket
@@ -494,6 +497,55 @@ def command_probe(args: argparse.Namespace) -> int:
                            "src/lab/live-lab.test.ts"], cwd=REPO_ROOT, env=env).returncode
 
 
+def command_run(args: argparse.Namespace) -> int:
+    """A program's own command in the lab environment, attached to this terminal (for example a
+    login the account owner types). Its output goes to whoever runs it, never to a file."""
+    state = load_state(Path(os.path.abspath(args.root)))
+    root = Path(state["root"])
+    return subprocess.run(rest(args.arguments), env=lab_env(root, state["user"]),
+                          cwd=root / "repo").returncode
+
+
+SIM_UDID = "2798C301-E0BB-41EF-A61F-4999184DFD05"
+SIM_FLOWS = ["02", "03", "04", "05", "06", "07"]
+
+
+def command_sim(args: argparse.Namespace) -> int:
+    """The app in the simulator against the lab: e2e/live through scripts/sim-verify.mjs --live."""
+    state = load_state(Path(os.path.abspath(args.root)))
+    root = Path(state["root"])
+    env_file = root / "sim-env.json"
+    listed = subprocess.run(["ssh-keygen", "-lf", str(root / "ssh/host_ed25519.pub")],
+                            capture_output=True, text=True, check=True).stdout.split()
+    # Maestro reads assertVisible as a regular expression; a fingerprint holds `+` and `/`.
+    env_file.write_text(json.dumps({"HOST": "127.0.0.1", "PORT": state["ssh_port"],
+                                    "USER": state["user"],
+                                    "FINGERPRINT": re.escape(listed[1])}) + "\n")
+    base = ["node", "scripts/sim-verify.mjs", "--live", "--flows", "e2e/live", "--env-file",
+            str(env_file), "--port", str(args.port), "--udid", args.udid]
+    flows = args.flows.split(",") if args.flows else SIM_FLOWS
+    if not args.flows or flows[0] == "01":
+        flows = [flow for flow in flows if flow != "01"]
+        # A fresh app: its Device Key goes into the lab's own authorized_keys, nowhere else.
+        if subprocess.run([*base, "--keep", "01"], cwd=REPO_ROOT).returncode:
+            return 1
+        pasted = subprocess.run(["xcrun", "simctl", "pbpaste", args.udid], capture_output=True,
+                                text=True).stdout.strip()
+        if not pasted.startswith("ssh-ed25519 ") or "\n" in pasted:
+            raise LabError("The simulator's pasteboard holds no Device Key line")
+        with open(root / "ssh/authorized_keys", "a") as output:
+            output.write(pasted + "\n")
+        print("Authorized the app's Device Key in the lab's authorized_keys")
+        agent = state["agents"].get("opencode")
+        if agent and not herdr_json(state, ["agent", "get", agent["name"]])["result"]["agent"].get(
+                "agent_session"):
+            # OpenCode's home screen takes no message from Chat: the first one goes in the terminal.
+            herdr(state, ["agent", "prompt", agent["name"], "Reply with the single word pong.",
+                          "--wait", "--timeout", "120000"], timeout=150)
+    keep = ["--keep"] if args.keep else []
+    return subprocess.run([*base, *keep, *flows], cwd=REPO_ROOT).returncode
+
+
 # ---------------------------------------------------------------------------- stop
 
 
@@ -591,6 +643,16 @@ def parser() -> argparse.ArgumentParser:
     probe.add_argument("--usage", action="store_true",
                        help="also read Usage through the plugin (start with --plugin)")
     probe.set_defaults(handler=command_probe)
+    run = commands.add_parser("run", help="a program's own command in the lab environment")
+    run.add_argument("arguments", nargs=argparse.REMAINDER)
+    run.set_defaults(handler=command_run)
+    sim = commands.add_parser("sim", help="the app in the simulator against the lab (e2e/live)")
+    sim.add_argument("--udid", default=SIM_UDID)
+    sim.add_argument("--port", type=int, default=8088, help="Metro port")
+    sim.add_argument("--flows", help="comma-separated flows; starting with 01 sets the app up "
+                     "again (Device Key), otherwise they run on an app already set up")
+    sim.add_argument("--keep", action="store_true", help="leave the simulator booted")
+    sim.set_defaults(handler=command_sim)
     stop = commands.add_parser("stop")
     stop.add_argument("--keep", action="store_true")
     stop.set_defaults(handler=command_stop)

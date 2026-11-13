@@ -1,0 +1,30 @@
+# Agent lab: OpenCode's shortcuts menu, and Switch Agent (Shift+Tab) moving its mode from Build to
+# Plan and back, as the header's mode chip reads it from the real screen.
+appId: com.openagentspocket.app
+---
+- runFlow: _open-agent.yaml
+- extendedWaitUntil:
+    visible: "Build"
+    timeout: 20000
+- tapOn:
+    id: composer-shortcuts
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: "Switch Agent"
+    timeout: 4000
+- assertVisible: "Interrupt"
+- assertVisible: "/new"
+- takeScreenshot: design/atlas/sim/live-06-shortcuts
+- tapOn: "Switch Agent"
+- extendedWaitUntil:
+    visible: "Plan"
+    timeout: 15000
+- takeScreenshot: design/atlas/sim/live-06-plan
+- tapOn:
+    id: composer-shortcuts
+    retryTapIfNoChange: false
+- tapOn: "Switch Agent"
+- extendedWaitUntil:
+    visible: "Build"
+    timeout: 15000
+- runFlow: ../sim/_guard.yaml

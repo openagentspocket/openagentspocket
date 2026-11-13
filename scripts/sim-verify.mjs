@@ -7,6 +7,9 @@
 // with the message on a Maestro failure, a crash report, a dead app or a development error screen.
 // It takes the native slot (a lock, see below) for the whole run and shuts the simulator down after
 // unless `--keep`. Run by the integrator or a native worker; never through computer use.
+// `--live --flows e2e/live --env-file <json>`: no demo data (the flows reach a real Host), never a
+// build (the installed one or a failure), and each `{"KEY": "value"}` of the file goes to Maestro as
+// `-e KEY=value`. scripts/agent-lab.py drives it against its lab.
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
@@ -26,7 +29,7 @@ import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { atlasDir, bundlerPortArgs, mobileDir, parseArgs, root, sleep } from './atlas-lib.mjs';
 
-const BOOLEAN = ['build', 'no-build', 'keep'];
+const BOOLEAN = ['build', 'no-build', 'keep', 'live'];
 const { options, ids } = parseArgs(
   process.argv.slice(2).flatMap((arg) => (BOOLEAN.includes(arg.slice(2)) ? [arg] : [arg])),
 );
@@ -36,7 +39,14 @@ const udid = String(options.udid ?? process.env.SIM_UDID ?? '2798C301-E0BB-41EF-
 const port = Number(options.port ?? 8081);
 const bundle = 'com.openagentspocket.app';
 const outDir = join(atlasDir, 'sim');
-const flowsDir = join(root, 'e2e/sim');
+const live = options.live === true;
+const flowsRelative = String(options.flows ?? 'e2e/sim');
+const flowsDir = join(root, flowsRelative);
+const flowEnv = options['env-file']
+  ? Object.entries(JSON.parse(readFileSync(String(options['env-file']), 'utf8'))).flatMap(
+      ([key, value]) => ['-e', `${key}=${value}`],
+    )
+  : [];
 const stampFile = join(outDir, '.native-stamp');
 const lockDir = join(tmpdir(), 'openagentspocket-native-slot.lock');
 const maestro = existsSync(join(homedir(), '.maestro/bin/maestro'))
@@ -179,7 +189,9 @@ async function startMetro() {
   const out = (await import('node:fs')).openSync(logPath, 'w');
   const server = spawn('npx', ['expo', 'start', '--port', String(port)], {
     cwd: mobileDir,
-    env: { ...process.env, EXPO_PUBLIC_DEMO: '1', CI: '1' },
+    env: live
+      ? { ...process.env, EXPO_PUBLIC_DEMO: '', CI: '1' }
+      : { ...process.env, EXPO_PUBLIC_DEMO: '1', CI: '1' },
     stdio: ['ignore', out, out],
   });
   for (let i = 0; i < 90; i++) {
@@ -257,7 +269,10 @@ try {
   if (simctl('bootstatus', udid, '-b').status !== 0)
     throw new Error(`simulator ${udid} did not boot`);
   const stale = !existsSync(stampFile) || readFileSync(stampFile, 'utf8') !== nativeFingerprint();
-  if (options.build || !installed() || (stale && !options['no-build'])) build(stale);
+  if (live) {
+    if (!installed()) throw new Error('--live never builds: install the Debug build first');
+    log('reusing the installed build (--live)');
+  } else if (options.build || !installed() || (stale && !options['no-build'])) build(stale);
   else log('reusing the installed build');
   simctl(
     'status_bar',
@@ -282,7 +297,7 @@ try {
     const runDir = mkdtempSync(join(tmpdir(), 'sim-verify-'));
     const run = spawnSync(
       maestro,
-      ['--udid', udid, 'test', '--test-output-dir', runDir, join('e2e/sim', flow)],
+      ['--udid', udid, 'test', '--test-output-dir', runDir, ...flowEnv, join(flowsRelative, flow)],
       // Maestro's driver starts slowly on a simulator just booted, and past its default wait the
       // first flow of a run dies with a bare stack trace before any step.
       {

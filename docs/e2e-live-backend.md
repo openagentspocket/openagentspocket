@@ -44,6 +44,30 @@ Programs:
   in the lab's environment) would be a separate session that `stop` deletes; whether to allow that
   is the account owner's decision.
 
+The app in the simulator against the lab is one command (simulator `2798C301`, Metro on 8088, the
+installed Debug build; it never builds):
+
+```sh
+python3 scripts/agent-lab.py sim            # all of e2e/live; screenshots design/atlas/sim/live-*
+python3 scripts/agent-lab.py sim --flows 04 # again on an app already set up
+```
+
+It runs `scripts/sim-verify.mjs --live`: flow `01` copies a fresh app's Device Key line, the lab
+reads it from the simulator's pasteboard into its own `authorized_keys`, sends OpenCode's first
+message in the terminal (its home screen takes none from Chat), then flows `02` to `07` add the Host,
+read and send in Chat, meet a real permission and a real question on the Blocked card, switch modes
+and open Usage. A flow taps a card option only by its id and exact label, after asserting the card's
+title and its options; no flow approves anything.
+
+State (2026-11-13): `01` passes; `02` does not get past the first connection. After Save, the Host's
+sheet shows Connecting while "Trust this Host?" is never visible over it; after 60 s the check says
+"The host key was not confirmed", and the redials that follow close before asking. The prompt was
+seen only on the Hosts list after the app came back to the foreground, and not reliably. Flows `03`
+to `07` are written and have not run against the lab yet.
+
+`run -- <command>` runs a program's own command in the lab environment, attached to the terminal
+(for example `agent-lab.py run -- codex login status`).
+
 Captures worth keeping become fixtures under `packages/core/goldens/<program>/lab/`, read by
 `packages/core/src/lab-captures.testkit.ts` (tests: `chat/opencode/lab.test.ts`,
 `blocked/opencode-lab.test.ts`). Read every capture before committing it: no account names, home
