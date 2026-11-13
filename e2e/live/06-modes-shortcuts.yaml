@@ -6,6 +6,9 @@ appId: com.openagentspocket.app
 - extendedWaitUntil:
     visible: "Build"
     timeout: 20000
+# The shortcuts circle shows while the Composer is focused.
+- tapOn:
+    id: composer-input
 - tapOn:
     id: composer-shortcuts
     retryTapIfNoChange: false
@@ -13,13 +16,17 @@ appId: com.openagentspocket.app
     visible: "Switch Agent"
     timeout: 4000
 - assertVisible: "Interrupt"
-- assertVisible: "/new"
+# /new: a native menu item exposes its title to Maestro, not its subtitle.
+- assertVisible: "New Conversation"
 - takeScreenshot: design/atlas/sim/live-06-shortcuts
 - tapOn: "Switch Agent"
 - extendedWaitUntil:
     visible: "Plan"
     timeout: 15000
 - takeScreenshot: design/atlas/sim/live-06-plan
+# The shortcuts circle shows while the Composer is focused.
+- tapOn:
+    id: composer-input
 - tapOn:
     id: composer-shortcuts
     retryTapIfNoChange: false

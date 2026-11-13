@@ -12,7 +12,7 @@ appId: com.openagentspocket.app
     visible:
       id: blocked-card
     timeout: 180000
-- assertVisible: "Permission required"
+- assertVisible: "Permission required.*"
 - assertVisible:
     id: blocked-option-1
     text: "Allow once"
@@ -23,25 +23,13 @@ appId: com.openagentspocket.app
 - tapOn:
     id: blocked-option-3
     text: "Reject"
-# Known gap (agent lab finding): the app builds the card without the matched call, so OpenCode's
-# Reject is refused and nothing is sent.
-- extendedWaitUntil:
-    visible:
-      id: blocked-notice
-    timeout: 10000
-- assertVisible: "Reject this in the terminal.*"
-- takeScreenshot: design/atlas/sim/live-04-reject-refused
-# Interrupt (Esc) from the shortcuts menu rejects OpenCode's own permission and ends the turn.
-- tapOn:
-    id: composer-shortcuts
-    retryTapIfNoChange: false
-- extendedWaitUntil:
-    visible: "Interrupt"
-    timeout: 4000
-- tapOn: "Interrupt"
+# The card matches OpenCode's own permission to the conversation's waiting call, so Reject sends
+# Esc (OpenCode rejects it) and the card goes away, with no refusal notice.
 - extendedWaitUntil:
     notVisible:
       id: blocked-card
     timeout: 20000
+- assertNotVisible:
+    id: blocked-notice
 - runFlow: ../sim/_guard.yaml
 - takeScreenshot: design/atlas/sim/live-04-rejected

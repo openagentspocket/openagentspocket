@@ -59,11 +59,10 @@ read and send in Chat, meet a real permission and a real question on the Blocked
 and open Usage. A flow taps a card option only by its id and exact label, after asserting the card's
 title and its options; no flow approves anything.
 
-State (2026-11-13): `01` passes; `02` does not get past the first connection. After Save, the Host's
-sheet shows Connecting while "Trust this Host?" is never visible over it; after 60 s the check says
-"The host key was not confirmed", and the redials that follow close before asking. The prompt was
-seen only on the Hosts list after the app came back to the foreground, and not reliably. Flows `03`
-to `07` are written and have not run against the lab yet.
+State (2026-11-13): `01` to `07` pass against OpenCode 2.1.3 (OpenCode's free model), in one run of
+`agent-lab.py sim`. `02` trusts the lab's key from "Trust this Host?" on the Host's sheet right after
+Save; `04` taps Reject on OpenCode's own permission, which sends Esc and the card goes away. An Agent
+that needs nothing is on Home's Sessions strip (`session-<host id><separator>w1:p1`), not the inbox.
 
 `run -- <command>` runs a program's own command in the lab environment, attached to the terminal
 (for example `agent-lab.py run -- codex login status`).

@@ -8,7 +8,7 @@ Items are worked from the top of each group; groups are in priority order.
 
 - [x] **Simulator suite on the new native build, then push.** The icon and the black native splash changed
   native inputs. Done when: every `pnpm sim:verify` flow passes on a rebuilt Debug app and main is pushed.
-- [ ] **Agent lab, OpenCode on the simulator** (`scripts/agent-lab.py`, `docs/e2e-live-backend.md`). Done
+- [x] **Agent lab, OpenCode on the simulator** (`scripts/agent-lab.py`, `docs/e2e-live-backend.md`). Done
   when: Maestro flows under `e2e/` drive the app against a real OpenCode (Home, Chat, send, Reject, a
   question, modes, shortcuts) and their screenshots are in `design/atlas/sim/live-*`.
 - [ ] **Agent lab, Codex.** The login inside the lab is done by a person or the lead, never by a worker. Done
@@ -43,7 +43,7 @@ so no program-specific branches.
 
 ## 3. Found and not fixed
 
-- [ ] **Add Manually: "Trust this Host?" does not show on the first connection.** Found by the agent lab:
+- [x] **Add Manually: "Trust this Host?" does not show on the first connection.** Found by the agent lab:
   after Save the Host's sheet says Connecting while SSH waits for the host-key answer, and the alert is
   not visible; later redials do not ask again. Blocks the lab's simulator flows and any user who adds a
   Host by hand. Done when: the prompt shows over whatever is on screen, and a redial asks again.
