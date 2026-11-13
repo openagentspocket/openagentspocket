@@ -65,7 +65,7 @@ so no program-specific branches.
 - [x] **Codex 0.167: a command waiting for approval, or declined, has no row in Chat.** Found by the agent
   lab: Codex runs commands through code mode (`custom_tool_call` `exec` calling `tools.exec_command`); the
   reducer reads that call only for a patch. Done when: the skipped test in `chat/codex/lab.test.ts` passes.
-- [ ] **Codex: the mode chip says Default Mode while a Plan Mode question covers the footer.** Found by the
+- [x] **Codex: the mode chip says Default Mode while a Plan Mode question covers the footer.** Found by the
   agent lab. Done when: the skipped test in `blocked/codex-lab.test.ts` passes (keep the last mode read).
 - [ ] **OpenCode Go usage is a stub.** Done when: it reports real limits, or the provider is not listed.
 - [x] **Connection sheet: the failure text touches the pinned actions** on a fit-height sheet.

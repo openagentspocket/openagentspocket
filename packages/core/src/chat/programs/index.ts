@@ -6,6 +6,7 @@ import { openCodeProgram } from '../opencode/definition';
 import { piProgram } from '../pi/definition';
 import { provideProgramDefinitions } from './registry';
 
+export { footerCovered, readAgentMode } from './agent-mode';
 export type { ProgramDefinition } from './definition';
 export { modeLabel, type ProgramModes, readProgramMode } from './modes';
 export {

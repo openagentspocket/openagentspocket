@@ -1,5 +1,5 @@
-import { agentKey, programModes, readProgramMode, screenText } from '@openagentspocket/core';
-import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { agentKey, type Message, programModes, readAgentMode } from '@openagentspocket/core';
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { cardText } from '@/blocked/text';
 import { useAgentScreenIO } from './useAgentScreenIO';
 
@@ -22,7 +22,8 @@ export function refreshAgentMode(hostId: string, paneId: string): void {
 
 /**
  * The Agent's mode as its screen names it (any program that lists its modes), read when the Agent
- * opens, when its status changes and after a shortcut; null for a program that names none.
+ * opens, when its status changes and after a shortcut; null for a program that names none. While a
+ * dialog covers the footer the mode read before it stays shown.
  */
 export function useAgentMode(
   hostId: string,
@@ -35,6 +36,7 @@ export function useAgentMode(
   const key = agentKey(hostId, paneId);
   const asked = useSyncExternalStore(subscribe, () => asks.get(key) ?? 0);
   const [mode, setMode] = useState<string | null>(null);
+  const last = useRef<Message | null>(null);
   // biome-ignore lint/correctness/useExhaustiveDependencies: a new status is a reason to read again.
   useEffect(() => {
     if (!modes) return;
@@ -44,8 +46,10 @@ export function useAgentMode(
         void io
           .readScreen()
           .then((screen) => {
-            const named = readProgramMode(modes, screenText(screen));
-            if (live) setMode(named ? cardText(named) : null);
+            if (!live) return;
+            const named = readAgentMode(program, screen, last.current);
+            last.current = named;
+            setMode(named ? cardText(named) : null);
           })
           // A screen that cannot be read leaves the last mode shown.
           .catch(() => {}),
@@ -55,6 +59,6 @@ export function useAgentMode(
       live = false;
       clearTimeout(timer);
     };
-  }, [modes, io, asked, status]);
+  }, [modes, program, io, asked, status]);
   return modes ? mode : null;
 }

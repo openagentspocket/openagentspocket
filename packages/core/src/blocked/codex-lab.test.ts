@@ -4,6 +4,7 @@ import '../chat/programs';
 // scripts/agent-lab.py, redacted by its `keep`).
 
 import { describe, expect, it } from 'vitest';
+import { footerCovered, readAgentMode } from '../chat/programs/agent-mode';
 import { CODEX_MODES } from '../chat/programs/mode-lists';
 import { readProgramMode } from '../chat/programs/modes';
 import { programShortcuts } from '../chat/programs/registry';
@@ -123,10 +124,24 @@ describe('Codex 0.167 screens for sending, modes, shortcuts and Stop', () => {
   });
 
   // Found by the agent lab (2026-11-13): Codex draws the question over its footer, so the screen
-  // has no mode words and the reader falls back to Default Mode while Codex is in Plan Mode.
-  it.skip('does not call a Plan Mode question Default Mode', () => {
-    const found = readProgramMode(CODEX_MODES, labScreenText('codex', 'question'));
-    expect(found && renderText(found)).not.toBe('Default Mode');
+  // has no mode words; the mode read before the question stands, never a Default Mode guess.
+  it('does not call a Plan Mode question Default Mode', () => {
+    const plan = readAgentMode('codex', screen('plan-idle'), null);
+    expect(plan && renderText(plan)).toBe('Plan Mode');
+    const found = readAgentMode('codex', screen('question'), plan);
+    expect(found && renderText(found)).toBe('Plan Mode');
+    expect(readAgentMode('codex', screen('question'), null)).toBeNull();
+  });
+
+  it('keeps the last mode under every dialog, and reads the footer again once it shows', () => {
+    const plan = readAgentMode('codex', screen('plan-idle'), null);
+    for (const name of ['exec-approval', 'hooks-review']) {
+      expect(footerCovered('codex', screen(name))).toBe(true);
+      expect(readAgentMode('codex', screen(name), plan)).toBe(plan);
+    }
+    expect(footerCovered('codex', screen('idle'))).toBe(false);
+    const after = readAgentMode('codex', screen('idle'), plan);
+    expect(after && renderText(after)).toBe('Default Mode');
   });
 
   it('cycles modes with the key its shortcuts overlay names', () => {
