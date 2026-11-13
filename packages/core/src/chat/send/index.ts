@@ -1,5 +1,6 @@
 export * from './agent-keys';
 export * from './command-menu';
+export * from './command-shortcut';
 export * from './defaults';
 export * from './delivery-policy';
 export * from './detect';

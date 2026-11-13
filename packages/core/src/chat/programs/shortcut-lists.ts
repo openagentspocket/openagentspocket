@@ -9,6 +9,13 @@
 // Pi: github.com/badlogic/pi-mono packages/coding-agent/docs/usage.md, keybindings.md
 // Oh My Pi: github.com/can1357/oh-my-pi docs/keybindings.md, omp.sh/docs/slash
 // Grok Build: docs.x.ai/build/keyboard-shortcuts, /build/features/sessions
+//
+// Where each command runs (`CommandPlace`): only `/compact` goes from Chat, which offers it in its
+// menu and confirms it by the compaction the program records. Every other command opens a picker
+// or a dialog (`/model`, `/models`, `/resume`, `/sessions`, `/tree`, `/fork`, `/review`,
+// `/usage`), shows its result only on the program's screen (`/diff`, `/status`, `/context`),
+// moves the program to a conversation herdr may not report (`/new`, `/clear`), or leaves text in
+// the input box that holds Chat's next send (OpenCode `/undo`), so it is typed in the terminal.
 
 import {
   commandShortcut as command,
@@ -19,7 +26,7 @@ import {
 const interruptEsc = keys('Interrupt', 'Esc', 'esc');
 const interruptCtrlC = keys('Interrupt', 'Ctrl+C', 'ctrl+c');
 const rewind = keys('Rewind', 'Esc Esc', 'esc', 'esc');
-const compact = command('/compact', 'Compact Conversation');
+const compact = command('/compact', 'Compact Conversation', 'conversation');
 const model = command('/model', 'Change Model');
 const resume = command('/resume', 'Resume a Session');
 

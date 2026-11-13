@@ -17,6 +17,7 @@ export {
 } from './registry';
 export {
   COMMON_SHORTCUTS,
+  type CommandPlace,
   commandShortcut,
   keysShortcut,
   type ProgramShortcut,

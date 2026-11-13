@@ -4,6 +4,18 @@
 
 import { type Message, message } from '../../errors/text';
 
+/**
+ * Where a command shortcut does its work. Chat sends a draft as a message and reads the answer from
+ * the conversation's records, so only a command whose result shows there may go from Chat; one
+ * that opens a picker or a dialog, or whose effect only the program's screen shows, runs in the
+ * Agent's terminal (`commandShortcutDraft`).
+ */
+export type CommandPlace =
+  /** It runs and its result shows in the conversation: Chat sends it like a message. */
+  | 'conversation'
+  /** It opens something interactive, or shows its result only on the program's screen. */
+  | 'terminal';
+
 /** A control in the shortcuts menu. */
 export type ProgramShortcut =
   | {
@@ -19,6 +31,7 @@ export type ProgramShortcut =
       readonly title: Message;
       /** The slash command, typed into the draft for the user to send. */
       readonly command: string;
+      readonly runsIn: CommandPlace;
     };
 
 export const keysShortcut = (title: string, hint: string, ...keys: string[]): ProgramShortcut => ({
@@ -28,10 +41,16 @@ export const keysShortcut = (title: string, hint: string, ...keys: string[]): Pr
   keys,
 });
 
-export const commandShortcut = (command: string, title: string): ProgramShortcut => ({
+/** A command shortcut; the terminal is the cautious place for one not shown to run from Chat. */
+export const commandShortcut = (
+  command: string,
+  title: string,
+  runsIn: CommandPlace = 'terminal',
+): ProgramShortcut => ({
   kind: 'command',
   title: message(title),
   command,
+  runsIn,
 });
 
 /** What every terminal agent answers: Esc stops the turn. */

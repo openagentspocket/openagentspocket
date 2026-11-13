@@ -126,7 +126,7 @@ export function createSendRules(
       let body = clean;
       if (reading.kind === 'command') {
         const { command } = reading;
-        const prefix = command.kind.type === 'compact' ? '/' : command.kind.prefix;
+        const prefix = command.kind.type === 'skill' ? command.kind.prefix : '/';
         // `read` refuses a bare command with arguments.
         if (submissionOf(command)?.kind === 'bare') return prefix + command.name;
         body =

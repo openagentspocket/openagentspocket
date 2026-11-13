@@ -71,7 +71,12 @@ export function useComposerMenus({
   const consoleStore = useConsoleStore();
   const row = useAgent(agentKey(hostId, paneId));
   const [sheet, setSheet] = useState<ToolsSheet | null>(null);
-  const shortcutItems = useAgentShortcuts(composer, program);
+  const shortcutItems = useAgentShortcuts(
+    composer,
+    program,
+    surface,
+    surface === 'chat' ? onToggleSurface : undefined,
+  );
   const staging = useMemo(() => {
     // The upload runs on the Host's transport at the time it starts.
     const stage: AttachmentStager = (prepared, options) =>

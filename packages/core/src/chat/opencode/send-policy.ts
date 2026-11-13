@@ -13,10 +13,17 @@ import { openCodeTerminalTitle } from './terminal-title';
 /** OpenCode exits for `exit`, `quit` and `:q` as typed; Claude Code's words, compared in any case, cover them. */
 const EXIT_WORDS: ReadonlySet<string> = new Set(['exit', 'quit', ':q', ':q!', ':wq', ':wq!']);
 
-/** OpenCode runs a bare `/compact` from its popup. With a space after it, the popup closes and the text goes to the model. */
+/**
+ * OpenCode runs a bare command from its popup. With a space after it, the popup closes and the text
+ * goes to the model (OpenCode 2.1.3 answered `/sessions ` as a prompt, agent lab 2026-11-13).
+ */
 const COMPACT_BARE: CommandSubmission = {
   kind: 'bare',
   argumentsRefusal: "OpenCode's /compact takes no instructions. Send /compact alone.",
+};
+const COMMAND_BARE: CommandSubmission = {
+  kind: 'bare',
+  argumentsRefusal: 'OpenCode runs its commands alone. Send the command without anything after it.',
 };
 
 /** OpenCode's interrupt resumes: a message waiting during the turn runs after it. */
@@ -29,7 +36,11 @@ export function openCodeSendPolicy(): ProgramSendPolicy {
       exitWords: EXIT_WORDS,
       refusal: openCodeRefusal,
       submission: (command) =>
-        command.kind.type === 'compact' ? COMPACT_BARE : { kind: 'trailingSpace' },
+        command.kind.type === 'compact'
+          ? COMPACT_BARE
+          : command.kind.type === 'program'
+            ? COMMAND_BARE
+            : { kind: 'trailingSpace' },
     },
     // Its skills have no form a message can invoke, and its server commands are not offered.
     offersSkill: () => false,

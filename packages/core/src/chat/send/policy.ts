@@ -11,12 +11,18 @@ import type { ChatAgentActivity, ChatProgram, ChatTranscript } from '../model/ty
 import type { InputBoxState } from './input-box';
 import type { SendWitness } from './send-witness';
 
-/** One entry of Chat's `/` menu: a skill the Host offers, or the program's `/compact`. */
+/**
+ * One entry of Chat's `/` menu: a skill the Host offers, or the program's `/compact`. A program's
+ * other built-in commands (`program`) are typed in its terminal (`commandShortcutDraft`).
+ */
 export interface ChatCommand {
   readonly name: string;
   readonly summary: string | null;
-  /** `compact`, or a skill invoked with `prefix` (`/`, `$`, `/skill:`). */
-  readonly kind: { readonly type: 'compact' } | { readonly type: 'skill'; readonly prefix: string };
+  /** `compact`, another of the program's commands, or a skill invoked with `prefix` (`/`, `$`, `/skill:`). */
+  readonly kind:
+    | { readonly type: 'compact' }
+    | { readonly type: 'program' }
+    | { readonly type: 'skill'; readonly prefix: string };
   /** False when the command needs another state: `/compact` while the Agent works. */
   readonly isEnabled: boolean;
 }
