@@ -1,0 +1,18 @@
+# Opens the Composer's shortcuts menu, taps the mode shortcut (MODE_SHORTCUT: OpenCode's Switch
+# Agent, Codex's Plan Mode; both press Shift+Tab) and waits for the header to read MODE, which the
+# caller sets.
+appId: com.openagentspocket.app
+---
+# The shortcuts circle shows while the Composer is focused.
+- tapOn:
+    id: composer-input
+- tapOn:
+    id: composer-shortcuts
+    retryTapIfNoChange: false
+- extendedWaitUntil:
+    visible: ${MODE_SHORTCUT}
+    timeout: 4000
+- tapOn: ${MODE_SHORTCUT}
+- extendedWaitUntil:
+    visible: ${MODE}
+    timeout: 15000

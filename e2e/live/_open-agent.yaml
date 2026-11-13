@@ -1,15 +1,15 @@
-# Opens the lab's OpenCode Agent (pane w1:p1) from its Sessions card on Home (an idle Agent is not
-# in the inbox; the card id is `session-<host id><separator>w1:p1`), on its Chat.
+# Opens the lab's Agent (pane PANE, w1:p1) from its Sessions card on Home (an idle Agent is not
+# in the inbox; the card id is `session-<host id><separator><pane>`), on its Chat.
 appId: com.openagentspocket.app
 ---
 - launchApp
 - openLink: openagentspocket:///
 - extendedWaitUntil:
     visible:
-      id: "session-.*w1:p1"
+      id: "session-.*${PANE}"
     timeout: 30000
 - tapOn:
-    id: "session-.*w1:p1"
+    id: "session-.*${PANE}"
 - extendedWaitUntil:
     visible:
       id: agent-header

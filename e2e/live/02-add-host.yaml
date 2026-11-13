@@ -1,5 +1,5 @@
 # Agent lab: add the lab as a Host (127.0.0.1, the lab's sshd port, Device Key), trust its own host
-# key, and see the OpenCode Agent on Home. HOST, PORT and USER come from the lab (no defaults here).
+# key, and see the lab's Agent on Home. HOST, PORT and USER come from the lab (no defaults here).
 appId: com.openagentspocket.app
 ---
 - launchApp
@@ -30,18 +30,18 @@ appId: com.openagentspocket.app
 - assertVisible: "Trust this Host?"
 # Trust only the lab's own host key: the fingerprint the lab printed.
 - assertVisible: ".*${FINGERPRINT}.*"
-- takeScreenshot: design/atlas/sim/live-02-trust
+- takeScreenshot: design/atlas/sim/${SHOTS}02-trust
 - tapOn:
     id: alert-action-confirm
 - extendedWaitUntil:
     visible: "Connected.*"
     timeout: 30000
-- takeScreenshot: design/atlas/sim/live-02-host
+- takeScreenshot: design/atlas/sim/${SHOTS}02-host
 - openLink: openagentspocket:///
 - extendedWaitUntil:
     visible:
-      id: "session-.*w1:p1"
+      id: "session-.*${PANE}"
     timeout: 30000
 - assertNotVisible: "Demo Host"
 - runFlow: ../sim/_guard.yaml
-- takeScreenshot: design/atlas/sim/live-02-home
+- takeScreenshot: design/atlas/sim/${SHOTS}02-home

@@ -1,12 +1,13 @@
 # Agent lab: Chat shows the real conversation (the lab sent "pong" in the terminal first, because
-# OpenCode's home screen takes no message from Chat), then a message from the Composer is answered.
+# OpenCode's home screen takes no message from Chat; a Codex that already talked starts a new
+# conversation for it), then a message from the Composer is answered.
 appId: com.openagentspocket.app
 ---
 - runFlow: _open-agent.yaml
 - extendedWaitUntil:
     visible: "Reply with the single word pong."
     timeout: 30000
-- takeScreenshot: design/atlas/sim/live-03-chat
+- takeScreenshot: design/atlas/sim/${SHOTS}03-chat
 - tapOn:
     id: composer-input
 - inputText: "Reply with the single word ping."
@@ -16,4 +17,4 @@ appId: com.openagentspocket.app
     visible: "(?i)ping\\.?"
     timeout: 120000
 - runFlow: ../sim/_guard.yaml
-- takeScreenshot: design/atlas/sim/live-03-sent
+- takeScreenshot: design/atlas/sim/${SHOTS}03-sent

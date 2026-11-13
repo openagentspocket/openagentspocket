@@ -1,4 +1,5 @@
-# Agent lab: Usage reads the lab's plugin. OpenCode has no Usage card (its collector reports nothing).
+# Agent lab: Usage reads the lab's plugin. OpenCode has no Usage card (its collector reports
+# nothing); Codex has one, from its rollouts and its service limits.
 appId: com.openagentspocket.app
 ---
 - launchApp
@@ -12,6 +13,17 @@ appId: com.openagentspocket.app
     visible:
       id: usage-screen
     timeout: 15000
-- assertNotVisible: "OpenCode.*"
+- runFlow:
+    when:
+      true: ${USAGE_HAS_CARD == 'false'}
+    commands:
+      - assertNotVisible: ${USAGE_CARD}
+- runFlow:
+    when:
+      true: ${USAGE_HAS_CARD == 'true'}
+    commands:
+      - extendedWaitUntil:
+          visible: ${USAGE_CARD}
+          timeout: 30000
 - runFlow: ../sim/_guard.yaml
-- takeScreenshot: design/atlas/sim/live-07-usage
+- takeScreenshot: design/atlas/sim/${SHOTS}07-usage

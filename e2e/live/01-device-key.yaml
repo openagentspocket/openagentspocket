@@ -14,4 +14,4 @@ appId: com.openagentspocket.app
 - tapOn:
     id: device-key-copy
 - runFlow: ../sim/_guard.yaml
-- takeScreenshot: design/atlas/sim/live-01-device-key
+- takeScreenshot: design/atlas/sim/${SHOTS}01-device-key

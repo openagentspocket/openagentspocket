@@ -1,30 +1,36 @@
-# Agent lab: a real OpenCode shell permission as a Blocked card. Never approves: the card's kind and
-# its option order are asserted first, and the only option tapped is matched by id AND exact label.
+# Agent lab: a real permission prompt of the lab's program as a Blocked card. Never approves: the
+# card's title and its option order are asserted first (the approve option is only asserted), and
+# the only option tapped is the deny option, matched by id AND exact label. The texts come from the
+# lab (scripts/agent-lab.py SIM_PROGRAM).
 appId: com.openagentspocket.app
 ---
 - runFlow: _open-agent.yaml
 - tapOn:
     id: composer-input
-- inputText: "Run the shell command ls in this directory and tell me what you see."
+- inputText: ${BLOCKED_PROMPT}
 - tapOn:
     id: composer-send
 - extendedWaitUntil:
     visible:
       id: blocked-card
     timeout: 180000
-- assertVisible: "Permission required.*"
+- assertVisible: ${BLOCKED_TITLE}
 - assertVisible:
-    id: blocked-option-1
-    text: "Allow once"
+    id: ${APPROVE_ID}
+    text: ${APPROVE_LABEL}
 - assertVisible:
-    id: blocked-option-3
-    text: "Reject"
-- takeScreenshot: design/atlas/sim/live-04-blocked
+    id: ${DENY_ID}
+    text: ${DENY_LABEL}
+# The option about to be tapped is not the approve option.
+- assertNotVisible:
+    id: ${DENY_ID}
+    text: ${APPROVE_LABEL}
+- takeScreenshot: design/atlas/sim/${SHOTS}04-blocked
 - tapOn:
-    id: blocked-option-3
-    text: "Reject"
-# The card matches OpenCode's own permission to the conversation's waiting call, so Reject sends
-# Esc (OpenCode rejects it) and the card goes away, with no refusal notice.
+    id: ${DENY_ID}
+    text: ${DENY_LABEL}
+# OpenCode: the card matches the permission to the conversation's waiting call and sends Esc.
+# Codex: its "No" option. Either way the card goes away with no refusal notice.
 - extendedWaitUntil:
     notVisible:
       id: blocked-card
@@ -32,4 +38,4 @@ appId: com.openagentspocket.app
 - assertNotVisible:
     id: blocked-notice
 - runFlow: ../sim/_guard.yaml
-- takeScreenshot: design/atlas/sim/live-04-rejected
+- takeScreenshot: design/atlas/sim/${SHOTS}04-rejected

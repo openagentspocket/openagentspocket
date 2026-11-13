@@ -39,16 +39,22 @@ Programs:
   service) on OpenCode's free models, which need no account. The repository's `opencode.json` sets
   `bash`, `edit` and `webfetch` to `ask`.
 - **Codex** needs a login, and the lab never copies or links the account's `auth.json` (Codex
-  rewrites it when it refreshes tokens). Without a login in the lab HOME it shows its sign-in screen,
-  so `--programs codex` is not usable yet. A login made inside the lab (`codex login --device-auth`
-  in the lab's environment) would be a separate session that `stop` deletes; whether to allow that
-  is the account owner's decision.
+  rewrites it when it refreshes tokens). Without a login in the lab HOME it shows its sign-in screen.
+  The account owner (or the lead) logs in inside the lab, a separate session that `stop` deletes;
+  a worker never runs a login or logout. The lab runs Codex with `approval_policy = "on-request"` in
+  a read-only sandbox, so a write such as `touch scratch.txt` asks.
+  Two steps by hand after the login, in the pane: restart the Agent (Ctrl+C, then `agent-lab.py herdr
+  -- agent start cx --kind codex --pane w1:p1 -- -c check_for_update_on_startup=false`), and on
+  Codex 0.167's "Hooks need review" choose Review hooks, check that the only hook is herdr's
+  `herdr-agent-state.sh` under the lab HOME, and press `t` to trust it. Codex documents no config
+  key for this (only `--dangerously-bypass-hook-trust`, which runs every enabled hook untrusted, per invocation). Without the trust
+  herdr never reports the session and Chat cannot bind (`goldens/codex/lab/no-session-without-hooks.ansi`).
 
 The app in the simulator against the lab is one command (simulator `2798C301`, Metro on 8088, the
 installed Debug build; it never builds):
 
 ```sh
-python3 scripts/agent-lab.py sim            # all of e2e/live; screenshots design/atlas/sim/live-*
+python3 scripts/agent-lab.py sim            # all of e2e/live for the lab's program; screenshots design/atlas/sim/live-*
 python3 scripts/agent-lab.py sim --flows 04 # again on an app already set up
 ```
 
@@ -58,6 +64,18 @@ message in the terminal (its home screen takes none from Chat), then flows `02` 
 read and send in Chat, meet a real permission and a real question on the Blocked card, switch modes
 and open Usage. A flow taps a card option only by its id and exact label, after asserting the card's
 title and its options; no flow approves anything.
+
+The flows are one set for every program: `sim` writes the program's texts (the Blocked prompt, the
+card's title, the approve option it asserts and the deny option it taps, the mode names, the Usage
+card) into Maestro's variables from `SIM_PROGRAM` in `agent-lab.py`, and screenshots are named
+`live-` (OpenCode) or `live-codex-`. With more than one program in the lab, pass `--program`. For
+Codex the lab starts a new conversation (`/new`) and sends the first message in the terminal; `05`
+switches Codex to Plan Mode first (Codex asks questions only there) and back after.
+
+State (2026-11-13), Codex 0.167.0: `01` to `07` pass, `04` on a second run: asked only to run
+`touch`, Codex tried it in the sandbox and reported the failure without asking, so the prompt now
+tells it to request approval. Deny taps "No, and tell Codex what to do differently" (`3`); nothing
+was ever approved and `scratch.txt` was never created.
 
 State (2026-11-13): `01` to `07` pass against OpenCode 2.1.3 (OpenCode's free model), in one run of
 `agent-lab.py sim`. `02` trusts the lab's key from "Trust this Host?" on the Host's sheet right after
@@ -69,8 +87,12 @@ that needs nothing is on Home's Sessions strip (`session-<host id><separator>w1:
 
 Captures worth keeping become fixtures under `packages/core/goldens/<program>/lab/`, read by
 `packages/core/src/lab-captures.testkit.ts` (tests: `chat/opencode/lab.test.ts`,
-`blocked/opencode-lab.test.ts`). Read every capture before committing it: no account names, home
-paths, emails or tokens.
+`blocked/opencode-lab.test.ts`, `chat/codex/lab.test.ts`, `blocked/codex-lab.test.ts`).
+`agent-lab.py keep <step>/<program>/<file> <program> <name>` copies one there redacted: account
+and user ids, plan, time zone, the user name, the home path and the host name are replaced; long
+texts (instructions, skills) are cut and tool lists emptied (they name the account's apps). Read
+every capture before committing it anyway: no account names, home paths, emails or tokens. Never
+capture Codex's `/status`; it shows the account.
 
 # Live end-to-end against the isolated backend
 

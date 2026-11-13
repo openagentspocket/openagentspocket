@@ -1,8 +1,15 @@
-# Agent lab: OpenCode's question tool as a Blocked card, answered from the card. The answer is
-# matched by id AND exact label after the card's question and options are asserted.
+# Agent lab: the program's question tool as a Blocked card, answered from the card. The answer is
+# matched by id AND exact label after the card's question and options are asserted. Codex asks
+# only in Plan Mode, so it switches there first and back after.
 appId: com.openagentspocket.app
 ---
 - runFlow: _open-agent.yaml
+- runFlow:
+    when:
+      true: ${PROGRAM == 'codex'}
+    file: _switch-mode.yaml
+    env:
+      MODE: ${MODE_B}
 - tapOn:
     id: composer-input
 - inputText: "Use your question tool to ask me which of two colors I prefer, red or blue, with options. Do not run any command."
@@ -19,7 +26,7 @@ appId: com.openagentspocket.app
 - assertVisible:
     id: blocked-option-2
     text: "Blue"
-- takeScreenshot: design/atlas/sim/live-05-question
+- takeScreenshot: design/atlas/sim/${SHOTS}05-question
 - tapOn:
     id: blocked-option-2
     text: "Blue"
@@ -28,4 +35,10 @@ appId: com.openagentspocket.app
       id: blocked-card
     timeout: 20000
 - runFlow: ../sim/_guard.yaml
-- takeScreenshot: design/atlas/sim/live-05-answered
+- takeScreenshot: design/atlas/sim/${SHOTS}05-answered
+- runFlow:
+    when:
+      true: ${PROGRAM == 'codex'}
+    file: _switch-mode.yaml
+    env:
+      MODE: ${MODE_A}

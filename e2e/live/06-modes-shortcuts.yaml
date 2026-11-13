@@ -1,10 +1,10 @@
-# Agent lab: OpenCode's shortcuts menu, and Switch Agent (Shift+Tab) moving its mode from Build to
-# Plan and back, as the header's mode chip reads it from the real screen.
+# Agent lab: the program's shortcuts menu, and its mode shortcut (Shift+Tab) moving the mode from
+# MODE_A to MODE_B and back, as the header's mode chip reads it from the real screen.
 appId: com.openagentspocket.app
 ---
 - runFlow: _open-agent.yaml
 - extendedWaitUntil:
-    visible: "Build"
+    visible: ${MODE_A}
     timeout: 20000
 # The shortcuts circle shows while the Composer is focused.
 - tapOn:
@@ -13,25 +13,19 @@ appId: com.openagentspocket.app
     id: composer-shortcuts
     retryTapIfNoChange: false
 - extendedWaitUntil:
-    visible: "Switch Agent"
+    visible: ${MODE_SHORTCUT}
     timeout: 4000
 - assertVisible: "Interrupt"
 # /new: a native menu item exposes its title to Maestro, not its subtitle.
 - assertVisible: "New Conversation"
-- takeScreenshot: design/atlas/sim/live-06-shortcuts
-- tapOn: "Switch Agent"
+- takeScreenshot: design/atlas/sim/${SHOTS}06-shortcuts
+- tapOn: ${MODE_SHORTCUT}
 - extendedWaitUntil:
-    visible: "Plan"
+    visible: ${MODE_B}
     timeout: 15000
-- takeScreenshot: design/atlas/sim/live-06-plan
-# The shortcuts circle shows while the Composer is focused.
-- tapOn:
-    id: composer-input
-- tapOn:
-    id: composer-shortcuts
-    retryTapIfNoChange: false
-- tapOn: "Switch Agent"
-- extendedWaitUntil:
-    visible: "Build"
-    timeout: 15000
+- takeScreenshot: design/atlas/sim/${SHOTS}06-plan
+- runFlow:
+    file: _switch-mode.yaml
+    env:
+      MODE: ${MODE_A}
 - runFlow: ../sim/_guard.yaml

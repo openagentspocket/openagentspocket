@@ -17,8 +17,9 @@ write the account's real configuration:
   ssh        a command over the lab's sshd, as the app runs it
   authorize  append a public key (the app's Device Key) to the lab's authorized_keys
   probe      run the app's own code against the running Agents (packages/transport/src/lab)
+  keep       copy a capture into packages/core/goldens/<program>/lab, account and paths redacted
   run        a program's own command in the lab environment (`agent-lab.py run -- codex login status`)
-  sim        the app in the iOS simulator against the lab: Maestro flows of e2e/live
+  sim        the app in the iOS simulator against the lab: Maestro flows of e2e/live, for one program
   stop       stop everything the lab started and remove the root
 
 `start --plugin` links this repository's herdr plugin (packages/plugin) into the lab's herdr, as
@@ -31,7 +32,8 @@ Programs (`--programs`, default `opencode`):
   codex     `codex` in a read-only sandbox asking before anything else (approval_policy
             "on-request"; 0.167 dropped "untrusted"), so a write waits for approval. It needs a login
             and the lab never copies or links the account's credentials: without one in the lab
-            HOME it shows its sign-in screen. See docs/e2e-live-backend.md.
+            HOME it shows its sign-in screen. Codex 0.167 also asks once to trust herdr's hook.
+            See docs/e2e-live-backend.md.
 """
 
 from __future__ import annotations
@@ -500,6 +502,58 @@ def command_probe(args: argparse.Namespace) -> int:
                            "src/lab/live-lab.test.ts"], cwd=REPO_ROOT, env=env).returncode
 
 
+# Values a capture must never carry into the repository: account identity, plan, location.
+SECRET_KEYS = {"creator_user_id", "creator_account_id", "account_id", "user_id", "email",
+               "plan_type", "plan"}
+LONG_TEXT = 1000
+
+
+def redacted(value, home: str, user: str):
+    """A JSON value with the account's identity and the machine's paths replaced, its shape kept.
+    Long texts (instructions, tool lists, skills) are cut: no reader needs them."""
+    if isinstance(value, dict):
+        # A tool list names the apps the account connected.
+        return {key: (type(item)() if key == "tools" and isinstance(item, (dict, list))
+                      else "redacted" if key in SECRET_KEYS and isinstance(item, str)
+                      else "UTC" if key == "timezone" and isinstance(item, str)
+                      else redacted(item, home, user)) for key, item in value.items()}
+    if isinstance(value, list):
+        return [redacted(item, home, user) for item in value]
+    if isinstance(value, str):
+        if len(value) > LONG_TEXT:
+            return f"(cut by the agent lab: {len(value)} characters)"
+        return redacted_text(value, home, user)
+    return value
+
+
+def redacted_text(text: str, home: str, user: str) -> str:
+    text = text.replace(home, "/home/user").replace(socket.gethostname().split(".")[0], "host")
+    text = re.sub(r"<timezone>[^<]*</timezone>", "<timezone>UTC</timezone>", text)
+    return re.sub(rf"\b{re.escape(user)}\b", "user", text)
+
+
+def command_keep(args: argparse.Namespace) -> int:
+    """Copies a capture into packages/core/goldens/<program>/lab/ with identity and paths redacted.
+    Read the result before committing it."""
+    root = Path(os.path.abspath(args.root))
+    state = load_state(root)
+    source = root / "captures" / args.capture
+    target = REPO_ROOT / "packages/core/goldens" / args.program / "lab" / args.name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    home, user = str(Path.home()), state["user"]
+    text = source.read_text()
+    if source.suffix == ".jsonl":
+        kept = "".join(json.dumps(redacted(json.loads(line), home, user), ensure_ascii=False,
+                                  separators=(",", ":")) + "\n" for line in text.splitlines() if line)
+    elif source.suffix == ".json":
+        kept = json.dumps(redacted(json.loads(text), home, user), indent=2) + "\n"
+    else:
+        kept = redacted_text(text, home, user)
+    target.write_text(kept)
+    print(f"Kept {source} as {target.relative_to(REPO_ROOT)}; read it before committing")
+    return 0
+
+
 def command_run(args: argparse.Namespace) -> int:
     """A program's own command in the lab environment, attached to this terminal (for example a
     login the account owner types). Its output goes to whoever runs it, never to a file."""
@@ -511,18 +565,76 @@ def command_run(args: argparse.Namespace) -> int:
 
 SIM_UDID = "2798C301-E0BB-41EF-A61F-4999184DFD05"
 SIM_FLOWS = ["02", "03", "04", "05", "06", "07"]
+FIRST_PROMPT = "Reply with the single word pong."
+# What e2e/live expects of each program, as Maestro variables (texts are regular expressions).
+# The Blocked flow taps only DENY_ID, matched by id and DENY_LABEL, after asserting APPROVE_LABEL
+# on APPROVE_ID: the approve option is asserted, never tapped.
+SIM_PROGRAM = {
+    "opencode": {
+        "SHOTS": "live-", "BLOCKED_PROMPT": "Run the shell command ls in this directory and tell "
+        "me what you see.", "BLOCKED_TITLE": "Permission required.*",
+        "APPROVE_ID": "blocked-option-1", "APPROVE_LABEL": "Allow once",
+        "DENY_ID": "blocked-option-3", "DENY_LABEL": "Reject",
+        "MODE_A": "Build", "MODE_B": "Plan", "MODE_SHORTCUT": "Switch Agent",
+        "USAGE_CARD": "OpenCode.*", "USAGE_HAS_CARD": "false",
+    },
+    "codex": {
+        # Codex asks only in Plan Mode (default_mode_request_user_input is off in 0.167), and its
+        # read-only sandbox lets `ls` run: a write is what asks.
+        # Codex may try a write in the sandbox first and stop at its failure; asked to request
+        # approval, it asks.
+        "SHOTS": "live-codex-", "BLOCKED_PROMPT": "Run the shell command touch scratch.txt in this "
+        "directory. The sandbox is read-only, so request approval to run it.",
+        # The card's header reads "<title>, Collapse" to Maestro.
+        "BLOCKED_TITLE": "Would you like to run the following command\\?.*",
+        "APPROVE_ID": "blocked-option-1", "APPROVE_LABEL": "Yes, proceed",
+        "DENY_ID": "blocked-option-3", "DENY_LABEL": "No, and tell Codex what to do differently",
+        "MODE_A": "Default Mode", "MODE_B": "Plan Mode", "MODE_SHORTCUT": "Plan Mode",
+        "USAGE_CARD": "Codex.*", "USAGE_HAS_CARD": "true",
+    },
+}
+
+
+def sim_program(state: dict, chosen: Optional[str]) -> str:
+    programs = [name for name in state["programs"] if name in SIM_PROGRAM]
+    if chosen:
+        if chosen not in programs:
+            raise LabError(f"{chosen} is not running in this lab ({', '.join(programs)})")
+        return chosen
+    if len(programs) != 1:
+        raise LabError(f"Pick the program the flows drive: --program {' or '.join(programs)}")
+    return programs[0]
+
+
+def first_conversation(state: dict, program: str) -> None:
+    """Gives Chat a conversation whose first message the flows find: the first prompt goes in the
+    terminal (OpenCode's home screen takes none from Chat). A Codex Agent that already talked
+    starts a new conversation first."""
+    agent = state["agents"][program]
+    session = herdr_json(state, ["agent", "get", agent["name"]])["result"]["agent"].get(
+        "agent_session")
+    if session and program == "opencode":
+        return
+    if session:
+        herdr(state, ["agent", "prompt", agent["name"], "/new"], timeout=30)
+        time.sleep(3)
+    herdr(state, ["agent", "prompt", agent["name"], FIRST_PROMPT, "--wait", "--timeout", "120000"],
+          timeout=150)
 
 
 def command_sim(args: argparse.Namespace) -> int:
     """The app in the simulator against the lab: e2e/live through scripts/sim-verify.mjs --live."""
     state = load_state(Path(os.path.abspath(args.root)))
     root = Path(state["root"])
+    program = sim_program(state, args.program)
     env_file = root / "sim-env.json"
     listed = subprocess.run(["ssh-keygen", "-lf", str(root / "ssh/host_ed25519.pub")],
                             capture_output=True, text=True, check=True).stdout.split()
     # Maestro reads assertVisible as a regular expression; a fingerprint holds `+` and `/`.
     env_file.write_text(json.dumps({"HOST": "127.0.0.1", "PORT": state["ssh_port"],
-                                    "USER": state["user"],
+                                    "USER": state["user"], "PROGRAM": program,
+                                    "PANE": state["agents"][program]["pane"],
+                                    **SIM_PROGRAM[program],
                                     "FINGERPRINT": re.escape(listed[1])}) + "\n")
     base = ["node", "scripts/sim-verify.mjs", "--live", "--flows", "e2e/live", "--env-file",
             str(env_file), "--port", str(args.port), "--udid", args.udid]
@@ -539,12 +651,7 @@ def command_sim(args: argparse.Namespace) -> int:
         with open(root / "ssh/authorized_keys", "a") as output:
             output.write(pasted + "\n")
         print("Authorized the app's Device Key in the lab's authorized_keys")
-        agent = state["agents"].get("opencode")
-        if agent and not herdr_json(state, ["agent", "get", agent["name"]])["result"]["agent"].get(
-                "agent_session"):
-            # OpenCode's home screen takes no message from Chat: the first one goes in the terminal.
-            herdr(state, ["agent", "prompt", agent["name"], "Reply with the single word pong.",
-                          "--wait", "--timeout", "120000"], timeout=150)
+        first_conversation(state, program)
     keep = ["--keep"] if args.keep else []
     return subprocess.run([*base, *keep, *flows], cwd=REPO_ROOT).returncode
 
@@ -646,6 +753,12 @@ def parser() -> argparse.ArgumentParser:
     probe.add_argument("--usage", action="store_true",
                        help="also read Usage through the plugin (start with --plugin)")
     probe.set_defaults(handler=command_probe)
+    keep = commands.add_parser("keep", help="copy a capture into packages/core/goldens/<program>/lab, "
+                               "redacted")
+    keep.add_argument("capture", help="path under <root>/captures, e.g. 10-approval/codex/screen.ansi")
+    keep.add_argument("program", choices=sorted(PROGRAMS))
+    keep.add_argument("name", help="file name under goldens/<program>/lab")
+    keep.set_defaults(handler=command_keep)
     run = commands.add_parser("run", help="a program's own command in the lab environment")
     run.add_argument("arguments", nargs=argparse.REMAINDER)
     run.set_defaults(handler=command_run)
@@ -655,6 +768,7 @@ def parser() -> argparse.ArgumentParser:
     sim.add_argument("--flows", help="comma-separated flows; starting with 01 sets the app up "
                      "again (Device Key), otherwise they run on an app already set up")
     sim.add_argument("--keep", action="store_true", help="leave the simulator booted")
+    sim.add_argument("--program", help="the program the flows drive (default: the lab's only one)")
     sim.set_defaults(handler=command_sim)
     stop = commands.add_parser("stop")
     stop.add_argument("--keep", action="store_true")
