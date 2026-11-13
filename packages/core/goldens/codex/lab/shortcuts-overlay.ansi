@@ -1,0 +1,40 @@
+[0m[1m[2m[48;5;8m› [0m[48;5;8mWrite the numbers from 1 to 300 in words, one per line. Do not run any command.                                      [0m
+  fifty-nine
+  sixty
+  sixty-one
+  sixty-two
+  sixty-three
+  sixty-four
+  sixty-five
+  sixty-six
+  sixty-seven
+  sixty-eight
+  sixty-nine
+  seventy
+  seventy-one
+  seventy-two
+  seventy-three
+  seventy-four
+  seventy
+ 
+■ Conversation interrupted - use /feedback if something went wrong
+ 
+  [0m[1mKeyboard shortcuts[0m
+ 
+  [0m[1mCompose[0m                       [0m[1mSession                              Transcript (open first)[0m
+  [0m[38;2;99;168;248m/[0m        Commands             [0m[38;2;99;168;248mtab      [0mSend message                [0m[38;2;99;168;248m⌃t            [0mOpen transcript
+  [0m[38;2;99;168;248m@[0m        Mention files        [0m[38;2;99;168;248m⇧tab     [0mChange mode                 [0m[38;2;99;168;248mf3            [0mFind text
+  [0m[38;2;99;168;248m![0m        Shell command        [0m[38;2;99;168;248m⌥,       [0mLess reasoning              [0m[38;2;99;168;248mpgup / pgdn   [0mScroll
+  [0m[38;2;99;168;248m⇧enter[0m   New line             [0m[38;2;99;168;248m⌥.       [0mMore reasoning              [0m[38;2;99;168;248m⌃space        [0mStart selection
+  [0m[38;2;99;168;248m⌃v[0m       Paste image          [0m[38;2;99;168;248mf8       [0mVoice                       [0m[38;2;99;168;248m⌃home / ⌃end  [0mTop / latest
+  [0m[38;2;99;168;248m⌃g[0m       External editor      [0m[38;2;99;168;248m←        [0mAgents (empty prompt)       [0m[38;2;99;168;248m⇧⌥, / ⇧⌥.     [0mTop / latest
+  [0m[38;2;99;168;248m⌃r[0m       Search history       [0m[38;2;99;168;248m⌥← / ⌥→  [0mSubagents (empty prompt)
+  [0m[38;2;99;168;248mesc esc  [0mEdit last message    [0m[38;2;99;168;248mf4       [0mInspect activity
+                                [0m[38;2;99;168;248m⌃c       [0mQuit
+ 
+  [0m[38;2;99;168;248m/keymap [0mcustomize
+ 
+[0m[1m› [0m[2mAsk Codex to do anything[0m
+ 
+  [0m[38;2;246;226;183mGPT-6-Luna default [0m· [0m[38;2;171;223;167m/private/tmp/oap-lab/repo [0m· [0m[38;2;137;180;250mReply pong[0m
+  [0m[1m?[0m / [0m[1mesc[0m close

@@ -7,7 +7,9 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { decodeAnsiScreen } from './blocked/ansi-decoder';
 import type { AnsiScreen } from './blocked/screen';
+import { codexAdapter } from './chat/engine/adapter';
 import type { ChatHostFiles } from './chat/model/host-files';
+import { frameLines } from './chat/model/lines';
 import { type ChatAgentActivity, type ChatTranscript, projectionContext } from './chat/model/types';
 import { openCodeAdapter } from './chat/opencode/adapter';
 import { OpenCodeRecordSource } from './chat/opencode/record-source';
@@ -50,6 +52,33 @@ export async function labTranscript(
   if (reducer.unsupportedFormat !== null) throw new Error(`${capture} reads as unsupported`);
   return reducer.transcript(projectionContext({ activity }));
 }
+
+/** A captured file's text (a Usage report, for example). */
+export const labText = (program: LabProgram, file: string): string =>
+  readFileSync(labPath(program, file), 'utf8');
+
+/**
+ * One Codex rollout capture (redacted by `agent-lab.py keep`) read through the adapter and the
+ * reducer the app uses, seeded with its first line as the engine seeds it.
+ */
+export function labRollout(
+  capture: string,
+  activity: ChatAgentActivity,
+): { transcript: ChatTranscript; unsupportedFormat: string | null } {
+  const lines = frameLines(new Uint8Array(readFileSync(labPath('codex', `${capture}.jsonl`))));
+  const reducer = codexAdapter.makeReducer({
+    path: `/sessions/rollout-2026-11-13T12-13-53-${LAB_CODEX_SESSION}.jsonl`,
+    firstLine: lines[0] ?? null,
+  });
+  reducer.append(lines);
+  return {
+    transcript: reducer.transcript(projectionContext({ activity })),
+    unsupportedFormat: reducer.unsupportedFormat,
+  };
+}
+
+/** The Codex conversation the lab's rollout captures hold. */
+export const LAB_CODEX_SESSION = '01a1d578-e8dc-7b91-be76-14cb186563d3';
 
 /**
  * Chat's file port answering every store query with one captured output, parsed by the real

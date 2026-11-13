@@ -4,7 +4,7 @@
 // of the conversation. Every raw input is written beside the report, so a capture can become a
 // fixture. Node only; never part of the app.
 
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
   BlockedCardStore,
@@ -17,6 +17,7 @@ import {
   decodeUtf8,
   detectInputBox,
   encodeUtf8,
+  frameLines,
   holdReason,
   parseBlockedDialog,
   planDialogAction,
@@ -103,7 +104,23 @@ async function readChat(transport: SshTransport, program: Program, session: unkn
       newConversationActivity: null,
       accountDirectories: [],
     } as never);
-    return { found: location.type === 'found', location };
+    if (location.type !== 'found') return { found: false, location };
+    // The lab's Host is this machine: the located file is read from disk, as SFTP would return it.
+    const { path } = location;
+    const bytes = new Uint8Array(readFileSync(path));
+    writeFileSync(join(out, 'rollout.jsonl'), bytes);
+    const framed = frameLines(bytes);
+    const fileReducer = adapter.makeReducer({ path, firstLine: framed[0] ?? null } as never);
+    fileReducer.append(framed);
+    const read = fileReducer.transcript(projectionContext({ activity: 'idle' }));
+    return {
+      found: true,
+      path,
+      lines: framed.length,
+      entries: entrySummary(read),
+      pendingRequests: read.pendingRequests.length,
+      unsupportedFormat: fileReducer.unsupportedFormat ?? null,
+    };
   }
   const lines = await source.open(files);
   const reducer = adapter.makeReducer({ path: '', firstLine: null } as never);

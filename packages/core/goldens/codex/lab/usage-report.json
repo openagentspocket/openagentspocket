@@ -1,0 +1,565 @@
+{
+  "plugin": {
+    "pluginId": "agentico",
+    "pluginRoot": "/home/user/Projects/Others/agentico-app/packages/plugin",
+    "version": "0.15.0",
+    "isEnabled": true,
+    "source": "local",
+    "hasManifestWarning": false,
+    "leftoverLegacyIds": [],
+    "disabledCurrentIdSource": null,
+    "repository": null
+  },
+  "report": {
+    "version": 1,
+    "runtime": "recorded",
+    "generatedAt": "2026-11-13T15:20:10.165Z",
+    "timeZone": "UTC",
+    "refreshing": false,
+    "pricingVersion": "2026-10-23",
+    "scan": {
+      "state": "complete",
+      "coveredFrom": "2026-11-13",
+      "coveredThrough": "2026-11-13T15:19:43.490Z",
+      "skippedArchives": 0,
+      "unreadableFiles": 0
+    },
+    "programs": [
+      {
+        "program": "claude",
+        "tokenUsage": {
+          "state": "noData",
+          "reason": null,
+          "totals": null,
+          "daily": [],
+          "models": [],
+          "directories": []
+        },
+        "usageLimits": {
+          "state": "disabled",
+          "reason": null,
+          "source": null,
+          "observedAt": null,
+          "retryAt": null,
+          "plan": null,
+          "windows": []
+        },
+        "accounts": [
+          {
+            "id": "default",
+            "isDefault": true,
+            "name": null,
+            "directory": "/tmp/oap-lab/home/.claude",
+            "state": "ok",
+            "tokenUsage": {
+              "state": "noData",
+              "reason": null,
+              "totals": null,
+              "daily": [],
+              "models": [],
+              "directories": []
+            },
+            "usageLimits": {
+              "state": "disabled",
+              "reason": null,
+              "source": null,
+              "observedAt": null,
+              "retryAt": null,
+              "plan": null,
+              "windows": []
+            }
+          }
+        ],
+        "accountSuggestions": []
+      },
+      {
+        "program": "codex",
+        "tokenUsage": {
+          "state": "ok",
+          "reason": null,
+          "totals": {
+            "today": {
+              "tokens": {
+                "input": 16624,
+                "cacheRead": 66176,
+                "cacheWrite": 0,
+                "output": 184,
+                "reasoning": 0,
+                "total": 82984
+              },
+              "estimatedCostUSD": 0.00241616,
+              "unpricedTokens": 0
+            },
+            "last7Days": {
+              "tokens": {
+                "input": 16624,
+                "cacheRead": 66176,
+                "cacheWrite": 0,
+                "output": 184,
+                "reasoning": 0,
+                "total": 82984
+              },
+              "estimatedCostUSD": 0.00241616,
+              "unpricedTokens": 0
+            },
+            "last30Days": {
+              "tokens": {
+                "input": 16624,
+                "cacheRead": 66176,
+                "cacheWrite": 0,
+                "output": 184,
+                "reasoning": 0,
+                "total": 82984
+              },
+              "estimatedCostUSD": 0.00241616,
+              "unpricedTokens": 0
+            }
+          },
+          "daily": [
+            {
+              "date": "2026-10-15",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-16",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-17",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-18",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-19",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-20",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-21",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-22",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-23",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-24",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-25",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-26",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-27",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-28",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-29",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-30",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-10-31",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-01",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-02",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-03",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-04",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-05",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-06",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-07",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-08",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-09",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-10",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-11",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-12",
+              "tokens": {
+                "input": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "output": 0,
+                "reasoning": 0,
+                "total": 0
+              },
+              "estimatedCostUSD": 0,
+              "unpricedTokens": 0
+            },
+            {
+              "date": "2026-11-13",
+              "tokens": {
+                "input": 16624,
+                "cacheRead": 66176,
+                "cacheWrite": 0,
+                "output": 184,
+                "reasoning": 0,
+                "total": 82984
+              },
+              "estimatedCostUSD": 0.00241616,
+              "unpricedTokens": 0
+            }
+          ],
+          "models": [
+            {
+              "model": "gpt-6-luna",
+              "priced": true,
+              "tokens": {
+                "input": 16624,
+                "cacheRead": 66176,
+                "cacheWrite": 0,
+                "output": 184,
+                "reasoning": 0,
+                "total": 82984
+              },
+              "estimatedCostUSD": 0.00241616,
+              "unpricedTokens": 0
+            }
+          ],
+          "directories": [
+            {
+              "path": "/private/tmp/oap-lab/repo",
+              "tokens": {
+                "input": 16624,
+                "cacheRead": 66176,
+                "cacheWrite": 0,
+                "output": 184,
+                "reasoning": 0,
+                "total": 82984
+              },
+              "estimatedCostUSD": 0.00241616,
+              "unpricedTokens": 0
+            }
+          ]
+        },
+        "usageLimits": {
+          "state": "ok",
+          "reason": null,
+          "source": "service",
+          "observedAt": "2026-11-13T15:19:45.230Z",
+          "retryAt": null,
+          "plan": "redacted",
+          "windows": [
+            {
+              "id": "primary",
+              "label": null,
+              "durationMinutes": 43200,
+              "usedPercent": 29,
+              "resetsAt": "2026-11-29T03:15:15.000Z",
+              "expired": false
+            }
+          ]
+        },
+        "accounts": null,
+        "accountSuggestions": null
+      }
+    ]
+  }
+}
