@@ -88,7 +88,8 @@ so no program-specific branches.
 
 ## 4. Release 1.0.1
 
-- [ ] **Store screenshots again**, after group 2 changes how Chat looks.
+- [x] **Store screenshots again**, after group 2 changes how Chat looks. (Retaken 2026-11-13 into
+  `docs/store/screenshots/en`; they go up with the 1.0.1 version in App Store Connect.)
 - [ ] **Spanish listing** in the store, from `docs/store/listing.md`.
 - [ ] **Build and upload** with the new icon, the animated launch and everything above, to internal testers.
   Submitting for review stays a person's step.
