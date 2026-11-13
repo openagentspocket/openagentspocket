@@ -78,27 +78,30 @@ export interface ChatStatusLineOptions {
   now: number;
   /** herdr reports the Agent Blocked: it waits on the user. */
   isBlocked: boolean;
+  /** The harness notices the sheet lists. */
+  notices?: number;
 }
 
 const n = (value: number) => String(value);
 
 /**
- * The status line; null with no turn running and no work unfinished. Finished work shows only as
- * counts here: the sheet the line opens lists it.
+ * The status line; null with no turn running and nothing for the sheet to list. Without a turn it
+ * holds only the counts, so finished work and notices stay one tap away: the sheet lists them.
  */
 export function chatStatusLine(
   turn: ChatLiveTurn | null,
   work: BackgroundWorkPresentation,
-  { now, isBlocked }: ChatStatusLineOptions,
+  { now, isBlocked, notices = 0 }: ChatStatusLineOptions,
 ): ChatStatusLine | null {
-  if (turn === null && work.unfinished.length === 0) return null;
+  if (turn === null && work.rows.length === 0 && notices === 0) return null;
   const shown: Text[] = [];
   const spoken: Text[] = [];
   const both = (text: Text) => {
     shown.push(text);
     spoken.push(text);
   };
-  const waiting = isBlocked || turn?.doing?.kind === 'waiting';
+  // What the Agent does belongs to its running turn.
+  const waiting = turn !== null && (isBlocked || turn.doing?.kind === 'waiting');
   if (turn) {
     const seconds = Math.max(0, (now - Date.parse(turn.since)) / 1000);
     shown.push(message('Working for %@', formatDuration(seconds)));
@@ -117,14 +120,22 @@ export function chatStatusLine(
     [count('completed'), '%lld done'],
     [count('failed'), '%lld failed'],
     [count('stopped'), '%lld stopped'],
+    [notices, '%lld notices'],
   ] as const) {
     if (value > 0) both(message(key, n(value)));
   }
+  const failed = count('failed') > 0;
   const state: ChatStatusLineState = waiting
     ? 'waiting'
     : turn !== null || running > 0
       ? 'running'
-      : 'unconfirmed';
+      : notUpdating > 0
+        ? 'unconfirmed'
+        : failed
+          ? 'failed'
+          : count('completed') > 0 || notices > 0
+            ? 'completed'
+            : 'stopped';
   return {
     state,
     text: { join: shown, separator: ' · ' },

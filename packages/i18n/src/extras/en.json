@@ -183,5 +183,6 @@
   "Notices": "Notices",
   "Queue for after this turn": "Queue for after this turn",
   "Queue for the Agent's next step": "Queue for the Agent's next step",
-  "Stop Dictating": "Stop Dictating"
+  "Stop Dictating": "Stop Dictating",
+  "%lld notices": "{0, plural, one {# notice} other {# notices}}"
 }

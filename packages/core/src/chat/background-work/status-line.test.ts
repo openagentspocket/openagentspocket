@@ -59,11 +59,11 @@ function work(items: Item[]): ChatBackgroundWork {
   };
 }
 
-const line = (rows: ChatRow[], items: Item[] = [], isBlocked = false) =>
+const line = (rows: ChatRow[], items: Item[] = [], isBlocked = false, notices = 0) =>
   chatStatusLine(
     liveTurnOf(rows),
     presentBackgroundWork(work(items), { isHostConnected: true, now: NOW, locale: 'en' }),
-    { now: NOW, isBlocked },
+    { now: NOW, isBlocked, notices },
   );
 const text = (rows: ChatRow[], items: Item[] = []) => {
   const shown = line(rows, items);
@@ -71,9 +71,19 @@ const text = (rows: ChatRow[], items: Item[] = []) => {
 };
 
 describe('the status line over the Composer', () => {
-  it('is absent with no turn running and nothing unfinished, even with finished work', () => {
+  it('is absent with no turn running and nothing for the sheet to list', () => {
     expect(line([user])).toBeNull();
-    expect(line([user], [{ state: 'completed', endedAt: ago(5) }])).toBeNull();
+    expect(line([user], [], true)).toBeNull();
+  });
+
+  it('stays after the turn while the sheet lists finished work or notices, with counts only', () => {
+    const done = line([user], [{ state: 'completed', endedAt: ago(5) }, { state: 'failed' }], true);
+    expect(renderText(done?.text ?? '')).toBe('1 done · 1 failed');
+    expect(done?.state).toBe('failed');
+    expect(done?.ticks).toBe(false);
+    const notices = line([user], [], false, 2);
+    expect(renderText(notices?.text ?? '')).toBe('2 notices');
+    expect(notices?.state).toBe('completed');
   });
 
   it('says how long the turn has worked, then what the newest record shows', () => {

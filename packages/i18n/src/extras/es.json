@@ -183,5 +183,6 @@
   "Notices": "Avisos",
   "Queue for after this turn": "En cola para después de este turno",
   "Queue for the Agent's next step": "En cola para el próximo paso del Agent",
-  "Stop Dictating": "Dejar de dictar"
+  "Stop Dictating": "Dejar de dictar",
+  "%lld notices": "{0, plural, one {# aviso} other {# avisos}}"
 }

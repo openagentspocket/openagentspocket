@@ -28,7 +28,7 @@ interface Props {
 /**
  * Chat's status line over the Composer (the running turn, what the Agent does, Background Work as
  * counts) and the sheet it opens, which lists the work and the harness's notices. Absent with no
- * turn running and nothing unfinished, so its height drops to zero.
+ * turn running and nothing for the sheet to list, so its height drops to zero.
  */
 export function AgentBackgroundWork({ hostId, paneId, isBlocked = false }: Props) {
   const styles = useStyles();
@@ -42,8 +42,8 @@ export function AgentBackgroundWork({ hostId, paneId, isBlocked = false }: Props
   const sheet = useHandoverSheet();
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
   const line = useMemo(
-    () => chatStatusLine(turn, presentation, { now, isBlocked }),
-    [turn, presentation, now, isBlocked],
+    () => chatStatusLine(turn, presentation, { now, isBlocked, notices: notices.length }),
+    [turn, presentation, now, isBlocked, notices.length],
   );
   const empty = presentation.rows.length === 0 && notices.length === 0;
   // A new message, or another conversation, leaves nothing to show.
