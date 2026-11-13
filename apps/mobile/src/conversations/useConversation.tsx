@@ -14,7 +14,9 @@ import {
   useMemo,
   useSyncExternalStore,
 } from 'react';
+import { isDemoMode } from '@/connections/mode';
 import type { ConversationRegistry } from './ConversationRegistry';
+import { demoConversation } from './demoConversation';
 
 const RegistryContext = createContext<ConversationRegistry | undefined>(undefined);
 
@@ -83,11 +85,13 @@ export function useConversation(
     store.show(viewer);
     return () => store.hide(viewer);
   }, [store, follows]);
-  const state = useSyncExternalStore(
-    store?.subscribe ?? inertSubscribe,
-    store?.getState ?? inertState$,
-    store?.getState ?? inertState$,
+  // The demo Host has no session files to read: its Agents show a scripted conversation.
+  const scripted = useMemo(
+    () => (store || !isDemoMode() ? null : demoConversation(hostId, paneId)),
+    [store, hostId, paneId],
   );
+  const snapshot = store?.getState ?? (scripted ? () => scripted : inertState$);
+  const state = useSyncExternalStore(store?.subscribe ?? inertSubscribe, snapshot, snapshot);
   return useMemo(
     () => ({
       state,
