@@ -18,6 +18,7 @@ import { ChatEmpty } from './ChatEmpty';
 import { ChatRowView } from './ChatRowView';
 import { useChatFollow } from './useChatFollow';
 import { useChatRows } from './useChatRows';
+import { useNoSessionNotice } from './useNoSessionNotice';
 import { useUndetectedProgram } from './useUndetectedProgram';
 
 const NO_MESSAGES: readonly ComposerMessage[] = [];
@@ -72,6 +73,13 @@ export function ChatTimeline({
     [messages, sendStatuses],
   );
   const undetected = useUndetectedProgram(hostId, paneId);
+  const noSession = useNoSessionNotice(
+    hostId,
+    paneId,
+    conversation.state.snapshot.phase,
+    activity,
+    messages,
+  );
   const { rows, toggle } = useChatRows(conversation.state, activity, pending);
   // The running turn's header is the status line over the Composer, not a row.
   usePublishLiveTurn(useMemo(() => liveTurnOf(rows), [rows]));
@@ -99,6 +107,7 @@ export function ChatTimeline({
           phase={conversation.state.snapshot.phase}
           onShowTerminal={onShowTerminal}
           undetected={undetected}
+          noSession={noSession}
         />
       </View>
     );

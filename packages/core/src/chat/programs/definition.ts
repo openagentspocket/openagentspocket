@@ -9,6 +9,7 @@ import type { ProgramSendPolicy } from '../send/policy';
 import type { ChatSessionStoreProblem } from '../timeline/reasons';
 import type { ProgramModes } from './modes';
 import type { ProgramShortcut } from './shortcuts';
+import type { TerminalWait } from './terminal-waits';
 
 /**
  * Everything one Chat program contributes. Adding a program is one more name in `CHAT_PROGRAMS` and
@@ -21,6 +22,15 @@ export interface ProgramDefinition {
   chatName: string;
   /** What Chat says while herdr has reported no session for the Agent. */
   noSessionMessage: () => Message;
+  /**
+   * What Chat says when the Agent took a prompt and herdr still reports no session: its integration
+   * is not reporting. Absent for the common words.
+   */
+  notReportingMessage?: () => Message;
+  /** Screens where the program waits for something only its terminal answers (Codex's hook review). */
+  terminalWaits?: () => readonly TerminalWait[];
+  /** What the Setup Guide says about this program's herdr integration; absent when nothing. */
+  setupNote?: () => Message;
   /** Turns the value herdr reports into the program's session id; null when it is not one. */
   sessionID: (value: string) => string | null;
   /** The session may be named by the absolute path of its `.jsonl` transcript. */

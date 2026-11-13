@@ -1,5 +1,6 @@
 import type { ChatProgram } from '../chat/model/types';
 import { programDefinition } from '../chat/programs/registry';
+import { terminalWaitOn } from '../chat/programs/terminal-waits';
 import { message } from '../errors/text';
 import {
   attemptPlan,
@@ -54,6 +55,19 @@ export function blockedSupportFor(program: ChatProgram): BlockedProgramSupport |
   return registered.get(program) ?? programDefinition(program).blocked?.() ?? undefined;
 }
 
+/**
+ * The generic card's excerpt as the card shows it: a wait only the terminal answers (Codex's hook
+ * review) keeps its rows, says what it waits for and loses its option buttons.
+ */
+export function genericCardExcerpt(
+  excerpt: GenericDialogExcerpt,
+  screen: AnsiScreen,
+  program: ChatProgram,
+): GenericDialogExcerpt {
+  const wait = terminalWaitOn(program, screen.rows);
+  return wait ? { ...excerpt, numbered: new Map(), reason: wait.explanation() } : excerpt;
+}
+
 /** The parser for an Agent's program; programs without one show no dialog (Pi has none). */
 export function parseBlockedDialog(screen: AnsiScreen, program: ChatProgram): DialogParseResult {
   return blockedSupportFor(program)?.parse(screen) ?? NO_DIALOG;
@@ -77,15 +91,22 @@ export function planDialogAction(
   });
 }
 
-/** The generic card's option button: the digit of an option the excerpt lists. */
+/**
+ * The generic card's option button: the digit of an option the excerpt lists. Refused for a wait
+ * only the terminal answers, read from `screen` (the whole screen the excerpt was cut from) if given.
+ */
 export function planGenericOption(
   number: number,
   excerpt: GenericDialogExcerpt,
   program: ChatProgram,
+  screen?: AnsiScreen,
 ): PlanResult {
   return attemptPlan(() => {
     const options = blockedSupportFor(program)?.genericOptions;
     if (!options) return refuse({ kind: 'unsupported', reason: terminalOnly() });
+    // The excerpt holds the dialog's rows only; the whole screen names the wait when it is given.
+    const wait = terminalWaitOn(program, screen?.rows ?? excerpt.rows);
+    if (wait) return refuse({ kind: 'unsupported', reason: wait.explanation() });
     if (!excerpt.numbered.has(number)) return refuse({ kind: 'noSuchOption', ordinal: number });
     const digit = digitKey(number);
     if (digit === null) {

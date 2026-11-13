@@ -4,10 +4,12 @@ import '../chat/programs';
 // scripts/agent-lab.py, redacted by its `keep`).
 
 import { describe, expect, it } from 'vitest';
+import { CODEX_HOOK_REVIEW } from '../chat/codex/terminal-waits';
 import { footerCovered, readAgentMode } from '../chat/programs/agent-mode';
 import { CODEX_MODES } from '../chat/programs/mode-lists';
 import { readProgramMode } from '../chat/programs/modes';
 import { programShortcuts } from '../chat/programs/registry';
+import { terminalWaitOn } from '../chat/programs/terminal-waits';
 import { detectInputBox } from '../chat/send/detect';
 import { sendPolicyFor } from '../chat/send/registry';
 import { renderText } from '../errors/text';
@@ -16,7 +18,7 @@ import { labScreen, labScreenText, labText } from '../lab-captures.testkit';
 import { decodeUsageReport } from '../usage/report';
 import { BlockedCardStore } from './card-store';
 import type { BlockedScreenIO } from './card-support';
-import { parseBlockedDialog, planDialogAction } from './programs';
+import { parseBlockedDialog, planDialogAction, planGenericOption } from './programs';
 import type { BlockedDialog } from './types';
 
 const screen = (name: string) => labScreen('codex', name);
@@ -95,6 +97,36 @@ describe('Codex 0.167 Blocked card, live captures', () => {
   it('does not read the hooks review as a card, and holds a send', () => {
     expect(parseBlockedDialog(screen('hooks-review'), 'codex').kind).toBe('unrecognized');
     expect(detectInputBox(screen('hooks-review'), sendPolicyFor('codex')).kind).toBe('dialog');
+  });
+
+  it('names the hooks review as a wait only the terminal answers, and no other screen', () => {
+    expect(terminalWaitOn('codex', screen('hooks-review').rows)?.id).toBe('codexHookReview');
+    for (const name of ['idle', 'no-session-without-hooks', 'question', 'exec-approval', 'draft']) {
+      expect([name, terminalWaitOn('codex', screen(name).rows)]).toEqual([name, null]);
+    }
+    expect(terminalWaitOn('opencode', screen('hooks-review').rows)).toBeNull();
+  });
+
+  it('shows the hooks review on the card with no option, and sends no key for one', async () => {
+    const io: BlockedScreenIO = {
+      readScreen: async () => screen('hooks-review'),
+      sendKeys: async () => {
+        throw new Error('no key may reach the hooks review');
+      },
+      paste: async () => undefined,
+    };
+    const card = new BlockedCardStore({ program: 'codex', io, clock: new FakeClock() });
+    card.setActivity('blocked');
+    await card.refresh();
+    const { content } = card.getState();
+    if (content.kind !== 'generic') throw new Error(`hooks review shows ${content.kind}`);
+    expect(content.excerpt.numbered.size).toBe(0);
+    expect(content.excerpt.reason).toEqual(CODEX_HOOK_REVIEW.explanation());
+    await card.press(2);
+    const parsed = parseBlockedDialog(screen('hooks-review'), 'codex');
+    if (parsed.kind !== 'unrecognized') throw new Error('expected the generic excerpt');
+    const plan = planGenericOption(2, parsed.excerpt, 'codex', screen('hooks-review'));
+    expect(plan.ok).toBe(false);
   });
 });
 

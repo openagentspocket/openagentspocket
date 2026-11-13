@@ -22,7 +22,7 @@ import type {
   DialogStep,
   PlanResult,
 } from './plan-types';
-import { planDialogAction, planGenericOption } from './programs';
+import { genericCardExcerpt, planDialogAction, planGenericOption } from './programs';
 import { matchedRequest, NO_REQUESTS, type RequestContext } from './request-match';
 import { type BlockedDialog, resultDialog, resultFingerprint } from './types';
 
@@ -156,7 +156,7 @@ export class BlockedCardStore extends CardBase {
         result.kind === 'unrecognized'
           ? result.excerpt
           : genericExcerptOf(result.dialog, observation.screen, reason);
-      return planGenericOption(number, excerpt, this.options.program);
+      return planGenericOption(number, excerpt, this.options.program, observation.screen);
     });
   }
 
@@ -363,7 +363,13 @@ export class BlockedCardStore extends CardBase {
       }
       return { kind: 'card', dialog: result.dialog };
     }
-    if (result.kind === 'unrecognized') return { kind: 'generic', excerpt: result.excerpt };
+    if (result.kind === 'unrecognized') {
+      const { program } = this.options;
+      return {
+        kind: 'generic',
+        excerpt: genericCardExcerpt(result.excerpt, observation.screen, program),
+      };
+    }
     return this.noDialogContent;
   }
 

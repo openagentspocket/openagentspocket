@@ -27,6 +27,7 @@ export {
   menuCommand,
   type ProgramShortcut,
 } from './shortcuts';
+export { type TerminalWait, terminalWaitOn } from './terminal-waits';
 
 provideProgramDefinitions({
   claude: claudeProgram,

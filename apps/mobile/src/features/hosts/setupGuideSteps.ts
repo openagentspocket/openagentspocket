@@ -1,5 +1,6 @@
-import { installerCommand } from '@openagentspocket/core';
+import { installerCommand, programDefinitions } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
+import { renderMessage } from '@/lib/renderText';
 
 export interface GuideStep {
   title: string;
@@ -33,10 +34,23 @@ export function pairingCodeStep(): GuideStep {
 }
 
 /**
+ * What some programs ask before they report to herdr (Codex: trust herdr's hook), from each
+ * program's definition; null when none asks anything.
+ */
+export function agentSetupStep(): GuideStep | null {
+  const notes = programDefinitions().flatMap((definition) =>
+    definition.setupNote ? [renderMessage(definition.setupNote())] : [],
+  );
+  if (notes.length === 0) return null;
+  return { title: t('Let Your Agents Report'), detail: notes.join('\n\n') };
+}
+
+/**
  * The numbered steps of the guide, complete for someone who has never used herdr: where each
  * command runs, that herdr stays open to show the code, and how the phone reaches the computer.
  */
 export function guideSteps(): readonly GuideStep[] {
+  const agentSetup = agentSetupStep();
   return [
     {
       title: t('Install herdr'),
@@ -62,6 +76,7 @@ export function guideSteps(): readonly GuideStep[] {
       title: t('Scan It'),
       detail: t('In Hosts, tap Scan to Pair and point the camera at the code.'),
     },
+    ...(agentSetup ? [agentSetup] : []),
     {
       title: t('Reach It Away from Home'),
       detail: t(

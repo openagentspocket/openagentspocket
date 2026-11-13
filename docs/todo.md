@@ -57,7 +57,7 @@ so no program-specific branches.
   when it is deallocated: it is not being released, or the app is killed first. Needs a native patch
   (sweep at start, and find why the controller outlives its view). Done when: each is removed with its
   terminal, and a start clears leftovers.
-- [ ] **Codex 0.167: herdr's hook is untrusted, and Chat says to send a prompt.** Found by the agent lab:
+- [x] **Codex 0.167: herdr's hook is untrusted, and Chat says to send a prompt.** Found by the agent lab:
   Codex holds a new pane on "Hooks need review" until the user trusts herdr's SessionStart hook (`/hooks`,
   or "Trust all" on that screen). Until then herdr reports no session, and Chat keeps saying "Codex reports
   its conversation after a prompt" after every prompt (`goldens/codex/lab/no-session-without-hooks.ansi`).

@@ -1,5 +1,6 @@
 import {
   type ChatConversationSnapshot,
+  type ChatNoSessionNotice,
   reasonExplanation,
   reasonIsWaiting,
   reasonTitle,
@@ -77,17 +78,59 @@ function Undetected({
   );
 }
 
+/** A notice with the terminal as its way out: no session reported, and why Chat can tell. */
+function TerminalNotice({
+  title,
+  message,
+  onShowTerminal,
+}: {
+  title: string;
+  message: string;
+  onShowTerminal?: () => void;
+}) {
+  return (
+    <EmptyState
+      title={title}
+      message={message}
+      layout="compact"
+      actions={
+        onShowTerminal ? (
+          <Button
+            kind="text"
+            title={t('Show Terminal')}
+            onPress={onShowTerminal}
+            testID="chat-show-terminal"
+          />
+        ) : undefined
+      }
+      testID="chat-slot"
+    />
+  );
+}
+
 export function ChatEmpty({
   phase,
   onShowTerminal,
   undetected,
+  noSession,
 }: {
   phase: ChatConversationSnapshot['phase'];
   onShowTerminal?: () => void;
   /** A program herdr does not report, with the reason and the fix. */
   undetected?: UndetectedProgram | null;
+  /** Why herdr reports no session, when Chat can tell more than "waiting". */
+  noSession?: ChatNoSessionNotice | null;
 }) {
   if (undetected) return <Undetected program={undetected} onShowTerminal={onShowTerminal} />;
+  if (noSession) {
+    return (
+      <TerminalNotice
+        title={renderMessage(noSession.title)}
+        message={renderMessage(noSession.explanation)}
+        onShowTerminal={onShowTerminal}
+      />
+    );
+  }
   if (phase.type !== 'unavailable') {
     return (
       <EmptyState
@@ -114,21 +157,10 @@ export function ChatEmpty({
     );
   }
   return (
-    <EmptyState
+    <TerminalNotice
       title={renderMessage(reasonTitle(reason))}
       message={renderMessage(reasonExplanation(reason))}
-      layout="compact"
-      actions={
-        onShowTerminal ? (
-          <Button
-            kind="text"
-            title={t('Show Terminal')}
-            onPress={onShowTerminal}
-            testID="chat-show-terminal"
-          />
-        ) : undefined
-      }
-      testID="chat-slot"
+      onShowTerminal={onShowTerminal}
     />
   );
 }
