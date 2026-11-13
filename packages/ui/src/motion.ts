@@ -30,12 +30,28 @@ export type MotionKey = keyof typeof timing;
 
 /** True when the system asks for less motion; animations then jump to their end value. */
 export function useReducedMotion(): boolean {
-  const [reduce, setReduce] = useState(false);
+  return useReducedMotionSetting() ?? false;
+}
+
+/**
+ * The system's Reduce Motion setting, or null until it is known (the first answer is async). For
+ * an animation that must choose its path before it starts, such as the launch.
+ */
+export function useReducedMotionSetting(): boolean | null {
+  const [reduce, setReduce] = useState<boolean | null>(null);
   useEffect(() => {
     let mounted = true;
-    void AccessibilityInfo.isReduceMotionEnabled?.().then((value) => {
-      if (mounted) setReduce(value);
-    });
+    const known = AccessibilityInfo.isReduceMotionEnabled?.();
+    if (known) {
+      void known.then(
+        (value) => {
+          if (mounted) setReduce(value);
+        },
+        () => {
+          if (mounted) setReduce(false);
+        },
+      );
+    } else setReduce(false);
     const sub = AccessibilityInfo.addEventListener?.('reduceMotionChanged', setReduce);
     return () => {
       mounted = false;

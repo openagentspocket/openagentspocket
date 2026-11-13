@@ -1,3 +1,7 @@
+export { AppMark, type MarkMotion } from './brand/AppMark';
+export { LaunchOverlay } from './brand/LaunchOverlay';
+export { LAUNCH, LAUNCH_TOTAL_MS, launchPhases } from './brand/launchTimeline';
+export { markGeometry, markPalette } from './brand/mark.generated';
 export * from './components/agentBar';
 export * from './components/agentRows';
 export * from './components/blockedTerminal';
@@ -63,6 +67,7 @@ export {
   snappySpring,
   timing,
   useReducedMotion,
+  useReducedMotionSetting,
 } from './motion';
 export {
   ActionMenu,
