@@ -55,6 +55,11 @@ manifest.json                                    counts, activities, plan inputs
 Programs: `claude`, `codex`, `pi`, `omp` (Oh My Pi, read by the Pi reducer),
 `grok`, `opencode`. 40 transcript goldens, 217 screen goldens.
 
+`<program>/lab/` is the one exception to "generated from the Swift repo": captures the agent lab
+took from the real program (`scripts/agent-lab.py`, see docs/e2e-live-backend.md), `*.ansi`
+screens and `store-*.out` store query outputs, with no goldens beside them. Their tests state
+what the app must read from them (`src/lab-captures.testkit.ts`). A Swift re-export leaves them alone.
+
 ## Transcript goldens
 
 ```json

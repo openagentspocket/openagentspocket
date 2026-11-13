@@ -52,8 +52,9 @@ export const CODEX_SHORTCUTS: readonly ProgramShortcut[] = [
 
 export const OPENCODE_SHORTCUTS: readonly ProgramShortcut[] = [
   interruptEsc,
-  keys('Next Agent', 'Tab', 'tab'),
-  keys('Previous Agent', 'Shift+Tab', 'shift+tab'),
+  // OpenCode 2.1.3 cycles its agents (Build, Plan) with Shift+Tab, as its footer says; Tab does
+  // nothing there (agent lab, goldens/opencode/lab).
+  keys('Switch Agent', 'Shift+Tab', 'shift+tab'),
   command('/new', 'New Conversation'),
   compact,
   command('/undo', 'Undo'),

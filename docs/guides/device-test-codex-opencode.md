@@ -163,13 +163,14 @@ Steps:
    Expect: a Blocked card for the question with its options and, when OpenCode offers it, a "Type your own answer" choice.
    Tap an option; OpenCode continues with it. If OpenCode has no question tool in your version, write "not reached".
    If not: capture kit while the question is on screen.
-9. **Modes.** Switch between Build and Plan in the terminal (Tab).
+9. **Modes.** Switch between Build and Plan in the terminal (Shift+Tab; OpenCode 2.1.3 ignores Tab).
    Expect: the app names the mode: Build, Plan, and the Auto-Accept variants when OpenCode draws them. When OpenCode draws
    no mode, the app shows none; that is expected.
    If not: capture kit.
 10. **Shortcuts.** Open the composer's shortcuts menu.
-    Expect: Interrupt (Esc), Next Agent (Tab), Previous Agent (Shift+Tab), /new, /compact, /undo, /redo, /models,
-    /sessions. While OpenCode works, tap Stop: it presses Esc twice and OpenCode stops.
+    Expect: Interrupt (Esc), Switch Agent (Shift+Tab), /new, /compact, /undo, /redo, /models, /sessions. Known gap
+    (agent lab): a command other than /compact is refused when sent from Chat, and from the terminal surface its
+    trailing space makes OpenCode send it to the model. While OpenCode works, tap Stop: it presses Esc twice and OpenCode stops.
     If not: capture kit. A Stop that did not take shows a notice that OpenCode still shows Working.
 11. **Usage.** Not expected. Confirm only that the Usage tab shows no OpenCode card and no error for it.
 12. **Push notification, app closed.** Force-close the app and lock the phone. Send the command request.
