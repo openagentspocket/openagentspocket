@@ -183,6 +183,14 @@ export const chatRowsEntries: readonly CatalogEntry[] = [
                 name: 'docs-audit',
                 detail: 'Check every guide page against the QR code flow',
                 status: 'running',
+                onOpen: noop,
+              },
+              {
+                id: 'c',
+                name: 'Check screenshots',
+                kind: 'general-purpose',
+                status: 'failed',
+                onOpen: noop,
               },
             ]}
           />

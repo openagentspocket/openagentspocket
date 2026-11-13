@@ -134,21 +134,36 @@ describe('ChatToolRow', () => {
     expect(screen.getByTestId('tool-status-waiting')).toBeTruthy();
   });
 
-  it('lists subagents with a transcript link only when they are finished', async () => {
+  it('draws a Subagent as a quiet line that opens it, without its type', async () => {
     const onOpen = jest.fn();
     await renderThemed(
       <ChatToolRow
         openLabel="Open transcript"
         subagents={[
           { id: 'a', name: 'Check anchors', kind: 'Explore', status: 'done', onOpen },
-          { id: 'b', name: 'docs-audit', status: 'running', onOpen },
+          { id: 'b', name: 'docs-audit', kind: 'Explore', status: 'running', onOpen },
         ]}
       />,
     );
-    expect(screen.getAllByRole('link')).toHaveLength(1);
+    expect(screen.queryAllByRole('link')).toHaveLength(0);
+    expect(screen.queryByText('Explore')).toBeNull();
+    expect(screen.getByTestId('tool-status-done')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('tool-line-done'));
+    await fireEvent.press(screen.getByTestId('tool-line-running'));
+    expect(onOpen).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps a card with its transcript link for a Subagent that failed', async () => {
+    const onOpen = jest.fn();
+    await renderThemed(
+      <ChatToolRow
+        openLabel="Open transcript"
+        subagents={[{ id: 'a', name: 'Check anchors', kind: 'Explore', status: 'failed', onOpen }]}
+      />,
+    );
+    expect(screen.getByText('Explore')).toBeTruthy();
     await fireEvent.press(screen.getByRole('link', { name: 'Open transcript, Check anchors' }));
     expect(onOpen).toHaveBeenCalledTimes(1);
-    expect(screen.getByTestId('tool-status-running')).toBeTruthy();
   });
 });
 

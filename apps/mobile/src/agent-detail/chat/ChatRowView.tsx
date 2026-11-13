@@ -54,6 +54,8 @@ interface Props {
   onLoadOlder: () => void;
   /** Opens a Subagent's own transcript by the id its call reported. */
   onOpenSubagent?: (agentId: string) => void;
+  /** Opens the Background Work sheet: a Subagent row with no transcript yet opens there. */
+  onOpenBackgroundWork?: () => void;
   /** The whole latest answer, when this row ends it: its actions show under the row. */
   answer?: string;
 }
@@ -65,6 +67,7 @@ export const ChatRowView = memo(function ChatRowView({
   onToggle,
   onLoadOlder,
   onOpenSubagent,
+  onOpenBackgroundWork,
   answer,
 }: Props) {
   const styles = useStyles();
@@ -141,7 +144,11 @@ export const ChatRowView = memo(function ChatRowView({
                   name: content.tool.title,
                   kind: content.tool.subtitle ?? undefined,
                   status,
-                  onOpen: onOpenSubagent ? () => onOpenSubagent(agentId) : undefined,
+                  // A running Subagent has no transcript to show yet: the sheet says where it is.
+                  onOpen:
+                    status !== 'running' && onOpenSubagent
+                      ? () => onOpenSubagent(agentId)
+                      : onOpenBackgroundWork,
                 },
               ]}
             />

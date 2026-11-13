@@ -12,7 +12,7 @@ import { useMemo, useRef } from 'react';
 import { FlatList, View } from 'react-native';
 import { useConsoleState } from '@/console/hooks';
 import { useConversation } from '@/conversations/useConversation';
-import { useDetailUi, usePublishLiveTurn } from '../detailUi';
+import { useDetailUi, useOpenBackgroundWork, usePublishLiveTurn } from '../detailUi';
 import { ChatBanners } from './ChatBanners';
 import { ChatEmpty } from './ChatEmpty';
 import { ChatRowView } from './ChatRowView';
@@ -61,6 +61,7 @@ export function ChatTimeline({
   const styles = useStyles();
   const conversation = useConversation(hostId, paneId);
   const { openSubagent } = useDetailUi();
+  const openBackgroundWork = useOpenBackgroundWork();
   const summary = useConsoleState().hosts.find((host) => host.id === hostId);
   // While the Host resumes, the last known good state stands: no Connecting or Not Connected line.
   const hostStatus =
@@ -121,6 +122,7 @@ export function ChatTimeline({
             onToggle={toggle}
             onLoadOlder={() => conversation.loadOlder(false)}
             onOpenSubagent={openSubagent}
+            onOpenBackgroundWork={openBackgroundWork}
             answer={item.id === answer?.id ? answer.text : undefined}
           />
         )}

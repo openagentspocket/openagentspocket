@@ -43,6 +43,7 @@ export interface SubagentItem {
   /** What it is doing while running. */
   detail?: string;
   status: ToolStatus;
+  /** What a tap does: its transcript once it has one, else the Background Work sheet. */
   onOpen?: () => void;
 }
 
@@ -147,6 +148,8 @@ export function needsAttention(status: ToolStatus): boolean {
 
 type ToolProps = Omit<ChatToolRowProps, 'subagents' | 'openLabel' | 'testID'> & {
   tool: NonNullable<ChatToolRowProps['tool']>;
+  /** A finished line says how it ended (a Subagent's check), not only a running one. */
+  marked?: boolean;
 };
 
 function LineCounts({ added, removed }: { added?: number | null; removed?: number | null }) {
@@ -160,7 +163,7 @@ function LineCounts({ added, removed }: { added?: number | null; removed?: numbe
 }
 
 /** The quiet line: kind glyph, summary, line counts, a spinner while it runs, and a chevron. */
-function ToolLine({ tool, detail, expanded = false, onToggle, onLongPress }: ToolProps) {
+function ToolLine({ tool, detail, expanded = false, onToggle, onLongPress, marked }: ToolProps) {
   const styles = useStyles();
   return (
     <View style={styles.line}>
@@ -184,7 +187,11 @@ function ToolLine({ tool, detail, expanded = false, onToggle, onLongPress }: Too
           {tool.title}
         </Text>
         <LineCounts added={tool.added} removed={tool.removed} />
-        {tool.status === 'running' ? <Spinner size="small" /> : null}
+        {tool.status === 'running' ? (
+          <Spinner size="small" />
+        ) : marked ? (
+          <StatusMark status={tool.status} />
+        ) : null}
         {onToggle ? <Icon name={expanded ? 'chevronDown' : 'chevronRight'} size={11} /> : null}
       </Tappable>
       {expanded && (tool.output || detail) ? (
@@ -236,10 +243,27 @@ function ToolCard({ tool, detail, expanded = false, onToggle, onLongPress }: Too
   );
 }
 
+/** A Subagent: the quiet line (its name, its state, a tap that opens it), a card when it needs attention. */
+function Subagent({ item, openLabel }: { item: SubagentItem; openLabel?: string }) {
+  const styles = useStyles();
+  return needsAttention(item.status) ? (
+    <View style={styles.stack}>
+      <SubagentCard item={item} openLabel={openLabel} />
+    </View>
+  ) : (
+    <ToolLine
+      tool={{ icon: 'bot', title: item.name, status: item.status }}
+      onToggle={item.onOpen}
+      marked
+    />
+  );
+}
+
 /**
  * A tool call or a fold of calls (Swift's tool row, made lighter): a borderless quiet line that
  * opens on tap, and a card only for a call that needs attention (`needsAttention`). Also the
- * subagent group, one card per Subagent with its transcript link.
+ * subagent group: a quiet line per Subagent that opens it, a card with its transcript link when
+ * it failed or waits on the user.
  */
 export function ChatToolRow({
   tool,
@@ -254,9 +278,9 @@ export function ChatToolRow({
   const styles = useStyles();
   if (subagents?.length) {
     return (
-      <View style={styles.stack} testID={testID}>
+      <View testID={testID}>
         {subagents.map((item) => (
-          <SubagentCard key={item.id} item={item} openLabel={openLabel} />
+          <Subagent key={item.id} item={item} openLabel={openLabel} />
         ))}
       </View>
     );

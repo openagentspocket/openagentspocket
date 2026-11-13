@@ -10,7 +10,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useBackgroundWork } from '@/conversations/useBackgroundWork';
-import { useDetailUi, useLiveTurn } from '../detailUi';
+import { useBackgroundWorkAsks, useDetailUi, useLiveTurn } from '../detailUi';
 import { detailItem, noticeItem, statusLineItem } from './workViewModel';
 
 const useStyles = makeStyles((th) => ({
@@ -46,6 +46,12 @@ export function AgentBackgroundWork({ hostId, paneId, isBlocked = false }: Props
     [turn, presentation, now, isBlocked, notices.length],
   );
   const empty = presentation.rows.length === 0 && notices.length === 0;
+  const show = () => {
+    setExpanded(new Set());
+    sheet.open(true);
+  };
+  // A Subagent row with no transcript to open asks for the sheet instead.
+  useBackgroundWorkAsks(show);
   // A new message, or another conversation, leaves nothing to show.
   useEffect(() => {
     if (empty) sheet.close();
@@ -67,10 +73,7 @@ export function AgentBackgroundWork({ hostId, paneId, isBlocked = false }: Props
         <View style={styles.strip}>
           <BackgroundWorkStrip
             line={statusLineItem(line)}
-            onOpen={() => {
-              setExpanded(new Set());
-              sheet.open(true);
-            }}
+            onOpen={show}
             labels={{ name: t('Background work'), hint: t('Shows all background work.') }}
           />
         </View>

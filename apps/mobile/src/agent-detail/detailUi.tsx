@@ -4,6 +4,7 @@ import { ClaudeSubagentTranscript, makeStyles, Sheet } from '@openagentspocket/u
 import {
   createContext,
   type ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -38,6 +39,7 @@ class Shared<T> {
 
 const dockSlot = () => new Shared<ReactNode>(null);
 const liveTurnSlot = () => new Shared<ChatLiveTurn | null>(null, sameLiveTurn);
+const requestSlot = () => new Shared(0);
 
 interface DetailUi {
   /** The node a surface hands the dock (the terminal's key toolbar), drawn over the composer. */
@@ -49,6 +51,8 @@ interface DetailUi {
   setComposing: (composing: boolean) => void;
   /** Opens a Subagent's own transcript, read-only, by the id its reporting call carried. */
   openSubagent: (agentId: string) => void;
+  /** Counts the asks to open the Background Work sheet (a Subagent row with no transcript yet). */
+  workSheet: Shared<number>;
 }
 
 const DetailUiContext = createContext<DetailUi>({
@@ -57,6 +61,7 @@ const DetailUiContext = createContext<DetailUi>({
   composing: false,
   setComposing: () => undefined,
   openSubagent: () => undefined,
+  workSheet: requestSlot(),
 });
 
 export const useDetailUi = () => useContext(DetailUiContext);
@@ -86,6 +91,24 @@ export function usePublishLiveTurn(turn: ChatLiveTurn | null): void {
     liveTurn.set(turn);
   }, [liveTurn, turn]);
   useEffect(() => () => liveTurn.set(null), [liveTurn]);
+}
+
+/** Asks the dock to open the Background Work sheet. */
+export function useOpenBackgroundWork(): () => void {
+  const { workSheet } = useDetailUi();
+  return useCallback(() => workSheet.set(workSheet.get() + 1), [workSheet]);
+}
+
+/** Opens the sheet on each ask, for the part that owns it. */
+export function useBackgroundWorkAsks(open: () => void): void {
+  const { workSheet } = useDetailUi();
+  const asked = useSyncExternalStore(workSheet.subscribe, workSheet.get, workSheet.get);
+  const seen = useRef(asked);
+  useEffect(() => {
+    if (asked === seen.current) return;
+    seen.current = asked;
+    open();
+  }, [asked, open]);
 }
 
 /** Chat's running turn, as it last handed it over. */
@@ -156,9 +179,10 @@ export function DetailUiProvider({
   const [agentId, setAgentId] = useState<string | null>(null);
   const slot = useRef(dockSlot()).current;
   const liveTurn = useRef(liveTurnSlot()).current;
+  const workSheet = useRef(requestSlot()).current;
   const value = useMemo(
-    () => ({ slot, liveTurn, composing, setComposing, openSubagent: setAgentId }),
-    [slot, liveTurn, composing],
+    () => ({ slot, liveTurn, workSheet, composing, setComposing, openSubagent: setAgentId }),
+    [slot, liveTurn, workSheet, composing],
   );
   return (
     <DetailUiContext.Provider value={value}>

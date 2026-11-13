@@ -84,3 +84,19 @@ describe('the status line over the Composer', () => {
     expect(screen.getByTestId('work-sheet-w3')).toBeTruthy();
   });
 });
+
+describe('a Subagent in the transcript', () => {
+  it('is a quiet line: finished, it opens its transcript; running, the sheet', async () => {
+    await showAtlasChat('list');
+    const finished = await screen.findByTestId('chat-row-entry:w3');
+    await fireEvent.press(within(finished).getByTestId('tool-line-done'));
+    await waitFor(() =>
+      expect(
+        screen.getByText('Check whether the screenshots still show the address field.'),
+      ).toBeTruthy(),
+    );
+    const running = screen.getByTestId('chat-row-entry:w1');
+    await fireEvent.press(within(running).getByTestId('tool-line-running'));
+    await waitFor(() => expect(screen.getByTestId('work-sheet-w1')).toBeTruthy());
+  });
+});
