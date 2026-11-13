@@ -27,6 +27,8 @@ const useStyles = makeStyles((t) => ({
   body: { paddingHorizontal: t.metrics.screenInset, paddingTop: t.spacing.xs, gap: t.spacing.md },
   // Floats over the content on the native host: the canvas under it hides what scrolls behind.
   hostFooter: { backgroundColor: t.colors.canvas, paddingBottom: t.spacing.sm },
+  // The native host already counts its footer in a content-sized sheet's height; the body only needs air above it.
+  aboveHostFooter: { paddingBottom: t.spacing.md },
 }));
 
 /** A labeled action in the sheet's bar: `Cancel` / `Done` leading, `Start` / `Save` trailing. */
@@ -58,9 +60,9 @@ export interface SheetContentProps {
   /** Content-sized: the body shrinks and scrolls past the host's limit; otherwise it fills. */
   fit: boolean;
   /**
-   * Height of a footer the host draws over the content (`footerPlacement="host"`). A content-sized
-   * sheet measures only this body, so the absolute footer would sit on its last lines: the body
-   * keeps that height free below itself. A filled sheet is inset by the host instead.
+   * Height of a footer the host draws under the content (`footerPlacement="host"`), zero until it is
+   * measured. The host sizes a content-sized sheet with its footer included (seen on the simulator:
+   * adding this height below the body doubled the room), so the body only keeps a gap above it.
    */
   footerHeight?: number;
   scrollRef?: Ref<ComponentRef<typeof ScrollView>>;
@@ -147,7 +149,7 @@ export function SheetContent({
         ref={scrollRef}
         contentContainerStyle={
           fit && footerPlacement === 'host' && footerHeight > 0
-            ? [styles.body, { paddingBottom: footerHeight }]
+            ? [styles.body, styles.aboveHostFooter]
             : styles.body
         }
         keyboardShouldPersistTaps="handled"

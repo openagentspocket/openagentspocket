@@ -6,7 +6,7 @@ Items are worked from the top of each group; groups are in priority order.
 
 ## 1. In flight
 
-- [ ] **Simulator suite on the new native build, then push.** The icon and the black native splash changed
+- [x] **Simulator suite on the new native build, then push.** The icon and the black native splash changed
   native inputs. Done when: every `pnpm sim:verify` flow passes on a rebuilt Debug app and main is pushed.
 - [ ] **Agent lab, OpenCode on the simulator** (`scripts/agent-lab.py`, `docs/e2e-live-backend.md`). Done
   when: Maestro flows under `e2e/` drive the app against a real OpenCode (Home, Chat, send, Reject, a
@@ -23,10 +23,10 @@ Items are worked from the top of each group; groups are in priority order.
 From comparing Chat with a first-party client on the same conversation. All of it works on Chat's own model,
 so no program-specific branches.
 
-- [ ] **Tool calls as one quiet line.** Consecutive tool calls fold into a single borderless row ("Ran 3
+- [x] **Tool calls as one quiet line.** Consecutive tool calls fold into a single borderless row ("Ran 3
   commands", "Read 4 files") that opens on tap; a card only when something needs attention (a failure, an
   approval, a diff). Done when: a turn with five tool calls takes one row, and the atlas shows it.
-- [ ] **The command's description, not its text.** When the program records what a command is for, the row
+- [x] **The command's description, not its text.** When the program records what a command is for, the row
   shows that; the raw command shows on opening it. Done when: a long shell line no longer fills a row.
 - [ ] **One status line above the Composer.** Elapsed time, what the Agent is doing, and how much Background
   Work runs, as one line; finished work folds into it. The "Working for" row leaves the transcript. Done
@@ -38,20 +38,27 @@ so no program-specific branches.
 - [ ] **Conversation title in the header**, with the program and Host under it; the mode chip moves next to
   the Composer.
 - [ ] **Dictation in reach.** The microphone shows in the Composer when the draft is empty.
-- [ ] **Message actions in sight.** Copy (and read aloud where the platform gives it) under the latest
+- [x] **Message actions in sight.** Copy (and read aloud where the platform gives it) under the latest
   answer, not only on long press.
 
 ## 3. Found and not fixed
 
-- [ ] **Demo: the Codex Agent's Chat says "Conversation Not Readable".** It is what a store reviewer sees.
+- [ ] **Add Manually: "Trust this Host?" does not show on the first connection.** Found by the agent lab:
+  after Save the Host's sheet says Connecting while SSH waits for the host-key answer, and the alert is
+  not visible; later redials do not ask again. Blocks the lab's simulator flows and any user who adds a
+  Host by hand. Done when: the prompt shows over whatever is on screen, and a redial asks again.
+- [x] **Demo: the Codex Agent's Chat says "Conversation Not Readable".** It is what a store reviewer sees.
   Done when: every demo Agent opens a conversation, or says in plain words why it has none.
-- [ ] **An Agent screen whose Host was removed shows "Reconnecting…" forever.** Done when: it says the Host
+- [x] **An Agent screen whose Host was removed shows "Reconnecting…" forever.** Done when: it says the Host
   is gone and offers the way back.
 - [ ] **Terminal config files pile up in the app's temporary folder** (`ghostty-config-*.conf`, one per
-  terminal opened). Done when: each is removed with its terminal, and a start clears leftovers.
+  terminal opened). Written by the terminal library's native controller, which removes its file only
+  when it is deallocated: it is not being released, or the app is killed first. Needs a native patch
+  (sweep at start, and find why the controller outlives its view). Done when: each is removed with its
+  terminal, and a start clears leftovers.
 - [ ] **OpenCode Go usage is a stub.** Done when: it reports real limits, or the provider is not listed.
-- [ ] **Connection sheet: the failure text touches the pinned actions** on a fit-height sheet.
-- [ ] **Demo Home: every Session thumbnail shows the same screen.**
+- [x] **Connection sheet: the failure text touches the pinned actions** on a fit-height sheet.
+- [x] **Demo Home: every Session thumbnail shows the same screen.**
 - [ ] **OpenCode: a background subagent's permission can look like the main session's.** Reject then opens
   OpenCode's follow-up field; not destructive. Done when: the end of a background subagent is known.
 - [ ] **Claude Code `/context` from Chat.** Runs in the terminal today because Chat's echo of local command

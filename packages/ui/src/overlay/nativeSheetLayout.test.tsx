@@ -101,14 +101,15 @@ describe('a content-sized sheet with the native footer', () => {
   const bodyPadding = () =>
     StyleSheet.flatten(screen.getByTestId('s-scroll').props.contentContainerStyle).paddingBottom;
 
-  // The absolute footer is not part of the height the sheet measures from its content: the body
-  // keeps the footer's height free, or the footer sits on the body's last lines.
-  it('keeps the footer height free under the body', async () => {
+  // The host counts its footer in a content-sized sheet's height, so the body keeps only a gap
+  // above it: its text never touches the pinned actions, and the footer's room is not added twice.
+  it('keeps a gap above the footer, not the footer height again', async () => {
     await renderThemed(withFooter('fit'));
     fireEvent(screen.getByTestId('s-footer'), 'layout', {
       nativeEvent: { layout: { height: 96 } },
     });
-    await waitFor(() => expect(bodyPadding()).toBe(96));
+    await waitFor(() => expect(bodyPadding()).toBeGreaterThan(0));
+    expect(bodyPadding()).toBeLessThan(96);
   });
 
   it('leaves a filled sheet to the host, which insets its scroll view', async () => {
