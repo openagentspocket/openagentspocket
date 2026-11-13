@@ -1,9 +1,9 @@
 import { AgentStatusClocks, MemoryStorage, PinnedAgents } from '@openagentspocket/core';
 import { setLocale, translate } from '@openagentspocket/i18n';
 import { systemClock } from '@openagentspocket/transport';
-import { ThemeProvider } from '@openagentspocket/ui';
+import { FAB_SIZE, ThemeProvider } from '@openagentspocket/ui';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import { bindDemoModeStorage, isDemoMode, setDemoModeSetting } from '@/connections/mode';
 import { ConsoleStoreProvider } from '../console/hooks';
 import { ConsoleStore } from '../console/store';
@@ -59,6 +59,15 @@ describe('HomeScreen', () => {
       expect(spanish).not.toBe(translate('en', 'app', key));
       expect(screen.getByText(spanish)).toBeTruthy();
     }
+  });
+
+  it('lets the list scroll until its last card is clear of the + button', async () => {
+    await renderHome();
+    await waitFor(() => expect(screen.getByTestId('home-scroll')).toBeTruthy());
+    const content = StyleSheet.flatten(
+      screen.getByTestId('home-scroll').props.contentContainerStyle,
+    );
+    expect(content.paddingBottom).toBeGreaterThan(FAB_SIZE);
   });
 
   it('opens the + sheet with New Agent, New Terminal and Add Host', async () => {
