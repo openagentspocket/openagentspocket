@@ -53,11 +53,13 @@ so no program-specific branches.
   Done when: every demo Agent opens a conversation, or says in plain words why it has none.
 - [x] **An Agent screen whose Host was removed shows "Reconnecting…" forever.** Done when: it says the Host
   is gone and offers the way back.
-- [ ] **Terminal config files pile up in the app's temporary folder** (`ghostty-config-*.conf`, one per
+- [x] **Terminal config files pile up in the app's temporary folder** (`ghostty-config-*.conf`, one per
   terminal opened). Written by the terminal library's native controller, which removes its file only
   when it is deallocated: it is not being released, or the app is killed first. Needs a native patch
   (sweep at start, and find why the controller outlives its view). Done when: each is removed with its
-  terminal, and a start clears leftovers.
+  terminal, and a start clears leftovers. Closed by `patches/expo-libghostty@0.8.1.patch`: the file goes right after
+  ghostty loads it (the shared controller is never deallocated, so one stayed per process), and a start
+  sweeps leftovers; proven on the simulator.
 - [x] **Codex 0.167: herdr's hook is untrusted, and Chat says to send a prompt.** Found by the agent lab:
   Codex holds a new pane on "Hooks need review" until the user trusts herdr's SessionStart hook (`/hooks`,
   or "Trust all" on that screen). Until then herdr reports no session, and Chat keeps saying "Codex reports
