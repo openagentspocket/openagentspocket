@@ -171,7 +171,7 @@ describe('FileDiffScreen', () => {
 
   it('renders the patch as numbered lines', async () => {
     await open();
-    await wrap(<FileDiffScreen agentId="a1" />);
+    await wrap(<FileDiffScreen agentId="a1" storage={new MemoryStorage()} />);
     await waitFor(() => expect(screen.getByTestId('diff-row')).toBeTruthy());
     expect(screen.getAllByTestId('diff-row-add')).toHaveLength(1);
     expect(screen.getAllByTestId('diff-row-del')).toHaveLength(1);
@@ -186,7 +186,7 @@ describe('FileDiffScreen', () => {
         return patchOf();
       },
     });
-    await wrap(<FileDiffScreen agentId="a1" />);
+    await wrap(<FileDiffScreen agentId="a1" storage={new MemoryStorage()} />);
     await waitFor(() => expect(screen.getByTestId('diff-failure')).toBeTruthy());
     fireEvent.press(screen.getByText(say('Try Again')));
     await waitFor(() => expect(screen.getByTestId('diff-row')).toBeTruthy());
@@ -194,7 +194,7 @@ describe('FileDiffScreen', () => {
 
   it('a truncated patch loads more at the extended cap', async () => {
     const { limits } = await open({ patch: async (limit) => patchOf(limit === 'initial') });
-    await wrap(<FileDiffScreen agentId="a1" />);
+    await wrap(<FileDiffScreen agentId="a1" storage={new MemoryStorage()} />);
     await waitFor(() => expect(screen.getByTestId('diff-row')).toBeTruthy());
     const more = screen.getAllByRole('button').at(-1);
     await act(async () => {
@@ -210,7 +210,7 @@ describe('FileDiffScreen', () => {
     'at width %d the layout toggle shows: %s, and switches to side by side',
     async (width, shown) => {
       await open();
-      await wrap(<FileDiffScreen agentId="a1" width={width} />);
+      await wrap(<FileDiffScreen agentId="a1" storage={new MemoryStorage()} width={width} />);
       await waitFor(() => expect(screen.getByTestId('diff-row')).toBeTruthy());
       expect(screen.queryByTestId('layout-split') !== null).toBe(shown);
       if (shown) {

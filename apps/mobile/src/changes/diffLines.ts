@@ -1,10 +1,12 @@
 import {
+  type CommentedLine,
   type DiffFile,
   type DiffNote,
   hunkTitle,
   unchangedLinesBefore,
 } from '@openagentspocket/core';
-import type { DiffHunk, DiffRowLine, DiffSegment } from '@openagentspocket/ui';
+import { t } from '@openagentspocket/i18n';
+import type { DiffHunk, DiffLabels, DiffRowLine, DiffSegment } from '@openagentspocket/ui';
 import { say } from './say';
 
 /** Git's own metadata notes: the Swift app shows these in English, so does this port. */
@@ -107,4 +109,28 @@ export function diffHunks(file: DiffFile): DiffHunk[] {
 /** Nothing to show: no hunks and no notes (an empty read, or only headers). */
 export function isEmptyPatch(files: readonly DiffFile[]): boolean {
   return files.every((file) => file.hunks.length === 0 && file.notes.length === 0);
+}
+
+/** The spoken heads of diff lines and the screen-reader action that comments on one. */
+export function diffRowLabels(): DiffLabels {
+  return {
+    added: (line) => (line === undefined ? say('Added') : say('Added, line %@', line)),
+    removed: (line) => (line === undefined ? say('Removed') : say('Removed, line %@', line)),
+    unchanged: (line) => (line === undefined ? say('Unchanged') : say('Unchanged, line %@', line)),
+    reference: t('Comment on Line'),
+  };
+}
+
+/**
+ * The line a comment points at: the new number and path for added and unchanged lines, the old
+ * ones for a removed line (it no longer exists in the new file).
+ */
+export function commentedLine(file: DiffFile, line: DiffRowLine): CommentedLine {
+  const removed = line.kind === 'del';
+  return {
+    path: (removed ? (file.oldPath ?? file.newPath) : (file.newPath ?? file.oldPath)) ?? '',
+    number: (removed ? line.oldNumber : line.newNumber) ?? 0,
+    removed,
+    text: line.text ?? (line.segments ?? []).map((segment) => segment.text).join(''),
+  };
 }

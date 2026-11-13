@@ -13,6 +13,7 @@ import {
   Chip,
   ChipRow,
   DiffRow,
+  type DiffRowLine,
   EmptyState,
   layoutModeFor,
   makeStyles,
@@ -21,7 +22,7 @@ import {
 } from '@openagentspocket/ui';
 import { useEffect, useMemo, useState } from 'react';
 import { useWindowDimensions, View } from 'react-native';
-import { diffHunks, isEmptyPatch, noteText, patchFileTitle } from './diffLines';
+import { diffHunks, diffRowLabels, isEmptyPatch, noteText, patchFileTitle } from './diffLines';
 import { say } from './say';
 
 const useStyles = makeStyles((t) => ({
@@ -52,7 +53,14 @@ function badgeFor(file: ChangedFile, patch: DiffFile, single: boolean) {
 
 /** Side by side needs two readable columns. */
 
-export function DiffContent({ diff, width: given }: { diff: FileDiffStore; width?: number }) {
+interface DiffContentProps {
+  diff: FileDiffStore;
+  width?: number;
+  /** Long press (or the screen-reader action) on a line; absent, lines take no action. */
+  onReference?: (file: DiffFile, line: DiffRowLine) => void;
+}
+
+export function DiffContent({ diff, width: given, onReference }: DiffContentProps) {
   const styles = useStyles();
   const [layout, setLayout] = useState<'unified' | 'split'>('unified');
   const window = useWindowDimensions();
@@ -139,6 +147,8 @@ export function DiffContent({ diff, width: given }: { diff: FileDiffStore; width
               file={badgeFor(state.file, patch, files.length === 1)}
               hunks={hunks[index] ?? []}
               layout={canSplit && layout === 'split' ? 'sideBySide' : 'unified'}
+              labels={diffRowLabels()}
+              onReference={onReference ? (line) => onReference(patch, line) : undefined}
             />
           </View>
         ))
