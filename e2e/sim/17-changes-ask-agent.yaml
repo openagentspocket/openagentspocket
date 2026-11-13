@@ -1,0 +1,36 @@
+# Smoke: Changes hands a commit request to the Agent's Composer and opens its Chat; nothing is sent.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- tapOn:
+    id: inbox-p2
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 15000
+- tapOn:
+    point: "90%,12%"
+- tapOn: "Changes"
+- extendedWaitUntil:
+    visible:
+      id: changes-ask-agent
+    timeout: 15000
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/17-changes-ask-agent
+- tapOn:
+    id: changes-ask-agent
+- extendedWaitUntil:
+    visible: "Commit Changes"
+    timeout: 4000
+- takeScreenshot: design/atlas/sim/17-changes-ask-agent-menu
+- tapOn: "Commit Changes"
+# Back on the Agent's Chat, with the request waiting in the Composer.
+- extendedWaitUntil:
+    visible:
+      id: composer-input
+    timeout: 15000
+- assertVisible: ".*uncommitted changes.*"
+- assertNotVisible:
+    id: changes-screen
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/17-changes-request-in-composer
