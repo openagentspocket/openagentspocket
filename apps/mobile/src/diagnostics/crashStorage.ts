@@ -1,4 +1,5 @@
 import Storage from 'expo-sqlite/kv-store';
+import { Platform } from 'react-native';
 import {
   type CrashStorage,
   type ErrorHooks,
@@ -13,6 +14,8 @@ export const crashStorage: CrashStorage = Storage;
 /** Called once at startup, before any screen renders. */
 export function recordUncaughtErrors(): void {
   installCrashRecorder((globalThis as { ErrorUtils?: ErrorHooks }).ErrorUtils, crashStorage);
+  // The fatal reporter is a native module: evaluating it on web throws, and web has no such report.
+  if (Platform.OS === 'web') return;
   // biome-ignore lint/suspicious/noReactNativeDeepImports: the only place a fatal error passes through
   const { default: reporter } = require('react-native/Libraries/Core/NativeExceptionsManager') as {
     default?: ExceptionReporter;
