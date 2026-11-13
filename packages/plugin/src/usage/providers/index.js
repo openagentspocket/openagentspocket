@@ -10,7 +10,6 @@ import { stubCollector } from "./stub.js";
  */
 export const COLLECTORS = [
   hermesCollector,
-  stubCollector("opencode-go", "session"),
   stubCollector("gemini", "interactive"),
   stubCollector("grok", "apiKey"),
   stubCollector("cursor", "session"),

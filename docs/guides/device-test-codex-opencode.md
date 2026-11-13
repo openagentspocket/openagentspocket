@@ -142,7 +142,7 @@ on done.
 - Approve from a notification. Its permission prompt has no numbered options, so its notifications carry no approval
   fields and stay a plain Blocked alert.
 - Live Activity Approve and Deny (they need Claude Code or Codex prompts).
-- A Usage card. The OpenCode Go collector is a stub that reports nothing, so no card appears.
+- A Usage card. OpenCode Go is not a listed provider (its limits are only in the web console).
 
 Steps:
 

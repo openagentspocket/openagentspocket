@@ -35,7 +35,7 @@ file on each side, never a UI branch.
 | Claude Code | `claude` CLI limits read, in-server on macOS | none (CLI's own sign-in; opt-in per device) | 5-hour, weekly, per-model weekly | works |
 | Codex | `codex app-server` `account/rateLimits/read`, or the last session's `token_count` event | none | primary (5-hour), secondary (weekly) | works |
 | Hermes (OpenRouter) | `GET https://openrouter.ai/api/v1/key` (bearer): `limit`, `limit_remaining`, `limit_reset`, `usage_daily/weekly/monthly`, `free_model_daily_requests` | Host's OpenRouter API key | credit limit with its reset period (daily/weekly/monthly, UTC), free-model requests per UTC day | works once the Host names a key file: `createHermesCollector` does the request (10 s timeout, no redirects, key only in the Authorization header, never in a report); tested against a fake local server (ok, 401, no limits, 500, odd body, timeout). No `hermes` entry in `providers.json`: not reported. Entry with a missing or non-private key file: reported `disabled` (the card reads off). Proxy settings are not applied |
-| OpenCode Go | opencode.ai console only; a GitHub issue says no CLI or API exposes usage. Docs list a rolling 5-hour, weekly and monthly allowance (dollar caps in older docs, percentages of the monthly cap in newer ones; verify before relying) | console session (cookie) | 5-hour, weekly, monthly | stub, reports nothing; needs a supported source first |
+| OpenCode Go | opencode.ai console only; a GitHub issue says no CLI or API exposes usage. Docs list a rolling 5-hour, weekly and monthly allowance (dollar caps in older docs, percentages of the monthly cap in newer ones; verify before relying) | console session (cookie) | 5-hour, weekly, monthly | not listed: no source a Host script can read without a console session cookie (re-checked 2026-11-13: docs name only the console and a per-response `opencode.allowance`; opencode issue 31084 asks for a CLI). Add the provider when a CLI or API lands |
 | Gemini CLI | `/stats` inside a session shows quota; Google documents daily request caps by sign-in (for example 1,000/day with a personal Google account) | none, but no non-interactive source found | one daily request window | stub, reports nothing |
 | Grok, Cursor | not researched to a source. Cursor's usage page works from a logged-in browser session (cookie) | session or key | unknown | stubs, report nothing |
 
@@ -47,5 +47,5 @@ Beyond Claude and Codex, only Hermes is readable, and only with the Host owner's
 Replace `stubCollector("<program>", ...)` in `COLLECTORS` with a module exporting a collector, read its key
 through `readProviderConfig` and `readSecretFile`, return windows in the report's `usageLimits` shape
 (`{ id, label, durationMinutes, usedPercent, resetsAt, expired }`), and add `<program>` to `builtin.ts` in
-core if it is not there (Hermes and OpenCode Go are). A plugin release carries it; older plugins simply do
+core if it is not there (Hermes is). A plugin release carries it; older plugins simply do
 not report the program.

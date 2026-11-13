@@ -67,7 +67,7 @@ so no program-specific branches.
   reducer reads that call only for a patch. Done when: the skipped test in `chat/codex/lab.test.ts` passes.
 - [x] **Codex: the mode chip says Default Mode while a Plan Mode question covers the footer.** Found by the
   agent lab. Done when: the skipped test in `blocked/codex-lab.test.ts` passes (keep the last mode read).
-- [ ] **OpenCode Go usage is a stub.** Done when: it reports real limits, or the provider is not listed.
+- [x] **OpenCode Go usage is a stub.** Closed by not listing it: limits live only in the web console (cookie session), no CLI, file or API a Host script can read.
 - [x] **Connection sheet: the failure text touches the pinned actions** on a fit-height sheet.
 - [x] **Demo Home: every Session thumbnail shows the same screen.**
 - [ ] **OpenCode: a background subagent's permission can look like the main session's.** Reject then opens
