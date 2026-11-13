@@ -16,7 +16,7 @@ export interface BackgroundWorkView {
   presentation: BackgroundWorkPresentation;
   /** A live read shows work running: the conversation keeps its active pace. */
   holdsPace: boolean;
-  /** The id a Subagent's transcript opens by, from the call that launched it; null when unknown. */
+  /** The id a Subagent's transcript opens by, from its launch; null when unknown or unsafe as a path. */
   subagentIdOf: (workId: string) => string | null;
 }
 
@@ -53,13 +53,10 @@ export function useBackgroundWork(hostId: string, paneId: string): BackgroundWor
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, [ticks]);
-  const entries = snapshot.transcript.entries;
+  const items = snapshot.transcript.backgroundWork;
   const subagentIdOf = useCallback(
-    (workId: string) => {
-      const entry = entries.find((candidate) => candidate.id === workId);
-      return entry?.content.type === 'tool' ? entry.content.value.subagentAgentID : null;
-    },
-    [entries],
+    (workId: string) => items.find((item) => item.id === workId)?.agentID ?? null,
+    [items],
   );
   return { work, presentation, holdsPace: holdsActivePace(work), subagentIdOf };
 }
