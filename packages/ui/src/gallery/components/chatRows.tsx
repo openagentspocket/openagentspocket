@@ -1,4 +1,5 @@
 import { ChatDivider } from '../../components/ChatDivider';
+import { ChatMessageActions } from '../../components/ChatMessageActions';
 import { ChatNoticeRow } from '../../components/ChatNoticeRow';
 import { ChatThoughtRow } from '../../components/ChatThoughtRow';
 import { ChatToolRow } from '../../components/ChatToolRow';
@@ -70,6 +71,19 @@ export const chatRowsEntries: readonly CatalogEntry[] = [
       {
         id: 'compacted',
         render: () => <ChatDivider kind="compacted" label="Context compacted" />,
+      },
+    ],
+  },
+  {
+    name: 'ChatMessageActions',
+    variants: [
+      {
+        id: 'default',
+        render: () => (
+          <ChatMessageActions
+            items={[{ key: 'copy', title: 'Copy', icon: 'copy', onPress: noop }]}
+          />
+        ),
       },
     ],
   },

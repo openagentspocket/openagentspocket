@@ -25,7 +25,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | UX3-home-shell | `gallery/components/homeShell.tsx` | InboxCard, SessionsStrip, HomeHostCard, UsageRing, Fab, LargeTitleBar |
 | UX3-nav-sheets | `gallery/components/navSheets.tsx` | ListToolbar, QuickSheetHeader, SearchBar, TextPromptSheet, ConnectionSheet, KeyValueGroup |
 | UX3-agent-bar | `gallery/components/agentBar.tsx` | AgentHeader, SessionDrawer, ComposerCard, ChangeRow |
-| UX3-chat-rows | `gallery/components/chatRows.tsx` | ChatUserBubble, ChatDivider, ChatThoughtRow, ChatToolRow, ChatNoticeRow, DiffRow |
+| UX3-chat-rows | `gallery/components/chatRows.tsx` | ChatUserBubble, ChatDivider, ChatMessageActions, ChatThoughtRow, ChatToolRow, ChatNoticeRow, DiffRow |
 | UX3-blocked-terminal | `gallery/components/blockedTerminal.tsx` | BackgroundWorkStrip, NoticeBanner, TerminalToolbar, KeyPad |
 | UX3-usage | `gallery/components/usage.tsx` | UsageLimitChip, ProviderUsageCard, LimitWindowRow, UsageTotals, UsageChart, UsageHeatMap, UsageBreakdownRow |
 | UX3-hosts-settings-files | `gallery/components/hostsSettingsFiles.tsx` | HostRow, HostStatusCard, ThemeChoiceCard, FileRow, PortRow, ChoiceSheet, CommandBlock |
@@ -60,6 +60,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [ChangeRow](#changerow) | UX3-agent-bar | `changes.list`<br>`agent-detail.status-line` | summary: [ref](ref/ChangeRow.summary.png) · [light](ref/ChangeRow.summary.light.png)<br>file: [ref](ref/ChangeRow.file.png) · [light](ref/ChangeRow.file.light.png) | `apps/mobile/src/changes/ChangedFileRow.tsx`<br>`apps/mobile/src/changes/ChangesHeader.tsx` | `Changes/ChangesView.swift:147-355`<br>`Changes/ChangesCountsViews.swift:1-119`<br>`Changes/ChangesBadge.swift:1-160` |
 | [ChatUserBubble](#chatuserbubble) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-timeline` | default: [ref](ref/ChatUserBubble.png) · [light](ref/ChatUserBubble.light.png)<br>pending: none | none | `Chat/Timeline/ChatRowView.swift:150-255` |
 | [ChatDivider](#chatdivider) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-timeline` | turn: [ref](ref/ChatDivider.turn.png) · [light](ref/ChatDivider.turn.light.png)<br>working: [ref](ref/ChatDivider.working.png) · [light](ref/ChatDivider.working.light.png)<br>compacted: [ref](ref/ChatDivider.compacted.png) · [light](ref/ChatDivider.compacted.light.png) | none | `Chat/Timeline/ChatRowView.swift:301-387`<br>`Chat/Timeline/ChatRowView.swift:1148-1236` |
+| [ChatMessageActions](#chatmessageactions) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-timeline` | default: none | `packages/ui/src/components/ChatMessageActions.tsx` |  |
 | [ChatThoughtRow](#chatthoughtrow) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-timeline` | default: [ref](ref/ChatThoughtRow.png) · [light](ref/ChatThoughtRow.light.png) | none | `Chat/Timeline/ChatRowView.swift:255-301` |
 | [ChatToolRow](#chattoolrow) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-blocked-card`<br>`agent-detail.chat-background-strip`<br>`agent-detail.subagent-transcript` | default: [ref](ref/ChatToolRow.png) · [light](ref/ChatToolRow.light.png)<br>waiting: [ref](ref/ChatToolRow.waiting.png) · [light](ref/ChatToolRow.waiting.light.png)<br>subagents: [ref](ref/ChatToolRow.subagents.png) · [light](ref/ChatToolRow.subagents.light.png)<br>line: none<br>running: none<br>group: none | none | `Chat/Timeline/ChatRowView.swift:387-1014`<br>`Chat/Timeline/ChatFileDiffView.swift:139-300` |
 | [ChatNoticeRow](#chatnoticerow) | UX3-chat-rows | `agent-detail.chat-floating-controls`<br>`agent-detail.chat-background-strip` | default: [ref](ref/ChatNoticeRow.png) · [light](ref/ChatNoticeRow.light.png) | none | `Chat/Timeline/ChatRowView.swift:1088-1148` |
@@ -543,6 +544,23 @@ Acceptance (the judge ticks each on the side-by-side):
 
 - [ ] footnote secondary text, chevron after the label for turn
 - [ ] compacted: label centered between two hairlines, caption2
+
+## ChatMessageActions
+
+Task UX3-chat-rows · target `packages/ui/src/components/ChatMessageActions.tsx` · composes Button
+
+Props sketch: `{ items: ActionMenuItem[], testID? }`
+
+Interactions: each button runs the same action as the message's long press menu item
+
+Variants (gallery variant id = the id before the colon):
+
+- `default`: a small Copy glyph button under the Agent's latest answer · crop none
+
+Acceptance (the judge ticks each on the side-by-side):
+
+- [ ] only under the latest finished answer, never under the running turn
+- [ ] glyph buttons in text ink, one per long press menu item
 
 ## ChatThoughtRow
 

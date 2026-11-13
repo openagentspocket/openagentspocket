@@ -1,5 +1,6 @@
 // Barrel of the UX3 group 'chatRows'.
 export { ChatDivider, formatClock } from './ChatDivider';
+export { ChatMessageActions } from './ChatMessageActions';
 export { ChatNoticeRow } from './ChatNoticeRow';
 export { ChatQuestions, type ChatQuestionsItem } from './ChatQuestions';
 export { ChatThoughtRow } from './ChatThoughtRow';

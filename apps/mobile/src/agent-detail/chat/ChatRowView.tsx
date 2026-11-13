@@ -10,6 +10,7 @@ import {
   type ActionMenuItem,
   Button,
   ChatDivider,
+  ChatMessageActions,
   ChatNoticeRow,
   ChatThoughtRow,
   ChatToolRow,
@@ -33,10 +34,11 @@ const useStyles = makeStyles((th) => ({
   inset: { paddingHorizontal: th.spacing.md },
   nested: { paddingLeft: th.spacing.sm },
   center: { alignItems: 'center' },
+  actions: { paddingTop: th.spacing.xxs },
 }));
 
-/** Copy, for a row that has text to copy. */
-function copyMenu(text: string | null): ActionMenuItem[] | undefined {
+/** Copy, for a row that has text to copy: the long press menu, and the actions under the latest answer. */
+function copyMenu(text: string | null | undefined): ActionMenuItem[] | undefined {
   if (!text) return undefined;
   const title = t('Copy');
   return [
@@ -53,6 +55,8 @@ interface Props {
   /** Opens a Subagent's own transcript by the id its call reported. */
   onOpenSubagent?: (agentId: string) => void;
   now: number;
+  /** The whole latest answer, when this row ends it: its actions show under the row. */
+  answer?: string;
 }
 
 /** One timeline row in the Swift app's look: quiet bubbles, flat answers, compact tool rows. */
@@ -63,12 +67,14 @@ export const ChatRowView = memo(function ChatRowView({
   onLoadOlder,
   onOpenSubagent,
   now,
+  answer,
 }: Props) {
   const styles = useStyles();
   const [open, setOpen] = useState(false);
   const { content } = row;
   const menu = useMemo(() => copyMenu(rowCopyText(content)), [content]);
   const copy = useRowMenu(menu);
+  const answerActions = useMemo(() => copyMenu(answer), [answer]);
   const { openCalls } = useAgentWait();
   const body = () => {
     switch (content.type) {
@@ -96,7 +102,16 @@ export const ChatRowView = memo(function ChatRowView({
         );
       }
       case 'assistant':
-        return <Markdown text={content.source} onLongPress={copy.onLongPress} />;
+        return (
+          <>
+            <Markdown text={content.source} onLongPress={copy.onLongPress} />
+            {answerActions ? (
+              <View style={styles.actions}>
+                <ChatMessageActions items={answerActions} />
+              </View>
+            ) : null}
+          </>
+        );
       case 'plan':
         return <Markdown text={content.plan.text} onLongPress={copy.onLongPress} />;
       case 'reasoning':

@@ -2,6 +2,7 @@ import {
   type ChatAgentActivity,
   type ChatRow,
   type ComposerMessage,
+  latestAnswer,
   pendingEchoes,
 } from '@openagentspocket/core';
 import { makeStyles, metrics } from '@openagentspocket/ui';
@@ -71,6 +72,7 @@ export function ChatTimeline({
   const { rows, toggle } = useChatRows(conversation.state, activity, pending);
   // Inverted: the newest row sits at offset 0, where the list opens and stays.
   const newestFirst = useMemo(() => [...rows].reverse(), [rows]);
+  const answer = useMemo(() => latestAnswer(rows), [rows]);
   const list = useRef<FlatList<ChatRow>>(null);
   const follow = useChatFollow(list, messages.length, visit);
   const banners = (
@@ -116,6 +118,7 @@ export function ChatTimeline({
             onLoadOlder={() => conversation.loadOlder(false)}
             onOpenSubagent={openSubagent}
             now={Date.now()}
+            answer={item.id === answer?.id ? answer.text : undefined}
           />
         )}
       />

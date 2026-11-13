@@ -620,6 +620,21 @@
       ]
     },
     {
+      "name": "ChatMessageActions",
+      "group": "chat-rows",
+      "swift": [],
+      "screens": ["agent-detail.chat", "agent-detail.chat-timeline"],
+      "variants": ["default|a small Copy glyph button under the Agent's latest answer"],
+      "interactions": "each button runs the same action as the message's long press menu item",
+      "rnToday": ["packages/ui/src/components/ChatMessageActions.tsx"],
+      "props": "{ items: ActionMenuItem[], testID? }",
+      "composes": ["Button"],
+      "accept": [
+        "only under the latest finished answer, never under the running turn",
+        "glyph buttons in text ink, one per long press menu item"
+      ]
+    },
+    {
       "name": "ChatThoughtRow",
       "group": "chat-rows",
       "swift": ["Chat/Timeline/ChatRowView.swift:255-301"],

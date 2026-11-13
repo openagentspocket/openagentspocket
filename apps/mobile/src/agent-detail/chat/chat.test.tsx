@@ -1,13 +1,17 @@
 import { MemoryStorage } from '@openagentspocket/core';
 import { ThemeProvider } from '@openagentspocket/ui';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react-native';
 import { AtlasChat } from '@/dev/atlas/atlasChat';
 import { TestSettings } from '@/settings/TestSettings';
 import { AgentDetailScreen } from '../AgentDetailScreen';
 import { durationText, rowToolStatus } from './chatRowModel';
 
 jest.mock('expo-router', () => ({ useRouter: () => ({ push: jest.fn() }) }));
-jest.mock('expo-clipboard', () => ({ getStringAsync: async () => '' }));
+const mockCopy = jest.fn(async (_text: string) => true);
+jest.mock('expo-clipboard', () => ({
+  getStringAsync: async () => '',
+  setStringAsync: (text: string) => mockCopy(text),
+}));
 describe('chat row model', () => {
   it('formats durations as seconds, then minutes and seconds', () => {
     expect(durationText(26)).toBe('26s');
@@ -23,26 +27,41 @@ describe('chat row model', () => {
 
 jest.setTimeout(30_000);
 
+async function showAtlasChat() {
+  await render(
+    <ThemeProvider themeId="indigo">
+      <TestSettings>
+        <AtlasChat>
+          <AgentDetailScreen
+            hostId="demo"
+            paneId="p2"
+            storage={new MemoryStorage()}
+            surface="chat"
+            onSwitch={jest.fn()}
+          />
+        </AtlasChat>
+      </TestSettings>
+    </ThemeProvider>,
+  );
+}
+
 describe('Chat timeline in the Agent detail', () => {
   it('folds a finished turn behind its header and opens it on tap', async () => {
-    await render(
-      <ThemeProvider themeId="indigo">
-        <TestSettings>
-          <AtlasChat>
-            <AgentDetailScreen
-              hostId="demo"
-              paneId="p2"
-              storage={new MemoryStorage()}
-              surface="chat"
-              onSwitch={jest.fn()}
-            />
-          </AtlasChat>
-        </TestSettings>
-      </ThemeProvider>,
-    );
+    await showAtlasChat();
     await waitFor(() => expect(screen.getAllByTestId(/^chat-row-turn:/).length).toBe(1));
     expect(screen.queryByText('Checking which controls the bar shows at each width.')).toBeNull();
     await fireEvent.press(screen.getAllByRole('button', { name: /^.+26s/ })[0] as never);
     await waitFor(() => expect(screen.getAllByTestId(/^chat-row-entry:t1/).length).toBe(1));
+  });
+});
+
+describe('the actions under the latest answer', () => {
+  it('show once, under the finished answer and not the running turn, and copy it', async () => {
+    await showAtlasChat();
+    await waitFor(() => expect(screen.getAllByTestId('chat-message-actions')).toHaveLength(1));
+    const answer = screen.getByTestId('chat-row-entry:a1');
+    expect(within(answer).getByTestId('chat-message-actions')).toBeTruthy();
+    await fireEvent.press(within(answer).getByTestId('chat-message-action-copy'));
+    expect(mockCopy).toHaveBeenCalledWith(expect.stringContaining('The toolbar now fits'));
   });
 });
