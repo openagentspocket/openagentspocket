@@ -141,6 +141,12 @@ function labelOf(tool: OpenCodeTool, kind: ToolKind): { title: string; subtitle:
   }
 }
 
+/** A shell call's description (OpenCode's bash tool asks for one), which its row shows over the command. */
+function purposeOf(tool: OpenCodeTool, kind: ToolKind, title: string): string | null {
+  const description = tool.input.description?.trim() ?? '';
+  return kind === 'command' && description !== '' && description !== title ? description : null;
+}
+
 /** The questions a question tool asked, each with its answer once given. */
 function questionsOf(tool: OpenCodeTool): ChatQuestion[] {
   const answers = tool.metadata?.answers ?? [];
@@ -235,6 +241,7 @@ export function openCodeToolActivity(
     name: tool.name,
     title: prefix500(label.title),
     subtitle: label.subtitle,
+    purpose: purposeOf(tool, kind, label.title),
     status,
     exitCode: status === 'failed' ? (tool.metadata?.exit ?? null) : null,
     questions,

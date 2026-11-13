@@ -151,6 +151,13 @@ export interface ChatToolActivity {
   name: string;
   title: string;
   subtitle: string | null;
+  /**
+   * What the call is for, in the program's own words (a shell command's description), which the
+   * row shows as its title. Null when the program records none. This port's: goldens leave it out.
+   */
+  purpose: string | null;
+  /** The command line as run, when the title is not it (it is the purpose). This port's, like `purpose`. */
+  command: string | null;
   status: ToolStatus;
   note: string | null;
   diff: ChatDiffStats | null;

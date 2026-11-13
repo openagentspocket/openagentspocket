@@ -1,4 +1,9 @@
-import { type ChatRow, rowCopyText, withoutAttachmentPaths } from '@openagentspocket/core';
+import {
+  type ChatRow,
+  rowCopyText,
+  toolLine,
+  withoutAttachmentPaths,
+} from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   ActionMenu,
@@ -129,12 +134,13 @@ export const ChatRowView = memo(function ChatRowView({
             />
           );
         }
+        const line = toolLine(content.tool);
         return (
           <ChatToolRow
             tool={{
               icon: toolIcon(content.tool.kind),
-              title: content.tool.subtitle ?? content.tool.title,
-              monospaced: content.tool.kind === 'command',
+              title: line.title,
+              monospaced: line.isCommand,
               status,
               statusLabel: asking ? t('Waiting') : toolStatusLabel(content.tool),
               added: content.tool.diff?.added,
@@ -149,7 +155,7 @@ export const ChatRowView = memo(function ChatRowView({
                     showsText={content.tool.questions.length > 1}
                   />
                 ) : null}
-                <ChatToolDetail hostId={hostId} tool={content.tool} />
+                <ChatToolDetail hostId={hostId} tool={content.tool} command={line.command} />
               </>
             }
             expanded={open || asking}

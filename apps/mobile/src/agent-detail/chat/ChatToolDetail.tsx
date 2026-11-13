@@ -92,14 +92,26 @@ function HostImage({ hostId, path }: { hostId: string; path: string }) {
   );
 }
 
-/** What an open tool row shows: the files it changed, its output, its picture. */
-export function ChatToolDetail({ hostId, tool }: { hostId: string; tool: ChatToolActivity }) {
+interface DetailProps {
+  hostId: string;
+  tool: ChatToolActivity;
+  /** The command line as run, when the row's title shows something shorter. */
+  command?: string | null;
+}
+
+/** What an open tool row shows: the command line it ran, the files it changed, its output, its picture. */
+export function ChatToolDetail({ hostId, tool, command }: DetailProps) {
   const styles = useStyles();
   const text = toolDetailText(tool);
   const images = tool.preview?.imageCount ?? 0;
   const changes = tool.fileChanges;
   return (
     <View style={styles.stack} testID="chat-tool-detail">
+      {command ? (
+        <Text variant="caption" monospaced selectable testID="chat-tool-command">
+          {command}
+        </Text>
+      ) : null}
       {changes?.files.map((change) => (
         <FileDiff key={change.path} change={change} directory={changes.directory} />
       ))}

@@ -44,6 +44,14 @@ describe('an open tool row', () => {
     expect(screen.getByText('a.txt')).toBeTruthy();
   });
 
+  it('is titled by its description and shows the command line once open', async () => {
+    const command = 'S=/tmp/x; cd "$S" && pnpm test --filter core -- --run';
+    await show(row({ title: 'Run the core tests', purpose: 'Run the core tests', command }));
+    expect(screen.queryByText(command)).toBeNull();
+    await fireEvent.press(screen.getByLabelText('Run the core tests'));
+    expect(screen.getByTestId('chat-tool-command')).toHaveTextContent(command);
+  });
+
   it('shows the lines of the files it changed', async () => {
     await show(
       row({

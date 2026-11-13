@@ -83,6 +83,8 @@ interface Summary {
   kind: ToolKind;
   title: string;
   subtitle: string | null;
+  /** A command's description, which the row shows over the command line (the title). */
+  purpose: string | null;
 }
 
 /** What a server-side search looked for: its title after `Web search:` or `X search:`, without quotes. */
@@ -168,9 +170,12 @@ export function toolSummary(call: GrokToolCall, directory: string | null): Summa
       title = null;
   }
   const shownTitle = title !== null && title !== '' ? title : fallbackTitle(call);
+  const shownSubtitle =
+    subtitle === null || subtitle === '' || subtitle === shownTitle ? null : subtitle;
   return {
     kind,
     title: shownTitle,
-    subtitle: subtitle === null || subtitle === '' || subtitle === shownTitle ? null : subtitle,
+    subtitle: shownSubtitle,
+    purpose: kind === 'command' ? shownSubtitle : null,
   };
 }

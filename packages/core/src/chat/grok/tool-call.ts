@@ -249,6 +249,7 @@ export class GrokToolCall {
       name: this.toolName,
       title: summary.title,
       subtitle: summary.subtitle,
+      purpose: summary.purpose,
       status,
       note,
       questions,

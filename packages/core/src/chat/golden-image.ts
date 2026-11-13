@@ -4,11 +4,17 @@
 
 import type { ChatBackgroundWorkItem, ChatEntry, ChatTranscript } from './model/types';
 
+/** An entry as Swift holds it: a tool's purpose and command line are this port's, so they are left out. */
 function entryImage(entry: ChatEntry): unknown {
+  let value: unknown = entry.content.value;
+  if (entry.content.type === 'tool') {
+    const { purpose: _purpose, command: _command, ...swift } = entry.content.value;
+    value = swift;
+  }
   return {
     id: entry.id,
     sourceOffset: entry.sourceOffset,
-    content: { [entry.content.type]: entry.content.value },
+    content: { [entry.content.type]: value },
   };
 }
 

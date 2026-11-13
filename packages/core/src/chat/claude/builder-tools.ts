@@ -13,6 +13,7 @@ import { dateOf, modelChangeTitle } from './prompts';
 import type { ClaudeRecord, ClaudeToolUse, ClaudeToolUseResult } from './record-types';
 import { noticeParts } from './text';
 import {
+  commandPurpose,
   outcomeNote,
   outcomeStatus,
   pendingDetail,
@@ -186,6 +187,7 @@ export abstract class ToolBuilder extends BuilderBase {
       name: use.name,
       title: summary.title,
       subtitle: summary.subtitle,
+      ...commandPurpose(use),
       status,
       callID: use.id === '' ? null : use.id,
     });

@@ -2,6 +2,7 @@
 
 import { isAbsoluteHostPath } from '../model/paths';
 import { capPreview, relativeToDirectory } from '../model/preview';
+import { isAssignment, RESERVED_WORDS, simpleCommands } from '../model/shell-words';
 import type {
   ChatFileChanges,
   ChatToolActivity,
@@ -10,7 +11,6 @@ import type {
   ToolStatus,
 } from '../model/types';
 import type { ClaudeToolResult, ClaudeToolResultDetails, ClaudeToolUse } from './record-types';
-import { isAssignment, RESERVED_WORDS, simpleCommands } from './shell-words';
 import { isMarker } from './user-text';
 
 export interface ClaudeToolSummary {
@@ -24,6 +24,16 @@ const SELECT_PREFIX = 'select:';
 function first(...values: (string | null)[]): string | null {
   for (const value of values) if (value !== null && value !== '') return value;
   return null;
+}
+
+/** A shell call's description, which its row shows, and the command line it stands for. */
+export function commandPurpose(use: ClaudeToolUse): Pick<ChatToolActivity, 'purpose' | 'command'> {
+  if (use.name !== 'Bash' && use.name !== 'PowerShell') return { purpose: null, command: null };
+  const command = use.input.command ?? '';
+  const description = first(use.input.description);
+  return description === null || description === command
+    ? { purpose: null, command: null }
+    : { purpose: description, command };
 }
 
 export function summarizeTool(

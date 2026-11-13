@@ -9,3 +9,4 @@ export * from './row';
 export * from './row-detail';
 export * from './status';
 export { displayFilePath, summaryOfTools } from './summary';
+export { shortCommand, type ToolLine, toolLine } from './tool-line';

@@ -29,6 +29,8 @@ export function toolActivity(
     subagentAgentID: null,
     imagePath: null,
     subtitle: null,
+    purpose: null,
+    command: null,
     note: null,
     diff: null,
     fileChanges: null,

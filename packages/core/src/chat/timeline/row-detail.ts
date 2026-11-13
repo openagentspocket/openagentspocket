@@ -1,5 +1,6 @@
 import type { ChatDiffHunk, ChatToolActivity } from '../model/types';
 import type { ChatRowContent } from './row';
+import { toolLine } from './tool-line';
 
 export interface ChatDiffLine {
   readonly kind: 'add' | 'del' | 'context';
@@ -47,10 +48,12 @@ export function rowCopyText(content: ChatRowContent): string | null {
       return content.plan.text;
     case 'reasoning':
       return content.reasoning.text;
-    case 'tool':
-      return [content.tool.subtitle ?? content.tool.title, toolDetailText(content.tool)]
+    case 'tool': {
+      const line = toolLine(content.tool);
+      return [line.command ?? line.title, toolDetailText(content.tool)]
         .filter((part) => part !== null)
         .join('\n\n');
+    }
     default:
       return null;
   }

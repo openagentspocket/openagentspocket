@@ -107,7 +107,10 @@ const ENTRIES: ChatEntry[] = [
       value: toolActivity({
         kind: 'command',
         name: 'Bash',
-        title: 'swift test --filter AttachToolbarSnapshotTests',
+        title: 'Run the toolbar snapshots at the accessibility sizes',
+        purpose: 'Run the toolbar snapshots at the accessibility sizes',
+        command:
+          'cd Packages/Attach && swift test --filter AttachToolbarSnapshotTests 2>&1 | tail -n 40',
         status: 'failed',
         exitCode: 1,
       }),
