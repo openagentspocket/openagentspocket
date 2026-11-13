@@ -44,7 +44,7 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, NamedTuple, Optional, Set, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_ROOT = Path("/tmp/oap-lab")
@@ -197,16 +197,69 @@ def resolve(name: str, fallback: Optional[str] = None) -> str:
     return os.path.realpath(found)
 
 
-def lab_processes(root: Path) -> List[int]:
-    """Processes holding a file under the root or running from it: only the lab's own."""
-    held = subprocess.run(["lsof", "-t", "+D", str(root)], capture_output=True, text=True)
-    pids = {int(line) for line in held.stdout.split() if line.strip().isdigit()}
-    listing = subprocess.run(["ps", "-axo", "pid=,command="], capture_output=True, text=True)
+class Proc(NamedTuple):
+    pid: int
+    ppid: int
+    pgid: int
+    command: str
+
+
+def root_forms(root: Path) -> List[str]:
+    """The root as a command line may spell it: /tmp and /private/tmp are one directory on macOS."""
+    forms = {str(root), os.path.realpath(str(root))}
+    forms |= {form[len("/private"):] for form in list(forms) if form.startswith("/private/")}
+    return sorted(forms)
+
+
+def select_targets(table: List[Proc], recorded: Set[int], root_paths: List[str],
+                   exclude: Set[int]) -> Set[int]:
+    """The processes the lab may signal: the ones it recorded, their descendants, members of the
+    recorded process groups (each spawn leads its own session, so a child re-parented to launchd
+    keeps its group), and anything executing from inside the root with its descendants. Never a
+    pid in `exclude`. A process that only names a path in the root (`tail -f <root>/log`) or sits
+    in it as its working directory is not selected."""
+    children: Dict[int, List[int]] = {}
+    for proc in table:
+        children.setdefault(proc.ppid, []).append(proc.pid)
+    inside = {proc.pid for proc in table
+              if any(proc.command.startswith(form + "/") for form in root_paths)}
+    targets = {proc.pid for proc in table if proc.pid in recorded} | inside
+    pending = list(targets)
+    while pending:
+        for child in children.get(pending.pop(), []):
+            if child not in targets:
+                targets.add(child)
+                pending.append(child)
+    targets |= {proc.pid for proc in table if proc.pgid in recorded}
+    return targets - exclude
+
+
+def process_table() -> List[Proc]:
+    listing = subprocess.run(["ps", "-axo", "pid=,ppid=,pgid=,command="], capture_output=True,
+                             text=True)
+    table = []
     for line in listing.stdout.splitlines():
-        parts = line.strip().split(None, 1)
-        if len(parts) == 2 and parts[1].startswith(str(root) + "/"):
-            pids.add(int(parts[0]))
-    return sorted(pids - {os.getpid()})
+        parts = line.split(None, 3)
+        if len(parts) == 4 and parts[0].isdigit():
+            table.append(Proc(int(parts[0]), int(parts[1]), int(parts[2]), parts[3]))
+    return table
+
+
+def own_ancestry(table: List[Proc]) -> Set[int]:
+    """This script and the shells that called it, which may sit in the root."""
+    parents = {proc.pid: proc.ppid for proc in table}
+    found: Set[int] = set()
+    pid = os.getpid()
+    while pid > 1 and pid not in found:
+        found.add(pid)
+        pid = parents.get(pid, 1)
+    return found
+
+
+def holders(root: Path) -> Set[int]:
+    """Processes with a file or working directory under the root."""
+    held = subprocess.run(["lsof", "-t", "+D", str(root)], capture_output=True, text=True)
+    return {int(line) for line in held.stdout.split() if line.strip().isdigit()}
 
 
 # ---------------------------------------------------------------------------- start
@@ -459,8 +512,16 @@ def terminate(pids: List[int]) -> None:
                 pass
 
 
-def stop_everything(state: dict) -> List[int]:
+def stop_everything(state: dict) -> Tuple[List[str], List[str]]:
+    """Signals only the lab's own processes. Returns (survivors, foreign holders) as `pid command`
+    lines; a process the lab did not start that holds a file under the root is never signalled."""
     root = Path(state["root"])
+    forms = root_forms(root)
+    recorded = {r["pid"] for r in state["processes"].values() if is_ours(r)}
+    table = process_table()
+    exclude = own_ancestry(table)
+    # Walked before anything stops, while every child still has its parent.
+    known = select_targets(table, recorded, forms, exclude)
     herdr_record = state["processes"].get("herdr")
     if is_ours(herdr_record):
         try:
@@ -468,10 +529,12 @@ def stop_everything(state: dict) -> List[int]:
         except subprocess.TimeoutExpired:
             pass
         wait_until(lambda: not is_ours(herdr_record), 10)
-    terminate([r["pid"] for r in state["processes"].values() if is_ours(r)])
-    # Whatever still holds a file in the root was started by the lab (an Agent, its server).
-    terminate(lab_processes(root))
-    return lab_processes(root)
+    known |= select_targets(process_table(), recorded | known, forms, exclude)
+    terminate(sorted(known))
+    commands = {proc.pid: proc.command for proc in process_table()}
+    survivors = [f"{pid} {commands[pid]}" for pid in sorted(known) if pid in commands]
+    foreign = [f"{pid} {commands.get(pid, '?')}" for pid in sorted(holders(root) - known - exclude)]
+    return survivors, foreign
 
 
 def command_stop(args: argparse.Namespace) -> int:
@@ -479,9 +542,14 @@ def command_stop(args: argparse.Namespace) -> int:
     if not (root / MARKER).exists():
         raise LabError(f"{root} is not a lab root (no {MARKER})")
     state = load_state(root) if state_path(root).exists() else {"root": str(root), "processes": {}}
-    survivors = stop_everything(state)
-    if survivors:
-        print(f"Still running after stop (root kept): {survivors}", file=sys.stderr)
+    survivors, foreign = stop_everything(state)
+    if survivors or foreign:
+        for line in survivors:
+            print(f"still running (started by the lab): {line}", file=sys.stderr)
+        for line in foreign:
+            print(f"not started by the lab, holds a file under the root, not signalled: {line}",
+                  file=sys.stderr)
+        print(f"Root kept for inspection: {root}", file=sys.stderr)
         return 1
     if args.keep:
         print(f"Stopped; kept {root}")
