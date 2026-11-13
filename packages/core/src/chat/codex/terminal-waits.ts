@@ -17,7 +17,7 @@ export const CODEX_HOOK_REVIEW: TerminalWait = {
   title: () => message("Codex Asks to Review herdr's Hook"),
   explanation: () =>
     message(
-      "Codex is waiting for you to review herdr's hook, which reports this conversation to Chat. Answer it in the terminal: Trust all and continue, or review it there. Chat shows the conversation once Codex reports it.",
+      "Codex is waiting for you to review herdr's hook, which reports this conversation to Chat. Review it in the terminal and trust it there. Chat shows the conversation once Codex reports it.",
     ),
 };
 
@@ -30,5 +30,5 @@ export const codexNotReportingMessage = () =>
 
 export const codexSetupNote = () =>
   message(
-    "Codex asks you to trust herdr's hook the first time it starts with it: choose Trust all and continue, or run /hooks. Until then Chat can't show its conversation.",
+    "Codex asks you to trust herdr's hook the first time it starts with it: review it on that screen, or run /hooks later. Until then Chat can't show its conversation.",
   );
