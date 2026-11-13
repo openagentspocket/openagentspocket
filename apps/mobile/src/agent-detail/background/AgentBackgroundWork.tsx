@@ -1,4 +1,4 @@
-import { chatStatusLine, isFinishedStatus } from '@openagentspocket/core';
+import { chatStatusLine } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import {
   BackgroundWorkList,
@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useBackgroundWork } from '@/conversations/useBackgroundWork';
 import { useBackgroundWorkAsks, useDetailUi, useLiveTurn } from '../detailUi';
-import { detailItem, noticeItem, statusLineItem } from './workViewModel';
+import { noticeItem, openableItem, statusLineItem } from './workViewModel';
 
 const useStyles = makeStyles((th) => ({
   strip: { paddingHorizontal: th.spacing.sm, paddingTop: th.spacing.xxs },
@@ -56,17 +56,8 @@ export function AgentBackgroundWork({ hostId, paneId, isBlocked = false }: Props
   useEffect(() => {
     if (empty) sheet.close();
   }, [empty, sheet.close]);
-  const withOpen = (row: (typeof presentation.rows)[number]) => {
-    const item = detailItem(row);
-    const running = !isFinishedStatus(row.status);
-    const agentId = row.kind === 'subagent' && !running ? subagentIdOf(row.id) : null;
-    if (agentId === null) return item;
-    return {
-      ...item,
-      openLabel: t('Open Subagent Transcript'),
-      onOpen: () => sheet.closeThen(() => openSubagent(agentId)),
-    };
-  };
+  const withOpen = (row: (typeof presentation.rows)[number]) =>
+    openableItem(row, subagentIdOf, (agentId) => sheet.closeThen(() => openSubagent(agentId)));
   return (
     <>
       {line ? (

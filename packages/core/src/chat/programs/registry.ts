@@ -58,3 +58,9 @@ export function programModes(program: string | null | undefined): ProgramModes |
   const known = CHAT_PROGRAMS.find((name) => name === program);
   return (known && programDefinition(known).modes?.()) || null;
 }
+
+/** Whether Chat reads a finished Subagent's transcript for an Agent of `program`. */
+export function readsSubagentTranscripts(program: string | null | undefined): boolean {
+  const known = CHAT_PROGRAMS.find((name) => name === program);
+  return known ? programDefinition(known).readsSubagentTranscripts === true : false;
+}

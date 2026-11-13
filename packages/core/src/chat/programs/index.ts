@@ -17,6 +17,7 @@ export {
   programDefinitions,
   programModes,
   programShortcuts,
+  readsSubagentTranscripts,
 } from './registry';
 export {
   COMMON_SHORTCUTS,

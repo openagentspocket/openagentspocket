@@ -1,7 +1,9 @@
+import '../programs';
 import { describe, expect, it } from 'vitest';
+import { backgroundWorkItem } from '../model/factories';
 import { type ChatBackgroundWorkItem, emptyTranscript } from '../model/types';
 import type { ChatWorkflowProgress } from '../model/workflow-progress';
-import { backgroundWorkOf, holdsActivePace } from './work';
+import { backgroundWorkOf, holdsActivePace, openableSubagentID } from './work';
 
 const NOW = Date.parse('2026-10-06T15:20:00Z');
 const ago = (seconds: number) => new Date(NOW - seconds * 1000).toISOString();
@@ -93,5 +95,26 @@ describe('background work', () => {
     expect(holdsActivePace(backgroundWorkOf(running, {}, false, NOW))).toBe(false);
     const finished = transcript([item('b', { state: 'completed', at: 20, endOffset: 30 })]);
     expect(holdsActivePace(backgroundWorkOf(finished, {}, true, NOW))).toBe(false);
+  });
+});
+
+describe('a Background Work row that opens a Subagent transcript', () => {
+  const items = [
+    backgroundWorkItem({ id: 'sub', kind: 'subagent', title: 'A', launchOffset: 1, agentID: 'a1' }),
+    backgroundWorkItem({ id: 'flow', kind: 'workflow', title: 'W', launchOffset: 2 }),
+    backgroundWorkItem({ id: 'anon', kind: 'subagent', title: 'B', launchOffset: 3 }),
+  ];
+
+  it("opens a Subagent's transcript for a program that reads one", () => {
+    expect(openableSubagentID(items, 'sub', 'claude')).toBe('a1');
+    expect(openableSubagentID(items, 'flow', 'claude')).toBeNull();
+    expect(openableSubagentID(items, 'anon', 'claude')).toBeNull();
+    expect(openableSubagentID(items, 'missing', 'claude')).toBeNull();
+  });
+
+  it('opens nothing for a program with no Subagent reader, or an unknown one', () => {
+    for (const program of ['opencode', 'codex', 'some-new-agent', null]) {
+      expect(openableSubagentID(items, 'sub', program)).toBeNull();
+    }
   });
 });

@@ -6,11 +6,13 @@ import {
   emptyBackgroundWork,
   holdsActivePace,
   listedNotices,
+  openableSubagentID,
   presentBackgroundWork,
 } from '@openagentspocket/core';
 import { getLocaleTag } from '@openagentspocket/i18n';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useConsoleState } from '@/console/hooks';
+import { chatAgentView } from './agentView';
 import { useConversation } from './useConversation';
 
 export interface BackgroundWorkView {
@@ -22,7 +24,10 @@ export interface BackgroundWorkView {
   now: number;
   /** A live read shows work running: the conversation keeps its active pace. */
   holdsPace: boolean;
-  /** The id a Subagent's transcript opens by, from its launch; null when unknown or unsafe as a path. */
+  /**
+   * The id a finished Subagent's transcript opens by, from its launch; null when unknown, unsafe as
+   * a path, or the program has no reader for it (the row then opens nothing).
+   */
   subagentIdOf: (workId: string) => string | null;
 }
 
@@ -39,7 +44,12 @@ export function useBackgroundWork(
   ticking = false,
 ): BackgroundWorkView {
   const { state } = useConversation(hostId, paneId);
-  const hostStatus = useConsoleState().hosts.find((host) => host.id === hostId)?.status;
+  const consoleState = useConsoleState();
+  const hostStatus = consoleState.hosts.find((host) => host.id === hostId)?.status;
+  const row = consoleState.rows.find(
+    (candidate) => candidate.hostId === hostId && candidate.agent.pane_id === paneId,
+  );
+  const program = row ? chatAgentView(row).program : null;
   const isHostConnected = hostStatus?.kind === 'connected';
   const { snapshot, workflowProgress } = state;
   const hasReadLive = useRef(false);
@@ -71,8 +81,8 @@ export function useBackgroundWork(
   );
   const items = snapshot.transcript.backgroundWork;
   const subagentIdOf = useCallback(
-    (workId: string) => items.find((item) => item.id === workId)?.agentID ?? null,
-    [items],
+    (workId: string) => openableSubagentID(items, workId, program),
+    [items, program],
   );
   return { work, presentation, notices, now, holdsPace: holdsActivePace(work), subagentIdOf };
 }

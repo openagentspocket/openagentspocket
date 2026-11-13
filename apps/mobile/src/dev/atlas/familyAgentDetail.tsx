@@ -129,9 +129,10 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.chat': chat,
   'agent-detail.chat-timeline': chat,
   'agent-detail.chat-floating-controls': chat,
-  'agent-detail.chat-background-strip': detail('p2', 'chat', undefined, false, false, 'list'),
+  // A Claude Code Agent: only a program that reads Subagent transcripts opens one.
+  'agent-detail.chat-background-strip': detail('p5', 'chat', undefined, false, false, 'list'),
   'agent-detail.subagent-transcript': detail(
-    'p2',
+    'p5',
     'chat',
     ['background-work-strip-summary', 'work-open-w3'],
     false,
@@ -139,7 +140,7 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
     'list',
   ),
   'agent-detail.chat-background-sheet': detail(
-    'p2',
+    'p5',
     'chat',
     ['background-work-strip-summary'],
     false,

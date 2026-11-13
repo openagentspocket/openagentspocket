@@ -60,4 +60,9 @@ export interface ProgramDefinition {
   shortcuts?: () => readonly ProgramShortcut[];
   /** The modes its screen names, from its source; absent for a program that draws none. */
   modes?: () => ProgramModes;
+  /**
+   * A finished Subagent's own transcript can be read and shown; absent where Chat has no reader
+   * for it, and its Background Work row then opens nothing.
+   */
+  readsSubagentTranscripts?: boolean;
 }

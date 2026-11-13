@@ -7,6 +7,7 @@ import {
   programDefinition,
   programDefinitions,
   programShortcuts,
+  readsSubagentTranscripts,
 } from './index';
 
 describe('program definitions', () => {
@@ -25,6 +26,15 @@ describe('program definitions', () => {
   it('only Pi and Hermes Agent have no Blocked dialogs to parse', () => {
     const without = programDefinitions().filter((definition) => !definition.blocked);
     expect(without.map((definition) => definition.program)).toEqual(['pi', 'hermes']);
+  });
+});
+
+describe('Subagent transcripts', () => {
+  it('only Claude Code has a reader for them', () => {
+    const readers = CHAT_PROGRAMS.filter((program) => readsSubagentTranscripts(program));
+    expect(readers).toEqual(['claude']);
+    expect(readsSubagentTranscripts('some-new-agent')).toBe(false);
+    expect(readsSubagentTranscripts(null)).toBe(false);
   });
 });
 

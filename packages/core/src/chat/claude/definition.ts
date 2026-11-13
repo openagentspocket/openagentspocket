@@ -22,4 +22,5 @@ export const claudeProgram: ProgramDefinition = {
   adapter: () => claudeAdapter,
   sendPolicy: () => claudeSendPolicy,
   blocked: () => claudeSupport,
+  readsSubagentTranscripts: true,
 };

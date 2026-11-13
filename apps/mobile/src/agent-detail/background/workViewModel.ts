@@ -3,6 +3,7 @@ import {
   type BackgroundWorkNotice,
   type BackgroundWorkPresentedRow,
   type ChatStatusLine,
+  isFinishedStatus,
   noticeTitleText,
   type Text,
 } from '@openagentspocket/core';
@@ -50,6 +51,22 @@ export function detailItem(row: BackgroundWorkPresentedRow): BackgroundWorkDetai
     agents: row.agents.map(agentItem),
     accessibilityLabel: renderMessage(row.accessibilityLabel),
   };
+}
+
+/**
+ * A sheet row that opens its finished Subagent's transcript, when `subagentIdOf` names one (the
+ * program reads Subagent transcripts and the launch named it). Otherwise the row opens nothing.
+ */
+export function openableItem(
+  row: BackgroundWorkPresentedRow,
+  subagentIdOf: (workId: string) => string | null,
+  open: (agentId: string) => void,
+): BackgroundWorkDetailItem {
+  const item = detailItem(row);
+  const agentId =
+    row.kind === 'subagent' && isFinishedStatus(row.status) ? subagentIdOf(row.id) : null;
+  if (agentId === null) return item;
+  return { ...item, openLabel: t('Open Subagent Transcript'), onOpen: () => open(agentId) };
 }
 
 /** The status line over the Composer, in the current locale. */

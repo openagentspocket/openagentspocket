@@ -6,6 +6,7 @@
 import { listedBackgroundWork, runStartedAt } from '../model/transcript';
 import type { ChatBackgroundWorkItem, ChatNotice, ChatTranscript } from '../model/types';
 import type { ChatWorkflowProgress } from '../model/workflow-progress';
+import { readsSubagentTranscripts } from '../programs/registry';
 
 export interface BackgroundWorkRow {
   item: ChatBackgroundWorkItem;
@@ -101,4 +102,19 @@ export function listedNotices(transcript: ChatTranscript): BackgroundWorkNotice[
       ? [{ id: entry.id, notice: entry.content.value }]
       : [],
   );
+}
+
+/**
+ * The id a Subagent's transcript opens by, when its row may open one: the program reads
+ * Subagent transcripts (`ProgramDefinition.readsSubagentTranscripts`) and the launch named the
+ * Subagent. Null leaves the row with nothing to open.
+ */
+export function openableSubagentID(
+  items: readonly ChatBackgroundWorkItem[],
+  workID: string,
+  program: string | null | undefined,
+): string | null {
+  if (!readsSubagentTranscripts(program)) return null;
+  const item = items.find((candidate) => candidate.id === workID);
+  return item?.kind === 'subagent' ? item.agentID : null;
 }

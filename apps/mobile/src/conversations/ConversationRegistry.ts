@@ -12,6 +12,7 @@ import {
   concatBytes,
   type Host,
   readSubagentTranscript,
+  readsSubagentTranscripts,
   screenText,
   subagentRoute,
 } from '@openagentspocket/core';
@@ -104,6 +105,10 @@ export class ConversationRegistry {
     paneId: string,
     agentID: string,
   ): Promise<{ route: ClaudeSubagentRoute | null; outcome: ClaudeSubagentOutcome }> {
+    // Only a program that reads Subagent transcripts names a Claude Code Subagent file.
+    if (!readsSubagentTranscripts(this.viewOf(hostId, paneId)?.program)) {
+      return { route: null, outcome: { type: 'missing' } };
+    }
     const { snapshot } = this.get(hostId, paneId).getState();
     const path = snapshot.phase.type === 'following' ? snapshot.phase.path : null;
     const route = subagentRoute(agentID, path, snapshot.transcript.entries);
