@@ -70,8 +70,11 @@ so no program-specific branches.
 - [x] **OpenCode Go usage is a stub.** Closed by not listing it: limits live only in the web console (cookie session), no CLI, file or API a Host script can read.
 - [x] **Connection sheet: the failure text touches the pinned actions** on a fit-height sheet.
 - [x] **Demo Home: every Session thumbnail shows the same screen.**
-- [ ] **OpenCode: a background subagent's permission can look like the main session's.** Reject then opens
+- [x] **OpenCode: a background subagent's permission can look like the main session's.** Reject then opens
   OpenCode's follow-up field; not destructive. Done when: the end of a background subagent is known.
+  Known from the parent's rows (the `subagent` call's `metadata.status: running`, ended by the
+  `synthetic` row naming its `childID`), on constructed rows; a lab capture of one would prove it
+  live. A launch above every loaded read, or a prompt the user types into the child, stays unseen.
 - [ ] **Claude Code `/context` from Chat.** Runs in the terminal today because Chat's echo of local command
   output is unverified. Done when: verified and moved to the conversation, or the reason is recorded.
 - [x] **tmux Hosts type a prompt's line breaks as Enter.** Matters when tmux Hosts ship; a draft with
