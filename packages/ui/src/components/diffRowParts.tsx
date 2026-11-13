@@ -88,9 +88,35 @@ interface UnifiedProps {
   line: DiffRowLine;
   spoken: string;
   onReference?: (line: DiffRowLine) => void;
+  /** The screen-reader action's name for `onReference`. */
+  referenceLabel?: string;
 }
 
-export function UnifiedLine({ line, spoken, onReference }: UnifiedProps) {
+/**
+ * Long press on a line references it; a screen reader gets the same as a named action, so it is
+ * reachable without the gesture. One entry per line (a side by side row can hold two).
+ */
+export function referenceActions(
+  lines: readonly DiffRowLine[],
+  onReference: ((line: DiffRowLine) => void) | undefined,
+  label: (line: DiffRowLine) => string,
+) {
+  if (!onReference || lines.length === 0) return {};
+  return {
+    accessibilityActions: lines.map((line, i) => ({ name: `reference-${i}`, label: label(line) })),
+    onAccessibilityAction: (event: { nativeEvent: { actionName: string } }) => {
+      const line = lines[Number(event.nativeEvent.actionName.replace('reference-', ''))];
+      if (line) onReference(line);
+    },
+  };
+}
+
+export function UnifiedLine({
+  line,
+  spoken,
+  onReference,
+  referenceLabel = 'Comment on Line',
+}: UnifiedProps) {
   const styles = useDiffStyles();
   const theme = useTheme();
   const sign = SIGNS[line.kind];
@@ -100,6 +126,7 @@ export function UnifiedLine({ line, spoken, onReference }: UnifiedProps) {
       style={[styles.row, { backgroundColor: lineWash(line.kind, theme) }]}
       onLongPress={onReference ? () => onReference(line) : undefined}
       accessibilityLabel={spoken}
+      {...referenceActions([line], onReference, () => referenceLabel)}
       testID={`diff-row-${line.kind}`}
     >
       <Text variant="caption" monospaced tone="tertiary" style={styles.gutter}>

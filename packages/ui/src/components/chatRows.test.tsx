@@ -154,6 +154,29 @@ describe('DiffRow', () => {
     expect(hunks[0].onExpandGap).toHaveBeenCalledTimes(1);
   });
 
+  it('references a line without the long press: a screen-reader action, in both layouts', async () => {
+    const onReference = jest.fn();
+    const { unmount } = await renderThemed(
+      <DiffRow file={file} hunks={hunks} onReference={onReference} />,
+    );
+    const added = screen.getByLabelText('Added, line 1: new');
+    expect(added.props.accessibilityActions).toEqual([
+      expect.objectContaining({ name: 'reference-0' }),
+    ]);
+    await fireEvent(added, 'accessibilityAction', { nativeEvent: { actionName: 'reference-0' } });
+    expect(onReference).toHaveBeenLastCalledWith(expect.objectContaining({ kind: 'add' }));
+    await unmount();
+    await renderThemed(
+      <DiffRow file={file} hunks={hunks} layout="sideBySide" onReference={onReference} />,
+    );
+    const row = screen.getByTestId('diff-row-split');
+    expect(row.props.accessibilityActions).toHaveLength(2);
+    await fireEvent(row, 'accessibilityAction', { nativeEvent: { actionName: 'reference-0' } });
+    expect(onReference).toHaveBeenLastCalledWith(expect.objectContaining({ kind: 'del' }));
+    await fireEvent(screen.getByTestId('diff-row-split-add'), 'longPress');
+    expect(onReference).toHaveBeenLastCalledWith(expect.objectContaining({ kind: 'add' }));
+  });
+
   it('pairs removed and added lines in the side by side layout', async () => {
     await renderThemed(<DiffRow file={file} hunks={hunks} layout="sideBySide" />);
     expect(screen.getAllByTestId('diff-row-split')).toHaveLength(1);

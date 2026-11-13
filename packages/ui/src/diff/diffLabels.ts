@@ -7,6 +7,8 @@ export interface DiffLabels {
   added: DiffLineHead;
   removed: DiffLineHead;
   unchanged: DiffLineHead;
+  /** The screen-reader action that references a line ("Comment on Line"), as long press does. */
+  reference?: string;
 }
 
 /** English defaults; the i18n layer passes translations through DiffView's label props. */
@@ -14,6 +16,7 @@ export const defaultDiffLabels: DiffLabels = {
   added: (line) => (line === undefined ? 'Added' : `Added, line ${line}`),
   removed: (line) => (line === undefined ? 'Removed' : `Removed, line ${line}`),
   unchanged: (line) => (line === undefined ? 'Unchanged' : `Unchanged, line ${line}`),
+  reference: 'Comment on Line',
 };
 
 /**

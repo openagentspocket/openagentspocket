@@ -10,6 +10,7 @@ import {
   LineText,
   lineWash,
   plainText,
+  referenceActions,
   UnifiedLine,
   useDiffStyles,
 } from './diffRowParts';
@@ -58,14 +59,14 @@ interface DiffRowProps {
   testID?: string;
 }
 
+function lineHead(line: DiffRowLine, labels: DiffLabels): string {
+  if (line.kind === 'add') return labels.added(line.newNumber);
+  if (line.kind === 'del') return labels.removed(line.oldNumber);
+  return labels.unchanged(line.newNumber);
+}
+
 function spokenLine(line: DiffRowLine, labels: DiffLabels): string {
-  const head =
-    line.kind === 'add'
-      ? labels.added(line.newNumber)
-      : line.kind === 'del'
-        ? labels.removed(line.oldNumber)
-        : labels.unchanged(line.newNumber);
-  return `${head}: ${plainText(line)}`;
+  return `${lineHead(line, labels)}: ${plainText(line)}`;
 }
 
 /** Pairs each run of removed lines with the added run after it, row by row. */
@@ -88,24 +89,42 @@ function pairLines(lines: readonly DiffRowLine[]): [DiffRowLine?, DiffRowLine?][
   return rows;
 }
 
-function SplitRow({ pair, labels }: { pair: [DiffRowLine?, DiffRowLine?]; labels: DiffLabels }) {
+function SplitRow({
+  pair,
+  labels,
+  onReference,
+}: {
+  pair: [DiffRowLine?, DiffRowLine?];
+  labels: DiffLabels;
+  onReference?: (line: DiffRowLine) => void;
+}) {
   const styles = useDiffStyles();
   const theme = useTheme();
   const cell = (line: DiffRowLine | undefined, number: number | undefined) => (
-    <View style={[styles.half, line && { backgroundColor: lineWash(line.kind, theme) }]}>
+    <Tappable
+      style={[styles.half, line && { backgroundColor: lineWash(line.kind, theme) }]}
+      onLongPress={line && onReference ? () => onReference(line) : undefined}
+      accessible={false}
+      testID={line ? `diff-row-split-${line.kind}` : undefined}
+    >
       <Text variant="caption" monospaced tone="tertiary" style={styles.gutter}>
         {number ?? ''}
       </Text>
       {line ? <LineText line={line} /> : <View style={styles.text} />}
-    </View>
+    </Tappable>
   );
   const [left, right] = pair;
-  const spoken = [left, right]
-    .filter((l, i, all): l is DiffRowLine => !!l && all.indexOf(l) === i)
-    .map((l) => spokenLine(l, labels))
-    .join('. ');
+  const lines = [left, right].filter((l, i, all): l is DiffRowLine => !!l && all.indexOf(l) === i);
+  const spoken = lines.map((l) => spokenLine(l, labels)).join('. ');
+  const reference = labels.reference ?? defaultDiffLabels.reference ?? '';
   return (
-    <View style={styles.row} accessible accessibilityLabel={spoken} testID="diff-row-split">
+    <View
+      style={styles.row}
+      accessible
+      accessibilityLabel={spoken}
+      {...referenceActions(lines, onReference, (l) => `${reference}: ${lineHead(l, labels)}`)}
+      testID="diff-row-split"
+    >
       {cell(left, left?.oldNumber)}
       <View style={styles.divider} />
       {cell(right, right?.newNumber)}
@@ -170,7 +189,7 @@ export function DiffRow({
           {layout === 'sideBySide'
             ? pairLines(hunk.lines).map((pair, i) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: diff rows are positional.
-                <SplitRow key={i} pair={pair} labels={labels} />
+                <SplitRow key={i} pair={pair} labels={labels} onReference={onReference} />
               ))
             : hunk.lines.map((line, i) => (
                 <UnifiedLine
@@ -179,6 +198,7 @@ export function DiffRow({
                   line={line}
                   spoken={spokenLine(line, labels)}
                   onReference={onReference}
+                  referenceLabel={labels.reference ?? defaultDiffLabels.reference}
                 />
               ))}
         </View>
