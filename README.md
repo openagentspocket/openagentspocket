@@ -765,6 +765,16 @@ the app's update notice installs from that branch. See
   `relay_url`, a self-hosted relay on loopback included, is honoured as
   written.
 
+### Updating to 0.15.0
+
+- The pairing checklist pre-checks two addresses instead of one: the Host's
+  LAN address first and, when the Host has one, an overlay address second (an
+  IPv4 address in 100.64.0.0/10 on a tunnel interface: Tailscale or a `utunN`
+  interface). The overlay address survives a new LAN address from the router.
+  A 100.64.0.0/10 address on an ordinary Ethernet or Wi-Fi interface is a LAN
+  address, not an overlay. IPv6 and Docker addresses stay unchecked. Codes
+  already paired are not changed; pair again to save the second route.
+
 ## Usage
 
 Plugin 0.7.0 adds Usage for Claude Code and Codex on Linux and macOS Hosts.

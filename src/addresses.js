@@ -1,11 +1,13 @@
 // Candidate address enumeration for the Pairing Code (ADR 0007).
 //
 // The Pairing Code carries user-selected candidate addresses; this module
-// enumerates them and pre-checks at most one default: a likely non-Docker
-// candidate (private LAN, Tailscale CGNAT, ULA) on the platform's primary
-// interface (en0 on macOS, eth0 on Linux), falling back to the best-ranked
-// likely non-Docker candidate when the primary has none. Docker addresses
-// remain available for manual selection at the end of the list.
+// enumerates them and pre-checks at most two defaults, LAN first and overlay
+// second: a likely non-Docker candidate (private LAN, ULA) on the platform's
+// primary interface (en0 on macOS, eth0 on Linux), falling back to the
+// best-ranked likely non-Docker candidate off a tunnel interface; plus one
+// overlay address, which stays valid when the router hands the computer a new
+// LAN address. Docker addresses remain available for manual selection at the
+// end of the list.
 
 import { isIP } from "node:net";
 import os from "node:os";
@@ -48,6 +50,26 @@ const DOCKER_INTERFACE_PATTERNS = [
   /^veth/i, // container veth pairs
 ];
 
+// An overlay address is an IPv4 address in 100.64.0.0/10 on a tunnel
+// interface (tailscale0 on Linux, "Tailscale" on Windows, utunN on macOS).
+// The range alone is not enough: it is also carrier-grade NAT, so the same
+// address on an ordinary Ethernet or Wi-Fi interface is a LAN-like address
+// that changes with the router. Known false negatives: an overlay on an
+// interface with another name (a renamed or WireGuard-only interface), and
+// an IPv6-only overlay (IPv6 ULA addresses are never pre-checked as overlay).
+// Known false positive: another VPN client that uses a utunN interface with a
+// 100.64/10 address.
+const TUNNEL_INTERFACE_PATTERNS = [/^tailscale\d*$/i, /^utun\d+$/i];
+
+function isTunnelInterface(interfaceName) {
+  return TUNNEL_INTERFACE_PATTERNS.some((pattern) => pattern.test(interfaceName));
+}
+
+function isCgnat(address) {
+  const [a, b] = ipv4Octets(address);
+  return a === 100 && b >= 64 && b <= 127;
+}
+
 function isDockerInterface(interfaceName) {
   return DOCKER_INTERFACE_PATTERNS.some((pattern) => pattern.test(interfaceName));
 }
@@ -55,11 +77,17 @@ function isDockerInterface(interfaceName) {
 /**
  * Enumerate candidate addresses for the Pairing Code.
  *
- * Skips loopback and link-local addresses. Pre-checks at most one likely
- * non-Docker address: prefer the platform's primary interface, then the
- * best-ranked likely candidate. Docker addresses follow all other candidates
- * and are never pre-checked. Within each group, likely addresses precede
- * unlikely ones, then IPv4 precedes IPv6, otherwise input order is preserved.
+ * Skips loopback and link-local addresses. Pre-checks at most two likely
+ * non-Docker addresses, in this order: the LAN address (the platform's
+ * primary interface, else the best-ranked likely address off a tunnel
+ * interface) and one overlay address (IPv4 in 100.64/10 on a tunnel
+ * interface; see TUNNEL_INTERFACE_PATTERNS). Two routes survive a LAN address change; a third
+ * would only lengthen the Pairing Code, so IPv6 and further addresses stay
+ * unchecked. With no LAN address the overlay is the only default; with
+ * neither, the best-ranked likely address is. Docker addresses follow all
+ * other candidates and are never pre-checked. Within each group, likely
+ * addresses precede unlikely ones, then IPv4 precedes IPv6, otherwise input
+ * order is preserved.
  *
  * @param {ReturnType<typeof os.networkInterfaces>} [interfaces]
  * @param {NodeJS.Platform} [platform]
@@ -90,7 +118,9 @@ export function candidateAddresses(
         continue;
       }
 
-      candidates.push({ address, family, interfaceName, likely, docker });
+      const tunnel = isTunnelInterface(interfaceName);
+      const overlay = tunnel && family === "IPv4" && isCgnat(address);
+      candidates.push({ address, family, interfaceName, likely, docker, tunnel, overlay });
     }
   }
 
@@ -108,17 +138,25 @@ export function candidateAddresses(
     });
 
   const primary = PRIMARY_INTERFACE_BY_PLATFORM[platform];
-  const defaultCandidate =
-    ordered.find((c) => !c.docker && c.likely && c.interfaceName === primary) ??
-    ordered.find((c) => !c.docker && c.likely);
+  const usable = ordered.filter((c) => !c.docker && c.likely);
+  const lan =
+    usable.find((c) => !c.tunnel && c.interfaceName === primary) ??
+    usable.find((c) => !c.tunnel);
+  const overlay = usable.find((c) => c.overlay);
+  const defaults = [lan, overlay].filter((c) => c !== undefined);
+  if (defaults.length === 0 && usable.length > 0) defaults.push(usable[0]);
+  const defaultIndex = (c) => {
+    const index = defaults.findIndex((d) => d.address === c.address);
+    return index === -1 ? defaults.length : index;
+  };
 
-  return ordered
-    .map(({ likely, docker, ...candidate }) => ({
+  // Defaults first, LAN ahead of overlay; the sort is stable for the rest.
+  return [...ordered]
+    .sort((a, b) => defaultIndex(a) - defaultIndex(b))
+    .map(({ likely, docker, tunnel, overlay: _overlay, ...candidate }) => ({
       ...candidate,
-      preChecked: defaultCandidate !== undefined &&
-        candidate.address === defaultCandidate.address,
-    }))
-    .sort((a, b) => Number(b.preChecked) - Number(a.preChecked));
+      preChecked: defaultIndex(candidate) < defaults.length,
+    }));
 }
 
 /**
