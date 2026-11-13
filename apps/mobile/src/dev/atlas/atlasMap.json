@@ -633,7 +633,7 @@
   },
   {
     "id": "console.host-connection-sheet",
-    "rn": "features/hosts/HostIssues.tsx (HostConnectionSheet)",
+    "rn": "features/hosts/HostConnectionSheet.tsx (useHostConnectionSheet)",
     "note": "offline Home, Lab issue row pressed"
   },
   {

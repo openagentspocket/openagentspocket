@@ -67,7 +67,7 @@ export function AgentDetailScreen({
   const [headerHeight, setHeaderHeight] = useState(0);
   useFocusDone(hostId, paneId, row?.agent.agent_status === 'done');
   const composer = useAgentComposer(hostId, paneId, row?.agent.agent_status ?? 'unknown', storage);
-  if (!row) return <AgentUnavailable gone={phase === 'gone'} />;
+  if (!row) return <AgentUnavailable gone={phase === 'gone'} hostId={hostId} />;
   const status = statusDot(row.agent.agent_status);
   const toggle = () => setSurface(surface === 'chat' ? 'terminal' : 'chat');
   return (
