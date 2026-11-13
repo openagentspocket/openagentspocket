@@ -1,6 +1,7 @@
-# App Store listing (version 1.0)
+# App Store listing (version 1.0.1)
 
-> The version in review carries the earlier text. This text is for the next update.
+> Version 1.0 is live with the earlier English text. This text, both languages, is entered in the 1.0.1
+> draft in App Store Connect (2026-11-13) and goes out when that version is released.
 
 The text entered in App Store Connect, kept here so a change is reviewed like code. English is the primary
 language; Spanish is the second localization. Limits: subtitle 30, promotional text 170, keywords 100,
@@ -61,6 +62,13 @@ No computer at hand? Tap "Try the Demo" on the first screen to explore the app w
 
 Agents Pocket is an independent project. Product names are trademarks of their owners and are used only to say what the app works with.
 
+**What's New (1.0.1):**
+• Chat reads lighter: tool calls fold into one line, and a single status line shows what the agent is doing.
+• Type / to see each program's own commands next to your skills.
+• A clearer notice when a Host can't be reached, with the way to pair it again.
+• New icon and launch animation.
+• Fixes for Codex and OpenCode.
+
 ## Spanish (Mexico)
 
 **Subtitle:** Tus agentes, en el bolsillo
@@ -113,6 +121,13 @@ QUÉ NECESITAS
 ¿No tienes una computadora a la mano? Toca "Probar la demo" en la primera pantalla para explorar la app con datos de ejemplo.
 
 Agents Pocket es un proyecto independiente. Los nombres de productos son marcas de sus dueños y se usan solo para decir con qué funciona la app.
+
+**What's New (1.0.1):**
+• El Chat se lee más liviano: las llamadas a herramientas se agrupan en una línea y una sola línea de estado muestra en qué trabaja el agente.
+• Al escribir / ves los comandos de cada programa además de tus skills.
+• Un aviso más claro cuando no se puede llegar a un Host, con el camino para volver a vincularlo.
+• Nuevo ícono y animación de inicio.
+• Correcciones para Codex y OpenCode.
 
 ## Notes for App Review
 
