@@ -1,0 +1,79 @@
+# Agent lab: approves one harmless command from the Blocked card, the only flow that approves.
+# Runs only through `agent-lab.py sim --approve`, which arms it (APPROVE_ARMED), checks on the Host
+# that the Agent works in the lab's throwaway repository, and afterwards that the repository holds
+# exactly the one new empty file. Without the arming value the flow fails at its first step.
+#
+# Every assertion comes before the single tap, none is optional or conditional, and the tap is
+# matched by id AND exact label AND sits below the exact command: if any check fails the flow
+# stops without tapping. Maestro matches `text` against the whole text, so APPROVE_COMMAND (the
+# command, regex-escaped) does not match a longer command that contains it; the two negative
+# assertions below catch it anyway. The texts come from the lab (agent-lab.py SIM_PROGRAM and
+# APPROVE_*). The card shows no working directory for OpenCode or Codex (neither prompt prints
+# one); the lab checks the Agent's directory on the Host before this flow runs.
+appId: com.openagentspocket.app
+---
+- assertTrue: ${APPROVE_ARMED == '1'}
+- runFlow: _open-agent.yaml
+- tapOn:
+    id: composer-input
+- inputText: ${APPROVE_PROMPT}
+- tapOn:
+    id: composer-send
+- extendedWaitUntil:
+    visible:
+      id: blocked-card
+    timeout: 180000
+- takeScreenshot: design/atlas/sim/${SHOTS}08-blocked
+# A command approval, as the app titles it for this program ("<title>, Collapse" to Maestro).
+- assertVisible:
+    id: blocked-collapse
+    text: ${BLOCKED_TITLE}
+# The command, whole, and nothing before or after it.
+- assertVisible:
+    id: blocked-subject-code
+    text: ${APPROVE_COMMAND}
+- assertNotVisible:
+    id: blocked-subject-code
+    text: ".+${APPROVE_COMMAND}"
+- assertNotVisible:
+    id: blocked-subject-code
+    text: "${APPROVE_COMMAND}.+"
+# The options in order: single-use approve, the persistent variant, deny, and nothing more.
+- assertVisible:
+    id: ${APPROVE_ID}
+    text: ${APPROVE_LABEL}
+- assertVisible:
+    id: ${PERSIST_ID}
+    text: ${PERSIST_LABEL}
+- assertVisible:
+    id: ${DENY_ID}
+    text: ${DENY_LABEL}
+- assertNotVisible:
+    id: blocked-option-4
+# The option about to be tapped is not an "always", "don't ask again" or session-wide one.
+- assertNotVisible:
+    id: ${APPROVE_ID}
+    text: "(?i).*(always|don.t ask|again|session|remember|all commands).*"
+- assertNotVisible:
+    id: ${APPROVE_ID}
+    text: ${PERSIST_LABEL}
+# The single tap: the single-use approve option, by id and exact label, below the exact command.
+- tapOn:
+    id: ${APPROVE_ID}
+    text: ${APPROVE_LABEL}
+    below:
+      id: blocked-subject-code
+      text: ${APPROVE_COMMAND}
+- extendedWaitUntil:
+    notVisible:
+      id: blocked-card
+    timeout: 20000
+- assertNotVisible:
+    id: blocked-notice
+# The conversation shows the command's result as the Agent reports it.
+- extendedWaitUntil:
+    visible: ${APPROVE_REPLY}
+    timeout: 120000
+- assertNotVisible: ${APPROVE_FAILED_REPLY}
+- runFlow: ../sim/_guard.yaml
+- takeScreenshot: design/atlas/sim/${SHOTS}08-approved

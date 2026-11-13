@@ -19,7 +19,8 @@ write the account's real configuration:
   probe      run the app's own code against the running Agents (packages/transport/src/lab)
   keep       copy a capture into packages/core/goldens/<program>/lab, account and paths redacted
   run        a program's own command in the lab environment (`agent-lab.py run -- codex login status`)
-  sim        the app in the iOS simulator against the lab: Maestro flows of e2e/live, for one program
+  sim        the app in the iOS simulator against the lab: Maestro flows of e2e/live, for one program;
+             `--approve` adds the one flow that approves (a harmless `touch` in the repository)
   stop       stop everything the lab started and remove the root
 
 `start --plugin` links this repository's herdr plugin (packages/plugin) into the lab's herdr, as
@@ -568,7 +569,8 @@ SIM_FLOWS = ["02", "03", "04", "05", "06", "07"]
 FIRST_PROMPT = "Reply with the single word pong."
 # What e2e/live expects of each program, as Maestro variables (texts are regular expressions).
 # The Blocked flow taps only DENY_ID, matched by id and DENY_LABEL, after asserting APPROVE_LABEL
-# on APPROVE_ID: the approve option is asserted, never tapped.
+# on APPROVE_ID: the approve option is asserted, never tapped, except by the approve flow (08),
+# which only `sim --approve` arms (APPROVE_* below).
 SIM_PROGRAM = {
     "opencode": {
         "SHOTS": "live-", "BLOCKED_PROMPT": "Run the shell command ls in this directory and tell "
@@ -593,6 +595,103 @@ SIM_PROGRAM = {
         "USAGE_CARD": "Codex.*", "USAGE_HAS_CARD": "true",
     },
 }
+
+# The approve flow (e2e/live/08), run only by `sim --approve`: one harmless command, approved once,
+# in the lab's repository. The Host checks before and after use the same names.
+APPROVE_FLOW = "08"
+APPROVE_FILE = "oap-approve-proof.txt"
+APPROVE_COMMAND = f"touch {APPROVE_FILE}"
+APPROVE_PROMPT = ("Do not use a file editing tool and run no other command. Request approval to "
+                  "run exactly this shell command in the current directory, unchanged, then reply "
+                  "with the single word created if it succeeded or failed if it did not: "
+                  + APPROVE_COMMAND)
+# Per program: the persistent approve option, asserted beside the single-use one (APPROVE_ID and
+# APPROVE_LABEL above) so a reordering fails the flow. From the lab's captures
+# (packages/core/src/blocked/opencode-lab.test.ts, codex-lab.test.ts).
+APPROVE_PERSIST = {
+    "opencode": {"PERSIST_ID": "blocked-option-2", "PERSIST_LABEL": "Always allow"},
+    "codex": {"PERSIST_ID": "blocked-option-2",
+              "PERSIST_LABEL": "Yes, and don.t ask again for commands that start with ."
+              + re.escape(APPROVE_COMMAND) + "."},
+}
+
+
+def approve_env(program: str) -> Dict[str, str]:
+    """The Maestro variables only the approve run gets: without APPROVE_ARMED the flow fails at
+    its first step, so a plain `sim` (or sim-verify on its own) never approves."""
+    return {"APPROVE_ARMED": "1", "APPROVE_PROMPT": APPROVE_PROMPT,
+            "APPROVE_COMMAND": re.escape(APPROVE_COMMAND),
+            "APPROVE_REPLY": "(?i)created\\.?", "APPROVE_FAILED_REPLY": "(?i)failed\\.?",
+            **APPROVE_PERSIST[program]}
+
+
+def is_inside(child: Path, parent: Path) -> bool:
+    """Whether `child` is strictly inside `parent`, both resolved (symlinks, /tmp and /private/tmp)."""
+    child, parent = Path(os.path.realpath(child)), Path(os.path.realpath(parent))
+    return child != parent and child.is_relative_to(parent)
+
+
+def status_problems(porcelain: str, expected: List[str]) -> List[str]:
+    """What differs between `git status --porcelain --untracked-files=all` and the expected lines
+    (["?? <file>"] after approving, [] before). Empty when they match exactly."""
+    lines = [line for line in porcelain.splitlines() if line.strip()]
+    problems = [f"unexpected: {line}" for line in lines if line not in expected]
+    problems += [f"missing: {line}" for line in expected if line not in lines]
+    if len(lines) != len(set(lines)):
+        problems.append("repeated lines in git status")
+    return problems
+
+
+def cwd_problems(agent: dict, repo: Path) -> List[str]:
+    """Whether herdr's record of the Agent puts it in the repository: every directory it names
+    (`cwd`, `foreground_cwd`) is the repository, and it names at least one."""
+    named = {key: agent.get(key) for key in ("cwd", "foreground_cwd") if agent.get(key)}
+    if not named:
+        return ["herdr names no directory for the Agent"]
+    real = os.path.realpath(repo)
+    return [f"{key} is {value}, not {repo}" for key, value in named.items()
+            if os.path.realpath(value) != real]
+
+
+def file_problems(path: Path) -> List[str]:
+    if path.is_symlink():
+        return [f"{path} is a symbolic link"]
+    if not path.is_file():
+        return [f"{path} does not exist as a file"]
+    size = path.stat().st_size
+    return [f"{path} is not empty ({size} bytes)"] if size else []
+
+
+def repo_status(state: dict) -> str:
+    done = lab_program(state, ["/usr/bin/git", "status", "--porcelain", "--untracked-files=all"])
+    if done.returncode:
+        raise LabError(f"git status in the lab repository failed: {done.stderr.strip()}")
+    return done.stdout
+
+
+def approve_preflight(state: dict, program: str) -> Path:
+    """Refuses to arm the approve flow unless the root is a lab root, the repository is inside it,
+    the Agent works in the repository, and the repository is clean without the proof file."""
+    root = Path(state["root"])
+    repo = root / "repo"
+    if not (root / MARKER).exists():
+        raise LabError(f"{root} is not a lab root (no {MARKER}); not approving")
+    if not is_inside(repo, root):
+        raise LabError(f"{repo} is not inside the lab root {root}; not approving")
+    agent = herdr_json(state, ["agent", "get", state["agents"][program]["name"]])["result"]["agent"]
+    problems = cwd_problems(agent, repo)
+    if (repo / APPROVE_FILE).exists() or (repo / APPROVE_FILE).is_symlink():
+        problems.append(f"{repo / APPROVE_FILE} already exists")
+    problems += status_problems(repo_status(state), [])
+    if problems:
+        raise LabError("not approving:\n  " + "\n  ".join(problems))
+    return repo
+
+
+def approve_verify(state: dict, repo: Path) -> List[str]:
+    """After the flow: exactly the proof file, empty, and nothing else changed in the repository."""
+    return file_problems(repo / APPROVE_FILE) + status_problems(repo_status(state),
+                                                               [f"?? {APPROVE_FILE}"])
 
 
 def sim_program(state: dict, chosen: Optional[str]) -> str:
@@ -622,29 +721,83 @@ def first_conversation(state: dict, program: str) -> None:
           timeout=150)
 
 
+def flow_for(names: List[str], flow_id: str) -> Optional[str]:
+    """The flow file sim-verify.mjs picks for an id (its pickFlows: sorted, first exact name,
+    `<id>-` prefix or substring)."""
+    return next((name for name in sorted(names)
+                 if name == flow_id or name.startswith(f"{flow_id}-") or flow_id in name), None)
+
+
+def live_flow_names() -> List[str]:
+    return [path.name for path in (REPO_ROOT / "e2e/live").glob("*.yaml")
+            if re.match(r"^\d", path.name)]
+
+
+def sim_env(state: dict, program: str) -> dict:
+    root = Path(state["root"])
+    listed = subprocess.run(["ssh-keygen", "-lf", str(root / "ssh/host_ed25519.pub")],
+                            capture_output=True, text=True, check=True).stdout.split()
+    # Maestro reads assertVisible as a regular expression; a fingerprint holds `+` and `/`.
+    return {"HOST": "127.0.0.1", "PORT": state["ssh_port"], "USER": state["user"],
+            "PROGRAM": program, "PANE": state["agents"][program]["pane"],
+            **SIM_PROGRAM[program], "FINGERPRINT": re.escape(listed[1])}
+
+
 def command_sim(args: argparse.Namespace) -> int:
     """The app in the simulator against the lab: e2e/live through scripts/sim-verify.mjs --live."""
     state = load_state(Path(os.path.abspath(args.root)))
     root = Path(state["root"])
     program = sim_program(state, args.program)
-    env_file = root / "sim-env.json"
-    listed = subprocess.run(["ssh-keygen", "-lf", str(root / "ssh/host_ed25519.pub")],
-                            capture_output=True, text=True, check=True).stdout.split()
-    # Maestro reads assertVisible as a regular expression; a fingerprint holds `+` and `/`.
-    env_file.write_text(json.dumps({"HOST": "127.0.0.1", "PORT": state["ssh_port"],
-                                    "USER": state["user"], "PROGRAM": program,
-                                    "PANE": state["agents"][program]["pane"],
-                                    **SIM_PROGRAM[program],
-                                    "FINGERPRINT": re.escape(listed[1])}) + "\n")
-    base = ["node", "scripts/sim-verify.mjs", "--live", "--flows", "e2e/live", "--env-file",
-            str(env_file), "--port", str(args.port), "--udid", args.udid]
     flows = args.flows.split(",") if args.flows else SIM_FLOWS
-    if not args.flows or flows[0] == "01":
-        flows = [flow for flow in flows if flow != "01"]
+    names = live_flow_names()
+    approve_name = flow_for(names, APPROVE_FLOW)
+    if approve_name is None:
+        raise LabError(f"No flow {APPROVE_FLOW} in e2e/live")
+    if any(flow_for(names, flow) == approve_name for flow in flows):
+        raise LabError(f"{approve_name} approves a command; it runs only through `sim --approve`, "
+                       "after the other flows")
+    if args.approve:
+        approve_preflight(state, program)
+    env = sim_env(state, program)
+    env_file = root / "sim-env.json"
+    env_file.write_text(json.dumps(env) + "\n")
+    setup = not args.flows or flows[0] == "01"
+    # Approving runs after the others on the same simulator, so it stays booted in between.
+    code = run_sim_flows(state, program, sim_base(args, env_file), [f for f in flows if f != "01"],
+                         setup, args.udid, keep=args.keep or args.approve)
+    if not args.approve:
+        return code
+    if code:
+        print("Not approving: the flows before it failed", file=sys.stderr)
+        return code
+    repo = approve_preflight(state, program)
+    approve_file = root / "sim-approve-env.json"
+    approve_file.write_text(json.dumps({**env, **approve_env(program)}) + "\n")
+    print(f"About to approve one command, `{APPROVE_COMMAND}`, for {program} in {repo}")
+    keep = ["--keep"] if args.keep else []
+    code = subprocess.run([*sim_base(args, approve_file), *keep, APPROVE_FLOW],
+                          cwd=REPO_ROOT).returncode
+    problems = approve_verify(state, repo)
+    if problems:
+        print("Approve check FAILED on the Host:\n  " + "\n  ".join(problems), file=sys.stderr)
+        return 1
+    print(f"Approve check passed: {repo / APPROVE_FILE} exists, empty, and git status shows only it")
+    return code
+
+
+def sim_base(args: argparse.Namespace, env_file: Path) -> List[str]:
+    return ["node", "scripts/sim-verify.mjs", "--live", "--flows", "e2e/live", "--env-file",
+            str(env_file), "--port", str(args.port), "--udid", args.udid]
+
+
+def run_sim_flows(state: dict, program: str, base: List[str], flows: List[str], setup: bool,
+                  udid: str, keep: bool) -> int:
+    root = Path(state["root"])
+    if setup:
         # A fresh app: its Device Key goes into the lab's own authorized_keys, nowhere else.
         if subprocess.run([*base, "--keep", "01"], cwd=REPO_ROOT).returncode:
             return 1
-        pasted = subprocess.run(["xcrun", "simctl", "pbpaste", args.udid], capture_output=True,
+        pasted = subprocess.run(["xcrun", "simctl", "pbpaste", udid], capture_output=True,
                                 text=True).stdout.strip()
         if not pasted.startswith("ssh-ed25519 ") or "\n" in pasted:
             raise LabError("The simulator's pasteboard holds no Device Key line")
@@ -652,8 +805,9 @@ def command_sim(args: argparse.Namespace) -> int:
             output.write(pasted + "\n")
         print("Authorized the app's Device Key in the lab's authorized_keys")
         first_conversation(state, program)
-    keep = ["--keep"] if args.keep else []
-    return subprocess.run([*base, *keep, *flows], cwd=REPO_ROOT).returncode
+    if not flows:
+        return 0
+    return subprocess.run([*base, *(["--keep"] if keep else []), *flows], cwd=REPO_ROOT).returncode
 
 
 # ---------------------------------------------------------------------------- stop
@@ -769,6 +923,9 @@ def parser() -> argparse.ArgumentParser:
                      "again (Device Key), otherwise they run on an app already set up")
     sim.add_argument("--keep", action="store_true", help="leave the simulator booted")
     sim.add_argument("--program", help="the program the flows drive (default: the lab's only one)")
+    sim.add_argument("--approve", action="store_true",
+                     help=f"after the other flows, run {APPROVE_FLOW} (approves `{APPROVE_COMMAND}` "
+                     "once in the lab's repository) and check the repository on the Host after")
     sim.set_defaults(handler=command_sim)
     stop = commands.add_parser("stop")
     stop.add_argument("--keep", action="store_true")
