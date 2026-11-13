@@ -307,6 +307,11 @@
     "note": "RN-only state: a typed /model refused in Chat, with Run in Terminal"
   },
   {
+    "id": "rn.composer-skill-list",
+    "rn": "ComposerCard (skills panel)",
+    "note": "RN-only state: thirty suggestions, the panel scrolls inside its height limit"
+  },
+  {
     "id": "rn.board",
     "rn": "app/board.tsx (BoardScreen)",
     "note": "RN-only screen, no Swift id"

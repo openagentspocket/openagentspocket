@@ -3,6 +3,7 @@ import { Platform, View } from 'react-native';
 import { composerAction } from '../composer/Composer';
 import { ActionMenuButton, type ActionMenuItem, isDeadMenuTrigger } from '../overlay/ActionMenu';
 import { useAnchor } from '../overlay/anchors';
+import { BoundedScroll } from '../primitives/BoundedScroll';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
@@ -17,6 +18,12 @@ import { KeyboardDismissButton } from './KeyboardDismissButton';
 const CIRCLE = 40;
 /** Centres one body line (22 pt) in the circle-high field. */
 const LINE_PAD = (CIRCLE - typography.body.lineHeight) / 2;
+
+/**
+ * The suggestions panel takes at most this share of the window, so the input and the keyboard stay
+ * usable over a list of dozens; its rows scroll inside it.
+ */
+const SKILLS_MAX_SHARE = 0.3;
 
 const useStyles = makeStyles((t) => ({
   card: {
@@ -319,23 +326,30 @@ export function ComposerCard({
               <Icon name="close" size={16} />
             </Tappable>
           </View>
-          {skills?.map((skill, index) => (
-            <Tappable
-              key={skill.name}
-              onPress={() => onSkill?.(skill.name)}
-              accessibilityRole="button"
-              accessibilityLabel={`${skill.name}. ${skill.description}`}
-              style={styles.skill}
-              testID={`${testID}-skill-${skill.name}`}
-            >
-              <Text variant="body" monospaced>
-                {skill.name}
-              </Text>
-              <Text variant="caption" tone="secondary" numberOfLines={1}>
-                {skill.description}
-              </Text>
-            </Tappable>
-          ))}
+          <BoundedScroll
+            share={SKILLS_MAX_SHARE}
+            resetKey={value}
+            spaced={false}
+            testID={`${testID}-skills-list`}
+          >
+            {skills?.map((skill, index) => (
+              <Tappable
+                key={skill.name}
+                onPress={() => onSkill?.(skill.name)}
+                accessibilityRole="button"
+                accessibilityLabel={`${skill.name}. ${skill.description}`}
+                style={styles.skill}
+                testID={`${testID}-skill-${skill.name}`}
+              >
+                <Text variant="body" monospaced>
+                  {skill.name}
+                </Text>
+                <Text variant="caption" tone="secondary" numberOfLines={1}>
+                  {skill.description}
+                </Text>
+              </Tappable>
+            ))}
+          </BoundedScroll>
         </View>
       ) : null}
       <View style={stacked ? styles.stack : styles.oneLine}>

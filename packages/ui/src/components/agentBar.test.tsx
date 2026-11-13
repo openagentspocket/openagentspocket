@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react-native';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react-native';
 import type { ReactElement } from 'react';
 import { renderThemed } from '../test-utils';
 import { ThemeProvider } from '../theme/theme';
@@ -184,6 +184,33 @@ describe('ComposerCard', () => {
     expect(onSkill).toHaveBeenCalledWith('/code-review');
     await fireEvent.press(screen.getByTestId('composer-card-skills-close'));
     expect(screen.queryByTestId('composer-card-skills')).toBeNull();
+  });
+});
+
+describe('ComposerCard suggestions panel', () => {
+  const many = Array.from({ length: 30 }, (_, index) => ({
+    name: `/skill-${index}`,
+    description: `Skill ${index}`,
+  }));
+
+  it('scrolls its rows inside a bounded list, with the header outside it', async () => {
+    const onSkill = jest.fn();
+    await renderThemed(
+      <ComposerCard
+        value="/"
+        onChange={jest.fn()}
+        onSend={jest.fn()}
+        skills={many}
+        onSkill={onSkill}
+      />,
+    );
+    const list = screen.getByTestId('composer-card-skills-list');
+    expect(list.props.keyboardShouldPersistTaps).toBe('handled');
+    expect(within(list).getByTestId('composer-card-skill-/skill-29')).toBeTruthy();
+    expect(within(list).queryByTestId('composer-card-skills-close')).toBeNull();
+    expect(screen.getByTestId('composer-card-skills-close')).toBeTruthy();
+    await fireEvent.press(screen.getByTestId('composer-card-skill-/skill-29'));
+    expect(onSkill).toHaveBeenCalledWith('/skill-29');
   });
 });
 

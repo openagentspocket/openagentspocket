@@ -63,6 +63,12 @@ const skills = [
   { name: '/release-notes', description: 'Draft release notes from the merged changes.' },
 ];
 
+/** Thirty commands: far more rows than the panel shows, so they scroll inside it. */
+const manySkills = Array.from({ length: 30 }, (_, index) => ({
+  name: `/skill-${String(index + 1).padStart(2, '0')}`,
+  description: `Demo skill number ${index + 1}.`,
+}));
+
 function DemoComposer({ initial, ...rest }: { initial: string } & Partial<ComposerCardProps>) {
   const [value, setValue] = useState(initial);
   return (
@@ -169,6 +175,10 @@ export const agentBarEntries: readonly CatalogEntry[] = [
         render: () => <DemoComposer initial="" working expanded moreMenu={menu} />,
       },
       { id: 'skills', render: () => <DemoComposer initial="/" skills={skills} moreMenu={menu} /> },
+      {
+        id: 'skills-long',
+        render: () => <DemoComposer initial="/" skills={manySkills} moreMenu={menu} />,
+      },
     ],
   },
   {

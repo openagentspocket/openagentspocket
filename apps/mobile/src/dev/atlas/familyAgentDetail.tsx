@@ -1,5 +1,6 @@
 // Atlas entries of the agent detail family (agent-detail.*). Owned by its UX family task, so parallel tasks never edit the same registry file.
 import { t } from '@openagentspocket/i18n';
+import { ComposerCard } from '@openagentspocket/ui';
 import { Stack } from 'expo-router';
 import { AgentDetailScreen } from '@/agent-detail/AgentDetailScreen';
 import { closeTerminalConfirmation } from '@/features/terminals/closeConfirmation';
@@ -58,6 +59,24 @@ const refusedCommand: AtlasEntry = {
   },
 };
 
+/** The `/` panel over thirty entries: it stops at a share of the screen and its rows scroll. */
+const longSkillList: AtlasEntry = {
+  render: () => (
+    <AtlasChat>
+      <Stack.Screen options={{ headerShown: false }} />
+      <ComposerCard
+        value="/"
+        onChange={noop}
+        onSend={noop}
+        skills={Array.from({ length: 30 }, (_, index) => ({
+          name: `/skill-${String(index + 1).padStart(2, '0')}`,
+          description: `Atlas skill number ${index + 1}.`,
+        }))}
+      />
+    </AtlasChat>
+  ),
+};
+
 const chat = detail('p2', 'chat');
 const terminal = detail('p2', 'terminal');
 
@@ -98,6 +117,7 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.composer': chat,
   'agent-detail.composer-skill-suggestions': chat,
   'rn.composer-command-notice': refusedCommand,
+  'rn.composer-skill-list': longSkillList,
   'agent-detail.composer-more-menu': detail('p4', 'terminal', ['composer-input', 'composer-more']),
   'agent-detail.composer-add-menu': detail('p2', 'chat', ['composer-add']),
   'agent-detail.header-more-menu': detail('p2', 'chat', ['agent-header-more']),
