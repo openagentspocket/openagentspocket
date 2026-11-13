@@ -1,0 +1,54 @@
+# Smoke: a comment on a diff line joins the Agent's draft while the diff stays; Open Chat shows it, unsent.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- tapOn:
+    id: inbox-p2
+- extendedWaitUntil:
+    visible:
+      id: agent-header-sidebar
+    timeout: 15000
+- tapOn:
+    point: "90%,12%"
+- tapOn: "Changes"
+- extendedWaitUntil:
+    visible:
+      id: changes-ask-agent
+    timeout: 15000
+- tapOn:
+    id: changes-file-src/cart/Cart.ts
+- extendedWaitUntil:
+    visible:
+      id: diff-content
+    timeout: 15000
+- longPressOn:
+    id: diff-row-add
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: line-comment-field
+    timeout: 6000
+- runFlow: _guard.yaml
+- inputText: "Use integer cents here"
+- takeScreenshot: design/atlas/sim/18-line-comment-sheet
+- tapOn:
+    id: line-comment-add
+- extendedWaitUntil:
+    visible:
+      id: diff-open-chat
+    timeout: 6000
+# Still on the diff, with the confirmation.
+- assertVisible:
+    id: diff-content
+- takeScreenshot: design/atlas/sim/18-line-comment-added
+- tapOn:
+    id: diff-open-chat
+- extendedWaitUntil:
+    visible:
+      id: composer-input
+    timeout: 15000
+- assertVisible: ".*Use integer cents here.*"
+- assertNotVisible:
+    id: file-diff-screen
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/18-line-comment-in-composer

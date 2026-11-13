@@ -20,10 +20,12 @@ appId: com.openagentspocket.app
 - tapOn:
     id: changes-ask-agent
 - extendedWaitUntil:
-    visible: "Commit Changes"
+    visible:
+      id: action-menu-commit
     timeout: 4000
 - takeScreenshot: design/atlas/sim/17-changes-ask-agent-menu
-- tapOn: "Commit Changes"
+- tapOn:
+    id: action-menu-commit
 # Back on the Agent's Chat, with the request waiting in the Composer.
 - extendedWaitUntil:
     visible:
