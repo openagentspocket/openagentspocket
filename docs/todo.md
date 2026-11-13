@@ -14,9 +14,10 @@ Items are worked from the top of each group; groups are in priority order.
 - [x] **Agent lab, Codex.** The login inside the lab is done by a person or the lead, never by a worker. Done
   when: Codex has the same captures, fixtures and flows as OpenCode. (Codex 0.167: `goldens/codex/lab`,
   `e2e/live` with `live-codex-*` screenshots; three findings in group 3.)
-- [ ] **Agent lab, Approve.** The flow asserts the exact harmless command and the throwaway repository
+- [x] **Agent lab, Approve.** The flow asserts the exact harmless command and the throwaway repository
   before it taps the single-use approve option, and fails without tapping otherwise. Done when: the lead
-  has read the flow and it passes for OpenCode and Codex.
+  has read the flow and it passes for OpenCode and Codex. (Passed for both on 2026-11-13: the repository held
+  only the one new empty file each time.)
 - [x] **Device install.** Done when: the build with everything below is on the test iPhone.
 
 ## 2. Chat reads lighter (every program)
