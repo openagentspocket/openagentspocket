@@ -18,7 +18,7 @@ import { DetailUiProvider } from './detailUi';
 import { type Surface, useSurface } from './surface';
 import { useFocusDone } from './useFocusDone';
 
-/** How far past the header the fade runs, so text is gone before it reaches the buttons. */
+/** How far past the header the fade runs; the header's own height behind it is solid. */
 const HEADER_FADE = 24;
 
 const useStyles = makeStyles((th) => ({
@@ -97,7 +97,9 @@ export function AgentDetailScreen({
                 onShowTerminal={() => setSurface('terminal')}
                 visit={visit}
               />
-              {surface === 'chat' ? <EdgeFade height={headerHeight + HEADER_FADE} /> : null}
+              {surface === 'chat' ? (
+                <EdgeFade height={headerHeight + HEADER_FADE} solidHeight={headerHeight} />
+              ) : null}
               <View
                 style={styles.header}
                 pointerEvents="box-none"
