@@ -2,7 +2,8 @@ import { StyleSheet, View } from 'react-native';
 import Svg, { Defs, LinearGradient, Rect, Stop } from 'react-native-svg';
 import { useTheme } from '../theme/theme';
 
-const SOLID = 0.96;
+/** The edge's opacity when there is no plateau. */
+const SOFT = 0.96;
 
 interface EdgeFadeProps {
   /** Which edge the canvas is solid at. */
@@ -13,12 +14,32 @@ interface EdgeFadeProps {
   testID?: string;
 }
 
-/** Offsets of the gradient's stops: solid at the edge, solid to the end of the plateau, clear at the far end. */
-export function fadeOffsets(edge: 'top' | 'bottom', height: number, solidHeight: number) {
+export interface FadeStop {
+  offset: number;
+  opacity: number;
+}
+
+/**
+ * The gradient's stops, ascending by offset. With no plateau: the soft edge (0.96) fading to clear.
+ * With one: fully opaque from the edge to the end of `solidHeight` (so chrome hides what scrolls
+ * under it), then the fade over the rest. Never two stops at one offset with one opacity.
+ */
+export function fadeStops(edge: 'top' | 'bottom', height: number, solidHeight: number): FadeStop[] {
   const plateau = height > 0 ? Math.min(1, Math.max(0, solidHeight / height)) : 0;
+  const stops: FadeStop[] =
+    plateau === 0
+      ? [
+          { offset: 0, opacity: SOFT },
+          { offset: 1, opacity: 0 },
+        ]
+      : [
+          { offset: 0, opacity: 1 },
+          { offset: plateau, opacity: 1 },
+          ...(plateau < 1 ? [{ offset: 1, opacity: 0 }] : []),
+        ];
   return edge === 'top'
-    ? { edge: 0, plateau, clear: 1 }
-    : { edge: 1, plateau: 1 - plateau, clear: 0 };
+    ? stops
+    : stops.map((stop) => ({ ...stop, offset: 1 - stop.offset })).reverse();
 }
 
 /**
@@ -32,13 +53,7 @@ export function EdgeFade({
   testID = 'edge-fade',
 }: EdgeFadeProps) {
   const theme = useTheme();
-  const offsets = fadeOffsets(edge, height, solidHeight);
-  // SVG wants stops in ascending order; the bottom edge is solid at 1.
-  const stops = [
-    { offset: offsets.edge, opacity: SOLID },
-    { offset: offsets.plateau, opacity: SOLID },
-    { offset: offsets.clear, opacity: 0 },
-  ].sort((a, b) => a.offset - b.offset);
+  const stops = fadeStops(edge, height, solidHeight);
   return (
     <View
       pointerEvents="none"
@@ -50,7 +65,7 @@ export function EdgeFade({
           <LinearGradient id="edgeFade" x1="0" y1="0" x2="0" y2="1">
             {stops.map(({ offset, opacity }) => (
               <Stop
-                key={offset}
+                key={`${offset}:${opacity}`}
                 offset={offset}
                 stopColor={theme.colors.canvas}
                 stopOpacity={opacity}

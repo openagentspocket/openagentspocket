@@ -2,7 +2,7 @@ import { fireEvent, screen } from '@testing-library/react-native';
 import { StyleSheet } from 'react-native';
 import { renderThemed } from '../test-utils';
 import { UsageBreakdownRow } from './UsageBreakdownRow';
-import { UsageChart } from './UsageChart';
+import { axisWidthFor, UsageChart } from './UsageChart';
 import { UsageHeatMap } from './UsageHeatMap';
 import { UsageLimitChip } from './UsageLimitChip';
 import { UsageTotals } from './UsageTotals';
@@ -118,6 +118,15 @@ describe('UsageChart', () => {
     expect(label.props.numberOfLines).toBe(1);
     // No fixed width: the label is as wide as its text and the axis follows the widest one.
     expect(StyleSheet.flatten(label.props.style).width).toBeUndefined();
+  });
+});
+
+describe('axisWidthFor', () => {
+  it('follows the widest measured label plus the gap, never under the minimum', () => {
+    expect(axisWidthFor([])).toBe(52);
+    expect(axisWidthFor([30, 60, 41])).toBe(68);
+    // A later, narrower set of labels (another metric or range) gives a narrower axis.
+    expect(axisWidthFor([30, 20, 25])).toBe(52);
   });
 });
 

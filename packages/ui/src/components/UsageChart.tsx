@@ -36,6 +36,18 @@ const useStyles = makeStyles((t) => ({
   xLabel: { position: 'absolute', width: 44, textAlign: 'center' },
 }));
 
+/** The axis width for the measured label widths: the widest plus the gap, never under the minimum. */
+export function axisWidthFor(widths: readonly number[]): number {
+  return Math.max(MIN_AXIS_WIDTH, ...widths.map((w) => w + AXIS_GAP));
+}
+
+/** The measured widths with one slot overwritten; slots are tick positions, so a new tick replaces the old. */
+function withWidth(widths: readonly number[], slot: number, width: number): number[] {
+  const next = [...widths];
+  next[slot] = width;
+  return next;
+}
+
 export interface ChartSeries {
   key: string;
   label: string;
@@ -80,17 +92,14 @@ export function UsageChart({
   const styles = useStyles();
   const theme = useTheme();
   const [width, setWidth] = useState(0);
-  const [labelWidths, setLabelWidths] = useState<Record<number, number>>({});
+  const [labelWidths, setLabelWidths] = useState<readonly number[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const held = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const count = Math.max(0, ...series.map((s) => s.points.length));
   const top = niceCeiling(chartMax(series));
   // The axis takes its width from its widest label (plus the gap to the plot), whatever the locale's format.
-  const axisWidth = Math.max(
-    MIN_AXIS_WIDTH,
-    ...Object.values(labelWidths).map((w) => w + AXIS_GAP),
-  );
+  const axisWidth = axisWidthFor(labelWidths);
   const plotWidth = Math.max(0, width - axisWidth);
   const x = (index: number) => (count > 1 ? (index / (count - 1)) * plotWidth : 0);
   const y = (value: number) => HEIGHT - (Math.max(0, value) / top) * (HEIGHT - 2) - 1;
@@ -203,7 +212,7 @@ export function UsageChart({
             ) : null}
           </Svg>
         ) : null}
-        {ticks.map((tick) => (
+        {ticks.map((tick, slot) => (
           <Text
             key={tick}
             variant="caption"
@@ -212,7 +221,7 @@ export function UsageChart({
             onLayout={(event) => {
               const measured = Math.ceil(event.nativeEvent.layout.width);
               setLabelWidths((previous) =>
-                previous[tick] === measured ? previous : { ...previous, [tick]: measured },
+                previous[slot] === measured ? previous : withWidth(previous, slot, measured),
               );
             }}
             style={[styles.yLabel, { top: Math.min(HEIGHT - 16, Math.max(0, y(tick) - 16)) }]}
