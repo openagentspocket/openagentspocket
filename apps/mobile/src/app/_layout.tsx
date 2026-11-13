@@ -13,6 +13,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ConnectionsProvider } from '@/connections/ConnectionsProvider';
 import { bindDemoModeStorage } from '@/connections/mode';
 import { recordUncaughtErrors } from '@/diagnostics/crashStorage';
+import { LaunchAnimation } from '@/launch/LaunchAnimation';
 import { useIncomingLinks } from '@/links/useIncomingLinks';
 import { useOpenAgent } from '@/links/useOpenAgent';
 import { LiveActivityActions } from '@/live-activity/LiveActivityActions';
@@ -129,6 +130,8 @@ export default function RootLayout() {
           </RootCanvas>
         </SettingsTheme>
       </SettingsProvider>
+      {/* Last, so it draws above everything (the app lock cover included) until it is gone. */}
+      <LaunchAnimation />
     </GestureHandlerRootView>
   );
 }
