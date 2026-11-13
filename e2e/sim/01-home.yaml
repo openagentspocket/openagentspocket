@@ -6,3 +6,7 @@ appId: com.openagentspocket.app
 - assertVisible: "DONE.*"
 - runFlow: _guard.yaml
 - takeScreenshot: design/atlas/sim/01-home
+# The end of the list: its last card must clear the "+" button.
+- scroll
+- scroll
+- takeScreenshot: design/atlas/sim/01-home-end
