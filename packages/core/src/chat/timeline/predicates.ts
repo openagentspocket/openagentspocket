@@ -21,7 +21,6 @@ export function isPinned(row: ChatRow): boolean {
       return true;
     case 'notice':
       return (
-        content.notice.kind === 'taskNotification' ||
         content.notice.kind === 'interrupted' ||
         content.notice.kind === 'stopped' ||
         content.notice.kind === 'error'
@@ -50,6 +49,14 @@ export const isAwaiting = (row: ChatRow): boolean =>
   row.content.type === 'tool' && row.content.tool.status === 'awaitingApproval';
 
 export const isReasoning = (row: ChatRow): boolean => row.content.type === 'reasoning';
+
+/**
+ * The harness talking, not the user or the Agent: a task notification ("Background command ...
+ * completed"). It opens the turn the Agent answers it in, but shows no row; Background Work reads
+ * the records it came from.
+ */
+export const isHarnessNotice = (row: ChatRow): boolean =>
+  row.content.type === 'notice' && row.content.notice.kind === 'taskNotification';
 
 export const isBlank = (row: ChatRow): boolean =>
   row.content.type === 'reasoning' && row.content.reasoning.text === '';

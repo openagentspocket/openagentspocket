@@ -4,7 +4,15 @@
 // and opening a turn opens none of the groups or rows inside it. A pure function of the built rows.
 
 import type { ChatTurn, ChatTurnEnd, ToolStatus, TurnEnding } from '../model/types';
-import { holdsHead, isAwaiting, isBlank, isGroupable, isPinned, isReasoning } from './predicates';
+import {
+  holdsHead,
+  isAwaiting,
+  isBlank,
+  isGroupable,
+  isHarnessNotice,
+  isPinned,
+  isReasoning,
+} from './predicates';
 import {
   type ChatRow,
   type ChatRowID,
@@ -196,9 +204,12 @@ function emit(
   open: ReadonlySet<ChatRowID>,
   output: ProjectionOutput,
 ): void {
-  if (segment.head) output.rows.push(segment.head);
+  // A harness notice still opens its turn, but is no row of the conversation.
+  if (segment.head && !isHarnessNotice(segment.head)) output.rows.push(segment.head);
   // Reasoning with no text says nothing, wherever it is.
-  const body = coalescingSubagents(segment.body, output.owners).filter((row) => !isBlank(row));
+  const body = coalescingSubagents(segment.body, output.owners).filter(
+    (row) => !isBlank(row) && !isHarnessNotice(row),
+  );
 
   const fold =
     phase === 'settled' && folds && signals.foldsFinishedTurns

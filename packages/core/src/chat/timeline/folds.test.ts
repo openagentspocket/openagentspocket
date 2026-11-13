@@ -82,8 +82,31 @@ describe('turn folds', () => {
       'n1',
       'c1',
     ]);
-    const pinned = [user('u1'), notice('t1', 'taskNotification'), text('a1')];
+    const pinned = [user('u1'), notice('t1', 'error'), text('a1')];
     expect(ids(project(pinned, { turns: [turn('u1')] }))).toEqual(['u1', 't1', 'a1']);
+  });
+
+  it('shows no row for a harness notice, in a turn or opening one', () => {
+    const rows = [
+      user('u1'),
+      tool('c1'),
+      notice('n1', 'taskNotification'),
+      text('a1'),
+      notice('n2', 'taskNotification'),
+      tool('c2'),
+      text('a2'),
+    ];
+    const output = project(rows, { turns: [turn('u1'), turn('n2')] });
+    expect(ids(output)).toEqual(['u1', '[turn a1]', 'a1', '[turn a2]', 'a2']);
+    // The notice still opens the turn the Agent answers it in, so its work folds on its own.
+    const open = project(rows, {
+      turns: [turn('u1'), turn('n2')],
+      open: new Set([rowID.turn('a2')]),
+    });
+    expect(ids(open)).toEqual(['u1', '[turn a1]', 'a1', '[turn a2]', 'c2', 'a2']);
+    expect(project(rows, { turns: [] }).rows.some((row) => row.content.type === 'notice')).toBe(
+      false,
+    );
   });
 
   it.each(['interrupted', 'failed'] as const)('does not fold a %s turn', (ending) => {

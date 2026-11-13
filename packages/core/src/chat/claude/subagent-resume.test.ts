@@ -8,6 +8,9 @@ import { frameLines } from '../model/lines';
 import { carryBackgroundWork, listedBackgroundWork } from '../model/transcript';
 import type { ChatAgentActivity, ChatTranscript } from '../model/types';
 import { projectionContext } from '../model/types';
+import { ChatRowBuilder } from '../timeline/builder';
+import { projectTimeline } from '../timeline/projection';
+import { turnSignals } from '../timeline/row';
 import { ClaudeTranscriptReducer } from './reducer';
 
 type Record = (uuid: string, parent: string | null) => object;
@@ -315,5 +318,31 @@ describe('a resumed subagent', () => {
     const now = Date.parse(at(50)) + 2 * 3600 * 1000;
     const work = backgroundWorkOf(t, {}, true, now, { workflowQuiet: 3600, subagentRun: 3 * 3600 });
     expect(work.rows[0]).toMatchObject({ isStale: false, lastActivity: at(50) });
+  });
+
+  it('ends and resumes from task notifications that Chat shows no row for', () => {
+    const records = [
+      ...start,
+      notification('ag1', 'toolu_ag', 'completed', 5),
+      ...send('toolu_sm', 'ag1', 7),
+      notification('ag1', 'toolu_sm', 'completed', 9),
+    ];
+    const resumed = read(records.slice(0, -1));
+    expect(resumed.backgroundWork[0]).toMatchObject({ state: 'running', endOffset: null });
+    const ended = read(records);
+    expect(ended.backgroundWork[0]).toMatchObject({ state: 'completed', endedAt: at(9) });
+    // The transcript keeps the notices; the conversation's rows leave them out.
+    const notices = (t: ChatTranscript) =>
+      t.entries.filter(
+        (entry) =>
+          entry.content.type === 'notice' && entry.content.value.kind === 'taskNotification',
+      );
+    expect(notices(ended)).toHaveLength(2);
+    const rows = projectTimeline(
+      new ChatRowBuilder().rows({ entries: ended.entries, pending: [], older: 'reachedStart' }),
+      { turns: ended.turns, signals: turnSignals({ activity: 'idle' }) },
+    ).rows;
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.some((row) => row.content.type === 'notice')).toBe(false);
   });
 });
