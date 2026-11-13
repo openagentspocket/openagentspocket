@@ -181,7 +181,7 @@ describe('Chat send rules', () => {
       ];
       const claude = rulesFor('claude', { skills: catalog });
       expect(claude.commands.map((command) => command.name)).toEqual(['compact', 'review']);
-      expect(claude.validate('/e2e-hidden')).toEqual({
+      expect(claude.validate('/e2e-hidden')).toMatchObject({
         kind: 'unknownCommand',
         name: 'e2e-hidden',
       });
@@ -216,7 +216,7 @@ describe('Chat send rules', () => {
   describe('menu', () => {
     it('reads a skill form only for skill commands', () => {
       const rules = rulesFor('claude');
-      expect(rules.validate('/skill:review')).toEqual({
+      expect(rules.validate('/skill:review')).toMatchObject({
         kind: 'unknownCommand',
         name: 'skill:review',
       });

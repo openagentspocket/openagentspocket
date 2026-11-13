@@ -1,4 +1,5 @@
 import { ComposerRegistry, FakeClock, MemoryStorage } from '@openagentspocket/core';
+import { t } from '@openagentspocket/i18n';
 import { ThemeProvider } from '@openagentspocket/ui';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore, DemoConsoleTransport } from '@/console/demo';
@@ -107,6 +108,21 @@ describe('Chat send through the program send policy', () => {
     await waitFor(() => expect(screen.getByTestId('composer-skill-/compact')).toBeTruthy());
     fireEvent.press(screen.getByTestId('composer-skill-/compact'));
     await waitFor(() => expect(screen.getByTestId('composer-input').props.value).toBe('/compact '));
+    expect(transport.prompts).toEqual([]);
+  });
+
+  it('takes a typed command to the terminal as the program runs it, and sends nothing', async () => {
+    const transport = new PaneTransport();
+    renderDetail('p5', transport);
+    await type('/model opus');
+    fireEvent.press(screen.getByTestId('composer-send'));
+    await waitFor(() => expect(screen.getByTestId('composer-notice-action')).toBeTruthy());
+    expect(screen.getByTestId('composer-input').props.value).toBe('/model opus');
+    fireEvent.press(screen.getByTestId('composer-notice-action'));
+    // The terminal is showing and the command waits typed in its draft for the user's own Send.
+    await waitFor(() => expect(screen.getByLabelText(t('Show Chat'))).toBeTruthy());
+    expect(screen.queryByTestId('composer-notice')).toBeNull();
+    expect(screen.getByTestId('composer-input').props.value).toBe('/model opus');
     expect(transport.prompts).toEqual([]);
   });
 

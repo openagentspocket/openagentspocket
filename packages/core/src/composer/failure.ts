@@ -34,5 +34,5 @@ export function deliveryFailureText(error: unknown): Text {
 /** A refusal as the failure line of a message that was already echoed. */
 export function refusalFailureText(refusal: ComposerRefusal): Text {
   const text = refusalText(refusal);
-  return 'key' in text ? message(text.key) : text.plain;
+  return 'key' in text ? message(text.key, ...(text.args ?? [])) : text.plain;
 }

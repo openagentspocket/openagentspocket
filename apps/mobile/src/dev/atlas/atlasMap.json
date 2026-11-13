@@ -302,6 +302,11 @@
     "note": "demo shell"
   },
   {
+    "id": "rn.composer-command-notice",
+    "rn": "AgentComposerBar (composer-notice)",
+    "note": "RN-only state: a typed /model refused in Chat, with Run in Terminal"
+  },
+  {
     "id": "rn.board",
     "rn": "app/board.tsx (BoardScreen)",
     "note": "RN-only screen, no Swift id"

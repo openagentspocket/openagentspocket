@@ -7,8 +7,9 @@ import {
   detectSkillTrigger,
   ESCAPE_WAIT,
   matchingSkills,
+  message,
   primaryControl,
-  refusalSuggestsTerminal,
+  refusalAction,
   refusalText,
   terminalPolicy,
 } from '@openagentspocket/core';
@@ -126,16 +127,20 @@ export function AgentComposerBar({
     hasAttachments,
     canStop: canStop && !held,
   });
+  // Chat refused and only a Terminal can be sure to do it: the way there goes with the words, and
+  // a typed command arrives there typed as the program runs it, for the user to send.
+  const terminalReachable = onToggleSurface !== undefined;
   const notice =
     snapshot.notice && snapshot.notice.route === surface
-      ? refusalText(snapshot.notice.refusal)
+      ? refusalText(snapshot.notice.refusal, { terminalReachable })
       : undefined;
-  // Chat refused and only a Terminal can be sure to do it: the way there goes with the words.
   const refused = snapshot.notice?.refusal;
-  const offersTerminal =
-    surface === 'chat' &&
-    refused !== undefined &&
-    (refused.kind === 'agentBlocked' || refusalSuggestsTerminal(refused));
+  const noticeAction =
+    surface === 'chat' && refused ? refusalAction(refused, terminalReachable) : undefined;
+  const takeNoticeAction = () => {
+    onToggleSurface?.();
+    if (noticeAction?.kind === 'runInTerminal') store.replaceDraft(noticeAction.text);
+  };
   const shownStatus = useShownStatus(status ?? 'idle');
   const stopNotice = store.stop.notice;
   const failed = snapshot.messages.filter(
@@ -179,9 +184,19 @@ export function AgentComposerBar({
       {notice ? (
         <Banner
           tone="warning"
-          title={'key' in notice ? renderMessage({ key: notice.key }) : notice.plain}
-          actionLabel={offersTerminal ? t('Show Terminal') : undefined}
-          onAction={offersTerminal ? onToggleSurface : undefined}
+          title={
+            'key' in notice
+              ? renderMessage(message(notice.key, ...(notice.args ?? [])))
+              : notice.plain
+          }
+          actionLabel={
+            noticeAction?.kind === 'runInTerminal'
+              ? t('Run in Terminal')
+              : noticeAction
+                ? t('Show Terminal')
+                : undefined
+          }
+          onAction={noticeAction ? takeNoticeAction : undefined}
           testID="composer-notice"
         />
       ) : null}

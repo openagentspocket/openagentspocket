@@ -13,7 +13,7 @@ import type { AtlasEntry } from './entries';
 
 /** The Agent detail in a fixed state: Agent pane, surface, and what is pressed after it settles. */
 function detail(
-  pane: 'p1' | 'p2' | 'p4',
+  pane: 'p1' | 'p2' | 'p4' | 'p5',
   surface: 'chat' | 'terminal',
   press?: readonly string[],
   blocked = false,
@@ -48,6 +48,15 @@ function detail(
     ),
   };
 }
+
+/** Chat after a typed `/model opus` was sent and refused: the notice and its Run in Terminal action. */
+const refusedCommand: AtlasEntry = {
+  script: { press: ['composer-send'] },
+  render: () => {
+    deviceStorage.set('composer.draft.demo/p5', '/model opus');
+    return detail('p5', 'chat').render();
+  },
+};
 
 const chat = detail('p2', 'chat');
 const terminal = detail('p2', 'terminal');
@@ -88,6 +97,7 @@ export const agentDetailEntries: Readonly<Record<string, AtlasEntry>> = {
   'agent-detail.agent-switcher': chat,
   'agent-detail.composer': chat,
   'agent-detail.composer-skill-suggestions': chat,
+  'rn.composer-command-notice': refusedCommand,
   'agent-detail.composer-more-menu': detail('p4', 'terminal', ['composer-input', 'composer-more']),
   'agent-detail.composer-add-menu': detail('p2', 'chat', ['composer-add']),
   'agent-detail.header-more-menu': detail('p2', 'chat', ['agent-header-more']),

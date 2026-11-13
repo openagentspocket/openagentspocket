@@ -128,6 +128,11 @@ describe('safety and refusals', () => {
     expect(refusalEndsWhenStatusBecomes({ kind: 'commandAwaitsIdle', name: 'x' }, 'done')).toBe(
       true,
     );
-    expect(refusalEndsWhenStatusBecomes({ kind: 'unknownCommand', name: 'x' }, 'idle')).toBe(false);
+    expect(
+      refusalEndsWhenStatusBecomes(
+        { kind: 'unknownCommand', name: 'x', known: false, terminalText: '/x ' },
+        'idle',
+      ),
+    ).toBe(false);
   });
 });

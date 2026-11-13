@@ -62,9 +62,12 @@ describe('OpenCode send policy', () => {
   it('offers no skills or commands but /compact', () => {
     const r = rulesFor('opencode');
     expect(r.commands.map((command) => command.name)).toEqual(['compact']);
-    expect(r.validate('/review the diff')).toEqual({ kind: 'unknownCommand', name: 'review' });
+    expect(r.validate('/review the diff')).toMatchObject({
+      kind: 'unknownCommand',
+      name: 'review',
+    });
     for (const name of ['new', 'sessions', 'undo', 'btw', 'cd', 'rename']) {
-      expect(r.validate(`/${name}`)).toEqual({ kind: 'unknownCommand', name });
+      expect(r.validate(`/${name}`)).toMatchObject({ kind: 'unknownCommand', name });
     }
   });
 

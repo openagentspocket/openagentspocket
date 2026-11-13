@@ -9,8 +9,16 @@ export type ComposerRefusal =
   | { readonly kind: 'agentBlocked' }
   /** The text would make the Agent do something other than read a message. */
   | { readonly kind: 'unsafeText'; readonly reason: string }
-  /** A leading `/command` the menu does not offer. */
-  | { readonly kind: 'unknownCommand'; readonly name: string }
+  /**
+   * A leading `/command` the menu does not offer. `terminalText` is what the Agent's terminal
+   * accepts for it, with the arguments typed; `known` says the program's own command list has it.
+   */
+  | {
+      readonly kind: 'unknownCommand';
+      readonly name: string;
+      readonly known: boolean;
+      readonly terminalText: string;
+    }
   /** A command the menu offers only while the Agent is idle. */
   | { readonly kind: 'commandAwaitsIdle'; readonly name: string }
   /** A command the menu offers, but not in the form typed. */
@@ -21,15 +29,35 @@ export type ComposerRefusal =
 /** The one refusal sentence the String Catalog localizes. */
 export const AGENT_BLOCKED_KEY = 'The Agent is waiting for an answer. Answer it first.';
 
-/** The words a refusal shows: the catalog key for the localized sentence, the plain text otherwise. */
-export function refusalText(refusal: ComposerRefusal): { key: string } | { plain: string } {
+export const KNOWN_COMMAND_KEY = "%@ runs in the Agent's terminal.";
+export const KNOWN_COMMAND_OPEN_KEY =
+  "%@ runs in the Agent's terminal. Open the terminal to run it.";
+export const UNKNOWN_COMMAND_KEY =
+  "The app can't tell what %@ does. Run it in the Agent's terminal.";
+export const UNKNOWN_COMMAND_OPEN_KEY =
+  "The app can't tell what %@ does. Open the terminal to run it.";
+
+/** The words a refusal shows: a catalog key with its arguments, or plain text. */
+export type RefusalText = { key: string; args?: string[] } | { plain: string };
+
+/**
+ * The words a refusal shows. `terminalReachable` says whether the Composer can take the user to the
+ * Agent's terminal: a command's text then offers the way, and otherwise only says to open it.
+ */
+export function refusalText(
+  refusal: ComposerRefusal,
+  options: { terminalReachable: boolean } = { terminalReachable: true },
+): RefusalText {
   switch (refusal.kind) {
     case 'agentBlocked':
       return { key: AGENT_BLOCKED_KEY };
-    case 'unknownCommand':
-      return {
-        plain: `/${refusal.name} is not in the menu. Pick a command from the menu, or open the terminal to run it.`,
-      };
+    case 'unknownCommand': {
+      const args = [`/${refusal.name}`];
+      const reachable = options.terminalReachable;
+      if (refusal.known)
+        return { key: reachable ? KNOWN_COMMAND_KEY : KNOWN_COMMAND_OPEN_KEY, args };
+      return { key: reachable ? UNKNOWN_COMMAND_KEY : UNKNOWN_COMMAND_OPEN_KEY, args };
+    }
     case 'commandAwaitsIdle':
       return { plain: `/${refusal.name} is available once the Agent is idle.` };
     default:
@@ -37,9 +65,31 @@ export function refusalText(refusal: ComposerRefusal): { key: string } | { plain
   }
 }
 
-/** Whether the terminal can do what Chat declined. */
-export function refusalSuggestsTerminal(refusal: ComposerRefusal): boolean {
-  return !['agentBlocked', 'commandAwaitsIdle', 'commandUnavailable'].includes(refusal.kind);
+/** What a notice's action does once the user takes it. */
+export type RefusalAction =
+  /** Show the Agent's terminal. */
+  | { readonly kind: 'showTerminal' }
+  /** Show the Agent's terminal with `text` typed in its draft; the user presses Send there. */
+  | { readonly kind: 'runInTerminal'; readonly text: string };
+
+/**
+ * The way out a refusal offers, when the terminal can do what Chat declined and the Composer can
+ * take the user there (`terminalReachable`).
+ */
+export function refusalAction(
+  refusal: ComposerRefusal,
+  terminalReachable: boolean,
+): RefusalAction | undefined {
+  if (!terminalReachable) return undefined;
+  switch (refusal.kind) {
+    case 'unknownCommand':
+      return { kind: 'runInTerminal', text: refusal.terminalText };
+    case 'commandAwaitsIdle':
+    case 'commandUnavailable':
+      return undefined;
+    default:
+      return { kind: 'showTerminal' };
+  }
 }
 
 /** What herdr's Agent Status says about the Agent's turn (done reads as idle). */

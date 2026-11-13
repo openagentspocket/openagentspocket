@@ -80,6 +80,53 @@ describe('command shortcuts', () => {
     }
   });
 
+  // A typed command gets what a tapped one gets: the terminal, in the form the program runs.
+  describe('a command typed in Chat that its menu does not offer', () => {
+    const refusalFor = (program: Program, draft: string) => {
+      const refusal = rulesOf(program).validate(draft);
+      if (refusal?.kind !== 'unknownCommand') throw new Error(`${program} did not refuse ${draft}`);
+      return refusal;
+    };
+
+    it('carries the same terminal text a tapped shortcut types, for every program', () => {
+      for (const program of CHAT_PROGRAMS) {
+        for (const shortcut of commandsOf(program)) {
+          if (shortcut.runsIn === 'conversation') continue;
+          const refusal = refusalFor(program, shortcut.command);
+          const tapped = commandShortcutDraft(shortcut, 'chat', sendPolicyFor(program));
+          expect(refusal.terminalText).toBe(tapped.text);
+          expect(refusal.known).toBe(true);
+        }
+      }
+    });
+
+    it('is never sent through Chat, with or without arguments', () => {
+      for (const program of CHAT_PROGRAMS) {
+        for (const shortcut of commandsOf(program)) {
+          if (shortcut.runsIn === 'conversation') continue;
+          for (const draft of [shortcut.command, `${shortcut.command} `, `${shortcut.command} x`]) {
+            expect(rulesOf(program).validate(draft)?.kind).toBe('unknownCommand');
+          }
+        }
+      }
+    });
+
+    it('keeps the arguments typed, in the form each program accepts', () => {
+      expect(refusalFor('opencode', '/sessions').terminalText).toBe('/sessions');
+      expect(refusalFor('opencode', '/sessions all').terminalText).toBe('/sessions all');
+      expect(refusalFor('claude', '/model').terminalText).toBe('/model ');
+      expect(refusalFor('claude', '/model opus').terminalText).toBe('/model opus');
+      expect(refusalFor('codex', '/review  main  ').terminalText).toBe('/review main');
+    });
+
+    it('says whether the program lists the command', () => {
+      expect(refusalFor('claude', '/model').known).toBe(true);
+      expect(refusalFor('claude', '/Model').known).toBe(true);
+      expect(refusalFor('claude', '/frobnicate').known).toBe(false);
+      expect(refusalFor('claude', '/frobnicate').terminalText).toBe('/frobnicate ');
+    });
+  });
+
   it('moves every command to the terminal for a program Chat does not send to', () => {
     const compact = commandsOf('claude').find((s) => s.command === '/compact');
     if (!compact) throw new Error('no /compact');

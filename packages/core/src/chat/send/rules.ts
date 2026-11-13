@@ -6,6 +6,7 @@
 import type { ComposerRefusal } from '../../composer/policy';
 import { containsOnlySafeScalars, normalizingNewlines } from '../../terminal/text-safety';
 import { commandNamed } from './command-menu';
+import { unknownCommandRefusal } from './command-shortcut';
 import type { ChatCommand, ProgramSendPolicy } from './policy';
 
 export type DraftReading =
@@ -98,10 +99,12 @@ export function createSendRules(
     // `/usr/bin/env` is a path in prose, not a command.
     if (name.includes('/')) return { kind: 'text' };
     const command = commandNamed(name, commands);
-    if (!command) return { kind: 'refused', refusal: { kind: 'unknownCommand', name } };
+    const args = afterSlash.slice(name.length).trim();
+    if (!command) {
+      return { kind: 'refused', refusal: unknownCommandRefusal(name, args, policy) };
+    }
     if (!command.isEnabled)
       return { kind: 'refused', refusal: { kind: 'commandAwaitsIdle', name } };
-    const args = afterSlash.slice(name.length).trim();
     const submission = submissionOf(command);
     if (submission?.kind === 'bare' && args !== '') {
       return {
