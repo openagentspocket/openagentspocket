@@ -1,9 +1,11 @@
 import { marked, type Token, type Tokens } from 'marked';
-import { Fragment, memo, type ReactNode, useMemo } from 'react';
+import { Fragment, memo, type ReactNode, useMemo, useState } from 'react';
 import { Linking, ScrollView, View } from 'react-native';
 import { Card } from '../primitives/Card';
 import { Text, type TextVariant } from '../primitives/Text';
+import { useFontScale } from '../theme/accessibility';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
+import { typography } from '../theme/typography';
 import { CodeBlock } from './CodeBlock';
 import { tableColumnWidths } from './tableColumns';
 
@@ -180,7 +182,16 @@ function List({ token, ctx }: { token: Tokens.List; ctx: Context }) {
 }
 
 function Table({ token, ctx }: { token: Tokens.Table; ctx: Context }) {
-  const widths = tableColumnWidths([token.header, ...token.rows]);
+  const [frame, setFrame] = useState<number | undefined>(undefined);
+  const { scale } = useFontScale();
+  const hairline = ctx.theme.metrics.hairlineWidth;
+  const widths = tableColumnWidths([token.header, ...token.rows], {
+    // Cells are `callout`, scaled with the text size.
+    fontSize: typography.callout.fontSize * scale,
+    cellInset: 2 * ctx.theme.spacing.xs + hairline,
+    // The card's border on both sides.
+    available: frame === undefined ? undefined : frame - 2 * hairline,
+  });
   const row = (cells: Tokens.TableCell[], head: boolean, key: string) => (
     <View key={key} style={[ctx.styles.tableRow, head && ctx.styles.tableHead]}>
       {cells.map((cell, index) => (
@@ -202,6 +213,7 @@ function Table({ token, ctx }: { token: Tokens.Table; ctx: Context }) {
       directionalLockEnabled
       nestedScrollEnabled
       showsHorizontalScrollIndicator
+      onLayout={(event) => setFrame(event.nativeEvent.layout.width)}
       testID="markdown-table"
     >
       <Card padded={false}>
