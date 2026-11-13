@@ -20,6 +20,11 @@ export interface ChatHostScriptResult {
 export type ChatHostScriptRunner = (script: Uint8Array) => Promise<ChatHostScriptResult>;
 
 export interface StoreQueryRunnerOptions extends StoreScriptOptions {
+  /**
+   * The random source of each query's nonce. The app passes the OS's secure bytes: the default
+   * needs Web Crypto, which Hermes lacks ("crypto.getRandomValues must be defined").
+   */
+  random?: (length: number) => Uint8Array;
   /** Overrides the nonce source (tests). */
   nonce?: () => string;
 }
@@ -30,7 +35,7 @@ export function storeQueryRunner(
   options: StoreQueryRunnerOptions = {},
 ): (store: ChatStore, query: StoreQuery) => Promise<StoreQueryResponse> {
   return async (store, query) => {
-    const nonce = (options.nonce ?? makeNonce)();
+    const nonce = options.nonce ? options.nonce() : makeNonce(options.random);
     const result = await run(
       store.script(query, nonce, { reader: options.reader, pathExport: options.pathExport }),
     );

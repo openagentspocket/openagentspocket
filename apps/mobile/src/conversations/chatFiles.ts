@@ -35,7 +35,11 @@ export class TransportChatFiles implements ChatHostFiles {
   private current: { transport: SshTransport; files: SessionHostFiles } | undefined;
   private readonly lane = new ExecLane();
 
-  constructor(private readonly run: RunOnTransport) {}
+  constructor(
+    private readonly run: RunOnTransport,
+    /** Secure random bytes for each store query's nonce (the device's `RandomBytes`). */
+    private readonly random: (length: number) => Uint8Array,
+  ) {}
 
   status(path: string): Promise<HostFileStatus | null> {
     return this.run((transport) => this.filesOf(transport).status(path));
@@ -68,7 +72,7 @@ export class TransportChatFiles implements ChatHostFiles {
     });
 
   queryStore(store: ChatStore, query: StoreQuery): Promise<StoreQueryResponse> {
-    return storeQueryRunner(this.runScript)(store, query);
+    return storeQueryRunner(this.runScript, { random: this.random })(store, query);
   }
 
   home(): Promise<string> {

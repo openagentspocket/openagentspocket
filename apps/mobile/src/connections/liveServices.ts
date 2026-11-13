@@ -162,7 +162,10 @@ export function createLiveServices(deps: LiveDeps): LiveServices {
     console: store,
     hosts: () => model.getSnapshot().hosts,
     createFiles: (hostId) =>
-      new TransportChatFiles((operation) => manager.withTransport(hostId, operation)),
+      new TransportChatFiles(
+        (operation) => manager.withTransport(hostId, operation),
+        deps.randomBytes,
+      ),
     cache: deps.chatCache ?? new VolatileChatTranscriptCache(),
     clock: deps.clock,
     readScreen: (hostId, paneId) =>
