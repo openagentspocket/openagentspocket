@@ -89,6 +89,8 @@ export interface OpenCodeToolMetadata {
   truncated: boolean | null;
   /** `running` for a call that left its work running in the background. */
   status: string | null;
+  /** The child session a `subagent` or `task` call runs. */
+  sessionID: string | null;
   /** The `skill` tool's skill name. */
   name: string | null;
   files: OpenCodeFileDiff[];
@@ -160,6 +162,10 @@ export interface OpenCodeNote {
   /** `subagent` or `shell` for a background completion. */
   source: string | null;
   jobID: string | null;
+  /** A subagent completion's child session. */
+  childID: string | null;
+  /** A subagent completion's job status: `completed`, `error` or `cancelled`. */
+  state: string | null;
   /** `restart` for the note OpenCode adds when it resumes a turn. */
   notice: string | null;
   skill: string | null;

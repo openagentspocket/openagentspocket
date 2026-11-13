@@ -41,7 +41,10 @@ export interface TranscriptCalls {
   readonly openQuestion: boolean;
   /** The waiting calls, oldest first, that a dialog on screen is matched against. */
   readonly requests: readonly ChatPendingRequest[];
-  /** A subagent call is running, whose own requests the screen may show. */
+  /**
+   * A subagent call is running, or a Subagent it left working in the background has not ended
+   * (Background Work), whose own requests the screen may show.
+   */
   readonly subagentRunning: boolean;
 }
 
@@ -58,7 +61,9 @@ export function transcriptCalls(
     if (request.callID !== null) waiting.add(request.callID);
   }
   const resolved = new Set<string>();
-  let subagentRunning = false;
+  let subagentRunning = transcript.backgroundWork.some(
+    (item) => item.kind === 'subagent' && item.state === 'running',
+  );
   for (const { content } of transcript.entries) {
     if (content.type === 'tool' && content.value.kind === 'agent' && isOpen(content.value.status)) {
       subagentRunning = true;

@@ -12,9 +12,10 @@ export interface RequestContext {
   /** The calls waiting on the user, oldest first. */
   readonly requests: readonly ChatPendingRequest[];
   /**
-   * A subagent of this conversation is running. OpenCode draws a running subagent's requests where
-   * its own show, and their calls are not in this conversation, so an OpenCode dialog matches no
-   * call then, even one that looks the same.
+   * A subagent of this conversation is running, in a call or in the background until the
+   * conversation records its end. OpenCode draws a running subagent's requests where its own show,
+   * and their calls are not in this conversation, so an OpenCode dialog matches no call then, even
+   * one that looks the same: the request may be the subagent's, and Esc there asks for a note.
    */
   readonly subagentRunning: boolean;
 }

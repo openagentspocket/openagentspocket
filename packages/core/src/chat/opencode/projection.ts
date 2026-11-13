@@ -18,6 +18,7 @@ import {
   emptyTranscript,
   type TurnEnding,
 } from '../model/types';
+import { OpenCodeBackgroundWork } from './background-work';
 import {
   compactionPreview,
   dateOf,
@@ -49,6 +50,7 @@ export class OpenCodeProjection {
   readonly transcript: ChatTranscript = emptyTranscript();
   private sawIdle = false;
   private run: Run;
+  private readonly work = new OpenCodeBackgroundWork();
 
   constructor(
     private readonly context: ChatProjectionContext,
@@ -119,6 +121,7 @@ export class OpenCodeProjection {
    * open run's newest running call is the one OpenCode asks about.
    */
   finish(): void {
+    this.work.apply(this.transcript);
     this.settleDecline();
     const index = this.run.runningTools.at(-1);
     if (this.run.isEnded || this.context.activity !== 'blocked' || index === undefined) return;
@@ -221,6 +224,7 @@ export class OpenCodeProjection {
           length,
         });
         if (tool.status === 'running') this.run.runningTools.push(this.transcript.entries.length);
+        this.work.launch(kind.tool, row);
         this.entry(row, 'tool', tool, suffix);
       }
     }
@@ -286,6 +290,7 @@ export class OpenCodeProjection {
   }
 
   private addNote(row: OpenCodeRow, note: OpenCodeNote): void {
+    this.work.end(note, row);
     const shown = noteNotice(row.type, note);
     if (shown === null) return;
     if (shown.resumes) this.resume();

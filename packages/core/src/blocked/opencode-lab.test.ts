@@ -4,6 +4,7 @@ import '../chat/programs';
 
 import { describe, expect, it } from 'vitest';
 import { type TranscriptCalls, transcriptCalls } from '../chat/model/open-questions';
+import { constructedLines, constructedTranscript } from '../chat/opencode/constructed.testkit';
 import { OPENCODE_MODES } from '../chat/programs/mode-lists';
 import { readProgramMode } from '../chat/programs/modes';
 import { programShortcuts } from '../chat/programs/registry';
@@ -109,6 +110,26 @@ describe('OpenCode 2.1.3 Blocked card, live captures', () => {
   it('sends nothing without the conversation, or while a subagent runs', async () => {
     expect(await rejectWith(null)).toEqual([]);
     expect(await rejectWith({ ...(await shellCalls()), subagentRunning: true })).toEqual([]);
+  });
+
+  // The screen is the captured shell permission; the conversation is constructed
+  // (goldens/opencode/constructed): the main session waits on `ls` while a subagent it started
+  // works in the background, so the permission on screen may be the subagent's.
+  it('rejects only once the background subagent has ended', async () => {
+    const launched = constructedLines('rows-background-subagent');
+    const notes = constructedLines('rows-background-subagent-notes');
+    const upTo = (seq: number) =>
+      transcriptCalls(
+        constructedTranscript(
+          [...launched, ...notes.filter((line) => line.offset <= seq)],
+          'blocked',
+        ),
+        [],
+      );
+    expect(await rejectWith(upTo(0))).toEqual([]);
+    // The subagent went idle with work of its own still running.
+    expect(await rejectWith(upTo(40))).toEqual([]);
+    expect(await rejectWith(upTo(50))).toEqual([['esc']]);
   });
 });
 

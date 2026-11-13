@@ -60,6 +60,11 @@ took from the real program (`scripts/agent-lab.py`, see docs/e2e-live-backend.md
 screens and `store-*.out` store query outputs, with no goldens beside them. Their tests state
 what the app must read from them (`src/lab-captures.testkit.ts`). A Swift re-export leaves them alone.
 
+`opencode/constructed/` is not captured at all: rows written by hand in the record source's line
+format, shaped after OpenCode's source, for a case no capture holds yet (a background subagent and
+its completion rows). Their tests say so (`src/chat/opencode/constructed.testkit.ts`). Replace one
+with a lab capture once one exists.
+
 ## Transcript goldens
 
 ```json
