@@ -13,7 +13,14 @@
 import { execFileSync, spawn } from 'node:child_process';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { atlasDir, mappedScreens, mobileDir, parseArgs, sleep } from './atlas-lib.mjs';
+import {
+  atlasDir,
+  bundlerPortArgs,
+  mappedScreens,
+  mobileDir,
+  parseArgs,
+  sleep,
+} from './atlas-lib.mjs';
 
 const { options, ids } = parseArgs(process.argv.slice(2));
 const udid = options.udid;
@@ -21,7 +28,7 @@ if (typeof udid !== 'string') {
   console.error('ERROR --udid <simulator udid> is required');
   process.exit(2);
 }
-const port = Number(options.port ?? 8081); // Debug builds read the bundle from 8081
+const port = Number(options.port ?? 8081);
 const theme = options.theme ?? 'indigo';
 const bundle = options.bundle ?? 'com.openagentspocket.app';
 const launchWait = Number(options['launch-wait'] ?? 8000); // ms for the bundle to load after launch
@@ -62,6 +69,7 @@ try {
     '100',
   );
   simctl('ui', udid, 'appearance', theme === 'papel' ? 'light' : 'dark');
+  simctl(...bundlerPortArgs(udid, bundle, port));
   if (!options['no-server']) {
     server = spawn('npx', ['expo', 'start', '--port', String(port)], {
       cwd: mobileDir,
@@ -81,7 +89,7 @@ try {
     try {
       simctl('terminate', udid, bundle);
     } catch {} // not running
-    // A Debug build asks Metro on the default port (8081) for its bundle; no dev-client launcher.
+    // No dev-client launcher: the Debug build asks Metro on the port set above.
     simctl('launch', udid, bundle);
     await sleep(index === 0 ? Math.max(launchWait, 15000) : launchWait); // the first bundle is cold
     simctl('openurl', udid, `openagentspocket://__atlas/${id}?theme=${theme}`);

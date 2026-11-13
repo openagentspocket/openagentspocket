@@ -24,7 +24,7 @@ import {
 } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { atlasDir, mobileDir, parseArgs, root, sleep } from './atlas-lib.mjs';
+import { atlasDir, bundlerPortArgs, mobileDir, parseArgs, root, sleep } from './atlas-lib.mjs';
 
 const BOOLEAN = ['build', 'no-build', 'keep'];
 const { options, ids } = parseArgs(
@@ -270,6 +270,7 @@ try {
     '--batteryLevel',
     '100',
   );
+  simctl(...bundlerPortArgs(udid, bundle, port));
   metro = await startMetro();
   const started = Date.now();
   const failures = [];

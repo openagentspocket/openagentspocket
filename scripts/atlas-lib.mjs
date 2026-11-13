@@ -42,3 +42,18 @@ export function parseArgs(argv) {
 }
 
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * The `simctl` arguments that make a Debug build ask Metro on `port`. A Debug build asks 8081 unless
+ * React Native's `RCT_jsLocation` default says otherwise; writing it on every run keeps `--port`
+ * true when another project's Metro holds 8081, and puts 8081 back when no port is given.
+ */
+export const bundlerPortArgs = (udid, bundle, port) => [
+  'spawn',
+  udid,
+  'defaults',
+  'write',
+  bundle,
+  'RCT_jsLocation',
+  `localhost:${port}`,
+];
