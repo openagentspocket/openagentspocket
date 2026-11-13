@@ -1,4 +1,6 @@
-import { existsSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { decodeResult } from '@openagentspocket/core';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { agentRead, handleLine, typeKeys, visibleScreen } from './handler.js';
@@ -110,6 +112,60 @@ describe.skipIf(!BINARY)('the bridge on a real tmux', () => {
       return decodeResult(out, '1', 'pane_read').read.text.includes('ñandú 42');
     });
   });
+
+  // A pane that records the raw bytes it receives; `bracketed` makes it ask for bracketed paste first.
+  async function recorder(name: string, bracketed: boolean) {
+    const file = join(mkdtempSync(join(tmpdir(), 'oap-paste-')), 'bytes');
+    const enable = bracketed ? "printf '\\033[?2004h'; " : '';
+    const script = `${enable}stty raw -echo; cat > ${file}`;
+    await tmux.run([
+      'new-session',
+      '-d',
+      '-s',
+      name,
+      '-x',
+      '80',
+      '-y',
+      '10',
+      '/bin/sh',
+      '-c',
+      script,
+    ]);
+    const pane = (await listPanes(tmux)).find((p) => p.sessionName === name)?.paneId as string;
+    // The program must have switched the terminal before anything is pasted.
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return { file, pane, read: () => (existsSync(file) ? readFileSync(file, 'utf8') : '') };
+  }
+
+  it('a multi-line prompt arrives as one bracketed paste, not as Enter presses', async () => {
+    const { pane, read } = await recorder('paste', true);
+    const text = 'one\r\n\r\n-two\nthree\n';
+    await ask('pane.send_input', { pane_id: pane, text, keys: [] });
+    await eventually(async () => read().includes('\u001b[201~'));
+    expect(read()).toBe('\u001b[200~one\n\n-two\nthree\u001b[201~');
+    expect(await tmux.run(['list-buffers'])).toBe('');
+    await tmux.run(['kill-session', '-t', 'paste']);
+  });
+
+  it('a pane without bracketed paste gets the lines as LF, never CR', async () => {
+    const { pane, read } = await recorder('plain', false);
+    await ask('pane.send_text', { pane_id: pane, text: 'a\nb' });
+    await eventually(async () => read().includes('b'));
+    expect(read()).toBe('a\nb');
+    await tmux.run(['kill-session', '-t', 'plain']);
+  });
+
+  it('keeps the user’s own paste buffer and takes a long text whole', async () => {
+    await tmux.run(['set-buffer', '-b', 'mine', 'keep me']);
+    const { pane, read } = await recorder('long', true);
+    const text = Array.from({ length: 4000 }, (_, i) => `line ${i} with some words`).join('\n');
+    await ask('pane.send_text', { pane_id: pane, text });
+    await eventually(async () => read().endsWith('\u001b[201~'));
+    expect(read()).toBe(`\u001b[200~${text}\u001b[201~`);
+    expect((await tmux.run(['list-buffers', '-F', '#{buffer_name}'])).trim()).toBe('mine');
+    await tmux.run(['delete-buffer', '-b', 'mine']);
+    await tmux.run(['kill-session', '-t', 'long']);
+  }, 20_000);
 
   it('text that looks like a key name stays text', async () => {
     const pane = (await snapshot()).panes[1]?.pane_id as string;

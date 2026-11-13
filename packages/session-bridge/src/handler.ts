@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url';
 import type { herdr } from '@openagentspocket/core';
 import { actionFor, BridgeError, type Result } from './actions.js';
 import { tmuxKeyArgs } from './keys.js';
+import { pasteOrType } from './paste.js';
 import { liveSnapshot, SESSION_PROTOCOL } from './snapshot.js';
 import { isPaneGone, listPanes, type TmuxPane, type TmuxRunner } from './tmux.js';
 
@@ -88,10 +89,7 @@ async function readPane(tmux: TmuxRunner, params: Request['params']): Promise<Re
 
 async function sendInput(tmux: TmuxRunner, params: Request['params']): Promise<Result> {
   const target = paneById(await listPanes(tmux), params.pane_id).paneId;
-  // `-l` sends text literally; without it a word like "Enter" would press the key.
-  if (typeof params.text === 'string' && params.text !== '') {
-    await tmux.run(['send-keys', '-t', target, '-l', '--', params.text]);
-  }
+  if (typeof params.text === 'string') await pasteOrType(tmux, target, params.text);
   if (Array.isArray(params.keys)) {
     for (const key of params.keys)
       await tmux.run(['send-keys', '-t', target, ...tmuxKeyArgs(String(key))]);

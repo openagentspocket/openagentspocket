@@ -74,7 +74,7 @@ so no program-specific branches.
   OpenCode's follow-up field; not destructive. Done when: the end of a background subagent is known.
 - [ ] **Claude Code `/context` from Chat.** Runs in the terminal today because Chat's echo of local command
   output is unverified. Done when: verified and moved to the conversation, or the reason is recorded.
-- [ ] **tmux Hosts type a prompt's line breaks as Enter.** Matters when tmux Hosts ship; a draft with
+- [x] **tmux Hosts type a prompt's line breaks as Enter.** Matters when tmux Hosts ship; a draft with
   several diff comments would go out in pieces.
 
 ## 4. Release 1.0.1

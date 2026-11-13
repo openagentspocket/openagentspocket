@@ -1,6 +1,7 @@
 /** Runs one `tmux` command on the Host and gives back what it printed. */
 export interface TmuxRunner {
-  run(args: readonly string[]): Promise<string>;
+  /** `input` is written to the command's stdin (`load-buffer -`), so long text never travels in argv. */
+  run(args: readonly string[], input?: string): Promise<string>;
   /** What the programs' hooks recorded, by pane. */
   records?(): ReadonlyMap<string, PaneRecord>;
 }

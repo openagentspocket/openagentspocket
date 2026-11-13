@@ -56,8 +56,17 @@ export function tmuxRunner(
 ): TmuxRunner {
   const { binary = 'tmux', socketName, recordsDir } = options;
   const flags = socketFlags(socketName);
+  const runPlain = async (args: readonly string[]) =>
+    (await run(binary, [...flags, ...args])).stdout;
+  const runWithInput = (args: readonly string[], input: string) =>
+    new Promise<string>((resolve, reject) => {
+      const child = execFile(binary, [...flags, ...args], (error, stdout) =>
+        error ? reject(error) : resolve(stdout),
+      );
+      child.stdin?.end(input);
+    });
   return {
-    run: async (args) => (await run(binary, [...flags, ...args])).stdout,
+    run: (args, input) => (input === undefined ? runPlain(args) : runWithInput(args, input)),
     records: () => (recordsDir ? readRecords(recordsDir) : new Map()),
   };
 }

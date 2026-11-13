@@ -1,5 +1,6 @@
 import type { herdr } from '@openagentspocket/core';
 import { agentExecutableOf } from './agents.js';
+import { pasteOrType } from './paste.js';
 import { liveSnapshot } from './snapshot.js';
 import type { TmuxRunner } from './tmux.js';
 
@@ -161,7 +162,7 @@ export function actionFor(
     case 'agent.prompt':
       return async (tmux, version, params) => {
         const target = required(params, 'target');
-        await tmux.run(['send-keys', '-t', target, '-l', '--', required(params, 'text')]);
+        await pasteOrType(tmux, target, required(params, 'text'));
         await tmux.run(['send-keys', '-t', target, 'Enter']);
         return { type: 'agent_prompted', agent: await agentOf(tmux, version, target) };
       };
