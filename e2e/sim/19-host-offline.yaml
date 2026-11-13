@@ -1,0 +1,28 @@
+# An offline Host says what failed and offers the ways out: Retry, Stop, Edit and Pair Again.
+# The demo Host is always connected, so this uses the atlas state with two Hosts offline.
+appId: com.openagentspocket.app
+---
+- runFlow: _demo.yaml
+- openLink: openagentspocket:///__atlas/console.host-issue-rows
+- extendedWaitUntil:
+    visible:
+      id: host-issue-row-Lab
+    timeout: 15000
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/19-host-offline-home
+- tapOn:
+    id: host-issue-row-Lab
+- extendedWaitUntil:
+    visible:
+      id: host-connection-sheet-pair-again
+    timeout: 8000
+- waitForAnimationToEnd
+- assertVisible:
+    id: host-connection-sheet-primary
+- runFlow: _guard.yaml
+- takeScreenshot: design/atlas/sim/19-host-offline-sheet
+# The failure's detail and recovery scroll above the pinned actions.
+- swipe:
+    start: 50%, 72%
+    end: 50%, 60%
+- takeScreenshot: design/atlas/sim/19-host-offline-sheet-scrolled
