@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react-native';
+import { act, render } from '@testing-library/react-native';
 import type { ReactElement } from 'react';
 import { Dimensions } from 'react-native';
 import { ThemeProvider } from './theme/theme';
@@ -20,4 +20,14 @@ export function setFontScale(fontScale: number): void {
     window: { ...Dimensions.get('window'), fontScale },
     screen: { ...Dimensions.get('screen'), fontScale },
   });
+}
+
+/** Calls confirm() inside act, since it updates the mounted host; boxed so awaiting does not wait for the answer. */
+export async function ask<T>(run: () => Promise<T>): Promise<{ answer: Promise<T> }> {
+  const box: { answer?: Promise<T> } = {};
+  await act(async () => {
+    box.answer = run();
+  });
+  if (!box.answer) throw new Error('confirm() was not called');
+  return { answer: box.answer };
 }

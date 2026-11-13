@@ -102,6 +102,11 @@ function menuSections(ui: SwiftUiMenu, items: readonly ActionMenuItem[]) {
         role={item.destructive ? 'destructive' : undefined}
         disabled={item.disabled}
         onPress={item.disabled ? undefined : item.onPress}
+        modifiers={
+          item.accessibilityLabel && ui.modifiers
+            ? [ui.modifiers.accessibilityLabel(item.accessibilityLabel)]
+            : undefined
+        }
       />
     ));
     // A SwiftUI Section draws the divider (and the title) between groups.

@@ -11,7 +11,7 @@ import { groupMenuItems, isDeadMenuTrigger } from './menuGroups';
 import { loadSwiftUi, NativeActionMenu } from './NativeActionMenu';
 
 export type { MenuGroup } from './menuGroups';
-export { groupMenuItems, isDeadMenuTrigger };
+export { groupMenuItems, isDeadMenuTrigger, MENU_DISMISS_MS };
 
 const MEASURE_TIMEOUT_MS = 80;
 /** A subtitle's or a section title's line, for placing the menu before it is measured. */
@@ -29,6 +29,8 @@ export interface ActionMenuItem {
   section?: string;
   /** A second line under the title, secondary ink. */
   subtitle?: string;
+  /** What a screen reader says when the title is a short form of it ("Commit and PR"). */
+  accessibilityLabel?: string;
   onPress: () => void;
 }
 
@@ -39,8 +41,6 @@ export interface MenuAnchor {
   width: number;
   height: number;
 }
-
-export { MENU_DISMISS_MS };
 
 export const MENU_WIDTH = 250;
 
@@ -158,7 +158,7 @@ export function ActionMenu({
     <Tappable
       key={item.key}
       accessibilityRole="menuitem"
-      accessibilityLabel={item.title}
+      accessibilityLabel={item.accessibilityLabel ?? item.title}
       accessibilityState={{
         disabled: item.disabled ?? false,
         checked: item.checked,

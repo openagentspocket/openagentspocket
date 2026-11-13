@@ -20,9 +20,12 @@ interface AskAgentMenuProps {
   storage: KeyValueStorage;
 }
 
-const titleOf = (kind: CommitRequestKind, clean: boolean): string => {
-  if (kind === 'commit') return t('Commit Changes');
-  return clean ? t('Open Pull Request') : t('Commit and Open Pull Request');
+/** The menu shows about 17 characters beside an icon: short titles, full wording for VoiceOver. */
+const entryOf = (kind: CommitRequestKind, clean: boolean) => {
+  if (kind === 'commit') return { title: t('Commit'), accessibilityLabel: t('Commit Changes') };
+  return clean
+    ? { title: t('Open PR'), accessibilityLabel: t('Open Pull Request') }
+    : { title: t('Commit and PR'), accessibilityLabel: t('Commit and Open Pull Request') };
 };
 
 /**
@@ -35,7 +38,7 @@ export function AskAgentMenu({ target, changes, storage }: AskAgentMenuProps) {
   const clean = isClean(changes);
   const items: ActionMenuItem[] = commitRequestKinds(changes).map((kind) => ({
     key: kind,
-    title: titleOf(kind, clean),
+    ...entryOf(kind, clean),
     icon: kind === 'commit' ? 'commit' : 'branch',
     onPress: () => {
       handoff.add(target, renderMessage(commitRequestText(changes, kind)));

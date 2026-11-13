@@ -77,6 +77,25 @@ describe('Ask Agent on Changes', () => {
     }
   });
 
+  it.each(['en', 'es'] as const)(
+    'menu titles fit beside their icon (about 17 characters; 15 with room): %s',
+    async (locale) => {
+      setLocale(locale);
+      for (const key of ['Commit', 'Commit and PR', 'Open PR'] as const) {
+        expect(Array.from(t(key)).length).toBeLessThanOrEqual(15);
+      }
+      install();
+      await renderChanges(AGENT);
+      await fireEvent.press(await screen.findByRole('button', { name: t('Ask Agent') }));
+      // Drawn short, read out in full.
+      expect(await screen.findByText(t('Commit and PR'))).toBeTruthy();
+      expect(
+        screen.getByRole('menuitem', { name: t('Commit and Open Pull Request') }),
+      ).toBeTruthy();
+      expect(screen.getByText(t('Commit'))).toBeTruthy();
+    },
+  );
+
   it('puts the request into the Agent draft, opens its Chat, and sends nothing', async () => {
     install();
     const { storage, registry, prompt } = await renderChanges(AGENT);

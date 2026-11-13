@@ -169,5 +169,8 @@
   "In %@, line %@ (`%@`): %@": "En {0}, línea {1} (`{2}`): {3}",
   "In %@, removed line %@ (`%@`): %@": "En {0}, línea eliminada {1} (`{2}`): {3}",
   "In %@, line %@: %@": "En {0}, línea {1}: {2}",
-  "In %@, removed line %@: %@": "En {0}, línea eliminada {1}: {2}"
+  "In %@, removed line %@: %@": "En {0}, línea eliminada {1}: {2}",
+  "Commit": "Hacer commit",
+  "Commit and PR": "Commit y PR",
+  "Open PR": "Abrir PR"
 }
