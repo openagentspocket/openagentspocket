@@ -11,6 +11,7 @@ export * from './policy';
 export * from './registry';
 export * from './rules';
 export * from './send-witness';
+export * from './slash-panel';
 export * from './stop-plan';
 export * from './tracker';
 export {

@@ -10,6 +10,8 @@ export type { ProgramDefinition } from './definition';
 export { modeLabel, type ProgramModes, readProgramMode } from './modes';
 export {
   messageJumpProfile,
+  type ProgramCommand,
+  programCommands,
   programDefinition,
   programDefinitions,
   programModes,
@@ -17,9 +19,11 @@ export {
 } from './registry';
 export {
   COMMON_SHORTCUTS,
+  type CommandArgument,
   type CommandPlace,
   commandShortcut,
   keysShortcut,
+  menuCommand,
   type ProgramShortcut,
 } from './shortcuts';
 

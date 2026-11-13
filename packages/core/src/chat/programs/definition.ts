@@ -43,7 +43,10 @@ export interface ProgramDefinition {
   blocked?: () => BlockedProgramSupport | null;
   /** How Message Jump finds the program's prompts; absent for the default walk. */
   messageJump?: () => MessageJumpProfile;
-  /** The composer's shortcuts menu, from the program's docs; absent for the common keys. */
+  /**
+   * The program's keys and its whole command menu, from its docs; the shortcuts menu shows the keys
+   * and the commands flagged `shortcut`, the `/` panel every command. Absent for the common keys.
+   */
   shortcuts?: () => readonly ProgramShortcut[];
   /** The modes its screen names, from its source; absent for a program that draws none. */
   modes?: () => ProgramModes;

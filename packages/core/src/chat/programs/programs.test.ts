@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { bindTarget } from '../engine/store-bind';
 import { CHAT_PROGRAMS } from '../model/types';
-import { COMMON_SHORTCUTS, programDefinition, programDefinitions, programShortcuts } from './index';
+import {
+  COMMON_SHORTCUTS,
+  programCommands,
+  programDefinition,
+  programDefinitions,
+  programShortcuts,
+} from './index';
 
 describe('program definitions', () => {
   it('defines every Chat program under its own name, with parts of that program', () => {
@@ -60,6 +66,24 @@ describe('program shortcuts', () => {
         } else {
           expect(shortcut.command).toMatch(/^\/[a-z][a-z0-9-]*$/);
         }
+      }
+    }
+  });
+
+  it('keeps the shortcuts menu short and lists the whole menu once, by name', () => {
+    expect(programCommands('some-new-agent')).toEqual([]);
+    for (const program of CHAT_PROGRAMS) {
+      const commands = programCommands(program);
+      const shortcuts = programShortcuts(program).filter((s) => s.kind === 'command');
+      expect(shortcuts.every((s) => s.kind === 'command' && s.shortcut)).toBe(true);
+      expect(shortcuts.length).toBeLessThanOrEqual(10);
+      expect(commands.length).toBeGreaterThan(shortcuts.length);
+      const listed = commands.map((command) => command.command);
+      expect(new Set(listed).size).toBe(listed.length);
+      for (const command of commands) {
+        expect(command.command).toMatch(/^\/[a-z][a-z0-9-]*$/);
+        // A shortcut is one tap: it takes no argument.
+        if (command.shortcut) expect(command.argument).toBe('none');
       }
     }
   });

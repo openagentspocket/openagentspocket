@@ -32,7 +32,14 @@ export type ProgramShortcut =
       /** The slash command, typed into the draft for the user to send. */
       readonly command: string;
       readonly runsIn: CommandPlace;
+      /** Whether the command reads text typed after its name. */
+      readonly argument: CommandArgument;
+      /** Also in the shortcuts menu; every command is in the `/` panel. */
+      readonly shortcut: boolean;
     };
+
+/** What a command takes after its name: nothing, an optional value, or a value it needs. */
+export type CommandArgument = 'none' | 'optional' | 'required';
 
 export const keysShortcut = (title: string, hint: string, ...keys: string[]): ProgramShortcut => ({
   kind: 'keys',
@@ -51,6 +58,25 @@ export const commandShortcut = (
   title: message(title),
   command,
   runsIn,
+  argument: 'none',
+  shortcut: true,
+});
+
+/**
+ * A command of the program's own menu that only the `/` panel lists. It runs in the terminal: only
+ * `/compact` is shown to run from Chat, and it is a shortcut.
+ */
+export const menuCommand = (
+  command: string,
+  title: string,
+  argument: CommandArgument = 'none',
+): ProgramShortcut => ({
+  kind: 'command',
+  title: message(title),
+  command,
+  runsIn: 'terminal',
+  argument,
+  shortcut: false,
 });
 
 /** What every terminal agent answers: Esc stops the turn. */

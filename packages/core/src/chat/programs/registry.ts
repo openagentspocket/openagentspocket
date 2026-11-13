@@ -34,10 +34,23 @@ export function messageJumpProfile(program: string | null | undefined): MessageJ
   return (known && programDefinition(known).messageJump?.()) ?? DEFAULT_MESSAGE_JUMP_PROFILE;
 }
 
+/** The definition's whole list: its keys and every command of its menu. */
+function programList(program: string | null | undefined): readonly ProgramShortcut[] | undefined {
+  const known = CHAT_PROGRAMS.find((name) => name === program);
+  return known ? programDefinition(known).shortcuts?.() : undefined;
+}
+
 /** The composer's shortcuts for an Agent; a program Chat does not know gets the common keys. */
 export function programShortcuts(program: string | null | undefined): readonly ProgramShortcut[] {
-  const known = CHAT_PROGRAMS.find((name) => name === program);
-  return (known && programDefinition(known).shortcuts?.()) ?? COMMON_SHORTCUTS;
+  const list = programList(program);
+  return list ? list.filter((s) => s.kind === 'keys' || s.shortcut) : COMMON_SHORTCUTS;
+}
+
+export type ProgramCommand = Extract<ProgramShortcut, { kind: 'command' }>;
+
+/** Every command of the program's own `/` menu, shortcuts first; none for a program Chat does not know. */
+export function programCommands(program: string | null | undefined): readonly ProgramCommand[] {
+  return (programList(program) ?? []).flatMap((s) => (s.kind === 'command' ? [s] : []));
 }
 
 /** The modes an Agent's screen names; null for a program that draws none, or one Chat does not know. */

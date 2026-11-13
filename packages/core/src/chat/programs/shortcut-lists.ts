@@ -1,14 +1,21 @@
-// Each program's shortcuts, from its own documentation (read 2026-11-08). Only keys that act the same
-// whatever the draft holds, and commands that need no argument. Esc does not interrupt Hermes or
-// Grok: Ctrl+C does there.
+// Each program's keys and its own `/` menu, from its own documentation or source. The shortcuts
+// menu keeps a short set (`command`): keys that act the same whatever the draft holds, and commands
+// that need no argument; the `/` panel lists every command (`menu` adds the rest, with whether it
+// takes an argument). Esc does not interrupt Hermes or Grok: Ctrl+C does there. Commands a source
+// marks hidden, debug-only or feature-gated, bundled skills, and ones the sources disagree on stay
+// out; a command typed that is not listed still gets Chat's "Run in Terminal" notice.
 //
-// Claude Code: code.claude.com/docs/en/interactive-mode, /commands
-// Codex: github.com/openai/codex codex-rs/tui (keymap.rs, slash_command.rs), rust-v0.167.0
-// OpenCode: docs.opencode.ai/docs/keybinds, /tui
-// Hermes: hermes-agent.nousresearch.com/docs/user-guide/cli
-// Pi: github.com/badlogic/pi-mono packages/coding-agent/docs/usage.md, keybindings.md
+// Shortcuts read 2026-11-08; the whole menus read 2026-11-13:
+// Claude Code: code.claude.com/docs/en/interactive-mode, /commands ("All commands")
+// Codex: github.com/openai/codex codex-rs/tui (keymap.rs, slash_command.rs), rust-v0.167.0;
+//   the menu from slash_command.rs and bottom_pane/slash_commands.rs at rust-v0.169.0
+// OpenCode: docs.opencode.ai/docs/keybinds, /tui; the menu from opencode.ai/docs/cli/tui and the
+//   `slash:` registrations in anomalyco/opencode v2.3.0 packages/tui/src and packages/core/src/plugin/command.ts
+// Hermes: hermes-agent.nousresearch.com/docs/user-guide/cli, /docs/reference/slash-commands
+// Pi: github.com/badlogic/pi-mono packages/coding-agent/docs/usage.md, keybindings.md,
+//   docs/slash-commands.md and src/core/slash-commands.ts (only what the source lists)
 // Oh My Pi: github.com/can1357/oh-my-pi docs/keybindings.md, omp.sh/docs/slash
-// Grok Build: docs.x.ai/build/keyboard-shortcuts, /build/features/sessions
+// Grok Build: docs.x.ai/build/keyboard-shortcuts, /build/features/sessions, /build/modes-and-commands
 //
 // Where each command runs (`CommandPlace`): only `/compact` goes from Chat, which offers it in its
 // menu and confirms it by the compaction the program records. Every other command opens a picker
@@ -20,6 +27,7 @@
 import {
   commandShortcut as command,
   keysShortcut as keys,
+  menuCommand as menu,
   type ProgramShortcut,
 } from './shortcuts';
 
@@ -42,6 +50,47 @@ export const CLAUDE_SHORTCUTS: readonly ProgramShortcut[] = [
   resume,
   command('/context', 'Context Usage'),
   command('/usage', 'Plan Usage'),
+  menu('/add-dir', 'Add Working Directory', 'required'),
+  menu('/agents', 'Manage Subagents'),
+  menu('/background', 'Run in Background', 'optional'),
+  menu('/branch', 'Branch Conversation', 'optional'),
+  menu('/btw', 'Side Question', 'optional'),
+  menu('/cd', 'Change Directory', 'required'),
+  menu('/config', 'Open Settings', 'optional'),
+  menu('/copy', 'Copy Response', 'optional'),
+  menu('/diff', 'Show Diff'),
+  menu('/doctor', 'Setup Checkup', 'optional'),
+  menu('/effort', 'Effort Level', 'optional'),
+  menu('/exit', 'Exit'),
+  menu('/export', 'Export Conversation', 'optional'),
+  menu('/fast', 'Fast Mode', 'optional'),
+  menu('/feedback', 'Send Feedback', 'optional'),
+  menu('/fork', 'Fork Session', 'optional'),
+  menu('/goal', 'Set Goal', 'optional'),
+  menu('/help', 'Help'),
+  menu('/hooks', 'Hooks'),
+  menu('/ide', 'IDE Integrations'),
+  menu('/init', 'Create Instructions File'),
+  menu('/login', 'Sign In'),
+  menu('/logout', 'Sign Out'),
+  menu('/mcp', 'MCP Servers', 'optional'),
+  menu('/memory', 'Edit Memory'),
+  menu('/output-style', 'Output Style', 'optional'),
+  menu('/permissions', 'Permissions'),
+  menu('/plan', 'Plan Mode', 'optional'),
+  menu('/plugin', 'Plugins', 'optional'),
+  menu('/recap', 'Session Recap'),
+  menu('/release-notes', 'Release Notes'),
+  menu('/rename', 'Rename Session', 'optional'),
+  menu('/rewind', 'Rewind'),
+  menu('/security-review', 'Security Review'),
+  menu('/skills', 'Skills'),
+  menu('/status', 'Session Status'),
+  menu('/statusline', 'Status Line', 'optional'),
+  menu('/stop', 'Stop Background Session'),
+  menu('/tasks', 'Background Tasks'),
+  menu('/theme', 'Change Theme'),
+  menu('/voice', 'Voice Mode', 'optional'),
 ];
 
 export const CODEX_SHORTCUTS: readonly ProgramShortcut[] = [
@@ -55,6 +104,31 @@ export const CODEX_SHORTCUTS: readonly ProgramShortcut[] = [
   command('/review', 'Review Changes'),
   command('/diff', 'Show Diff'),
   command('/status', 'Session Status'),
+  menu('/agents', 'Agents'),
+  menu('/archive', 'Archive Session'),
+  menu('/btw', 'Side Question', 'optional'),
+  menu('/cd', 'Change Directory', 'optional'),
+  menu('/clear', 'Clear Conversation', 'optional'),
+  menu('/config', 'Open Settings'),
+  menu('/copy', 'Copy Response'),
+  menu('/exit', 'Exit'),
+  menu('/export', 'Export Conversation', 'optional'),
+  menu('/feedback', 'Send Feedback'),
+  menu('/fork', 'Fork Session', 'optional'),
+  menu('/hooks', 'Hooks'),
+  menu('/init', 'Create Instructions File'),
+  menu('/logout', 'Sign Out'),
+  menu('/mcp', 'MCP Servers', 'optional'),
+  menu('/memories', 'Memories'),
+  menu('/mention', 'Mention a File'),
+  menu('/permissions', 'Permissions', 'optional'),
+  menu('/ps', 'Background Terminals'),
+  menu('/recap', 'Session Recap'),
+  menu('/rename', 'Rename Session', 'optional'),
+  menu('/skills', 'Skills'),
+  menu('/statusline', 'Status Line', 'optional'),
+  menu('/stop', 'Stop Background Terminals'),
+  menu('/theme', 'Change Theme'),
 ];
 
 export const OPENCODE_SHORTCUTS: readonly ProgramShortcut[] = [
@@ -68,6 +142,29 @@ export const OPENCODE_SHORTCUTS: readonly ProgramShortcut[] = [
   command('/redo', 'Redo'),
   command('/models', 'Change Model'),
   command('/sessions', 'Resume a Session'),
+  menu('/agents', 'Switch Agent'),
+  menu('/btw', 'Side Question', 'required'),
+  menu('/cd', 'Change Directory', 'required'),
+  menu('/clear', 'Clear Conversation'),
+  menu('/connect', 'Connect a Provider'),
+  menu('/copy', 'Copy Response'),
+  menu('/diff', 'Show Diff'),
+  menu('/editor', 'Open Editor'),
+  menu('/exit', 'Exit'),
+  menu('/export', 'Export Conversation'),
+  menu('/fork', 'Fork Session'),
+  menu('/help', 'Help'),
+  menu('/init', 'Create Instructions File', 'optional'),
+  menu('/mcps', 'MCP Servers'),
+  menu('/rename', 'Rename Session', 'required'),
+  menu('/review', 'Review Changes', 'optional'),
+  menu('/settings', 'Open Settings'),
+  menu('/skills', 'Skills'),
+  menu('/status', 'Session Status'),
+  menu('/themes', 'Change Theme'),
+  menu('/timeline', 'Jump to Message'),
+  menu('/usage', 'Plan Usage'),
+  menu('/variants', 'Effort Level'),
 ];
 
 export const HERMES_SHORTCUTS: readonly ProgramShortcut[] = [
@@ -79,6 +176,33 @@ export const HERMES_SHORTCUTS: readonly ProgramShortcut[] = [
   command('/context', 'Context Usage'),
   command('/usage', 'Plan Usage'),
   command('/sessions', 'Resume a Session'),
+  menu('/branch', 'Branch Conversation', 'optional'),
+  menu('/btw', 'Side Question', 'required'),
+  menu('/clear', 'Clear Conversation'),
+  menu('/compress', 'Compress Context', 'optional'),
+  menu('/config', 'Open Settings'),
+  menu('/copy', 'Copy Response', 'optional'),
+  menu('/diff', 'Show Diff', 'optional'),
+  menu('/exit', 'Exit'),
+  menu('/goal', 'Set Goal', 'required'),
+  menu('/help', 'Help', 'optional'),
+  menu('/history', 'Show History'),
+  menu('/init', 'Create Instructions File', 'optional'),
+  menu('/insights', 'Usage Insights'),
+  menu('/new', 'New Conversation', 'optional'),
+  menu('/plan', 'Plan Mode', 'optional'),
+  menu('/queue', 'Queue a Prompt', 'required'),
+  menu('/reasoning', 'Effort Level', 'optional'),
+  menu('/resume', 'Resume a Session', 'optional'),
+  menu('/retry', 'Retry'),
+  menu('/review', 'Review Changes', 'optional'),
+  menu('/rollback', 'Restore Checkpoint', 'optional'),
+  menu('/skills', 'Skills', 'optional'),
+  menu('/steer', 'Steer the Turn', 'required'),
+  menu('/title', 'Rename Session', 'optional'),
+  menu('/tools', 'Tools', 'optional'),
+  menu('/undo', 'Undo'),
+  menu('/yolo', 'Always Approve', 'optional'),
 ];
 
 const PI_COMMON: readonly ProgramShortcut[] = [
@@ -96,6 +220,24 @@ export const PI_SHORTCUTS: readonly ProgramShortcut[] = [
   resume,
   command('/tree', 'Session Tree'),
   command('/fork', 'Fork Session'),
+  menu('/bug', 'Report a Bug', 'optional'),
+  menu('/changelog', 'Release Notes'),
+  menu('/clone', 'Clone Session'),
+  menu('/copy', 'Copy Response'),
+  menu('/export', 'Export Conversation', 'optional'),
+  menu('/hotkeys', 'Keyboard Shortcuts'),
+  menu('/import', 'Import Session', 'required'),
+  menu('/login', 'Sign In', 'optional'),
+  menu('/logout', 'Sign Out'),
+  menu('/name', 'Rename Session', 'optional'),
+  menu('/quit', 'Exit'),
+  menu('/reload', 'Reload Resources'),
+  menu('/scoped-models', 'Scoped Models'),
+  menu('/session', 'Session Info'),
+  menu('/settings', 'Open Settings'),
+  menu('/share', 'Share Session'),
+  menu('/thinking', 'Effort Level', 'optional'),
+  menu('/trust', 'Trust Project'),
 ];
 
 export const OMP_SHORTCUTS: readonly ProgramShortcut[] = [
@@ -107,6 +249,35 @@ export const OMP_SHORTCUTS: readonly ProgramShortcut[] = [
   resume,
   command('/plan', 'Plan Mode'),
   command('/usage', 'Plan Usage'),
+  menu('/branch', 'Branch Conversation'),
+  menu('/btw', 'Side Question', 'required'),
+  menu('/changelog', 'Release Notes', 'optional'),
+  menu('/clear', 'Clear Conversation'),
+  menu('/context', 'Context Usage'),
+  menu('/copy', 'Copy Response', 'optional'),
+  menu('/exit', 'Exit'),
+  menu('/export', 'Export Conversation', 'optional'),
+  menu('/fast', 'Fast Mode', 'optional'),
+  menu('/fork', 'Fork Session'),
+  menu('/goal', 'Set Goal', 'optional'),
+  menu('/hotkeys', 'Keyboard Shortcuts'),
+  menu('/jobs', 'Background Tasks'),
+  menu('/login', 'Sign In', 'optional'),
+  menu('/logout', 'Sign Out', 'optional'),
+  menu('/loop', 'Loop', 'optional'),
+  menu('/mcp', 'MCP Servers', 'optional'),
+  menu('/move', 'Change Directory', 'required'),
+  menu('/plugins', 'Plugins', 'optional'),
+  menu('/queue', 'Queue a Prompt', 'required'),
+  menu('/rename', 'Rename Session', 'required'),
+  menu('/retry', 'Retry'),
+  menu('/session', 'Session Info', 'optional'),
+  menu('/settings', 'Open Settings'),
+  menu('/share', 'Share Session'),
+  menu('/stats', 'Usage Insights', 'optional'),
+  menu('/todo', 'To-Do List', 'optional'),
+  menu('/tools', 'Tools'),
+  menu('/tree', 'Session Tree'),
 ];
 
 export const GROK_SHORTCUTS: readonly ProgramShortcut[] = [
@@ -118,4 +289,31 @@ export const GROK_SHORTCUTS: readonly ProgramShortcut[] = [
   compact,
   command('/context', 'Context Usage'),
   command('/fork', 'Fork Session'),
+  menu('/always-approve', 'Always Approve'),
+  menu('/btw', 'Side Question', 'required'),
+  menu('/copy', 'Copy Response', 'optional'),
+  menu('/effort', 'Effort Level'),
+  menu('/exit', 'Exit'),
+  menu('/export', 'Export Conversation'),
+  menu('/goal', 'Set Goal', 'required'),
+  menu('/help', 'Help'),
+  menu('/login', 'Sign In'),
+  menu('/logout', 'Sign Out'),
+  menu('/mcps', 'MCP Servers'),
+  menu('/memory', 'Edit Memory'),
+  menu('/model', 'Change Model', 'required'),
+  menu('/new', 'New Conversation'),
+  menu('/plan', 'Plan Mode', 'optional'),
+  menu('/release-notes', 'Release Notes'),
+  menu('/rename', 'Rename Session', 'required'),
+  menu('/rewind', 'Rewind'),
+  menu('/session-info', 'Session Info'),
+  menu('/sessions', 'Manage Sessions'),
+  menu('/settings', 'Open Settings'),
+  menu('/share', 'Share Session'),
+  menu('/skills', 'Skills'),
+  menu('/tasks', 'Background Tasks'),
+  menu('/theme', 'Change Theme', 'optional'),
+  menu('/usage', 'Plan Usage'),
+  menu('/view-plan', 'View Plan'),
 ];

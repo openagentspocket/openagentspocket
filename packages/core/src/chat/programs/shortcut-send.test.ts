@@ -9,12 +9,12 @@ import { chatCommands } from '../send/command-menu';
 import { type CommandShortcut, commandShortcutDraft } from '../send/command-shortcut';
 import { sendPolicyFor } from '../send/registry';
 import { createSendRules } from '../send/rules';
-import { programShortcuts } from './registry';
+import { programCommands } from './registry';
 
 type Program = (typeof CHAT_PROGRAMS)[number];
 
-const commandsOf = (program: Program): CommandShortcut[] =>
-  programShortcuts(program).flatMap((shortcut) => (shortcut.kind === 'command' ? [shortcut] : []));
+// The program's whole menu: the shortcuts and every command the `/` panel lists.
+const commandsOf = (program: Program): readonly CommandShortcut[] => programCommands(program);
 
 const rulesOf = (program: Program) => {
   const policy = sendPolicyFor(program);

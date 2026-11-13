@@ -4,7 +4,7 @@
 // takes its commands bare, where a trailing space would hand the text to the model as a prompt.
 
 import type { ComposerRefusal, ComposerRoute } from '../../composer/policy';
-import { programShortcuts } from '../programs/registry';
+import { programCommands } from '../programs/registry';
 import type { ProgramShortcut } from '../programs/shortcuts';
 import type { ChatCommand, ProgramSendPolicy } from './policy';
 
@@ -67,9 +67,8 @@ export function unknownCommandRefusal(
   args: string,
   policy: ProgramSendPolicy,
 ): Extract<ComposerRefusal, { kind: 'unknownCommand' }> {
-  const known = programShortcuts(policy.program).some(
-    (shortcut) =>
-      shortcut.kind === 'command' && shortcut.command.slice(1).toLowerCase() === name.toLowerCase(),
+  const known = programCommands(policy.program).some(
+    (command) => command.command.slice(1).toLowerCase() === name.toLowerCase(),
   );
   return {
     kind: 'unknownCommand',
