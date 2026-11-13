@@ -86,6 +86,27 @@ describe('AgentComposerBar', () => {
     });
   });
 
+  it("says what Send does from the program's send policy while the Agent works", async () => {
+    // Oh My Pi, working: a message steers the turn at its next step.
+    await renderDetail('p3', undefined, undefined, 'chat');
+    await waitFor(() =>
+      expect(screen.getByTestId('composer-input').props.placeholder).toBe(
+        t("Queue for the Agent's next step"),
+      ),
+    );
+  });
+
+  it('keeps the plain placeholder where the program is unverified, and while Blocked', async () => {
+    await renderDetail('p2', undefined, undefined, 'chat');
+    await waitFor(() =>
+      expect(screen.getByTestId('composer-input').props.placeholder).toBe(t('Message Agent')),
+    );
+    await renderDetail('p1', undefined, undefined, 'chat');
+    await waitFor(() =>
+      expect(screen.getByTestId('composer-input').props.placeholder).toBe(t('Message Agent')),
+    );
+  });
+
   it('keeps a typed draft and sends it, clearing the input', async () => {
     await renderDetail('p2');
     await waitFor(() => expect(screen.getByTestId('composer-input')).toBeTruthy());

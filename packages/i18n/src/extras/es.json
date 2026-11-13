@@ -180,5 +180,7 @@
   "This Host is no longer saved, so its Agents are not available.": "Este Host ya no está guardado, así que sus Agents no están disponibles.",
   "Thinking": "Pensando",
   "%lld running": "{0, number} en ejecución",
-  "Notices": "Avisos"
+  "Notices": "Avisos",
+  "Queue for after this turn": "En cola para después de este turno",
+  "Queue for the Agent's next step": "En cola para el próximo paso del Agent"
 }

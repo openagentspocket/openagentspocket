@@ -34,6 +34,8 @@ export function grokSendPolicy(): ProgramSendPolicy {
     writesNewConversationWithFirstReply: false,
     recordsCompactionBeforeNextPrompt: false,
     stopReturnsUntakenSends: false,
+    // A message sent mid-turn waits as a queued message and starts after the turn (its Stop notice).
+    whileWorking: 'queuesForTurnEnd',
     // It restores a draft stashed with Ctrl+S after the next send, so a draft is not necessarily the message.
     mayRefillInputBoxAfterSend: true,
     readInputBox: readGrokInputBox,

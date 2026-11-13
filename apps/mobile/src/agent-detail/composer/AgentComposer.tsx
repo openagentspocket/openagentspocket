@@ -1,7 +1,9 @@
 import {
   type AgentSkill,
   type ComposerSkill,
+  chatActivityOf,
   commandSuggestions,
+  composerPlaceholder,
   detectSkillTrigger,
   ESCAPE_WAIT,
   matchingSkills,
@@ -204,7 +206,13 @@ export function AgentComposerBar({
             : undefined
         }
         working={control === 'stop'}
-        placeholder={t('Message Agent')}
+        // What Send does now: a program that holds a message sent mid-turn says when it is read.
+        placeholder={renderMessage(
+          composerPlaceholder(
+            surface === 'chat' ? chatSend.policy : null,
+            chatActivityOf(snapshot.status),
+          ),
+        )}
         skills={suggestions}
         onSkill={(command) => {
           if (menu) {

@@ -6,6 +6,7 @@ export * from './delivery-policy';
 export * from './detect';
 export * from './echoes';
 export * from './input-box';
+export * from './placeholder';
 export * from './policy';
 export * from './registry';
 export * from './rules';

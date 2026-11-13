@@ -47,6 +47,8 @@ export function openCodeSendPolicy(): ProgramSendPolicy {
     echoesByEntry: true,
     // Its compaction rows, then the turn's end, are recorded before the next prompt.
     recordsCompactionBeforeNextPrompt: true,
+    // A message sent mid-turn waits and runs after the turn, even after a Stop (UNCONFIRMED_NOTICE).
+    whileWorking: 'queuesForTurnEnd',
     readInputBox: (screen) => readOpenCodeScreen(screen).state,
     // `/undo` puts the undone prompt back in the box, and Up recalls an earlier one.
     textHoldReason:

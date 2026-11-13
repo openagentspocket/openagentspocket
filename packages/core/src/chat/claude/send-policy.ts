@@ -19,6 +19,9 @@ export const claudeSendPolicy: ProgramSendPolicy = {
   writesNewConversationWithFirstReply: false,
   recordsCompactionBeforeNextPrompt: false,
   stopReturnsUntakenSends: false,
+  // A message sent mid-turn is recorded as an enqueue, then delivered as a `queued_command` inside
+  // the running turn, or as a `queued` prompt when the turn ended first (claude/prompts.ts).
+  whileWorking: 'queuesForNextStep',
   mayRefillInputBoxAfterSend: false,
   readInputBox: readClaudeInputBox,
   textHoldReason: "The Agent's input box already has text. Send or clear it in the terminal first.",

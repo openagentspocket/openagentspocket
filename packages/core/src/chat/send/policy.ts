@@ -142,6 +142,12 @@ export interface ProgramSendPolicy {
   readonly recordsCompactionBeforeNextPrompt: boolean;
   /** Stop puts the steers its turn had not taken back into the input box, unrecorded. */
   readonly stopReturnsUntakenSends: boolean;
+  /**
+   * What a message sent while the Agent works does, where the program's docs or records show it:
+   * held until the turn ends, or taken in at the turn's next step. Absent where it interrupts the
+   * turn or is unverified; the Composer then keeps its plain placeholder.
+   */
+  readonly whileWorking?: 'queuesForTurnEnd' | 'queuesForNextStep';
   /** Present when a declined `/compact` shows only on screen. */
   readonly compaction?: CompactionScreenReader;
 

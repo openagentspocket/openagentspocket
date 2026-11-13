@@ -25,6 +25,8 @@ export function piSendPolicy(program: 'pi' | 'omp'): ProgramSendPolicy {
     writesNewConversationWithFirstReply: true,
     recordsCompactionBeforeNextPrompt: true,
     stopReturnsUntakenSends: true,
+    // Enter mid-turn queues a steer the turn takes at its next step; Stop returns the untaken ones.
+    whileWorking: 'queuesForNextStep',
     compaction: piCompaction(program),
     mayRefillInputBoxAfterSend: false,
     readInputBox: (screen) => readPiInputBox(screen, program),
