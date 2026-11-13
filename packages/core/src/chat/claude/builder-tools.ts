@@ -3,6 +3,7 @@
 import { backgroundWorkItem, notice, question, toolActivity } from '../model/factories';
 import { isSafeComponent } from '../model/paths';
 import { capPreview } from '../model/preview';
+import { applyWorkEnd, followAgent } from '../model/transcript';
 import type { ChatBackgroundWorkItem, ChatToolActivity, ToolStatus } from '../model/types';
 import type { Answer } from './answers';
 import { answerOutcome } from './answers';
@@ -291,6 +292,7 @@ export abstract class ToolBuilder extends BuilderBase {
         title: nonEmpty(use.input.description) ?? 'Subagent',
         subtitle: nonEmpty(use.input.subagentType),
         launchOffset: record.byteOffset,
+        agentID: result.agentID && isSafeComponent(result.agentID) ? result.agentID : null,
       });
     } else {
       return null;
@@ -298,13 +300,10 @@ export abstract class ToolBuilder extends BuilderBase {
     item.launchedAt = dateOf(record.timestamp);
     const delivery = this.notifications.get(use.id);
     const end = delivery ? endOfDelivery(delivery) : this.endStoppingAfter(record.byteOffset);
-    if (end) {
-      item.state = end.state;
-      item.endOffset = end.offset;
-      item.endedAt = end.endedAt;
-      item.usage = end.usage;
-    }
-    return item;
+    if (end) item = applyWorkEnd(item, end);
+    return item.agentID === null
+      ? item
+      : followAgent(item, this.backgroundWorkAgents[item.agentID]);
   }
 }
 

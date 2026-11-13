@@ -81,6 +81,8 @@ export function backgroundWorkItem(
     launchedAt: null,
     endedAt: null,
     usage: null,
+    agentID: null,
+    resume: null,
     ...init,
   };
 }

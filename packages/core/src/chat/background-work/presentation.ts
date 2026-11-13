@@ -7,6 +7,7 @@
 import { message, type Text } from '../../errors/text';
 import { formatDuration } from '../../format/duration';
 import { dateKey, formatDate, formatNumber } from '../../intl';
+import { runStartedAt } from '../model/transcript';
 import type {
   BackgroundWorkKind,
   BackgroundWorkUsage,
@@ -120,21 +121,20 @@ function fractionOf(row: BackgroundWorkRow): BackgroundWorkFraction | null {
   return started > 0 ? { done, total: started } : null;
 }
 
-/** Running time from the launch, on the Host's clock, so a Host ahead of the phone reads zero. */
+/** Time of the latest run, from its launch or resume, on the Host's clock, so a Host ahead of the phone reads zero. */
 function secondsOf(
   item: ChatBackgroundWorkItem,
   status: BackgroundWorkStatus,
   now: number,
 ): number | null {
+  const startedAt = runStartedAt(item);
   if (status === 'running') {
-    return item.launchedAt === null
-      ? null
-      : Math.max(0, (now - Date.parse(item.launchedAt)) / 1000);
+    return startedAt === null ? null : Math.max(0, (now - Date.parse(startedAt)) / 1000);
   }
   if (status === 'unconfirmed' || status === 'quiet') return null;
   if (item.usage?.durationMilliseconds != null) return item.usage.durationMilliseconds / 1000;
-  if (item.launchedAt === null || item.endedAt === null) return null;
-  return Math.max(0, (Date.parse(item.endedAt) - Date.parse(item.launchedAt)) / 1000);
+  if (startedAt === null || item.endedAt === null) return null;
+  return Math.max(0, (Date.parse(item.endedAt) - Date.parse(startedAt)) / 1000);
 }
 
 function usageText(usage: BackgroundWorkUsage | null): Text | null {

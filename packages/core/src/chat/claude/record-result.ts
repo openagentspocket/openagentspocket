@@ -103,6 +103,7 @@ export function decodeToolUseResult(
     fileChanges: null,
     status: asString(raw.status),
     agentID: asString(raw.agentId),
+    resumedAgentID: asString(raw.resumedAgentId),
     teammateName: asString(raw.name),
     taskID: asString(raw.taskId),
     taskType: asString(raw.taskType),

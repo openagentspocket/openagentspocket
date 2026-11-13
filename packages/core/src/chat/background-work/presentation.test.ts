@@ -36,6 +36,8 @@ function row(
       launchOffset: 0,
       endOffset: null,
       launchedAt: launchedAgo === null ? null : ago(launchedAgo),
+      agentID: null,
+      resume: null,
       endedAt: options.endedAgo == null ? null : ago(options.endedAgo),
       usage: options.usage
         ? {

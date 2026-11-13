@@ -292,6 +292,27 @@ export interface ChatBackgroundWorkItem {
   launchedAt: string | null;
   endedAt: string | null;
   usage: BackgroundWorkUsage | null;
+  /** A Subagent's id (its notifications' task id, its transcript's name); null for a Workflow or an id unsafe as a path. */
+  agentID: string | null;
+  /** The latest resume of a Subagent that ended; its state, end and usage are that run's. */
+  resume: ChatBackgroundWorkResume | null;
+}
+
+/** A Subagent continued after it ended (Claude Code `SendMessage` naming it), running again. */
+export interface ChatBackgroundWorkResume {
+  /** The resuming call, which the notification ending this run names. */
+  callID: string;
+  offset: number;
+  resumedAt: string | null;
+}
+
+/** What the loaded lines say about one Subagent beyond its launch, by its id. */
+export interface ChatBackgroundWorkAgent {
+  /** Its latest resume in the loaded lines, and the end of that run there, if any. */
+  resume: ChatBackgroundWorkResume | null;
+  resumeEnd: ChatBackgroundWorkEnd | null;
+  /** Notifications naming only the agent, no tool call, oldest first. */
+  notifications: ChatBackgroundWorkEnd[];
 }
 
 export interface ChatBackgroundWorkEnd {
@@ -319,6 +340,8 @@ export interface ChatTranscript {
   latestPromptOffset: number | null;
   backgroundWorkEnds: Record<string, ChatBackgroundWorkEnd>;
   backgroundWorkStop: ChatBackgroundWorkEnd | null;
+  /** Resumes and task-id-only notifications by Subagent id, for work launched above the loaded lines. */
+  backgroundWorkAgents: Record<string, ChatBackgroundWorkAgent>;
   turns: ChatTurn[];
   precedingTurnEnd: ChatTurnEnd | null;
   /** Entries standing for something not recorded yet (a queued prompt's bubble); never cached. */
@@ -353,6 +376,7 @@ export function emptyTranscript(): ChatTranscript {
     latestPromptOffset: null,
     backgroundWorkEnds: {},
     backgroundWorkStop: null,
+    backgroundWorkAgents: {},
     turns: [],
     precedingTurnEnd: null,
     unrecordedEntryIDs: new Set(),

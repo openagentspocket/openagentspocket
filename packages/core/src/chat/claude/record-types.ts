@@ -77,6 +77,8 @@ export interface ClaudeToolUseResult {
   fileChanges: ChatFileChanges | null;
   status: string | null;
   agentID: string | null;
+  /** A `SendMessage` that continued an ended Subagent names it here. */
+  resumedAgentID: string | null;
   teammateName: string | null;
   taskID: string | null;
   taskType: string | null;

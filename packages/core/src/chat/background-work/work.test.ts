@@ -20,6 +20,8 @@ function item(
     launchOffset: options.at,
     endOffset: options.endOffset ?? null,
     launchedAt: ago(options.launchedAgo ?? 60),
+    agentID: null,
+    resume: null,
     endedAt: null,
     usage: null,
   };

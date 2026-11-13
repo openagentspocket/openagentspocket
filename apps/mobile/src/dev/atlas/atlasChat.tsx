@@ -222,6 +222,8 @@ const work = (
   launchOffset: 100,
   endOffset: null,
   launchedAt: at(options.launchedAgo),
+  agentID: options.kind === 'workflow' ? null : `a-${id}`,
+  resume: null,
   endedAt: null,
   usage: null,
   ...options,

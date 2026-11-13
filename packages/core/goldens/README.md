@@ -154,3 +154,9 @@ conformances leave out:
 
 A port's types need not match these shapes: map the port's output into this
 image in the test, then deep-compare.
+
+This port's image (`src/chat/golden-image.ts`) leaves out what Swift does not
+hold: Subagent resumes (Claude Code `SendMessage` continuing an ended agent),
+that is `backgroundWorkAgents` on the transcript and `agentID` and `resume` on
+each Background Work item. No fixture resumes a Subagent, so the rest of every
+projection is still compared.

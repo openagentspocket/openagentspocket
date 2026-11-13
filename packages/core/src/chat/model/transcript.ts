@@ -1,6 +1,7 @@
 // Derived views and merges of a ChatTranscript (Swift ChatTranscript extensions).
 
 import type {
+  ChatBackgroundWorkAgent,
   ChatBackgroundWorkEnd,
   ChatBackgroundWorkItem,
   ChatEntry,
@@ -38,9 +39,52 @@ export function applyWorkEnd(
   };
 }
 
+/** Where the item's latest run starts: its latest resume, or its launch. */
+export function runOffset(item: ChatBackgroundWorkItem): number {
+  return item.resume?.offset ?? item.launchOffset;
+}
+
+/** When the item's latest run started, on the Host's clock. */
+export function runStartedAt(item: ChatBackgroundWorkItem): string | null {
+  return item.resume ? item.resume.resumedAt : item.launchedAt;
+}
+
+/** The id of the tool call that started the item's latest run, which its ending notification names. */
+export function runCallID(item: ChatBackgroundWorkItem): string {
+  return item.resume?.callID ?? item.id;
+}
+
+/**
+ * The item as what the loaded lines say about its Subagent leaves it. A resume after the latest run
+ * started begins a new run, running from the resume until the end the lines hold for it. A
+ * notification naming only the agent ends the run in progress (it says the agent stopped, not which
+ * run, so it never starts a run nor moves an end already read).
+ */
+export function followAgent(
+  item: ChatBackgroundWorkItem,
+  agent: ChatBackgroundWorkAgent | undefined,
+): ChatBackgroundWorkItem {
+  if (!agent) return item;
+  const start = runOffset(item);
+  if (agent.resume && agent.resume.offset > start) {
+    const resumed: ChatBackgroundWorkItem = {
+      ...item,
+      resume: agent.resume,
+      state: 'running',
+      endOffset: null,
+      endedAt: null,
+      usage: null,
+    };
+    return agent.resumeEnd ? applyWorkEnd(resumed, agent.resumeEnd) : resumed;
+  }
+  if (item.state !== 'running') return item;
+  const end = agent.notifications.find((candidate) => candidate.offset > start);
+  return end ? applyWorkEnd(item, end) : item;
+}
+
 /**
  * Puts work an earlier read listed, launched above `windowStart`, ahead of the work launched in the
- * loaded lines, ending what they end. The earlier read's latest message stands when none is loaded.
+ * loaded lines, ending what they end and running again what they resume. The earlier read's latest message stands when none is loaded.
  */
 export function carryBackgroundWork(
   transcript: ChatTranscript,
@@ -51,13 +95,16 @@ export function carryBackgroundWork(
   const loaded = new Set(transcript.backgroundWork.map((item) => item.id));
   const carried = earlier
     .filter((item) => item.launchOffset < launchedBefore && !loaded.has(item.id))
-    .map((item) => {
-      const end = transcript.backgroundWorkEnds[item.id];
-      if (end && end.offset > (item.endOffset ?? item.launchOffset)) return applyWorkEnd(item, end);
-      if (item.state === 'running' && transcript.backgroundWorkStop) {
-        return applyWorkEnd(item, transcript.backgroundWorkStop);
+    .map((earlierItem) => {
+      let item = earlierItem;
+      const end = transcript.backgroundWorkEnds[runCallID(item)];
+      if (end && end.offset > (item.endOffset ?? runOffset(item))) item = applyWorkEnd(item, end);
+      else if (item.state === 'running' && transcript.backgroundWorkStop) {
+        item = applyWorkEnd(item, transcript.backgroundWorkStop);
       }
-      return item;
+      const agent =
+        item.agentID === null ? undefined : transcript.backgroundWorkAgents[item.agentID];
+      return followAgent(item, agent);
     });
   return {
     ...transcript,

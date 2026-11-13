@@ -4,8 +4,10 @@ import { notice, userMessage } from '../model/factories';
 import { capPreview } from '../model/preview';
 import type {
   ChatAgentActivity,
+  ChatBackgroundWorkAgent,
   ChatBackgroundWorkEnd,
   ChatBackgroundWorkItem,
+  ChatBackgroundWorkResume,
   ChatEntry,
   ChatEntryContent,
   ChatPendingRequest,
@@ -39,7 +41,7 @@ interface TurnDraft {
   failed: boolean;
 }
 
-function _nonEmpty(text: string | null | undefined): string | null {
+function nonEmpty(text: string | null | undefined): string | null {
   return text === null || text === undefined || text === '' ? null : text;
 }
 
@@ -64,6 +66,11 @@ export abstract class BuilderBase {
   protected turnOpen = false;
   protected notifications = new Map<string, NotificationDelivery>();
   protected notificationKeys = new Set<string>();
+  /** Subagent resumes (`SendMessage` results naming `resumedAgentId`), by agent id, in order. */
+  protected resumes = new Map<string, ChatBackgroundWorkResume[]>();
+  /** Notifications naming a task but no tool call, by task id, each at its earliest place. */
+  protected agentNotifications = new Map<string, Map<string, NotificationDelivery>>();
+  private agents: Record<string, ChatBackgroundWorkAgent> | null = null;
   protected agentsKilled: ClaudeRecord[] = [];
   protected planExitPaths = new Map<string, string>();
   protected planWrites = new Map<string, string>();
@@ -89,7 +96,9 @@ export abstract class BuilderBase {
         else this.children.set(parent, [record]);
       }
       for (const answer of answersIn(record)) {
-        if (answer.result.toolUseID !== '') this.answers.set(answer.result.toolUseID, answer);
+        if (answer.result.toolUseID === '') continue;
+        this.answers.set(answer.result.toolUseID, answer);
+        this.noteResume(answer.result.toolUseID, record);
       }
       if (record.messageID !== null) {
         for (const block of record.blocks) {
@@ -106,6 +115,7 @@ export abstract class BuilderBase {
       }
       const notification = notificationIn(record);
       if (notification) {
+        this.noteAgentNotification(notification, record.byteOffset, record.timestamp);
         if (notification.toolUseID !== null) {
           this.notifications.set(notification.toolUseID, {
             notification,
@@ -123,6 +133,7 @@ export abstract class BuilderBase {
       if (operation.operation !== 'enqueue' || operation.content === null) continue;
       const classified = classifyUserText(operation.content);
       if (classified.type !== 'taskNotification') continue;
+      this.noteAgentNotification(classified.notification, operation.offset, operation.timestamp);
       const callID = classified.notification.toolUseID;
       if (callID === null) continue;
       const existing = this.notifications.get(callID);
@@ -139,6 +150,34 @@ export abstract class BuilderBase {
     const ends: Record<string, ChatBackgroundWorkEnd> = {};
     for (const [callID, delivery] of this.notifications) ends[callID] = endOfDelivery(delivery);
     return ends;
+  }
+
+  /**
+   * Per Subagent id: its latest resume and that run's end (the notification naming the resuming
+   * call, else the first notification naming only the agent after it, else a stop-all after it), and
+   * its notifications that name only the agent.
+   */
+  get backgroundWorkAgents(): Record<string, ChatBackgroundWorkAgent> {
+    if (this.agents) return this.agents;
+    const agents: Record<string, ChatBackgroundWorkAgent> = {};
+    const ids = new Set([...this.resumes.keys(), ...this.agentNotifications.keys()]);
+    for (const agentID of ids) {
+      const notifications = [...(this.agentNotifications.get(agentID)?.values() ?? [])]
+        .sort((a, b) => a.offset - b.offset)
+        .map(endOfDelivery);
+      const resume = this.resumes.get(agentID)?.at(-1) ?? null;
+      let resumeEnd: ChatBackgroundWorkEnd | null = null;
+      if (resume) {
+        const matched = this.notifications.get(resume.callID);
+        resumeEnd = matched
+          ? endOfDelivery(matched)
+          : (notifications.find((end) => end.offset > resume.offset) ??
+            this.endStoppingAfter(resume.offset));
+      }
+      agents[agentID] = { resume, resumeEnd, notifications };
+    }
+    this.agents = agents;
+    return agents;
   }
 
   /** The first stop-all record after `offset`, which ends work launched above the loaded lines. */
@@ -194,6 +233,33 @@ export abstract class BuilderBase {
       added.set(prompt.offset, id);
     }
     return added;
+  }
+
+  // MARK: Background work
+
+  private noteResume(callID: string, record: ClaudeRecord): void {
+    const agentID = nonEmpty(record.toolResult?.result?.resumedAgentID);
+    if (this.role !== 'main' || agentID === null) return;
+    const resume = { callID, offset: record.byteOffset, resumedAt: dateOf(record.timestamp) };
+    const list = this.resumes.get(agentID);
+    if (list) list.push(resume);
+    else this.resumes.set(agentID, [resume]);
+  }
+
+  private noteAgentNotification(
+    notification: NotificationDelivery['notification'],
+    offset: number,
+    timestamp: string | null,
+  ): void {
+    if (notification.toolUseID !== null || notification.taskID === null) return;
+    let byKey = this.agentNotifications.get(notification.taskID);
+    if (!byKey) {
+      byKey = new Map();
+      this.agentNotifications.set(notification.taskID, byKey);
+    }
+    const key = notificationKey(notification);
+    const existing = byKey.get(key);
+    if (!existing || offset < existing.offset) byKey.set(key, { notification, offset, timestamp });
   }
 
   // MARK: Turns

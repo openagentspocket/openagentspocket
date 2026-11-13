@@ -3,7 +3,7 @@
 // first. Built afresh after every read and never saved, so nothing read from the device can claim to
 // be running.
 
-import { listedBackgroundWork } from '../model/transcript';
+import { listedBackgroundWork, runStartedAt } from '../model/transcript';
 import type { ChatBackgroundWorkItem, ChatTranscript } from '../model/types';
 import type { ChatWorkflowProgress } from '../model/workflow-progress';
 
@@ -12,7 +12,7 @@ export interface BackgroundWorkRow {
   progress: ChatWorkflowProgress | null;
   /** Running, with no sign of it for longer than such work runs: the program may have stopped it. */
   isStale: boolean;
-  /** The newest sign of the work, on the Host's clock: its launch, or a Workflow's latest journal write. */
+  /** The newest sign of the work, on the Host's clock: its launch or latest resume, or a Workflow's latest journal write. */
   lastActivity: string | null;
 }
 
@@ -63,7 +63,7 @@ export function backgroundWorkOf(
 ): ChatBackgroundWork {
   const rows = listedBackgroundWork(transcript).map((item): BackgroundWorkRow => {
     const known = progress[item.id] ?? null;
-    const lastActivity = newest(item.launchedAt, known?.updatedAt);
+    const lastActivity = newest(runStartedAt(item), known?.updatedAt);
     let isStale = false;
     if (item.state === 'running' && lastActivity !== null) {
       const limit = item.kind === 'workflow' ? staleness.workflowQuiet : staleness.subagentRun;

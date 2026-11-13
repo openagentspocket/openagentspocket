@@ -2,7 +2,7 @@
 // payloads as `{case: payload}`, Sets as sorted arrays. Absent optionals are already `null`.
 // Shared by every program's golden test.
 
-import type { ChatEntry, ChatTranscript } from './model/types';
+import type { ChatBackgroundWorkItem, ChatEntry, ChatTranscript } from './model/types';
 
 function entryImage(entry: ChatEntry): unknown {
   return {
@@ -12,11 +12,19 @@ function entryImage(entry: ChatEntry): unknown {
   };
 }
 
+/** Background Work as Swift holds it: Subagent resumes are this port's, so their fields are left out. */
+function workImage(item: ChatBackgroundWorkItem): unknown {
+  const { agentID: _agentID, resume: _resume, ...swift } = item;
+  return swift;
+}
+
 export function goldenImage(transcript: ChatTranscript): unknown {
+  const { backgroundWorkAgents: _agents, ...swift } = transcript;
   return JSON.parse(
     JSON.stringify({
-      ...transcript,
+      ...swift,
       entries: transcript.entries.map(entryImage),
+      backgroundWork: transcript.backgroundWork.map(workImage),
       diagnostics: {
         ...transcript.diagnostics,
         unknownRecordTypes: [...transcript.diagnostics.unknownRecordTypes].sort(),

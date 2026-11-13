@@ -15,7 +15,7 @@ import { decodeClaudeLine, emptyInput } from './record';
 import { type ClaudeRecord, type ClaudeToolUse, toolUsesOf } from './record-types';
 import { toolFileChanges, toolPreview } from './tool-summary';
 
-export const CLAUDE_REVISION = 14;
+export const CLAUDE_REVISION = 15;
 
 export class ClaudeTranscriptReducer implements ChatTranscriptReducer {
   readonly index = new ClaudeTranscriptIndex();
@@ -64,6 +64,7 @@ export class ClaudeTranscriptReducer implements ChatTranscriptReducer {
       latestPromptOffset: builder.latestPromptOffset,
       backgroundWorkEnds: main ? builder.backgroundWorkEnds : {},
       backgroundWorkStop: main ? builder.endStoppingAfter(context.windowStart) : null,
+      backgroundWorkAgents: main ? builder.backgroundWorkAgents : {},
       turns: main ? builder.turns : [],
       precedingTurnEnd: main ? builder.precedingTurnEnd : null,
       unrecordedEntryIDs: new Set(waiting.values()),
