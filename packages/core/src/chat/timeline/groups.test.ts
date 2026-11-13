@@ -29,6 +29,26 @@ import { finished, subagentTool } from './helpers.test-util';
 
 const entry = rowID.entry;
 describe('groups', () => {
+  it('folds a running turn of five calls into one row, its failure counted', () => {
+    const rows = [
+      user('u1'),
+      tool('s1', 'search'),
+      tool('f1', 'fileRead'),
+      tool('e1', 'fileEdit', { diff: { added: 3, removed: 1, files: 1 } }),
+      tool('e2', 'fileEdit', { diff: { added: 2, removed: 0, files: 1 } }),
+      tool('c1', 'command', { status: 'failed' }),
+      text('n1'),
+    ];
+    const output = project(rows, { turns: [turn('u1', { ended: false })], signals: WORKING });
+    expect(ids(output)).toEqual(['u1', '[working]', '[group c1]', 'n1']);
+    expect(groupOf(output, rowID.group('c1'))).toMatchObject({
+      calls: 5,
+      failed: 1,
+      added: 5,
+      removed: 1,
+    });
+  });
+
   it('makes no group of one call, even with many files', () => {
     const changes = fileChanges(['a', 'b', 'c'].map((p) => fileChange(`${p}.swift`)));
     const rows = [user('u1'), tool('e1', 'fileEdit', { name: 'Edit', changes }), text('n1')];

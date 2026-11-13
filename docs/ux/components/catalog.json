@@ -652,9 +652,12 @@
       "variants": [
         "default|tool card: kind icon, mono command (2 lines), trailing status (Exit 1 red)",
         "waiting|orange hand glyph 'Waiting', command line in secondary",
-        "subagents|group of subagent rows: icon, name, kind, check or spinner, 'Open Subagent Transcript' link"
+        "subagents|group of subagent rows: icon, name, kind, check or spinner, 'Open Subagent Transcript' link",
+        "line|a finished call as one quiet line: kind glyph, its description in secondary ink, +/- line counts, chevron; no border",
+        "running|a running call: the same quiet line with a spinner before the chevron",
+        "group|consecutive calls folded into one quiet line ('Ran 3 commands, Edited 2 files'), opens on tap"
       ],
-      "interactions": "tap expands output; subagent rows open the transcript; long press copy",
+      "interactions": "tap expands output; subagent rows open the transcript; long press copy; only a failed or waiting call is a card",
       "rnToday": ["none"],
       "props": "{ tool: { kind, title, detail, status, exitCode? }, expanded, onToggle }",
       "composes": ["Card", "StatusOrb", "Badge", "Icon", "Text"],

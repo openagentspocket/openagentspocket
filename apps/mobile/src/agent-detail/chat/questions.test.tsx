@@ -141,7 +141,7 @@ describe('a question in Chat', () => {
     await waitFor(() => expect(screen.getByText('Ship')).toBeTruthy());
     expect(screen.queryByText(/Hold/)).toBeNull();
     expect(screen.queryByTestId('chat-question-unread')).toBeNull();
-    expect(screen.getByTestId('tool-status-done')).toBeTruthy();
+    expect(screen.getByTestId('tool-line-done')).toBeTruthy();
   });
 
   it('draws the rows a program writes as questions of their own', async () => {

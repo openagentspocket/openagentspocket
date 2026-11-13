@@ -91,6 +91,7 @@ export const chatRowsEntries: readonly CatalogEntry[] = [
           <ChatToolRow
             tool={{
               title: 'swift test --filter AttachToolbarSnapshotTests',
+              monospaced: true,
               status: 'failed',
               statusLabel: 'Exit 1',
             }}
@@ -104,8 +105,47 @@ export const chatRowsEntries: readonly CatalogEntry[] = [
           <ChatToolRow
             tool={{
               title: 'git push origin main',
+              monospaced: true,
               status: 'waiting',
               statusLabel: 'Waiting',
+            }}
+            onToggle={noop}
+          />
+        ),
+      },
+      {
+        id: 'line',
+        render: () => (
+          <ChatToolRow
+            tool={{
+              icon: 'file',
+              title: 'Sources/Attach/AttachToolbar.swift',
+              status: 'done',
+              added: 12,
+              removed: 4,
+            }}
+            onToggle={noop}
+          />
+        ),
+      },
+      {
+        id: 'running',
+        render: () => (
+          <ChatToolRow
+            tool={{ title: 'Run the toolbar snapshot tests', status: 'running' }}
+            onToggle={noop}
+          />
+        ),
+      },
+      {
+        id: 'group',
+        render: () => (
+          <ChatToolRow
+            tool={{
+              title: 'Ran 3 commands, Edited 2 files',
+              status: 'done',
+              added: 18,
+              removed: 6,
             }}
             onToggle={noop}
           />

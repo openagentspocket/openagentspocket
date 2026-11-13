@@ -12,6 +12,7 @@ import {
 import type { ReactNode } from 'react';
 import type { ConversationRegistry } from '@/conversations/ConversationRegistry';
 import { ConversationsProvider } from '@/conversations/useConversation';
+import { FOLDED_CALLS } from './atlasChatCalls';
 import { ATLAS_NOW } from './atlasClock';
 
 const at = (secondsAgo: number) => new Date(ATLAS_NOW - secondsAgo * 1000).toISOString();
@@ -89,9 +90,18 @@ const ENTRIES: ChatEntry[] = [
       },
     },
   },
+  ...FOLDED_CALLS,
+  {
+    id: 'a3',
+    sourceOffset: 12,
+    content: {
+      type: 'assistant',
+      value: { text: 'The label fits now. Running the snapshots at the accessibility sizes.' },
+    },
+  },
   {
     id: 't2',
-    sourceOffset: 7,
+    sourceOffset: 13,
     content: {
       type: 'tool',
       value: toolActivity({
@@ -105,7 +115,7 @@ const ENTRIES: ChatEntry[] = [
   },
   {
     id: 'a2',
-    sourceOffset: 8,
+    sourceOffset: 14,
     content: {
       type: 'assistant',
       value: {

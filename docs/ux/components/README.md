@@ -61,7 +61,7 @@ outside `packages/ui/src/components` was needed. Screens then swap their local m
 | [ChatUserBubble](#chatuserbubble) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-timeline` | default: [ref](ref/ChatUserBubble.png) · [light](ref/ChatUserBubble.light.png)<br>pending: none | none | `Chat/Timeline/ChatRowView.swift:150-255` |
 | [ChatDivider](#chatdivider) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-timeline` | turn: [ref](ref/ChatDivider.turn.png) · [light](ref/ChatDivider.turn.light.png)<br>working: [ref](ref/ChatDivider.working.png) · [light](ref/ChatDivider.working.light.png)<br>compacted: [ref](ref/ChatDivider.compacted.png) · [light](ref/ChatDivider.compacted.light.png) | none | `Chat/Timeline/ChatRowView.swift:301-387`<br>`Chat/Timeline/ChatRowView.swift:1148-1236` |
 | [ChatThoughtRow](#chatthoughtrow) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-timeline` | default: [ref](ref/ChatThoughtRow.png) · [light](ref/ChatThoughtRow.light.png) | none | `Chat/Timeline/ChatRowView.swift:255-301` |
-| [ChatToolRow](#chattoolrow) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-blocked-card`<br>`agent-detail.chat-background-strip`<br>`agent-detail.subagent-transcript` | default: [ref](ref/ChatToolRow.png) · [light](ref/ChatToolRow.light.png)<br>waiting: [ref](ref/ChatToolRow.waiting.png) · [light](ref/ChatToolRow.waiting.light.png)<br>subagents: [ref](ref/ChatToolRow.subagents.png) · [light](ref/ChatToolRow.subagents.light.png) | none | `Chat/Timeline/ChatRowView.swift:387-1014`<br>`Chat/Timeline/ChatFileDiffView.swift:139-300` |
+| [ChatToolRow](#chattoolrow) | UX3-chat-rows | `agent-detail.chat`<br>`agent-detail.chat-blocked-card`<br>`agent-detail.chat-background-strip`<br>`agent-detail.subagent-transcript` | default: [ref](ref/ChatToolRow.png) · [light](ref/ChatToolRow.light.png)<br>waiting: [ref](ref/ChatToolRow.waiting.png) · [light](ref/ChatToolRow.waiting.light.png)<br>subagents: [ref](ref/ChatToolRow.subagents.png) · [light](ref/ChatToolRow.subagents.light.png)<br>line: none<br>running: none<br>group: none | none | `Chat/Timeline/ChatRowView.swift:387-1014`<br>`Chat/Timeline/ChatFileDiffView.swift:139-300` |
 | [ChatNoticeRow](#chatnoticerow) | UX3-chat-rows | `agent-detail.chat-floating-controls`<br>`agent-detail.chat-background-strip` | default: [ref](ref/ChatNoticeRow.png) · [light](ref/ChatNoticeRow.light.png) | none | `Chat/Timeline/ChatRowView.swift:1088-1148` |
 | [DiffRow](#diffrow) | UX3-chat-rows | `changes.file-diff`<br>`agent-detail.chat (inline diff)` | default: [ref](ref/DiffRow.png) · [light](ref/DiffRow.light.png) | `packages/ui/src/diff/DiffView.tsx` | `Changes/DiffLineViews.swift:7-407`<br>`Changes/FileDiffView.swift:5-715`<br>`Changes/FileDiffSideBySideRow.swift:6-111`<br>`Chat/Timeline/ChatFileDiffView.swift:267-456` |
 | [BackgroundWorkStrip](#backgroundworkstrip) | UX3-blocked-terminal | `agent-detail.chat-blocked-card`<br>`agent-detail.chat-floating-controls`<br>`agent-detail.chat-background-strip`<br>`agent-detail.chat-background-sheet` | default: [ref](ref/BackgroundWorkStrip.png) · [light](ref/BackgroundWorkStrip.light.png)<br>expanded: [ref](ref/BackgroundWorkStrip.expanded.png) · [light](ref/BackgroundWorkStrip.expanded.light.png) | none | `Chat/BackgroundWork/ChatBackgroundWorkStrip.swift:8-266`<br>`Chat/BackgroundWork/ChatBackgroundWorkSheet.swift:7-214` |
@@ -567,13 +567,16 @@ Task UX3-chat-rows · target `packages/ui/src/components/ChatToolRow.tsx` · com
 
 Props sketch: `{ tool: { kind, title, detail, status, exitCode? }, expanded, onToggle }`
 
-Interactions: tap expands output; subagent rows open the transcript; long press copy
+Interactions: tap expands output; subagent rows open the transcript; long press copy; only a failed or waiting call is a card
 
 Variants (gallery variant id = the id before the colon):
 
 - `default`: tool card: kind icon, mono command (2 lines), trailing status (Exit 1 red) · crop [ref](ref/ChatToolRow.png) · [light](ref/ChatToolRow.light.png)
 - `waiting`: orange hand glyph 'Waiting', command line in secondary · crop [ref](ref/ChatToolRow.waiting.png) · [light](ref/ChatToolRow.waiting.light.png)
 - `subagents`: group of subagent rows: icon, name, kind, check or spinner, 'Open Subagent Transcript' link · crop [ref](ref/ChatToolRow.subagents.png) · [light](ref/ChatToolRow.subagents.light.png)
+- `line`: a finished call as one quiet line: kind glyph, its description in secondary ink, +/- line counts, chevron; no border · crop none
+- `running`: a running call: the same quiet line with a spinner before the chevron · crop none
+- `group`: consecutive calls folded into one quiet line ('Ran 3 commands, Edited 2 files'), opens on tap · crop none
 
 Acceptance (the judge ticks each on the side-by-side):
 

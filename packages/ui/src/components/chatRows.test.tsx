@@ -98,6 +98,35 @@ describe('ChatToolRow', () => {
     expect(onToggle).toHaveBeenCalledTimes(1);
   });
 
+  it('draws a finished call as a quiet line that opens to its output on press', async () => {
+    const onToggle = jest.fn();
+    await renderThemed(
+      <ChatToolRow
+        tool={{ title: 'Run the tests', status: 'done', output: 'ok', added: 3, removed: 1 }}
+        onToggle={onToggle}
+      />,
+    );
+    expect(screen.getByTestId('tool-line-done')).toBeTruthy();
+    expect(screen.queryByTestId('tool-status-done')).toBeNull();
+    expect(screen.queryByText('ok')).toBeNull();
+    expect(screen.getByText('+3')).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: 'Run the tests' }));
+    expect(onToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it("shows an open quiet line's output under it", async () => {
+    await renderThemed(
+      <ChatToolRow tool={{ title: 'Run the tests', status: 'done', output: 'ok' }} expanded />,
+    );
+    expect(screen.getByText('ok')).toBeTruthy();
+  });
+
+  it('keeps a running call on its quiet line, busy', async () => {
+    await renderThemed(<ChatToolRow tool={{ title: 'Build', status: 'running' }} />);
+    expect(screen.getByTestId('tool-line-running')).toBeTruthy();
+    expect(screen.queryByTestId('tool-status-running')).toBeNull();
+  });
+
   it('marks a waiting tool', async () => {
     await renderThemed(
       <ChatToolRow tool={{ title: 'git push', status: 'waiting', statusLabel: 'Waiting' }} />,

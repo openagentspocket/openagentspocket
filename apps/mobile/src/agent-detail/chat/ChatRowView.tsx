@@ -134,8 +134,11 @@ export const ChatRowView = memo(function ChatRowView({
             tool={{
               icon: toolIcon(content.tool.kind),
               title: content.tool.subtitle ?? content.tool.title,
+              monospaced: content.tool.kind === 'command',
               status,
               statusLabel: asking ? t('Waiting') : toolStatusLabel(content.tool),
+              added: content.tool.diff?.added,
+              removed: content.tool.diff?.removed,
             }}
             detail={
               <>
@@ -168,8 +171,10 @@ export const ChatRowView = memo(function ChatRowView({
                 : content.group.failed
                   ? 'failed'
                   : 'done',
+              added: content.group.added,
+              removed: content.group.removed,
             }}
-            expanded={false}
+            expanded={content.group.isOpen}
             onToggle={() => onToggle(row.id)}
           />
         );
