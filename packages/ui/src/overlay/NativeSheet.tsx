@@ -29,6 +29,7 @@ export function NativeSheet(props: SheetProps) {
   // The sheet's own dismissal (a swipe) arrives after the fact: do not dismiss it twice.
   const open = useRef(false);
   const [presented, setPresented] = useState(visible);
+  const [footerHeight, setFooterHeight] = useState(0);
   useEffect(() => {
     if (visible) {
       setPresented(true);
@@ -53,7 +54,16 @@ export function NativeSheet(props: SheetProps) {
       scrollableRef={scrollRef}
       // A footer inside the content stays behind the keyboard; the sheet's own absolute footer
       // rises above it and goes back down with it, and insets the scroll view by its height.
-      footer={props.footer ? <SheetFooter footer={props.footer} host /> : undefined}
+      footer={
+        props.footer ? (
+          <SheetFooter
+            footer={props.footer}
+            host
+            onHeight={setFooterHeight}
+            testID={`${testID}-footer`}
+          />
+        ) : undefined
+      }
       footerOptions={props.footer ? FOOTER_OPTIONS : undefined}
       onDidDismiss={() => {
         if (open.current) {
@@ -72,6 +82,7 @@ export function NativeSheet(props: SheetProps) {
             fit={detent === 'fit'}
             scrollRef={scrollRef}
             footerPlacement="host"
+            footerHeight={footerHeight}
           />
           <SheetAlertHost testID={testID} />
         </View>

@@ -14,10 +14,12 @@ interface Props {
   scrollRef?: Ref<ComponentRef<typeof ScrollView>>;
   /** Who draws the footer and keeps it above the keyboard (see `SheetContent`). */
   footerPlacement?: 'inline' | 'host';
+  /** The host-drawn footer's height (see `SheetContent`). */
+  footerHeight?: number;
 }
 
 /** What every sheet host draws inside its panel: the canvas, the bar, title, body and footer. */
-export function SheetBody({ sheet, fit, top, scrollRef, footerPlacement }: Props) {
+export function SheetBody({ sheet, fit, top, scrollRef, footerPlacement, footerHeight }: Props) {
   const testID = sheet.testID ?? 'sheet';
   return (
     <>
@@ -35,6 +37,7 @@ export function SheetBody({ sheet, fit, top, scrollRef, footerPlacement }: Props
         footer={sheet.footer}
         footerPlacement={footerPlacement}
         fit={fit}
+        footerHeight={footerHeight}
         scrollRef={scrollRef}
         testID={testID}
       >

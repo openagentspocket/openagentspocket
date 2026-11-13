@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react-native';
+import { fireEvent, screen, waitFor } from '@testing-library/react-native';
 import type { ReactElement, ReactNode } from 'react';
 import { StyleSheet, Text, type ViewStyle } from 'react-native';
 import { renderThemed } from '../test-utils';
@@ -83,5 +83,41 @@ describe('a sheet footer and the keyboard', () => {
     await renderThemed(sheet(JsSheet));
     expect(screen.getAllByText('Save')).toHaveLength(1);
     expect(screen.getByTestId('s-scroll').props.automaticallyAdjustKeyboardInsets).toBe(true);
+  });
+});
+
+describe('a content-sized sheet with the native footer', () => {
+  const withFooter = (detent: SheetDetent) => (
+    <NativeSheet
+      visible
+      onClose={() => undefined}
+      detent={detent}
+      footer={<Text>Save</Text>}
+      testID="s"
+    >
+      <Text>body</Text>
+    </NativeSheet>
+  );
+  const bodyPadding = () =>
+    StyleSheet.flatten(screen.getByTestId('s-scroll').props.contentContainerStyle).paddingBottom;
+
+  // The absolute footer is not part of the height the sheet measures from its content: the body
+  // keeps the footer's height free, or the footer sits on the body's last lines.
+  it('keeps the footer height free under the body', async () => {
+    await renderThemed(withFooter('fit'));
+    fireEvent(screen.getByTestId('s-footer'), 'layout', {
+      nativeEvent: { layout: { height: 96 } },
+    });
+    await waitFor(() => expect(bodyPadding()).toBe(96));
+  });
+
+  it('leaves a filled sheet to the host, which insets its scroll view', async () => {
+    await renderThemed(withFooter('large'));
+    fireEvent(screen.getByTestId('s-footer'), 'layout', {
+      nativeEvent: { layout: { height: 96 } },
+    });
+    // The host has measured nothing it would need: the padding stays out.
+    await waitFor(() => expect(screen.getByTestId('s-footer')).toBeTruthy());
+    expect(bodyPadding()).toBeUndefined();
   });
 });

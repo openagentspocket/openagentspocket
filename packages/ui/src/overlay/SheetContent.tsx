@@ -57,6 +57,12 @@ export interface SheetContentProps {
   footerPlacement?: 'inline' | 'host';
   /** Content-sized: the body shrinks and scrolls past the host's limit; otherwise it fills. */
   fit: boolean;
+  /**
+   * Height of a footer the host draws over the content (`footerPlacement="host"`). A content-sized
+   * sheet measures only this body, so the absolute footer would sit on its last lines: the body
+   * keeps that height free below itself. A filled sheet is inset by the host instead.
+   */
+  footerHeight?: number;
   scrollRef?: Ref<ComponentRef<typeof ScrollView>>;
   children: ReactNode;
   testID: string;
@@ -75,6 +81,7 @@ export function SheetContent({
   footer,
   footerPlacement = 'inline',
   fit,
+  footerHeight = 0,
   scrollRef,
   children,
   testID,
@@ -138,7 +145,11 @@ export function SheetContent({
       ) : null}
       <ScrollView
         ref={scrollRef}
-        contentContainerStyle={styles.body}
+        contentContainerStyle={
+          fit && footerPlacement === 'host' && footerHeight > 0
+            ? [styles.body, { paddingBottom: footerHeight }]
+            : styles.body
+        }
         keyboardShouldPersistTaps="handled"
         // Inline, the JS panel lifts with the keyboard and this scrolls the focused field into
         // view; on the native host True Sheet insets the plugged scroll view: once, not twice.
@@ -154,10 +165,25 @@ export function SheetContent({
 }
 
 /** The pinned footer (a primary action): under the body inline, or given to the native host. */
-export function SheetFooter({ footer, host = false }: { footer: ReactNode; host?: boolean }) {
+export function SheetFooter({
+  footer,
+  host = false,
+  onHeight,
+  testID,
+}: {
+  footer: ReactNode;
+  host?: boolean;
+  /** The footer's measured height, for the body to keep that room free (see `footerHeight`). */
+  onHeight?: (height: number) => void;
+  testID?: string;
+}) {
   const styles = useStyles();
   return (
-    <View style={host ? [styles.body, styles.hostFooter] : styles.body}>
+    <View
+      style={host ? [styles.body, styles.hostFooter] : styles.body}
+      onLayout={onHeight ? (event) => onHeight(event.nativeEvent.layout.height) : undefined}
+      testID={testID}
+    >
       <SurfaceFillProvider value="surfaceOverlay">{footer}</SurfaceFillProvider>
     </View>
   );
