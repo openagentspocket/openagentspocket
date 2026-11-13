@@ -1,6 +1,7 @@
 import type { StagedAttachment } from '../attachments/types';
 import type { Clock } from '../hosts/cancellation';
 import type { KeyValueStorage } from '../hosts/known-hosts';
+import { appendParagraph } from './handoff';
 import { type ComposerPrompt, ComposerStore } from './store';
 
 const DRAFT_PREFIX = 'composer.draft.';
@@ -76,6 +77,21 @@ export class ComposerRegistry {
     });
     this.stores.set(input.key, store);
     return store;
+  }
+
+  /**
+   * Adds text to an Agent's draft as its own paragraph (`appendParagraph`), whether or not its
+   * Composer is live: a live store takes it (its subscribers and persistence see it), otherwise the
+   * saved draft does and `composerFor` reads it on first use. Never sends.
+   */
+  appendToDraft(key: string, text: string): void {
+    const live = this.stores.get(key);
+    if (live) {
+      live.replaceDraft(appendParagraph(live.getSnapshot().draft, text));
+      return;
+    }
+    const { storage } = this.options;
+    storage.set(DRAFT_PREFIX + key, appendParagraph(readDraft(storage, key), text));
   }
 
   /** Forgets an Agent that closed, with its saved draft and attachments. */
