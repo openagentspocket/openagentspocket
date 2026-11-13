@@ -33,7 +33,8 @@ TypeScript strict, pnpm 11 workspaces. Pre-alpha. Where the work stands: [docs/r
 | `packages/core`, `packages/ui`, `apps/mobile` JS | verify-fast (related tests); the merge commit reruns it over the whole branch diff |
 | `packages/plugin`, `packages/relay`, `apps/site` | verify-fast runs their suites |
 | A milestone (wave closed, device install, release) | the lead runs `pnpm test` once |
-| A visual or navigation change | `pnpm sim:verify <flow...>` for the affected flows (e2e/sim, demo mode, simulator 2798C301, takes the native slot) before reporting; the report lists the screenshots in `design/atlas/sim/`. The web atlas is support, not proof |
+| A JS-only visual or navigation change | `node scripts/atlas-web.mjs --theme negro <id...>` (Expo web, seconds, no simulator, ids in `apps/mobile/src/dev/atlas/atlasMap.json`); PNGs land in `design/atlas/rn-web/<id>.negro.png`; look at each one. The script exits non-zero for a screen that shows the error screen or a development overlay. It is support, not proof of the native look: it cannot show native sheets, native menus, the terminal or the launch animation's timing |
+| A visual or navigation change that touches native, or needs those | `pnpm sim:verify <flow...>` for the affected flows (e2e/sim, demo mode, simulator 2798C301, takes the native slot) before reporting; the report lists the screenshots in `design/atlas/sim/`. The simulator also runs at a milestone with the suite |
 | Native deps, config plugins, `app.json` native fields | integrator only: `npx expo prebuild --clean` then rebuild native once per batch (a stale `ios/` silently skips modules) |
 
 ## Rules

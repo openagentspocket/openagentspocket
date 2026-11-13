@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { redirectLink } from '@/links/nativeIntent';
+import { loadNotifications } from './loadNotifications';
 import { notificationTapLink } from './notificationTapLink';
 
 interface Response {
@@ -19,7 +20,8 @@ const linkOf = ({ notification: { request } }: Response) =>
 export function useNotificationTaps(): void {
   const router = useRouter();
   useEffect(() => {
-    const Notifications = require('expo-notifications') as typeof import('expo-notifications');
+    const Notifications = loadNotifications();
+    if (!Notifications) return;
     const open = (response: Response | null) => {
       const link = response && linkOf(response);
       if (link) router.navigate(redirectLink(link) as never);

@@ -23,14 +23,19 @@ variant) or core (helper); never a screen-local copy. Report the reusable pieces
 - Do not edit `entries.tsx`, `_layout.tsx`, `Icon.tsx` or another family's files. If you need a shared change
   (a new icon, a root layout option), list it in your report; the lead lands it.
 
-## Proof on the simulator (mandatory)
+## Proof: web atlas for JS-only changes, simulator for native ones
 
-Any visual or navigation change passes `pnpm sim:verify <flow...>` with the flows it affects before you report
+A JS-only layout change is checked with the web atlas (`node scripts/atlas-web.mjs --theme negro <id...>`, PNGs in
+`design/atlas/rn-web/`, look at every one; the script fails for a screen showing the error screen or a development
+overlay). It cannot show native sheets, native menus, the terminal or the launch animation's timing; anything that
+touches those, and every milestone, goes through the simulator below.
+
+A visual or navigation change that touches native passes `pnpm sim:verify <flow...>` with the flows it affects before you report
 (flows in `e2e/sim/`, numbered; no name runs all). It builds the dev client only when native inputs changed,
 runs the Maestro smoke flows on demo data on simulator 2798C301 holding the native slot, writes screenshots to
 `design/atlas/sim/`, and fails with the message on a flow failure, crash or development error screen. Add or
 extend a flow for a new screen. Your report lists the screenshots (absolute paths). Never computer-use. The web
-atlas below is support for iterating on layout, not proof.
+atlas is support, not proof of the native look.
 
 ## Visual loop (fresh every time)
 

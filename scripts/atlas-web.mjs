@@ -70,6 +70,14 @@ try {
     }
   };
   // The first load bundles; later ones are instant.
+  // A capture of the app's error screen or a development overlay is a failure, not an "ok".
+  const ERROR_PROBE = `(function(){
+    var f=document.querySelector('[data-testid="render-error"]');
+    if(f)return 'error screen: '+f.innerText.replace(/\\s+/g,' ').slice(0,200);
+    var o=document.querySelector('[data-testid="logbox"],[data-testid="logbox_container"],#expo-dev-overlay,#react-refresh-overlay,vite-error-overlay,nextjs-portal');
+    return o?'development overlay: '+(o.id||o.tagName):'';
+  })()`;
+  const failures = [];
   const suffix = theme === 'indigo' ? '' : `.${theme}`;
   for (const id of targets) {
     setViewport(devices.get(id) ?? 'iphone');
@@ -85,7 +93,20 @@ try {
     );
     const device = devices.get(id) === 'ipad' ? '.ipad' : '';
     browser('screenshot', join(outDir, `${id}${device}${suffix}.png`));
-    console.log(`ok ${id}${device}${suffix}`);
+    let problem = '';
+    try {
+      problem = browser('eval', ERROR_PROBE).trim().replace(/^"|"$/g, '');
+    } catch (error) {
+      problem = `could not inspect the page: ${String(error.message ?? error).split('\n')[0]}`;
+    }
+    if (problem) {
+      failures.push(id);
+      console.log(`FAIL ${id}${device}${suffix}: ${problem}`);
+    } else console.log(`ok ${id}${device}${suffix}`);
+  }
+  if (failures.length) {
+    console.error(`ERROR ${failures.length} screen(s) did not render: ${failures.join(', ')}`);
+    process.exitCode = 1;
   }
 } catch (error) {
   console.error(String(error.message ?? error).split('\n')[0]);

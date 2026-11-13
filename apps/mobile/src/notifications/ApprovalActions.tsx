@@ -7,6 +7,7 @@ import { useConsoleStore } from '@/console/hooks';
 import { waitForLiveHost } from '@/console/waitForLiveHost';
 import { hostsRuntime } from '@/features/hosts/hostsRuntime';
 import { approvalFeedback } from './approvalFeedback';
+import { loadNotifications } from './loadNotifications';
 import { useNotificationServices } from './services';
 
 const DECISIONS: Readonly<Record<string, ApprovalDecision>> = {
@@ -40,7 +41,8 @@ export function ApprovalActions(): null {
 
   useEffect(() => {
     if (!approvals) return;
-    const Notifications = require('expo-notifications') as typeof import('expo-notifications');
+    const Notifications = loadNotifications();
+    if (!Notifications) return;
     const open = { identifier: 'agentico.open', buttonTitle: t('Open') };
     const deny = {
       identifier: 'agentico.deny',
