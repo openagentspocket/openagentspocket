@@ -11,8 +11,9 @@ Items are worked from the top of each group; groups are in priority order.
 - [x] **Agent lab, OpenCode on the simulator** (`scripts/agent-lab.py`, `docs/e2e-live-backend.md`). Done
   when: Maestro flows under `e2e/` drive the app against a real OpenCode (Home, Chat, send, Reject, a
   question, modes, shortcuts) and their screenshots are in `design/atlas/sim/live-*`.
-- [ ] **Agent lab, Codex.** The login inside the lab is done by a person or the lead, never by a worker. Done
-  when: Codex has the same captures, fixtures and flows as OpenCode.
+- [x] **Agent lab, Codex.** The login inside the lab is done by a person or the lead, never by a worker. Done
+  when: Codex has the same captures, fixtures and flows as OpenCode. (Codex 0.167: `goldens/codex/lab`,
+  `e2e/live` with `live-codex-*` screenshots; three findings in group 3.)
 - [ ] **Agent lab, Approve.** The flow asserts the exact harmless command and the throwaway repository
   before it taps the single-use approve option, and fails without tapping otherwise. Done when: the lead
   has read the flow and it passes for OpenCode and Codex.
@@ -56,6 +57,16 @@ so no program-specific branches.
   when it is deallocated: it is not being released, or the app is killed first. Needs a native patch
   (sweep at start, and find why the controller outlives its view). Done when: each is removed with its
   terminal, and a start clears leftovers.
+- [ ] **Codex 0.167: herdr's hook is untrusted, and Chat says to send a prompt.** Found by the agent lab:
+  Codex holds a new pane on "Hooks need review" until the user trusts herdr's SessionStart hook (`/hooks`,
+  or "Trust all" on that screen). Until then herdr reports no session, and Chat keeps saying "Codex reports
+  its conversation after a prompt" after every prompt (`goldens/codex/lab/no-session-without-hooks.ansi`).
+  Done when: Chat, and the Setup Guide for Codex, say to trust herdr's hook in Codex.
+- [ ] **Codex 0.167: a command waiting for approval, or declined, has no row in Chat.** Found by the agent
+  lab: Codex runs commands through code mode (`custom_tool_call` `exec` calling `tools.exec_command`); the
+  reducer reads that call only for a patch. Done when: the skipped test in `chat/codex/lab.test.ts` passes.
+- [ ] **Codex: the mode chip says Default Mode while a Plan Mode question covers the footer.** Found by the
+  agent lab. Done when: the skipped test in `blocked/codex-lab.test.ts` passes (keep the last mode read).
 - [ ] **OpenCode Go usage is a stub.** Done when: it reports real limits, or the provider is not listed.
 - [x] **Connection sheet: the failure text touches the pinned actions** on a fit-height sheet.
 - [x] **Demo Home: every Session thumbnail shows the same screen.**

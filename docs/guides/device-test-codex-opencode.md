@@ -27,8 +27,11 @@ On your Host (the computer that runs herdr):
    ```
 
 4. Make the program ask before it acts, so the approval steps are reachable:
-   - Codex: start it with `codex --ask-for-approval untrusted` in the repository (check `codex --help` if your version
-     names the flag differently). In this mode a command such as `touch` asks first.
+   - Codex: start it with `codex --ask-for-approval on-request --sandbox read-only` in the repository (0.167 dropped
+     `untrusted`; check `codex --help` if your version names the flags differently). A write such as `touch` then asks,
+     when Codex is told to request approval. On Codex 0.167 the first start shows "Hooks need review": review it, and
+     trust herdr's hook only (`herdr-agent-state.sh`). Without it herdr reports no session and Chat cannot show the
+     conversation.
    - OpenCode: create `~/scratch-agent-test/opencode.json` with
      `{ "permission": { "bash": "ask", "edit": "ask" } }` and start `opencode` in the repository.
 5. Run the program inside herdr, in a pane whose directory is the throwaway repository. Note the pane id herdr shows for it;
@@ -61,6 +64,13 @@ edit, a new file or a patch shows only its path, so its notification offers Deny
 
 Expected from the code: Chat, send, Blocked card (command, edit and network approvals, and question views), modes (Plan Mode
 or Default Mode), shortcuts, Usage, a notification on an ask and on done, and Approve from a notification.
+
+Already covered by the agent lab on the simulator (Codex 0.167, `docs/e2e-live-backend.md`; screenshots `live-codex-*`):
+steps 1 (the Agent on Home; its status changes were not asserted), 2, 3, 6, 8, 9, the Plan Mode shortcut of step 10 and step 11 pass in `e2e/live`; step 4 and Interrupt in step
+10 pass in the lab's probe (no phone). Still for a phone: step 5 (Approve; the lab never approves), step 7 (file edit),
+/status in step 10, and steps 12 to 14 (push, notification actions, Live Activity), which need a real device and relay.
+Known differences the run will see: Chat shows no row for the command a card asks about, and the mode chip says Default
+Mode while a Plan Mode question is open (`docs/todo.md`, group 3).
 
 1. **Agent on Home.** Start `codex` in the pane. On the phone, open Home.
    Expect: the Agent appears under the Host as Codex, with the repository's name, and its status changes between idle and
