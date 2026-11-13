@@ -1,6 +1,7 @@
 import { HerdrApiError } from './herdr-api-error';
 import { type Message, message as m, renderText, type Text, type Translate } from './text';
 import {
+  isAddressUnreachable,
   isTransportRouteHostKeySecurityFailure,
   type TransportError,
   TransportFailure,
@@ -36,10 +37,24 @@ function droppingTrailingPeriods(text: string): string {
 const VERIFY_KEY = m('Verify it before reconnecting.');
 const VERIFY_MACHINE = m('Verify the machine before updating trust.');
 const ENABLE_ON_JUMP = m('Enable it on the Jump Host.');
+/** Nothing answered: a Host on DHCP may have a new address, which only its owner can give it. */
+const ADDRESS_MAY_HAVE_CHANGED = m(
+  'Check that the Host is awake and reachable. If its address changed, for example after a restart, pair it again or edit its address.',
+);
+const ADDRESSES_MAY_HAVE_CHANGED = m(
+  'Check that the Host is awake. If its addresses changed, for example after a restart, pair it again or edit its routes.',
+);
+
+export interface PresentationOptions {
+  /** The Host is paired to a herdr endpoint: its socket comes from the Pairing Code. */
+  readonly usesHerdrEndpoint?: boolean;
+  /** The error is a Host's connection status, so a bare timeout is a dial nothing answered. */
+  readonly connecting?: boolean;
+}
 
 export function presentation(
   error: TransportError,
-  options: { readonly usesHerdrEndpoint?: boolean } = {},
+  options: PresentationOptions = {},
 ): TransportErrorPresentation {
   // An endpoint Host's socket comes from its Pairing Code: no session setting brings a missing
   // one back, so recovery targets the configured instance.
@@ -54,15 +69,11 @@ export function presentation(
     case 'hostFeatureUnavailable':
       return p(m('This feature is unavailable on the Host'), error.feature);
     case 'sshUnreachable':
-      return p(
-        m('SSH unavailable'),
-        error.detail,
-        m('Check that the Host is awake and reachable, then verify its address and port.'),
-      );
+      return p(m('SSH unavailable'), error.detail, ADDRESS_MAY_HAVE_CHANGED);
     case 'jumpHostFailed':
       return jumpHostPresentation(error.underlying);
     case 'noRouteReached':
-      return noRouteReachedPresentation(error.failures);
+      return noRouteReachedPresentation(error);
     case 'tcpForwardingUnavailable':
       return p(m('SSH TCP forwarding is disabled'), undefined, ENABLE_ON_JUMP);
     case 'authenticationFailed':
@@ -147,7 +158,9 @@ export function presentation(
         m('Close the other terminal before reconnecting.'),
       );
     case 'timedOut':
-      return p(m('Connection timed out'));
+      return options.connecting
+        ? p(m('Connection timed out'), undefined, ADDRESS_MAY_HAVE_CHANGED)
+        : p(m('Connection timed out'));
     case 'gitTimedOut':
       return p(m('Reading Changes timed out'));
     case 'hostFileTimedOut':
@@ -234,8 +247,9 @@ function jumpHostPresentation(underlying: TransportError): TransportErrorPresent
  * as it would for a Host with one route, so it does not read as an ordinary outage.
  */
 function noRouteReachedPresentation(
-  failures: Extract<TransportError, { kind: 'noRouteReached' }>['failures'],
+  error: Extract<TransportError, { kind: 'noRouteReached' }>,
 ): TransportErrorPresentation {
+  const { failures } = error;
   const detail: Text = {
     join: failures.map((failure) => ({
       join: [failure.route, presentation(failure.error).summary],
@@ -251,7 +265,9 @@ function noRouteReachedPresentation(
   return p(
     m('No route reached the Host'),
     detail,
-    m('Check that the Host is awake, then review its routes.'),
+    isAddressUnreachable(error)
+      ? ADDRESSES_MAY_HAVE_CHANGED
+      : m('Check that the Host is awake, then review its routes.'),
   );
 }
 

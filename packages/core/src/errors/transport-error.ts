@@ -148,6 +148,31 @@ export function isRetryable(error: TransportError): boolean {
 }
 
 /**
+ * Nothing answered at the network level: refused, no route, or a dial that timed out. Every route
+ * of a `noRouteReached` must fail that way; a Jump Host, a key, authentication or herdr failure has
+ * another cause. A bare `timedOut` counts only when `connecting` says it is a Host's connection
+ * status, since a request deadline elsewhere says nothing about the address.
+ */
+export function isAddressUnreachable(
+  error: TransportError,
+  options: { readonly connecting?: boolean } = {},
+): boolean {
+  switch (error.kind) {
+    case 'sshUnreachable':
+      return true;
+    case 'timedOut':
+      return options.connecting === true;
+    case 'noRouteReached':
+      return (
+        error.failures.length > 0 &&
+        error.failures.every((failure) => isAddressUnreachable(failure.error, { connecting: true }))
+      );
+    default:
+      return false;
+  }
+}
+
+/**
  * A changed host key is a security refusal, not an ordinary outage. A Jump Host key change is
  * still one. Across routes, a LAN route's changed key counts only when every route failed on its
  * key; any other route's changed key counts on its own.

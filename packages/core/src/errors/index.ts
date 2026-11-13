@@ -2,6 +2,7 @@ export { HerdrApiError } from './herdr-api-error';
 export * from './message';
 export {
   explanation,
+  type PresentationOptions,
   presentation,
   presentationMessage,
   type TransportErrorPresentation,
@@ -18,6 +19,7 @@ export {
 } from './text';
 export {
   asTransportError,
+  isAddressUnreachable,
   isHostKeySecurityFailure,
   isRetryable,
   isTransportRouteHostKeySecurityFailure,

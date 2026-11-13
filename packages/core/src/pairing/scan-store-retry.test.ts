@@ -180,6 +180,27 @@ describe('PairingScanStore: re-pairing a saved Host', () => {
     expect(env.catalog.saved[0]?.routes).toEqual([]);
   });
 
+  it('keeps a stale address and adds the new one when the Host moved (DHCP)', async () => {
+    const env = makeEnv({ outcomes: [{ succeeds: PAIRED_RESULT }] });
+    env.store.submit(CODES.bootstrap);
+    await env.store.pair();
+    const saved = env.catalog.saved[0];
+    const stale = { address: '192.168.1.40', port: 22, usesJumpHost: false };
+    // Saved while the Host had another lease; its code now offers only the new address.
+    if (saved) env.catalog.update({ ...saved, routes: [stale] });
+
+    env.store.rescan();
+    env.store.submit(CODES.bootstrap);
+    await env.store.pair();
+
+    expect(env.store.getState().pairedHostId).toBe(saved?.id);
+    expect(env.catalog.saved).toHaveLength(1);
+    expect(env.catalog.saved[0]?.routes).toEqual([
+      stale,
+      { address: '10.0.0.7', port: 22, usesJumpHost: false },
+    ]);
+  });
+
   it('adds the routes a twin is missing', async () => {
     const env = makeEnv({ outcomes: [{ succeeds: PAIRED_RESULT }] });
     env.store.submit(CODES.bootstrap);
