@@ -5,7 +5,7 @@ import {
   type DeviceKeyStore,
   type DevicePushTokenSource,
   type HostCatalog,
-  type HostKeyCandidate,
+  type HostKeyPolicy,
   type herdr,
   type KeyAccessGate,
   type KeyValueStorage,
@@ -65,7 +65,7 @@ export interface LiveDeps {
   readonly clock: Clock;
   /** The alias the device key is kept under. */
   readonly keyAlias: string;
-  readonly confirmFirstConnect?: (candidate: HostKeyCandidate) => Promise<boolean>;
+  readonly confirmFirstConnect?: HostKeyPolicy['confirmFirstConnect'];
   readonly initiallyActive?: boolean;
   readonly trustTimeoutMs?: number;
   /** Where Chat keeps conversations between visits; in memory when absent (tests). */

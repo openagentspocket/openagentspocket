@@ -1,11 +1,22 @@
-import { fingerprintDisplay, type HostKeyCandidate } from '@openagentspocket/core';
+import {
+  type FirstConnectAnswer,
+  fingerprintDisplay,
+  type HostKeyCandidate,
+} from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import { confirm } from '@openagentspocket/ui';
 
 export const TRUST_TIMEOUT_MS = 60_000;
 
-/** The "Trust this Host?" alert; a prompt left unanswered past `timeoutMs` counts as declined. */
-export function askToTrust(candidate: HostKeyCandidate, timeoutMs: number): Promise<boolean> {
+/**
+ * The "Trust this Host?" alert. A prompt left unanswered past `timeoutMs` is withdrawn from the
+ * screen and answers `unanswered`: no trust is stored, and the next dial asks again.
+ */
+export function askToTrust(
+  candidate: HostKeyCandidate,
+  timeoutMs: number,
+): Promise<FirstConnectAnswer> {
+  const withdraw = new AbortController();
   const answer = confirm({
     title: t('Trust this Host?'),
     message: t(
@@ -16,10 +27,14 @@ export function askToTrust(candidate: HostKeyCandidate, timeoutMs: number): Prom
     ),
     confirmLabel: t('Trust'),
     cancelLabel: t("Don't Trust"),
+    signal: withdraw.signal,
   });
   let timer: ReturnType<typeof setTimeout> | undefined;
-  const timeout = new Promise<boolean>((resolve) => {
-    timer = setTimeout(() => resolve(false), timeoutMs);
+  const timeout = new Promise<'unanswered'>((resolve) => {
+    timer = setTimeout(() => {
+      withdraw.abort();
+      resolve('unanswered');
+    }, timeoutMs);
   });
   return Promise.race([answer, timeout]).finally(() => clearTimeout(timer));
 }
@@ -32,19 +47,24 @@ export const DECISION_REUSE_MS = 10_000;
  * The policy re-reads the pinned keys after each answer, so a key trusted by an earlier
  * answer is not asked about twice. Two consumers (the preflight probe and the connection
  * manager) asking about the same key share one prompt: the second reuses the decision, whether
- * it arrives while the alert is up or just after it was answered.
+ * it arrives while the alert is up or just after it was answered. A prompt nobody answered is
+ * not a decision: the next consumer asks again.
  */
 export class TrustPromptQueue {
   private tail: Promise<unknown> = Promise.resolve();
-  private readonly decisions = new Map<string, { answer: Promise<boolean>; settledAt?: number }>();
+  private readonly decisions = new Map<
+    string,
+    { answer: Promise<FirstConnectAnswer>; settledAt?: number }
+  >();
 
   constructor(
-    private readonly ask: (candidate: HostKeyCandidate) => Promise<boolean> = (candidate) =>
-      askToTrust(candidate, TRUST_TIMEOUT_MS),
+    private readonly ask: (candidate: HostKeyCandidate) => Promise<FirstConnectAnswer> = (
+      candidate,
+    ) => askToTrust(candidate, TRUST_TIMEOUT_MS),
     private readonly now: () => number = Date.now,
   ) {}
 
-  confirm = (candidate: HostKeyCandidate): Promise<boolean> => {
+  confirm = (candidate: HostKeyCandidate): Promise<FirstConnectAnswer> => {
     const key = `${candidate.host}:${candidate.port}:${fingerprintDisplay(candidate.fingerprint)}`;
     const known = this.decisions.get(key);
     if (
@@ -55,14 +75,15 @@ export class TrustPromptQueue {
     }
     const run = this.tail.then(() => this.ask(candidate));
     this.tail = run.catch(() => undefined);
-    const entry: { answer: Promise<boolean>; settledAt?: number } = { answer: run };
+    const entry: { answer: Promise<FirstConnectAnswer>; settledAt?: number } = { answer: run };
     this.decisions.set(key, entry);
-    const settle = () => {
-      entry.settledAt = this.now();
+    const forget = () => {
+      if (this.decisions.get(key) === entry) this.decisions.delete(key);
     };
-    run.then(settle, () => {
-      this.decisions.delete(key);
-    });
+    run.then((answer) => {
+      if (answer === 'unanswered') forget();
+      else entry.settledAt = this.now();
+    }, forget);
     return run;
   };
 }

@@ -28,7 +28,11 @@ export function hostKeyFailureError(failure: HostKeyFailure): TransportError {
         known: fingerprintDisplay(failure.known),
         presented: fingerprintDisplay(failure.presented),
       }
-    : { kind: 'hostKeyRejected', presented: fingerprintDisplay(failure.presented) };
+    : {
+        kind: 'hostKeyRejected',
+        presented: fingerprintDisplay(failure.presented),
+        ...(failure.unanswered ? { unanswered: true } : {}),
+      };
 }
 
 export interface HostKeyDecision {

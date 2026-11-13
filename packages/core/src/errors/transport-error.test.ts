@@ -31,6 +31,8 @@ const TABLE: readonly [TransportError, boolean][] = [
   [{ kind: 'rsaSignatureUnsupported' }, false],
   [{ kind: 'keyAccessNotConfirmed' }, false],
   [{ kind: 'hostKeyRejected', presented }, false],
+  // A prompt nobody answered is asked again on the next dial; a declined key stands.
+  [{ kind: 'hostKeyRejected', presented, unanswered: true }, true],
   [mismatch, false],
   [{ kind: 'socketNotFound', path: '/tmp/herdr.sock' }, false],
   [{ kind: 'herdrBinaryNotFound' }, false],

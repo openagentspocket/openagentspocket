@@ -8,7 +8,7 @@ jest.mock('expo-secure-store', () => ({}));
 jest.mock('expo-sqlite/kv-store', () => ({}));
 
 /** Past the session's first backoff, inside the grace. */
-const _RECONNECT_WAIT_MS = BACKGROUND_GRACE_MS / 3;
+const RECONNECT_WAIT_MS = BACKGROUND_GRACE_MS / 3;
 
 function statusOf(world: World): string | undefined {
   return world.store.getState().hosts.find((host) => host.id === SAMPLE_HOST.id)?.status?.kind;
@@ -47,6 +47,23 @@ describe('connection manager', () => {
     const key = hostTrustKey(SAMPLE_HOST.id);
     expect(world.deps.knownHosts.fingerprints(key.host, key.port)).toHaveLength(0);
     expect(world.ssh.sessions).toHaveLength(0);
+    world.manager.stop();
+  });
+
+  it('asks again on the next dial when nobody answered the prompt, and connects once trusted', async () => {
+    const world = await createWorld();
+    world.prompts.answer = 'unanswered';
+    world.manager.start();
+    await world.runtime.model.add(SAMPLE_HOST, null);
+    await waitFor(() => expect(world.prompts.count).toBe(1));
+    const key = hostTrustKey(SAMPLE_HOST.id);
+    expect(world.deps.knownHosts.fingerprints(key.host, key.port)).toHaveLength(0);
+
+    world.prompts.answer = true;
+    await world.clock.advance(RECONNECT_WAIT_MS);
+    await untilStatus(world, 'connected');
+    expect(world.prompts.count).toBe(2);
+    expect(world.deps.knownHosts.fingerprints(key.host, key.port)).toHaveLength(1);
     world.manager.stop();
   });
 

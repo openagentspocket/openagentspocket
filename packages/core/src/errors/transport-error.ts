@@ -29,8 +29,11 @@ export type TransportError =
   | { readonly kind: 'rsaSignatureUnsupported' }
   /** The owner cancelled or failed the prompt that guards SSH key use; only Retry asks again. */
   | { readonly kind: 'keyAccessNotConfirmed' }
-  /** First connect and the user declined the host key; nothing was stored. */
-  | { readonly kind: 'hostKeyRejected'; readonly presented: string }
+  /**
+   * First connect and the host key was not trusted; nothing was stored. `unanswered`: the prompt
+   * went away without an answer, which is retried (the next dial asks again), not a refusal.
+   */
+  | { readonly kind: 'hostKeyRejected'; readonly presented: string; readonly unanswered?: true }
   /** The Host presented a key that differs from the trusted one: possibly a man-in-the-middle. */
   | { readonly kind: 'hostKeyMismatch'; readonly known: string; readonly presented: string }
   /** The herdr API socket path does not exist on the Host. */
@@ -142,6 +145,9 @@ export function isRetryable(error: TransportError): boolean {
         !error.failures.some(isTransportRouteHostKeySecurityFailure) &&
         error.failures.some((failure) => isRetryable(failure.error))
       );
+    // A declined key stands; a prompt nobody answered is asked again on the next dial.
+    case 'hostKeyRejected':
+      return error.unanswered === true;
     default:
       return RETRYABLE[error.kind];
   }

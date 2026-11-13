@@ -36,11 +36,20 @@ export interface HostKeyCandidate {
   readonly fingerprint: HostKeyFingerprint;
 }
 
+/**
+ * The user's answer to a first-connect prompt: trust, decline, or `unanswered` when the prompt
+ * went away without an answer (nobody saw it, or it timed out). Only a decline is a refusal.
+ */
+export type FirstConnectAnswer = boolean | 'unanswered';
+
 /** TOFU: trust what the user confirmed on first connect, hard-fail when it changes. */
 export interface HostKeyPolicy {
   readonly knownHosts: KnownHostsStore;
-  /** Shown the candidate; false fails with `hostKeyRejected` and stores nothing. */
-  confirmFirstConnect(candidate: HostKeyCandidate): Promise<boolean>;
+  /**
+   * Shown the candidate; false or `unanswered` fails with `hostKeyRejected` and stores nothing.
+   * An unanswered prompt is marked so the next dial asks again instead of standing refused.
+   */
+  confirmFirstConnect(candidate: HostKeyCandidate): Promise<FirstConnectAnswer>;
 }
 
 /** Why a presented host key was refused; shaped like the transport error cases. */
@@ -50,7 +59,12 @@ export type HostKeyFailure =
       readonly known: HostKeyFingerprint;
       readonly presented: HostKeyFingerprint;
     }
-  | { readonly kind: 'hostKeyRejected'; readonly presented: HostKeyFingerprint };
+  | {
+      readonly kind: 'hostKeyRejected';
+      readonly presented: HostKeyFingerprint;
+      /** Nobody answered the prompt: not a refusal, the next dial asks again. */
+      readonly unanswered?: true;
+    };
 
 export interface HostKeyCheck {
   /** The endpoint dialled. */
@@ -106,6 +120,7 @@ export async function verifyHostKey(check: HostKeyCheck): Promise<HostKeyFailure
     port: check.port,
     fingerprint: presented,
   });
+  if (confirmed === 'unanswered') return { kind: 'hostKeyRejected', presented, unanswered: true };
   if (!confirmed) return { kind: 'hostKeyRejected', presented };
   knownHosts.setFingerprint(presented, key.host, key.port);
   return null;

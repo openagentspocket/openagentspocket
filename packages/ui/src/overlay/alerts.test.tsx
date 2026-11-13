@@ -31,6 +31,32 @@ describe('confirm()', () => {
     await expect(answer).resolves.toBeNull();
   });
 
+  it('withdraws a request whose signal aborts: it leaves the screen and answers cancel', async () => {
+    await renderThemed(<OverlayHost />);
+    const withdraw = new AbortController();
+    const { answer } = await ask(() =>
+      confirm({ title: 'Trust this Host?', confirmLabel: 'Trust', signal: withdraw.signal }),
+    );
+    expect(screen.getByTestId('alert-alert')).toBeTruthy();
+    await act(async () => withdraw.abort());
+    await expect(answer).resolves.toBe(false);
+    expect(screen.queryByText('Trust this Host?')).toBeNull();
+
+    // The next request is drawn, not held behind the withdrawn one.
+    const next = await ask(() => confirm({ title: 'Reconnect?', confirmLabel: 'Reconnect' }));
+    await fireEvent.press(screen.getByTestId('alert-action-confirm'));
+    await expect(next.answer).resolves.toBe(true);
+  });
+
+  it('answers cancel at once for a signal already aborted', async () => {
+    await renderThemed(<OverlayHost />);
+    const withdraw = new AbortController();
+    withdraw.abort();
+    const { answer } = await ask(() => confirm({ title: 'Late', signal: withdraw.signal }));
+    await expect(answer).resolves.toBe(false);
+    expect(screen.queryByText('Late')).toBeNull();
+  });
+
   it('draws a destructive action and a title header in an alert', async () => {
     await renderThemed(<OverlayHost />);
     await ask(() =>

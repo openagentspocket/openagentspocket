@@ -22,6 +22,11 @@ interface BaseOptions {
   anchor?: 'center' | 'end';
   /** A popover points at the control registered under this key (`useAnchor`); without one it sits above the bottom edge. */
   anchorKey?: string;
+  /**
+   * Withdraws the request when aborted: it leaves the screen (or the queue) and answers cancel,
+   * so a question nobody can answer any more never stays up or blocks the ones behind it.
+   */
+  signal?: AbortSignal;
 }
 
 export interface ConfirmOptions extends BaseOptions {
@@ -70,18 +75,32 @@ export function answerAlert(request: AlertRequest, key: string | null, text?: st
 
 function presentWithText(
   request: Omit<AlertRequest, 'resolve'>,
+  signal?: AbortSignal,
 ): Promise<{ key: string | null; text?: string }> {
+  if (signal?.aborted) return Promise.resolve({ key: null });
   if (!hasHost('alert')) {
     console.warn('confirm(): no <OverlayHost /> is mounted; answering cancel.');
     return Promise.resolve({ key: null });
   }
-  return new Promise((resolve) =>
-    alertQueue.push({ ...request, resolve: (key, text) => resolve({ key, text }) }),
-  );
+  return new Promise((resolve) => {
+    const withdraw = () => answerAlert(entry, null);
+    const entry: AlertRequest = {
+      ...request,
+      resolve: (key, text) => {
+        signal?.removeEventListener('abort', withdraw);
+        resolve({ key, text });
+      },
+    };
+    signal?.addEventListener('abort', withdraw, { once: true });
+    alertQueue.push(entry);
+  });
 }
 
-async function present(request: Omit<AlertRequest, 'resolve'>): Promise<string | null> {
-  return (await presentWithText(request)).key;
+async function present(
+  request: Omit<AlertRequest, 'resolve'>,
+  signal?: AbortSignal,
+): Promise<string | null> {
+  return (await presentWithText(request, signal)).key;
 }
 
 /** A centered alert with one text field: resolves the entered text, or null on cancel. */
@@ -115,27 +134,33 @@ export async function confirm<K extends string>(
 ): Promise<boolean | K | null> {
   const cancelLabel = options.cancelLabel === undefined ? 'Cancel' : options.cancelLabel;
   if ('actions' in options) {
-    const key = await present({
-      title: options.title,
-      message: options.message,
-      actions: options.actions,
-      cancelLabel,
-      presentation: options.presentation ?? 'dialog',
-      anchor: options.anchor,
-      anchorKey: options.anchorKey,
-    });
+    const key = await present(
+      {
+        title: options.title,
+        message: options.message,
+        actions: options.actions,
+        cancelLabel,
+        presentation: options.presentation ?? 'dialog',
+        anchor: options.anchor,
+        anchorKey: options.anchorKey,
+      },
+      options.signal,
+    );
     return key as K | null;
   }
-  const key = await present({
-    title: options.title,
-    message: options.message,
-    actions: [
-      { key: 'confirm', title: options.confirmLabel ?? 'OK', destructive: options.destructive },
-    ],
-    cancelLabel,
-    presentation: options.presentation ?? 'alert',
-    anchor: options.anchor,
-    anchorKey: options.anchorKey,
-  });
+  const key = await present(
+    {
+      title: options.title,
+      message: options.message,
+      actions: [
+        { key: 'confirm', title: options.confirmLabel ?? 'OK', destructive: options.destructive },
+      ],
+      cancelLabel,
+      presentation: options.presentation ?? 'alert',
+      anchor: options.anchor,
+      anchorKey: options.anchorKey,
+    },
+    options.signal,
+  );
   return key === 'confirm';
 }

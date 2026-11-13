@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { fingerprintFromBlob, fingerprintFromDigest, type HostKeyFingerprint } from './fingerprint';
 import {
+  type FirstConnectAnswer,
   type HostKeyCandidate,
   type HostKeyPolicy,
   type HostKeyTrust,
@@ -20,7 +21,7 @@ function hostKey(algorithm: string, marker: string): HostKeyFingerprint {
   return fingerprintFromBlob(blob);
 }
 
-function policy(knownHosts: KnownHostsStore, answer: boolean) {
+function policy(knownHosts: KnownHostsStore, answer: FirstConnectAnswer) {
   const asked: HostKeyCandidate[] = [];
   const value: HostKeyPolicy = {
     knownHosts,
@@ -61,6 +62,23 @@ describe('host key policy (TOFU)', () => {
       presented,
     });
     expect(knownHosts.fingerprints('host.example', 22)).toEqual([]);
+  });
+
+  it('marks a prompt nobody answered, persists nothing, and asks again on the next dial', async () => {
+    const knownHosts = new KnownHostsStore();
+    const presented = hostKey('ssh-ed25519', 'host-a');
+    const unanswered = policy(knownHosts, 'unanswered');
+
+    expect(await verify(presented, unanswered.policy)).toEqual({
+      kind: 'hostKeyRejected',
+      presented,
+      unanswered: true,
+    });
+    expect(knownHosts.fingerprints('host.example', 22)).toEqual([]);
+
+    const next = policy(knownHosts, true);
+    expect(await verify(presented, next.policy)).toBeNull();
+    expect(next.asked.map((c) => c.fingerprint)).toEqual([presented]);
   });
 
   it('connects a known algorithm and key without asking', async () => {

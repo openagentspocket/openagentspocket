@@ -1,6 +1,7 @@
 import {
   DeviceKeyStore,
   FakeClock,
+  type FirstConnectAnswer,
   type Host,
   HostCatalog,
   hostRoute,
@@ -76,7 +77,7 @@ export function herdrAnswers(_socket: string, request: Uint8Array): Uint8Array {
 export interface World extends LiveServices {
   readonly ssh: FakeSsh;
   readonly clock: FakeClock;
-  readonly prompts: { count: number; answer: boolean };
+  readonly prompts: { count: number; answer: FirstConnectAnswer };
   readonly deps: LiveDeps;
   /** Acknowledges every events subscription opened so far (the Host's herdr says yes). */
   acknowledgeEvents(): void;
@@ -98,7 +99,7 @@ export async function createWorld(
       },
     },
   });
-  const prompts = { count: 0, answer: true };
+  const prompts: { count: number; answer: FirstConnectAnswer } = { count: 0, answer: true };
   const clock = new FakeClock();
   const storage = new MemoryStorage();
   const deps: LiveDeps = {
