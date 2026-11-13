@@ -1,0 +1,90 @@
+# To do
+
+The working list. One line per item; tick it in the commit that closes it, and move what is done to
+[roadmap.md](roadmap.md) when a group empties. "Done when" is the check that closes the item.
+Items are worked from the top of each group; groups are in priority order.
+
+## 1. In flight
+
+- [ ] **Simulator suite on the new native build, then push.** The icon and the black native splash changed
+  native inputs. Done when: every `pnpm sim:verify` flow passes on a rebuilt Debug app and main is pushed.
+- [ ] **Agent lab, OpenCode on the simulator** (`scripts/agent-lab.py`, `docs/e2e-live-backend.md`). Done
+  when: Maestro flows under `e2e/` drive the app against a real OpenCode (Home, Chat, send, Reject, a
+  question, modes, shortcuts) and their screenshots are in `design/atlas/sim/live-*`.
+- [ ] **Agent lab, Codex.** The login inside the lab is done by a person or the lead, never by a worker. Done
+  when: Codex has the same captures, fixtures and flows as OpenCode.
+- [ ] **Agent lab, Approve.** The flow asserts the exact harmless command and the throwaway repository
+  before it taps the single-use approve option, and fails without tapping otherwise. Done when: the lead
+  has read the flow and it passes for OpenCode and Codex.
+- [ ] **Device install.** Done when: the build with everything below is on the test iPhone.
+
+## 2. Chat reads lighter (every program)
+
+From comparing Chat with a first-party client on the same conversation. All of it works on Chat's own model,
+so no program-specific branches.
+
+- [ ] **Tool calls as one quiet line.** Consecutive tool calls fold into a single borderless row ("Ran 3
+  commands", "Read 4 files") that opens on tap; a card only when something needs attention (a failure, an
+  approval, a diff). Done when: a turn with five tool calls takes one row, and the atlas shows it.
+- [ ] **The command's description, not its text.** When the program records what a command is for, the row
+  shows that; the raw command shows on opening it. Done when: a long shell line no longer fills a row.
+- [ ] **One status line above the Composer.** Elapsed time, what the Agent is doing, and how much Background
+  Work runs, as one line; finished work folds into it. The "Working for" row leaves the transcript. Done
+  when: the line is the only live indicator and opens the Background Work sheet.
+- [ ] **Harness notices out of the conversation.** Records such as "Background command completed" are not
+  messages. Done when: they show in the Background Work sheet and not as Chat rows.
+- [ ] **The Composer says what Send does.** While the Agent works and the program queues input, the
+  placeholder says the message is queued for after this turn. A property of the program's send policy.
+- [ ] **Conversation title in the header**, with the program and Host under it; the mode chip moves next to
+  the Composer.
+- [ ] **Dictation in reach.** The microphone shows in the Composer when the draft is empty.
+- [ ] **Message actions in sight.** Copy (and read aloud where the platform gives it) under the latest
+  answer, not only on long press.
+
+## 3. Found and not fixed
+
+- [ ] **Demo: the Codex Agent's Chat says "Conversation Not Readable".** It is what a store reviewer sees.
+  Done when: every demo Agent opens a conversation, or says in plain words why it has none.
+- [ ] **An Agent screen whose Host was removed shows "Reconnecting…" forever.** Done when: it says the Host
+  is gone and offers the way back.
+- [ ] **Terminal config files pile up in the app's temporary folder** (`ghostty-config-*.conf`, one per
+  terminal opened). Done when: each is removed with its terminal, and a start clears leftovers.
+- [ ] **OpenCode Go usage is a stub.** Done when: it reports real limits, or the provider is not listed.
+- [ ] **Connection sheet: the failure text touches the pinned actions** on a fit-height sheet.
+- [ ] **Demo Home: every Session thumbnail shows the same screen.**
+- [ ] **OpenCode: a background subagent's permission can look like the main session's.** Reject then opens
+  OpenCode's follow-up field; not destructive. Done when: the end of a background subagent is known.
+- [ ] **Claude Code `/context` from Chat.** Runs in the terminal today because Chat's echo of local command
+  output is unverified. Done when: verified and moved to the conversation, or the reason is recorded.
+- [ ] **tmux Hosts type a prompt's line breaks as Enter.** Matters when tmux Hosts ship; a draft with
+  several diff comments would go out in pieces.
+
+## 4. Release 1.0.1
+
+- [ ] **Store screenshots again**, after group 2 changes how Chat looks.
+- [ ] **Spanish listing** in the store, from `docs/store/listing.md`.
+- [ ] **Build and upload** with the new icon, the animated launch and everything above, to internal testers.
+  Submitting for review stays a person's step.
+
+## 5. Needs the owner
+
+- [ ] **On a real phone:** Ask Agent and Comment on Line against a real Agent; an unreachable Host's sheet
+  and Agent screen; a resumed subagent listed as running; approvals in Claude Code still confirm (the
+  matched-request change); a command shortcut from Chat opens the terminal with the command typed; the
+  animated launch on a Release build, with Reduce Motion and with App Lock.
+- [ ] **What a simulator cannot do:** a push with the app closed, Approve from a notification, the Live
+  Activity, for Codex and OpenCode (`docs/guides/device-test-codex-opencode.md`).
+- [ ] **Local `worktree-agent-*` branches.** Their work is on main by cherry-pick, so git only deletes them
+  by force.
+
+## 6. Later (each needs a decision record first)
+
+- [ ] **Host addresses that heal themselves.** Each encrypted notification carries the Host's current
+  addresses and the app updates that Host's routes; the pinned host key still decides which machine is
+  trusted. Changes the notification envelope.
+- [ ] **iPad.**
+- [ ] **Approve without opening the app, and Apple Watch.**
+- [ ] **A bug hunt by zones** (planned, never run).
+- [ ] **State docs.** Archive `docs/tasks.yml` and `docs/PROGRESS.md`, bring CLAUDE.md's gate notes up to
+  date, add a map of `packages/core`.
+- [ ] **Site:** remove the Windows installer while Windows Hosts are out of scope.
