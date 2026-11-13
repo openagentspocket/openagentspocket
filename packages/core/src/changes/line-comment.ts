@@ -15,8 +15,9 @@ export interface CommentedLine {
 }
 
 /**
- * One line, whatever was typed: a line break reaches a terminal Agent as Enter (the Composer's
- * delivery types the text with `tmux send-keys -l`, unframed), so a comment never carries one.
+ * One line, whatever was typed, so a comment is safe on every delivery path. On a herdr Host a
+ * Chat draft goes as one bracketed paste and Enter (`chat/send/rules.ts`, ADR 0024); the tmux
+ * session bridge types `agent.prompt` text unframed (`send-keys -l`), where a line break is Enter.
  */
 const oneLine = (text: string) => text.replace(/\s+/g, ' ').trim();
 
