@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
   KeyboardAvoidingView,
-  Modal,
   Platform,
   StyleSheet,
   useWindowDimensions,
@@ -14,6 +13,7 @@ import { useInsets } from '../theme/insets';
 import { spacing } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { typography } from '../theme/typography';
+import { AlertLayer } from './AlertLayer';
 import { type AnchorRect, measureAnchor } from './anchors';
 import { type AlertRequest, alertQueue, answerAlert } from './confirm';
 import { useActiveHost, useQueue } from './store';
@@ -94,15 +94,12 @@ export function AlertHost() {
   const queue = useQueue(alertQueue);
   const current = active ? queue[0] : undefined;
   return (
-    <Modal
+    <AlertLayer
       visible={current !== undefined}
-      transparent
-      animationType="fade"
-      statusBarTranslucent
       onRequestClose={() => current && answerAlert(current, null)}
     >
       {current ? <AlertPanel request={current} /> : null}
-    </Modal>
+    </AlertLayer>
   );
 }
 
