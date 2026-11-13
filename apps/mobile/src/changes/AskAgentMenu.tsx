@@ -37,7 +37,10 @@ export function AskAgentMenu({ target, changes, storage }: AskAgentMenuProps) {
     key: kind,
     title: titleOf(kind, clean),
     icon: kind === 'commit' ? 'commit' : 'branch',
-    onPress: () => handoff(target, renderMessage(commitRequestText(changes, kind))),
+    onPress: () => {
+      handoff.add(target, renderMessage(commitRequestText(changes, kind)));
+      handoff.open(target);
+    },
   }));
   return (
     <ActionMenuButton
