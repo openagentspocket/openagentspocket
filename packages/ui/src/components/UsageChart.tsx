@@ -9,7 +9,10 @@ import { makeStyles, useTheme } from '../theme/theme';
 import { chartMax, niceCeiling, type Point, scrubIndex, smoothPath } from './usageChartMath';
 
 const HEIGHT = 128;
-const AXIS_WIDTH = 52;
+/** The narrowest the axis gets; it grows to its widest label. */
+const MIN_AXIS_WIDTH = 52;
+/** Space between the axis labels and the plot. */
+const AXIS_GAP = 8;
 const HOLD_MS = 250;
 
 const useStyles = makeStyles((t) => ({
@@ -19,7 +22,8 @@ const useStyles = makeStyles((t) => ({
   spacer: { flex: 1 },
   hint: { flexShrink: 0, marginLeft: airy.chipV },
   plot: { height: HEIGHT, marginTop: t.spacing.xs },
-  yLabel: { position: 'absolute', right: 0, width: AXIS_WIDTH - 8, textAlign: 'right' },
+  // No fixed width: the label is as wide as its text, so it never wraps; the widest sets the axis.
+  yLabel: { position: 'absolute', right: 0, textAlign: 'right' },
   readout: {
     position: 'absolute',
     top: 0,
@@ -76,12 +80,18 @@ export function UsageChart({
   const styles = useStyles();
   const theme = useTheme();
   const [width, setWidth] = useState(0);
+  const [labelWidths, setLabelWidths] = useState<Record<number, number>>({});
   const [selected, setSelected] = useState<number | null>(null);
   const held = useRef(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const count = Math.max(0, ...series.map((s) => s.points.length));
   const top = niceCeiling(chartMax(series));
-  const plotWidth = Math.max(0, width - AXIS_WIDTH);
+  // The axis takes its width from its widest label (plus the gap to the plot), whatever the locale's format.
+  const axisWidth = Math.max(
+    MIN_AXIS_WIDTH,
+    ...Object.values(labelWidths).map((w) => w + AXIS_GAP),
+  );
+  const plotWidth = Math.max(0, width - axisWidth);
   const x = (index: number) => (count > 1 ? (index / (count - 1)) * plotWidth : 0);
   const y = (value: number) => HEIGHT - (Math.max(0, value) / top) * (HEIGHT - 2) - 1;
 
@@ -198,6 +208,13 @@ export function UsageChart({
             key={tick}
             variant="caption"
             tone="secondary"
+            numberOfLines={1}
+            onLayout={(event) => {
+              const measured = Math.ceil(event.nativeEvent.layout.width);
+              setLabelWidths((previous) =>
+                previous[tick] === measured ? previous : { ...previous, [tick]: measured },
+              );
+            }}
             style={[styles.yLabel, { top: Math.min(HEIGHT - 16, Math.max(0, y(tick) - 16)) }]}
           >
             {formatValue(tick)}

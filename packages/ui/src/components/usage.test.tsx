@@ -1,4 +1,5 @@
 import { fireEvent, screen } from '@testing-library/react-native';
+import { StyleSheet } from 'react-native';
 import { renderThemed } from '../test-utils';
 import { UsageBreakdownRow } from './UsageBreakdownRow';
 import { UsageChart } from './UsageChart';
@@ -101,6 +102,22 @@ describe('UsageChart', () => {
     expect(screen.getByLabelText('Cost')).toBeTruthy();
     expect(screen.getByText('Claude Code')).toBeTruthy();
     expect(screen.getByText('Codex')).toBeTruthy();
+  });
+
+  it('keeps each axis label on one line, however long the locale formats it', async () => {
+    await renderThemed(
+      <UsageChart
+        series={[{ key: 'a', label: 'Claude Code', color: '#FF0000', points: [1, 2] }]}
+        dayLabels={['1', '2']}
+        formatValue={(value) => `US$ ${value.toFixed(2).replace('.', ',')}`}
+        hint="Hold"
+        accessibilityLabel="Cost"
+      />,
+    );
+    const label = screen.getByText('US$ 0,00');
+    expect(label.props.numberOfLines).toBe(1);
+    // No fixed width: the label is as wide as its text and the axis follows the widest one.
+    expect(StyleSheet.flatten(label.props.style).width).toBeUndefined();
   });
 });
 
