@@ -63,7 +63,8 @@ reads it from the simulator's pasteboard into its own `authorized_keys`, sends O
 message in the terminal (its home screen takes none from Chat), then flows `02` to `07` add the Host,
 read and send in Chat, meet a real permission and a real question on the Blocked card, switch modes
 and open Usage. A flow taps a card option only by its id and exact label, after asserting the card's
-title and its options; no flow approves anything.
+title and its options; no flow approves anything unless `sim --approve` arms the approve flow
+(below).
 
 The flows are one set for every program: `sim` writes the program's texts (the Blocked prompt, the
 card's title, the approve option it asserts and the deny option it taps, the mode names, the Usage
@@ -81,6 +82,47 @@ State (2026-11-13): `01` to `07` pass against OpenCode 2.1.3 (OpenCode's free mo
 `agent-lab.py sim`. `02` trusts the lab's key from "Trust this Host?" on the Host's sheet right after
 Save; `04` taps Reject on OpenCode's own permission, which sends Esc and the card goes away. An Agent
 that needs nothing is on Home's Sessions strip (`session-<host id><separator>w1:p1`), not the inbox.
+
+## The approve flow (`sim --approve`)
+
+Approving is the app's most sensitive action, so one flow does it and only on purpose:
+
+```sh
+python3 scripts/agent-lab.py sim --program opencode --approve              # e2e/live, then 08
+python3 scripts/agent-lab.py sim --program codex --approve --flows 03      # an app already set up
+```
+
+`e2e/live/08-blocked-approve.yaml` asks the Agent to request approval for exactly one command,
+`touch oap-approve-proof.txt`, in its current directory, and to reply `created` or `failed`. It
+approves once and refuses everything else:
+
+- Plain `sim` never runs it: a `--flows` id that resolves to `08` is refused, and the flow's first
+  step fails unless the run is armed (`APPROVE_ARMED`, written only into `<root>/sim-approve-env.json`
+  by `--approve`). `sim-verify.mjs` on its own, with the normal env file, stops at that step.
+- Before arming, the lab checks on the Host: the root carries the lab marker, the repository is
+  inside the root, herdr's record of the Agent (`cwd`, `foreground_cwd`) is the repository, the proof
+  file does not exist and `git status --porcelain` is clean. Any failure: nothing runs.
+- `--approve` runs after the other flows, only if they passed, and prints the command and the
+  repository it is about to approve in.
+- Before any tap the flow asserts: the card's title is the program's command approval
+  (`BLOCKED_TITLE`); the command (`blocked-subject-code`) is exactly the command, a longer one
+  containing it fails; option 1 is the program's single-use approve label, option 2 its persistent
+  variant, option 3 its deny, and there is no option 4; option 1 carries no "always", "don't ask
+  again" or session wording. No step is optional or conditional.
+- The single tap is option 1, matched by id, exact label and position below the exact command. Then
+  the card must go away with no notice, and the Agent's `created` reply must show in Chat.
+- After the flow (whether it passed or not) the lab checks the Host: `oap-approve-proof.txt` is one
+  empty regular file in the repository and `git status --porcelain --untracked-files=all` shows only
+  `?? oap-approve-proof.txt`. Anything else fails the run and prints the difference.
+
+Neither OpenCode nor Codex prints a working directory on its approval prompt, so the card shows none
+and the flow cannot assert it; the repository is guarded by the Host checks above. Labels asserted:
+OpenCode "Allow once" / "Always allow" / "Reject" (title "Permission required"); Codex "Yes, proceed"
+/ "Yes, and don't ask again for commands that start with `touch oap-approve-proof.txt`" / "No, and
+tell Codex what to do differently" (title "Would you like to run the following command?"). They come
+from the lab's captures (`blocked/opencode-lab.test.ts`, `blocked/codex-lab.test.ts`).
+
+## Other commands
 
 `run -- <command>` runs a program's own command in the lab environment, attached to the terminal
 (for example `agent-lab.py run -- codex login status`).
