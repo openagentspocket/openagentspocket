@@ -28,7 +28,8 @@ Programs (`--programs`, default `opencode`):
   opencode  `opencode --standalone` (a private server, never the account's background service)
             with OpenCode's free models, which need no account. Permissions `ask` for bash, edit
             and webfetch, from the repository's opencode.json.
-  codex     `codex` asking before any command (approval_policy "untrusted"). Codex needs a login
+  codex     `codex` in a read-only sandbox asking before anything else (approval_policy
+            "on-request"; 0.167 dropped "untrusted"), so a write waits for approval. It needs a login
             and the lab never copies or links the account's credentials: without one in the lab
             HOME it shows its sign-in screen. See docs/e2e-live-backend.md.
 """
@@ -307,11 +308,13 @@ def write_program_config(root: Path, program: str) -> None:
                   "permission": PERMISSION_ASK}
         (home / ".config/opencode/opencode.json").write_text(json.dumps(config, indent=2) + "\n")
     if program == "codex":
-        # Written after herdr's integration, which creates config.toml with its hooks enabled.
-        with open(home / ".codex/config.toml", "a") as config:
-            config.write('\napproval_policy = "untrusted"\nsandbox_mode = "workspace-write"\n'
-                         "check_for_update_on_startup = false\n"
-                         f'\n[projects."{root.resolve() / "repo"}"]\ntrust_level = "trusted"\n')
+        # Written after herdr's integration, which creates config.toml with its hooks table: the
+        # top-level keys go before it, the project table after.
+        config = home / ".codex/config.toml"
+        integration = config.read_text() if config.exists() else ""
+        config.write_text('approval_policy = "on-request"\nsandbox_mode = "read-only"\n'
+                          "check_for_update_on_startup = false\n\n" + integration +
+                          f'\n[projects."{root.resolve() / "repo"}"]\ntrust_level = "trusted"\n')
 
 
 def start_server(state: dict) -> None:
