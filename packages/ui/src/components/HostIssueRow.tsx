@@ -7,6 +7,8 @@ import { type AgentRowLabels, defaultAgentRowLabels } from './agentRowLabels';
 
 export interface HostIssue {
   hostName: string;
+  /** Tells apart two Hosts with one name; the line's testID stays its name. */
+  hostId?: string;
   kind: 'offline' | 'unreachable' | 'error';
   /** Overrides the default "<Host> is offline" line. */
   message?: string;
@@ -46,9 +48,17 @@ export function HostIssueRow({
   const ink = theme.colors.warning;
   const lines =
     issues.length >= 3
-      ? [{ key: 'summary', text: labels.hostsOffline(issues.length), issue: undefined }]
+      ? [
+          {
+            key: 'summary',
+            id: 'summary',
+            text: labels.hostsOffline(issues.length),
+            issue: undefined,
+          },
+        ]
       : issues.map((issue) => ({
-          key: issue.hostName,
+          key: issue.hostId ?? issue.hostName,
+          id: issue.hostName,
           text: issue.message ?? labels.hostOffline(issue.hostName),
           issue,
         }));
@@ -62,7 +72,7 @@ export function HostIssueRow({
           accessibilityRole={onOpen ? 'button' : 'text'}
           accessibilityLabel={line.text}
           style={({ pressed }) => [styles.row, pressed && styles.pressed]}
-          testID={`${testID}-${line.key}`}
+          testID={`${testID}-${line.id}`}
         >
           <View style={styles.glyph}>
             <Icon name="wifiSlash" size={16} tint={ink} />
