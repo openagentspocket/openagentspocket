@@ -122,6 +122,8 @@ export interface CodexCallOutput {
   isCancelled: boolean;
   /** The user stopped the call: a code-mode `exec` output that starts "aborted by user". */
   isAbortedByUser: boolean;
+  /** How a code-mode script ended (`Script completed`, failed); null while it runs or unread. */
+  scriptStatus: 'succeeded' | 'failed' | null;
   exitCode: number | null;
   preview: ChatToolPreview | null;
   output: ChatOutputReference;
@@ -137,6 +139,7 @@ export function callOutput(
     answers: null,
     isCancelled: false,
     isAbortedByUser: false,
+    scriptStatus: null,
     exitCode: null,
     preview: null,
     output,
@@ -144,10 +147,17 @@ export function callOutput(
   };
 }
 
-export interface CodexCodeModePatch {
+/**
+ * A code-mode `exec` call this adapter reads: a patch (shown only when aborted, its FileChange
+ * twin stands for it otherwise) or the commands it runs (shown at once, until a recorded
+ * CommandExecution of each stands for it).
+ */
+export interface CodexCodeModeCall {
   callID: string;
   turnID: string | null;
   snapshot: CodexToolSnapshot;
+  /** The command lines a command call runs; null for a patch. */
+  commands: string[] | null;
 }
 
 export type CodexToolCallRole =
@@ -188,7 +198,7 @@ export type CodexRecord =
   | { type: 'questionCall'; call: CodexQuestionCall }
   | { type: 'verifiedAnswer'; answer: CodexVerifiedAnswer }
   | { type: 'callOutput'; output: CodexCallOutput }
-  | { type: 'codeModePatch'; patch: CodexCodeModePatch }
+  | { type: 'codeModeCall'; call: CodexCodeModeCall }
   // Legacy rollouts.
   | { type: 'userMessage'; content: CodexUserContent }
   | { type: 'agentMessage'; content: CodexAgentContent }

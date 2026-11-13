@@ -133,7 +133,8 @@ function projectEntry(
   scope: Scope,
 ): ChatEntry {
   const content = projectContent(entry, wasQueued, open, scope);
-  return { id: entry.id, sourceOffset: entry.sourceOffset, content };
+  const projected: ChatEntry = { id: entry.id, sourceOffset: entry.sourceOffset, content };
+  return entry.isPortOnly ? { ...projected, isPortOnly: true } : projected;
 }
 
 function projectContent(

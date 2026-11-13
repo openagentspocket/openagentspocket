@@ -11,23 +11,25 @@
 // prompt is not the user's message.
 //
 // Response items are never rows (their `item_completed` twins are), except the sync
-// `request_user_input` call and a code-mode patch the user aborted.
+// `request_user_input` call, a code-mode patch the user aborted, and a code-mode command until its
+// CommandExecution twin is recorded (one waiting for approval, or declined, never gets one).
 
 import {
   type Accepted,
   assembleTimeline,
   type CodexOrdinalDiagnostics,
+  codeModeOutcome,
   emptyOrdinals,
-  type PendingPatch,
+  type PendingCodeModeCall,
   type Position,
   type Turn,
   turnIDNamed,
 } from './paginated-types';
 import type {
   CodexItem,
-  CodexItemContent,
   CodexRecord,
   CodexStoredLine,
+  CodexToolSnapshot,
   CodexTurnTimes,
 } from './record';
 import type { CodexSegment } from './segment';
@@ -46,8 +48,8 @@ class PaginatedBuilder {
   private readonly turns = new Map<string, Turn>();
   /** Question calls by `call_id`, with the turn holding their row. */
   private readonly questionTurns = new Map<string, string>();
-  /** Code-mode patch calls by `call_id`, until an output aborts them. */
-  private readonly pendingPatches = new Map<string, PendingPatch>();
+  /** Code-mode patch and command calls by `call_id`, until their output arrives. */
+  private readonly codeModeCalls = new Map<string, PendingCodeModeCall>();
   private currentTurnID: string | null = null;
   /** Turns whose items join their root turn, by turn id. */
   private readonly forwardedTurns = new Map<string, string>();
@@ -178,16 +180,20 @@ class PaginatedBuilder {
         });
         return;
       }
-      case 'codeModePatch': {
-        const named = record.patch.turnID ?? this.currentTurnID;
+      case 'codeModeCall': {
+        const named = record.call.turnID ?? this.currentTurnID;
         if (named === null) return;
-        this.pendingPatches.set(record.patch.callID, {
+        const call: PendingCodeModeCall = {
           turnID: this.forwardedTurns.get(named) ?? named,
           position,
           line,
           segment,
-          snapshot: record.patch.snapshot,
-        });
+          snapshot: record.call.snapshot,
+          commands: record.call.commands,
+        };
+        this.codeModeCalls.set(record.call.callID, call);
+        // A command shows at once: waiting for approval, it has nothing else in the rollout.
+        if (call.commands !== null) this.placeCodeModeRow(record.call.callID, call, {});
         return;
       }
       case 'callOutput':
@@ -227,7 +233,7 @@ class PaginatedBuilder {
         segment,
       ),
       question: null,
-      isCodeModePatch: false,
+      codeModeCommands: null,
       isLate: item.content.type === 'tool' && turn.status === 'completed',
     });
   }
@@ -238,31 +244,10 @@ class PaginatedBuilder {
     segment: CodexSegment,
     position: Position,
   ): void {
-    if (output.isAbortedByUser) {
-      const patch = this.pendingPatches.get(output.callID);
-      if (!patch) return;
-      this.pendingPatches.delete(output.callID);
-      this.touch(patch.turnID, patch.position);
-      const turn = this.turns.get(patch.turnID);
-      if (!turn) return;
-      const row: CodexItemContent = {
-        type: 'tool',
-        value: { ...patch.snapshot, status: 'interrupted' },
-      };
-      turn.items.set(output.callID, {
-        position: patch.position,
-        entry: this.entry(
-          output.callID,
-          null,
-          patch.turnID,
-          { type: 'item', value: row },
-          patch.line,
-          patch.segment,
-        ),
-        question: null,
-        isCodeModePatch: true,
-        isLate: false,
-      });
+    const call = this.codeModeCalls.get(output.callID);
+    if (call && (output.isAbortedByUser || (call.commands !== null && output.scriptStatus))) {
+      this.codeModeCalls.delete(output.callID);
+      this.placeCodeModeRow(output.callID, call, codeModeOutcome(call, output));
       return;
     }
     // Outputs of other calls are not rows in a paginated rollout.
@@ -271,6 +256,32 @@ class PaginatedBuilder {
     this.updateQuestion(output.callID, turnID, line, segment, position, (q) => {
       q.hasOutput = true;
       q.outputAnswers = output.answers;
+    });
+  }
+
+  /** Places (or replaces) a code-mode call's row at its call's position, with `outcome` applied. */
+  private placeCodeModeRow(
+    callID: string,
+    call: PendingCodeModeCall,
+    outcome: Partial<CodexToolSnapshot>,
+  ): void {
+    this.touch(call.turnID, call.position);
+    const turn = this.turns.get(call.turnID);
+    if (!turn) return;
+    const row: CodexTimelineContent = {
+      type: 'item',
+      value: { type: 'tool', value: { ...call.snapshot, ...outcome } },
+    };
+    turn.items.set(callID, {
+      position: call.position,
+      entry: {
+        ...this.entry(callID, null, call.turnID, row, call.line, call.segment),
+        // Swift reads a code-mode call only for a patch.
+        ...(call.commands === null ? {} : { isPortOnly: true }),
+      },
+      question: null,
+      codeModeCommands: call.commands ?? [],
+      isLate: false,
     });
   }
 
@@ -348,7 +359,7 @@ class PaginatedBuilder {
           segment,
         ),
         question: null,
-        isCodeModePatch: false,
+        codeModeCommands: null,
         isLate: false,
       };
       turn.items.set(callID, item);

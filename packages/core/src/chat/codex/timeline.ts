@@ -85,6 +85,8 @@ export interface CodexTimelineEntry {
   /** The file that line is in, or null for the live rollout. */
   path: string | null;
   content: CodexTimelineContent;
+  /** A row this port reads that the Swift app does not show (a code-mode command). */
+  isPortOnly?: boolean;
 }
 
 export interface CodexTimelineTurn {

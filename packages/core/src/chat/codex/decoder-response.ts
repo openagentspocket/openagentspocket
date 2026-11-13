@@ -3,6 +3,7 @@
 import { type ChatLine, isTruncatedLine } from '../model/lines';
 import { asArray, asObject, asString } from '../model/reducer';
 import { CLASSIFIER_PREFIX_LIMIT, type CodexLineClassification, classifyLine } from './classifier';
+import { decodeCodeModeCall, decodeCodeModeOutput } from './code-mode';
 import {
   type DecodeContext,
   envelope,
@@ -28,8 +29,6 @@ import {
 } from './record';
 import * as summary from './tool-summary';
 
-const CODE_MODE_PATCH_CALL = 'tools.apply_patch(';
-const ABORTED_BY_USER = 'aborted by user';
 export const CANCELLED_QUESTION_OUTPUT =
   'request_user_input was cancelled before receiving a response';
 
@@ -63,8 +62,8 @@ export function decodeResponse(
     case 'local_shell_call': {
       if (legacy) return decodeCall(type, line, classification, context);
       if (type === 'custom_tool_call' && classification.name === 'exec') {
-        const patch = codeModePatch(line, context);
-        if (patch) return patch;
+        const call = decodeCodeModeCall(line, context);
+        if (call) return call;
       }
       return shapeChecked(line);
     }
@@ -72,7 +71,7 @@ export function decodeResponse(
       return decodeOutput(line, classification, context);
     case 'custom_tool_call_output':
       if (legacy) return decodeOutput(line, classification, context);
-      return abortedOutput(line) ?? shapeChecked(line);
+      return decodeCodeModeOutput(line, context) ?? shapeChecked(line);
     case 'message':
       if (legacy && classification.role === 'user') return decodeHookMessage(line);
       return shapeChecked(line);
@@ -92,42 +91,6 @@ function decodeHookMessage(line: ChatLine): CodexLineOutcome {
     type: 'legacyItem',
     item: { id, content: { type: 'hook', text: hook } },
     placement: { type: 'current' },
-  });
-}
-
-/** A paginated rollout's code-mode `exec` call, read only when its script applies a patch. */
-function codeModePatch(line: ChatLine, context: DecodeContext): CodexLineOutcome | null {
-  if (isTruncatedLine(line) || !includesBytes(line.data, CODE_MODE_PATCH_CALL)) return null;
-  const parsed = response(line);
-  if (!parsed || parsed.callID === null || parsed.input === null) return null;
-  const patches = summary.codeModePatches(parsed.input, CODE_MODE_PATCH_CALL);
-  if (patches.length === 0) return null;
-  const patch = summary.patchSummary(patches.join('\n'), context.cwd);
-  if (!patch) return null;
-  // Only a declined or stopped call shows this row: nothing was applied, so no output or counts.
-  const row = snapshot({
-    kind: patch.kind,
-    name: 'apply_patch',
-    title: patch.title,
-    callID: parsed.callID,
-    output: reference(line),
-  });
-  return withRecord({
-    type: 'codeModePatch',
-    patch: { callID: parsed.callID, turnID: parsed.turnID, snapshot: row },
-  });
-}
-
-/** A paginated rollout's custom tool output, read only when the user aborted the call. */
-function abortedOutput(line: ChatLine): CodexLineOutcome | null {
-  if (isTruncatedLine(line) || !includesBytes(line.data, ABORTED_BY_USER)) return null;
-  const parsed = response(line);
-  if (!parsed || parsed.callID === null || !parsed.output?.text.startsWith(ABORTED_BY_USER)) {
-    return null;
-  }
-  return withRecord({
-    type: 'callOutput',
-    output: callOutput(parsed.callID, reference(line), { isAbortedByUser: true }),
   });
 }
 

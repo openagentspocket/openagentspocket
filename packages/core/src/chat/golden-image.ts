@@ -24,12 +24,13 @@ function workImage(item: ChatBackgroundWorkItem): unknown {
   return swift;
 }
 
+/** The transcript as Swift holds it: entries only this port shows are left out. */
 export function goldenImage(transcript: ChatTranscript): unknown {
   const { backgroundWorkAgents: _agents, ...swift } = transcript;
   return JSON.parse(
     JSON.stringify({
       ...swift,
-      entries: transcript.entries.map(entryImage),
+      entries: transcript.entries.filter((entry) => !entry.isPortOnly).map(entryImage),
       backgroundWork: transcript.backgroundWork.map(workImage),
       diagnostics: {
         ...transcript.diagnostics,

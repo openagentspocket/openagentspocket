@@ -229,6 +229,11 @@ export interface ChatEntry {
   /** Where the line that places this entry starts in its file. */
   sourceOffset: number;
   content: ChatEntryContent;
+  /**
+   * An entry this port shows that the Swift app does not (it reads more of the record, such as
+   * a Codex code-mode command): the Swift goldens leave it out. Absent otherwise.
+   */
+  isPortOnly?: true;
 }
 
 export type TurnEnding = 'completed' | 'interrupted' | 'failed';

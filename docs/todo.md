@@ -62,7 +62,7 @@ so no program-specific branches.
   or "Trust all" on that screen). Until then herdr reports no session, and Chat keeps saying "Codex reports
   its conversation after a prompt" after every prompt (`goldens/codex/lab/no-session-without-hooks.ansi`).
   Done when: Chat, and the Setup Guide for Codex, say to trust herdr's hook in Codex.
-- [ ] **Codex 0.167: a command waiting for approval, or declined, has no row in Chat.** Found by the agent
+- [x] **Codex 0.167: a command waiting for approval, or declined, has no row in Chat.** Found by the agent
   lab: Codex runs commands through code mode (`custom_tool_call` `exec` calling `tools.exec_command`); the
   reducer reads that call only for a patch. Done when: the skipped test in `chat/codex/lab.test.ts` passes.
 - [ ] **Codex: the mode chip says Default Mode while a Plan Mode question covers the footer.** Found by the

@@ -163,6 +163,41 @@ export function patchSummary(patch: string, cwd: string | null): FileChangeSumma
   };
 }
 
+/**
+ * The string literal `text` starts with, unescaped (null when it never closes), and where reading
+ * stopped; null when `text` does not start with a quote.
+ */
+function scriptLiteral(text: string): { literal: string | null; end: number } | null {
+  const quote = text[0];
+  if (quote !== '"' && quote !== "'" && quote !== '`') return null;
+  let literal = '';
+  let index = 1;
+  while (index < text.length) {
+    const char = text[index] as string;
+    index += 1;
+    if (char === quote) return { literal, end: index };
+    if (char !== '\\' || index >= text.length) {
+      literal += char;
+      continue;
+    }
+    const escaped = text[index] as string;
+    index += 1;
+    if (escaped === 'n') literal += '\n';
+    else if (escaped === 't') literal += '\t';
+    else if (escaped === 'r') literal += '\r';
+    else if (escaped === 'u') {
+      const hex = text.slice(index, index + 4);
+      if (/^[0-9a-fA-F]{4}$/.test(hex)) {
+        literal += String.fromCharCode(Number.parseInt(hex, 16));
+        index += 4;
+      } else {
+        literal += escaped;
+      }
+    } else literal += escaped;
+  }
+  return { literal: null, end: index };
+}
+
 /** The string literals a code-mode script passes to `call`, unescaped; non-literals give nothing. */
 export function codeModePatches(script: string, call: string): string[] {
   const patches: string[] = [];
@@ -171,41 +206,34 @@ export function codeModePatches(script: string, call: string): string[] {
     const found = rest.indexOf(call);
     if (found < 0) break;
     rest = rest.slice(found + call.length).replace(/^\s+/, '');
-    const quote = rest[0];
-    if (quote !== '"' && quote !== "'" && quote !== '`') continue;
-    let literal = '';
-    let index = 1;
-    let closed = false;
-    while (index < rest.length) {
-      const char = rest[index] as string;
-      index += 1;
-      if (char === quote) {
-        closed = true;
-        break;
-      }
-      if (char !== '\\' || index >= rest.length) {
-        literal += char;
-        continue;
-      }
-      const escaped = rest[index] as string;
-      index += 1;
-      if (escaped === 'n') literal += '\n';
-      else if (escaped === 't') literal += '\t';
-      else if (escaped === 'r') literal += '\r';
-      else if (escaped === 'u') {
-        const hex = rest.slice(index, index + 4);
-        if (/^[0-9a-fA-F]{4}$/.test(hex)) {
-          literal += String.fromCharCode(Number.parseInt(hex, 16));
-          index += 4;
-        } else {
-          literal += escaped;
-        }
-      } else literal += escaped;
-    }
-    rest = rest.slice(index);
-    if (closed) patches.push(literal);
+    const read = scriptLiteral(rest);
+    if (!read) continue;
+    rest = rest.slice(read.end);
+    if (read.literal !== null) patches.push(read.literal);
   }
   return patches;
+}
+
+/** An object argument's `cmd` key (quoted or not), up to its value. */
+const COMMAND_KEY = /^\s*\{(?:[^{}]*?[,\s])?["']?cmd["']?\s*:\s*/;
+
+/**
+ * The command lines a code-mode script runs through `call` (`tools.exec_command({cmd: "..."})`),
+ * unescaped, in script order; a call whose `cmd` is not a literal gives nothing.
+ */
+export function codeModeCommands(script: string, call: string): string[] {
+  const commands: string[] = [];
+  let rest = script;
+  for (;;) {
+    const found = rest.indexOf(call);
+    if (found < 0) break;
+    rest = rest.slice(found + call.length);
+    const key = COMMAND_KEY.exec(rest);
+    if (!key) continue;
+    const read = scriptLiteral(rest.slice(key[0].length));
+    if (read && read.literal !== null) commands.push(read.literal);
+  }
+  return commands;
 }
 
 // MARK: Questions

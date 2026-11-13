@@ -6,6 +6,7 @@ import '../programs';
 import { describe, expect, it } from 'vitest';
 import { labRollout } from '../../lab-captures.testkit';
 import type { ChatTranscript } from '../model/types';
+import { toolLine } from '../timeline/tool-line';
 
 const kinds = (transcript: ChatTranscript) => transcript.entries.map((entry) => entry.content.type);
 
@@ -41,12 +42,38 @@ describe('Codex 0.167 rollout, live captures', () => {
   });
 
   // Found by the agent lab (2026-11-13): Codex 0.167 runs commands through code mode, a
-  // `custom_tool_call` named `exec` whose script calls `tools.exec_command`. The reducer reads that
-  // call only when its script applies a patch, so a command waiting for approval, or declined,
-  // has no row in Chat; the Blocked card is the only place it shows.
-  it.skip('shows the command waiting for approval as a tool awaiting approval', () => {
+  // `custom_tool_call` named `exec` whose script calls `tools.exec_command`. A command waiting for
+  // approval, or declined, gets no CommandExecution item, so the call itself is its row.
+  it('shows the command waiting for approval as a tool awaiting approval', () => {
     const { transcript } = labRollout('rollout-exec-approval', 'blocked');
     const tool = transcript.entries.at(-1)?.content;
     expect(tool?.type === 'tool' && tool.value.status).toBe('awaitingApproval');
+    expect(tool?.type === 'tool' && toolLine(tool.value)).toEqual({
+      title: 'touch scratch.txt',
+      isCommand: true,
+      command: null,
+    });
+    expect(tool?.type === 'tool' && tool.value.kind).toBe('command');
+    expect(transcript.pendingRequests.map((request) => request.summary)).toEqual([
+      'touch scratch.txt',
+    ]);
+  });
+
+  it('shows the command running while Codex works', () => {
+    const { transcript } = labRollout('rollout-exec-approval', 'working');
+    const tool = transcript.entries.at(-1)?.content;
+    expect(tool?.type === 'tool' && tool.value.status).toBe('running');
+  });
+
+  it('shows the declined command as declined, before the stopped turn', () => {
+    const { transcript } = labRollout('rollout-after-deny-and-stop', 'idle');
+    const commands = transcript.entries.flatMap((entry) =>
+      entry.content.type === 'tool' && entry.content.value.kind === 'command'
+        ? [entry.content.value]
+        : [],
+    );
+    expect(
+      commands.map(({ title, status, purpose, command }) => [title, status, purpose, command]),
+    ).toEqual([['touch scratch.txt', 'declined', null, null]]);
   });
 });
