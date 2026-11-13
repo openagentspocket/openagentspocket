@@ -13,7 +13,12 @@ import { deviceStorage } from '@/settings/deviceStorage';
 
 export default function AgentRoute() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ hostId: string; paneId: string; surface?: string }>();
+  const params = useLocalSearchParams<{
+    hostId: string;
+    paneId: string;
+    surface?: string;
+    request?: string;
+  }>();
   const row = useAgent(agentKey(params.hostId, params.paneId));
   const entries = useEntryMenus();
   const store = useConsoleStore();
@@ -37,6 +42,7 @@ export default function AgentRoute() {
         paneId={params.paneId}
         storage={deviceStorage}
         surface={parseSurface(params.surface)}
+        surfaceRequest={params.request}
         menu={items}
         onHome={() => router.navigate('/')}
         visit={visit}

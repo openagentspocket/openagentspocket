@@ -33,6 +33,8 @@ interface Props {
   storage: KeyValueStorage;
   /** A deep link's surface for this visit. */
   surface?: Surface;
+  /** A fresh token re-applies `surface` while the detail is open (text handed to the Composer). */
+  surfaceRequest?: string;
   onSwitch: (row: ConsoleRow) => void;
   /** Changes, Files and Ports, from the route; the header menu adds Chat/Terminal. */
   menu?: readonly ActionMenuItem[];
@@ -49,6 +51,7 @@ export function AgentDetailScreen({
   paneId,
   storage,
   surface: requested,
+  surfaceRequest,
   onSwitch,
   menu,
   onOpenChanges,
@@ -59,7 +62,7 @@ export function AgentDetailScreen({
   const { row, phase } = useAgentPhase(hostId, paneId);
   const rows = useConsole();
   const latency = useConsoleState().hosts.find((host) => host.id === hostId)?.latencyMs;
-  const [surface, setSurface] = useSurface(storage, requested);
+  const [surface, setSurface] = useSurface(storage, requested, surfaceRequest);
   const [drawer, setDrawer] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   useFocusDone(hostId, paneId, row?.agent.agent_status === 'done');

@@ -51,6 +51,14 @@ export function ComposerRegistryProvider({
   return <RegistryContext.Provider value={registry}>{children}</RegistryContext.Provider>;
 }
 
+/** The registry key of an Agent's Composer (and of its saved draft). */
+export const composerKey = (hostId: string, paneId: string): string => `${hostId}/${paneId}`;
+
+/** The Composers in force: the provided registry, else the one kept for this storage. */
+export function useComposerRegistry(storage: KeyValueStorage): ComposerRegistry {
+  return useContext(RegistryContext) ?? defaultRegistry(storage);
+}
+
 /** The slices of the live Transport the Composer uses (`HerdrApi`); the demo Transport has neither. */
 interface PromptTransport {
   promptAgent(params: { target: string; text: string }): Promise<unknown>;
@@ -95,7 +103,7 @@ export function useAgentComposer(
   storage: KeyValueStorage,
 ): AgentComposer {
   const consoleStore = useConsoleStore();
-  const registry = useContext(RegistryContext) ?? defaultRegistry(storage);
+  const registry = useComposerRegistry(storage);
   const addressing = usePaneAddressing(hostId, paneId);
   const byPane = useRef(addressing === 'pane');
   byPane.current = addressing === 'pane';
@@ -113,7 +121,7 @@ export function useAgentComposer(
         } else if (canPrompt(transport)) await transport.promptAgent(params);
       });
     return registry.composerFor({
-      key: `${hostId}/${paneId}`,
+      key: composerKey(hostId, paneId),
       target: paneId,
       prompt,
       status: initialStatus.current,

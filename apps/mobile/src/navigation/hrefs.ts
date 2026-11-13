@@ -16,9 +16,22 @@ export const hrefs = {
       ...(origin?.duplicate ? { duplicate: origin.duplicate } : {}),
     },
   }),
-  agent: (hostId: string, paneId: string): Href => ({
+  /**
+   * An Agent's detail. `surface` opens it on Chat or Terminal; `request` (any fresh token) makes a
+   * detail that is already open apply that surface again.
+   */
+  agent: (
+    hostId: string,
+    paneId: string,
+    open?: { surface: 'chat' | 'terminal'; request?: string },
+  ): Href => ({
     pathname: '/agent/[hostId]/[paneId]',
-    params: { hostId, paneId },
+    params: {
+      hostId,
+      paneId,
+      ...(open ? { surface: open.surface } : {}),
+      ...(open?.request ? { request: open.request } : {}),
+    },
   }),
   /** New Agent on a Host; with a workspace and directory it starts a tab beside an Agent. */
   newAgent: (origin?: { hostId: string; workspaceId?: string; cwd?: string }): Href => ({

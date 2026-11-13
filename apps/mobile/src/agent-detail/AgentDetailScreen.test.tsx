@@ -49,6 +49,35 @@ describe('AgentDetailScreen', () => {
     expect(readSurface(storage)).toBe('chat');
   });
 
+  it('a fresh surface request brings an open detail back to Chat (a Composer handoff)', async () => {
+    const storage = new MemoryStorage();
+    const settings = new SettingsStore(new MemoryStorage());
+    const detail = (request?: string) => (
+      <ThemeProvider themeId="indigo">
+        <SettingsProvider store={settings} authenticator={fakeAuthenticator(null)}>
+          <AgentDetailScreen
+            hostId="demo"
+            paneId="p2"
+            storage={storage}
+            onSwitch={jest.fn()}
+            surface={request ? 'chat' : undefined}
+            surfaceRequest={request}
+          />
+        </SettingsProvider>
+      </ThemeProvider>
+    );
+    const view = await render(detail());
+    await waitFor(() => expect(screen.getByTestId('surface-toggle')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('surface-toggle'));
+    await waitFor(() => expect(screen.getByTestId('slot-terminal')).toBeTruthy());
+    await view.rerender(detail('1'));
+    await waitFor(() => expect(screen.getByTestId('slot-chat')).toBeTruthy());
+    fireEvent.press(screen.getByTestId('surface-toggle'));
+    await waitFor(() => expect(screen.getByTestId('slot-terminal')).toBeTruthy());
+    await view.rerender(detail('2'));
+    await waitFor(() => expect(screen.getByTestId('slot-chat')).toBeTruthy());
+  });
+
   it('switches to another Agent from the title', async () => {
     const { onSwitch } = renderDetail({ paneId: 'p2', surface: 'terminal' });
     await waitFor(() => expect(screen.getByTestId('agent-header-title')).toBeTruthy());

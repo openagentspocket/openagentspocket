@@ -24,9 +24,16 @@ export function parseSurface(param: string | string[] | undefined): Surface | un
 export function useSurface(
   storage: KeyValueStorage,
   requested?: Surface,
+  /** A new token re-applies `requested` on a detail that is already open (a Composer handoff). */
+  request?: string,
 ): [Surface, (surface: Surface) => void] {
   const [chosen, setChosen] = useState<Surface | undefined>(requested);
   const [saved, setSaved] = useState(() => readSurface(storage));
+  const [applied, setApplied] = useState(request);
+  if (request !== applied) {
+    setApplied(request);
+    setChosen(requested);
+  }
   const select = useCallback(
     (surface: Surface) => {
       storage.set(STORAGE_KEY, surface);
