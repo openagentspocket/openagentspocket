@@ -1,5 +1,7 @@
 # App Store listing (version 1.0)
 
+> The version in review carries the earlier text. This text is for the next update.
+
 The text entered in App Store Connect, kept here so a change is reviewed like code. English is the primary
 language; Spanish is the second localization. Limits: subtitle 30, promotional text 170, keywords 100,
 description 4000 characters.
@@ -11,14 +13,14 @@ description 4000 characters.
 **Subtitle:** Coding agents in your pocket
 
 **Promotional text:**
-Check on your coding agents from anywhere: read the conversation, answer a question, approve a step, or open the terminal. Free and open source.
+No account to create. Your phone connects straight to your own computer over SSH: read the session, answer, approve a step, or open the terminal. Free and open source.
 
 **Keywords:**
 ssh,terminal,agents,ai,coding,herdr,remote,developer,approve,cli,shell,server,devops,mac,linux
 
 **Description:**
 
-Agents Pocket is the phone companion for herdr, the console that runs your AI coding agents on your own Mac or Linux computer. Leave the agents working at your desk and keep up with them from your pocket.
+Agents Pocket is the phone companion for herdr, the console that runs your AI coding agents on your own Mac or Linux computer. It picks up the agent sessions you already have open in herdr, so you can leave them working at your desk and keep up with them from your pocket. There is no account to create.
 
 SEE EVERY AGENT AT A GLANCE
 • One Home for all your Hosts: which agents are working, which are done, and which are waiting for you.
@@ -33,18 +35,19 @@ ANSWER WHEN AN AGENT IS BLOCKED
 • When an agent stops to ask for approval or to ask a question, the prompt shows as a card with its own options.
 • The app reads the prompt again before it answers, so your tap never lands on a prompt you did not see.
 
-A REAL TERMINAL WHEN YOU NEED IT
-• Attach to the agent's terminal with a full keyboard row, scrollback, and themes.
+A REAL TERMINAL WHEN YOU WANT IT
+• Attach to the same session in a full terminal, with a full keyboard row, scrollback, and themes.
 • Browse changed files and diffs, open files, and see forwarded ports.
 
 YOUR USAGE LIMITS
 • See how much of each agent's plan limits you have used and when they reset.
 
-PRIVATE BY DESIGN
-• The app connects straight to your computer over SSH. There is no account and no server of ours between you and your agents.
+STRAIGHT TO YOUR COMPUTER
+• No account to create. Add your computer and go.
+• Your phone connects to your computer over SSH. Your code and prompts go from one to the other, not through our servers.
 • SSH keys stay in the device keychain and can require Face ID.
-• Notifications are encrypted on your computer; the push relay forwards them without being able to read them. You can run your own relay.
-• Free and open source (MIT).
+• Notifications are optional. They are encrypted on your computer and pass through a push relay and Apple's push service; the relay cannot read them. You can run your own relay.
+• No analytics and no tracking. Free and open source (MIT).
 
 WORKS WITH
 Claude Code, Codex, OpenCode, Hermes Agent, Grok and Oh My Pi, running under herdr. Support depends on each program's version; some features are available only for some programs.
@@ -63,50 +66,51 @@ Agents Pocket is an independent project. Product names are trademarks of their o
 **Subtitle:** Tus agentes, en el bolsillo
 
 **Promotional text:**
-Seguí a tus agentes de código desde cualquier lugar: leé la conversación, respondé una pregunta, aprobá un paso o abrí la terminal. Gratis y de código abierto.
+Sin crear una cuenta. Tu teléfono se conecta directo a tu computadora por SSH: lee la sesión, responde, aprueba un paso o abre la terminal. Gratis y de código abierto.
 
 **Keywords:**
 ssh,terminal,agentes,ia,código,herdr,remoto,desarrollador,aprobar,cli,shell,servidor,devops,linux
 
 **Description:**
 
-Agents Pocket es el compañero móvil de herdr, la consola que corre tus agentes de código con IA en tu propia computadora Mac o Linux. Dejá a los agentes trabajando en tu escritorio y seguilos desde el bolsillo.
+Agents Pocket es el compañero móvil de herdr, la consola que corre tus agentes de código con IA en tu propia computadora Mac o Linux. Retoma las sesiones de agentes que ya tienes abiertas en herdr, así que puedes dejarlas trabajando en tu escritorio y seguirlas desde el bolsillo. No hay que crear una cuenta.
 
 TODOS TUS AGENTES DE UN VISTAZO
 • Un Home para todos tus Hosts: qué agentes están trabajando, cuáles terminaron y cuáles te esperan.
 • Una notificación y una Live Activity cuando un agente te necesita o termina.
 
-LEÉ Y RESPONDÉ COMO EN UN CHAT
+LEE Y RESPONDE COMO EN UN CHAT
 • La conversación de cada agente como un chat limpio: mensajes, llamadas a herramientas, resultados y razonamiento.
-• Escribí o dictá una respuesta, adjuntá una foto o un archivo y enviásela al agente.
+• Escribe o dicta una respuesta, adjunta una foto o un archivo y envíasela al agente.
 • Atajos por agente para sus teclas y comandos.
 
-RESPONDÉ CUANDO UN AGENTE SE BLOQUEA
+RESPONDE CUANDO UN AGENTE SE BLOQUEA
 • Cuando un agente se detiene para pedir aprobación o hacer una pregunta, el aviso aparece como una tarjeta con sus opciones.
 • La app vuelve a leer el aviso antes de responder, así tu toque nunca cae en un aviso que no viste.
 
-UNA TERMINAL DE VERDAD CUANDO HACE FALTA
-• Conectate a la terminal del agente con fila de teclas, historial y temas.
-• Mirá los archivos cambiados y sus diffs, abrí archivos y revisá los puertos.
+UNA TERMINAL DE VERDAD CUANDO QUIERAS
+• Conéctate a la misma sesión en una terminal completa, con fila de teclas, historial y temas.
+• Mira los archivos cambiados y sus diffs, abre archivos y revisa los puertos.
 
 TUS LÍMITES DE USO
-• Mirá cuánto usaste de los límites del plan de cada agente y cuándo se reinician.
+• Mira cuánto has usado de los límites del plan de cada agente y cuándo se reinician.
 
-PRIVADA POR DISEÑO
-• La app se conecta directo a tu computadora por SSH. No hay cuenta ni un servidor nuestro entre vos y tus agentes.
+DIRECTO A TU COMPUTADORA
+• No hay que crear una cuenta. Agrega tu computadora y listo.
+• Tu teléfono se conecta a tu computadora por SSH. Tu código y tus mensajes van de uno a otra, sin pasar por servidores nuestros.
 • Las claves SSH quedan en el llavero del dispositivo y pueden pedir Face ID.
-• Las notificaciones se cifran en tu computadora; el relay de push las reenvía sin poder leerlas. Podés usar tu propio relay.
-• Gratis y de código abierto (MIT).
+• Las notificaciones son opcionales. Se cifran en tu computadora y pasan por un relay de push y por el servicio de notificaciones de Apple; el relay no puede leerlas. Puedes usar tu propio relay.
+• Sin analítica y sin rastreo. Gratis y de código abierto (MIT).
 
 FUNCIONA CON
 Claude Code, Codex, OpenCode, Hermes Agent, Grok y Oh My Pi, corriendo bajo herdr. El soporte depende de la versión de cada programa; algunas funciones están disponibles solo para algunos programas.
 
-QUÉ NECESITÁS
+QUÉ NECESITAS
 • Una computadora Mac o Linux con herdr instalado y SSH activado.
 • El teléfono tiene que poder llegar a esa computadora: la misma red, o una red privada como Tailscale.
 • La Guía de instalación de la app te acompaña en la vinculación con un código QR.
 
-¿No tenés una computadora a mano? Tocá "Probar la demo" en la primera pantalla para explorar la app con datos de ejemplo.
+¿No tienes una computadora a la mano? Toca "Probar la demo" en la primera pantalla para explorar la app con datos de ejemplo.
 
 Agents Pocket es un proyecto independiente. Los nombres de productos son marcas de sus dueños y se usan solo para decir con qué funciona la app.
 
