@@ -21,8 +21,10 @@ Notes:
 
 - OpenCode lab (2026-11-13, OpenCode 2.1.3, herdr 0.9.5, `scripts/agent-lab.py`): Chat read the real store, a Chat send
   went through, the card parsed real shell, edit and question prompts and answered a question; Stop, the input box
-  check and modes matched. Reject on the card is refused because the app builds the card without the matched call
-  (`toolUseIdFor`). Captures and tests: `packages/core/goldens/opencode/lab`.
+  check and modes matched. Reject on the card was refused because the app built the card without the matched call;
+  the card now matches the dialog to the conversation's waiting call (`blocked/request-match.ts`), so Reject on
+  OpenCode's own permission sends Esc (tests; not yet seen live). Captures and tests:
+  `packages/core/goldens/opencode/lab`.
 - Codex lab: not run. The lab never copies the account's Codex login, and Codex needs one.
 
 - Live Activity Approve and Deny need Claude Code or Codex prompts, like Approve from a notification, and open a confirmation sheet in the app. Tests only so far.

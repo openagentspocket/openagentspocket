@@ -102,7 +102,8 @@ or Default Mode), shortcuts, Usage, a notification on an ask and on done, and Ap
    If not: capture kit.
 10. **Shortcuts.** Open the composer's shortcuts menu.
     Expect: Interrupt (Esc), Plan Mode (Shift+Tab), Edit a Previous Prompt (Esc Esc), /new, /compact, /model, /resume,
-    /review, /diff, /status. While Codex works, tap Interrupt: Codex stops its turn. Tap /status: the command is sent.
+    /review, /diff, /status. While Codex works, tap Interrupt: Codex stops its turn. In Chat, tap /status: the app
+    switches to the terminal with `/status ` in the draft; send it and Codex shows its status card there.
     If not: capture kit.
 11. **Usage.** Open the Usage tab, with a Codex login on the Host that has made at least one request.
     Expect: a Codex card with its plan limits and reset times, read from Codex's own data on the Host. If there is none yet,
@@ -168,9 +169,10 @@ Steps:
    no mode, the app shows none; that is expected.
    If not: capture kit.
 10. **Shortcuts.** Open the composer's shortcuts menu.
-    Expect: Interrupt (Esc), Switch Agent (Shift+Tab), /new, /compact, /undo, /redo, /models, /sessions. Known gap
-    (agent lab): a command other than /compact is refused when sent from Chat, and from the terminal surface its
-    trailing space makes OpenCode send it to the model. While OpenCode works, tap Stop: it presses Esc twice and OpenCode stops.
+    Expect: Interrupt (Esc), Switch Agent (Shift+Tab), /new, /compact, /undo, /redo, /models, /sessions. In Chat,
+    /compact goes into the draft; any other command switches to the terminal with the command in the draft, with no
+    space after it. Send it there: /sessions opens OpenCode's session list (not a reply from the model). While OpenCode
+    works, tap Stop: it presses Esc twice and OpenCode stops.
     If not: capture kit. A Stop that did not take shows a notice that OpenCode still shows Working.
 11. **Usage.** Not expected. Confirm only that the Usage tab shows no OpenCode card and no error for it.
 12. **Push notification, app closed.** Force-close the app and lock the phone. Send the command request.
