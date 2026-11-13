@@ -235,6 +235,7 @@ export function AgentComposerBar({
             : undefined
         }
         onFocusChange={setComposing}
+        dictation={menus.dictation}
         addMenu={menus.addItems}
         moreMenu={menus.moreItems}
         shortcutsMenu={menus.shortcutItems}

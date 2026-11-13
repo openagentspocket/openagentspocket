@@ -182,5 +182,6 @@
   "%lld running": "{0, number} running",
   "Notices": "Notices",
   "Queue for after this turn": "Queue for after this turn",
-  "Queue for the Agent's next step": "Queue for the Agent's next step"
+  "Queue for the Agent's next step": "Queue for the Agent's next step",
+  "Stop Dictating": "Stop Dictating"
 }

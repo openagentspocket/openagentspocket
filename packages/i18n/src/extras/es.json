@@ -182,5 +182,6 @@
   "%lld running": "{0, number} en ejecución",
   "Notices": "Avisos",
   "Queue for after this turn": "En cola para después de este turno",
-  "Queue for the Agent's next step": "En cola para el próximo paso del Agent"
+  "Queue for the Agent's next step": "En cola para el próximo paso del Agent",
+  "Stop Dictating": "Dejar de dictar"
 }

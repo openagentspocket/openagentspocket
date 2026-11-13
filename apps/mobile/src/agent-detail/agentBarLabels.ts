@@ -16,6 +16,8 @@ export function agentBarLabels(): AgentBarLabels {
     messagePlaceholder: t('Message Agent'),
     send: t('Send'),
     stop: t('Stop'),
+    dictate: t('Dictate'),
+    stopDictating: t('Stop Dictating'),
     add: t('Add'),
     moreOptions: t('More Options'),
     shortcuts: t('Shortcuts'),

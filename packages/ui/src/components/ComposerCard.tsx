@@ -134,6 +134,11 @@ export interface ComposerCardProps {
   barToggle?: { visible: boolean; onToggle: () => void; label: string };
   /** The input gained or lost focus: the composer is open (a surface above it may condense). */
   onFocusChange?: (focused: boolean) => void;
+  /**
+   * Dictation into the draft: a microphone while the draft is empty, in Send's place or beside Stop,
+   * and while it listens. Omitted where the build has no recognizer.
+   */
+  dictation?: { listening: boolean; onToggle: () => void };
   testID?: string;
 }
 
@@ -203,6 +208,7 @@ export function ComposerCard({
   moreAnchorKey,
   barToggle,
   onFocusChange,
+  dictation,
   skills,
   onSkill,
   expanded,
@@ -271,6 +277,21 @@ export function ComposerCard({
         <Icon name="send" size={18} color="canvas" />
       </Tappable>
     );
+  // Text in the draft takes the microphone's place for Send; a draft dictated so far keeps it to stop.
+  const empty = value.trim() === '' && !hasAttachments;
+  const mic =
+    dictation && (empty || dictation.listening) ? (
+      <Tappable
+        style={[styles.circle, dictation.listening && { backgroundColor: theme.colors.accent }]}
+        onPress={dictation.onToggle}
+        accessibilityRole="button"
+        accessibilityLabel={dictation.listening ? labels.stopDictating : labels.dictate}
+        accessibilityState={{ selected: dictation.listening }}
+        testID={`${testID}-mic`}
+      >
+        <Icon name="mic" size={18} color={dictation.listening ? 'onAccent' : 'textPrimary'} />
+      </Tappable>
+    ) : null;
   const leadingMark = leading ? (
     <View style={styles.circle}>
       {leading}
@@ -351,7 +372,8 @@ export function ComposerCard({
         {input}
         <View style={[styles.buttons, stacked && styles.pinRight]}>
           {focused ? <KeyboardDismissButton label={labels.dismissKeyboard} /> : null}
-          {trailing}
+          {mic}
+          {mic && action === 'none' ? null : trailing}
         </View>
       </View>
     </View>

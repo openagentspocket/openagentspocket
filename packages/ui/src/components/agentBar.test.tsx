@@ -187,6 +187,42 @@ describe('ComposerCard', () => {
   });
 });
 
+describe('ComposerCard microphone', () => {
+  const card = (value: string, options: { working?: boolean; listening?: boolean } = {}) => (
+    <ComposerCard
+      value={value}
+      onChange={jest.fn()}
+      onSend={jest.fn()}
+      onStop={jest.fn()}
+      working={options.working}
+      dictation={{ listening: options.listening ?? false, onToggle: toggle }}
+    />
+  );
+  const toggle = jest.fn();
+
+  it("stands in Send's place with an empty draft and starts dictation", async () => {
+    await renderThemed(card(''));
+    expect(screen.queryByTestId('composer-card-send')).toBeNull();
+    await fireEvent.press(screen.getByTestId('composer-card-mic'));
+    expect(toggle).toHaveBeenCalled();
+  });
+
+  it('gives way to Send once the draft has text', async () => {
+    await renderThemed(card('Run the tests'));
+    expect(screen.queryByTestId('composer-card-mic')).toBeNull();
+    expect(screen.getByTestId('composer-card-send')).toBeTruthy();
+  });
+
+  it('sits beside Stop while the Agent works, and stays to stop a dictation under way', async () => {
+    await renderThemed(card('', { working: true }));
+    expect(screen.getByTestId('composer-card-mic')).toBeTruthy();
+    expect(screen.getByTestId('composer-card-stop')).toBeTruthy();
+    await renderThemed(card('Run the', { listening: true }));
+    expect(screen.getByTestId('composer-card-mic')).toBeTruthy();
+    expect(screen.getByTestId('composer-card-send')).toBeTruthy();
+  });
+});
+
 describe('ComposerCard shortcuts', () => {
   it("opens the program's shortcuts from their own circle after more", async () => {
     const onPress = jest.fn();

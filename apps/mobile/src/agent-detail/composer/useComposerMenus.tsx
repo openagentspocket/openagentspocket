@@ -51,6 +51,8 @@ export interface ComposerMenus {
   shortcutItems: ActionMenuItem[];
   /** The sheets the menus open (Skills, Snippets, Rename Agent); render beside the composer. */
   sheets: ReactNode;
+  /** Dictation into the draft, for the Composer's microphone; undefined without a recognizer. */
+  dictation?: { listening: boolean; onToggle: () => void };
 }
 
 /**
@@ -168,5 +170,13 @@ export function useComposerMenus({
       {rename.sheet}
     </>
   );
-  return { addItems: items.add, moreItems: items.more, shortcutItems, staging, sheets };
+  const { listening, toggle } = dictation;
+  return {
+    addItems: items.add,
+    moreItems: items.more,
+    shortcutItems,
+    staging,
+    sheets,
+    dictation: toggle ? { listening, onToggle: toggle } : undefined,
+  };
 }

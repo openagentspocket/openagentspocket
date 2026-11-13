@@ -12,6 +12,8 @@ export interface AgentBarLabels {
   messagePlaceholder: string;
   send: string;
   stop: string;
+  dictate: string;
+  stopDictating: string;
   add: string;
   moreOptions: string;
   shortcuts: string;
@@ -45,6 +47,8 @@ export const defaultAgentBarLabels: AgentBarLabels = {
   messagePlaceholder: 'Message Agent',
   send: 'Send',
   stop: 'Stop',
+  dictate: 'Dictate',
+  stopDictating: 'Stop Dictating',
   add: 'Add',
   moreOptions: 'More options',
   shortcuts: 'Shortcuts',

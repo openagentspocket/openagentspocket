@@ -73,6 +73,7 @@ function DemoComposer({ initial, ...rest }: { initial: string } & Partial<Compos
       onStop={noop}
       leading={<ProgramMark program="codex" size={22} surface="control" />}
       addMenu={addMenu}
+      dictation={{ listening: false, onToggle: noop }}
       {...rest}
     />
   );
@@ -161,6 +162,8 @@ export const agentBarEntries: readonly CatalogEntry[] = [
     name: 'ComposerCard',
     variants: [
       { id: 'default', render: () => <DemoComposer initial="" working /> },
+      { id: 'idle', render: () => <DemoComposer initial="" /> },
+      { id: 'draft', render: () => <DemoComposer initial="Run the snapshots" /> },
       {
         id: 'expanded',
         render: () => <DemoComposer initial="" working expanded moreMenu={menu} />,
