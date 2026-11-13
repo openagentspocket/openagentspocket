@@ -13,3 +13,9 @@ overrides:
 allowBuilds:
   "@parcel/watcher": true
   expo-libghostty: true
+
+# Local fixes to dependencies, each meant to go upstream. expo-libghostty: the iOS
+# terminal controller deletes its generated ghostty-config-*.conf right after loading
+# it, and sweeps leftovers once per process (they piled up in the app's tmp folder).
+patchedDependencies:
+  expo-libghostty@0.8.1: patches/expo-libghostty@0.8.1.patch

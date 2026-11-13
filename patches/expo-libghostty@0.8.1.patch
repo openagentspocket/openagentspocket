@@ -1,0 +1,138 @@
+diff --git a/ios/vendor/GhosttyTerminal/Controller/TerminalController+Config.swift b/ios/vendor/GhosttyTerminal/Controller/TerminalController+Config.swift
+index 60a35a859d9137c8f45882dd50184c35d99bc03f..da70949e228448bc29aa3b2cf6ebc3bca269ce61 100644
+--- a/ios/vendor/GhosttyTerminal/Controller/TerminalController+Config.swift
++++ b/ios/vendor/GhosttyTerminal/Controller/TerminalController+Config.swift
+@@ -54,7 +54,6 @@ extension TerminalController {
+ 
+     private func applyPreparedConfigToRuntime(_ prepared: PreparedConfig, source: ConfigSource) {
+         let previousConfig = config
+-        let previousManagedConfigURL = managedConfigURL
+         let nextConfig = prepared.rawValue
+ 
+         if let app {
+@@ -71,10 +70,6 @@ extension TerminalController {
+         if let previousConfig {
+             ghostty_config_free(previousConfig)
+         }
+-
+-        if let previousManagedConfigURL, previousManagedConfigURL != managedConfigURL {
+-            try? FileManager.default.removeItem(at: previousManagedConfigURL)
+-        }
+     }
+ 
+     func applyInitialConfig(source: ConfigSource) {
+@@ -158,14 +153,19 @@ extension TerminalController {
+         }
+ 
+         ghostty_config_load_file(rawValue, configPath)
++        // ghostty reads the whole file inside load_file and keeps no handle
++        // to it (this runtime never asks it to reload from disk), so the
++        // generated file can go now. Keeping it until the controller's deinit
++        // left one behind per process: the shared controller is never
++        // deallocated, and a killed app runs no deinit at all.
++        if let managedConfigURL {
++            try? FileManager.default.removeItem(at: managedConfigURL)
++        }
+         ghostty_config_finalize(rawValue)
+ 
+         let diagnostics = configDiagnostics(from: rawValue)
+         guard diagnostics.isEmpty else {
+             ghostty_config_free(rawValue)
+-            if let managedConfigURL {
+-                try? FileManager.default.removeItem(at: managedConfigURL)
+-            }
+             return .failure(
+                 ConfigurationIssue("ghostty config diagnostics: \(diagnostics.joined(separator: " | "))")
+             )
+@@ -174,7 +174,6 @@ extension TerminalController {
+         return .success(
+             PreparedConfig(
+                 rawValue: rawValue,
+-                managedConfigURL: managedConfigURL,
+                 renderedContents: resolvedContents
+             )
+         )
+@@ -182,8 +181,8 @@ extension TerminalController {
+ 
+     private static func writeManagedConfig(contents: String) -> Result<URL, ConfigurationIssue> {
+         let url = FileManager.default.temporaryDirectory
+-            .appendingPathComponent("ghostty-config-\(UUID().uuidString)")
+-            .appendingPathExtension("conf")
++            .appendingPathComponent("\(managedConfigPrefix)\(UUID().uuidString)")
++            .appendingPathExtension(managedConfigExtension)
+ 
+         do {
+             try contents.write(to: url, atomically: true, encoding: .utf8)
+@@ -193,6 +192,21 @@ extension TerminalController {
+         }
+     }
+ 
++    /// Removes generated config files that an earlier process left in the
++    /// temporary directory (for example one killed between writing and
++    /// loading its config). Called once per process before any config is
++    /// written, so no live controller owns any of them.
++    static func removeStaleManagedConfigs() {
++        let fileManager = FileManager.default
++        let directory = fileManager.temporaryDirectory
++        guard let names = try? fileManager.contentsOfDirectory(atPath: directory.path) else { return }
++        for name in names
++            where name.hasPrefix(managedConfigPrefix) && name.hasSuffix(".\(managedConfigExtension)")
++        {
++            try? fileManager.removeItem(at: directory.appendingPathComponent(name))
++        }
++    }
++
+     private static func configDiagnostics(from config: ghostty_config_t) -> [String] {
+         let count = ghostty_config_diagnostics_count(config)
+         guard count > 0 else { return [] }
+@@ -210,7 +224,6 @@ extension TerminalController {
+ 
+     private func applyPreparedConfig(_ prepared: PreparedConfig, source: ConfigSource) {
+         config = prepared.rawValue
+-        managedConfigURL = prepared.managedConfigURL
+         renderedConfigContents = prepared.renderedContents
+         configSource = source
+         lastConfigurationIssue = nil
+diff --git a/ios/vendor/GhosttyTerminal/Controller/TerminalController.swift b/ios/vendor/GhosttyTerminal/Controller/TerminalController.swift
+index 8079ab097035d5ab38cb6a40fdd6e94389c8558e..8c8fe76b3f51429386aa8f913a775949f132971d 100644
+--- a/ios/vendor/GhosttyTerminal/Controller/TerminalController.swift
++++ b/ios/vendor/GhosttyTerminal/Controller/TerminalController.swift
+@@ -25,7 +25,6 @@ import GhosttyKit
+ public final class TerminalController {
+     struct PreparedConfig {
+         let rawValue: ghostty_config_t
+-        let managedConfigURL: URL?
+         let renderedContents: String
+     }
+ 
+@@ -46,13 +45,14 @@ public final class TerminalController {
+     public static let shared = TerminalController()
+ 
+     static let defaultRenderedConfig = TerminalConfiguration.default.rendered
++    static let managedConfigPrefix = "ghostty-config-"
++    static let managedConfigExtension = "conf"
+     private static var runtimeInitialized = false
+ 
+     nonisolated(unsafe) var app: ghostty_app_t?
+     nonisolated(unsafe) var config: ghostty_config_t?
+     var retainedBridges: [TerminalCallbackBridge] = []
+     var configSource: ConfigSource
+-    var managedConfigURL: URL?
+     var renderedConfigContents: String = TerminalController.defaultRenderedConfig
+ 
+     public internal(set) var lastConfigurationIssue: String?
+@@ -301,13 +301,11 @@ public final class TerminalController {
+         guard !runtimeInitialized else { return }
+         runtimeInitialized = true
+         ghostty_init(0, nil)
++        removeStaleManagedConfigs()
+     }
+ 
+     deinit {
+         if let app { ghostty_app_free(app) }
+         if let config { ghostty_config_free(config) }
+-        if let managedConfigURL {
+-            try? FileManager.default.removeItem(at: managedConfigURL)
+-        }
+     }
+ }
