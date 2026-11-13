@@ -80,6 +80,26 @@ describe('command shortcuts', () => {
     }
   });
 
+  it("sends Claude Code's /context from Chat while idle, and holds it while the Agent works", () => {
+    const policy = sendPolicyFor('claude');
+    const context = commandsOf('claude').find((s) => s.command === '/context');
+    if (!context) throw new Error('no /context');
+    expect(commandShortcutDraft(context, 'chat', policy)).toEqual({
+      surface: 'chat',
+      text: '/context ',
+    });
+    const idle = createSendRules(policy, chatCommands([], true, policy));
+    expect(idle.outgoingText('/context')).toBe('/context ');
+    expect(idle.outgoingText('/context all')).toBe('/context all ');
+    const busy = createSendRules(policy, chatCommands([], false, policy));
+    expect(busy.validate('/context')).toEqual({ kind: 'commandAwaitsIdle', name: 'context' });
+    // Only Claude Code records the command and its output; elsewhere it stays in the terminal.
+    for (const program of CHAT_PROGRAMS) {
+      if (program === 'claude') continue;
+      expect(rulesOf(program).validate('/context')?.kind).not.toBeUndefined();
+    }
+  });
+
   // A typed command gets what a tapped one gets: the terminal, in the form the program runs.
   describe('a command typed in Chat that its menu does not offer', () => {
     const refusalFor = (program: Program, draft: string) => {

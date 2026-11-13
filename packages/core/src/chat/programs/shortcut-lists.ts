@@ -17,10 +17,14 @@
 // Oh My Pi: github.com/can1357/oh-my-pi docs/keybindings.md, omp.sh/docs/slash
 // Grok Build: docs.x.ai/build/keyboard-shortcuts, /build/features/sessions, /build/modes-and-commands
 //
-// Where each command runs (`CommandPlace`): only `/compact` goes from Chat, which offers it in its
-// menu and confirms it by the compaction the program records. Every other command opens a picker
-// or a dialog (`/model`, `/models`, `/resume`, `/sessions`, `/tree`, `/fork`, `/review`,
-// `/usage`), shows its result only on the program's screen (`/diff`, `/status`, `/context`),
+// Where each command runs (`CommandPlace`): a command goes from Chat when the program records it and
+// its result in the conversation's file. `/compact` does, confirmed by the compaction it records;
+// so does Claude Code's `/context`, a local command it records with its output and that output as
+// markdown (seen in Claude Code 2.1, typed while idle as Chat pastes it; the input box is empty
+// after, no dialog). Chat offers either only while the Agent is idle. Every other command
+// opens a picker or a dialog (`/model`, `/models`, `/resume`, `/sessions`, `/tree`, `/fork`,
+// `/review`, `/usage`), shows its result only on the program's screen (`/diff`, `/status`, the
+// other programs' `/context`),
 // moves the program to a conversation herdr may not report (`/new`, `/clear`), or leaves text in
 // the input box that holds Chat's next send (OpenCode `/undo`), so it is typed in the terminal.
 
@@ -48,7 +52,7 @@ export const CLAUDE_SHORTCUTS: readonly ProgramShortcut[] = [
   compact,
   model,
   resume,
-  command('/context', 'Context Usage'),
+  command('/context', 'Context Usage', 'conversation'),
   command('/usage', 'Plan Usage'),
   menu('/add-dir', 'Add Working Directory', 'required'),
   menu('/agents', 'Manage Subagents'),

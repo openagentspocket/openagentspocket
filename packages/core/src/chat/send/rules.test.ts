@@ -180,7 +180,11 @@ describe('Chat send rules', () => {
         makeSkill({ scope: 'project', name: 'e2e-hidden', isUserInvocable: false }),
       ];
       const claude = rulesFor('claude', { skills: catalog });
-      expect(claude.commands.map((command) => command.name)).toEqual(['compact', 'review']);
+      expect(claude.commands.map((command) => command.name)).toEqual([
+        'compact',
+        'context',
+        'review',
+      ]);
       expect(claude.validate('/e2e-hidden')).toMatchObject({
         kind: 'unknownCommand',
         name: 'e2e-hidden',
@@ -227,6 +231,7 @@ describe('Chat send rules', () => {
       const { commands } = rulesFor('claude');
       expect(commandSuggestions('/', commands)?.map((c) => c.name)).toEqual([
         'compact',
+        'context',
         'review',
         'deploy',
       ]);

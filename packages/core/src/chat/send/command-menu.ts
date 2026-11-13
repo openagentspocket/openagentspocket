@@ -1,18 +1,20 @@
-// Chat's `/` menu for every program (Swift ChatCommandMenu, ADR 0024): the Host's skills plus
-// `/compact`. Commands that open pickers or end sessions are left out; the terminal still runs
-// them. Which skills a program is offered is the policy's (`offersSkill`).
+// Chat's `/` menu for every program (Swift ChatCommandMenu, ADR 0024): the Host's skills plus the
+// program's commands that run in the conversation (`runsIn`): `/compact` for every program, and
+// any other its definition lists there. Commands that open pickers or end sessions are left out;
+// the terminal still runs them. Which skills a program is offered is the policy's (`offersSkill`).
 
 import type { AgentSkill } from '../../skills/agent-skill';
+import { programCommands } from '../programs/registry';
 import type { ChatCommand, ProgramSendPolicy } from './policy';
 
 /** The prefix a skill typed in its qualified form carries. */
 export const SKILL_COMMAND_PREFIX = '/skill:';
 
-export function chatCommands(
-  skills: readonly AgentSkill[],
-  agentIsIdle: boolean,
-  policy: ProgramSendPolicy,
-): ChatCommand[] {
+/**
+ * The program's own commands Chat sends. Each waits for idle: Chat confirms a command by what the
+ * program records, which only `/compact` and local commands seen while idle have shown.
+ */
+function conversationCommands(policy: ProgramSendPolicy, agentIsIdle: boolean): ChatCommand[] {
   const commands: ChatCommand[] = [
     {
       name: 'compact',
@@ -21,7 +23,27 @@ export function chatCommands(
       isEnabled: agentIsIdle,
     },
   ];
-  const names = new Set(['compact']);
+  for (const command of programCommands(policy.program)) {
+    const name = command.command.slice(1);
+    if (command.runsIn !== 'conversation' || commands.some((entry) => entry.name === name))
+      continue;
+    commands.push({
+      name,
+      summary: command.title.key,
+      kind: { type: 'program' },
+      isEnabled: agentIsIdle,
+    });
+  }
+  return commands;
+}
+
+export function chatCommands(
+  skills: readonly AgentSkill[],
+  agentIsIdle: boolean,
+  policy: ProgramSendPolicy,
+): ChatCommand[] {
+  const commands = conversationCommands(policy, agentIsIdle);
+  const names = new Set(commands.map((command) => command.name));
   // Filtered before the dedupe, so a template listed first cannot hide the skill of the same name.
   for (const skill of skills) {
     if (!policy.offersSkill(skill) || names.has(skill.name)) continue;

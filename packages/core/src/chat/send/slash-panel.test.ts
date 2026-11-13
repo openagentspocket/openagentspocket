@@ -132,7 +132,7 @@ describe('the / panel', () => {
 
     it('leaves out what runs on the terminal when the Composer cannot go there', () => {
       const result = panel('claude', 'chat', '/', { terminalReachable: false });
-      expect(names(result.commands)).toEqual(['/compact']);
+      expect(names(result.commands)).toEqual(['/compact', '/context']);
     });
   });
 

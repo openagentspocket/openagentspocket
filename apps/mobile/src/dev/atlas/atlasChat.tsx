@@ -14,6 +14,7 @@ import type { ReactNode } from 'react';
 import type { ConversationRegistry } from '@/conversations/ConversationRegistry';
 import { ConversationsProvider } from '@/conversations/useConversation';
 import { FOLDED_CALLS } from './atlasChatCalls';
+import { COMMAND_OUTPUT } from './atlasChatCommand';
 import { ATLAS_NOW } from './atlasClock';
 
 const at = (secondsAgo: number) => new Date(ATLAS_NOW - secondsAgo * 1000).toISOString();
@@ -347,7 +348,21 @@ const blockedWorkState: ConversationState = {
   },
 };
 
+/** The first turn, then `/context` sent from Chat while idle. */
+const commandState: ConversationState = {
+  ...state,
+  snapshot: {
+    ...state.snapshot,
+    transcript: {
+      ...state.snapshot.transcript,
+      entries: [...ENTRIES.slice(0, 4), COMMAND_OUTPUT],
+      turns: state.snapshot.transcript.turns.slice(0, 1),
+    },
+  },
+};
+
 const registry = registryFor(state);
+const commandRegistry = registryFor(commandState);
 const workRegistry = registryFor(workState);
 const blockedWorkRegistry = registryFor(blockedWorkState);
 const lookingRegistry = registryFor(lookingState);
@@ -361,8 +376,8 @@ export function AtlasChat({
   children: ReactNode;
   /** The conversation is still being located and the last read failed (chat-banners). */
   looking?: boolean;
-  /** Background Work over the Composer: the strip's list, or the Blocked card's single Subagent. */
-  background?: 'list' | 'blocked';
+  /** Background Work over the Composer, or `command`: a local command's output in place of it. */
+  background?: 'list' | 'blocked' | 'command';
 }) {
   const scripted = looking
     ? lookingRegistry
@@ -370,6 +385,8 @@ export function AtlasChat({
       ? workRegistry
       : background === 'blocked'
         ? blockedWorkRegistry
-        : registry;
+        : background === 'command'
+          ? commandRegistry
+          : registry;
   return <ConversationsProvider registry={scripted}>{children}</ConversationsProvider>;
 }

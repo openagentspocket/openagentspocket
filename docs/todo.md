@@ -75,8 +75,11 @@ so no program-specific branches.
   Known from the parent's rows (the `subagent` call's `metadata.status: running`, ended by the
   `synthetic` row naming its `childID`), on constructed rows; a lab capture of one would prove it
   live. A launch above every loaded read, or a prompt the user types into the child, stays unseen.
-- [ ] **Claude Code `/context` from Chat.** Runs in the terminal today because Chat's echo of local command
+- [x] **Claude Code `/context` from Chat.** Runs in the terminal today because Chat's echo of local command
   output is unverified. Done when: verified and moved to the conversation, or the reason is recorded.
+  Verified (Claude Code 2.1, pasted as Chat sends it, while idle): it records the command, its output and
+  the output as markdown, and leaves the input box empty. Chat sends it while the Agent is idle and shows
+  the markdown as the command's notice. Mid-turn stays held (unverified there).
 - [x] **tmux Hosts type a prompt's line breaks as Enter.** Matters when tmux Hosts ship; a draft with
   several diff comments would go out in pieces.
 

@@ -63,8 +63,8 @@ export const commandShortcut = (
 });
 
 /**
- * A command of the program's own menu that only the `/` panel lists. It runs in the terminal: only
- * `/compact` is shown to run from Chat, and it is a shortcut.
+ * A command of the program's own menu that only the `/` panel lists. It runs in the terminal: the
+ * commands shown to run from Chat (`/compact`, Claude Code's `/context`) are shortcuts.
  */
 export const menuCommand = (
   command: string,
