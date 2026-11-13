@@ -6,6 +6,7 @@ import {
   divider,
   emptyTranscript,
   initialSnapshot,
+  notice,
   toolActivity,
   userMessage,
 } from '@openagentspocket/core';
@@ -283,6 +284,16 @@ const workState: ConversationState = {
             }),
           },
         })),
+        {
+          id: 'n1',
+          sourceOffset: 140,
+          content: {
+            type: 'notice' as const,
+            value: notice('taskNotification', 'Background task completed', {
+              detail: 'pnpm test --filter attach: 24 passed',
+            }),
+          },
+        },
       ],
       backgroundWork: [
         work('w1', 'Find old pairing steps', { subtitle: 'Explore', launchedAgo: 246 }),

@@ -5,15 +5,16 @@ export {
   type BackgroundWorkDetailItem,
   BackgroundWorkList,
   type BackgroundWorkListLabels,
+  type BackgroundWorkNoticeItem,
 } from './BackgroundWorkList';
 export {
   BackgroundWorkGlyph,
-  type BackgroundWorkItem,
   type BackgroundWorkLabels,
   type BackgroundWorkState,
   BackgroundWorkStrip,
   type BackgroundWorkSummaryLine,
   defaultBackgroundWorkLabels,
+  type StatusLineState,
 } from './BackgroundWorkStrip';
 export {
   agentPadKeys,

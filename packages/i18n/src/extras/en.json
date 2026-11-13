@@ -177,5 +177,8 @@
   "Commit and PR": "Commit and PR",
   "Open PR": "Open PR",
   "Host Not Saved": "Host Not Saved",
-  "This Host is no longer saved, so its Agents are not available.": "This Host is no longer saved, so its Agents are not available."
+  "This Host is no longer saved, so its Agents are not available.": "This Host is no longer saved, so its Agents are not available.",
+  "Thinking": "Thinking",
+  "%lld running": "{0, number} running",
+  "Notices": "Notices"
 }

@@ -54,7 +54,6 @@ interface Props {
   onLoadOlder: () => void;
   /** Opens a Subagent's own transcript by the id its call reported. */
   onOpenSubagent?: (agentId: string) => void;
-  now: number;
   /** The whole latest answer, when this row ends it: its actions show under the row. */
   answer?: string;
 }
@@ -66,7 +65,6 @@ export const ChatRowView = memo(function ChatRowView({
   onToggle,
   onLoadOlder,
   onOpenSubagent,
-  now,
   answer,
 }: Props) {
   const styles = useStyles();
@@ -201,16 +199,8 @@ export const ChatRowView = memo(function ChatRowView({
         );
       case 'turnHeader': {
         const { state, isOpen } = content.header;
-        if (state.kind === 'working') {
-          const since = Math.max(0, (now - Date.parse(state.since)) / 1000);
-          return (
-            <ChatDivider
-              kind="working"
-              label={t('Working for %@', '').trim()}
-              elapsedSeconds={since}
-            />
-          );
-        }
+        // The running turn's time is the status line over the Composer (ChatTimeline leaves it out).
+        if (state.kind === 'working') return null;
         return (
           <ChatDivider
             kind="turn"

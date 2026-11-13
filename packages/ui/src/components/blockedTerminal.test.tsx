@@ -1,6 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react-native';
 import { Banner } from '../primitives/Banner';
 import { renderThemed } from '../test-utils';
+import { BackgroundWorkList } from './BackgroundWorkList';
 import { BackgroundWorkStrip } from './BackgroundWorkStrip';
 import { agentPadKeys, KeyPad, swipedPage } from './KeyPad';
 import {
@@ -12,38 +13,48 @@ import {
 } from './TerminalToolbar';
 
 describe('BackgroundWorkStrip', () => {
-  const items = [
-    { id: '1', title: 'A', caption: 'Explore', state: 'running' as const, meta: '1s' },
-    { id: '2', title: 'B', caption: 'Audit', state: 'completed' as const, meta: '2s' },
-    { id: '3', title: 'C', caption: 'x', state: 'failed' as const, meta: '3s' },
-  ];
-  it('opens at a row, or at no row from "+N more"', async () => {
-    const onOpen = jest.fn();
-    await renderThemed(<BackgroundWorkStrip items={items} overflow={2} onOpen={onOpen} />);
-    expect(screen.getByTestId('work-spinner', { includeHiddenElements: true })).toBeTruthy();
-    expect(
-      screen.getByTestId('work-glyph-completed', { includeHiddenElements: true }),
-    ).toBeTruthy();
-    await fireEvent.press(screen.getByTestId('work-row-2'));
-    expect(onOpen).toHaveBeenLastCalledWith('2');
-    await fireEvent.press(screen.getByTestId('work-more'));
-    expect(onOpen).toHaveBeenLastCalledWith(null);
-  });
-
-  it('condenses to one line that opens the list, and is empty with nothing to list', async () => {
+  it('is one line that opens the sheet, and draws nothing without a line', async () => {
     const onOpen = jest.fn();
     await renderThemed(
       <BackgroundWorkStrip
-        items={items}
-        summary={{ state: 'running', text: '1 running · A' }}
+        line={{ state: 'running', text: 'Working for 5s · 2 done' }}
         onOpen={onOpen}
       />,
     );
-    expect(screen.queryByTestId('work-row-1')).toBeNull();
+    expect(screen.getByTestId('work-spinner', { includeHiddenElements: true })).toBeTruthy();
     await fireEvent.press(screen.getByTestId('background-work-strip-summary'));
-    expect(onOpen).toHaveBeenCalledWith(null);
-    await renderThemed(<BackgroundWorkStrip items={[]} onOpen={onOpen} />);
-    expect(screen.queryByTestId('background-work-strip')).toBeNull();
+    expect(onOpen).toHaveBeenCalled();
+    await renderThemed(<BackgroundWorkStrip line={null} onOpen={onOpen} />);
+    expect(screen.queryByTestId('background-work-strip-summary')).toBeNull();
+  });
+
+  it('shows the Agent waiting on the user with its own glyph', async () => {
+    await renderThemed(
+      <BackgroundWorkStrip line={{ state: 'waiting', text: 'Needs you' }} onOpen={jest.fn()} />,
+    );
+    expect(screen.getByTestId('work-glyph-waiting', { includeHiddenElements: true })).toBeTruthy();
+  });
+});
+
+describe('BackgroundWorkList notices', () => {
+  it('lists the harness notices in their own section', async () => {
+    await renderThemed(
+      <BackgroundWorkList
+        unfinished={[]}
+        finished={[]}
+        notices={[{ id: 'n1', title: 'Background task finished', detail: 'exit 0' }]}
+        expanded={new Set()}
+        onToggle={jest.fn()}
+        labels={{
+          running: 'Running',
+          finished: 'Finished',
+          finishedFooter: '',
+          notices: 'Notices',
+        }}
+      />,
+    );
+    expect(screen.getByTestId('work-notice-n1')).toBeTruthy();
+    expect(screen.getByText('Notices')).toBeTruthy();
   });
 });
 

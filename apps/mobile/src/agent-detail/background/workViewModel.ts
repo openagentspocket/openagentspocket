@@ -1,33 +1,22 @@
-import type {
-  BackgroundWorkAgent,
-  BackgroundWorkPresentation,
-  BackgroundWorkPresentedRow,
-  Text,
+import {
+  type BackgroundWorkAgent,
+  type BackgroundWorkNotice,
+  type BackgroundWorkPresentedRow,
+  type ChatStatusLine,
+  noticeTitleText,
+  type Text,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
 import type {
   BackgroundWorkAgentItem,
   BackgroundWorkDetailItem,
-  BackgroundWorkItem,
+  BackgroundWorkNoticeItem,
   BackgroundWorkSummaryLine,
 } from '@openagentspocket/ui';
 import { renderMessage } from '@/lib/renderText';
 
 const words = (text: Text | null): string | undefined =>
   text === null ? undefined : renderMessage(text);
-
-/** A strip row: title, type or phase, fraction, and the time (or why there is none). */
-export function stripItem(row: BackgroundWorkPresentedRow): BackgroundWorkItem {
-  return {
-    id: row.id,
-    title: row.title,
-    caption: renderMessage(row.caption),
-    monospaced: row.kind === 'workflow',
-    state: row.status,
-    fraction: row.fraction ?? undefined,
-    meta: row.time ?? words(row.shortNote),
-  };
-}
 
 function agentItem(agent: BackgroundWorkAgent, index: number): BackgroundWorkAgentItem {
   return {
@@ -63,9 +52,16 @@ export function detailItem(row: BackgroundWorkPresentedRow): BackgroundWorkDetai
   };
 }
 
-export function summaryLine(
-  presentation: BackgroundWorkPresentation,
-): BackgroundWorkSummaryLine | undefined {
-  const summary = presentation.summary;
-  return summary ? { state: summary.status, text: renderMessage(summary.text) } : undefined;
+/** The status line over the Composer, in the current locale. */
+export function statusLineItem(line: ChatStatusLine): BackgroundWorkSummaryLine {
+  return {
+    state: line.state,
+    text: renderMessage(line.text),
+    accessibilityValue: renderMessage(line.accessibilityValue),
+  };
+}
+
+/** A harness notice in the sheet: its title as Chat words it, and what the program reported. */
+export function noticeItem({ id, notice }: BackgroundWorkNotice): BackgroundWorkNoticeItem {
+  return { id, title: renderMessage(noticeTitleText(notice)), detail: notice.detail ?? undefined };
 }

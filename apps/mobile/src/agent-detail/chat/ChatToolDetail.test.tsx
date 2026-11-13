@@ -30,7 +30,7 @@ function row(init: Partial<Parameters<typeof toolActivity>[0]>): ChatRow {
 async function show(value: ChatRow) {
   await render(
     <ThemeProvider themeId="indigo">
-      <ChatRowView hostId="h" row={value} onToggle={jest.fn()} onLoadOlder={jest.fn()} now={0} />
+      <ChatRowView hostId="h" row={value} onToggle={jest.fn()} onLoadOlder={jest.fn()} />
       <OverlayHost />
     </ThemeProvider>,
   );

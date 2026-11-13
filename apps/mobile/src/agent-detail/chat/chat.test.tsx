@@ -27,11 +27,11 @@ describe('chat row model', () => {
 
 jest.setTimeout(30_000);
 
-async function showAtlasChat() {
+async function showAtlasChat(background?: 'list') {
   await render(
     <ThemeProvider themeId="indigo">
       <TestSettings>
-        <AtlasChat>
+        <AtlasChat background={background}>
           <AgentDetailScreen
             hostId="demo"
             paneId="p2"
@@ -63,5 +63,24 @@ describe('the actions under the latest answer', () => {
     expect(within(answer).getByTestId('chat-message-actions')).toBeTruthy();
     await fireEvent.press(within(answer).getByTestId('chat-message-action-copy'));
     expect(mockCopy).toHaveBeenCalledWith(expect.stringContaining('The toolbar now fits'));
+  });
+});
+
+describe('the status line over the Composer', () => {
+  it('stands for the running turn, which is no row of the transcript', async () => {
+    await showAtlasChat();
+    const line = await screen.findByTestId('background-work-strip-summary');
+    expect(line.props.accessibilityValue.text).toMatch(/^Working for /);
+    expect(screen.queryByTestId('chat-row-liveTurn')).toBeNull();
+  });
+
+  it('folds finished work into a count and opens the sheet, which lists the notices', async () => {
+    await showAtlasChat('list');
+    const line = await screen.findByTestId('background-work-strip-summary');
+    expect(line.props.accessibilityValue.text).toContain('2 done');
+    expect(screen.queryByTestId('work-row-w3')).toBeNull();
+    await fireEvent.press(line);
+    await waitFor(() => expect(screen.getByTestId('work-notice-n1')).toBeTruthy());
+    expect(screen.getByTestId('work-sheet-w3')).toBeTruthy();
   });
 });

@@ -17,7 +17,6 @@ async function show(state: ChatPendingEchoState) {
         row={pendingRow(state)}
         onToggle={jest.fn()}
         onLoadOlder={jest.fn()}
-        now={0}
       />
     </ThemeProvider>,
   );

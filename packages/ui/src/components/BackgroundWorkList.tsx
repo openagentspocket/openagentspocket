@@ -40,10 +40,18 @@ export interface BackgroundWorkDetailItem {
   openLabel?: string;
 }
 
+/** A harness notice ("Background command ... completed"): what the program reported, not a message. */
+export interface BackgroundWorkNoticeItem {
+  id: string;
+  title: string;
+  detail?: string;
+}
+
 export interface BackgroundWorkListLabels {
   running: string;
   finished: string;
   finishedFooter: string;
+  notices: string;
 }
 
 const useStyles = makeStyles((t) => ({
@@ -181,9 +189,32 @@ function DetailRow({
   );
 }
 
+function NoticeRow({ notice }: { notice: BackgroundWorkNoticeItem }) {
+  const styles = useStyles();
+  return (
+    <View style={styles.row} testID={`work-notice-${notice.id}`}>
+      <View style={styles.glyph}>
+        <Icon name="info" size={14} color="textSecondary" />
+      </View>
+      <View style={styles.text}>
+        <Text variant="body" numberOfLines={2}>
+          {notice.title}
+        </Text>
+        {notice.detail ? (
+          <Text variant="subheadline" tone="secondary" numberOfLines={3}>
+            {notice.detail}
+          </Text>
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
 interface BackgroundWorkListProps {
   unfinished: readonly BackgroundWorkDetailItem[];
   finished: readonly BackgroundWorkDetailItem[];
+  /** What the program's harness reported since the latest message, oldest first. */
+  notices?: readonly BackgroundWorkNoticeItem[];
   /** Ids of the Workflows open to their agents. */
   expanded: ReadonlySet<string>;
   onToggle: (id: string) => void;
@@ -192,11 +223,13 @@ interface BackgroundWorkListProps {
 
 /**
  * Everything Chat lists as Background Work (Swift ChatBackgroundWorkSheet content): running work,
- * then what finished since the user's latest message. A Workflow opens to the agents it ran.
+ * then what finished since the user's latest message, then the harness's notices. A Workflow opens
+ * to the agents it ran.
  */
 export function BackgroundWorkList({
   unfinished,
   finished,
+  notices = [],
   expanded,
   onToggle,
   labels,
@@ -225,6 +258,13 @@ export function BackgroundWorkList({
               open={expanded.has(item.id)}
               onToggle={() => onToggle(item.id)}
             />
+          ))}
+        </Section>
+      ) : null}
+      {notices.length > 0 ? (
+        <Section title={labels.notices}>
+          {notices.map((notice) => (
+            <NoticeRow key={notice.id} notice={notice} />
           ))}
         </Section>
       ) : null}

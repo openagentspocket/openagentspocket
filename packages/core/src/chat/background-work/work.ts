@@ -4,7 +4,7 @@
 // be running.
 
 import { listedBackgroundWork, runStartedAt } from '../model/transcript';
-import type { ChatBackgroundWorkItem, ChatTranscript } from '../model/types';
+import type { ChatBackgroundWorkItem, ChatNotice, ChatTranscript } from '../model/types';
 import type { ChatWorkflowProgress } from '../model/workflow-progress';
 
 export interface BackgroundWorkRow {
@@ -81,3 +81,24 @@ export function backgroundWorkOf(
 /** Whether a live read shows work running, which keeps Chat reading at its active pace. */
 export const holdsActivePace = (work: ChatBackgroundWork): boolean =>
   work.isLive && work.rows.some((row) => isRowRunning(row) && !row.isStale);
+
+/** A harness notice ("Background command ... completed"): no row of the conversation, listed in the sheet. */
+export interface BackgroundWorkNotice {
+  id: string;
+  notice: ChatNotice;
+}
+
+/**
+ * The harness notices since the user's latest message, oldest first: the records Chat's timeline
+ * leaves out (its `isHarnessNotice`), which leave the sheet with the next message as finished work does.
+ */
+export function listedNotices(transcript: ChatTranscript): BackgroundWorkNotice[] {
+  const prompt = transcript.latestPromptOffset ?? 0;
+  return transcript.entries.flatMap((entry) =>
+    entry.content.type === 'notice' &&
+    entry.content.value.kind === 'taskNotification' &&
+    entry.sourceOffset > prompt
+      ? [{ id: entry.id, notice: entry.content.value }]
+      : [],
+  );
+}

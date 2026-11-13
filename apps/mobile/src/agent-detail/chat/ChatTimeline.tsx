@@ -3,14 +3,16 @@ import {
   type ChatRow,
   type ComposerMessage,
   latestAnswer,
+  liveTurnOf,
   pendingEchoes,
+  withoutLiveTurn,
 } from '@openagentspocket/core';
 import { makeStyles, metrics } from '@openagentspocket/ui';
 import { useMemo, useRef } from 'react';
 import { FlatList, View } from 'react-native';
 import { useConsoleState } from '@/console/hooks';
 import { useConversation } from '@/conversations/useConversation';
-import { useDetailUi } from '../detailUi';
+import { useDetailUi, usePublishLiveTurn } from '../detailUi';
 import { ChatBanners } from './ChatBanners';
 import { ChatEmpty } from './ChatEmpty';
 import { ChatRowView } from './ChatRowView';
@@ -70,8 +72,10 @@ export function ChatTimeline({
   );
   const undetected = useUndetectedProgram(hostId, paneId);
   const { rows, toggle } = useChatRows(conversation.state, activity, pending);
+  // The running turn's header is the status line over the Composer, not a row.
+  usePublishLiveTurn(useMemo(() => liveTurnOf(rows), [rows]));
   // Inverted: the newest row sits at offset 0, where the list opens and stays.
-  const newestFirst = useMemo(() => [...rows].reverse(), [rows]);
+  const newestFirst = useMemo(() => withoutLiveTurn(rows).reverse(), [rows]);
   const answer = useMemo(() => latestAnswer(rows), [rows]);
   const list = useRef<FlatList<ChatRow>>(null);
   const follow = useChatFollow(list, messages.length, visit);
@@ -117,7 +121,6 @@ export function ChatTimeline({
             onToggle={toggle}
             onLoadOlder={() => conversation.loadOlder(false)}
             onOpenSubagent={openSubagent}
-            now={Date.now()}
             answer={item.id === answer?.id ? answer.text : undefined}
           />
         )}

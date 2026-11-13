@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import { type BackgroundWorkItem, BackgroundWorkStrip } from '../../components/BackgroundWorkStrip';
+import { BackgroundWorkStrip } from '../../components/BackgroundWorkStrip';
 import { agentPadKeys, KeyPad } from '../../components/KeyPad';
 
 import { TerminalToolbar } from '../../components/TerminalToolbar';
@@ -17,26 +17,6 @@ const useStyles = makeStyles((t) => ({
   lifted: { paddingTop: 190 },
   right: { alignItems: 'flex-end' },
 }));
-
-const work: readonly BackgroundWorkItem[] = [
-  {
-    id: 'a',
-    title: 'Find old pairing steps',
-    caption: 'Explore',
-    state: 'running',
-    meta: '4m 13s',
-  },
-  {
-    id: 'b',
-    title: 'docs-audit',
-    caption: 'Audit',
-    state: 'running',
-    fraction: { done: 2, total: 3 },
-    meta: '4m 4s',
-    monospaced: true,
-  },
-  { id: 'c', title: 'Check screenshots', caption: 'Subagent', state: 'completed', meta: '2m 4s' },
-];
 
 function Padded({ children, lifted }: { children: React.ReactNode; lifted?: boolean }) {
   const styles = useStyles();
@@ -98,18 +78,34 @@ export const blockedTerminalEntries: readonly CatalogEntry[] = [
         render: () => (
           <Padded>
             <BackgroundWorkStrip
-              items={work}
-              summary={{ state: 'running', text: '1 running · Find other retry callers' }}
+              line={{
+                state: 'running',
+                text: 'Working for 1m 56s · Thinking · 2 running · 1 done',
+              }}
               onOpen={noop}
             />
           </Padded>
         ),
       },
       {
-        id: 'expanded',
+        id: 'waiting',
         render: () => (
           <Padded>
-            <BackgroundWorkStrip items={work} overflow={1} onOpen={noop} />
+            <BackgroundWorkStrip
+              line={{ state: 'waiting', text: 'Working for 4m 2s · Needs you · 1 running' }}
+              onOpen={noop}
+            />
+          </Padded>
+        ),
+      },
+      {
+        id: 'work',
+        render: () => (
+          <Padded>
+            <BackgroundWorkStrip
+              line={{ state: 'running', text: '1 running · 2 done' }}
+              onOpen={noop}
+            />
           </Padded>
         ),
       },

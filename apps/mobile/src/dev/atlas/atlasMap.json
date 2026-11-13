@@ -403,13 +403,13 @@
   },
   {
     "id": "agent-detail.chat-background-strip",
-    "rn": "AgentDetailScreen (AgentBackgroundWork strip)",
-    "note": "two running, two finished, +1 more; scripted conversation"
+    "rn": "AgentDetailScreen (AgentBackgroundWork status line)",
+    "note": "one status line: the running turn, two running, two finished as counts; scripted conversation"
   },
   {
     "id": "agent-detail.chat-background-sheet",
     "rn": "AgentBackgroundWork sheet (BackgroundWorkList)",
-    "note": "opened from the first strip row"
+    "note": "opened from the status line; running, finished, and a harness notice"
   },
   {
     "id": "agent-detail.chat-banners",
