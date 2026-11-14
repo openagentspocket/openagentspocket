@@ -1,5 +1,5 @@
 import { ThemeProvider } from '@openagentspocket/ui';
-import { act, render, screen, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { createDemoConsoleStore } from '../console/demo';
 import { ConsoleStoreProvider } from '../console/hooks';
 import { HomeScreen } from './HomeScreen';
@@ -23,6 +23,15 @@ describe('Home with two Hosts', () => {
     expect(screen.queryByLabelText('All Agents')).toBeNull();
     expect(screen.queryByLabelText('Sessions')).toBeNull();
     expect(screen.getByTestId('home-host-scope')).toBeTruthy();
+  });
+
+  it('lists the Hosts, then Browse with All Agents and Sessions', async () => {
+    await renderTwoHosts();
+    await fireEvent.press(screen.getByTestId('home-host-scope'));
+    expect(await screen.findByText('Browse')).toBeTruthy();
+    expect(screen.getAllByText('All Hosts').length).toBeGreaterThan(1);
+    expect(screen.getByText('All Agents')).toBeTruthy();
+    expect(screen.getAllByText('Sessions').length).toBeGreaterThan(1);
   });
 
   it('offers the Host scope and starts on every Host', async () => {
