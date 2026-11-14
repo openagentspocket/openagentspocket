@@ -45,35 +45,3 @@ export function measureAnchor(key: string): Promise<AnchorRect | null> {
     });
   });
 }
-
-/** Where the finger went down, in window coordinates (a touch event's pageX and pageY). */
-export interface PressPoint {
-  pageX: number;
-  pageY: number;
-}
-
-/** How far outside a control's frame a press still counts as on it (its hit slop). */
-const PRESS_SLOP = 12;
-
-/**
- * A control's frame in window coordinates from what `measureInWindow` said and where the press
- * landed. Some native parents (a glass capsule, a bar inside a scroll view) make the measured
- * origin relative to the parent; a press on the control cannot lie outside its own frame, so a
- * frame that does not hold the press is replaced by one of the same size centered on the press.
- * An empty frame (a view that has not laid out, web before layout) is no anchor at all.
- */
-export function reconcileFrame(
-  measured: AnchorRect | null,
-  press?: PressPoint | null,
-): AnchorRect | null {
-  if (!measured || measured.width <= 0 || measured.height <= 0) return null;
-  if (!press) return measured;
-  const { x, y, width, height } = measured;
-  const inside =
-    press.pageX >= x - PRESS_SLOP &&
-    press.pageX <= x + width + PRESS_SLOP &&
-    press.pageY >= y - PRESS_SLOP &&
-    press.pageY <= y + height + PRESS_SLOP;
-  if (inside) return measured;
-  return { x: press.pageX - width / 2, y: press.pageY - height / 2, width, height };
-}
