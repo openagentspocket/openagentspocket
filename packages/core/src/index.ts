@@ -23,5 +23,6 @@ export * from './settings';
 export * from './skills';
 export * from './snippets';
 export * from './terminal';
+export * from './updates';
 export * from './usage';
 export * from './wire';

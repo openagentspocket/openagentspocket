@@ -4,6 +4,10 @@ jest.mock('expo-sqlite/kv-store', () => ({
   default: { getItemSync: () => null, setItemSync: () => {} },
 }));
 
+// jest-expo's native mock says updates are enabled; tests run as a build from source, where they are
+// off (apps/mobile/app.config.js). Tests of the updates paths pass a fake (src/updates/appUpdates.ts).
+jest.mock('expo-updates', () => ({ isEnabled: false }));
+
 // Screens set their navigator header through `Stack.Screen`, which needs a navigator; component
 // tests have none, so the header component is a no-op there.
 jest.mock('./src/navigation/NavigatorHeader', () => ({ NavigatorHeader: () => null }));

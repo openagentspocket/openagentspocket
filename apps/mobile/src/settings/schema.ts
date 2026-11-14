@@ -7,6 +7,8 @@ export interface SettingsContext {
   /** "Face ID", "Touch ID" or "Passcode" when the device can authenticate; null otherwise. */
   authKind: string | null;
   version: string;
+  /** Over-the-air updates in this build (an official store build only) and what runs now. */
+  updates: { enabled: boolean; running: string };
   themeName: string;
   themeId: SettingsThemeId;
   /** Live values for the root rows: notification state, Host count. */

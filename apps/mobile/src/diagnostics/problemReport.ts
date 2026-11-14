@@ -7,6 +7,8 @@ export interface AppBuild {
   build: string;
   /** "ios 26.1": the platform and its version. */
   system: string;
+  /** The over-the-air update that runs, in a build that has updates; absent otherwise. */
+  update?: string;
 }
 
 /** Where a problem is reported: a new issue on the project's GitHub (the owner's support channel). */
@@ -31,6 +33,7 @@ export function problemReportBody(build: AppBuild, crash?: CrashRecord): string 
     '### App',
     '',
     `- Version: ${build.version || 'unknown'} (build ${build.build || 'unknown'})`,
+    ...(build.update ? [`- Update: ${build.update}`] : []),
     `- System: ${build.system}`,
   ];
   if (crash) {

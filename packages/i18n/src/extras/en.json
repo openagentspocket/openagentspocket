@@ -266,5 +266,9 @@
   "They are encrypted on your Host. The service that delivers them cannot open them.": "They are encrypted on your Host. The service that delivers them cannot open them.",
   "You can change this in Settings › Notifications.": "You can change this in Settings › Notifications.",
   "Turn on notifications to know when an Agent needs you.": "Turn on notifications to know when an Agent needs you.",
-  "Turn On": "Turn On"
+  "Turn On": "Turn On",
+  "Update": "Update",
+  "Built In": "Built In",
+  "Early Updates": "Early Updates",
+  "Get fixes a few days before everyone else. They are the same signed updates.": "Get fixes a few days before everyone else. They are the same signed updates."
 }

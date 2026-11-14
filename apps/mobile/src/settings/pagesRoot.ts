@@ -203,6 +203,25 @@ export const root: SettingsPage = {
           icon: 'info',
           value: (ctx) => ctx.version,
         },
+        // Over-the-air updates: only a build that has them (an official store build) shows these.
+        {
+          kind: 'info',
+          id: 'settings.about.update',
+          title: () => t('Update'),
+          icon: 'refresh',
+          value: (ctx) => ctx.updates.running,
+          when: (ctx) => ctx.updates.enabled,
+        },
+        {
+          kind: 'toggle',
+          id: 'settings.about.earlyUpdates',
+          title: () => t('Early Updates'),
+          subtitle: () =>
+            t('Get fixes a few days before everyone else. They are the same signed updates.'),
+          icon: 'sparkles',
+          key: 'earlyUpdates',
+          when: (ctx) => ctx.updates.enabled,
+        },
         route('setupGuide', () => t('Setup Guide'), 'file'),
         route('reportProblem', () => t('Report a Problem'), 'warning'),
         {

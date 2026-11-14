@@ -9,6 +9,7 @@ import { OverlayHost, ThemeProvider, themeIds, themes } from '@openagentspocket/
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import * as WebBrowser from 'expo-web-browser';
 import type { ReactElement } from 'react';
+import { type AppUpdates, createAppUpdates, fakeUpdatesApi } from '@/updates/appUpdates';
 import { type Authenticator, fakeAuthenticator } from './authenticator';
 import { PRIVACY_POLICY_URL } from './pagesRoot';
 import { SettingsProvider } from './SettingsProvider';
@@ -24,16 +25,22 @@ jest.mock('expo-web-browser', () => ({ openBrowserAsync: jest.fn() }));
 interface Options {
   authenticator?: Authenticator;
   chatCache?: ChatCache;
+  updates?: AppUpdates;
 }
 
 async function setup(
   page: string,
-  { authenticator = fakeAuthenticator(null), chatCache }: Options = {},
+  { authenticator = fakeAuthenticator(null), chatCache, updates }: Options = {},
 ) {
   const store = new SettingsStore(new MemoryStorage());
   const ui: ReactElement = (
     <ThemeProvider themeId="indigo">
-      <SettingsProvider store={store} authenticator={authenticator} chatCache={chatCache}>
+      <SettingsProvider
+        store={store}
+        authenticator={authenticator}
+        chatCache={chatCache}
+        updates={updates}
+      >
         <SettingsScreen page={page} />
         <OverlayHost />
       </SettingsProvider>
@@ -87,6 +94,26 @@ describe('SettingsScreen', () => {
     expect(screen.getByTestId('settings.about.privacyPolicy')).toBeTruthy();
     expect(screen.queryByTestId('settings.snippets')).toBeNull();
     expect(screen.queryByTestId('settings-section-security')).toBeNull();
+  });
+
+  it('shows nothing about updates in a build without them', async () => {
+    await setup('root');
+    expect(screen.queryByTestId('settings.about.update')).toBeNull();
+    expect(screen.queryByTestId('settings.about.earlyUpdates')).toBeNull();
+  });
+
+  it('in a build with updates, names the running one and offers Early Updates, off by default', async () => {
+    const api = fakeUpdatesApi({
+      isEmbeddedLaunch: false,
+      updateId: '0f6a2b3c-1d2e-4f50-8a9b-0c1d2e3f4a5b',
+      createdAt: new Date('2026-11-14T12:00:00.000Z'),
+    });
+    const store = await setup('root', { updates: createAppUpdates(api) });
+    expect(screen.getByTestId('settings.about.update')).toBeTruthy();
+    expect(screen.getByText(/0f6a2b3c/)).toBeTruthy();
+    expect(store.get('earlyUpdates')).toBe(false);
+    await fireEvent(screen.getByTestId('settings.about.earlyUpdates'), 'valueChange', true);
+    expect(store.get('earlyUpdates')).toBe(true);
   });
 
   it("opens the site's privacy page from Help", async () => {

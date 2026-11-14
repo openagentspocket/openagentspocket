@@ -31,6 +31,8 @@ import { settingsStore } from '@/settings/deviceSettings';
 import { deviceStorage } from '@/settings/deviceStorage';
 import { SettingsProvider, useSettings } from '@/settings/SettingsProvider';
 import { useResolvedThemeId } from '@/settings/useSettingsContext';
+import { deviceUpdates } from '@/updates/deviceUpdates';
+import { UpdateChannelSync } from '@/updates/UpdateChannelSync';
 import { useWidgetSync } from '@/widgets/useWidgetSync';
 
 recordUncaughtErrors();
@@ -112,7 +114,12 @@ export default function RootLayout() {
   const openAgent = useOpenAgent();
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SettingsProvider store={settingsStore} authenticator={deviceAuthenticator}>
+      <SettingsProvider
+        store={settingsStore}
+        authenticator={deviceAuthenticator}
+        updates={deviceUpdates}
+      >
+        <UpdateChannelSync />
         <SettingsTheme>
           <RootCanvas>
             <ThemedStatusBar />

@@ -266,5 +266,9 @@
   "They are encrypted on your Host. The service that delivers them cannot open them.": "Se cifran en tu Host. El servicio que las entrega no puede abrirlas.",
   "You can change this in Settings › Notifications.": "Podés cambiarlo en Configuración › Notificaciones.",
   "Turn on notifications to know when an Agent needs you.": "Activá las notificaciones para saber cuándo un Agente te necesita.",
-  "Turn On": "Activar"
+  "Turn On": "Activar",
+  "Update": "Actualización",
+  "Built In": "Incluida en la app",
+  "Early Updates": "Actualizaciones anticipadas",
+  "Get fixes a few days before everyone else. They are the same signed updates.": "Recibí los arreglos unos días antes que el resto. Son las mismas actualizaciones firmadas."
 }
