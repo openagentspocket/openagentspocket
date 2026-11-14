@@ -16,8 +16,9 @@ Pieces:
 | Released builds and their runtime versions | `docs/releases/builds.json` (appended by `scripts/release-ios.mjs`) | No |
 | Public log of published updates | `docs/releases/updates.jsonl` (appended by a real upload) | No |
 
-Status (2026-11-14): server, publish script and tests exist. `expo-updates` is not installed, no key
-exists, nothing is deployed. iOS only; Android stays off until its client is verified on a device.
+Status (2026-11-14): server, publish script, the app config and the app side (channel setting, running
+update in Settings) exist with tests. No key exists, nothing is deployed, and no native build with
+`expo-updates` has run yet. iOS only; Android stays off until its client is verified on a device.
 
 ## How a publish goes
 
@@ -86,8 +87,7 @@ Everything that needs the key, the Cloudflare account or a store submission:
    (RSA 2048, node-forge's default, with the code signing usage.) The key folder must be outside the
    repository; move `private-key.pem` to offline storage (an encrypted PEM in a password manager, or a
    hardware token after a spike) and delete `public-key.pem` and the folder. Commit only
-   `apps/mobile/certs/certificate.pem`, renamed `updates.pem`. Needs `expo-updates` installed (step 7
-   of the ADR plan), or run it from a scratch project.
+   `apps/mobile/certs/certificate.pem`, renamed `updates.pem`.
 2. **Create the R2 bucket** `openagentspocket-updates` (needs: Cloudflare account access):
    `npx wrangler r2 bucket create openagentspocket-updates`.
 3. **Deploy the Worker and route the update domain** (needs: account, DNS):
@@ -95,8 +95,9 @@ Everything that needs the key, the Cloudflare account or a store submission:
    in `wrangler.toml`, as the relay does). There is no secret to put. Check Workers Logs stay off.
    Then implement `r2Store` in `packages/updates-server/publish/upload.js` (for example
    `wrangler r2 object put --remote`, same interface as the local store).
-4. **First store build with expo-updates** through TestFlight, then the App Store (release guide);
-   `release-ios.mjs` records its runtime version in `docs/releases/builds.json`; commit it.
+4. **First store build with expo-updates** through TestFlight, then the App Store (release guide),
+   with the official-build flag set (below); `release-ios.mjs` records its runtime version in
+   `docs/releases/builds.json`; commit it.
 5. **Publish** (key + account): the four commands above, beta first.
 
 ## Roll back
@@ -147,52 +148,87 @@ node scripts/publish-update.mjs $L --upload build/updates/<id> --channel beta --
 node scripts/publish-update.mjs $L verify --url http://127.0.0.1:8787/manifest --channel beta --runtime $R --allow-unlogged
 ```
 
-Device check (ADR plan step 4, integrator): a Release simulator build with `expo-updates`, the test
-certificate and `updates.url` pointing at `http://127.0.0.1:8787/manifest` (iOS allows plain http to
-loopback only with an App Transport Security exception in that test build). Check: an update applies
-on the next cold start; a bad signature, a wrong runtime and an older `createdAt` are refused; a crash
-at launch rolls back.
+Device check (ADR plan step 4, integrator): a Release simulator build pointed at the local server,
+with the throwaway certificate from above. Updates are on only in a build signed for production APNs,
+which is also the environment the runtime version above was computed in:
 
-## App config for the integrator (ADR plan step 7)
+```sh
+cd apps/mobile
+APNS_ENVIRONMENT=production UPDATES_URL=http://127.0.0.1:8787/manifest UPDATES_CERTIFICATE=$T/cert.pem \
+  npx expo prebuild --clean --platform ios
+# then a Release build for the simulator from this shell (or with the three values in app.local.json:
+# "apnsEnvironment", "updatesUrl", "updatesCertificate")
+```
 
-Not applied yet. Verified against the [SDK 58 app config](https://docs.expo.dev/versions/v58.0.0/config/app/)
-and the expo-updates SDK 58 source.
+Plain http reaches loopback through the `NSAllowsLocalNetworking` exception `withLocalPreview` already
+adds. Check: an update applies on the next cold start; a bad signature, a wrong runtime and an older
+`createdAt` are refused; a crash at launch rolls back; Settings shows the running update and Early
+Updates, and with it on the server sees `channel=beta` in `Expo-Extra-Params`.
 
-1. `npx expo install expo-updates` in `apps/mobile` (native module: prebuild and a store release).
-2. `apps/mobile/app.json`, under `expo`:
-   ```json
-   "runtimeVersion": { "policy": "fingerprint" }
-   ```
-3. `apps/mobile/app.config.js` adds `updates` **only for official builds** (an official-build flag,
-   for example `updatesUrl` in `app.local.json` or an `UPDATES_URL` environment variable; a fork or a
-   build from source gets `updates: { enabled: false }`):
-   ```js
-   updates: {
-     url: 'https://<update domain>/manifest',
-     codeSigningCertificate: './certs/updates.pem',
-     codeSigningMetadata: { keyid: 'main', alg: 'rsa-v1_5-sha256' },
-     checkAutomatically: 'ON_LOAD',
-     fallbackToCacheTimeout: 0,
-     enableBsdiffPatchSupport: false,   // the server never sends patches (226); keep requests plain
-   },
-   ```
-   Leave `requestHeaders` unset (baked into the binary; TestFlight and the App Store share it),
-   `disableAntiBrickingMeasures` false, `useEmbeddedUpdate` true, `maxUpdatesToKeep` 2.
-4. `apps/mobile/fingerprint.config.js`, so a change to a pnpm patch changes the runtime version
-   (checked 2026-11-14 with `@expo/fingerprint` 0.21.8: the default fingerprint only hashes a
-   `patches/` folder inside `apps/mobile`, and ours is at the repository root; with this source it is
-   hashed and the hash changes):
-   ```js
-   /** @type {import('expo/fingerprint').Config} */
-   module.exports = {
-     extraSources: [{ type: 'dir', filePath: '../../patches', reasons: ['pnpmPatches'] }],
-   };
-   ```
-   After adding it, `scripts/lib/runtime-version.mjs` also runs `expo-updates runtimeversion:resolve`
-   and fails on any difference, and `release-ios.mjs` checks the runtime the build embeds
-   (`EXUpdates.bundle/fingerprint`) against the one it records.
-5. The channel: the app calls `Updates.setExtraParamAsync('channel', 'beta')` for beta users (how it
-   decides is not built yet); without it the server serves `production`.
+## App config (ADR plan step 7, applied)
+
+Verified against the [SDK 58 app config](https://docs.expo.dev/versions/v58.0.0/config/app/), the
+[SDK 58 Updates page](https://docs.expo.dev/versions/v58.0.0/sdk/updates/) and the expo-updates 58.0.22
+source. Covered by `apps/mobile/src/config/appConfig.test.ts`, which resolves the config the way
+prebuild does.
+
+- `apps/mobile/app.json`: `"runtimeVersion": { "policy": "fingerprint" }`.
+- **The official-build flag** is the update server's manifest URL: `UPDATES_URL` in the environment, or
+  `"updatesUrl"` in the gitignored `apps/mobile/app.local.json` (the environment wins, as for
+  `APPLE_TEAM_ID`; the file is what an Xcode archive from the Dock sees). No URL is in the repository.
+  `apps/mobile/app.config.js` turns updates on only when the flag is set **and** the build is signed for
+  production APNs (`APNS_ENVIRONMENT=production`, what `release-ios.mjs` sets):
+  ```js
+  updates: {
+    enabled: true,
+    url: '<the flag>',
+    codeSigningCertificate: './certs/updates.pem',
+    codeSigningMetadata: { keyid: 'main', alg: 'rsa-v1_5-sha256' },
+    checkAutomatically: 'ON_LOAD',
+    fallbackToCacheTimeout: 0,
+    enableBsdiffPatchSupport: false,   // the server never sends patches (226); keep requests plain
+  },
+  ```
+  Everything else gets `updates: { enabled: false }`: a fork or a build from source (no flag), device
+  installs signed for development, the simulator suite and development builds (development APNs,
+  whatever the flag says). They never contact an update server and run only their embedded JS.
+  `requestHeaders` stays unset (baked into the binary; TestFlight and the App Store share it),
+  `disableAntiBrickingMeasures` false, `useEmbeddedUpdate` true, `maxUpdatesToKeep` 2 (defaults).
+- **Refusals** (the config step fails, so prebuild and the fingerprint fail with it): the flag set with no
+  certificate file ("an official build never accepts unsigned updates"); a URL that is not https
+  (plain http only to loopback); `UPDATES_CERTIFICATE` / `"updatesCertificate"` (a throwaway
+  certificate's path, for the local test) with anything but a loopback URL.
+- **For a store build**: put `"updatesUrl": "https://<update domain>/manifest"` in `app.local.json` (or
+  export `UPDATES_URL` in the release shell) once the certificate is committed (owner step 1) and the
+  Worker is deployed (step 3), then run `release-ios.mjs` as usual. It prints whether updates are on and
+  checks the result before upload ([release guide](release.md), "The checks").
+- **Android is off** in every build: `apps/mobile/plugins/withUpdatesIosOnly.js` writes
+  `expo.modules.updates.ENABLED=false` into the Android manifest after expo-updates does (ADR 0028,
+  Decided).
+- `apps/mobile/fingerprint.config.js`: `extraSources` adds the root `patches/` folder (checked
+  2026-11-14 with `@expo/fingerprint` 0.21.8: the default only hashes a `patches/` folder inside
+  `apps/mobile`), and `fileHookTransform` leaves the `updates` block out of the hashed Expo config.
+  Without that, the flag, the URL and the certificate path changed the fingerprint (measured: three
+  different hashes for no flag, the loopback URL and another URL), so an official build's runtime would
+  differ from the one the release and publish scripts compute without knowing the URL. Those fields say
+  where updates come from, not what JS the binary runs.
+- `scripts/lib/runtime-version.mjs` always cross-checks its hash with `expo-updates runtimeversion:resolve`
+  and fails on any difference; a test pins that the flag does not change the runtime. `release-ios.mjs`
+  refuses a build whose `EXUpdates.bundle/fingerprint` is missing or differs from the runtime it records.
+
+## The app side
+
+- `apps/mobile/src/updates/appUpdates.ts`: the `AppUpdates` interface over `expo-updates`, with a fake
+  (`fakeUpdatesApi`) and `disabledUpdates`; `deviceUpdates.ts` loads the native module lazily and never on
+  web. Tests run with updates off (`jest.setup.js`), as a build from source does.
+- **Early Updates** (Settings, Help section, under Version; setting `earlyUpdates`, off by default): on
+  sends `channel=beta` (`Updates.setExtraParamAsync('channel', 'beta')`), off removes the param, so the
+  server serves `production`. `UpdateChannelSync` applies it at launch and on every toggle; it rides on the
+  next update request. Shown only when the build has updates.
+- **Update** row (same place, same condition): "Built In" for the binary's own JS, or the running update's
+  first 8 id characters and its date; the Report a Problem text carries the same as `- Update: ...`.
+- Updates download at launch and apply on the next cold start, silently. The app never checks, fetches or
+  reloads by itself and logs nothing about updates; demo mode is no different.
 
 ## Store and privacy wording (drafts, ADR 0028 section 7)
 

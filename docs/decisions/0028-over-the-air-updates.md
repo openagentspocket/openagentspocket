@@ -215,7 +215,8 @@ update whose runtime matches no released build.
   Built 2026-11-14 on the server side: the channel is the `channel` key of `Expo-Extra-Params` (an SFV
   dictionary of strings, `FileDownloader.swift`), `beta` or `production`, absent meaning `production`; storage
   is keyed by (platform, runtime version, channel). The same signed bundle is uploaded to `beta`, then to
-  `production`. Channels do not use manifest filters (section 3). How the app picks its channel is not built.
+  `production`. Channels do not use manifest filters (section 3). The app picks its channel from an "Early
+  Updates" setting, off by default (built 2026-11-14, updates guide).
 - **Staged percentage:** not in the protocol. The Worker could bucket by a hash of `EAS-Client-ID` computed per
   request and never stored. Not needed at our size; start with beta then everyone.
 - **Rollback:** prefer re-publishing the last good commit as a new signed update (newer `createdAt`, so every device
@@ -300,7 +301,9 @@ Owner-only steps are marked **(owner)**.
 5. Generate the production key pair and certificate, store the key offline **(owner)**. Commit the certificate.
 6. Create the R2 bucket, deploy the Worker, route it on the project domain **(owner)**.
 7. `npx expo install expo-updates`, the app config fields, `fingerprint.config.js` with `patches/`, the
-   official-build flag; the release script records the fingerprint.
+   official-build flag; the release script records the fingerprint. Built 2026-11-14 (flag `UPDATES_URL`, on only with
+   production APNs; the `updates` block is left out of the fingerprint so the flag does not change the
+   runtime; Android forced off; the app's channel is an "Early Updates" setting; updates guide).
 8. Privacy policy section, App Review note, listing wording (section 7).
 9. First store release that contains `expo-updates`, through TestFlight **(owner)**, then App Store.
 10. First real update to the beta channel only, then everyone **(owner publishes)**.

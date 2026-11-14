@@ -39,6 +39,9 @@ is enabled for production (Apple Developer › Keys: "Sandbox & Production" or "
   `ASC_API_ISSUER_ID` in the release shell; the script passes them to `xcodebuild`. Letting Xcode create the
   distribution certificate through a key may need an Admin key.
 - `apps/mobile/app.local.json` holds `{ "appleTeamId": "<your team id>" }` (gitignored), or `APPLE_TEAM_ID`.
+- Over-the-air updates (optional, [updates guide](updates.md)): `"updatesUrl": "https://<update domain>/manifest"`
+  in the same file, or `UPDATES_URL`, with the certificate committed at `apps/mobile/certs/updates.pem`.
+  Without it the build has updates off; the run prints which.
 - The app exists in App Store Connect (My Apps › + › New App, bundle id `com.openagentspocket.app`).
 
 ## 2. Preconditions and the bump
@@ -105,6 +108,8 @@ Re-run them alone on any IPA: `node scripts/release-ios.mjs check <ipa> --archiv
 | every purpose string (keys of `apps/mobile/locales/es.json`) in `Info.plist` and `es.lproj` | App Review rejects a missing one |
 | no `ITSAppUsesNonExemptEncryption` in `Info.plist` | the encryption answer is given per build in App Store Connect |
 | a dSYM per bundle in the archive | crash symbolication |
+| `EXUpdates.bundle/fingerprint` equals the runtime version this commit computes | updates are published for the recorded runtime; a different one would reach no device |
+| `Expo.plist`: updates disabled without `UPDATES_URL`; with it, enabled, that URL, a code signing certificate, key id `main` / `rsa-v1_5-sha256`, runtime `file:fingerprint` | an official build never accepts unsigned updates, and a build from source never asks for any |
 
 By hand, on the exported IPA:
 
@@ -116,6 +121,7 @@ for b in $A $A/PlugIns/*.appex; do
   codesign -d --entitlements - --xml $b 2>/dev/null | plutil -p -
 done
 plutil -p $A/Info.plist | grep UsageDescription
+cat $A/EXUpdates.bundle/fingerprint; plutil -p $A/Expo.plist | grep -v CERTIFICATE
 ls $R/AgentsPocket.xcarchive/dSYMs
 ```
 
