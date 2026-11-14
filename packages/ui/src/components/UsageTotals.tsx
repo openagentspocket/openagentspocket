@@ -1,6 +1,7 @@
 import { type ReactNode, useRef } from 'react';
 import { View, type ViewInstance } from 'react-native';
 import type { MenuAnchor } from '../overlay/ActionMenu';
+import { measureWindowFrame, useScreenRoot } from '../overlay/windowFrame';
 import { Icon } from '../primitives/Icon';
 import { Segmented, type SegmentedOption } from '../primitives/Segmented';
 import { Tappable } from '../primitives/Tappable';
@@ -125,16 +126,12 @@ export function UsageTotals<M extends string, R extends string>({
 }: UsageTotalsProps<M, R>) {
   const styles = useStyles();
   const pill = useRef<ViewInstance>(null);
-  const anchor = useRef<MenuAnchor | undefined>(undefined);
-  // The pill's window frame, kept for the menu that opens under it.
-  const measure = () =>
-    pill.current?.measureInWindow?.((x, y, width, height) => {
-      anchor.current = { x, y, width, height };
-    });
-  const openScope = () => {
-    measure();
-    scope?.onPress(anchor.current);
-  };
+  const root = useScreenRoot();
+  // The menu opens under the pill, measured as it is pressed (unmeasurable: the menu's default spot).
+  const openScope = () =>
+    void measureWindowFrame(pill.current, root?.current).then((frame) =>
+      scope?.onPress(frame ?? undefined),
+    );
   const totals = (
     <View style={styles.totals}>
       {caption ? (
@@ -203,7 +200,6 @@ export function UsageTotals<M extends string, R extends string>({
           {scope ? (
             <Tappable
               ref={pill}
-              onLayout={measure}
               onPress={openScope}
               accessibilityRole="button"
               accessibilityLabel={scope.label}

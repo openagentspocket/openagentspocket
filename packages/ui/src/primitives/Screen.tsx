@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import { type Edge, SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenRootContext } from '../overlay/windowFrame';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
 import { ScreenBackground } from './ScreenBackground';
@@ -95,44 +96,46 @@ export function Screen({
     <ThemedRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
   ) : undefined;
   return (
-    <SafeAreaView
-      ref={ref}
-      onLayout={onLayout}
-      style={styles.root}
-      edges={safeEdges}
-      testID={testID}
-    >
-      <ScreenBackground />
-      <View style={[styles.fill, { paddingTop: headerInset, paddingBottom: hidden }]}>
-        <ScreenHeaderBar header={header} />
-        <KeyboardAvoidingView
-          style={styles.fill}
-          enabled={keyboardAvoiding && !nativeInsets}
-          // Only the full-bleed screens: a sheet does not start at the top of the window.
-          keyboardVerticalOffset={bare ? lift.offset : 0}
-          onLayout={lift.onLayout}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          testID={`${testID}-keyboard`}
-        >
-          {bare ? (
-            <View style={styles.fill}>{children}</View>
-          ) : scroll ? (
-            <ScrollView
-              style={styles.fill}
-              testID={`${testID}-scroll`}
-              contentContainerStyle={[styles.content, styles.readable]}
-              keyboardShouldPersistTaps="handled"
-              keyboardDismissMode="on-drag"
-              automaticallyAdjustKeyboardInsets={keyboardAvoiding}
-              refreshControl={refresh}
-            >
-              {children}
-            </ScrollView>
-          ) : (
-            <View style={[styles.fill, styles.content, styles.readable]}>{children}</View>
-          )}
-        </KeyboardAvoidingView>
-      </View>
-    </SafeAreaView>
+    <ScreenRootContext.Provider value={ref}>
+      <SafeAreaView
+        ref={ref}
+        onLayout={onLayout}
+        style={styles.root}
+        edges={safeEdges}
+        testID={testID}
+      >
+        <ScreenBackground />
+        <View style={[styles.fill, { paddingTop: headerInset, paddingBottom: hidden }]}>
+          <ScreenHeaderBar header={header} />
+          <KeyboardAvoidingView
+            style={styles.fill}
+            enabled={keyboardAvoiding && !nativeInsets}
+            // Only the full-bleed screens: a sheet does not start at the top of the window.
+            keyboardVerticalOffset={bare ? lift.offset : 0}
+            onLayout={lift.onLayout}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            testID={`${testID}-keyboard`}
+          >
+            {bare ? (
+              <View style={styles.fill}>{children}</View>
+            ) : scroll ? (
+              <ScrollView
+                style={styles.fill}
+                testID={`${testID}-scroll`}
+                contentContainerStyle={[styles.content, styles.readable]}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
+                automaticallyAdjustKeyboardInsets={keyboardAvoiding}
+                refreshControl={refresh}
+              >
+                {children}
+              </ScrollView>
+            ) : (
+              <View style={[styles.fill, styles.content, styles.readable]}>{children}</View>
+            )}
+          </KeyboardAvoidingView>
+        </View>
+      </SafeAreaView>
+    </ScreenRootContext.Provider>
   );
 }

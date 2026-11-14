@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { type AccessibilityActionEvent, View, type ViewInstance } from 'react-native';
 import { ActionMenu, type MenuAnchor } from '../overlay/ActionMenu';
+import { measureWindowFrame, useScreenRoot } from '../overlay/windowFrame';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { ListRow, type ListRowProps } from '../primitives/ListRow';
@@ -107,17 +108,12 @@ export function PickerRow<V extends string>({
   const ref = useRef<ViewInstance>(null);
   const current = options.find((option) => option.value === value);
   // The menu opens next to its row (as a popover does); unmeasurable falls back to the bottom.
-  const show = () => {
-    let shown = false;
-    const go = (next?: MenuAnchor) => {
-      if (shown) return;
-      shown = true;
-      setAnchor(next);
+  const root = useScreenRoot();
+  const show = () =>
+    void measureWindowFrame(ref.current, root?.current).then((frame) => {
+      setAnchor(frame ?? undefined);
       setOpen(true);
-    };
-    ref.current?.measureInWindow?.((x, y, width, height) => go({ x, y, width, height }));
-    setTimeout(() => go(), 80);
-  };
+    });
   return (
     <View ref={ref} collapsable={false}>
       <ListRow
