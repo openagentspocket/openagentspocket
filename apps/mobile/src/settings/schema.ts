@@ -7,8 +7,11 @@ export interface SettingsContext {
   /** "Face ID", "Touch ID" or "Passcode" when the device can authenticate; null otherwise. */
   authKind: string | null;
   version: string;
-  /** Over-the-air updates in this build (an official store build only) and what runs now. */
-  updates: { enabled: boolean; running: string };
+  /**
+   * Over-the-air updates in this build (an official store build only) and what runs now: a short
+   * value for the row ("Built In" or the update's short id) and, for an update, its date.
+   */
+  updates: { enabled: boolean; running: string; runningDate?: string };
   themeName: string;
   themeId: SettingsThemeId;
   /** Live values for the root rows: notification state, Host count. */
@@ -16,6 +19,8 @@ export interface SettingsContext {
 }
 
 type Text = (ctx: SettingsContext) => string;
+/** A secondary line; undefined draws none. */
+type Subtitle = (ctx: SettingsContext) => string | undefined;
 type BoolKey = { [K in SettingKey]: SettingsValues[K] extends boolean ? K : never }[SettingKey];
 type NumberKey = { [K in SettingKey]: SettingsValues[K] extends number ? K : never }[SettingKey];
 type ChoiceKey = { [K in SettingKey]: SettingsValues[K] extends string ? K : never }[SettingKey];
@@ -23,7 +28,7 @@ type ChoiceKey = { [K in SettingKey]: SettingsValues[K] extends string ? K : nev
 interface RowBase {
   id: string;
   title: Text;
-  subtitle?: Text;
+  subtitle?: Subtitle;
   icon?: IconName;
   /** Hides the row (and an emptied section) when false. */
   when?: (ctx: SettingsContext) => boolean;

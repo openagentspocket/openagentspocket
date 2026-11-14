@@ -66,7 +66,15 @@ export function SettingsRowView({ row, ctx }: Props) {
         />
       );
     case 'info':
-      return <ListRow title={title} icon={row.icon} value={row.value(ctx)} testID={row.id} />;
+      return (
+        <ListRow
+          title={title}
+          subtitle={subtitle}
+          icon={row.icon}
+          value={row.value(ctx)}
+          testID={row.id}
+        />
+      );
     case 'toggle':
       return (
         <ToggleRow

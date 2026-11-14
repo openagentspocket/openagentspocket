@@ -210,6 +210,7 @@ export const root: SettingsPage = {
           title: () => t('Update'),
           icon: 'refresh',
           value: (ctx) => ctx.updates.running,
+          subtitle: (ctx) => ctx.updates.runningDate,
           when: (ctx) => ctx.updates.enabled,
         },
         {

@@ -16,11 +16,14 @@ export function useResolvedThemeId() {
   return resolveThemeId(values, scheme === 'light' ? 'light' : 'dark');
 }
 
-/** The running update as Settings shows it: the binary's own JS, or an update's short id and date. */
-export function runningUpdateText(updates: AppUpdates): string {
+/**
+ * The running update as Settings shows it: the binary's own JS, or an update's short id as the
+ * value with its date as the row's secondary line (both on one line do not fit a phone row).
+ */
+export function runningUpdateRow(updates: AppUpdates): { running: string; runningDate?: string } {
   const summary = summarizeRunningUpdate(updates.running());
-  if (summary.kind === 'embedded') return t('Built In');
-  return summary.date ? `${summary.shortId} (${summary.date})` : summary.shortId;
+  if (summary.kind === 'embedded') return { running: t('Built In') };
+  return { running: summary.shortId, runningDate: summary.date ?? undefined };
 }
 
 /** What schema rows read: the values, the device's authentication kind, version, theme name. */
@@ -46,7 +49,7 @@ export function useSettingsContext(): SettingsContext {
     values,
     authKind,
     version: appBuild().version,
-    updates: { enabled: updates.enabled, running: runningUpdateText(updates) },
+    updates: { enabled: updates.enabled, ...runningUpdateRow(updates) },
     themeName: themes[themeId].name,
     themeId,
     summary,

@@ -110,7 +110,9 @@ describe('SettingsScreen', () => {
     });
     const store = await setup('root', { updates: createAppUpdates(api) });
     expect(screen.getByTestId('settings.about.update')).toBeTruthy();
-    expect(screen.getByText(/0f6a2b3c/)).toBeTruthy();
+    // The short id is the value and the date its own line: together they do not fit a phone row.
+    expect(screen.getByText('0f6a2b3c')).toBeTruthy();
+    expect(screen.getByText('2026-11-14')).toBeTruthy();
     expect(store.get('earlyUpdates')).toBe(false);
     await fireEvent(screen.getByTestId('settings.about.earlyUpdates'), 'valueChange', true);
     expect(store.get('earlyUpdates')).toBe(true);
