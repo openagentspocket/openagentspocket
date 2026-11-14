@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import { ConnectionSheet } from '../../components/ConnectionSheet';
 import { KeyValueGroup } from '../../components/KeyValueGroup';
 import { ListToolbar } from '../../components/ListToolbar';
+import { PermissionPrimer } from '../../components/PermissionPrimer';
 import { QuickSheetHeader } from '../../components/QuickSheetHeader';
 import { SearchBar } from '../../components/SearchBar';
 import { TextPromptSheet } from '../../components/TextPromptSheet';
@@ -173,6 +174,45 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
                 secondary={{ label: 'Stop Connecting', onPress: close }}
                 edit={{ label: 'Edit', onPress: close }}
                 onClose={close}
+              />
+            )}
+          </SheetOpener>
+        ),
+      },
+    ],
+  },
+  {
+    name: 'PermissionPrimer',
+    variants: [
+      {
+        id: 'default',
+        render: () => (
+          <SheetOpener title="Turn On Notifications">
+            {(close) => (
+              <PermissionPrimer
+                visible
+                onClose={close}
+                title="Know when an Agent needs you"
+                reasons={[
+                  {
+                    icon: 'hand',
+                    title: 'Approve without opening the app',
+                    message: 'Answer from the notification.',
+                  },
+                  {
+                    icon: 'bell',
+                    title: 'Know when it is done',
+                    message: 'A notice when an Agent finishes.',
+                  },
+                  {
+                    icon: 'lock',
+                    title: 'Only you can read them',
+                    message: 'Encrypted on your computer.',
+                  },
+                ]}
+                primary={{ label: 'Enable Notifications', onPress: close }}
+                secondary={{ label: 'Not Now', onPress: close }}
+                finePrint="You can change this in Settings."
               />
             )}
           </SheetOpener>

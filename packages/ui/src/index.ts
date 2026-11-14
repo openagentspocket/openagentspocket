@@ -19,6 +19,12 @@ export {
   type OverlayPeerMode,
   OverlayPeerPicker,
 } from './components/OverlayPeerPicker';
+export {
+  PermissionPrimer,
+  type PermissionPrimerProps,
+  type PrimerAction,
+  type PrimerReason,
+} from './components/PermissionPrimer';
 export { SheetBar, type SheetBarItem } from './components/SheetBar';
 export * from './components/settingsPickers';
 export * from './components/usage';
@@ -91,6 +97,7 @@ export {
   prompt,
 } from './overlay/confirm';
 export { OverlayHost } from './overlay/OverlayHost';
+export { useOverlayShowing } from './overlay/presence';
 export { Sheet, type SheetBarAction, type SheetDetent } from './overlay/Sheet';
 export { detentShare, type FractionDetent } from './overlay/sheetDetents';
 export { ToastHost } from './overlay/ToastHost';

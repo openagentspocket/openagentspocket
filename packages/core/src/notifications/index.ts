@@ -60,6 +60,19 @@ export {
   validateKeyRecord,
 } from './key-store';
 export {
+  combinedDelivery,
+  type HostDelivery,
+  hostDelivery,
+  NotificationPrimerRecord,
+  PRIMER_SETTING_KEY,
+  type PrimerFacts,
+  type PrimerPhase,
+  type PrimerStep,
+  primerStep,
+  registerUnregisteredHosts,
+  turnOnNotifications,
+} from './permission-primer';
+export {
   type ApprovalOptIns,
   type HostNotificationSettings,
   type HostNotificationState,
