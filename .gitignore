@@ -22,6 +22,7 @@ design/atlas/
 apps/mobile/google-services.json
 apps/mobile/app.local.json
 packages/relay/deploy.local.json
+packages/updates-server/deploy.local.json
 
 # Wrangler's local state (wrangler dev, the local R2 bucket)
 .wrangler/

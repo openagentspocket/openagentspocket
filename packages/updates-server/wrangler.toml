@@ -5,7 +5,9 @@
 # simulation in .wrangler/state; `node scripts/publish-update.mjs --upload <bundle> --channel beta`
 # from the repository root writes into that same local bucket. See README.md.
 #
-# Creating the bucket, deploying and routing a domain are owner steps (docs/guides/updates.md).
+# Creating the bucket, deploying and routing a domain are owner steps (docs/guides/updates.md):
+# `node scripts/deploy.mjs` takes the custom domain (and an account id, if needed) from the
+# gitignored deploy.local.json, so neither is committed here.
 
 name = "openagentspocket-updates"
 main = "src/worker.js"
@@ -13,10 +15,7 @@ main = "src/worker.js"
 # `wrangler dev` working with older local wrangler installs.
 compatibility_date = "2026-05-01"
 workers_dev = true
-# A custom domain replaces workers.dev when the owner routes one:
-# [[routes]]
-# pattern = "updates.example.com"
-# custom_domain = true
+# The custom domain is passed as `wrangler deploy --domain` by scripts/deploy.mjs; no route here.
 
 [[r2_buckets]]
 binding = "UPDATES"
