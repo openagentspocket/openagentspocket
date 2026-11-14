@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { Modal, ScrollView, useWindowDimensions, View, type ViewInstance } from 'react-native';
+import { Modal, ScrollView, useWindowDimensions, View } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
@@ -9,12 +9,13 @@ import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
 import { MENU_DISMISS_MS } from './dismiss';
 import { groupMenuItems, isDeadMenuTrigger } from './menuGroups';
+import { placePopover } from './menuPlacement';
 import { loadSwiftUi, NativeActionMenu } from './NativeActionMenu';
+import { useMenuTrigger } from './useMenuTrigger';
 
 export type { MenuGroup } from './menuGroups';
 export { groupMenuItems, isDeadMenuTrigger, MENU_DISMISS_MS };
 
-const MEASURE_TIMEOUT_MS = 80;
 /** A subtitle's or a section title's line, for placing the menu before it is measured. */
 const LINE_HEIGHT = 20;
 
@@ -241,21 +242,16 @@ export function ActionMenu({
     const lines = items.filter((item) => item.subtitle).length + groupMenuItems(items).length;
     const estimated =
       items.length * theme.metrics.minTapSize + lines * LINE_HEIGHT + (title ? 40 : 0);
-    const left = shown
-      ? Math.min(Math.max(margin, shown.x + shown.width - width), window.width - width - margin)
-      : (window.width - width) / 2;
-    const below = shown ? shown.y + shown.height + 4 : 0;
-    const lowest = window.height - insets.bottom - margin;
-    const fitsBelow = below + estimated < lowest;
-    const fitsAbove = shown ? shown.y - 4 - estimated > insets.top + margin : false;
-    const highest = insets.top + margin;
-    const position = shown
-      ? fitsBelow
-        ? { left, top: below, maxHeight: lowest - below }
-        : fitsAbove
-          ? { left, bottom: window.height - shown.y + 4, maxHeight: shown.y - 4 - highest }
-          : { left, top: Math.max(highest, lowest - estimated), maxHeight: lowest - highest }
-      : { left, bottom: insets.bottom + theme.spacing.lg, maxHeight: lowest - highest };
+    const position = placePopover({
+      anchor: shown,
+      width,
+      estimated,
+      window,
+      insets,
+      margin,
+      gap: theme.spacing.xxs,
+      fallbackBottom: theme.spacing.lg,
+    });
     body = (
       <View
         style={[styles.panel, styles.popover, { width }, position]}
@@ -347,19 +343,11 @@ export function ActionMenuButton({
   testID = 'menu-button',
 }: ActionMenuButtonProps) {
   const ui = native ? loadSwiftUi() : null;
-  const ref = useRef<ViewInstance>(null);
+  const trigger = useMenuTrigger();
   const [menu, setMenu] = useState<{ anchor?: MenuAnchor } | null>(null);
   const open = () => {
     onOpenChange?.(true);
-    let shown = false;
-    const show = (anchor?: MenuAnchor) => {
-      if (shown) return;
-      shown = true;
-      setMenu({ anchor });
-    };
-    ref.current?.measureInWindow?.((x, y, width, height) => show({ x, y, width, height }));
-    // Unmeasurable (tests, a detached view): open centered instead of never.
-    setTimeout(() => show(), MEASURE_TIMEOUT_MS);
+    trigger.measure((anchor) => setMenu({ anchor }));
   };
   if (isDeadMenuTrigger(items)) return null;
   if (ui) {
@@ -376,7 +364,7 @@ export function ActionMenuButton({
     );
   }
   return (
-    <View ref={ref} collapsable={false}>
+    <View ref={trigger.ref} collapsable={false} onTouchStart={trigger.onTouchStart}>
       <Button
         kind="text"
         {...(label === undefined
