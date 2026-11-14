@@ -92,10 +92,10 @@ so no program-specific branches.
   `docs/store/screenshots/en`; they go up with the 1.0.1 version in App Store Connect.)
 - [x] **Spanish listing** in the store, from `docs/store/listing.md`. (Spanish (Mexico) added to the 1.0.1
   draft on 2026-11-13 with the new English text and screenshots; it goes public when 1.0.1 is released.)
-- [ ] **Build and upload** with the new icon, the animated launch and everything above, to internal testers.
-  Submitting for review stays a person's step. (1.0.1 build 3 uploaded 2026-11-13, tag `ios-1.0.1-3`; testers
-  get it once the export-compliance answer is given for that build in App Store Connect: a declaration
-  only the account holder makes. Version 1.0 went live on 2026-11-13.)
+- [x] **Build and upload** with the new icon, the animated launch and everything above, to internal testers.
+  Submitting for review stays a person's step. (1.0.1 build 3 uploaded 2026-11-13, tag `ios-1.0.1-3`; the owner
+  answered export compliance and TestFlight shows it for the Internal group. Version 1.0 went live the
+  same day.)
 
 ## 5. Needs the owner
 
