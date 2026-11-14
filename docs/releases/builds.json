@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "platform": "ios",
+    "version": "1.0.1",
+    "build": "4",
+    "runtimeVersion": "84ef6352d68c95d22f0ed62dd5d844957187620c",
+    "commit": "c5a560f82e956da402b83f6b6ac72f626106253e",
+    "archivedAt": "2026-11-14T14:10:34.842Z"
+  }
+]
