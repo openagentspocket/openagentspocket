@@ -22,7 +22,11 @@ const useStyles = makeStyles((th) => ({
   empty: { flex: 1 },
 }));
 
-/** The Home header: All Agents and Sessions in a capsule at the leading edge, the Host scope between, the Usage ring and the Settings gear in one at the trailing edge. */
+/**
+ * The Home header: one pill at the leading edge (the Host scope menu: the Hosts, then All Agents and
+ * Sessions under Browse), the Usage ring and the Settings gear in a capsule at the trailing edge.
+ * Without a Host there is nothing to scope or browse, so no pill.
+ */
 export function HomeTitle({
   usage,
   scope,
@@ -38,20 +42,31 @@ export function HomeTitle({
 }) {
   return (
     <LargeTitleBar
-      center={
+      leading={
         scope ? (
           <HostScopeMenu
-            items={scope.items}
+            items={[
+              ...scope.items.map((item, i) => (i === 0 ? { ...item, section: t('Hosts') } : item)),
+              {
+                key: 'browse-agents',
+                title: t('All Agents'),
+                icon: 'list',
+                section: t('Browse'),
+                onPress: () => onOpenAgents?.(),
+              },
+              {
+                key: 'browse-sessions',
+                title: t('Sessions'),
+                icon: 'terminal',
+                onPress: () => onOpenSessions?.(),
+              },
+            ]}
             label={scope.label}
-            accessibilityLabel={t('Filter by Host')}
+            accessibilityLabel={t('Hosts and Lists')}
             testID="home-host-scope"
           />
         ) : undefined
       }
-      leadingActions={[
-        { label: t('All Agents'), icon: 'list', onPress: () => onOpenAgents?.() },
-        { label: t('Sessions'), icon: 'terminal', onPress: () => onOpenSessions?.() },
-      ]}
       actions={[
         { label: t('Usage'), node: usage.ring, onPress: usage.open },
         { label: t('Settings'), icon: 'settings', onPress: () => onOpenSettings?.() },

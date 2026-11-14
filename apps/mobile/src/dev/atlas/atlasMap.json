@@ -332,6 +332,11 @@
     "note": "FAB menu open"
   },
   {
+    "id": "shell.home-host-menu",
+    "rn": "app/index.tsx (HomeScreen)",
+    "note": "Host pill menu open: Hosts, then Browse (All Agents, Sessions)"
+  },
+  {
     "id": "console.row-context-menu",
     "rn": "app/index.tsx (HomeScreen)",
     "note": "long-press on the Needs you card (web: synthetic mouse hold)"

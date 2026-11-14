@@ -32,6 +32,10 @@ export function useHostScope() {
           })),
         ]
       : [];
-  const label = hosts.find((host) => host.id === hostId)?.name ?? t('All Hosts');
+  // One Host has no "all": the pill names it. Several default to All Hosts.
+  const label =
+    hosts.find((host) => host.id === hostId)?.name ??
+    (hosts.length === 1 ? hosts[0]?.name : undefined) ??
+    t('All Hosts');
   return { hostId, label, items, setHostId };
 }

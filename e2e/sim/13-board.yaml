@@ -2,6 +2,8 @@
 appId: com.openagentspocket.app
 ---
 - runFlow: _demo.yaml
+- tapOn:
+    id: home-host-scope
 - tapOn: "All Agents"
 - extendedWaitUntil:
     visible:

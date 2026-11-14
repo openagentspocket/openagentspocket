@@ -327,7 +327,7 @@
       "screens": ["shell.home", "console.agents-list-flat", "hosts.list", "settings.root"],
       "variants": [
         "default|34pt bold large title left, glass capsule on the right with the actions",
-        "leading|RN addition: no title, a capsule of All Agents and Sessions at the leading edge"
+        "leading|RN addition: no title, a capsule of actions at the leading edge (Home puts its Host menu there through `leading`)"
       ],
       "interactions": "title collapses into a small centered title on scroll; capsule buttons have haptics",
       "rnToday": ["apps/mobile/src/navigation/ (header options only, no capsule)"],

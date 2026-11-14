@@ -316,7 +316,7 @@ Interactions: title collapses into a small centered title on scroll; capsule but
 Variants (gallery variant id = the id before the colon):
 
 - `default`: 34pt bold large title left, glass capsule on the right with the actions · crop [ref](ref/LargeTitleBar.png) · [light](ref/LargeTitleBar.light.png)
-- `leading`: RN addition: no title, a capsule of All Agents and Sessions at the leading edge · crop none
+- `leading`: RN addition: no title, a capsule of actions at the leading edge (Home puts its Host menu there through `leading`) · crop none
 
 Acceptance (the judge ticks each on the side-by-side):
 

@@ -254,5 +254,7 @@
   "Codex asks you to trust herdr's hook the first time it starts with it: review it on that screen, or run /hooks later. Until then Chat can't show its conversation.": "Codex asks you to trust herdr's hook the first time it starts with it: review it on that screen, or run /hooks later. Until then Chat can't show its conversation.",
   "%@ Isn't Reporting Its Conversation": "{0} Isn't Reporting Its Conversation",
   "%@ took your prompt, but its herdr integration hasn't reported the conversation. Check the terminal for anything %@ is waiting on, or restart %@ in this pane.": "{0} took your prompt, but its herdr integration hasn't reported the conversation. Check the terminal for anything {1} is waiting on, or restart {2} in this pane.",
-  "Let Your Agents Report": "Let Your Agents Report"
+  "Let Your Agents Report": "Let Your Agents Report",
+  "Browse": "Browse",
+  "Hosts and Lists": "Hosts and Lists"
 }

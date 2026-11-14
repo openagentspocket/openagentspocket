@@ -46,6 +46,7 @@ export const atlasEntries: Readonly<Record<string, AtlasEntry>> = {
   ...settingsEntries,
   'shell.home': { render: () => <Index /> },
   'shell.home-new-menu': { script: { press: ['fab'] }, render: () => <Index /> },
+  'shell.home-host-menu': { script: { press: ['home-host-scope'] }, render: () => <Index /> },
   'console.row-context-menu': { script: { longPress: 'inbox-p2' }, render: () => <Index /> },
   'console.close-confirmation': {
     script: {

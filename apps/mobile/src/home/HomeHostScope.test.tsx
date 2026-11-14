@@ -18,6 +18,13 @@ async function renderTwoHosts() {
 }
 
 describe('Home with two Hosts', () => {
+  it('keeps All Agents and Sessions in the Host menu, not as bar buttons', async () => {
+    await renderTwoHosts();
+    expect(screen.queryByLabelText('All Agents')).toBeNull();
+    expect(screen.queryByLabelText('Sessions')).toBeNull();
+    expect(screen.getByTestId('home-host-scope')).toBeTruthy();
+  });
+
   it('offers the Host scope and starts on every Host', async () => {
     await renderTwoHosts();
     expect(screen.getByTestId('home-host-scope-capsule')).toBeTruthy();

@@ -1,5 +1,5 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react-native';
-import { Platform } from 'react-native';
+import { Platform, Text } from 'react-native';
 import { renderThemed } from '../test-utils';
 import {
   Fab,
@@ -165,6 +165,17 @@ describe('Home header and snapshots', () => {
     );
     await fireEvent.press(screen.getByLabelText('All Agents'));
     expect(onPress).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('header')).toBeNull();
+  });
+
+  it('LargeTitleBar draws a custom leading control and no title', async () => {
+    await renderThemed(
+      <LargeTitleBar
+        leading={<Text>Menu</Text>}
+        actions={[{ icon: 'settings', label: 'Settings', onPress: jest.fn() }]}
+      />,
+    );
+    expect(screen.getByText('Menu')).toBeTruthy();
     expect(screen.queryByRole('header')).toBeNull();
   });
 
