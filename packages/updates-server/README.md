@@ -125,8 +125,11 @@ the Worker. Deployed, nothing is logged (above).
 `publish/` holds the Node side the owner runs through `scripts/publish-update.mjs`: `manifest.js`
 (manifest and directive bodies from an `npx expo export` folder), `signing.js` (key and certificate
 loading, RSA-SHA256), `create.js` (sign, verify, write a bundle), `bundle.js` (the bundle folder),
-`verify.js` (client-side checks, on a folder or against a server), `upload.js` (memory, local
-wrangler and the stubbed real R2 store), `log.js` (the public log). They share `src/protocol.js`
+`verify.js` (client-side checks, on a folder or against a server), `upload.js` (the ordered,
+never-overwriting upload with read-back before the pointer), `stores.js` (memory, the local bucket
+and the real R2 bucket, both through `wrangler r2 object`), `publish-upload.js` (the upload step's
+refusals, dry run and log line), `fake-wrangler.js` (the test stand-in for wrangler), `log.js` (the
+public log). They share `src/protocol.js`
 with the Worker, so both sides agree on headers, SFV, multipart and the storage keys.
 
 ## Tests
@@ -139,6 +142,9 @@ pnpm test          # node --test: Worker conformance, publish tooling
 
 ## Deploy (owner only)
 
-Not scripted on purpose. The owner creates the bucket (`wrangler r2 bucket create
-openagentspocket-updates`), deploys (`npx wrangler deploy`) and routes the update domain; see
-docs/guides/updates.md, "Owner steps". There is no secret to put.
+`node scripts/deploy.mjs [--dry-run]` from this folder, with the custom domain (and, for a login with
+several accounts, the account id) in the gitignored `deploy.local.json`:
+`{ "domains": ["updates.<your domain>"] }`. It checks `wrangler.toml` (the `UPDATES` binding, Workers
+Logs off, no account id, no committed route) and that the bucket exists, then runs
+`wrangler deploy --domain <domain>`. There is no secret to put. Creating the bucket and the rest of
+the order: docs/guides/updates.md, "Owner steps".

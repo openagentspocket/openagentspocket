@@ -16,11 +16,13 @@ Pieces:
 | Released builds and their runtime versions | `docs/releases/builds.json` (appended by `scripts/release-ios.mjs`) | No |
 | Public log of published updates | `docs/releases/updates.jsonl` (appended by a real upload) | No |
 
-Status (2026-11-14): server, publish script, the app config and the app side (channel setting, running
-update in Settings) exist with tests. No key exists, nothing is deployed, and no native build with
-`expo-updates` has run yet. iOS only; Android stays off until its client is verified on a device.
+Status (2026-11-14): server, publish script (including the real R2 upload), the deploy script, the app
+config and the app side (channel setting, running update in Settings) exist with tests. No key exists,
+nothing is deployed, and the R2 upload and the deploy have never run against a real Cloudflare account
+(they are tested against a fake `wrangler`; the local bucket path runs for real). iOS only; Android
+stays off until its client is verified on a device.
 
-## How a publish goes
+## Publish
 
 From a clean `main`, level with `origin/main`, on the owner's machine:
 
@@ -55,29 +57,62 @@ What it does, in order, stopping at the first problem:
 # 2. Re-check any time
 node scripts/publish-update.mjs verify build/updates/<id> --channel beta
 
-# 3. Upload: separate and explicit. beta first, then production with the same bundle.
-node scripts/publish-update.mjs --upload build/updates/<id> --channel beta --target r2
-node scripts/publish-update.mjs --upload build/updates/<id> --channel production --target r2
-```
+# 3. Upload: separate and explicit. Look at the plan first, then upload; beta first.
+node scripts/publish-update.mjs --upload build/updates/<id> --channel beta --target r2 \
+  --base-url https://<update domain> --dry-run
+node scripts/publish-update.mjs --upload build/updates/<id> --channel beta --target r2 \
+  --base-url https://<update domain>
+git add docs/releases/updates.jsonl && git commit -m "Updates: manifest <id> on beta" && git push origin main
 
-The upload verifies again for that channel (refuses an update already on it or not newer than its
-last one), writes the assets, then the signed body and signature, then the channel pointer last, and
-appends the entry to `docs/releases/updates.jsonl`. **Commit and push that file** after each upload.
-
-```sh
-# 4. Check what the server serves, as the app would
+# 4. Check what the server serves, as the app would (the upload already did once)
 node scripts/publish-update.mjs verify --url https://<update domain>/manifest --channel beta
+
+# 5. Days later, the same bundle to everyone
+node scripts/publish-update.mjs --upload build/updates/<id> --channel production --target r2 \
+  --base-url https://<update domain>
+git add docs/releases/updates.jsonl && git commit -m "Updates: manifest <id> on production" && git push origin main
 ```
 
-`--target r2` is not implemented yet: it refuses before writing anything ("owner step, not run").
-It becomes real once the bucket exists (owner step 3).
+What the upload does (`packages/updates-server/publish/publish-upload.js` and `upload.js`), stopping at
+the first problem, with nothing written before the first write:
 
-## What is owner-only
+1. Refuses a `--local-test` bundle for `r2`, and a bundle that fails `verify` for that channel (signature,
+   released runtime, asset hashes, already on the channel, not newer than the channel's last update).
+2. **Beta first**: refuses `--channel production` for an update the public log never recorded on beta,
+   unless `--skip-beta` (meant for an emergency rollback directive).
+3. With `--base-url`, refuses a bundle whose asset URLs point at another server.
+4. `--dry-run` stops here: it prints every object it would write and the pointer change (from the log's
+   last entry for that channel) and reads or writes nothing in any bucket.
+5. Reads the channel pointer and refuses when it names something other than what the log's last entry
+   for that channel says (an upload that was never logged, or a log that is behind: add the missing
+   line from the bundle's `log-entry.json` plus `channel` and `uploadedAt`, then retry).
+6. Writes each asset (`assets/<sha256>`), then `updates/<id>/body` and `updates/<id>/signature`. An object
+   already present is skipped when its SHA-256 matches and refused when it does not: nothing is ever
+   overwritten (the same bundle on production finds everything already there from beta).
+7. Reads back every object it wrote and compares SHA-256 (assets through the deployed Worker with
+   `--base-url`, which also checks their content type; otherwise `wrangler r2 object get`). A failure
+   stops before the pointer: the channel keeps serving what it served.
+8. Writes the channel pointer, last. With `--base-url` it then asks `/manifest` as the app would and
+   requires this exact update; if that fails it puts the previous pointer back (or removes the new one
+   when there was none) and stops.
+9. Appends the entry to `docs/releases/updates.jsonl` and prints the git commands to commit and push it.
+   It never commits or pushes. **Commit and push the log line before the next upload**: the production
+   upload reads it for the beta-first rule, and step 5 compares the bucket with it.
 
-Everything that needs the key, the Cloudflare account or a store submission:
+`--target r2` runs `npx wrangler r2 object get|put|delete <bucket>/<key> --remote` (wrangler 4, which
+reads local storage unless told `--remote`). The repository does not pin wrangler; `npx` uses the
+`wrangler` on your PATH or fetches the latest 4.x. It authenticates as wrangler does: the session
+`npx wrangler login` left, or `CLOUDFLARE_API_TOKEN` in your shell. If your login sees more than one
+account, set `CLOUDFLARE_ACCOUNT_ID` in the shell or `"accountId"` in `packages/updates-server/deploy.local.json`.
+Nothing is printed but wrangler's own error text on a failure. `--target local` is the same code against
+the local bucket `wrangler dev` serves ("Test locally").
+
+## Owner steps
+
+Everything that needs the key, the Cloudflare account or a store submission, in this order:
 
 1. **Generate the key pair and certificate** (needs: Node, a machine you trust, offline storage for
-   the key). Three-year validity (ADR 0028):
+   the key; nothing from Cloudflare). Three-year validity (ADR 0028):
    ```sh
    cd apps/mobile
    npx expo-updates codesigning:generate --key-output-directory ../../../updates-keys \
@@ -88,17 +123,44 @@ Everything that needs the key, the Cloudflare account or a store submission:
    repository; move `private-key.pem` to offline storage (an encrypted PEM in a password manager, or a
    hardware token after a spike) and delete `public-key.pem` and the folder. Commit only
    `apps/mobile/certs/certificate.pem`, renamed `updates.pem`.
-2. **Create the R2 bucket** `openagentspocket-updates` (needs: Cloudflare account access):
-   `npx wrangler r2 bucket create openagentspocket-updates`.
-3. **Deploy the Worker and route the update domain** (needs: account, DNS):
-   `cd packages/updates-server && npx wrangler deploy`, then a custom domain (uncomment `[[routes]]`
-   in `wrangler.toml`, as the relay does). There is no secret to put. Check Workers Logs stay off.
-   Then implement `r2Store` in `packages/updates-server/publish/upload.js` (for example
-   `wrangler r2 object put --remote`, same interface as the local store).
-4. **First store build with expo-updates** through TestFlight, then the App Store (release guide),
-   with the official-build flag set (below); `release-ios.mjs` records its runtime version in
-   `docs/releases/builds.json`; commit it.
-5. **Publish** (key + account): the four commands above, beta first.
+2. **Sign in to Cloudflare** (needs: the Cloudflare account that will host the Worker, with the update
+   domain's zone on it): `npx wrangler login`, or an API token in `CLOUDFLARE_API_TOKEN` for the shell
+   you publish from. A token needs Workers Scripts Edit and Workers R2 Storage Edit on the account, and
+   Workers Routes Edit plus DNS Edit on the zone for the custom domain (Cloudflare's names; not checked
+   against a real account). Several accounts on one login: `CLOUDFLARE_ACCOUNT_ID`, or `"accountId"` in
+   `deploy.local.json` (step 4). Never put the token in a file in the repository.
+3. **Create the R2 bucket** (needs: R2 enabled on the account; free tier is enough):
+   ```sh
+   npx wrangler r2 bucket create openagentspocket-updates
+   ```
+   Keep it private: no r2.dev URL and no bucket custom domain; only the Worker reads it. Optional, a
+   second guard against overwrites (not tried on a real account; the upload never overwrites anyway, and
+   a lock cannot be undone for the objects it covers):
+   `npx wrangler r2 bucket lock add openagentspocket-updates immutable-assets assets/ --retention-indefinite`
+   and the same for `updates/`. Never lock `channels/`: the pointer must move.
+4. **Deploy the Worker on the update domain** (needs: the zone of `<update domain>` on the same account):
+   write `packages/updates-server/deploy.local.json` (gitignored, like the relay's):
+   ```json
+   { "domains": ["updates.<your domain>"] }
+   ```
+   (add `"accountId": "<32 hex>"` only for a login with several accounts), then
+   ```sh
+   cd packages/updates-server
+   node scripts/deploy.mjs --dry-run   # checks, then wrangler deploy --dry-run; reads nothing from the account
+   node scripts/deploy.mjs             # checks the bucket exists, then wrangler deploy --domain <domain>
+   curl -si https://<update domain>/manifest -H 'expo-protocol-version: 1' -H 'expo-platform: ios' \
+     -H 'expo-runtime-version: 0'      # expect 204
+   ```
+   The script refuses a `wrangler.toml` without the `UPDATES` binding, with Workers Logs on, with an
+   `account_id` or a committed route, or with Logpush or Analytics Engine. `--domain` makes the custom
+   domain and its DNS record. There is no secret to put. In the dashboard, check Workers Logs stay off
+   for `openagentspocket-updates`.
+5. **First store build with expo-updates** through TestFlight, then the App Store (release guide),
+   with the official-build flag set to `https://<update domain>/manifest` (below); `release-ios.mjs`
+   records its runtime version in `docs/releases/builds.json`; commit it.
+6. **First publish, to beta** (key + account): steps 1 to 4 of "Publish", with the log line
+   committed and pushed. Check on a TestFlight install with Early Updates on.
+7. **Then production**: step 5 of "Publish", the same bundle.
 
 ## Roll back
 
@@ -112,8 +174,14 @@ back to the JS inside their binary:
 
 ```sh
 node scripts/publish-update.mjs rollback --key /path/outside/the/repo/updates-key.pem
-node scripts/publish-update.mjs --upload build/updates/<id> --channel production --target r2
+node scripts/publish-update.mjs --upload build/updates/<id> --channel production --target r2 \
+  --base-url https://<update domain> --skip-beta
+node scripts/publish-update.mjs --upload build/updates/<id> --channel beta --target r2 \
+  --base-url https://<update domain>
+# commit and push docs/releases/updates.jsonl as the upload prints
 ```
+
+`--skip-beta` is the explicit exception to beta first; use it only here.
 
 Expo warns that the embedded JS may not read state a newer update wrote
 ([error recovery](https://docs.expo.dev/eas-update/error-recovery/)). A later normal update replaces the
@@ -245,7 +313,8 @@ prebuild does.
   server serves `production`. `UpdateChannelSync` applies it at launch and on every toggle; it rides on the
   next update request. Shown only when the build has updates.
 - **Update** row (same place, same condition): "Built In" for the binary's own JS, or the running update's
-  first 8 id characters and its date; the Report a Problem text carries the same as `- Update: ...`.
+  first 8 id characters as the value with its date as the row's second line (both on one line were cut
+  on a phone); the Report a Problem text carries both as `- Update: <id> (<date>)`.
 - Updates download at launch and apply on the next cold start, silently. The app never checks, fetches or
   reloads by itself and logs nothing about updates; demo mode is no different.
 

@@ -1,9 +1,10 @@
 # 0028. Over-the-air JS updates: expo-updates, a signed static server on our Cloudflare account
 
 Status: accepted (2026-11-14). Researched 2026-11-13; the owner decided the open points on 2026-11-14
-(section "Decided"). Built: the update server (`packages/updates-server`) and the publish script
-(`scripts/publish-update.mjs`), plan steps 2 and 3; how to use them is in the
-[updates guide](../guides/updates.md). Not yet: `expo-updates` in the app, a key, a deployment.
+(section "Decided"). Built: the update server (`packages/updates-server`), the publish script
+(`scripts/publish-update.mjs`) with the real R2 upload, the Worker's deploy script, and the app side;
+how to use them is in the [updates guide](../guides/updates.md). Not yet: a key, a deployment, a store
+build with `expo-updates`; the R2 upload and the deploy have not run against a real account.
 
 ## Context
 
@@ -293,13 +294,20 @@ Owner-only steps are marked **(owner)**.
    Tests with `node --test` against the protocol rules. No secret in it. Built 2026-11-14.
 3. `scripts/publish-update.mjs`: refuses unless clean `main` and green `pnpm test`; `npx expo export --platform ios`;
    checks the runtime fingerprint against released builds; builds the manifest; signs it with the key file given on
-   the command line; `--dry-run` writes everything to a folder; upload is a separate step. Built 2026-11-14
-   (the real R2 upload is a stub until owner step 6).
+   the command line; `--dry-run` writes everything to a folder; upload is a separate step. Built 2026-11-14.
+   The R2 upload (built 2026-11-14, `wrangler r2 object --remote` with the owner's login or API token)
+   writes assets, then the signed body and signature, reads everything back, and moves the channel
+   pointer last; it never overwrites an object, refuses `--local-test` bundles and production before
+   beta (`--skip-beta` to override), checks the deployed Worker after the pointer moves and puts the
+   pointer back if that fails, and appends the public log line for the owner to commit.
 4. Local end-to-end without publishing: the Worker under `wrangler dev`, a Release simulator build pointed at it with a
    throwaway test key and test certificate (integrator builds it). Checks: an update applies on the next cold start;
    a bad signature, a wrong runtime and an older `createdAt` are all refused; a crash on launch rolls back.
 5. Generate the production key pair and certificate, store the key offline **(owner)**. Commit the certificate.
-6. Create the R2 bucket, deploy the Worker, route it on the project domain **(owner)**.
+6. Create the R2 bucket, deploy the Worker, route it on the project domain **(owner)**. The deploy is
+   `packages/updates-server/scripts/deploy.mjs` (built 2026-11-14): the domain and account id come from
+   a gitignored `deploy.local.json`, it checks the bucket binding and that Workers Logs stay off, then
+   runs `wrangler deploy --domain`.
 7. `npx expo install expo-updates`, the app config fields, `fingerprint.config.js` with `patches/`, the
    official-build flag; the release script records the fingerprint. Built 2026-11-14 (flag `UPDATES_URL`, on only with
    production APNs; the `updates` block is left out of the fingerprint so the flag does not change the
