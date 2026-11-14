@@ -9,6 +9,10 @@ import { gitProblems, headCommit } from './git-state.mjs';
 
 let dir;
 let repo;
+// Under a git hook (verify-fast from pre-commit) the environment carries GIT_DIR, GIT_INDEX_FILE and
+// the like for the real repository: left in, the scratch repos below (and gitProblems) would read and
+// write the real index instead (it emptied a worktree's index once).
+for (const name of Object.keys(process.env)) if (name.startsWith('GIT_')) delete process.env[name];
 const git = (cwd, ...args) =>
   execFileSync('git', args, {
     cwd,
