@@ -4,7 +4,8 @@
 //   node scripts/release-ios.mjs [--dry-run] [--skip-tests] [--allow-branch]
 //       preconditions, pnpm test, prebuild, pods, archive, export, checks; --dry-run prints the commands.
 //       A finished release appends the build and its runtime version to docs/releases/builds.json,
-//       which over-the-air updates are checked against (docs/guides/updates.md)
+//       which over-the-air updates are checked against (docs/guides/updates.md); the checks require
+//       the embedded runtime and Expo.plist to match the commit and UPDATES_URL (the official flag)
 //   node scripts/release-ios.mjs check <AgentsPocket.ipa | AgentsPocket.app> [--archive <.xcarchive>]
 //       only the pre-upload checks, against an exported IPA (or a built .app)
 // Optional App Store Connect API key instead of an Xcode sign-in (for signing and the upload):
@@ -22,7 +23,14 @@ import {
 import { tmpdir } from 'node:os';
 import { basename, join, relative } from 'node:path';
 import { gitProblems, headCommit } from './lib/git-state.mjs';
-import { appendBuild, BUILDS_FILE, embeddedRuntimeProblem } from './lib/released-builds.mjs';
+import { exportOptions } from './lib/ios-export-options.mjs';
+import {
+  appendBuild,
+  BUILDS_FILE,
+  bundleUpdatesReport,
+  embeddedRuntimeProblem,
+  officialUpdatesUrl,
+} from './lib/released-builds.mjs';
 import { computeRuntimeVersion } from './lib/runtime-version.mjs';
 import { runStep, shown } from './lib/steps.mjs';
 
@@ -53,6 +61,12 @@ function fail(message) {
   console.error(`release-ios: ${message}`);
   process.exit(1);
 }
+
+const readLocal = () => {
+  const localFile = join(MOBILE, 'app.local.json');
+  return existsSync(localFile) ? JSON.parse(readFileSync(localFile, 'utf8')) : {};
+};
+const UPDATES_URL = officialUpdatesUrl(process.env, readLocal());
 
 const out = (cmd, cmdArgs, cwd = ROOT) =>
   execFileSync(cmd, cmdArgs, { cwd, encoding: 'utf8' }).trim();
@@ -104,8 +118,7 @@ function preconditions({ allowBranch }) {
       `BUILD_NUMBER=${process.env.BUILD_NUMBER} in the shell differs from app.json (${BUILD}); unset it`,
     );
   }
-  const localFile = join(MOBILE, 'app.local.json');
-  const local = existsSync(localFile) ? JSON.parse(readFileSync(localFile, 'utf8')) : {};
+  const local = readLocal();
   if (!process.env.APPLE_TEAM_ID && !local.appleTeamId) {
     problems.push('no Apple team: set appleTeamId in apps/mobile/app.local.json or APPLE_TEAM_ID');
   }
@@ -188,23 +201,6 @@ function plan(dir) {
   };
 }
 
-function exportOptions(destination) {
-  // Automatic signing: Xcode picks the distribution certificate and App Store profiles for the app and
-  // each extension. The build number is ours (app.json), never Xcode's.
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>method</key><string>app-store-connect</string>
-  <key>destination</key><string>${destination}</string>
-  <key>signingStyle</key><string>automatic</string>
-  <key>uploadSymbols</key><true/>
-  <key>manageAppVersionAndBuildNumber</key><false/>
-</dict>
-</plist>
-`;
-}
-
 function run(step) {
   const problem = runStep(step, ROOT);
   if (problem) fail(problem);
@@ -228,7 +224,7 @@ function entitlements(bundle) {
   }
 }
 
-function checkBundle(appPath, { archive } = {}) {
+function checkBundle(appPath, { archive, runtimeVersion }) {
   const errors = [];
   const ok = (line) => console.log(`ok   ${line}`);
   const expect = (cond, line) => (cond ? ok(line) : errors.push(line));
@@ -265,6 +261,11 @@ function checkBundle(appPath, { archive } = {}) {
     String(config.ios?.buildNumber) === BUILD,
     `embedded app.config buildNumber ${config.ios?.buildNumber}`,
   );
+
+  // Over-the-air updates: the runtime this commit computes and the config the flag asked for.
+  const updates = bundleUpdatesReport(appPath, { runtimeVersion, url: UPDATES_URL, plist });
+  errors.push(...updates.problems);
+  if (!updates.problems.length) ok(updates.summary);
 
   const plugins = join(appPath, 'PlugIns');
   const appexes = existsSync(plugins)
@@ -313,8 +314,9 @@ function checkBundle(appPath, { archive } = {}) {
   return errors;
 }
 
-function check(target, archive) {
+function check(target, archive, runtimeVersion) {
   if (!target || !existsSync(target)) fail('check needs the path of an .ipa or .app');
+  const runtime = runtimeVersion ?? computeRuntimeVersion({ mobileDir: MOBILE, platform: 'ios' });
   let appPath = target;
   let tmp;
   if (target.endsWith('.ipa')) {
@@ -327,7 +329,7 @@ function check(target, archive) {
     );
   }
   try {
-    const errors = checkBundle(appPath, { archive });
+    const errors = checkBundle(appPath, { archive, runtimeVersion: runtime });
     for (const e of errors) console.log(`FAIL ${e}`);
     if (errors.length) fail(`${errors.length} check(s) failed; do not upload`);
     console.log(`\n${VERSION} (${BUILD}) passed the pre-upload checks.`);
@@ -355,6 +357,9 @@ function release({ dryRun, skipTests, allowBranch }) {
   const runtimeVersion = computeRuntimeVersion({ mobileDir: MOBILE, platform: 'ios' });
   const commit = headCommit(ROOT);
   console.log(`Runtime version (fingerprint): ${runtimeVersion}`);
+  console.log(
+    `Over-the-air updates: ${UPDATES_URL ? `on, from ${UPDATES_URL}` : 'off (no UPDATES_URL)'}`,
+  );
   if (dryRun) {
     console.log(
       `\n# ExportOptions.plist (export), in ${relative(ROOT, dir)}:\n${exportOptions('export')}`,
@@ -369,7 +374,7 @@ function release({ dryRun, skipTests, allowBranch }) {
   // For the upload with an Xcode sign-in (docs/guides/release.md, "Upload"): same signing, sent to Apple.
   writeFileSync(join(dir, 'ExportOptions-upload.plist'), exportOptions('upload'));
   for (const s of todo) run(s);
-  check(join(ROOT, ipa), join(ROOT, archive));
+  check(join(ROOT, ipa), join(ROOT, archive), runtimeVersion);
   recordBuild({ runtimeVersion, commit, archive: join(ROOT, archive) });
   console.log(
     `\nNext (docs/guides/release.md, "Upload"): upload ${ipa}. Keep ${relative(ROOT, dir)}.`,

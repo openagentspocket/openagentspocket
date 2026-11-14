@@ -40,18 +40,73 @@ export function appendBuild(file, entry) {
 }
 
 /**
- * With expo-updates installed, the iOS build phase writes the runtime version it embedded to
- * EXUpdates.bundle/fingerprint in the app (expo-updates scripts/create-updates-resources-ios.sh).
- * It must equal the one computed for the record, or updates would target a runtime no device runs.
- * Returns the problem, or null when they agree or the app embeds none (no expo-updates yet).
+ * The iOS build phase of expo-updates writes the runtime version it embedded to
+ * EXUpdates.bundle/fingerprint in the app (scripts/create-updates-resources-ios.sh), whether updates
+ * are on or off in that build. It must equal the one computed for the record, or updates would target
+ * a runtime no device runs. Returns the problem, or null when they agree.
  */
 export function embeddedRuntimeProblem(appPath, runtimeVersion) {
   const file = join(appPath, 'EXUpdates.bundle', 'fingerprint');
-  if (!existsSync(file)) return null;
+  if (!existsSync(file))
+    return 'the build embeds no runtime version (EXUpdates.bundle/fingerprint): is expo-updates linked?';
   const embedded = readFileSync(file, 'utf8').trim();
   return embedded === runtimeVersion
     ? null
     : `the build embeds runtime ${embedded}, the record would say ${runtimeVersion}`;
+}
+
+/**
+ * The official-build flag, read as apps/mobile/app.config.js reads it: the update server's manifest
+ * URL, or null for a build without over-the-air updates.
+ */
+export function officialUpdatesUrl(env, local) {
+  return env.UPDATES_URL || local.updatesUrl || null;
+}
+
+/**
+ * What a store build's Expo.plist must say about updates (apps/mobile/app.config.js): with the flag,
+ * enabled, from that URL, code signed with the project's key id; without it, disabled.
+ *
+ * @param {Record<string, unknown>} expoPlist
+ * @param {string | null} url the flag the build was made with
+ * @returns {string[]} the problems, empty when the build is as expected
+ */
+export function embeddedUpdatesProblems(expoPlist, url) {
+  if (!url)
+    return expoPlist.EXUpdatesEnabled === false
+      ? []
+      : ['updates are not disabled in Expo.plist, but no UPDATES_URL was set'];
+  const problems = [];
+  if (expoPlist.EXUpdatesEnabled !== true) problems.push('updates are not enabled in Expo.plist');
+  if (expoPlist.EXUpdatesURL !== url)
+    problems.push(`Expo.plist updates URL is ${expoPlist.EXUpdatesURL}, expected ${url}`);
+  if (!/BEGIN CERTIFICATE/.test(String(expoPlist.EXUpdatesCodeSigningCertificate ?? '')))
+    problems.push('Expo.plist carries no code signing certificate: updates would be unsigned');
+  const metadata = /** @type {{keyid?: string, alg?: string}} */ (
+    expoPlist.EXUpdatesCodeSigningMetadata ?? {}
+  );
+  if (metadata.keyid !== 'main' || metadata.alg !== 'rsa-v1_5-sha256')
+    problems.push('Expo.plist code signing metadata is not keyid main, rsa-v1_5-sha256');
+  if (expoPlist.EXUpdatesRuntimeVersion !== 'file:fingerprint')
+    problems.push('Expo.plist runtime version is not the embedded fingerprint');
+  return problems;
+}
+
+/**
+ * Everything a built iOS app says about over-the-air updates: the embedded runtime version and the
+ * Expo.plist updates config, against this commit's runtime and the official-build flag.
+ *
+ * @param {string} appPath
+ * @param {{runtimeVersion: string, url: string | null, plist: (file: string) => Record<string, unknown>}} options
+ */
+export function bundleUpdatesReport(appPath, { runtimeVersion, url, plist }) {
+  const runtime = embeddedRuntimeProblem(appPath, runtimeVersion);
+  const problems = [
+    ...(runtime ? [runtime] : []),
+    ...embeddedUpdatesProblems(plist(join(appPath, 'Expo.plist')), url),
+  ];
+  const state = url ? `on, signed, from ${url}` : 'off';
+  return { problems, summary: `runtime ${runtimeVersion}, over-the-air updates ${state}` };
 }
 
 /** The recorded builds an update for this runtime version can reach, newest last. */
