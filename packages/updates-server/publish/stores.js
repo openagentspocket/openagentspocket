@@ -10,7 +10,7 @@
 // Both wrangler stores run `npx wrangler r2 object get|put <bucket>/<key>` through an injected
 // runner, so tests replace wrangler with a fake and nothing reaches the network.
 import { execFile } from 'node:child_process';
-import { readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 /**
@@ -77,15 +77,26 @@ export function npxRunner(cwd, env = {}) {
     });
 }
 
+/**
+ * CLOUDFLARE_ACCOUNT_ID from the gitignored deploy.local.json ("accountId"), for a wrangler login
+ * that sees several accounts; the shell's own CLOUDFLARE_ACCOUNT_ID wins. Empty when neither.
+ */
+export function accountEnv(packageDir = PACKAGE_DIR, env = process.env) {
+  const file = join(packageDir, 'deploy.local.json');
+  if (env.CLOUDFLARE_ACCOUNT_ID || !existsSync(file)) return {};
+  const { accountId } = JSON.parse(readFileSync(file, 'utf8'));
+  return accountId ? { CLOUDFLARE_ACCOUNT_ID: String(accountId) } : {};
+}
+
 const fileName = (key) => key.replaceAll('/', '_');
 
 /**
  * @param {{mode: 'local' | 'remote', scratchDir: string, packageDir?: string, persistTo?: string,
- *   run?: ReturnType<typeof npxRunner>}} options
+ *   run?: ReturnType<typeof npxRunner>, env?: Record<string, string>}} options
  */
-function wranglerStore({ mode, scratchDir, packageDir = PACKAGE_DIR, persistTo, run }) {
+function wranglerStore({ mode, scratchDir, packageDir = PACKAGE_DIR, persistTo, run, env = {} }) {
   const bucket = configuredBucketName(packageDir);
-  const exec = run ?? npxRunner(packageDir);
+  const exec = run ?? npxRunner(packageDir, env);
   const where = [
     `--${mode}`,
     ...(mode === 'local' && persistTo ? ['--persist-to', persistTo] : []),

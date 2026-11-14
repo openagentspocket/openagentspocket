@@ -6,6 +6,7 @@ import { copyFileSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { after, before, test } from 'node:test';
 
+import { accountEnv } from '../publish/stores.js';
 import { deploy, localProblems, tomlProblems } from '../scripts/deploy.mjs';
 import { tempDir } from './support.js';
 
@@ -105,4 +106,12 @@ test('a dry run reads nothing from the account and passes --dry-run to wrangler 
   assert.deepEqual(fake.calls, [
     ['wrangler', 'deploy', '--domain', 'updates.my-project.dev', '--dry-run'],
   ]);
+});
+
+test('the account id in deploy.local.json reaches wrangler, unless the shell sets its own', () => {
+  writeLocal({ domains: ['updates.my-project.dev'], accountId: ACCOUNT });
+  assert.deepEqual(accountEnv(dir, {}), { CLOUDFLARE_ACCOUNT_ID: ACCOUNT });
+  assert.deepEqual(accountEnv(dir, { CLOUDFLARE_ACCOUNT_ID: 'cd'.repeat(16) }), {});
+  writeLocal({ domains: ['updates.my-project.dev'] });
+  assert.deepEqual(accountEnv(dir, {}), {});
 });

@@ -6,7 +6,8 @@
 //
 // Before `wrangler deploy` it checks wrangler.toml: the UPDATES R2 binding, Workers Logs off
 // (`[observability] enabled = false`), no account_id and no committed route. The custom domain is
-// passed as `--domain`; `accountId`, when set, as CLOUDFLARE_ACCOUNT_ID for wrangler only. A real
+// passed as `--domain`; `accountId`, when set, as CLOUDFLARE_ACCOUNT_ID for wrangler only (the
+// upload to r2 uses it too; a CLOUDFLARE_ACCOUNT_ID in the shell wins). A real
 // deploy first checks that the bucket exists (`wrangler r2 bucket info`). There is no secret to put.
 //
 // Usage: node scripts/deploy.mjs [--dry-run]
@@ -16,7 +17,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { configuredBucketName, npxRunner } from '../publish/stores.js';
+import { accountEnv, configuredBucketName, npxRunner } from '../publish/stores.js';
 
 const PACKAGE_DIR = join(import.meta.dirname, '..');
 const LOCAL_FILE = 'deploy.local.json';
@@ -102,8 +103,7 @@ export async function deploy({
   ];
   if (problems.length) return { ok: false, problems, commands: [] };
 
-  const env = local.accountId ? { CLOUDFLARE_ACCOUNT_ID: local.accountId } : {};
-  const exec = run ?? npxRunner(packageDir, env);
+  const exec = run ?? npxRunner(packageDir, accountEnv(packageDir));
   const bucket = configuredBucketName(packageDir);
   const commands = [];
   const step = async (args) => {

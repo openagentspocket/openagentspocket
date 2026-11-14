@@ -43,7 +43,11 @@ import { LOG_FILE, readLog } from '../packages/updates-server/publish/log.js';
 import { normalizeBaseUrl, readExport } from '../packages/updates-server/publish/manifest.js';
 import { runUpload } from '../packages/updates-server/publish/publish-upload.js';
 import { loadCertificate, loadPrivateKey } from '../packages/updates-server/publish/signing.js';
-import { r2Store, wranglerLocalStore } from '../packages/updates-server/publish/stores.js';
+import {
+  accountEnv,
+  r2Store,
+  wranglerLocalStore,
+} from '../packages/updates-server/publish/stores.js';
 import { verifyBundle, verifyRemote } from '../packages/updates-server/publish/verify.js';
 import { isChannel } from '../packages/updates-server/src/protocol.js';
 import { gitProblems, headCommit } from './lib/git-state.mjs';
@@ -234,7 +238,7 @@ async function upload() {
       makeStore: () =>
         target === 'local'
           ? wranglerLocalStore({ scratchDir: scratch })
-          : r2Store({ scratchDir: scratch }),
+          : r2Store({ scratchDir: scratch, env: accountEnv() }),
       log: log(),
       logFile: join(ROOT, LOG_FILE),
       certificate: certificate(),
