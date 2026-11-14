@@ -50,3 +50,27 @@ export function previousEntries(entries, { platform, runtimeVersion, channel }) 
       (channel === undefined || e.channel === channel),
   );
 }
+
+/** What the log says a channel serves now: its last entry for that platform and runtime, if any. */
+export function servedNow(entries, { platform, runtimeVersion, channel }) {
+  return previousEntries(entries, { platform, runtimeVersion, channel }).at(-1) ?? null;
+}
+
+/**
+ * The rule is beta first: a production upload of an update the log never recorded on beta is
+ * refused unless the owner says so (`--skip-beta`, for an emergency rollback directive).
+ */
+export function betaFirstProblem(entries, entry, channel, { skipBeta = false } = {}) {
+  if (channel !== 'production' || skipBeta) return null;
+  if (entries.some((e) => e.id === entry.id && e.channel === 'beta')) return null;
+  return `${entry.kind} ${entry.id} was never on beta (docs/releases/updates.jsonl): upload it to beta first, or pass --skip-beta`;
+}
+
+/** The git commands that publish the log line; the upload never commits or pushes itself. */
+export function logCommitCommands(entry, channel) {
+  return [
+    `git add ${LOG_FILE}`,
+    `git commit -m "Updates: ${entry.kind} ${entry.id} on ${channel}"`,
+    'git push origin main',
+  ];
+}

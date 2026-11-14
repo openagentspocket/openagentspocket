@@ -11,7 +11,7 @@ import { readBundle } from '../publish/bundle.js';
 import { createRollbackBundle, createUpdateBundle } from '../publish/create.js';
 import { readExport } from '../publish/manifest.js';
 import { loadCertificate, loadPrivateKey } from '../publish/signing.js';
-import { memoryStore, r2Store, uploadBundle } from '../publish/upload.js';
+import { memoryStore, uploadBundle } from '../publish/upload.js';
 import { verifyRemote } from '../publish/verify.js';
 import { createMemoryBucket } from '../src/memory-bucket.js';
 import { createUpdatesServer } from '../src/worker.js';
@@ -113,13 +113,4 @@ test('a rollback directive goes through the same path', async () => {
   });
   assert.deepEqual(result.problems, []);
   assert.equal(result.served.kind, 'directive');
-});
-
-test('the real R2 store is an owner step: it refuses before writing anything', async () => {
-  const outDir = join(dir, 'unsent');
-  await createRollbackBundle({ ...common, outDir, now: new Date('2026-11-14T12:00:00.000Z') });
-  await assert.rejects(
-    uploadBundle(readBundle(outDir), { channel: 'beta', store: r2Store() }),
-    /owner step/,
-  );
 });

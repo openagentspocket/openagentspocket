@@ -1,116 +1,168 @@
 // Putting a verified bundle in the bucket, in the order that keeps every reader safe: assets, then
 // the signed body and its signature, then the channel pointer. Until the pointer is written nothing
-// serves the update; after it, everything it names is already there.
+// serves the update; after it, everything it names is already there (README "Storage layout").
 //
-// A store is { name, ready(), put(key, {path?, bytes?}, contentType) }. Three exist:
-// - memoryStore: the in-memory bucket, for tests;
-// - wranglerLocalStore: the local R2 simulation `wrangler dev` reads (no account);
-// - r2Store: the real bucket. OWNER STEP, NOT RUN: it refuses before writing anything until the
-//   owner has created the bucket and wired credentials (docs/guides/updates.md, "Owner steps").
-import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { storageKeys } from '../src/protocol.js';
-import { encodeJson } from './manifest.js';
+// Nothing is overwritten but the pointer. An object that already exists is skipped when its bytes
+// are the ones the bundle has (assets are content-addressed; the same update goes to beta, then to
+// production) and refused otherwise. Everything written is read back and its SHA-256 compared
+// before the pointer moves, so a failed read-back leaves the pointer where it was.
+//
+// The stores (memory, local wrangler, real R2) are in stores.js.
+import { readFileSync, statSync } from 'node:fs';
+import { parsePointer, storageKeys } from '../src/protocol.js';
+import { encodeJson, sha256Hex } from './manifest.js';
 
-const PACKAGE_DIR = join(import.meta.dirname, '..');
+export { configuredBucketName, memoryStore, r2Store, wranglerLocalStore } from './stores.js';
+
+const decode = (bytes) => new TextDecoder().decode(bytes);
+
+/**
+ * Every object the upload writes, in order, and the pointer it moves last.
+ *
+ * @param {ReturnType<import('./bundle.js').readBundle>} bundle
+ */
+export function planUpload(bundle, { channel }) {
+  const { entry } = bundle;
+  const signature = new TextEncoder().encode(bundle.signature);
+  const assets = bundle.assets.map((asset) => {
+    const path = bundle.assetPath(asset.sha256);
+    return {
+      key: storageKeys.asset(asset.sha256),
+      source: { path },
+      contentType: asset.contentType,
+      sha256: asset.sha256,
+      size: statSync(path).size,
+      asset: true,
+    };
+  });
+  const update = [
+    { key: storageKeys.body(entry.id), bytes: bundle.bytes, contentType: 'application/json' },
+    { key: storageKeys.signature(entry.id), bytes: signature, contentType: 'text/plain' },
+  ].map(({ key, bytes, contentType }) => ({
+    key,
+    source: { bytes },
+    contentType,
+    sha256: sha256Hex(bytes),
+    size: bytes.byteLength,
+    asset: false,
+  }));
+  const pointer = {
+    key: storageKeys.pointer(entry.platform, entry.runtimeVersion, channel),
+    bytes: encodeJson({ kind: entry.kind, id: entry.id }),
+    contentType: 'application/json',
+  };
+  return { assets, update, pointer, entry };
+}
+
+/** What a dry run prints: every object, then the pointer change (`previous` from the public log). */
+export function describeUpload(plan, { previous }) {
+  const line = (o) => `  ${o.key}  ${o.contentType}  ${o.size} bytes`;
+  const from = previous ? `${previous.kind} ${previous.id}` : 'nothing published';
+  return [
+    'Would write, in this order (an object already present with the same bytes is skipped, with other bytes refused):',
+    ...plan.assets.map(line),
+    ...plan.update.map(line),
+    'Then read every written object back and compare its SHA-256, and only then move the pointer:',
+    `  ${plan.pointer.key}: ${from} -> ${plan.entry.kind} ${plan.entry.id}`,
+  ];
+}
+
+async function inPool(items, size, task) {
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const item = items[next];
+      next += 1;
+      await task(item);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(size, items.length) }, worker));
+}
+
+const NOT_MOVED = 'the channel pointer was not moved';
 
 /**
  * @param {ReturnType<import('./bundle.js').readBundle>} bundle
- * @param {{channel: string, store: {name: string, ready(): void, put(key: string, source: {path?: string, bytes?: Uint8Array}, contentType: string): Promise<void> | void}}} options
+ * @param {{channel: string,
+ *   store: import('./stores.js').Store,
+ *   expectedPointer?: {kind: string, id: string} | null,
+ *   readAsset?: (sha256: string) => Promise<{bytes: Uint8Array, contentType?: string} | null>,
+ *   afterPointer?: () => Promise<string[]>,
+ *   onProgress?: (line: string) => void}} options
+ *   expectedPointer: what the public log says the channel serves now; when given, a bucket that
+ *     disagrees is refused before anything is written. readAsset: read assets back over HTTP from
+ *     the deployed Worker instead of the store. afterPointer: checks once the pointer moved; any
+ *     problem puts the previous pointer back (or removes it when there was none).
  */
-export async function uploadBundle(bundle, { channel, store }) {
+export async function uploadBundle(bundle, options) {
+  const { channel, store, readAsset, afterPointer, onProgress = () => {} } = options;
   store.ready();
-  const { entry } = bundle;
-  for (const asset of bundle.assets)
-    await store.put(
-      storageKeys.asset(asset.sha256),
-      { path: bundle.assetPath(asset.sha256) },
-      asset.contentType,
-    );
-  await store.put(storageKeys.body(entry.id), { bytes: bundle.bytes }, 'application/json');
-  await store.put(
-    storageKeys.signature(entry.id),
-    { bytes: new TextEncoder().encode(bundle.signature) },
-    'text/plain',
-  );
-  const pointer = encodeJson({ kind: entry.kind, id: entry.id });
-  await store.put(
-    storageKeys.pointer(entry.platform, entry.runtimeVersion, channel),
-    { bytes: pointer },
-    'application/json',
-  );
-}
-
-const sourceBytes = (source) => source.bytes ?? new Uint8Array(readFileSync(source.path));
-
-export function memoryStore(bucket) {
-  return {
-    name: 'memory',
-    ready() {},
-    async put(key, source, contentType) {
-      await bucket.put(key, sourceBytes(source), { httpMetadata: { contentType } });
-    },
-  };
-}
-
-/** The bucket name wrangler.toml binds as UPDATES. */
-export function configuredBucketName(packageDir = PACKAGE_DIR) {
-  const toml = readFileSync(join(packageDir, 'wrangler.toml'), 'utf8');
-  const name = /\[\[r2_buckets\]\][^[]*?bucket_name\s*=\s*"([^"]+)"/s.exec(toml)?.[1];
-  if (!name) throw new Error('wrangler.toml binds no R2 bucket');
-  return name;
-}
-
-/**
- * The local R2 simulation in packages/updates-server/.wrangler/state, the one `wrangler dev` serves.
- * Uses `npx wrangler r2 object put --local`, which needs no Cloudflare account.
- */
-export function wranglerLocalStore({ scratchDir, packageDir = PACKAGE_DIR, persistTo }) {
-  const bucket = configuredBucketName(packageDir);
-  return {
-    name: 'local',
-    ready() {},
-    put(key, source, contentType) {
-      let file = source.path;
-      if (!file) {
-        file = join(scratchDir, key.replaceAll('/', '_'));
-        writeFileSync(file, source.bytes);
-      }
-      const args = [
-        'wrangler',
-        'r2',
-        'object',
-        'put',
-        `${bucket}/${key}`,
-        '--file',
-        file,
-        '--content-type',
-        contentType,
-        '--local',
-      ];
-      if (persistTo) args.push('--persist-to', persistTo);
-      const result = spawnSync('npx', args, { cwd: packageDir, encoding: 'utf8' });
-      if (result.status !== 0)
-        throw new Error(
-          `wrangler r2 object put ${key} failed: ${(result.stderr || result.stdout).trim()}`,
-        );
-    },
-  };
-}
-
-/** The real R2 bucket: an owner step that has not been run. Refuses before anything is written. */
-export function r2Store() {
-  return {
-    name: 'r2',
-    ready() {
+  const plan = planUpload(bundle, { channel });
+  const current = await store.get(plan.pointer.key);
+  if (options.expectedPointer !== undefined) {
+    const now = current ? parsePointer(decode(current)) : null;
+    const expected = options.expectedPointer;
+    if ((now?.id ?? null) !== (expected?.id ?? null))
       throw new Error(
-        'uploading to the real R2 bucket is an owner step that has not been set up: create the bucket, ' +
-          'deploy the Worker, then implement this store (docs/guides/updates.md, "Owner steps"). Nothing was uploaded.',
+        `${plan.pointer.key} names ${now ? now.id : 'nothing'}, the public log says ${expected ? expected.id : 'nothing'}: ` +
+          'an upload was not logged, or the log is behind. Reconcile docs/releases/updates.jsonl first; nothing was written.',
       );
-    },
-    put() {
-      throw new Error('r2Store is not set up');
-    },
+  }
+
+  const written = [];
+  const skipped = [];
+  const putOnce = async (o) => {
+    const existing = await store.get(o.key);
+    if (existing) {
+      const got = sha256Hex(existing);
+      if (got !== o.sha256)
+        throw new Error(
+          `${o.key} already exists with other bytes (sha256 ${got}, the bundle has ${o.sha256}); nothing is overwritten and ${NOT_MOVED}`,
+        );
+      skipped.push(o.key);
+      return;
+    }
+    if (o.asset && sha256Hex(new Uint8Array(readFileSync(o.source.path))) !== o.sha256)
+      throw new Error(`the bundle's ${o.key} does not match its name; ${NOT_MOVED}`);
+    await store.put(o.key, o.source, o.contentType);
+    written.push(o);
+    onProgress(`wrote ${o.key}`);
+  };
+  // One at a time unless the store says otherwise: the local simulation is a SQLite file that
+  // concurrent wrangler processes lock each other out of.
+  const parallel = store.concurrency ?? 1;
+  await inPool(plan.assets, parallel, putOnce);
+  for (const o of plan.update) await putOnce(o);
+
+  await inPool(written, parallel, async (o) => {
+    const back =
+      o.asset && readAsset ? await readAsset(o.sha256) : { bytes: await store.get(o.key) };
+    if (!back?.bytes)
+      throw new Error(`read-back: ${o.key} is missing after the upload; ${NOT_MOVED}`);
+    const got = sha256Hex(back.bytes);
+    if (got !== o.sha256)
+      throw new Error(`read-back: ${o.key} has sha256 ${got}, expected ${o.sha256}; ${NOT_MOVED}`);
+    if (back.contentType !== undefined && back.contentType !== o.contentType)
+      throw new Error(
+        `read-back: ${o.key} is served as ${back.contentType}, expected ${o.contentType}; ${NOT_MOVED}`,
+      );
+  });
+  onProgress(`read back ${written.length} written object(s); ${skipped.length} already present`);
+
+  await store.put(plan.pointer.key, { bytes: plan.pointer.bytes }, plan.pointer.contentType);
+  onProgress(`moved ${plan.pointer.key} to ${plan.entry.kind} ${plan.entry.id}`);
+  const problems = afterPointer ? await afterPointer() : [];
+  if (problems.length) {
+    // Back to what the channel served before: the previous pointer, or none at all.
+    if (current) await store.put(plan.pointer.key, { bytes: current }, plan.pointer.contentType);
+    else await store.remove(plan.pointer.key);
+    throw new Error(
+      `after the pointer moved, the server check failed (${problems.join('; ')}); the pointer was put back to ${current ? 'its previous value' : 'nothing'}`,
+    );
+  }
+  return {
+    written: written.map((o) => o.key),
+    skipped,
+    previous: current ? parsePointer(decode(current)) : null,
   };
 }

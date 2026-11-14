@@ -14,9 +14,15 @@
 //     The same, for a signed rollBackToEmbedded directive (the emergency tool; prefer republishing
 //     the last good commit).
 //   node scripts/publish-update.mjs --upload <bundle-dir> --channel beta|production --target local|r2
-//     Verifies the bundle again for that channel and uploads it. `local` writes the local R2 bucket
-//     `wrangler dev` serves; `r2` is the real bucket, an owner step not set up yet (it refuses).
-//     A real upload appends the entry to the public log, docs/releases/updates.jsonl.
+//       [--base-url <url>] [--skip-beta] [--dry-run]
+//     Verifies the bundle again for that channel and uploads it: assets, body and signature, read
+//     back, then the channel pointer last (publish/upload.js). `local` writes the local R2 bucket
+//     `wrangler dev` serves; `r2` the real bucket through `wrangler r2 object --remote`, with the
+//     owner's wrangler login or CLOUDFLARE_API_TOKEN. With --base-url the deployed Worker is checked
+//     as the app would, and a failed check puts the pointer back. Production needs the update on
+//     beta first (--skip-beta to override). --dry-run prints every object and the pointer change and
+//     touches nothing remote. A real r2 upload appends the entry to docs/releases/updates.jsonl and
+//     prints the git commands to publish it.
 //   node scripts/publish-update.mjs verify <bundle-dir> [--channel <c>] [--cert] [--keyid]
 //   node scripts/publish-update.mjs verify --url <manifest-url> --channel <c> [--runtime <rt>]
 //       [--allow-unlogged]
@@ -29,19 +35,15 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
 
-import { readBundle } from '../packages/updates-server/publish/bundle.js';
 import {
   createRollbackBundle,
   createUpdateBundle,
 } from '../packages/updates-server/publish/create.js';
-import { appendLog, LOG_FILE, readLog } from '../packages/updates-server/publish/log.js';
+import { LOG_FILE, readLog } from '../packages/updates-server/publish/log.js';
 import { normalizeBaseUrl, readExport } from '../packages/updates-server/publish/manifest.js';
+import { runUpload } from '../packages/updates-server/publish/publish-upload.js';
 import { loadCertificate, loadPrivateKey } from '../packages/updates-server/publish/signing.js';
-import {
-  r2Store,
-  uploadBundle,
-  wranglerLocalStore,
-} from '../packages/updates-server/publish/upload.js';
+import { r2Store, wranglerLocalStore } from '../packages/updates-server/publish/stores.js';
 import { verifyBundle, verifyRemote } from '../packages/updates-server/publish/verify.js';
 import { isChannel } from '../packages/updates-server/src/protocol.js';
 import { gitProblems, headCommit } from './lib/git-state.mjs';
@@ -96,7 +98,7 @@ function step(why, cmd, cmdArgs, cwd = ROOT, env = {}) {
   if (problem) fail(problem);
 }
 
-function summary(entry, outDir) {
+function summary(entry, outDir, baseUrl = '<update server URL>') {
   console.log(`\n${entry.kind} ${entry.id}`);
   console.log(`  runtime    ${entry.runtimeVersion}`);
   console.log(`  createdAt  ${entry.createdAt}`);
@@ -105,9 +107,9 @@ function summary(entry, outDir) {
   console.log(`  bundle     ${relative(ROOT, outDir)}`);
   console.log('\nNothing was uploaded. Next (docs/guides/updates.md, "Publish"):');
   const target = localTest ? 'local --local-test' : 'r2';
-  console.log(
-    `  node scripts/publish-update.mjs --upload ${relative(ROOT, outDir)} --channel beta --target ${target}`,
-  );
+  const upload = `node scripts/publish-update.mjs --upload ${relative(ROOT, outDir)} --channel beta --target ${target} --base-url ${baseUrl}`;
+  console.log(`  ${upload} --dry-run`);
+  console.log(`  ${upload}`);
 }
 
 function sinceLastUpdate(runtimeVersion) {
@@ -184,7 +186,7 @@ async function publish() {
       id,
       localTest,
     });
-    summary(entry, outDir);
+    summary(entry, outDir, baseUrl);
   } finally {
     rmSync(work, { recursive: true, force: true });
   }
@@ -222,36 +224,29 @@ function report(problems, ok) {
 }
 
 async function upload() {
-  const dir = resolve(option('--upload'));
-  const channel = option('--channel');
   const target = option('--target');
-  if (!isChannel(channel)) fail('--channel beta|production is required');
-  if (!['local', 'r2'].includes(target)) fail('--target local|r2 is required');
-  if (target === 'r2' && readBundle(dir).entry.localTest)
-    fail('a --local-test bundle never goes to r2; publish from a clean main');
-  const { problems, entry } = await verifyBundle(dir, {
-    certificate: certificate(),
-    keyId: keyId(),
-    builds: builds({ released: target === 'r2' }),
-    log: target === 'r2' ? log() : [],
-    channel,
-  });
-  for (const p of problems) console.log(`FAIL ${p}`);
-  if (problems.length) fail('the bundle failed verification; nothing was uploaded');
   const scratch = mkdtempSync(join(tmpdir(), 'publish-update-'));
   try {
-    const store = target === 'local' ? wranglerLocalStore({ scratchDir: scratch }) : r2Store();
-    await uploadBundle(readBundle(dir), { channel, store });
-  } catch (error) {
-    fail(error.message);
+    await runUpload({
+      dir: resolve(option('--upload')),
+      channel: option('--channel'),
+      target,
+      makeStore: () =>
+        target === 'local'
+          ? wranglerLocalStore({ scratchDir: scratch })
+          : r2Store({ scratchDir: scratch }),
+      log: log(),
+      logFile: join(ROOT, LOG_FILE),
+      certificate: certificate(),
+      keyId: keyId(),
+      builds: builds({ released: target === 'r2' }),
+      baseUrl: option('--base-url'),
+      dryRun: flag('--dry-run'),
+      skipBeta: flag('--skip-beta'),
+    });
   } finally {
     rmSync(scratch, { recursive: true, force: true });
   }
-  if (target === 'r2') {
-    appendLog(join(ROOT, LOG_FILE), { ...entry, channel, uploadedAt: new Date().toISOString() });
-    console.log(`Appended to ${LOG_FILE}: commit and push it.`);
-  }
-  console.log(`Uploaded ${entry.kind} ${entry.id} to ${channel} (${target}).`);
 }
 
 async function verify() {
