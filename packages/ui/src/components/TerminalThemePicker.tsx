@@ -4,6 +4,7 @@ import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 
@@ -43,14 +44,14 @@ const useStyles = makeStyles((t) => ({
   swatch: {
     width: SWATCH_WIDTH,
     height: SWATCH_HEIGHT,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.control),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     paddingHorizontal: t.spacing.xs,
     justifyContent: 'center',
     gap: airy.chipV,
   },
-  bar: { height: 4, borderRadius: 2 },
+  bar: { height: 4, borderRadius: t.radius.capsule },
   text: { flex: 1, gap: airy.badgeV },
 }));
 

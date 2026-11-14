@@ -8,13 +8,18 @@ import { makeStyles } from '../theme/theme';
 const useStyles = makeStyles((t) => ({
   root: { gap: t.spacing.xs, paddingBottom: t.spacing.xs },
   grabberRow: { alignItems: 'center', paddingTop: airy.stack },
-  grabber: { width: 36, height: 5, borderRadius: 3, backgroundColor: t.colors.control },
+  grabber: {
+    width: 36,
+    height: 5,
+    borderRadius: t.radius.capsule,
+    backgroundColor: t.colors.control,
+  },
   row: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   fill: { flex: 1 },
   close: {
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: t.radius.capsule,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: t.colors.control,

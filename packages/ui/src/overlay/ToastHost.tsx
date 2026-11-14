@@ -3,6 +3,7 @@ import { AccessibilityInfo, Animated, PanResponder, StyleSheet, View } from 'rea
 import { Icon } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { useInsets } from '../theme/insets';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -23,7 +24,7 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     gap: t.spacing.sm,
     backgroundColor: t.colors.surfaceRaised,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.card),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     paddingHorizontal: t.spacing.md,

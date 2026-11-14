@@ -9,6 +9,7 @@ import {
 import { noFocusRing, Tappable } from '../primitives/Tappable';
 import { monoFamily, Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
+import { rounded } from '../theme/corners';
 import { useInsets } from '../theme/insets';
 import { spacing } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -24,10 +25,10 @@ const useStyles = makeStyles((t) => ({
   clear: { flex: 1 },
   center: { justifyContent: 'center', alignItems: 'center', padding: t.metrics.screenInset },
   bottom: { justifyContent: 'flex-end', paddingHorizontal: t.spacing.xs },
-  // Swift alerts are glass panels with a large radius, not the 8 pt card.
+  // Swift alerts are glass panels with the sheet's large radius, not the card's.
   panel: {
     backgroundColor: t.colors.surfaceOverlay,
-    borderRadius: PANEL_RADIUS,
+    ...rounded(t.radius.sheet),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     padding: t.spacing.md,
@@ -60,7 +61,7 @@ const useStyles = makeStyles((t) => ({
   column: { gap: t.spacing.xs },
   pill: {
     minHeight: 48,
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: t.spacing.xs,
@@ -70,7 +71,7 @@ const useStyles = makeStyles((t) => ({
   input: {
     minHeight: t.metrics.minTapSize,
     paddingHorizontal: t.spacing.sm,
-    borderRadius: t.metrics.chipRadius,
+    ...rounded(t.radius.control),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     backgroundColor: t.colors.control,
@@ -80,7 +81,6 @@ const useStyles = makeStyles((t) => ({
   },
 }));
 
-const PANEL_RADIUS = 28;
 const POPOVER_WIDTH = 280;
 const EDGE = 12;
 const POLL_MS = 150;

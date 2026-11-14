@@ -23,7 +23,7 @@ export function nativeDetents(detent: SheetDetent, maxShare: number): TrueSheetD
 export function NativeSheet(props: SheetProps) {
   const { visible, onClose, onDismissed, detent = 'fit', grabber = true, testID = 'sheet' } = props;
   const TrueSheet = loadTrueSheet();
-  const { colors, metrics } = useTheme();
+  const { colors, metrics, radius } = useTheme();
   const ref = useRef<TrueSheetMethods>(null);
   const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
   // The sheet's own dismissal (a swipe) arrives after the fact: do not dismiss it twice.
@@ -49,7 +49,7 @@ export function NativeSheet(props: SheetProps) {
       style={fill}
       detents={nativeDetents(detent, metrics.sheetMaxShare)}
       backgroundColor={colors.canvas}
-      cornerRadius={metrics.sheetRadius}
+      cornerRadius={radius.sheet}
       grabber={grabber}
       scrollableRef={scrollRef}
       // A footer inside the content stays behind the keyboard; the sheet's own absolute footer

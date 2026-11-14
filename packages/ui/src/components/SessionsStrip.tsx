@@ -7,6 +7,7 @@ import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { useTerminalColors } from '../terminal/TerminalThemeContext';
 import { withAlpha } from '../theme/color';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -33,7 +34,7 @@ const useStyles = makeStyles((t) => ({
     height: 84,
     justifyContent: 'space-between',
     padding: airy.tile,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.card),
     backgroundColor: t.colors.surface,
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,

@@ -38,7 +38,7 @@ export function SetupStep({ number, step, divider }: SetupStepProps) {
           style={{
             width: 26,
             height: 26,
-            borderRadius: 13,
+            borderRadius: theme.radius.capsule,
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: theme.wash(theme.colors.accent),

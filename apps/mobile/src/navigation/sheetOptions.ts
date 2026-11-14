@@ -17,14 +17,14 @@ export type SheetSize = 'full' | 'fit';
  * so call this in the root stack only (see modalRoutes.test).
  */
 export function sheetOptions(
-  { metrics }: Pick<Theme, 'metrics'>,
+  { radius }: Pick<Theme, 'radius'>,
   { size = 'full' }: { size?: SheetSize } = {},
 ): NativeStackNavigationOptions {
   if (Platform.OS !== 'ios') return { presentation: 'modal' };
   return {
     presentation: 'formSheet',
     sheetAllowedDetents: size === 'fit' ? 'fitToContents' : [1],
-    sheetCornerRadius: metrics.sheetRadius,
+    sheetCornerRadius: radius.sheet,
     sheetGrabberVisible: true,
     sheetExpandsWhenScrolledToEdge: true,
   };

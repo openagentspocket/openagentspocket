@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { Meter } from '../primitives/Meter';
 import { Text, type TextTone } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 
@@ -22,7 +23,7 @@ const useStyles = makeStyles((t) => ({
   segment: {
     flex: 1,
     height: 10,
-    borderRadius: 2,
+    ...rounded(t.radius.mark),
     backgroundColor: t.colors.control,
     overflow: 'hidden',
   },

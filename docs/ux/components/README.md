@@ -3,7 +3,7 @@
 
 The UX program goes component first: each Swift visual component is cloned once into `packages/ui/src/components/<Name>.tsx`,
 reused by every screen, and judged against a crop of the Swift atlas. Whole screens are assembled afterwards (the `UX1-*` tasks).
-Skin: Índigo default, Papel light, Noche optional; cards radius 8 with a hairline; airy density (x1.3 of the Swift spacing). The atlas
+Skin: Índigo default, Papel light, Noche optional; cards radius 20 (continuous) with a hairline; airy density (x1.3 of the Swift spacing). The atlas
 is the old Noche skin: copy structure, spacing and behavior, never colors.
 
 ## Loop for a UX3 worker

@@ -101,17 +101,20 @@ if within 1 pt, else a named constant in the screen's own style file (never a ba
 the status dot (8; RN draws 10: set to 8 for list rows, 7 in the status line), strokes (1 pt hairline, 2 pt selection
 ring), the 24 pt usage ring, grabber (36x5).
 
-Radii (*decided* cards 8):
+Radii (*decided* 2026-11-13: larger, iOS continuous corners): one scale, `t.radius` (`packages/ui/src/theme/metrics.ts`),
+drawn with `rounded()` (adds `borderCurve: 'continuous'` on iOS; `Tappable` adds it too). `scripts/check-radius-literals.mjs`
+rejects any other number. A nested shape steps down (inner about outer minus the inset, never larger).
 
-| Swift | Value | Índigo |
+| Token | Value | Used for |
 |---|---|---|
-| `cardRadius` (cards, grouped sections, inbox card, host card, skeletons) | 20 | **8** (`metrics.cardRadius`) |
-| `chipRadius` (chips, rows inside cards) | 10 | **6** (`metrics.chipRadius`) |
-| session tile, option buttons, quick-detail rows | 12 | 8 (they are cards) |
-| banner | 14 continuous | 8 |
-| composer container | 24 continuous | 16 (`metrics.sheetRadius`): the one rounder container, proposal |
-| capsule badges, round buttons, header capsules | capsule/circle | stays 999 |
-| sheet top corners | system | 16 (`metrics.sheetRadius`) |
+| `radius.card` | 20 | cards, grouped sections, banners, toasts, the Blocked card, the user bubble, session tiles |
+| `radius.control` | 12 | buttons, inputs, code blocks, thumbnails, menu panels, key caps, rows inside a drawer |
+| `radius.chip` | 8 | chips, small tags and tiles (diff kind, heat map cells), terminal keys, chart readout |
+| `radius.mark` | 4 | legend swatches, limit segments, 18 pt icon bubbles, text skeletons |
+| `radius.sheet` | 28 | sheet top corners (JS and native), alerts, the session drawer |
+| `radius.capsule` | 999 | pills, badges, round buttons, dots, segmented controls (iOS 26), meters |
+
+The composer card is concentric with its 40 pt circles: `CIRCLE / 2 + spacing.xs` (30).
 
 Hairlines: Swift draws **no** border on a card (flat surface on canvas). *Decided* skin: a 1 pt hairline at
 `textPrimary` 16% (`theme.hairline`, `metrics.hairlineOpacity`), already on `Card`. Separators between grouped rows are
@@ -131,7 +134,7 @@ sidebar column: 2 pt `accent` stroke around the card (`HomeCardSelection`), not 
 ## 5. Components: Swift anatomy, RN primitive, gap
 
 ### 5.1 Cards (`themedCard`) -> `Card`
-Fill surface (overlay level inside sheets), radius 8, hairline, optional attention outline. Content padding: inbox card
+Fill surface (overlay level inside sheets), `radius.card`, hairline, optional attention outline. Content padding: inbox card
 spacing[3]=16 -> `md` 21 uniform (RN `Card` padded uses `md` with `gap xs`: matches). Host card 14 -> 18 (use
 `padded={false}` + own style). Pressed state: Swift `.plain` button has no highlight on cards, iPad adds `.hoverEffect(.highlight)`;
 RN `Card` pressed = `surfaceRaised` fill: keep. Gap: none beyond the screen glow.
@@ -161,7 +164,7 @@ headers use `DisclosureChevron`: `chevron.right` footnote semibold secondary, ro
   RN `Badge` has accent/control/outline: add `wash`.
 - `StatusPill` = wash badge in the status color, ink from the status color for the current appearance; Working shows the
   `SolvingOrbView` (12 pt) before the word. **Gap**: no orb primitive; add `StatusOrb` (animated, reduce-motion = static dot).
-- `MetadataChip`: caption2 monospaced, secondary ink, padding 8x3, `control` fill, radius `chipRadius`, optional leading
+- `MetadataChip`: caption2 monospaced, secondary ink, padding 8x3, `control` fill, radius `radius.chip`, optional leading
   SF Symbol small. This is the inbox chip (host, workspace, model + context). RN: `Chip size="small"` (the same `Chip`
   that is also the selectable filter chip).
 - Context-low badge (triangle + "16 %") before the status pill when 20% or less of the context is left.
@@ -220,13 +223,13 @@ RN `EmptyState` has layouts; verify type roles against 2. Quiet inline state ("A
 with subheadline secondary text, not a bare text.
 
 ### 5.11 Banners and toasts -> `Banner`, `toast`
-Notification banner (in-app): material card, radius 14 -> 8, padding 14x10 -> 18x13, max width 520 centered, title
+Notification banner (in-app): material card, radius 14 -> `radius.card`, padding 14x10 -> 18x13, max width 520 centered, title
 subheadline semibold one line, body footnote secondary 2 lines (Blocked question: footnote monospaced 3 lines), slides from
 the top with opacity (`.move(edge: .top)` + opacity), `.snappy`. Inline banners (chat) are footnote text in a tinted wash
 row. See `briefs/notifications-banners.md`.
 
 ### 5.12 Loading
-Skeleton card: `surfaceOverlay`, radius 8, 72 pt high, two of them for the inbox; no shimmer in Swift (static). RN
+Skeleton card: `surfaceOverlay`, `radius.card`, 72 pt high, two of them for the inbox; no shimmer in Swift (static). RN
 `Skeleton` shimmers: keep static under reduce motion. Pull to refresh: system control, tint `accent`.
 
 ### 5.13 Copy affordance -> `CopyButton`

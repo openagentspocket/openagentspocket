@@ -176,9 +176,10 @@ export {
   useChromeInsets,
 } from './theme/chrome';
 export { withAlpha } from './theme/color';
+export { continuousCurve, rounded } from './theme/corners';
 export { useInsets } from './theme/insets';
 export { type LayoutMode, layoutModeFor, useLayoutMode } from './theme/layoutMode';
-export { airy, metrics, spacing } from './theme/metrics';
+export { airy, metrics, type RadiusKey, radius, spacing } from './theme/metrics';
 export { mixed, programTint } from './theme/programTint';
 export { type Status, statusColorKey, type Tone, toneColorKey } from './theme/status';
 export {

@@ -2,6 +2,7 @@ import { type TextInputProps, View } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
+import { rounded } from '../theme/corners';
 import { makeStyles, useTheme } from '../theme/theme';
 import { typography } from '../theme/typography';
 
@@ -12,7 +13,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xs,
     minHeight: 40,
     paddingHorizontal: t.spacing.sm,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.control),
     backgroundColor: t.colors.control,
   },
   input: {

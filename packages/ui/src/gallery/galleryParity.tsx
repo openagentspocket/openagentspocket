@@ -18,6 +18,7 @@ import { Segmented } from '../primitives/Segmented';
 import { StatusOrb } from '../primitives/StatusOrb';
 import { Text, type TextVariant } from '../primitives/Text';
 import { FontScaleOverride } from '../theme/accessibility';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import { makeStyles, ThemeProvider, useTheme } from '../theme/theme';
 import type { ThemeId } from '../theme/tokens.generated';
@@ -43,7 +44,7 @@ const MENU: ActionMenuItem[] = [
 
 const useStyles = makeStyles((t) => ({
   stage: {
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.card),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     overflow: 'hidden',

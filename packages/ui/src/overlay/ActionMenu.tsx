@@ -4,6 +4,7 @@ import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
 import { MENU_DISMISS_MS } from './dismiss';
@@ -48,7 +49,7 @@ const useStyles = makeStyles((t) => ({
   backdrop: { flex: 1, backgroundColor: t.backdrop },
   panel: {
     backgroundColor: t.colors.surfaceOverlay,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.control),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     overflow: 'hidden',

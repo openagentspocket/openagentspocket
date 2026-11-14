@@ -38,13 +38,30 @@ export const airy = {
   statusLineDot: 7,
 } as const;
 
+/**
+ * The one corner scale, in the current iOS look (large, continuous corners; `rounded()` adds the
+ * continuous curve). A shape nested in another steps down: its radius is about the outer radius minus
+ * the inset between them, never larger. `scripts/check-radius-literals.mjs` rejects any other number.
+ */
+export const radius = {
+  /** Tiny shapes: legend swatches, meter segments, icon bubbles under 20 pt, text placeholders. */
+  mark: 4,
+  /** Chips, small tags and tiles, inline code, keys. */
+  chip: 8,
+  /** Control size, alone or inside a card: buttons, inputs, code blocks, thumbnails, menus, rows. */
+  control: 12,
+  /** Cards, grouped panels, banners, toasts, bubbles. */
+  card: 20,
+  /** Top corners of a sheet (iOS 26 style), alerts and the drawer; the native form sheet too. */
+  sheet: 28,
+  /** Fully rounded: pills, capsules, round buttons and dots. */
+  capsule: 999,
+} as const;
+
+export type RadiusKey = keyof typeof radius;
+
 export const metrics = {
   screenInset: 21,
-  cardRadius: 8,
-  /** Chips and the capsule-less badges. */
-  chipRadius: 6,
-  /** Top corners of a sheet (iOS 26 style); the native form sheet gets the same value. */
-  sheetRadius: 28,
   /** A sheet is never shorter than this share of the window, nor taller than the max one. */
   sheetMinShare: 0.3,
   sheetMaxShare: 0.92,

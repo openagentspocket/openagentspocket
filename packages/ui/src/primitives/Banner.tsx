@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useRef } from 'react';
 import { Animated, PanResponder, Platform, View } from 'react-native';
 import { quick, useReducedMotion } from '../motion';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import type { Tone } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -18,9 +19,8 @@ const TONE_ICON: Record<Tone, IconName> = {
   neutral: 'info',
 };
 
-/** Swift `AgentNotificationBannerView`: system-banner width, 14 pt corners. */
+/** Swift `AgentNotificationBannerView`: system-banner width. */
 const INAPP_MAX_WIDTH = 520;
-const FLOATING_RADIUS = 14;
 /** Slide distance (points) of the floating banner's entrance and exit. */
 const SLIDE = 16;
 /** Upward travel (points) of a swipe that dismisses the floating banner. */
@@ -34,7 +34,7 @@ const useStyles = makeStyles((t) => ({
   wash: {
     alignItems: 'flex-start',
     gap: t.spacing.sm,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.card),
     paddingVertical: t.spacing.sm,
     paddingLeft: t.spacing.md,
     paddingRight: t.spacing.xs,
@@ -44,7 +44,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xs,
     minHeight: t.metrics.minTapSize,
     padding: t.spacing.xs,
-    borderRadius: t.metrics.cardRadius + 4,
+    ...rounded(t.radius.card),
     backgroundColor: t.colors.surfaceRaised,
   },
   floating: {
@@ -52,7 +52,7 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.sm,
     gap: t.spacing.sm,
-    borderRadius: FLOATING_RADIUS,
+    ...rounded(t.radius.card),
     backgroundColor: t.colors.surfaceOverlay,
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,

@@ -4,6 +4,7 @@ import { Button } from '../primitives/Button';
 import { Icon } from '../primitives/Icon';
 import { Spinner } from '../primitives/Spinner';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { makeStyles } from '../theme/theme';
 
 const THUMBNAIL = 64;
@@ -21,7 +22,7 @@ const useStyles = makeStyles((t) => ({
   thumbnail: {
     width: THUMBNAIL,
     height: THUMBNAIL,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.control),
     overflow: 'hidden',
     backgroundColor: t.colors.control,
   },
@@ -34,7 +35,7 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     gap: t.spacing.xxs,
     paddingLeft: t.spacing.xs,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.control),
     backgroundColor: t.colors.control,
   },
   name: { maxWidth: CHIP_NAME_WIDTH },

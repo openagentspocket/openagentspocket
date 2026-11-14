@@ -4,6 +4,7 @@ import { EmptyState } from '../primitives/EmptyState';
 import { Screen } from '../primitives/Screen';
 import { SectionHeader } from '../primitives/SectionHeader';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { makeStyles, ThemeProvider } from '../theme/theme';
 import type { ThemeId } from '../theme/tokens.generated';
 import { componentCatalog, findCatalogEntry } from './components/registry';
@@ -18,7 +19,7 @@ const useStageStyles = makeStyles((t) => ({
     width: '100%',
     maxWidth: CAPTURE_WIDTH,
     backgroundColor: t.colors.canvas,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.card),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     paddingVertical: t.spacing.md,

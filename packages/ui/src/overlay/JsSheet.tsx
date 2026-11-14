@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { quick, useReducedMotion } from '../motion';
 import { Tappable } from '../primitives/Tappable';
+import { continuousCurve } from '../theme/corners';
 import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
 import { SheetAlertHost, SheetBody } from './SheetBody';
@@ -31,8 +32,9 @@ const useStyles = makeStyles((t) => ({
   panel: {
     backgroundColor: t.colors.canvas,
     overflow: 'hidden',
-    borderTopLeftRadius: t.metrics.sheetRadius,
-    borderTopRightRadius: t.metrics.sheetRadius,
+    borderTopLeftRadius: t.radius.sheet,
+    borderTopRightRadius: t.radius.sheet,
+    ...continuousCurve,
     maxWidth: t.metrics.readableWidth,
     alignSelf: 'center',
   },
@@ -43,7 +45,7 @@ const useStyles = makeStyles((t) => ({
     alignSelf: 'center',
     width: t.metrics.sheetGrabberWidth,
     height: t.metrics.sheetGrabberHeight,
-    borderRadius: t.metrics.sheetGrabberHeight / 2,
+    borderRadius: t.radius.capsule,
     backgroundColor: t.colors.control,
     marginTop: t.spacing.xs,
   },

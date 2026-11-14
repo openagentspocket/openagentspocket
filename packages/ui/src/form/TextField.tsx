@@ -2,6 +2,7 @@ import type { Ref } from 'react';
 import { type TextInputInstance, type TextInputProps, View } from 'react-native';
 import { monoFamily, Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
+import { rounded } from '../theme/corners';
 import { makeStyles, useTheme } from '../theme/theme';
 import { typography } from '../theme/typography';
 
@@ -11,7 +12,7 @@ const useStyles = makeStyles((t) => ({
     minHeight: t.metrics.minTapSize,
     paddingHorizontal: t.spacing.sm,
     paddingVertical: t.spacing.xs,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.control),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     backgroundColor: t.colors.control,

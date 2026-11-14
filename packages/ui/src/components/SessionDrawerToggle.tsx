@@ -8,14 +8,14 @@ import { makeStyles, useTheme } from '../theme/theme';
 const useStyles = makeStyles((t) => ({
   toggles: {
     flexDirection: 'row',
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     backgroundColor: t.colors.control,
     padding: airy.badgeV,
   },
   toggle: {
     width: 34,
     height: 34,
-    borderRadius: 17,
+    borderRadius: t.radius.capsule,
     alignItems: 'center',
     justifyContent: 'center',
   },

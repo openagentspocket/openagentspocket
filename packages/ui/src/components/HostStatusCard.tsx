@@ -4,6 +4,7 @@ import { Card } from '../primitives/Card';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import { toneColorKey } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -21,7 +22,7 @@ const useStyles = makeStyles((t) => ({
   tile: {
     width: 48,
     height: 48,
-    borderRadius: 10,
+    ...rounded(t.radius.control),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -29,7 +30,7 @@ const useStyles = makeStyles((t) => ({
   reconnect: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: t.radius.capsule,
     alignItems: 'center',
     justifyContent: 'center',
   },

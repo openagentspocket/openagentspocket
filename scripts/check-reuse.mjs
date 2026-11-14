@@ -8,26 +8,23 @@ import { basename, dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const RADIUS = /metrics\.cardRadius/;
+const RADIUS = /radius\.card\b/;
 
 /** The bases: they define the shapes everything else reuses. */
 const BASES = new Set([
   'packages/ui/src/primitives/Card.tsx',
-  'packages/ui/src/primitives/Button.tsx',
   'packages/ui/src/primitives/Banner.tsx',
-  'packages/ui/src/form/SearchField.tsx',
-  'packages/ui/src/form/TextField.tsx',
-  'packages/ui/src/overlay/ActionMenu.tsx',
   'packages/ui/src/overlay/ToastHost.tsx',
 ]);
 
 /** Not cards: a shape drawn with the card radius for its own reason. */
 const NOT_CARDS = new Map([
-  ['packages/ui/src/components/ComposerAttachmentStrip.tsx', 'image frame and chip'],
-  ['packages/ui/src/components/SessionDrawer.tsx', 'selected row background'],
+  ['packages/ui/src/components/BackgroundWorkStrip.tsx', 'a floating status line'],
+  ['packages/ui/src/components/ChatUserBubble.tsx', 'message bubble'],
   ['packages/ui/src/components/SessionsStrip.tsx', 'terminal thumbnail in its own palette'],
+  ['packages/ui/src/components/TerminalThemePreview.tsx', 'a preview in a terminal palette'],
   ['packages/ui/src/components/ThemeChoiceCard.tsx', "a preview in another theme's colors"],
-  ['packages/ui/src/components/TerminalThemePicker.tsx', 'swatch in a terminal palette'],
+  ['packages/ui/src/composer/Composer.tsx', 'a text field that grows'],
   ['packages/ui/src/scanner/QRCamera.tsx', 'camera frame'],
 ]);
 

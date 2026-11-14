@@ -4,6 +4,7 @@ import Svg, { Defs, G, Line, LinearGradient, Path, Stop } from 'react-native-svg
 import { impact } from '../haptics';
 import { Card } from '../primitives/Card';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { chartMax, niceCeiling, type Point, scrubIndex, smoothPath } from './usageChartMath';
@@ -18,7 +19,7 @@ const HOLD_MS = 250;
 const useStyles = makeStyles((t) => ({
   legend: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xxs },
-  dot: { width: 10, height: 10, borderRadius: 5 },
+  dot: { width: 10, height: 10, borderRadius: t.radius.capsule },
   spacer: { flex: 1 },
   hint: { flexShrink: 0, marginLeft: airy.chipV },
   plot: { height: HEIGHT, marginTop: t.spacing.xs },
@@ -29,7 +30,7 @@ const useStyles = makeStyles((t) => ({
     top: 0,
     paddingHorizontal: t.spacing.xs,
     paddingVertical: t.spacing.xxs,
-    borderRadius: t.metrics.chipRadius,
+    ...rounded(t.radius.chip),
     backgroundColor: t.colors.surfaceOverlay,
   },
   xRow: { height: 16, marginTop: t.spacing.xxs },

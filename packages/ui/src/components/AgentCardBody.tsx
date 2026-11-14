@@ -5,6 +5,7 @@ import { ProgramMark } from '../primitives/ProgramMark';
 import { DisclosureChevron } from '../primitives/SectionHeader';
 import { StatusOrb } from '../primitives/StatusOrb';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -43,7 +44,7 @@ const useStyles = makeStyles((t) => ({
   bubble: {
     width: 18,
     height: 18,
-    borderRadius: 5,
+    ...rounded(t.radius.mark),
     borderWidth: t.metrics.hairlineWidth,
     alignItems: 'center',
     justifyContent: 'center',
@@ -56,7 +57,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: airy.badgeV,
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     paddingHorizontal: airy.stack,
     paddingVertical: airy.badgeV,
   },

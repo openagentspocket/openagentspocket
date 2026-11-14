@@ -7,6 +7,7 @@ import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { makeStyles, useTheme } from '../theme/theme';
 import { KeyboardDismissButton } from './KeyboardDismissButton';
 import { useKeyRepeat } from './keyRepeat';
@@ -79,7 +80,7 @@ const useStyles = makeStyles((t) => ({
     bottom: 8,
     width: 176,
     height: 176,
-    borderRadius: 28,
+    ...rounded(t.radius.sheet),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -93,7 +94,7 @@ const useStyles = makeStyles((t) => ({
   hub: {
     width: 56,
     height: 56,
-    borderRadius: 28,
+    borderRadius: t.radius.capsule,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: t.colors.control,

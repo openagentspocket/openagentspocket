@@ -21,7 +21,7 @@ const ROW_PREFIX = { models: 'model', directories: 'directory', days: 'day' } as
 const DAYS = 30;
 
 const useStyles = makeStyles((th) => ({
-  dot: { width: 8, height: 8, borderRadius: 4 },
+  dot: { width: 8, height: 8, borderRadius: th.radius.capsule },
   amounts: { alignItems: 'flex-end', gap: airy.line, flexShrink: 0 },
   separator: {
     height: th.metrics.hairlineWidth,

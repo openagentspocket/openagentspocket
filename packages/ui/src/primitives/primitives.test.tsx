@@ -9,6 +9,7 @@ import {
   CopyableValueRow,
   CopyButton,
   Icon,
+  radius,
   Screen,
   SectionHeader,
   StatusDot,
@@ -87,7 +88,7 @@ describe('Card', () => {
     expect(screen.getByTestId('card')).toHaveStyle({
       backgroundColor: themes.papel.colors.surfaceOverlay,
       borderColor: withAlpha(themes.papel.colors.statusBlocked, 0.4),
-      borderRadius: 8,
+      borderRadius: radius.card,
     });
   });
 

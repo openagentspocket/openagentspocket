@@ -7,6 +7,7 @@ import { Markdown } from '../markdown/Markdown';
 import { toast } from '../overlay/toast';
 import { Text } from '../primitives/Text';
 import { type TerminalHandle, TerminalView } from '../terminal/TerminalView';
+import { rounded } from '../theme/corners';
 import { useTheme } from '../theme/theme';
 import { sampleDiff, sampleKeyRows, sampleMarkdown, sampleTerminal } from './galleryData';
 import { Specimen, Stack } from './galleryKit';
@@ -36,7 +37,7 @@ export function Content() {
         <View
           style={{
             height: 140,
-            borderRadius: theme.metrics.cardRadius,
+            ...rounded(theme.radius.control),
             overflow: 'hidden',
             borderWidth: theme.metrics.hairlineWidth,
             borderColor: theme.hairline,

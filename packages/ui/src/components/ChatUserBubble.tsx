@@ -5,9 +5,9 @@ import { Chip } from '../primitives/Chip';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text, type TextTone } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { makeStyles } from '../theme/theme';
 
-const BUBBLE_RADIUS = 20;
 const STATUS_INK = { secondary: 'textSecondary', warning: 'warning', danger: 'danger' } as const;
 
 const useStyles = makeStyles((t) => ({
@@ -15,7 +15,7 @@ const useStyles = makeStyles((t) => ({
   bubble: {
     maxWidth: '80%',
     backgroundColor: t.colors.control,
-    borderRadius: BUBBLE_RADIUS,
+    ...rounded(t.radius.card),
     paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.sm,
     gap: t.spacing.xs,
@@ -54,7 +54,7 @@ interface ChatUserBubbleProps {
   testID?: string;
 }
 
-/** Swift's user message bubble: right aligned, radius 20 on the raised surface, no border. */
+/** Swift's user message bubble: right aligned, the card corner on the raised surface, no border. */
 export function ChatUserBubble({
   text,
   attachments,

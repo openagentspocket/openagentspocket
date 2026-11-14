@@ -4,6 +4,7 @@ import { Card } from '../primitives/Card';
 import { Icon } from '../primitives/Icon';
 import { Text } from '../primitives/Text';
 import { withAlpha } from '../theme/color';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type ThemeId, themes } from '../theme/tokens.generated';
@@ -20,7 +21,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xxs,
     paddingHorizontal: t.spacing.xs,
     paddingVertical: t.spacing.xxs,
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     backgroundColor: t.colors.canvas,
   },
   dot: { width: DOT, height: DOT, borderRadius: DOT / 2 },
@@ -110,18 +111,26 @@ const usePreviewStyles = makeStyles((t) => ({
     flexDirection: 'row',
     gap: t.spacing.sm,
     padding: t.spacing.md,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.card),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
   },
   agent: { flex: 3, padding: t.spacing.sm, gap: t.spacing.xs, borderWidth: 1 },
   terminal: { flex: 2, padding: t.spacing.sm, gap: airy.line, borderWidth: 1 },
   header: { flexDirection: 'row', alignItems: 'center', gap: t.spacing.xs },
-  dot: { width: 8, height: 8, borderRadius: 4 },
+  dot: { width: 8, height: 8, borderRadius: t.radius.capsule },
   grow: { flex: 1 },
-  badge: { borderRadius: 999, paddingHorizontal: t.spacing.xs, paddingVertical: airy.line },
+  badge: {
+    borderRadius: t.radius.capsule,
+    paddingHorizontal: t.spacing.xs,
+    paddingVertical: airy.line,
+  },
   chips: { flexDirection: 'row', gap: t.spacing.xxs },
-  chip: { borderRadius: 6, paddingHorizontal: t.spacing.xs, paddingVertical: airy.line },
+  chip: {
+    borderRadius: t.radius.chip,
+    paddingHorizontal: t.spacing.xs,
+    paddingVertical: airy.line,
+  },
 }));
 
 interface ThemeChoicePreviewProps {
@@ -150,7 +159,7 @@ export function ThemeChoicePreview({
   const styles = usePreviewStyles();
   const theme = useTheme();
   const { colors } = themes[themeId];
-  const radius = theme.metrics.cardRadius;
+  const corner = rounded(theme.radius.control);
   return (
     <View
       style={[styles.stage, { backgroundColor: colors.canvas }]}
@@ -162,7 +171,7 @@ export function ThemeChoicePreview({
         style={[
           styles.agent,
           {
-            borderRadius: radius,
+            ...corner,
             backgroundColor: colors.surface,
             borderColor: withAlpha(colors.statusBlocked, theme.metrics.accentOutlineOpacity),
           },
@@ -205,7 +214,7 @@ export function ThemeChoicePreview({
         style={[
           styles.terminal,
           {
-            borderRadius: radius,
+            ...corner,
             backgroundColor: colors.terminalBackground,
             borderColor: colors.separator,
           },

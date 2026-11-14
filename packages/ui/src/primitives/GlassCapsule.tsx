@@ -11,7 +11,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: t.metrics.minTapSize,
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     overflow: 'hidden',
   },
   fallback: { borderWidth: t.metrics.hairlineWidth, borderColor: t.hairline },

@@ -34,12 +34,16 @@ const useStyles = makeStyles((t) => ({
     ...({ position: 'absolute', right: 0, bottom: 1 } as const),
     width: 9,
     height: 9,
-    borderRadius: 5,
+    borderRadius: t.radius.capsule,
     borderWidth: 1.5,
     borderColor: t.colors.canvas,
   },
   pills: { flexDirection: 'row', gap: t.spacing.xxs },
-  pill: { borderRadius: 999, paddingHorizontal: airy.stack, paddingVertical: airy.badgeV },
+  pill: {
+    borderRadius: t.radius.capsule,
+    paddingHorizontal: airy.stack,
+    paddingVertical: airy.badgeV,
+  },
 }));
 
 interface FoldHeaderProps {

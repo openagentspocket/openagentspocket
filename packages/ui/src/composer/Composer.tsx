@@ -4,6 +4,7 @@ import { ActionMenu, type ActionMenuItem } from '../overlay/ActionMenu';
 import { Button } from '../primitives/Button';
 import { Chip } from '../primitives/Chip';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
+import { rounded } from '../theme/corners';
 import { makeStyles, useTheme } from '../theme/theme';
 import { typography } from '../theme/typography';
 
@@ -43,7 +44,7 @@ const useStyles = makeStyles((t) => ({
     paddingHorizontal: t.spacing.sm,
     paddingTop: t.spacing.xs,
     paddingBottom: t.spacing.xs,
-    borderRadius: 20,
+    ...rounded(t.radius.card),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     backgroundColor: t.colors.control,

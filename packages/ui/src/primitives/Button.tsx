@@ -1,4 +1,5 @@
 import { useAnchor } from '../overlay/anchors';
+import { rounded } from '../theme/corners';
 import { makeStyles, type Theme, useTheme } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
 import { Icon, type IconName } from './Icon';
@@ -16,7 +17,7 @@ const useStyles = makeStyles((t) => ({
     minHeight: t.metrics.minTapSize,
     paddingHorizontal: t.spacing.md,
     paddingVertical: t.spacing.xxs,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.control),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -33,9 +34,9 @@ const useStyles = makeStyles((t) => ({
   secondary: { backgroundColor: t.colors.control },
   destructive: { backgroundColor: t.wash(t.colors.danger) },
   text: { paddingHorizontal: t.spacing.xs },
-  capsule: { backgroundColor: t.colors.accentContainer, borderRadius: 999 },
+  capsule: { backgroundColor: t.colors.accentContainer, borderRadius: t.radius.capsule },
   label: { flexShrink: 1, textAlign: 'center' },
-  pill: { borderRadius: 999 },
+  pill: { borderRadius: t.radius.capsule },
   pressed: { opacity: 0.75 },
   disabled: { opacity: 0.4 },
 }));

@@ -7,6 +7,7 @@ import { Button } from '../primitives/Button';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
+import { rounded } from '../theme/corners';
 import { makeStyles, useTheme } from '../theme/theme';
 import { typography } from '../theme/typography';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
@@ -20,7 +21,8 @@ const LINE_PAD = (CIRCLE - typography.body.lineHeight) / 2;
 const useStyles = makeStyles((t) => ({
   card: {
     marginHorizontal: t.spacing.sm,
-    borderRadius: 28,
+    // Concentric with the circles it holds at the xs inset.
+    ...rounded(CIRCLE / 2 + t.spacing.xs),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     backgroundColor: t.colors.surfaceRaised,
@@ -79,7 +81,7 @@ const useStyles = makeStyles((t) => ({
     bottom: -2,
     width: 16,
     height: 16,
-    borderRadius: 8,
+    borderRadius: t.radius.capsule,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: t.colors.surfaceRaised,

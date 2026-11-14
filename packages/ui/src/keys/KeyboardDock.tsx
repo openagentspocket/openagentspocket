@@ -3,6 +3,7 @@ import { ScrollView, View } from 'react-native';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { makeStyles } from '../theme/theme';
 
 /** One key of a toolbar row. Tables of these come from the terminal's key data, not from code. */
@@ -29,7 +30,7 @@ const useStyles = makeStyles((t) => ({
     minWidth: 40,
     height: 36,
     paddingHorizontal: t.spacing.xs,
-    borderRadius: t.metrics.chipRadius,
+    ...rounded(t.radius.chip),
     backgroundColor: t.colors.control,
     alignItems: 'center',
     justifyContent: 'center',

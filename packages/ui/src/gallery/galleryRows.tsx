@@ -22,7 +22,7 @@ export function CardsAndRows() {
         <Stack>
           <Card>
             <Text variant="headline">Surface card</Text>
-            <Text tone="secondary">Radius 8 and a hairline at 16%.</Text>
+            <Text tone="secondary">The card corner and a hairline at 16%.</Text>
           </Card>
           <Card level="overlay">
             <Text variant="headline">Overlay card</Text>

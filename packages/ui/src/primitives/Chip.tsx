@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { View } from 'react-native';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import { makeStyles } from '../theme/theme';
 import { Icon, type IconName } from './Icon';
@@ -13,7 +14,7 @@ const useStyles = makeStyles((t) => ({
     alignSelf: 'flex-start',
     gap: t.spacing.xxs,
     backgroundColor: t.colors.control,
-    borderRadius: t.metrics.chipRadius,
+    ...rounded(t.radius.chip),
     paddingHorizontal: t.spacing.xs,
     paddingVertical: airy.badgeV,
     maxWidth: '100%',

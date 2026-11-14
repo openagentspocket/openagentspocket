@@ -17,7 +17,7 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     gap: t.spacing.xxs,
     backgroundColor: t.colors.control,
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     paddingHorizontal: t.spacing.xs,
     paddingVertical: airy.line,
     minHeight: 24,

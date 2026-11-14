@@ -14,7 +14,7 @@ const useStyles = makeStyles((t) => ({
     flexDirection: 'row',
     alignItems: 'center',
     gap: t.spacing.xxs,
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     paddingHorizontal: airy.stack,
     paddingVertical: airy.badgeV,
   },

@@ -1,8 +1,8 @@
-import { metrics } from '@openagentspocket/ui';
+import { radius } from '@openagentspocket/ui';
 import { Platform } from 'react-native';
 import { sheetOptions } from './sheetOptions';
 
-const theme = { metrics };
+const theme = { radius };
 const setOS = (os: 'ios' | 'android' | 'web') => {
   Object.defineProperty(Platform, 'OS', { configurable: true, get: () => os });
 };
@@ -15,7 +15,7 @@ describe('sheetOptions', () => {
     expect(sheetOptions(theme, { size: 'full' })).toMatchObject({
       presentation: 'formSheet',
       sheetAllowedDetents: [1],
-      sheetCornerRadius: metrics.sheetRadius,
+      sheetCornerRadius: radius.sheet,
       sheetGrabberVisible: true,
     });
     expect(sheetOptions(theme).sheetAllowedDetents).toEqual([1]);

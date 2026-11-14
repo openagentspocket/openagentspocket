@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Linking, View } from 'react-native';
 import { Button } from '../primitives/Button';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { makeStyles } from '../theme/theme';
 import { QRNotice } from './QRNotice';
 import type { QRScannerLabels } from './qrLabels';
@@ -13,7 +14,7 @@ const useStyles = makeStyles((t) => ({
     aspectRatio: 1,
     width: '100%',
     overflow: 'hidden',
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.card),
     backgroundColor: t.colors.control,
   },
   camera: { flex: 1 },

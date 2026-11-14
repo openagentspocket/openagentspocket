@@ -19,18 +19,18 @@ export function meterColor(value: number, tint: ColorKey = 'accent'): ColorKey {
 const useStyles = makeStyles((t) => ({
   track: {
     height: 6,
-    borderRadius: 3,
+    borderRadius: t.radius.capsule,
     backgroundColor: t.colors.control,
     overflow: 'visible',
     justifyContent: 'center',
   },
-  fill: { position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: 3 },
+  fill: { position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: t.radius.capsule },
   tick: {
     position: 'absolute',
     width: 2,
     top: -3,
     bottom: -3,
-    borderRadius: 1,
+    borderRadius: t.radius.capsule,
     backgroundColor: t.colors.textPrimary,
   },
 }));

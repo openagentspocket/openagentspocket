@@ -21,7 +21,7 @@ const useStyles = makeStyles((t) => ({
   glyph: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: t.radius.capsule,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: t.colors.control,
@@ -80,7 +80,7 @@ export function HomeHostCard({
               style={{
                 width: 9,
                 height: 9,
-                borderRadius: 5,
+                borderRadius: theme.radius.capsule,
                 backgroundColor: theme.colors[toneColorKey[host.tone]],
               }}
             />

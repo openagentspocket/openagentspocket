@@ -7,13 +7,15 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { withAlpha } from './color';
-import { metrics, spacing } from './metrics';
+import { metrics, radius, spacing } from './metrics';
 import { type Status, statusColorKey, type Tone, toneColorKey } from './status';
 import { type ThemeId, type ThemeTokens, themes } from './tokens.generated';
 
 export interface Theme extends ThemeTokens {
   spacing: typeof spacing;
   metrics: typeof metrics;
+  /** The corner scale: mark < chip < control < card < sheet, and capsule. */
+  radius: typeof radius;
   /** Card and divider border color. */
   hairline: string;
   /** The color of an Agent status in this theme. */
@@ -32,6 +34,7 @@ export function buildTheme(id: ThemeId): Theme {
     ...tokens,
     spacing,
     metrics,
+    radius,
     hairline: withAlpha(tokens.colors.textPrimary, metrics.hairlineOpacity),
     status: (status) => tokens.colors[statusColorKey[status]],
     tone: (tone) => tokens.colors[toneColorKey[tone]],

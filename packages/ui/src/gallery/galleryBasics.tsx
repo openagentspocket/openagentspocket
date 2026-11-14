@@ -9,6 +9,7 @@ import { Icon, iconNames } from '../primitives/Icon';
 import { ProgramMark } from '../primitives/ProgramMark';
 import { StatusDot } from '../primitives/StatusDot';
 import { Text, type TextTone, type TextVariant } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { useTheme } from '../theme/theme';
@@ -66,7 +67,7 @@ export function TypeAndColor() {
                 style={{
                   width: 40,
                   height: 28,
-                  borderRadius: theme.metrics.chipRadius,
+                  ...rounded(theme.radius.chip),
                   borderWidth: theme.metrics.hairlineWidth,
                   borderColor: theme.hairline,
                   backgroundColor: theme.colors[key],

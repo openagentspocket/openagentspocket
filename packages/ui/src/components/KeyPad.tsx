@@ -5,6 +5,7 @@ import type { KeySpec } from '../keys/KeyboardDock';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { useKeyRepeat } from './keyRepeat';
@@ -63,14 +64,19 @@ const useStyles = makeStyles((t) => ({
   },
   pagerTitle: { flex: 1, alignItems: 'center' },
   dots: { flexDirection: 'row', gap: t.spacing.xxs },
-  dot: { width: 6, height: 6, borderRadius: 3, backgroundColor: t.colors.textTertiary },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: t.radius.capsule,
+    backgroundColor: t.colors.textTertiary,
+  },
   dotOn: { backgroundColor: t.colors.accent },
   grid: { gap: t.spacing.xs },
   gridRow: { flexDirection: 'row', gap: t.spacing.xs },
   cap: {
     flex: 1,
     minHeight: 64,
-    borderRadius: 12,
+    ...rounded(t.radius.control),
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: t.colors.surfaceRaised,
@@ -82,7 +88,7 @@ const useStyles = makeStyles((t) => ({
   tab: {
     flex: 1,
     minHeight: t.metrics.minTapSize,
-    borderRadius: 12,
+    ...rounded(t.radius.control),
     alignItems: 'center',
     justifyContent: 'center',
     gap: airy.line,

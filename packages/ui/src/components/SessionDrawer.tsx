@@ -10,6 +10,7 @@ import { Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
 import { useChromeInsets } from '../theme/chrome';
 import { withAlpha } from '../theme/color';
+import { continuousCurve, rounded } from '../theme/corners';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -30,8 +31,9 @@ const useStyles = makeStyles((t) => ({
     width: DRAWER_WIDTH,
     maxWidth: '88%',
     backgroundColor: t.colors.surfaceRaised,
-    borderTopRightRadius: 24,
-    borderBottomRightRadius: 24,
+    borderTopRightRadius: t.radius.sheet,
+    borderBottomRightRadius: t.radius.sheet,
+    ...continuousCurve,
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     paddingTop: t.spacing.sm,
@@ -52,7 +54,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xxs,
     height: t.metrics.minTapSize,
     paddingHorizontal: airy.stack + 4,
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     backgroundColor: t.colors.control,
   },
   input: {
@@ -88,7 +90,7 @@ const useStyles = makeStyles((t) => ({
   },
   count: {
     backgroundColor: t.colors.control,
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     paddingHorizontal: airy.stack,
     paddingVertical: airy.line,
   },
@@ -116,7 +118,7 @@ const useStyles = makeStyles((t) => ({
     paddingLeft: ROW_INDENT,
     paddingRight: t.spacing.sm,
     height: 50,
-    borderRadius: t.metrics.cardRadius + 4,
+    ...rounded(t.radius.control),
   },
   rowTitle: { flex: 1 },
   lead: { width: 24, alignItems: 'center' },

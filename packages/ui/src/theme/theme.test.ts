@@ -55,12 +55,17 @@ describe('theme', () => {
     }
   });
 
-  it('washes a color at 15% and keeps radius 8 cards', () => {
+  it('washes a color at 15% and steps the corner scale down from sheet to mark', () => {
     const theme = buildTheme('noche');
     expect(theme.wash(themes.noche.colors.accent)).toBe(
       withAlpha(themes.noche.colors.accent, 0.15),
     );
-    expect(theme.metrics.cardRadius).toBe(8);
+    const { mark, chip, control, card, sheet, capsule } = theme.radius;
+    expect(mark).toBeLessThan(chip);
+    expect(chip).toBeLessThan(control);
+    expect(control).toBeLessThan(card);
+    expect(card).toBeLessThan(sheet);
+    expect(capsule).toBeGreaterThan(sheet);
   });
 
   it('dims overlays with a dark scrim in every theme, light ones included', () => {

@@ -8,6 +8,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { withAlpha } from '../theme/color';
+import { rounded } from '../theme/corners';
 import { makeStyles, useTheme } from '../theme/theme';
 import type { ColorKey } from '../theme/tokens.generated';
 import { SurfaceFillProvider } from './surfaceFill';
@@ -26,15 +27,16 @@ export const CARD_FILL: Record<CardLevel, ColorKey> = {
 const useStyles = makeStyles((t) => ({
   card: {
     backgroundColor: t.colors.surface,
-    borderRadius: t.metrics.cardRadius,
+    ...rounded(t.radius.card),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     overflow: 'hidden',
   },
   padded: { padding: t.spacing.md, gap: t.spacing.xs },
   overlay: { backgroundColor: t.colors.surfaceOverlay },
-  control: { backgroundColor: t.colors.control },
-  terminal: { backgroundColor: t.colors.terminalBackground },
+  // Code and command boxes sit inside a card or a sheet: one step down the corner scale.
+  control: { backgroundColor: t.colors.control, ...rounded(t.radius.control) },
+  terminal: { backgroundColor: t.colors.terminalBackground, ...rounded(t.radius.control) },
   selected: {
     borderWidth: 1,
     borderColor: t.colors.accent,
@@ -71,7 +73,7 @@ interface CardProps {
   testID?: string;
 }
 
-/** A themed card: surface fill, radius 8, hairline border. */
+/** A themed card: surface fill, the card corner, hairline border. */
 export function Card({
   children,
   level = 'surface',

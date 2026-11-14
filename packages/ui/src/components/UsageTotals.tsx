@@ -35,7 +35,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xxs,
     paddingHorizontal: t.spacing.sm,
     minHeight: 32,
-    borderRadius: 999,
+    borderRadius: t.radius.capsule,
     backgroundColor: t.colors.control,
   },
 }));

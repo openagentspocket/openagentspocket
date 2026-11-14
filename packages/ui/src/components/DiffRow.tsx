@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { type DiffLabels, defaultDiffLabels } from '../diff/diffLabels';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { makeStyles, useTheme } from '../theme/theme';
 import {
   type DiffHunk,
@@ -30,7 +31,7 @@ const useStyles = makeStyles((t) => ({
   kind: {
     width: BADGE,
     height: BADGE,
-    borderRadius: t.metrics.chipRadius,
+    ...rounded(t.radius.chip),
     borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',

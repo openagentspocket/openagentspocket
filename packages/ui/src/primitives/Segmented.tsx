@@ -8,7 +8,7 @@ const useStyles = makeStyles((t) => ({
   track: {
     flexDirection: 'row',
     backgroundColor: t.colors.control,
-    borderRadius: t.metrics.chipRadius + 2,
+    borderRadius: t.radius.capsule,
     padding: airy.line,
   },
   segment: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((t) => ({
     minHeight: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: t.metrics.chipRadius,
+    borderRadius: t.radius.capsule,
     paddingHorizontal: airy.chipV,
     minWidth: 0,
   },

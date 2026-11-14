@@ -3,6 +3,7 @@ import { Icon, type IconName } from '../primitives/Icon';
 import { Spinner } from '../primitives/Spinner';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { makeStyles } from '../theme/theme';
 
 /** How a piece of work stands, as the view says it (the core presentation's statuses). */
@@ -55,7 +56,7 @@ const useStyles = makeStyles((t) => ({
     gap: t.spacing.xs,
     paddingHorizontal: t.spacing.sm,
     paddingVertical: t.spacing.xs,
-    borderRadius: 18,
+    ...rounded(t.radius.card),
     backgroundColor: t.colors.surfaceRaised,
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,

@@ -1,5 +1,6 @@
 import { View } from 'react-native';
 import { Text } from '../primitives/Text';
+import { rounded } from '../theme/corners';
 import { makeStyles } from '../theme/theme';
 
 /** The colors of one terminal palette half; they come from the palette, never from the app tokens. */
@@ -40,12 +41,11 @@ export const defaultTerminalPreviewLabels: TerminalPreviewLabels = {
 };
 
 const PREVIEW_HEIGHT = 180;
-const PREVIEW_RADIUS = 16;
 
 const useStyles = makeStyles((t) => ({
   card: {
     height: PREVIEW_HEIGHT,
-    borderRadius: PREVIEW_RADIUS,
+    ...rounded(t.radius.card),
     borderWidth: t.metrics.hairlineWidth,
     borderColor: t.hairline,
     paddingHorizontal: t.spacing.md,

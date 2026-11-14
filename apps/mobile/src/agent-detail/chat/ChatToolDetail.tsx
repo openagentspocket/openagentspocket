@@ -7,7 +7,14 @@ import {
   toolDetailText,
 } from '@openagentspocket/core';
 import { t } from '@openagentspocket/i18n';
-import { DiffRow, type DiffRowLine, makeStyles, Spinner, Text } from '@openagentspocket/ui';
+import {
+  DiffRow,
+  type DiffRowLine,
+  makeStyles,
+  rounded,
+  Spinner,
+  Text,
+} from '@openagentspocket/ui';
 import { toBase64 } from 'agentico-ssh';
 import { useEffect, useMemo, useState } from 'react';
 import { Image, View } from 'react-native';
@@ -18,7 +25,7 @@ const MIME: Record<string, string> = { gif: 'gif', jpeg: 'jpeg', jpg: 'jpeg', we
 
 const useStyles = makeStyles((th) => ({
   stack: { gap: th.spacing.xs },
-  image: { width: '100%', height: IMAGE_HEIGHT, borderRadius: th.metrics.chipRadius },
+  image: { width: '100%', height: IMAGE_HEIGHT, ...rounded(th.radius.control) },
 }));
 
 const BADGES = {
