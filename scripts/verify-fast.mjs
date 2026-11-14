@@ -164,6 +164,7 @@ const WHOLE = [
   { dir: 'modules/ssh', cmd: ['exec', 'vitest', 'run'], codeOnly: true },
   { dir: 'modules/live-activity', cmd: ['exec', 'vitest', 'run'], codeOnly: true },
   { dir: 'packages/relay', cmd: ['test'], codeOnly: false },
+  { dir: 'packages/updates-server', cmd: ['test'], codeOnly: false },
   { dir: 'packages/session-bridge', cmd: ['test'], codeOnly: false },
   { dir: 'apps/site', cmd: ['test'], codeOnly: false },
 ];

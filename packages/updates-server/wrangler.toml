@@ -1,0 +1,27 @@
+# Cloudflare Workers config for the update server (ADR 0028). It holds no secret: there is no
+# `wrangler secret` for it, and there must never be one (the signing key stays with the owner).
+#
+# Local, no account needed: `npx wrangler dev` serves http://127.0.0.1:8787 against a local R2
+# simulation in .wrangler/state; `node scripts/publish-update.mjs --upload <bundle> --channel beta`
+# from the repository root writes into that same local bucket. See README.md.
+#
+# Creating the bucket, deploying and routing a domain are owner steps (docs/guides/updates.md).
+
+name = "openagentspocket-updates"
+main = "src/worker.js"
+compatibility_date = "2026-07-01"
+workers_dev = true
+# A custom domain replaces workers.dev when the owner routes one:
+# [[routes]]
+# pattern = "updates.example.com"
+# custom_domain = true
+
+[[r2_buckets]]
+binding = "UPDATES"
+bucket_name = "openagentspocket-updates"
+
+# Workers Logs stay off: every update check carries a per-install id, the IP address and, after a
+# crash, the error text. Platform logs would store them, and the privacy label says they are not
+# collected. Every deploy applies this.
+[observability]
+enabled = false

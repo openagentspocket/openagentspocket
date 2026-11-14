@@ -1,0 +1,15 @@
+{
+  "name": "@openagentspocket/updates-server",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Serves pre-signed Expo Updates from R2; holds no secret (ADR 0028)",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "dev": "wrangler dev"
+  }
+}
