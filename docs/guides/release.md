@@ -42,6 +42,9 @@ is enabled for production (Apple Developer › Keys: "Sandbox & Production" or "
 - Over-the-air updates (optional, [updates guide](updates.md)): `"updatesUrl": "https://<update domain>/manifest"`
   in the same file, or `UPDATES_URL`, with the certificate committed at `apps/mobile/certs/updates.pem`.
   Without it the build has updates off; the run prints which.
+- First build with over-the-air updates: deploy the relay first (it serves the privacy policy with the
+  "App updates" section) and update the App Store Connect texts from `docs/store/listing.md` before submitting
+  ([updates guide](updates.md)).
 - The app exists in App Store Connect (My Apps › + › New App, bundle id `com.openagentspocket.app`).
 
 ## 2. Preconditions and the bump

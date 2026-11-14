@@ -48,6 +48,7 @@ STRAIGHT TO YOUR COMPUTER
 • Your phone connects to your computer over SSH. Your code and prompts go from one to the other, not through our servers.
 • SSH keys stay in the device keychain and can require Face ID.
 • Notifications are optional. They are encrypted on your computer and pass through a push relay and Apple's push service; the relay cannot read them. You can run your own relay.
+• The app checks our server for updates to itself. Nothing about you is stored there.
 • No analytics and no tracking. Free and open source (MIT).
 
 WORKS WITH
@@ -108,6 +109,7 @@ DIRECTO A TU COMPUTADORA
 • Tu teléfono se conecta a tu computadora por SSH. Tu código y tus mensajes van de uno a otra, sin pasar por servidores nuestros.
 • Las claves SSH quedan en el llavero del dispositivo y pueden pedir Face ID.
 • Las notificaciones son opcionales. Se cifran en tu computadora y pasan por un relay de push y por el servicio de notificaciones de Apple; el relay no puede leerlas. Puedes usar tu propio relay.
+• La app consulta nuestro servidor para buscar actualizaciones de sí misma. Ahí no se guarda nada sobre ti.
 • Sin analítica y sin rastreo. Gratis y de código abierto (MIT).
 
 FUNCIONA CON
@@ -131,7 +133,7 @@ Agents Pocket es un proyecto independiente. Los nombres de productos son marcas 
 
 ## Notes for App Review
 
-Agents Pocket is a companion for herdr (https://herdr.dev), an open-source console that runs AI coding agents on the user's own Mac or Linux computer. The app connects to that computer over SSH, like other SSH clients on the App Store; it does not download or run code on the device. There is no account and no sign-in.
+Agents Pocket is a companion for herdr (https://herdr.dev), an open-source console that runs AI coding agents on the user's own Mac or Linux computer. The app connects to that computer over SSH, like other SSH clients on the App Store. It does not download or execute code from the user's computers. The app's JavaScript can receive signed updates from the project's own server, only to fix and polish features reviewed here, never to add features or native code, in line with the Developer Program License Agreement's allowance for interpreted code (3.3.1(B), Guideline 2.5.2). Updates are code-signed, the app rejects unsigned ones, and no user content passes through that server. There is no account and no sign-in.
 
 HOW TO REVIEW WITHOUT A COMPUTER
 1. Open the app. The first screen says there are no Hosts.

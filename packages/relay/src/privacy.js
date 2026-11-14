@@ -3,7 +3,7 @@
 // source of truth: change the policy here. The contact address comes from
 // the PRIVACY_CONTACT var, so it is set at deploy time, not committed.
 
-const UPDATED = "2026-11-12";
+const UPDATED = "2026-11-14";
 const APP_NAME = "Agents Pocket";
 
 /** @param {string} contact */
@@ -15,7 +15,8 @@ function englishPolicy(contact) {
 on computers you own. It has no accounts, no ads, no analytics and no
 tracking. The developer does not keep or sell personal data. The only app data
 that passes through the developer's servers is what the notification relay
-needs to deliver a notification (see Notifications).</p>
+needs to deliver a notification (see Notifications) and what the app sends when
+it checks for updates to itself (see App updates).</p>
 <h2>What stays on your device</h2>
 <ul>
 <li>Your Hosts, settings and SSH keys. Private keys stay in the device's secure
@@ -37,6 +38,19 @@ Activities, agent counts. To limit abuse it counts requests per IP address
 and per push token in memory, for at most a minute. By default the app uses
 the relay the developer runs on Cloudflare Workers; you can set a relay you
 run yourself in the app's notification settings instead.</p>
+<h2>App updates</h2>
+<p>Official builds of the app can receive updates to their own JavaScript code
+from the update server the developer runs on Cloudflare. At each launch the
+app asks that server whether an update exists. The request carries your IP
+address, the platform, the app's version identifiers, the identifier of the
+update the app is running, a random identifier the update library creates when
+the app is installed and, if an update failed or the app crashed since the last
+check, a summary of the error. The server uses this only to answer the request
+and does not log or store any of it. Updates are signed by the developer and the
+app refuses any update that is not. They carry fixes and polish to features
+already in the app, not new data flows. No content from your Hosts, sessions or
+messages is sent to the update server. A build you make from the source code
+has updates turned off.</p>
 <h2>Children</h2>
 <p>The app is a developer tool and is not directed at children.</p>
 <h2>Changes and contact</h2>
@@ -54,7 +68,8 @@ programación que corren en computadoras tuyas. No tiene cuentas, publicidad,
 analítica ni rastreo. El desarrollador no guarda ni vende datos
 personales. De los datos de la app, lo único que pasa por los servidores del desarrollador es lo que
 el relay de notificaciones necesita para entregar una notificación (ver
-Notificaciones).</p>
+Notificaciones) y lo que la app envía cuando busca actualizaciones de sí misma
+(ver Actualizaciones de la app).</p>
 <h2>Lo que queda en tu dispositivo</h2>
 <ul>
 <li>Tus Hosts, ajustes y claves SSH. Las claves privadas quedan en el
@@ -78,6 +93,21 @@ agentes. Para limitar abusos cuenta los pedidos por dirección IP y por token
 push en memoria, durante un minuto como máximo. Por defecto la app usa el
 relay que el desarrollador corre en Cloudflare Workers; en los ajustes de
 notificaciones de la app podés poner en su lugar un relay que corras vos.</p>
+<h2>Actualizaciones de la app</h2>
+<p>Las versiones oficiales de la app pueden recibir actualizaciones de su propio
+código JavaScript desde el servidor de actualizaciones que el desarrollador
+corre en Cloudflare. En cada inicio, la app le pregunta a ese servidor si hay
+una actualización. El pedido incluye tu dirección IP, la plataforma, los
+identificadores de versión de la app, el identificador de la actualización que
+está corriendo, un identificador aleatorio que la biblioteca de actualizaciones
+crea al instalar la app y, si una actualización falló o la app se cerró por un
+error desde la última consulta, un resumen del error. El servidor lo usa solo
+para responder el pedido y no registra ni guarda nada de eso. Las
+actualizaciones están firmadas por el desarrollador y la app rechaza cualquiera
+que no lo esté. Traen correcciones y mejoras de funciones que la app ya tiene,
+no flujos de datos nuevos. Nada del contenido de tus Hosts, sesiones o mensajes
+se envía al servidor de actualizaciones. Una versión que compilás vos desde el
+código fuente tiene las actualizaciones desactivadas.</p>
 <h2>Menores</h2>
 <p>La app es una herramienta para desarrolladores y no está dirigida a
 menores.</p>

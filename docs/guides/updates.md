@@ -318,10 +318,15 @@ prebuild does.
 - Updates download at launch and apply on the next cold start, silently. The app never checks, fetches or
   reloads by itself and logs nothing about updates; demo mode is no different.
 
-## Store and privacy wording (drafts, ADR 0028 section 7)
+## Store and privacy wording (applied 2026-11-14, ADR 0028 section 7)
 
-Apply when the first build with `expo-updates` ships, not before: the served policy in
-`packages/relay/src/privacy.js` and `docs/store/listing.md` stay as they are until then.
+Applied: the policy (`packages/relay/src/privacy.js`, English and Spanish, section "App updates"),
+`docs/store/listing.md` (App Review notes, one line in each description) are updated. The in-app
+texts needed no change. The drafts below are kept for reference.
+
+**Before submitting the store build with updates:** the relay must be deployed (it serves the policy
+at `/privacy`) and the App Store Connect texts updated (review notes, description, promotional
+text if it repeats the claims), or the published texts will contradict the build.
 
 **Privacy policy, new section "App updates":**
 
@@ -344,3 +349,11 @@ Apply when the first build with `expo-updates` ships, not before: the served pol
 copy says there is no server of ours, say "no account" and "your sessions never pass through our
 servers" instead. App Privacy stays "Data Not Collected" as long as the Worker keeps nothing
 (`packages/updates-server/README.md`, "What the Worker sees, and discards").
+
+**Why "Data Not Collected" stays:** Apple defines "collect" as "transmitting data off the device in a way
+that allows you and/or your third-party partners to access it for a period longer than what is necessary
+to service the transmitted request in real time"
+([App Privacy details](https://developer.apple.com/app-store/app-privacy-details/)). The update server
+answers each check from memory, with no logs, analytics or storage, so no one can access the request
+afterwards and nothing is stored or linked to a user. That holds only while the Worker keeps nothing:
+logging the install id or the error header would turn it into Device ID and Diagnostics.
