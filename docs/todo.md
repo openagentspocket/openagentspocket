@@ -108,10 +108,12 @@ so no program-specific branches.
 - [x] **Air at the end of the Chat** above the status line, the Blocked card and the Composer.
 - [x] **Notifications asked after the first Host**, with a sheet that says why (`PermissionPrimer`). Approve
   from Notifications stays off by default (owner, 2026-11-14). Not yet seen on a real phone.
-- [ ] **Over-the-air JS updates** (ADR 0028, accepted by the owner 2026-11-14). In order: the update server and
-  the publish script (no deploy, no keys); `expo-updates` in the app behind the official-build flag; a local
-  end-to-end with a throwaway key; then the owner's steps (signing key, Cloudflare resources, the first store
-  release that contains it).
+- [ ] **Over-the-air JS updates** (ADR 0028, accepted by the owner 2026-11-14). Built and proven locally on a
+  Release simulator build with a throwaway key (`docs/guides/updates.md`): the update server, the publish
+  script, the app side behind the official-build flag, Early Updates. Left, in order: the signing key and
+  certificate (the owner keeps the key), the Cloudflare bucket, Worker and domain, the real R2 upload in
+  `publish/upload.js`, the privacy policy and store wording, the first store release that contains it, the
+  first update to beta. Small: the Update row in Settings cuts its date ("d9b48f5c (20…").
 
 ## 5. Needs the owner
 

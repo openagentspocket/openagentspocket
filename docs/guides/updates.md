@@ -165,6 +165,25 @@ adds. Check: an update applies on the next cold start; a bad signature, a wrong 
 `createdAt` are refused; a crash at launch rolls back; Settings shows the running update and Early
 Updates, and with it on the server sees `channel=beta` in `Expo-Extra-Params`.
 
+Run on 2026-11-14 (iPhone 17 Pro simulator, iOS 26.5, Release, `expo-updates` 58.0.22):
+
+- The runtime version the build embeds (`AgentsPocket.app/EXUpdates.bundle/fingerprint`) equals
+  `computeRuntimeVersion`.
+- With nothing published the app asks `/manifest` at launch and gets 204; Settings shows Update "Built In".
+- An update published after the build applies on the second cold start (the first one downloads it);
+  Settings shows its id.
+- An update exported BEFORE the build was made is refused (its `createdAt` is older than the embedded
+  bundle's): the app fetches the manifest and no asset. Publish after the build, never before.
+- A newer update signed with another key is refused the same way; the app stays on the last good update.
+
+Two things the commands above need on this machine: the Release simulator build takes
+`ONLY_ACTIVE_ARCH=YES ARCHS=arm64` (the SSH module's libssh2 has no x86_64 simulator slice), and zsh does
+not split `$L`, so pass the flags inline.
+
+Not checked on a device yet: the rollback after a crash at launch, `channel=beta` reaching the server with
+Early Updates on, a wrong runtime (the server never serves one: unit tested), Android.
+
+
 ## App config (ADR plan step 7, applied)
 
 Verified against the [SDK 58 app config](https://docs.expo.dev/versions/v58.0.0/config/app/), the
