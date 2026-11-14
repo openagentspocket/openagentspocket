@@ -111,10 +111,23 @@ npx wrangler dev            # http://127.0.0.1:8787, local R2 in .wrangler/state
 Put a bundle in the local bucket from the repository root (docs/guides/updates.md, "Test locally"):
 
 ```sh
-node scripts/publish-update.mjs --upload build/updates/<id> --channel beta --target local
+node scripts/publish-update.mjs --upload build/updates/<id> --channel beta --target local \
+  --local-test --cert <test cert> --builds <test builds.json>
 curl -si http://127.0.0.1:8787/manifest -H 'expo-protocol-version: 1' -H 'expo-platform: ios' \
   -H 'expo-runtime-version: <runtime>' -H 'expo-extra-params: channel="beta"'
 ```
+
+`wrangler dev` prints one line per request on your terminal; that is the local dev server, not
+the Worker. Deployed, nothing is logged (above).
+
+## Publish tooling
+
+`publish/` holds the Node side the owner runs through `scripts/publish-update.mjs`: `manifest.js`
+(manifest and directive bodies from an `npx expo export` folder), `signing.js` (key and certificate
+loading, RSA-SHA256), `create.js` (sign, verify, write a bundle), `bundle.js` (the bundle folder),
+`verify.js` (client-side checks, on a folder or against a server), `upload.js` (memory, local
+wrangler and the stubbed real R2 store), `log.js` (the public log). They share `src/protocol.js`
+with the Worker, so both sides agree on headers, SFV, multipart and the storage keys.
 
 ## Tests
 

@@ -9,7 +9,9 @@
 
 name = "openagentspocket-updates"
 main = "src/worker.js"
-compatibility_date = "2026-07-01"
+# Only basic Workers APIs are used (fetch, Request/Response, R2 get): an older date keeps
+# `wrangler dev` working with older local wrangler installs.
+compatibility_date = "2026-05-01"
 workers_dev = true
 # A custom domain replaces workers.dev when the owner routes one:
 # [[routes]]
