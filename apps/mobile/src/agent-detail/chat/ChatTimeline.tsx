@@ -26,6 +26,8 @@ const NO_STATUSES = new Map<string, never>();
 
 const useStyles = makeStyles((th) => ({
   list: { flex: 1 },
+  /** Air between the last row and whatever tops the dock. */
+  end: { height: th.spacing.sm },
   content: {
     maxWidth: metrics.readableWidth,
     width: '100%',
@@ -121,7 +123,7 @@ export function ChatTimeline({
         keyExtractor={(row) => row.id}
         initialNumToRender={40}
         {...follow}
-        ListHeaderComponent={<View style={{ height: bottomInset }} />}
+        ListHeaderComponent={<View style={[styles.end, { marginBottom: bottomInset }]} />}
         ListFooterComponent={banners}
         contentContainerStyle={styles.content}
         renderItem={({ item }) => (

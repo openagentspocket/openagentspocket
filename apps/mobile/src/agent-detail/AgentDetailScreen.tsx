@@ -1,5 +1,11 @@
 import type { ConsoleRow, KeyValueStorage } from '@openagentspocket/core';
-import { type ActionMenuItem, EdgeFade, makeStyles, useChromeInsets } from '@openagentspocket/ui';
+import {
+  type ActionMenuItem,
+  airy,
+  EdgeFade,
+  makeStyles,
+  useChromeInsets,
+} from '@openagentspocket/ui';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
@@ -21,10 +27,10 @@ import { useFocusDone } from './useFocusDone';
 /** How far past the header the fade runs; the header's own height behind it is solid. */
 const HEADER_FADE = 24;
 
-const useStyles = makeStyles((th) => ({
+const useStyles = makeStyles(() => ({
   fill: { flex: 1 },
   header: { position: 'absolute', top: 0, left: 0, right: 0 },
-  dock: { gap: th.spacing.xxs },
+  dock: { gap: airy.stack },
 }));
 
 interface Props {
