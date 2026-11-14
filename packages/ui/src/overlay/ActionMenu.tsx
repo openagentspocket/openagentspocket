@@ -9,6 +9,7 @@ import { useInsets } from '../theme/insets';
 import { makeStyles, useTheme } from '../theme/theme';
 import { MENU_DISMISS_MS } from './dismiss';
 import { groupMenuItems, isDeadMenuTrigger } from './menuGroups';
+import { placePopover } from './menuPlacement';
 import { loadSwiftUi, NativeActionMenu } from './NativeActionMenu';
 
 export type { MenuGroup } from './menuGroups';
@@ -241,21 +242,16 @@ export function ActionMenu({
     const lines = items.filter((item) => item.subtitle).length + groupMenuItems(items).length;
     const estimated =
       items.length * theme.metrics.minTapSize + lines * LINE_HEIGHT + (title ? 40 : 0);
-    const left = shown
-      ? Math.min(Math.max(margin, shown.x + shown.width - width), window.width - width - margin)
-      : (window.width - width) / 2;
-    const below = shown ? shown.y + shown.height + 4 : 0;
-    const lowest = window.height - insets.bottom - margin;
-    const fitsBelow = below + estimated < lowest;
-    const fitsAbove = shown ? shown.y - 4 - estimated > insets.top + margin : false;
-    const highest = insets.top + margin;
-    const position = shown
-      ? fitsBelow
-        ? { left, top: below, maxHeight: lowest - below }
-        : fitsAbove
-          ? { left, bottom: window.height - shown.y + 4, maxHeight: shown.y - 4 - highest }
-          : { left, top: Math.max(highest, lowest - estimated), maxHeight: lowest - highest }
-      : { left, bottom: insets.bottom + theme.spacing.lg, maxHeight: lowest - highest };
+    const position = placePopover({
+      anchor: shown,
+      width,
+      estimated,
+      window,
+      insets,
+      margin,
+      gap: theme.spacing.xxs,
+      fallbackBottom: theme.spacing.lg,
+    });
     body = (
       <View
         style={[styles.panel, styles.popover, { width }, position]}
