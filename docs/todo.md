@@ -97,12 +97,29 @@ so no program-specific branches.
   answered export compliance and TestFlight shows it for the Internal group. Version 1.0 went live the
   same day.)
 
+## 4b. After 1.0.1 (2026-11-14)
+
+- [x] **One corner scale and screen edges.** `t.radius` with iOS continuous corners; top bars at the safe top,
+  bottom bars 20 pt from the bottom (`useChromeInsets`).
+- [x] **Home's top bar without the Agents and Sessions buttons**; both are in the Host pill's menu.
+- [ ] **The Host pill's menu covers the pill on Home.** Two blind placement patches were reverted (they broke
+  the Composer's menu with the keyboard up). Done when: the cause is measured on the simulator and the panel
+  opens under the pill, with flows 03, 10 and 13 passing.
+- [x] **Air at the end of the Chat** above the status line, the Blocked card and the Composer.
+- [x] **Notifications asked after the first Host**, with a sheet that says why (`PermissionPrimer`). Approve
+  from Notifications stays off by default (owner, 2026-11-14). Not yet seen on a real phone.
+- [ ] **Over-the-air JS updates** (ADR 0028, accepted by the owner 2026-11-14). In order: the update server and
+  the publish script (no deploy, no keys); `expo-updates` in the app behind the official-build flag; a local
+  end-to-end with a throwaway key; then the owner's steps (signing key, Cloudflare resources, the first store
+  release that contains it).
+
 ## 5. Needs the owner
 
 - [ ] **On a real phone:** Ask Agent and Comment on Line against a real Agent; an unreachable Host's sheet
   and Agent screen; a resumed subagent listed as running; approvals in Claude Code still confirm (the
   matched-request change); a command shortcut from Chat opens the terminal with the command typed; the
-  animated launch on a Release build, with Reduce Motion and with App Lock.
+  animated launch on a Release build, with Reduce Motion and with App Lock. The notification sheet
+  after pairing a first Host, the system prompt after it, and a push arriving without visiting Settings.
 - [ ] **What a simulator cannot do:** a push with the app closed, Approve from a notification, the Live
   Activity, for Codex and OpenCode (`docs/guides/device-test-codex-opencode.md`).
 - [ ] **Local `worktree-agent-*` branches.** Their work is on main by cherry-pick, so git only deletes them
