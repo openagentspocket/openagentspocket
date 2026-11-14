@@ -2,7 +2,9 @@
 // (docs/guides/release.md). Version and build number come from apps/mobile/app.json, so the commit
 // that is archived records what shipped.
 //   node scripts/release-ios.mjs [--dry-run] [--skip-tests] [--allow-branch]
-//       preconditions, pnpm test, prebuild, pods, archive, export, checks; --dry-run prints the commands
+//       preconditions, pnpm test, prebuild, pods, archive, export, checks; --dry-run prints the commands.
+//       A finished release appends the build and its runtime version to docs/releases/builds.json,
+//       which over-the-air updates are checked against (docs/guides/updates.md)
 //   node scripts/release-ios.mjs check <AgentsPocket.ipa | AgentsPocket.app> [--archive <.xcarchive>]
 //       only the pre-upload checks, against an exported IPA (or a built .app)
 // Optional App Store Connect API key instead of an Xcode sign-in (for signing and the upload):
@@ -19,6 +21,10 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { basename, join, relative } from 'node:path';
+import { gitProblems, headCommit } from './lib/git-state.mjs';
+import { appendBuild, BUILDS_FILE, embeddedRuntimeProblem } from './lib/released-builds.mjs';
+import { computeRuntimeVersion } from './lib/runtime-version.mjs';
+import { runStep, shown } from './lib/steps.mjs';
 
 const ROOT = join(import.meta.dirname, '..');
 const MOBILE = join(ROOT, 'apps/mobile');
@@ -70,20 +76,11 @@ function apiKeyFlags() {
 // --- Preconditions --------------------------------------------------------------------------------
 
 function preconditions({ allowBranch }) {
-  const problems = [];
-  const branch = out('git', ['rev-parse', '--abbrev-ref', 'HEAD']);
-  if (branch !== 'main' && !allowBranch)
-    problems.push(`on branch ${branch}, not main (--allow-branch to override)`);
-  if (out('git', ['status', '--porcelain']))
-    problems.push('the working tree has uncommitted changes');
-  const upstream = spawnSync('git', ['rev-parse', '--verify', '--quiet', 'origin/main'], {
-    cwd: ROOT,
-    encoding: 'utf8',
+  const problems = gitProblems({
+    root: ROOT,
+    allowBranch,
+    branchHint: '(--allow-branch to override)',
   });
-  const head = out('git', ['rev-parse', 'HEAD']);
-  if (branch === 'main' && upstream.stdout.trim() !== head) {
-    problems.push('main is not level with origin/main (git fetch, then pull or push)');
-  }
   // The app recommends updating any Host whose plugin is older than the one it bundles, and the
   // update installs from the `plugin` branch: that branch must carry the version first.
   const pluginVersion = (toml) => /^version\s*=\s*"([^"]+)"/m.exec(toml)?.[1];
@@ -208,23 +205,9 @@ function exportOptions(destination) {
 `;
 }
 
-const quote = (s) => (/^[\w./:=@+-]+$/.test(s) ? s : `'${s.replaceAll("'", "'\\''")}'`);
-function shown(step) {
-  const env = Object.entries(step.env ?? {}).map(([k, v]) => `${k}=${v} `);
-  const line = `${env.join('')}${[step.cmd, ...step.args].map(quote).join(' ')}`;
-  const dir = relative(ROOT, step.cwd);
-  return dir ? `(cd ${quote(dir)} && ${line})` : line;
-}
-
 function run(step) {
-  console.log(`\n== ${step.why}\n${shown(step)}`);
-  const result = spawnSync(step.cmd, step.args, {
-    cwd: step.cwd,
-    stdio: 'inherit',
-    env: { ...process.env, ...step.env },
-  });
-  if (result.status !== 0)
-    fail(`step failed (${step.cmd} exited ${result.status ?? result.signal})`);
+  const problem = runStep(step, ROOT);
+  if (problem) fail(problem);
 }
 
 // --- Checks ---------------------------------------------------------------------------------------
@@ -368,12 +351,16 @@ function release({ dryRun, skipTests, allowBranch }) {
 
   const { archive, ipa, steps } = plan(dir);
   const todo = steps.filter((s) => !(s.tests && skipTests));
+  // Before prebuild: the fingerprint ignores ios/ anyway, and the commit is the one archived.
+  const runtimeVersion = computeRuntimeVersion({ mobileDir: MOBILE, platform: 'ios' });
+  const commit = headCommit(ROOT);
+  console.log(`Runtime version (fingerprint): ${runtimeVersion}`);
   if (dryRun) {
     console.log(
       `\n# ExportOptions.plist (export), in ${relative(ROOT, dir)}:\n${exportOptions('export')}`,
     );
     console.log('# ExportOptions-upload.plist: the same with destination upload\n');
-    for (const s of todo) console.log(`# ${s.why}\n${shown(s)}\n`);
+    for (const s of todo) console.log(`# ${s.why}\n${shown(s, ROOT)}\n`);
     console.log(`# then: node scripts/release-ios.mjs check ${ipa} --archive ${archive}`);
     return;
   }
@@ -383,9 +370,20 @@ function release({ dryRun, skipTests, allowBranch }) {
   writeFileSync(join(dir, 'ExportOptions-upload.plist'), exportOptions('upload'));
   for (const s of todo) run(s);
   check(join(ROOT, ipa), join(ROOT, archive));
+  recordBuild({ runtimeVersion, commit, archive: join(ROOT, archive) });
   console.log(
     `\nNext (docs/guides/release.md, "Upload"): upload ${ipa}. Keep ${relative(ROOT, dir)}.`,
   );
+}
+
+// Updates can only reach a build whose runtime version is recorded (docs/guides/updates.md).
+function recordBuild({ runtimeVersion, commit, archive }) {
+  const app = join(archive, 'Products/Applications', `${PROJECT}.app`);
+  const problem = embeddedRuntimeProblem(app, runtimeVersion);
+  if (problem) fail(`${problem}; do not upload`);
+  const entry = { platform: 'ios', version: VERSION, build: BUILD, runtimeVersion, commit };
+  appendBuild(join(ROOT, BUILDS_FILE), { ...entry, archivedAt: new Date().toISOString() });
+  console.log(`Recorded ${VERSION} (${BUILD}) in ${BUILDS_FILE}: commit it after the upload.`);
 }
 
 if (args[0] === 'check') check(args[1], option('--archive'));

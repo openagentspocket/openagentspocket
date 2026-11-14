@@ -175,6 +175,18 @@ for (const { dir, cmd, codeOnly } of WHOLE) {
   else skip(dir, codeOnly ? `no changed code under ${dir}` : nothingUnder(dir));
 }
 
+// The release and update-publish helpers: their suite runs when they or their callers change.
+const releaseScripts = changed.filter((f) =>
+  /^scripts\/(lib\/|release-ios\.mjs$|publish-update\.mjs$)/.test(f),
+);
+if (releaseScripts.length)
+  suite(
+    'scripts/lib',
+    `whole suite, ${releaseScripts.length} changed files`,
+    run('scripts/lib tests', 'node', ['--test', 'scripts/lib/*.test.mjs']),
+  );
+else skip('scripts/lib', 'no change to scripts/lib or the release scripts');
+
 if (codeIn('packages/core/').length)
   skip(
     'packages/ui and apps/mobile tests that import core',
