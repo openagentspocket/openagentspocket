@@ -6,15 +6,15 @@
 //
 // The fingerprint hashes the resolved Expo config, so it depends on the environment the config is
 // resolved in: APNS_ENVIRONMENT changes the aps-environment entitlement and with it the hash
-// (BUILD_NUMBER does not). Store builds use RUNTIME_ENV, so this does too.
+// (BUILD_NUMBER does not). Store builds use RUNTIME_ENV, so this does too. The `updates` fields that
+// only an official build has (UPDATES_URL) are left out of the hash by apps/mobile/fingerprint.config.js,
+// so this matches an official build without knowing its update URL.
 //
 // Mirrors expo-updates SDK 58 utils/src/createFingerprintAsync.ts (managed branch):
 //   createFingerprintAsync(projectRoot, { platforms: [platform], ignorePaths: ['android/**/*', 'ios/**/*'] })
-// When expo-updates is installed, its own CLI (`expo-updates runtimeversion:resolve`) is run as well
-// and any difference is an error.
+// expo-updates' own CLI (`expo-updates runtimeversion:resolve`) is run as well and any difference is
+// an error, so a change in how expo-updates fingerprints cannot slip past this copy.
 import { spawnSync } from 'node:child_process';
-import { createRequire } from 'node:module';
-import { join } from 'node:path';
 
 export const RUNTIME_ENV = { APNS_ENVIRONMENT: 'production' };
 
@@ -41,15 +41,6 @@ function run(cmd, args, options) {
   return result.stdout.trim();
 }
 
-function hasExpoUpdates(mobileDir) {
-  try {
-    createRequire(join(mobileDir, 'package.json')).resolve('expo-updates/package.json');
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 /**
  * @param {{mobileDir: string, platform: 'ios' | 'android'}} options
  * @returns {string} the runtime version (a fingerprint hash)
@@ -59,15 +50,15 @@ export function computeRuntimeVersion({ mobileDir, platform }) {
     cwd: mobileDir,
   });
   if (!/^[0-9a-f]{40}$/.test(hash)) throw new Error(`unexpected fingerprint output: ${hash}`);
-  if (hasExpoUpdates(mobileDir)) {
-    const out = run(
-      'npx',
-      ['expo-updates', 'runtimeversion:resolve', '--platform', platform, '--workflow', 'managed'],
-      { cwd: mobileDir },
-    );
-    const resolved = JSON.parse(out.split('\n').at(-1)).runtimeVersion;
-    if (resolved !== hash)
-      throw new Error(`expo-updates resolves runtime ${resolved}, this script computed ${hash}`);
-  }
+  const out = run(
+    'npx',
+    ['expo-updates', 'runtimeversion:resolve', '--platform', platform, '--workflow', 'managed'],
+    { cwd: mobileDir },
+  );
+  const resolved = JSON.parse(out.split('\n').at(-1)).runtimeVersion;
+  if (resolved === null)
+    throw new Error('expo-updates resolves no runtime: apps/mobile/app.json needs runtimeVersion');
+  if (resolved !== hash)
+    throw new Error(`expo-updates resolves runtime ${resolved}, this script computed ${hash}`);
   return hash;
 }

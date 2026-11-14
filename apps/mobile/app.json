@@ -3,6 +3,7 @@
     "name": "Agents Pocket",
     "slug": "openagentspocket",
     "version": "1.0.1",
+    "runtimeVersion": { "policy": "fingerprint" },
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": ["openagentspocket", "agentico"],
@@ -71,7 +72,8 @@
       "expo-secure-store",
       "expo-notifications",
       "@bacons/apple-targets",
-      "./plugins/withLocalPreview"
+      "./plugins/withLocalPreview",
+      "./plugins/withUpdatesIosOnly"
     ],
     "locales": {
       "es": "./locales/es.json"
