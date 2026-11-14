@@ -11,7 +11,7 @@
     "ios": {
       "bundleIdentifier": "com.openagentspocket.app",
       "deploymentTarget": "18.0",
-      "buildNumber": "3",
+      "buildNumber": "4",
       "entitlements": {
         "com.apple.security.application-groups": ["group.com.openagentspocket.app"]
       },
