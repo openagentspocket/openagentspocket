@@ -102,9 +102,9 @@ so no program-specific branches.
 - [x] **One corner scale and screen edges.** `t.radius` with iOS continuous corners; top bars at the safe top,
   bottom bars 20 pt from the bottom (`useChromeInsets`).
 - [x] **Home's top bar without the Agents and Sessions buttons**; both are in the Host pill's menu.
-- [ ] **The Host pill's menu covers the pill on Home.** Two blind placement patches were reverted (they broke
-  the Composer's menu with the keyboard up). Done when: the cause is measured on the simulator and the panel
-  opens under the pill, with flows 03, 10 and 13 passing.
+- [x] **The Host pill's menu covered the pill on Home.** Measured on the simulator: iOS draws a stack screen
+  72 pt down while Fabric measures it from 0, so every anchor frame was 72 pt high. Anchors are corrected by
+  the screen's real origin (`windowFrame.ts`), and an open menu measures again when the keyboard moves.
 - [x] **Air at the end of the Chat** above the status line, the Blocked card and the Composer.
 - [x] **Notifications asked after the first Host**, with a sheet that says why (`PermissionPrimer`). Approve
   from Notifications stays off by default (owner, 2026-11-14). Not yet seen on a real phone.
