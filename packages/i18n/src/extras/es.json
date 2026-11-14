@@ -256,5 +256,15 @@
   "%@ took your prompt, but its herdr integration hasn't reported the conversation. Check the terminal for anything %@ is waiting on, or restart %@ in this pane.": "{0} tomó tu prompt, pero su integración de herdr no informó la conversación. Fijate en la terminal si {1} espera algo, o reiniciá {2} en este panel.",
   "Let Your Agents Report": "Dejá que tus Agentes informen",
   "Browse": "Explorar",
-  "Hosts and Lists": "Hosts y listas"
+  "Hosts and Lists": "Hosts y listas",
+  "Know when an Agent needs you": "Enterate cuando un Agente te necesita",
+  "Get to a request in one tap": "Llegá al pedido con un toque",
+  "The notification and the Live Activity take you straight to what the Agent asks. Approving from the notification is an option you turn on per Host.": "La notificación y la Live Activity te llevan directo a lo que pide el Agente. Aprobar desde la notificación es una opción que activás por Host.",
+  "Know when it is done": "Sabé cuándo terminó",
+  "A notice when an Agent is blocked or finishes its work.": "Un aviso cuando un Agente queda bloqueado o termina su trabajo.",
+  "Only you can read them": "Solo vos podés leerlas",
+  "They are encrypted on your Host. The service that delivers them cannot open them.": "Se cifran en tu Host. El servicio que las entrega no puede abrirlas.",
+  "You can change this in Settings › Notifications.": "Podés cambiarlo en Configuración › Notificaciones.",
+  "Turn on notifications to know when an Agent needs you.": "Activá las notificaciones para saber cuándo un Agente te necesita.",
+  "Turn On": "Activar"
 }

@@ -7,11 +7,13 @@ import {
   type DevicePushTokenSource,
   FakeNotificationTransport,
   type Host,
+  type HostDelivery,
   MemoryNotificationKeyStore,
   MemoryStorage,
   makeHost,
   type NotificationKeyStore,
   NotificationPreferencesStore,
+  type NotificationPrimerRecord,
   NotificationRegistrationCeremony,
   NotificationRelaySettings,
   type PluginVersion,
@@ -38,6 +40,15 @@ export interface NotificationServices {
   };
   /** The per-Host Live Activity opt-in; absent where Live Activities do not run (demo, tests). */
   readonly liveActivity?: LiveActivityToggles;
+  /** The once-per-install notification primer; absent in demo mode, where it never shows. */
+  readonly primer?: NotificationPrimerServices;
+}
+
+/** What the notification primer needs beyond the token and the store. */
+export interface NotificationPrimerServices {
+  readonly record: NotificationPrimerRecord;
+  /** Whether a Host's plugin can deliver notices, asked without a push token. */
+  delivery(host: Host): Promise<HostDelivery>;
 }
 
 /** What the Settings toggle needs from the Live Activity runtime. */

@@ -337,6 +337,11 @@
     "note": "Host pill menu open: Hosts, then Browse (All Agents, Sessions)"
   },
   {
+    "id": "shell.home-notifications-primer",
+    "rn": "app/index.tsx (HomeScreen) + NotificationPrimerSheet",
+    "note": "RN-only: the notification primer after the first Host, opened directly (demo mode never shows it)"
+  },
+  {
     "id": "console.row-context-menu",
     "rn": "app/index.tsx (HomeScreen)",
     "note": "long-press on the Needs you card (web: synthetic mouse hold)"

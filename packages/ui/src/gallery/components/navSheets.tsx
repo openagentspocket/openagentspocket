@@ -196,7 +196,7 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
                 reasons={[
                   {
                     icon: 'hand',
-                    title: 'Approve without opening the app',
+                    title: 'Get to a request in one tap',
                     message: 'Answer from the notification.',
                   },
                   {

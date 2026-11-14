@@ -3,11 +3,7 @@ import { t } from '@openagentspocket/i18n';
 import { airy, makeStyles, useLayoutMode } from '@openagentspocket/ui';
 import { useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
-import { DemoModeNotice } from '@/connections/DemoModeNotice';
 import type { CrashStorage } from '@/diagnostics/crashRecorder';
-import { LastCrashBanner } from '@/diagnostics/LastCrashBanner';
-import { HostIssues } from '@/features/hosts/HostIssues';
-import { HostScopeNotice } from '@/features/hosts/HostScopeNotice';
 import { AppScreen } from '@/navigation/AppScreen';
 import { useConsoleState, useConsoleStore, useStatusInbox } from '../console/hooks';
 import { useHostScope } from '../console/useHostScope';
@@ -15,6 +11,7 @@ import { useHosts } from '../features/hosts/useHosts';
 import { HomeTitle, NewStrip, NoHosts, useNewStripHeight } from './HomeChrome';
 import { HomeHosts } from './HomeHosts';
 import { HomeInbox } from './HomeInbox';
+import { HomeNotices } from './HomeNotices';
 import { HomeSessions } from './HomeSessions';
 import { homeContent } from './homeModel';
 import { useUsageRing } from './UsageRingSlot';
@@ -29,6 +26,8 @@ const useStyles = makeStyles((th) => ({
 export interface HomeScreenProps {
   /** Where the last uncaught error was kept; with it, Home offers that error to copy. */
   crashStorage?: CrashStorage;
+  /** Home is the screen in front (no route over it); the notification primer waits for it. */
+  focused?: boolean;
   /** Opens the Agent's detail; unset until the detail route exists. */
   onOpenAgent?: (row: ConsoleRow) => void;
   onOpenHost?: (hostId: string) => void;
@@ -113,10 +112,7 @@ export function HomeScreen(props: HomeScreenProps) {
             onOpenAgents={props.onOpenAgents}
             onOpenSessions={props.onOpenSessions}
           />
-          <DemoModeNotice />
-          <HostIssues />
-          <HostScopeNotice />
-          {props.crashStorage ? <LastCrashBanner storage={props.crashStorage} /> : null}
+          <HomeNotices crashStorage={props.crashStorage} focused={props.focused ?? true} />
           <View style={styles.body}>
             <HomeInbox
               content={content}

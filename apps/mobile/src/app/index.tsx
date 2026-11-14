@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useIsFocused, useRouter } from 'expo-router';
 import { crashStorage } from '@/diagnostics/crashStorage';
 import { useAddHostSheet } from '@/features/hosts/useAddHostSheet';
 import { HomeScreen } from '@/home/HomeScreen';
@@ -7,6 +7,7 @@ import { hrefs } from '@/navigation/hrefs';
 /** `/`: Home. The header capsules, the + sheet and every card are drawn by HomeScreen. */
 export default function Index() {
   const router = useRouter();
+  const focused = useIsFocused();
   const addHost = useAddHostSheet({
     onEasyPair: () => router.push(hrefs.easyPair()),
     onAddManually: () => router.push(hrefs.hostForm()),
@@ -15,6 +16,7 @@ export default function Index() {
     <>
       <HomeScreen
         crashStorage={crashStorage}
+        focused={focused}
         onAddHost={addHost.open}
         onSetupGuide={() => router.push(hrefs.setupGuide())}
         onOpenSettings={() => router.push('/settings')}
