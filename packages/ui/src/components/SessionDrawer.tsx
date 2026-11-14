@@ -8,8 +8,8 @@ import { StatusDot } from '../primitives/StatusDot';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
 import { ThemedTextInput } from '../primitives/ThemedTextInput';
+import { useChromeInsets } from '../theme/chrome';
 import { withAlpha } from '../theme/color';
-import { useInsets } from '../theme/insets';
 import { airy } from '../theme/metrics';
 import type { Status } from '../theme/status';
 import { makeStyles, useTheme } from '../theme/theme';
@@ -159,7 +159,7 @@ export function SessionDrawer({
   testID = 'session-drawer',
 }: SessionDrawerProps) {
   const styles = useStyles();
-  const insets = useInsets();
+  const chrome = useChromeInsets();
   const theme = useTheme();
   const [query, setQuery] = useState('');
   const [view, setView] = useState<'tree' | 'agents'>('tree');
@@ -238,11 +238,8 @@ export function SessionDrawer({
         styles.drawer,
         // Embedded in a drawer layout it fills the drawer's height.
         !onClose && { flexGrow: 1 },
-        // The drawer is a window over the screen: it keeps clear of the notch and the home indicator.
-        {
-          paddingTop: insets.top + theme.spacing.sm,
-          paddingBottom: insets.bottom + theme.spacing.md,
-        },
+        // The drawer is a window over the screen: its edges follow the screen chrome's rule.
+        { paddingTop: chrome.top, paddingBottom: chrome.bottom },
       ]}
       testID={testID}
     >

@@ -3,7 +3,6 @@ import { ScrollView, View } from 'react-native';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
-import { useInsets } from '../theme/insets';
 import { makeStyles } from '../theme/theme';
 
 /** One key of a toolbar row. Tables of these come from the terminal's key data, not from code. */
@@ -42,6 +41,8 @@ const useStyles = makeStyles((t) => ({
     borderTopWidth: t.metrics.hairlineWidth,
     borderTopColor: t.hairline,
     paddingTop: t.spacing.xs,
+    // The host screen keeps the dock clear of the home indicator (`useChromeInsets`).
+    paddingBottom: t.spacing.xxs,
     gap: t.spacing.xs,
   },
 }));
@@ -108,14 +109,13 @@ export function KeyboardDock({
   testID = 'keyboard-dock',
 }: KeyboardDockProps) {
   const styles = useStyles();
-  const insets = useInsets();
   const [latched, setLatched] = useState<KeyModifiers>(NONE);
   const press = (key: KeySpec, modifiers: KeyModifiers) => {
     onKey(key, modifiers);
     setLatched(NONE);
   };
   return (
-    <View style={[styles.dock, { paddingBottom: insets.bottom + 6 }]} testID={testID}>
+    <View style={styles.dock} testID={testID}>
       {toolbar}
       {rows.map((keys, index) => (
         <KeyRow

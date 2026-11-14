@@ -1,5 +1,5 @@
 import type { ConsoleRow, KeyValueStorage } from '@openagentspocket/core';
-import { type ActionMenuItem, EdgeFade, makeStyles } from '@openagentspocket/ui';
+import { type ActionMenuItem, EdgeFade, makeStyles, useChromeInsets } from '@openagentspocket/ui';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { statusDot } from '@/console/agentStatus';
@@ -24,7 +24,7 @@ const HEADER_FADE = 24;
 const useStyles = makeStyles((th) => ({
   fill: { flex: 1 },
   header: { position: 'absolute', top: 0, left: 0, right: 0 },
-  dock: { gap: th.spacing.xxs, paddingBottom: th.spacing.xxs },
+  dock: { gap: th.spacing.xxs },
 }));
 
 interface Props {
@@ -59,6 +59,7 @@ export function AgentDetailScreen({
   visit,
 }: Props) {
   const styles = useStyles();
+  const chrome = useChromeInsets({ aboveKeyboard: true });
   const { row, phase } = useAgentPhase(hostId, paneId);
   const rows = useConsole();
   const latency = useConsoleState().hosts.find((host) => host.id === hostId)?.latencyMs;
@@ -86,7 +87,7 @@ export function AgentDetailScreen({
           onSelect={onSwitch}
           onHome={onHome}
         >
-          <AppScreen scroll={false} bare keyboardAvoiding testID="agent-detail">
+          <AppScreen scroll={false} bare bottomBar keyboardAvoiding testID="agent-detail">
             <View style={styles.fill} testID={`slot-${surface}`}>
               <DetailSlot
                 hostId={hostId}
@@ -123,7 +124,7 @@ export function AgentDetailScreen({
                 />
               </View>
             </View>
-            <View style={styles.dock}>
+            <View style={[styles.dock, { paddingBottom: chrome.bottom }]}>
               <DetailDock row={row} surface={surface} />
               <AgentComposerBar
                 composer={composer}

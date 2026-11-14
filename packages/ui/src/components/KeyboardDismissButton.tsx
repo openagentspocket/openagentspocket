@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
 import { Keyboard } from 'react-native';
 import { Icon } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
+import { useKeyboardVisible } from '../theme/chrome';
 import { makeStyles } from '../theme/theme';
+
+export { useKeyboardVisible };
 
 const useStyles = makeStyles((t) => ({
   button: {
@@ -12,20 +14,6 @@ const useStyles = makeStyles((t) => ({
     justifyContent: 'center',
   },
 }));
-
-/** Whether the on-screen keyboard is up. */
-export function useKeyboardVisible(): boolean {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const shown = Keyboard.addListener('keyboardDidShow', () => setVisible(true));
-    const hidden = Keyboard.addListener('keyboardDidHide', () => setVisible(false));
-    return () => {
-      shown.remove();
-      hidden.remove();
-    };
-  }, []);
-  return visible;
-}
 
 interface KeyboardDismissButtonProps {
   label?: string;

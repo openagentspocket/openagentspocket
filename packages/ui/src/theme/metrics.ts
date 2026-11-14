@@ -66,6 +66,12 @@ export const metrics = {
    */
   accessibilityFontScale: 1.4,
   minTapSize: 44,
+  /**
+   * How far a bottom bar reaches into the home indicator's safe strip on iOS: with the usual 34 pt
+   * strip its edge lands 20 pt from the bottom, where iOS's own floating bars sit, clear of the
+   * indicator (about 8 pt from the bottom, 5 pt tall).
+   */
+  homeIndicatorOverlap: 14,
   /** Airy grouped-row minimum height: 44 x1.3, rounded. */
   rowMinHeight: 56,
   /** Swift ScreenBackground: glow radius and height in points. */

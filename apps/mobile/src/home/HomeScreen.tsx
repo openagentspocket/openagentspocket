@@ -89,7 +89,7 @@ export function HomeScreen(props: HomeScreenProps) {
   ] as const;
   const empty = hosts.length === 0;
   return (
-    <AppScreen bare scroll={false} testID={empty ? 'home-empty' : 'home'}>
+    <AppScreen bare bottomBar scroll={false} testID={empty ? 'home-empty' : 'home'}>
       {empty ? (
         <>
           <HomeTitle

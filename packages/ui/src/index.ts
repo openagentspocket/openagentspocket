@@ -167,6 +167,14 @@ export {
   useFontScale,
   useFontScaleOverride,
 } from './theme/accessibility';
+export {
+  CHROME_KEYBOARD_GAP,
+  CHROME_MIN_BOTTOM,
+  CHROME_TOP_GAP,
+  type ChromeInsets,
+  chromeInsets,
+  useChromeInsets,
+} from './theme/chrome';
 export { withAlpha } from './theme/color';
 export { useInsets } from './theme/insets';
 export { type LayoutMode, layoutModeFor, useLayoutMode } from './theme/layoutMode';

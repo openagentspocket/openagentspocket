@@ -60,6 +60,12 @@ interface ScreenProps {
   headerInset?: number;
   /** Full width, no inset or readable column: the screen lays out its own columns (non-scrolling). */
   bare?: boolean;
+  /**
+   * The screen pins its own bar to the bottom (the Composer, Home's + button): the screen runs to the
+   * window's bottom and the bar keeps clear of the home indicator and the keyboard with
+   * `useChromeInsets().bottom`.
+   */
+  bottomBar?: boolean;
   testID?: string;
 }
 
@@ -74,13 +80,15 @@ export function Screen({
   header,
   headerInset = 0,
   bare = false,
+  bottomBar = false,
   testID = 'screen',
 }: ScreenProps) {
   const styles = useStyles();
   const { hidden, ref, onLayout } = useOffscreenBottom();
   const theme = useTheme();
   const insets = useInsets();
-  const safeEdges = edges ?? (header?.variant === 'native' ? UNDER_NATIVE_HEADER : ALL_EDGES);
+  const requested = edges ?? (header?.variant === 'native' ? UNDER_NATIVE_HEADER : ALL_EDGES);
+  const safeEdges = bottomBar ? requested.filter((edge) => edge !== 'bottom') : requested;
   const lift = useKeyboardOffset(safeEdges.includes('bottom') ? insets.bottom : 0);
   const nativeInsets = Platform.OS === 'ios' && scroll && !bare;
   const refresh = onRefresh ? (

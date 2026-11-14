@@ -8,6 +8,7 @@ import {
   HostScopeMenu,
   LargeTitleBar,
   makeStyles,
+  useChromeInsets,
   useTheme,
 } from '@openagentspocket/ui';
 import { View } from 'react-native';
@@ -16,12 +17,7 @@ import type { useHostScope } from '../console/useHostScope';
 import type { useUsageRing } from './UsageRingSlot';
 
 const useStyles = makeStyles((th) => ({
-  strip: {
-    height: FAB_SIZE + 2 * th.spacing.xs,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    paddingRight: th.metrics.screenInset,
-  },
+  strip: { alignItems: 'flex-end', paddingRight: th.metrics.screenInset },
   floating: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   empty: { flex: 1 },
 }));
@@ -66,14 +62,18 @@ export function HomeTitle({
 
 /** Height the list reserves at its end so the last row never hides behind the + button. */
 export function useNewStripHeight(): number {
-  return FAB_SIZE + 2 * useTheme().spacing.xs;
+  return FAB_SIZE + useChromeInsets().bottom + useTheme().spacing.xs;
 }
 
 /** The + button floats bottom trailing over the list (content peeks beneath, as in Swift). */
 export function NewStrip({ items }: { items: readonly ActionMenuItem[] }) {
   const styles = useStyles();
+  const { bottom } = useChromeInsets();
   return (
-    <View style={[styles.strip, styles.floating]} pointerEvents="box-none">
+    <View
+      style={[styles.strip, styles.floating, { paddingBottom: bottom }]}
+      pointerEvents="box-none"
+    >
       <Fab items={items} accessibilityLabel={t('New')} menuTitle={t('New')} />
     </View>
   );
