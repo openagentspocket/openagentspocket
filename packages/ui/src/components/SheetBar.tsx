@@ -5,6 +5,7 @@ import { Icon, type IconName } from '../primitives/Icon';
 import { Spinner } from '../primitives/Spinner';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { CHROME_TOP_GAP } from '../theme/chrome';
 import { makeStyles, useTheme } from '../theme/theme';
 
 export interface SheetBarItem {
@@ -20,6 +21,9 @@ export interface SheetBarItem {
 
 const useStyles = makeStyles((t) => ({
   root: { paddingTop: t.spacing.sm, gap: t.spacing.xs },
+  // At the top of a full screen the controls start a hairline under the safe top, as every top bar.
+  rootFullScreen: { paddingTop: CHROME_TOP_GAP },
+  barFullScreen: { minHeight: t.metrics.minTapSize },
   bar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -55,6 +59,8 @@ interface SheetBarProps {
   back?: boolean;
   /** Trailing capsule: one or several glyph actions (scan and add), or a word (Edit, Save). */
   trailing?: readonly SheetBarItem[];
+  /** The bar tops a pushed full screen (Changes), not a sheet: it sits right under the safe top. */
+  fullScreen?: boolean;
   testID?: string;
 }
 
@@ -100,12 +106,13 @@ export function SheetBar({
   leading,
   back = false,
   trailing = [],
+  fullScreen = false,
   testID = 'sheet-bar',
 }: SheetBarProps) {
   const styles = useStyles();
   return (
-    <View style={styles.root} testID={testID}>
-      <View style={styles.bar}>
+    <View style={[styles.root, fullScreen && styles.rootFullScreen]} testID={testID}>
+      <View style={[styles.bar, fullScreen && styles.barFullScreen]}>
         <View style={styles.slot}>
           {leading ? (
             <GlassCapsule>

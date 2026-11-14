@@ -68,6 +68,7 @@ export function ChangesScreen({
     variant: 'sheet',
     title: say('Changes'),
     back: true,
+    fullScreen: true,
     leading: { label: t('Back'), onPress: onBack ?? (() => {}), testID: 'changes-back' },
   };
 

@@ -8,6 +8,7 @@ import { Icon } from '../primitives/Icon';
 import { StatusDot } from '../primitives/StatusDot';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { CHROME_TOP_GAP } from '../theme/chrome';
 import { airy } from '../theme/metrics';
 import { makeStyles, useTheme } from '../theme/theme';
 import { type AgentBarLabels, defaultAgentBarLabels } from './agentBarLabels';
@@ -22,7 +23,7 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     paddingHorizontal: t.spacing.sm,
     gap: t.spacing.xs,
-    paddingTop: t.spacing.sm,
+    paddingTop: CHROME_TOP_GAP,
   },
   titles: { flex: 1, minWidth: 0, gap: airy.line },
   circle: {

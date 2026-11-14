@@ -114,6 +114,7 @@ export function FileDiffScreen({
     title: fileTitle(file),
     subtitle: file ? fileDirectory(file) || undefined : undefined,
     back: true,
+    fullScreen: true,
     leading: { label: say('Changes'), onPress: onBack ?? (() => {}), testID: 'diff-back' },
     trailing: comments.openChat
       ? [

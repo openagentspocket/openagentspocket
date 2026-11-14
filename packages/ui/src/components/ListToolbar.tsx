@@ -3,6 +3,7 @@ import { ActionMenuButton, type ActionMenuItem } from '../overlay/ActionMenu';
 import { Button } from '../primitives/Button';
 import { GlassCapsule } from '../primitives/GlassCapsule';
 import type { IconName } from '../primitives/Icon';
+import { CHROME_TOP_GAP } from '../theme/chrome';
 import { makeStyles } from '../theme/theme';
 import { HostScopeMenu } from './HostScopeMenu';
 
@@ -25,7 +26,12 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: t.metrics.screenInset,
-    paddingVertical: t.spacing.xs,
+    // It heads a `Screen`'s padded column: it reaches past the padding to the screen's edges, and its
+    // controls start a hairline under the safe top, as every top bar.
+    marginHorizontal: -t.metrics.screenInset,
+    marginTop: -t.metrics.screenInset,
+    paddingTop: CHROME_TOP_GAP,
+    paddingBottom: t.spacing.xs,
   },
   circle: {
     width: t.metrics.minTapSize,

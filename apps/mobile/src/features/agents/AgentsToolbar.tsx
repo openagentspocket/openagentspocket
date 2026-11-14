@@ -33,7 +33,6 @@ const TOOLBAR_ICON: Record<ListPresentation, ToolbarPresentation> = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  bar: { marginHorizontal: -theme.metrics.screenInset },
   head: { gap: theme.spacing.xs },
   searchRow: {
     flexDirection: 'row',
@@ -98,23 +97,21 @@ export function AgentsToolbar(props: AgentsToolbarProps) {
   }
   return (
     <>
-      <View style={styles.bar}>
-        <ListToolbar
-          presentation={TOOLBAR_ICON[props.presentation]}
-          presentationItems={presentationItems}
-          hostItems={props.hostItems}
-          hostLabel={props.hostLabel}
-          onHome={props.onHome}
-          onNew={props.onNew}
-          labels={{
-            home: t('Home'),
-            host: t('Filter by Host'),
-            presentation: t('Presentation'),
-            new: t('New Agent'),
-          }}
-          testID="agents-toolbar"
-        />
-      </View>
+      <ListToolbar
+        presentation={TOOLBAR_ICON[props.presentation]}
+        presentationItems={presentationItems}
+        hostItems={props.hostItems}
+        hostLabel={props.hostLabel}
+        onHome={props.onHome}
+        onNew={props.onNew}
+        labels={{
+          home: t('Home'),
+          host: t('Filter by Host'),
+          presentation: t('Presentation'),
+          new: t('New Agent'),
+        }}
+        testID="agents-toolbar"
+      />
       <View style={styles.head}>
         <Text variant="title" accessibilityRole="header">
           {t('Agents')}

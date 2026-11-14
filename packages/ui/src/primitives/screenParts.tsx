@@ -31,6 +31,8 @@ export type ScreenHeader =
       leading?: SheetBarItem;
       back?: boolean;
       trailing?: readonly SheetBarItem[];
+      /** Tops a pushed full screen rather than a sheet (see `SheetBar`). */
+      fullScreen?: boolean;
       testID?: string;
     };
 

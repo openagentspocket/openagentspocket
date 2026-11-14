@@ -10,7 +10,7 @@ import { Button } from '../../primitives/Button';
 import { Chip } from '../../primitives/Chip';
 import { ProgramMark } from '../../primitives/ProgramMark';
 import { Text } from '../../primitives/Text';
-import { spacing } from '../../theme/metrics';
+import { metrics, spacing } from '../../theme/metrics';
 import type { CatalogEntry } from './types';
 
 const noop = () => {};
@@ -53,13 +53,16 @@ export const navSheetsEntries: readonly CatalogEntry[] = [
       {
         id: 'default',
         render: () => (
-          <ListToolbar
-            presentation="flat"
-            presentationItems={items(['Flat', 'By Host', 'By Status', 'By Workspace'])}
-            hostItems={items(['All Hosts', 'Studio Mac', 'Build Server'])}
-            onHome={noop}
-            onNew={noop}
-          />
+          // The toolbar heads a Screen's padded column and reaches past its padding.
+          <View style={{ padding: metrics.screenInset }}>
+            <ListToolbar
+              presentation="flat"
+              presentationItems={items(['Flat', 'By Host', 'By Status', 'By Workspace'])}
+              hostItems={items(['All Hosts', 'Studio Mac', 'Build Server'])}
+              onHome={noop}
+              onNew={noop}
+            />
+          </View>
         ),
       },
     ],

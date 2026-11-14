@@ -5,6 +5,7 @@ import { GlassCapsule } from '../primitives/GlassCapsule';
 import { Icon, type IconName } from '../primitives/Icon';
 import { Tappable } from '../primitives/Tappable';
 import { Text } from '../primitives/Text';
+import { CHROME_TOP_GAP } from '../theme/chrome';
 import { makeStyles } from '../theme/theme';
 
 export interface TitleBarAction {
@@ -21,7 +22,10 @@ const useStyles = makeStyles((t) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: t.metrics.screenInset,
-    minHeight: t.metrics.minTapSize + t.spacing.xs,
+    // The capsules start a hairline under the safe top; the slack the bar had above them is gone.
+    paddingTop: CHROME_TOP_GAP,
+    paddingBottom: t.spacing.xxs,
+    minHeight: t.metrics.minTapSize + CHROME_TOP_GAP + t.spacing.xxs,
   },
   title: { flex: 1 },
   center: { alignItems: 'center', paddingHorizontal: t.spacing.xxs },

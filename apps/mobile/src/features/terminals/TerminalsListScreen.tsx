@@ -24,7 +24,6 @@ export interface TerminalsGroupModel {
 }
 
 const useStyles = makeStyles((theme) => ({
-  bar: { marginHorizontal: -theme.metrics.screenInset },
   groups: { gap: theme.spacing.xs },
 }));
 
@@ -56,25 +55,23 @@ export function TerminalsListScreen(props: TerminalsListScreenProps) {
     });
   return (
     <AppScreen testID="terminals-screen">
-      <View style={styles.bar}>
-        <ListToolbar
-          presentation="workspace"
-          presentationItems={[
-            { key: 'workspace', title: t('By Workspace'), checked: true, onPress: () => undefined },
-          ]}
-          hostItems={props.hostItems}
-          hostLabel={props.hostLabel}
-          onHome={props.onHome}
-          onNew={props.onNew}
-          labels={{
-            home: t('Home'),
-            host: t('Filter by Host'),
-            presentation: t('Presentation'),
-            new: t('New Terminal'),
-          }}
-          testID="terminals-toolbar"
-        />
-      </View>
+      <ListToolbar
+        presentation="workspace"
+        presentationItems={[
+          { key: 'workspace', title: t('By Workspace'), checked: true, onPress: () => undefined },
+        ]}
+        hostItems={props.hostItems}
+        hostLabel={props.hostLabel}
+        onHome={props.onHome}
+        onNew={props.onNew}
+        labels={{
+          home: t('Home'),
+          host: t('Filter by Host'),
+          presentation: t('Presentation'),
+          new: t('New Terminal'),
+        }}
+        testID="terminals-toolbar"
+      />
       <Text variant="title" accessibilityRole="header">
         {t('Terminals')}
       </Text>
