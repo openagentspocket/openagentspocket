@@ -146,6 +146,10 @@ Then tag the archived commit: `git tag -a ios-1.0.0-2 -m "iOS 1.0.0 (2)" && git 
 `prebuild --clean`, but not `git clean -fdx`: copy the folder somewhere backed up. `uploadSymbols` also sends
 the symbols to Apple, so crash reports in App Store Connect and Xcode Organizer arrive symbolicated.
 
+A finished run also appends the build and its runtime version (the fingerprint) to
+`docs/releases/builds.json`. Commit it after the upload: over-the-air updates are only published for a
+runtime version recorded there ([updates guide](updates.md)).
+
 ## 6. In App Store Connect
 
 1. **TestFlight processing**: the build shows as Processing, then Ready (an email arrives). Minutes to an hour.

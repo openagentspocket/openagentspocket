@@ -1,6 +1,9 @@
 # 0028. Over-the-air JS updates: expo-updates, a signed static server on our Cloudflare account
 
-Status: proposed (2026-11-13). Research only: nothing is installed, no key exists, no server runs.
+Status: accepted (2026-11-14). Researched 2026-11-13; the owner decided the open points on 2026-11-14
+(section "Decided"). Built: the update server (`packages/updates-server`) and the publish script
+(`scripts/publish-update.mjs`), plan steps 2 and 3; how to use them is in the
+[updates guide](../guides/updates.md). Not yet: `expo-updates` in the app, a key, a deployment.
 
 ## Context
 
@@ -18,7 +21,9 @@ privileges, on every phone that accepts it.** That JavaScript can read the Keych
 open SSH sessions to every paired Host. An update channel is a remote code path into users' computers, so it is
 designed as one.
 
-Sources were read on 2026-11-13. "Not verified" means the documentation or the code we read does not answer it.
+Sources were read on 2026-11-13, and the expo-updates SDK 58 source again on 2026-11-14 while building
+plan steps 2 and 3 (marked "settled 2026-11-14"). "Not verified" means the documentation or the code we
+read does not answer it.
 
 ## 1. Options
 
@@ -68,10 +73,19 @@ The release script gains a separate command (sketch in section 9): export, build
 `npx expo export --platform ios` writes `dist/` with the bundle, the assets and a `metadata.json` listing them per
 platform; Expo's docs do not describe `metadata.json`, the example server reads it
 ([manifest.ts](https://github.com/expo/custom-expo-updates-server/blob/main/expo-updates-server/pages/api/manifest.ts)).
+Settled 2026-11-14 from `@expo/cli` `src/export/createMetadataJson.ts` and a real export of this app:
+`{ version: 0, bundler: "metro", fileMetadata: { ios: { bundle: "_expo/static/js/ios/entry-<hash>.hbc",
+assets: [{ path: "assets/<md5>", ext: "png" }] } } }`; each asset file is named by its MD5.
 The manifest ([protocol v1](https://docs.expo.dev/technical-specs/expo-updates-1/)) is JSON: `id` (UUID),
 `createdAt` (ISO 8601), `runtimeVersion`, `launchAsset`, `assets[]` each with `key`, `contentType`, `url` and `hash`
 (base64url SHA-256), `metadata`, `extra`. The server answers `multipart/mixed` with a `manifest` part and, when
 asked, an `expo-signature` part header.
+
+Settled 2026-11-14 from the iOS client (`ExpoUpdatesUpdate.swift`, expo-manifests `ExpoUpdatesManifest.swift`):
+`fileExtension` is **required** for every asset except the launch asset (the spec says optional); asset
+URLs may be relative to `updates.url` on iOS (we use absolute ones, which every client reads); and an
+update's `Constants.expoConfig` is the manifest's `extra.expoClient`, so the publish script puts the
+public Expo config there (the app reads the APNs environment from it).
 
 ## 3. Security model
 
@@ -82,7 +96,9 @@ asked, an `expo-signature` part header.
   ([CodeSigningConfiguration.swift](https://github.com/expo/expo/blob/sdk-58/packages/expo-updates/ios/EXUpdates/CodeSigning/CodeSigningConfiguration.swift),
   [FileDownloader.swift](https://github.com/expo/expo/blob/sdk-58/packages/expo-updates/ios/EXUpdates/AppLoader/FileDownloader.swift)).
   Keys come from `npx expo-updates codesigning:generate`, which makes an RSA key pair and a self-signed certificate
-  ([code signing guide](https://docs.expo.dev/eas-update/code-signing/)); key size is node-forge's default, not verified.
+  ([code signing guide](https://docs.expo.dev/eas-update/code-signing/)). Key size settled 2026-11-14: RSA 2048,
+  node-forge's default (`@expo/code-signing-certificates` calls `pki.rsa.generateKeyPair()` with no size), with
+  the code signing extended key usage.
 - **Assets are covered.** The signed manifest carries each asset's SHA-256, and the client "MUST verify" it
   ([spec](https://docs.expo.dev/technical-specs/expo-updates-1/)): "Code signing the manifest also transitively
   signs the assets."
@@ -90,13 +106,18 @@ asked, an `expo-signature` part header.
   (`rollBackToEmbedded`, `noUpdateAvailable`) and rejects the whole response on a bad one (FileDownloader.swift).
 - **Missing or bad signature:** a missing `expo-signature` throws `SignatureHeaderMissing` unless
   `allowUnsignedManifests` is set (it is not by default); an invalid one fails the download and nothing is applied.
-  The app keeps running what it has. Read in the iOS source; **Android behaviour not verified**.
+  The app keeps running what it has. Read in the iOS source. Settled in source 2026-11-14 for Android
+  (`CodeSigningConfiguration.kt`, `FileDownloader.kt`): a missing signature throws "No expo-signature header
+  specified" unless `allowUnsignedManifests`, an invalid one throws "Incorrect signature", the same for
+  directives. **Not verified on an Android device**, so Android stays off (Decided).
 - **The key never touches the server or CI.** Expo's example server signs per request with `PRIVATE_KEY_PATH` on
   the server (helpers.ts in the example repo). **We do not copy that.** Our manifest is static per update, so the
   publish script signs it once on the owner's machine and uploads manifest bytes and signature together; the
   Worker serves them verbatim and holds no secret. For "nothing new", the Worker serves the current manifest anyway
-  (the client ignores an update whose `createdAt` is not newer, below) or a `204` (a no-op in the spec; whether
-  the client accepts an unsigned `204` with signing on is not verified). Any directive we use is pre-signed the same way.
+  (the client ignores an update whose `createdAt` is not newer, below) or a `204` (a no-op in the spec).
+  Settled 2026-11-14: both clients accept a `204` with no body and no signature when the response carries
+  `expo-protocol-version` above 0, before any signature check (`FileDownloader.swift` / `.kt`). The Worker
+  answers `204` with the protocol headers. Any directive we use is pre-signed the same way.
 - **Where the key lives:** an encrypted PEM in the owner's password manager, decrypted into a temporary file only
   for a publish, then deleted. Signing from a hardware token is possible in principle (plain RSA PKCS#1 v1.5), not
   verified with Expo's tooling. Never in the repo, CI, the Worker, Cloudflare secrets or a backup that syncs in clear.
@@ -119,6 +140,13 @@ asked, an `expo-signature` part header.
 - **Can** withhold updates (freeze users on what they have), and **replay** an older signed update that is still
   newer than what a given device runs (for example a superseded, buggy one). Signatures do not expire per update and
   cannot be revoked; keep superseded updates harmless, and use a new runtime version (store release) to cut off a bad one.
+- **Can** serve any signed update to any channel (the channel is server-side routing, not inside the
+  signed bytes), within the same "newer than what the device runs" bound.
+- **Cannot** use `expo-manifest-filters` to get around the downgrade check, as long as manifests carry no
+  `metadata`. Found 2026-11-14 (`LoaderSelectionPolicyFilterAware.swift`): when the update a device runs
+  fails the server's filters, the client loads a new update **whatever its createdAt**. A filter only
+  excludes an update whose metadata has the filtered key with another value, so the publish script keeps
+  `metadata` empty, `verify` rejects a non-empty one, and the Worker never sends filters.
 - **Can** read what the client sends (section 7).
 
 ### Rotation, loss, leak
@@ -161,13 +189,22 @@ The fingerprint hashes "app dependencies, custom native code, native project fil
 the Expo config (so every config plugin's output, including `./plugins/withLocalPreview`), with `fingerprint.config.js`
 and `.fingerprintignore` to tune it. Two gaps for us:
 
-- **`patches/expo-libghostty@0.8.1.patch`** (a pnpm patch): the docs do not say patches are hashed; not verified.
-  Add `patches/` through `extraSources` in `fingerprint.config.js` so a patch change always changes the runtime.
+- **`patches/expo-libghostty@0.8.1.patch`** (a pnpm patch). Settled 2026-11-14 with `@expo/fingerprint` 0.21.8
+  on this repo: the fingerprint hashes a `patches/` folder only inside the project root (`apps/mobile`, the
+  patch-package convention, `sourcer/PatchPackage.ts`); ours is at the repository root and the patched
+  package keeps its name@version, so **a patch change does not change the runtime**. With
+  `extraSources: [{ type: 'dir', filePath: '../../patches' }]` in `apps/mobile/fingerprint.config.js` the folder
+  is hashed (checked: the source appears and the hash changes). Config in the updates guide.
+- The fingerprint hashes the resolved config, so it depends on the build environment: measured 2026-11-14,
+  `APNS_ENVIRONMENT` (the `aps-environment` entitlement) changes it, `BUILD_NUMBER` does not. The scripts
+  compute it with `APNS_ENVIRONMENT=production`, as store builds are made (`scripts/lib/runtime-version.mjs`).
 - Anonymous config plugins are identified as `withAnonymous`, so editing their body may not change the hash; keep
   local plugins named.
 
-Guard rail: `release-ios.mjs` records the fingerprint of each archived build in the repo; the publish command
-recomputes it and refuses to publish an update whose runtime matches no released build.
+Guard rail (built 2026-11-14): `release-ios.mjs` records each archived build and its fingerprint in
+`docs/releases/builds.json` (and, once expo-updates is in, refuses a build whose embedded
+`EXUpdates.bundle/fingerprint` differs); the publish command recomputes it and refuses to publish an
+update whose runtime matches no released build.
 
 ## 5. Rollout
 
@@ -175,6 +212,10 @@ recomputes it and refuses to publish an update whose runtime matches no released
   build is promoted to the App Store unchanged, so a channel cannot be baked into the binary. Option: the app sets
   `Updates.setExtraParamAsync('channel', 'beta')` (sent as `Expo-Extra-Params`) when it detects a TestFlight install
   (detection method not verified) or from a hidden setting; the Worker serves "beta" updates only to that value.
+  Built 2026-11-14 on the server side: the channel is the `channel` key of `Expo-Extra-Params` (an SFV
+  dictionary of strings, `FileDownloader.swift`), `beta` or `production`, absent meaning `production`; storage
+  is keyed by (platform, runtime version, channel). The same signed bundle is uploaded to `beta`, then to
+  `production`. Channels do not use manifest filters (section 3). How the app picks its channel is not built.
 - **Staged percentage:** not in the protocol. The Worker could bucket by a hash of `EAS-Client-ID` computed per
   request and never stored. Not needed at our size; start with beta then everyone.
 - **Rollback:** prefer re-publishing the last good commit as a new signed update (newer `createdAt`, so every device
@@ -245,13 +286,14 @@ paths or message text; `Expo-Extra-Params` if set. No app config field disables 
 
 Owner-only steps are marked **(owner)**.
 
-1. Accept or amend this ADR **(owner)**; decide the "Not decided" list.
+1. Accept or amend this ADR **(owner)**; decide the "Not decided" list. Done 2026-11-14.
 2. Worker + R2 in `packages/updates-server` (new, separate from the relay to limit blast radius): routes for the
    manifest (pick latest by platform, runtime, channel; serve stored bytes and signature) and immutable assets.
-   Tests with `node --test` against the protocol rules. No secret in it.
+   Tests with `node --test` against the protocol rules. No secret in it. Built 2026-11-14.
 3. `scripts/publish-update.mjs`: refuses unless clean `main` and green `pnpm test`; `npx expo export --platform ios`;
    checks the runtime fingerprint against released builds; builds the manifest; signs it with the key file given on
-   the command line; `--dry-run` writes everything to a folder; upload is a separate step.
+   the command line; `--dry-run` writes everything to a folder; upload is a separate step. Built 2026-11-14
+   (the real R2 upload is a stub until owner step 6).
 4. Local end-to-end without publishing: the Worker under `wrangler dev`, a Release simulator build pointed at it with a
    throwaway test key and test certificate (integrator builds it). Checks: an update applies on the next cold start;
    a bad signature, a wrong runtime and an older `createdAt` are all refused; a crash on launch rolls back.
@@ -269,22 +311,31 @@ Recommended: `expo-updates` against our own static, pre-signed update server on 
 (Worker + R2), runtime version by fingerprint, code signing required, signing key offline with the owner, updates
 applied silently on the next cold start, used only for fixes and polish of reviewed features.
 
-## Not decided
+## Decided (owner, 2026-11-14)
 
-- Certificate validity (suggested 3 years: long enough to outlive installed builds, short enough to bound a leak).
-- Key custody: password manager PEM, or a hardware token (needs a spike).
-- How beta users are told apart (TestFlight detection or a hidden setting) and whether a staged percentage is wanted.
-- Whether the Worker lives in its own package (recommended) or as a route of the relay.
-- Whether Android ships with it at the same time (its client behaviour on a missing signature is not verified).
-- Whether to keep a public log of published updates (recommended).
+- **Certificate validity: 3 years.**
+- **Key custody:** the owner's choice; nothing in the repo reads, generates or stores a production key
+  (the publish script takes a file path at publish time; tests make a throwaway key in a temp folder).
+- **Beta versus everyone:** a channel the app sets at runtime (section 5); the server and the publish
+  script handle `beta` and `production`. How the app decides is a later step. No staged percentage.
+- **The Worker is its own package**, `packages/updates-server`, not a route of the relay.
+- **iOS first.** Android is not enabled (the publish script refuses it) until its client's behaviour on
+  a missing or bad signature is verified on a device.
+- **A public log of published updates is kept**, as `docs/releases/updates.jsonl` in the repository,
+  appended by the upload step and committed by the owner. A file the Worker served would be a file the
+  server can rewrite, and the server is what the log must hold to account; git history on the public
+  repository is outside the Worker's and the Cloudflare account's reach. Each entry has the update id,
+  runtime version, channel, `createdAt`, commit, the SHA-256 of the signed bytes and the signature, so
+  anyone can compare what the server serves with the log (`publish-update.mjs verify --url`) and rebuild
+  the update from the commit.
 
 ## Not verified
 
-- Android client's handling of missing or invalid signatures, and its request headers (read on iOS only).
-- Whether pnpm patches enter the fingerprint.
+- Android client's handling of missing or invalid signatures on a device (read in source 2026-11-14: same
+  as iOS; request headers also read there and match iOS).
 - `expo-updates` on RN 0.88 with the New Architecture on a device.
-- Whether the client accepts an unsigned `204` when signing is on.
-- RSA key size from `codesigning:generate`.
+- The path of the embedded fingerprint in an archived app (`EXUpdates.bundle/fingerprint`, read from
+  `create-updates-resources-ios.sh`; the release script checks it when present).
 - Apple's position on Hermes bytecode as interpreted code.
 - Whether native crashes trigger error recovery.
 - Certificate pinning for the update URL.
